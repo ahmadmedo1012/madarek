@@ -27,6 +27,9 @@ vi.mock('../../src/lib/api', () => ({
 }));
 
 import { useLogin, useRegister, useLogout, useMe } from '../../src/hooks/useAuth';
+// R320 §C — the password literals below ARE the documented test value,
+// imported from the single source of truth.
+import { TEST_PASSWORD } from '@shared/testAccounts';
 import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
 import { api, unwrap } from '../../src/lib/api';
 
@@ -83,7 +86,7 @@ describe('useLogin — session boundary', () => {
 
     const { result } = renderHook(() => useLogin(), { wrapper: makeWrapper(qc) });
     await act(async () => {
-      await result.current.mutateAsync({ email: USER_B.email, password: 'Madarek2026!' });
+      await result.current.mutateAsync({ email: USER_B.email, password: TEST_PASSWORD });
     });
 
     expect(qc.getQueryData(['auth', 'me'])).toBeUndefined();
@@ -103,7 +106,7 @@ describe('useRegister — session boundary', () => {
     await act(async () => {
       await result.current.mutateAsync({
         email: USER_B.email,
-        password: 'Madarek2026!',
+        password: TEST_PASSWORD,
         firstName: USER_B.firstName,
         lastName: USER_B.lastName,
         role: 'TEACHER',

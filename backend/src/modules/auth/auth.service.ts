@@ -5,7 +5,7 @@ import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../../lib
 import { AppError } from '../../lib/errors.js';
 import { logger } from '../../logger.js';
 import { decideRefresh, interpretRevocationBump } from './rotation.js';
-import { LOCK_DURATION_MS, MAX_FAILED_LOGINS, shouldLock } from './lockout.js';
+import { lockDurationFor, MAX_FAILED_LOGINS, shouldLock } from './lockout.js';
 import { passwordSchema } from './auth.dto.js';
 import { resolveMemberships, type ActiveMembership } from '../../http/middleware/institution.js';
 
@@ -331,7 +331,9 @@ export const registerUser = async (input: RegisterInput) => {
  *   - On failed password: increments failedLoginCount ATOMICALLY (the
  *     authoritative post-increment value is read back — racing logins
  *     each count exactly once) and locks the account for
- *     LOCK_DURATION_MS once the live count reaches MAX_FAILED_LOGINS.
+ *     lockDurationFor(email) — the full policy for real accounts, the
+ *     60 s demo backoff for @test.ly — once the live count reaches
+ *     MAX_FAILED_LOGINS.
  *   - On locked account: burns the same argon2 work as the other
  *     failure paths so lock state isn't timing-visible. (The 429 status
  *     itself still discloses "identifier exists AND is locked" — an
@@ -427,7 +429,10 @@ export const loginUser = async (
       // this condition miss — correctly leaving the account unlocked.
       await prisma.user.updateMany({
         where: { id: user.id, failedLoginCount: { gte: MAX_FAILED_LOGINS } },
-        data: { lockedUntil: new Date(Date.now() + LOCK_DURATION_MS) },
+        // R320 §C: the lock length is per-account — @test.ly demo
+        // accounts take the 60 s backoff (lockout.ts lockDurationFor),
+        // every real account keeps the full 15-minute policy.
+        data: { lockedUntil: new Date(Date.now() + lockDurationFor(user.email)) },
       });
     }
     await writeLoginEvent({

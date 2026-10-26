@@ -793,23 +793,98 @@
     line-height: var(--lh-base);
     color: var(--text-muted);
   }
-  .auth-demo-actions {
-    display: flex; flex-wrap: wrap; gap: var(--sp-2);
+  /* R320 §C — the test-account table: the sheet system's ruled-cell
+     grammar (1px hairline rows, square cells, radius 0, mono
+     credentials), grouped التعليم / الإدارة / النظام. One row per
+     job; the password is VISIBLE by design — these are published test
+     credentials. */
+  .auth-demo-table {
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: transparent;
   }
-  /* r184 (A3 §F7 — one height recipe): the demo role chips consume the
-     canonical .btn/.btn.sm recipe via the `btn sm auth-demo-btn` class
-     chain in AuthPage.tsx. Height, radius, padding, label type size,
-     press scale, focus ring, and disabled opacity flow from
-     components.css; ONLY the intentional quiet-ink deltas live
-     here — plus the unconditional 44px touch floor (S-1a). */
-  .auth-demo-btn {
-    color: var(--text-secondary);
-    min-block-size: 44px; /* touch floor — unconditional (S-1a) */
+  .auth-demo-group + .auth-demo-group {
+    border-block-start: 2px solid var(--rule); /* a heavier rule between groups */
   }
-  .auth-demo-btn:hover {
-    border-color: var(--border);
-    background: var(--surface);
+  .auth-demo-group-head {
+    display: flex; align-items: center; gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .auth-demo-group-label {
+    /* mono voice is Latin-only (r212): an Arabic group label stays in
+       the quiet sans metadata voice — the .auth-meta precedent. */
+    font-family: var(--font-sans);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+    letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
+    white-space: nowrap;
+  }
+  .auth-demo-group-rule {
+    flex: 1;
+    block-size: 1px;
+    background: var(--rule);
+  }
+  .auth-demo-row {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: var(--sp-2);
+    padding: var(--sp-2) var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+  }
+  .auth-demo-row-index {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    flex: none;
+  }
+  .auth-demo-row-job {
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
     color: var(--text);
+    flex: 1 1 8rem;
+    min-inline-size: 0;
+  }
+  .auth-demo-row-creds {
+    display: flex; flex-direction: column; gap: 2px;
+    flex: 2 1 11rem;
+    min-inline-size: 0;
+  }
+  .auth-demo-cred {
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+  }
+  .auth-demo-cred-pw { color: var(--text-muted); }
+  /* The square «تعبئة»/«دخول» cell — one height recipe, quiet ink (no
+     washes: hover is ink-only and hover-guarded, the r319 B1
+     discipline), 44px touch floor unconditional (S-1a). */
+  .auth-demo-fill {
+    flex: none;
+    min-inline-size: 72px;
+    min-block-size: 44px; /* touch floor — unconditional (S-1a) */
+    display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm); /* 0 — square cell */
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition: border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-demo-fill:hover { border-color: var(--border-strong); color: var(--text); }
+  }
+  .auth-demo-fill:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .auth-demo-fill:active { transform: scale(var(--press-scale)); }
+  .auth-demo-fill:disabled {
+    opacity: var(--state-btn-disabled-opacity);
+    cursor: not-allowed;
+    transform: none;
   }
 
   /* r157 F5 (finding 14): the demo panel starts COLLAPSED — dev
@@ -1123,7 +1198,7 @@
     .auth-input-toggle,
     .auth-submit,
     .auth-submit::before,
-    .auth-demo-btn,
+    .auth-demo-fill,
     .auth-demo-hint-close,
     .auth-demo-hint-reopen,
     .auth-error-link,

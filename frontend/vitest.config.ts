@@ -7,6 +7,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
+      // R320 §C — mirrored from vite.config.ts (the two runners MUST
+      // agree): the repo-root shared/ directory.
+      '@shared': path.resolve(__dirname, '..', 'shared'),
     },
   },
   test: {

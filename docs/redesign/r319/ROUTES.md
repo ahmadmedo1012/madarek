@@ -221,7 +221,7 @@ One row per capture-able live route (105 distinct routes → 108 capture rows; s
 | `/colleges/:id` (GUEST, seed college) | — | — | — | — | — | — | — |
 | `/404` + `*` (catch-all) | — | — | — | — | — | — | — |
 
-### 2.2 STUDENT (login: student@demo.madarek.ly)
+### 2.2 STUDENT (login: student@test.ly — R320 §C)
 
 | Route | 390 | 768 | 1440 | light | dark | judged | gate |
 |---|---|---|---|---|---|---|---|
@@ -274,7 +274,7 @@ One row per capture-able live route (105 distinct routes → 108 capture rows; s
 | `/colleges/leaderboard` (AUTHED) | — | — | — | — | — | — | — |
 | `/colleges/:id` (AUTHED, seed college) | — | — | — | — | — | — | — |
 
-### 2.4 TEACHER (login: teacher@demo.madarek.ly)
+### 2.4 TEACHER (login: teacher@test.ly)
 
 | Route | 390 | 768 | 1440 | light | dark | judged | gate |
 |---|---|---|---|---|---|---|---|
@@ -300,7 +300,7 @@ One row per capture-able live route (105 distinct routes → 108 capture rows; s
 | `/teacher/alerts` | — | — | — | — | — | — | — |
 | `/teacher/community` | — | — | — | — | — | — | — |
 
-### 2.5 ADMIN (login: admin@demo.madarek.ly)
+### 2.5 ADMIN (login: registrar@test.ly)
 
 | Route | 390 | 768 | 1440 | light | dark | judged | gate |
 |---|---|---|---|---|---|---|---|
@@ -317,7 +317,7 @@ One row per capture-able live route (105 distinct routes → 108 capture rows; s
 | `/admin/settings` | — | — | — | — | — | — | — |
 | `/admin/community` | — | — | — | — | — | — | — |
 
-### 2.6 QUALITY (login: quality@demo.madarek.ly)
+### 2.6 QUALITY (login: quality@test.ly)
 
 | Route | 390 | 768 | 1440 | light | dark | judged | gate |
 |---|---|---|---|---|---|---|---|
@@ -332,7 +332,7 @@ One row per capture-able live route (105 distinct routes → 108 capture rows; s
 | `/quality/alerts` | — | — | — | — | — | — | — |
 | `/quality/community` | — | — | — | — | — | — | — |
 
-### 2.7 OWNER (login: owner@demo.madarek.ly)
+### 2.7 OWNER (login: owner@test.ly)
 
 | Route | 390 | 768 | 1440 | light | dark | judged | gate |
 |---|---|---|---|---|---|---|---|
@@ -356,7 +356,7 @@ One row per capture-able live route (105 distinct routes → 108 capture rows; s
 
 ## 3 · Capture plan (order + concrete seed targets)
 
-Logins: the seed's demo accounts — `student@` · `teacher@` · `admin@` · `quality@` · `owner@demo.madarek.ly` (plus `student2@` / `teacher2@` / `admin2@` for the Al-Andalus second tenant). Password: the documented demo value in `backend/prisma/seed.ts` (header). Agent B's Playwright auth fixture (API token login) is the vehicle; once the local stack runs, prefer direct URL visits with the ids below.
+Logins: the shared test-account table (R320 §C — `shared/testAccounts.ts`) — `student@` · `teacher@` · `registrar@` · `quality@` · `owner@test.ly` (plus `student2@` / `teacher2@` / `admin2@test.ly` for the Al-Andalus second tenant). Password: the documented TEST value `12345678`. Agent B's Playwright auth fixture (API token login, derived from the same table) is the vehicle; once the local stack runs, prefer direct URL visits with the ids below.
 
 **Wave 1 — the five role dashboards** (§H exit needs 100% coverage; these are also the onboarding auto-start surfaces):
 `/student/dashboard` → `/teacher/dashboard` → `/admin/dashboard` → `/quality/dashboard` → `/owner/dashboard` — each at 390/768/1440 × light/dark (30 cells).

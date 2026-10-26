@@ -25,6 +25,13 @@
  */
 
 import type { AppRole } from '../../../src/stores/auth.store';
+// R320 §C — the documented TEST password comes from the single
+// source of truth. NOTE: Playwright's TS loader cannot follow the
+// repo-root shared/testAccounts.ts RE-EXPORT chain (it transpiles the
+// shim to CJS and named exports vanish — verified empirically), so
+// Playwright-consumed fixtures import the PHYSICAL table module
+// directly; vite/vitest consumers use the @shared alias.
+import { TEST_PASSWORD } from '../../../../backend/src/modules/auth/test-accounts.data';
 
 /* ── frozen clock ──────────────────────────────────────────────── */
 
@@ -126,9 +133,11 @@ export const ROLE_USERS: Record<'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'O
   OWNER: OWNER_USER,
 };
 
-/** The canonical demo password shared with the committed seed +
- * AuthPage's dev-only demo panel — a repo fixture, not a secret. */
-export const DEMO_PASSWORD = 'Madarek2026!';
+/** The canonical TEST password (R320 §C) — imported from the shared
+ * test-account table (repo-root shared/testAccounts.ts) so this
+ * hermetic corpus can never drift from the documented value. A repo
+ * fixture, not a secret. */
+export const DEMO_PASSWORD = TEST_PASSWORD;
 
 /** Credentials the mock transport accepts for a successful login. */
 export const VALID_LOGIN = {

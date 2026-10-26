@@ -119,7 +119,7 @@ SMOKE_EMAIL2=<بريد ب> SMOKE_PASSWORD2=<كلمة ب> npm run smoke
    يتحقق أن مجموعتي الشعب **منفصلتان تمامًا**، ثم يطلب المستخدم
    الأول شعبة مؤسسة الثاني (`GET /offerings/:id/full`) ويتحقق أن
    الرفض 403/404 — أبدًا 200. (مثال جاهز: الطالبان التجريبيان
-   `student@demo.madarek.ly` و`student2@demo.madarek.ly`.)
+   `student@test.ly` و`student2@test.ly` — R320 §C.)
    برسالة صريحة (لا تخطٍّ صامت).
 
 > قاعدة صدق: الفحص يلمس النشر الحي فقط ولا يُشغّل داخل CI أبدًا
@@ -294,10 +294,10 @@ pg_restore --no-owner --no-privileges \
 export NEW_PASSWORD="$(openssl rand -base64 24)"
 
 # 2) معاينة (قراءة فقط: يتحقق من الحساب ويعرض التغيير المخطط):
-npm run db:rotate-password -- --email owner@demo.madarek.ly --new-password-env NEW_PASSWORD --dry-run
+npm run db:rotate-password -- --email owner@test.ly --new-password-env NEW_PASSWORD --dry-run
 
 # 3) التنفيذ — يتطلب --yes (وإلزامي كذلك عند NODE_ENV=production):
-npm run db:rotate-password -- --email owner@demo.madarek.ly --new-password-env NEW_PASSWORD --yes
+npm run db:rotate-password -- --email owner@test.ly --new-password-env NEW_PASSWORD --yes
 ```
 
 دلالات السكربت تطابق `changePassword` في التطبيق
@@ -310,10 +310,12 @@ npm run db:rotate-password -- --email owner@demo.madarek.ly --new-password-env N
 نفسها)؛ قائمة كلمات المرور الشائعة حرس طبقة الـDTO داخل التطبيق —
 اختر كلمة قوية كما في الأمر أعلاه.
 
-> حسابات العرض الأربعة (student/teacher/admin/quality@demo.madarek.ly)
-> دُوّيرت في الإنتاج عبر التطبيق نفسه (`/auth/change-password`) —
-> كلمة `1234` لم تعد مقبولة هناك. هذا السكربت للأغراض المشغّلية
-> المستقبلية ولحساب المالك خاصة.
+> تاريخيًا: حسابات العرض الأربعة القديمة (student/teacher/admin/
+> quality على نطاق demo.madarek.ly السابق) دُوّيرت في الإنتاج عبر
+> التطبيق نفسه (`/auth/change-password`). منذ R320 §C حسابات الاختبار
+> الموثّقة تعيش على `@test.ly` بكلمة معلَنة للتطوير — إن رُقِّيت
+> المنصة للإنتاج دوّرها بالمسار نفسه (أو علّقها). هذا السكربت
+> للأغراض المشغّلية المستقبلية ولحساب المالك خاصة.
 
 ### 4ب) تجهيز حساب مالك باسم المشغّل — provision-owner (r187)
 
@@ -332,7 +334,7 @@ npm run db:rotate-password -- --email owner@demo.madarek.ly --new-password-env N
   كلمة المرور المختارة عبر متغير البيئة لا تُطبع أبدًا.
 - **صف تدقيق**: كل إنشاء يسجّل `OWNER_PROVISION`
   (مصدر operator-script) في `AuditLog` داخل نفس المعاملة.
-- **`--suspend-demo-owner`**: يعلّق حساب العرض `owner@demo.madarek.ly`
+- **`--suspend-demo-owner`**: يعلّق حساب المالك التجريبي
   (isActive=false + إبطال جلساته) **بعد** إنشاء الحساب الجديد
   وبنفس المعاملة — لا تنتهي المنصة بصفر مالكين نشطين أبدًا.
 - **مثبَّت باختبارات**: عقد السكربت كله (معاملات argon، حدود

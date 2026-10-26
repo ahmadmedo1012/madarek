@@ -212,33 +212,33 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(toggle).toHaveAccessibleName('إخفاء كلمة المرور');
   });
 
-  it('dev demo buttons FILL the form — they never submit it', async () => {
+  it('dev demo rows FILL the form — they never submit it', async () => {
     renderPage();
 
     // r157 F5: the panel starts collapsed — reopen it first via the
     // quiet chip (see the collapsed-pin test below).
     fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
 
-    // r184 (A3 §F7): the role chips ride the CANONICAL .btn/.btn.sm
-    // recipe (40/32/48 — DESIGN.md §5) — height, radius, press state,
-    // disabled opacity, and focus ring all flow from components.css.
-    // The old bespoke 36px was a third button height that would drift
-    // at the first .btn retune.
-    const roleButtons = ['طالب', 'أستاذ', 'المسجل العام', 'ضمان الجودة', 'المالك'] // R320 override: ADMIN demo button «الإدارة» → «المسجل العام» (§B rename)
-      .map((name) => screen.getAllByRole('button', { name }).find((b) => b.classList.contains('auth-demo-btn')))
-      .filter((b): b is HTMLElement => Boolean(b));
-    expect(roleButtons).toHaveLength(5);
-    for (const b of roleButtons) {
-      expect(b).toHaveClass('btn', 'sm', 'auth-demo-btn');
+    /* R320 override (§C): the five per-role chips (.btn.sm.auth-demo-btn)
+     * are retired — the panel is now the hairline test-account TABLE,
+     * one row per job from the SHARED table (@shared/testAccounts):
+     * grouped التعليم / الإدارة / النظام, email + password visible, and
+     * a square «تعبئة» button per row. The full panel contract lives in
+     * tests/unit/r320-test-accounts-panel.test.tsx; this pin keeps the
+     * form-integrity half here (fill only, never submit). */
+    const fillButtons = screen.getAllByRole('button', { name: /^تعبئة حساب / });
+    expect(fillButtons).toHaveLength(10);
+    for (const b of fillButtons) {
+      expect(b).toHaveClass('auth-demo-fill');
     }
 
     const email = screen.getByLabelText('البريد الإلكتروني أو رقم القيد') as HTMLInputElement;
     const password = screen.getByLabelText('كلمة المرور') as HTMLInputElement;
 
-    fireEvent.click(screen.getByRole('button', { name: 'طالب' }));
+    fireEvent.click(screen.getByRole('button', { name: 'تعبئة حساب طالب' }));
     await waitFor(() => {
-      expect(email.value).toBe('student@demo.madarek.ly');
-      expect(password.value).toBe('Madarek2026!');
+      expect(email.value).toBe('student@test.ly');
+      expect(password.value).toBe('12345678');
     });
     // One-click FILL only — the visitor submits the form themselves.
     expect(loginState.current.mutateAsync).not.toHaveBeenCalled();

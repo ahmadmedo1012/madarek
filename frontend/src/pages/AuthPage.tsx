@@ -1,12 +1,11 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
-  Home, GraduationCap, School,
-  Building2, AlertCircle, ShieldCheck, ArrowLeft, Crown, Eye, EyeOff,
+  Home, AlertCircle, ArrowLeft, Eye, EyeOff,
   FlaskConical, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
@@ -17,12 +16,18 @@ import { apiErrorCode } from '../lib/format';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
 import { ROLE_HOME, ROLE_LABELS } from '../lib/nav';
-// R320 §B: the demo buttons consume the shared role-label source
-// (lib/roleLabels.ts) — ADMIN is «المسجل العام» now; the other roles'
-// demo-panel wording is the established one (AUTH_DEMO_ROLE_LABELS).
-import { AUTH_DEMO_ROLE_LABELS } from '../lib/roleLabels';
 import { countAr } from '../lib/format';
 import { authErrorView } from '../lib/authErrors';
+// R320 §C — the test-account table (one easy account per job,
+// @test.ly / 12345678). Single source of truth: the repo-root
+// shared/testAccounts.ts re-export (physically
+// backend/src/modules/auth/test-accounts.data.ts). The alias is wired
+// identically in vite.config.ts, vitest.config.ts and tsconfig paths.
+import {
+  TEST_ACCOUNTS,
+  TEST_ACCOUNT_GROUPS,
+  type TestAccount,
+} from '@shared/testAccounts';
 import type { AppRole, MembershipInfo } from '../stores/auth.store';
 import type { AxiosError } from 'axios';
 
@@ -76,24 +81,18 @@ const loginSchema = z.object({
 });
 type LoginInputs = z.infer<typeof loginSchema>;
 
-/** Demo credentials are a dev-only convenience. Gating on
- *  import.meta.env.DEV keeps known emails/passwords out of production
- *  bundles (Vite replaces the flag statically, so the whole branch,
- *  its handlers and this map are dead-code-eliminated in prod builds). */
-const SHOW_DEMO_LOGIN = import.meta.env.DEV;
-
-const DEMO_EMAIL: Record<AppRole, string> = {
-  STUDENT: 'student@demo.madarek.ly',
-  TEACHER: 'teacher@demo.madarek.ly',
-  ADMIN:   'admin@demo.madarek.ly',
-  QUALITY: 'quality@demo.madarek.ly',
-  OWNER:   'owner@demo.madarek.ly',
-};
-/** Demo password — canonical value shared with the backend seed
- *  (backend/prisma/seed.ts) and the snap/probe scripts. Keeping one
- *  constant means a fresh `npm run db:seed` demo database always
- *  matches what these dev-only buttons fill in. */
-const DEMO_PASSWORD = 'Madarek2026!';
+/** Test accounts (R320 §C) — the demo panel's data lives in the SHARED
+ *  table (one easy account per job, `@test.ly` / `12345678`); the old
+ *  per-role DEMO_EMAIL/DEMO_PASSWORD constants are retired.
+ *
+ *  Visibility gate — `VITE_SHOW_TEST_ACCOUNTS`: DEFAULT ON while the
+ *  project is in development (absent env var = SHOW); the panel can be
+ *  hidden everywhere by building with `VITE_SHOW_TEST_ACCOUNTS=0`
+ *  (Vite replaces the expression statically, so the `'0'` build folds
+ *  the gate to a constant and dead-code-eliminates the panel). The
+ *  read lives INSIDE the component so the test belt can stub the env
+ *  per-render. */
+const showTestAccounts = () => import.meta.env.VITE_SHOW_TEST_ACCOUNTS !== '0';
 
 /** Deep link a visitor was trying to reach when ProtectedRoute bounced
  *  them here (ProtectedRoute passes `state={{ from: location }}`). Only
@@ -107,6 +106,7 @@ function readFromPath(state: unknown): string | null {
 export default function AuthPage() {
   useThemeSync();
   usePageTitle('تسجيل الدخول');
+  const SHOW_TEST_ACCOUNTS = showTestAccounts();
   const navigate = useNavigate();
   const location = useLocation();
   const login = useLogin();
@@ -126,6 +126,11 @@ export default function AuthPage() {
   // never the first thing a real visitor should read. A quiet reopen
   // chip (.auth-demo-hint-reopen) keeps it one honest click away.
   const [demoHintOpen, setDemoHintOpen] = useState(false);
+  // R320 §C — which test account's credentials currently fill the form
+  // (that row's button flips from «تعبئة» to «دخول» — the second tap
+  // submits). Null = nothing filled yet.
+  const [filledEmail, setFilledEmail] = useState<string | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const loginForm = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
@@ -188,12 +193,18 @@ export default function AuthPage() {
     } catch { /* error displayed in the chooser */ }
   };
 
-  /** One-click FILL of the demo credentials — the visitor reviews the
-   *  filled fields and submits the form themselves (no hidden
-   *  auto-login; the action stays visible and honest). */
-  const fillDemo = (role: AppRole) => {
-    loginForm.setValue('email', DEMO_EMAIL[role], { shouldValidate: false });
-    loginForm.setValue('password', DEMO_PASSWORD, { shouldValidate: false });
+  /** R320 §C — one-click FILL of a test account's credentials. The
+   *  first tap only FILLS the form (the visitor reviews and stays in
+   *  control); the SAME row's button then reads «دخول» and the second
+   *  tap submits it. */
+  const fillTestAccount = (account: TestAccount) => {
+    if (filledEmail === account.email) {
+      formRef.current?.requestSubmit();
+      return;
+    }
+    loginForm.setValue('email', account.email, { shouldValidate: false });
+    loginForm.setValue('password', account.password, { shouldValidate: false });
+    setFilledEmail(account.email);
   };
 
   // r157 F5 (finding 5 — alert storm): field-level errors are
@@ -345,7 +356,7 @@ export default function AuthPage() {
               the control filling the row. Transparent inputs, no icons
               inside them; errors are mono red micro-labels beside
               their row (describedby-only, r157 F5). */}
-          <form onSubmit={onLogin} noValidate className="auth-form">
+          <form onSubmit={onLogin} noValidate className="auth-form" ref={formRef}>
             <div className="auth-cells">
               <div className="auth-cell">
                 <span className="auth-cell-index" dir="ltr" aria-hidden="true">[01]</span>
@@ -525,7 +536,7 @@ export default function AuthPage() {
               </span>
             )}
 
-            {SHOW_DEMO_LOGIN && !demoHintOpen && (
+            {SHOW_TEST_ACCOUNTS && !demoHintOpen && (
               <button
                 type="button"
                 className="auth-demo-hint-reopen"
@@ -536,7 +547,7 @@ export default function AuthPage() {
               </button>
             )}
 
-            {SHOW_DEMO_LOGIN && demoHintOpen && (
+            {SHOW_TEST_ACCOUNTS && demoHintOpen && (
               <div className="auth-demo-hint">
                 <div className="auth-demo-hint-head">
                   <Icon icon={FlaskConical} size={14} />
@@ -551,29 +562,48 @@ export default function AuthPage() {
                   </button>
                 </div>
                 <p className="auth-demo-hint-body">
-                  اضغط دوراً لتعبئة الحقول ببيانات حساب تجريبي، ثم اضغط زر تسجيل الدخول.
+                  حساب واحد لكل دور — اضغط «تعبئة» لملء الحقول ثم «دخول» لتسجيل الدخول.
                 </p>
-                <div className="auth-demo-actions">
-                  {(['STUDENT', 'TEACHER', 'ADMIN', 'QUALITY', 'OWNER'] as const).map((role) => {
-                    const DemoIcon =
-                      role === 'STUDENT' ? GraduationCap :
-                      role === 'TEACHER' ? School :
-                      role === 'ADMIN' ? Building2 :
-                      role === 'QUALITY' ? ShieldCheck :
-                      Crown;
-                    return (
-                      <button
-                        key={role}
-                        type="button"
-                        className="btn sm auth-demo-btn"
-                        onClick={() => fillDemo(role)}
-                        disabled={login.isPending}
-                      >
-                        <Icon icon={DemoIcon} size={14} />
-                        <span>{AUTH_DEMO_ROLE_LABELS[role]}</span>
-                      </button>
-                    );
-                  })}
+                {/* R320 §C — the hairline-cell account table (Heron sheet
+                    grammar: 1px hairline rows, square cells, radius 0,
+                    mono credentials), grouped التعليم / الإدارة / النظام.
+                    Data is the shared test-account table — never forked
+                    here. The password is VISIBLE by design: these are
+                    published test credentials. */}
+                <div className="auth-demo-table">
+                  {TEST_ACCOUNT_GROUPS.map((group) => (
+                    <div className="auth-demo-group" key={group}>
+                      <div className="auth-demo-group-head">
+                        <span className="auth-demo-group-label">{group}</span>
+                        <span className="auth-demo-group-rule" aria-hidden="true" />
+                      </div>
+                      {TEST_ACCOUNTS.filter((a) => a.group === group).map((account, i) => (
+                        <div className="auth-demo-row" key={account.email}>
+                          <span className="auth-demo-row-index" dir="ltr" aria-hidden="true">
+                            [{String(i + 1).padStart(2, '0')}]
+                          </span>
+                          <span className="auth-demo-row-job">{account.job}</span>
+                          <span className="auth-demo-row-creds">
+                            <bdi dir="ltr" className="auth-demo-cred">{account.email}</bdi>
+                            <bdi dir="ltr" className="auth-demo-cred auth-demo-cred-pw">{account.password}</bdi>
+                          </span>
+                          <button
+                            type="button"
+                            className="auth-demo-fill"
+                            onClick={() => fillTestAccount(account)}
+                            disabled={login.isPending}
+                            aria-label={
+                              filledEmail === account.email
+                                ? `دخول بحساب ${account.job}`
+                                : `تعبئة حساب ${account.job}`
+                            }
+                          >
+                            {filledEmail === account.email ? 'دخول' : 'تعبئة'}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  ))}
                 </div>
               </div>
             )}

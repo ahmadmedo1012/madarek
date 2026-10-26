@@ -18,22 +18,34 @@
  * proves. Demo users carry Membership rows per institution; the platform
  * OWNER deliberately has NO membership (platform scope, never a member).
  *
- * Demo accounts (password = "Madarek2026!" for all — chosen to satisfy
- * the 8-char minimum in the register policy, see auth.dto.ts):
- *   student@demo.madarek.ly        → STUDENT (أحمد الزروق) — membership in madarek-demo
- *   teacher@demo.madarek.ly        → TEACHER (د. سالم البوسيفي) — membership in madarek-demo
- *   admin@demo.madarek.ly          → ADMIN   (المسجل العام) — membership in madarek-demo
- *   quality@demo.madarek.ly        → QUALITY (ضمان الجودة) — membership in madarek-demo
- *   owner@demo.madarek.ly          → OWNER   (مالك المنصة) — NO membership (platform owner)
- *   student2@demo.madarek.ly → STUDENT (ليلى المهدي) — membership in alandalus-demo
- *   admin2@demo.madarek.ly   → ADMIN   (المسجل العام) — membership in alandalus-demo
+ * Test accounts (R320 §C — ONE easy account per job; the single source
+ * of truth is src/modules/auth/test-accounts.data.ts, re-exported at
+ * the repo root as shared/testAccounts.ts):
+ *   student@test.ly   → STUDENT (أحمد الزروق) — membership in madarek-demo
+ *   student2@test.ly  → STUDENT (ليلى المهدي) — membership in alandalus-demo
+ *   teacher@test.ly   → TEACHER (د. سالم البوسيفي) — membership in madarek-demo
+ *   registrar@test.ly → ADMIN   (المسجل العام) — membership in madarek-demo
+ *   quality@test.ly   → QUALITY (ضمان الجودة) — membership in madarek-demo
+ *   owner@test.ly     → OWNER   (مالك المنصة) — NO membership (platform owner)
+ *   teacher2@test.ly  → TEACHER (خالد التربلسي) — membership in alandalus-demo
+ *   admin2@test.ly    → ADMIN   (مسجل عام — الأندلس) — membership in alandalus-demo
+ * Password for ALL seeded accounts: "12345678" (TEST_PASSWORD — the
+ * pre-R320 demo domain/password pair is retired).
+ *
+ * R320 §C — ensureTestAccounts(): on top of this corpus the seeder also
+ * maintains the FULL documented job table (رئيس قسم / عميد / نائب عميد /
+ * مسجل كلية بنطاق كلية …) via the idempotent ensureTestAccounts() in
+ * src/modules/auth/test-accounts.ts. It runs on EVERY db:seed — fresh
+ * AND established databases — as the ONE deliberate exception to the
+ * r183 zero-writes rule below, and it touches ONLY the @test.ly
+ * accounts (never real users' data). The backend boot path can also
+ * run it by setting MADAREK_TEST_ACCOUNTS=1 (see backend/src/index.ts).
  *
  * NOTE (final-polish audit, 2026-09-28): the PRODUCTION database was
- * seeded by an older generation of this file whose password was
- * "1234" — those five accounts still authenticate with "1234" there
- * until the owner re-runs this seed (the upserts below rewrite the
- * password hash to "Madarek2026!" on every run). Fresh environments
- * always get "Madarek2026!".
+ * seeded by older generations of this file whose demo passwords differ
+ * — those legacy accounts still authenticate with their old password
+ * until the owner re-runs this seed. The ensure pass creates/resets
+ * the CURRENT @test.ly set regardless of that legacy state.
  *
  * r180 — DEPLOY-TIME SEEDING + r183 — ESTABLISHED-DB GUARD: the root
  * `npm run build` chains `db:seed` after `db:deploy` (Render runs it in
@@ -79,6 +91,8 @@ import {
 } from '@prisma/client';
 import { hashPassword } from '../src/lib/password.js';
 import { utcDayStart } from '../src/lib/dates.js';
+import { ensureTestAccounts } from '../src/modules/auth/test-accounts.js';
+import { TEST_PASSWORD } from '../src/modules/auth/test-accounts.data.js';
 
 const prisma = new PrismaClient();
 
@@ -92,8 +106,13 @@ async function main() {
   const force = process.env.MADAREK_SEED_FORCE === '1';
   const existingUsers = await prisma.user.count();
   if (existingUsers > 0 && !force) {
+    // R320 §C — the test accounts are the ONE explicit exception to
+    // the r183 zero-writes rule: idempotent upserts keyed by the fixed
+    // @test.ly emails (password/lock-state reset + the extra jobs),
+    // touching nothing else. See src/modules/auth/test-accounts.ts.
+    const ensured = await ensureTestAccounts(prisma);
     console.log(
-      `ℹ بذرة r183: القاعدة مؤسَّسة (${existingUsers} مستخدمًا) — التشغيل العادي للنشر لا يكتب شيئًا أصلًا / seed skipped: established database, zero writes. إعادة ضبط العرض الواعية: MADAREK_SEED_FORCE=1 (npm run db:seed:force).`,
+      `ℹ بذرة r183: القاعدة مؤسَّسة (${existingUsers} مستخدمًا) — التشغيل العادي للنشر لا يكتب شيئًا أصلًا، باستثناء حسابات الاختبار الموثقة (${ensured} حسابًا على نطاق test.ly) / seed skipped: established database, zero writes except the documented @test.ly test accounts. إعادة ضبط العرض الواعية: MADAREK_SEED_FORCE=1 (npm run db:seed:force).`,
     );
     return;
   }
@@ -126,7 +145,7 @@ async function main() {
     },
   });
   // Generic demo institution — a context label, not a real-university
-  // claim (all demo users live on demo.madarek.ly).
+  // claim (all demo users live on the test.ly domain — R320 §C).
   const alandalus = await prisma.institution.upsert({
     where: { slug: 'alandalus-demo' },
     update: { name: 'مؤسسة الأندلس التعليمية', nameEn: 'Al-Andalus Education Institute', status: 'ACTIVE' },
@@ -247,11 +266,13 @@ async function main() {
   });
 
   // ─── Demo users ──────────────────────────────────────────────
-  // Demo password for all seeded accounts. It must satisfy the register
-  // policy (auth.dto.ts enforces a 12-char minimum, r170g) so the documented
-  // demo credentials are accepted by the real auth flows. Keep README.md's
-  // "After seeding…" block in sync when changing this value.
-  const password = await hashPassword('Madarek2026!');
+  // Password for all seeded accounts — R320 §C: the easy documented
+  // value from the single source of truth (test-accounts.data.ts). It
+  // is intentionally NOT register-policy-grade: these accounts are
+  // provisioned by the seeder (never through the register schema), and
+  // the login schema accepts it. Keep README.md and docs/05-setup.md
+  // in sync when changing the value (edit the shared table, not here).
+  const password = await hashPassword(TEST_PASSWORD);
 
   // r178: the demo reg-number literal — deliberately shared by BOTH demo
   // students (demo university + Al-Andalus) to prove reg-number uniqueness is
@@ -271,11 +292,11 @@ async function main() {
   // User upserts no longer nest profile creation (a profile needs its
   // membershipId first). Per-account order: user → membership → profile.
   const student = await prisma.user.upsert({
-    where: { email: 'student@demo.madarek.ly' },
+    where: { email: 'student@test.ly' },
     // Re-seeding resets the demo password so it always matches the docs.
     update: { passwordHash: password },
     create: {
-      email: 'student@demo.madarek.ly',
+      email: 'student@test.ly',
       passwordHash: password,
       role: Role.STUDENT,
       firstName: 'أحمد',
@@ -307,10 +328,10 @@ async function main() {
   });
 
   const teacher = await prisma.user.upsert({
-    where: { email: 'teacher@demo.madarek.ly' },
+    where: { email: 'teacher@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'teacher@demo.madarek.ly',
+      email: 'teacher@test.ly',
       passwordHash: password,
       role: Role.TEACHER,
       firstName: 'سالم',
@@ -340,10 +361,10 @@ async function main() {
   }
 
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@demo.madarek.ly' },
+    where: { email: 'registrar@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'admin@demo.madarek.ly',
+      email: 'registrar@test.ly',
       passwordHash: password,
       role: Role.ADMIN,
       /* R320 §B (c1-RENAME): the demo ADMIN account's display name is the
@@ -358,10 +379,10 @@ async function main() {
   await ensureMembership(admin.id, zawia.id, Role.ADMIN);
 
   const quality = await prisma.user.upsert({
-    where: { email: 'quality@demo.madarek.ly' },
+    where: { email: 'quality@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'quality@demo.madarek.ly',
+      email: 'quality@test.ly',
       passwordHash: password,
       role: Role.QUALITY,
       firstName: 'ضمان',
@@ -380,10 +401,10 @@ async function main() {
   // is User.role == OWNER only. The AuthPage OWNER demo button and the
   // snap.mjs owner cohort log in as this user.
   await prisma.user.upsert({
-    where: { email: 'owner@demo.madarek.ly' },
+    where: { email: 'owner@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'owner@demo.madarek.ly',
+      email: 'owner@test.ly',
       passwordHash: password,
       role: Role.OWNER,
       firstName: 'مالك',
@@ -419,10 +440,10 @@ async function main() {
   });
 
   const student2 = await prisma.user.upsert({
-    where: { email: 'student2@demo.madarek.ly' },
+    where: { email: 'student2@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'student2@demo.madarek.ly',
+      email: 'student2@test.ly',
       passwordHash: password,
       // User.role mirrors the membership role so legacy single-context
       // surfaces keep working (r178 contract).
@@ -452,10 +473,10 @@ async function main() {
   });
 
   const admin2 = await prisma.user.upsert({
-    where: { email: 'admin2@demo.madarek.ly' },
+    where: { email: 'admin2@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'admin2@demo.madarek.ly',
+      email: 'admin2@test.ly',
       passwordHash: password,
       role: Role.ADMIN,
       /* R320 §B (c1-RENAME): same role, second institution — the display
@@ -476,10 +497,10 @@ async function main() {
   // product is proven with (feeds, materials, and dashboards separate
   // by the verified institution context).
   const teacher2 = await prisma.user.upsert({
-    where: { email: 'teacher2@demo.madarek.ly' },
+    where: { email: 'teacher2@test.ly' },
     update: { passwordHash: password },
     create: {
-      email: 'teacher2@demo.madarek.ly',
+      email: 'teacher2@test.ly',
       passwordHash: password,
       role: Role.TEACHER,
       firstName: 'خالد',
@@ -1292,7 +1313,7 @@ async function main() {
       category: 'ONBOARDING', level: 'BEGINNER', iconEmoji: '🧭', themeColor: '#2952C8',
       estMinutes: 25, pointsAward: 150, order: 1,
       lessons: [
-        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصّة مدارك للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما نطاق بريد حسابات العرض في المنصّة؟', a: 'demo.madarek.ly' } },
+        { title: 'الترحيب والتسجيل', summary: 'كيفية إنشاء الحساب وإكمال الملف الشخصي', content: 'أهلاً بك في منصّة مدارك للتعليم الذكي. تبدأ رحلتك بإنشاء حسابك الجامعي عبر صفحة "إنشاء حساب"، وإدخال بياناتك الأساسية. بعدها أكمل ملفك الشخصي بإضافة الكلية والقسم والمعرّف الجامعي.', quiz: { q: 'ما نطاق بريد حسابات العرض في المنصّة؟', a: 'test.ly' } },
         { title: 'لوحة التحكم الرئيسية', summary: 'فهم العناصر في الصفحة الرئيسية', content: 'لوحة التحكم تعرض: المقررات الحالية، نسبة الإنجاز، الإشعارات، والمساعد الذكي. كل بطاقة قابلة للنقر وتأخذك إلى التفاصيل.' },
         { title: 'المصفوفة التعليمية', summary: 'كيف تعمل وكيف تستفيد منها', content: 'المصفوفة التعليمية تتبع فهمك لكل مفهوم على حدة وتقترح فيديوهات لسد أي فجوة معرفية تظهر في امتحاناتك أو نقاط التفاعل.' },
         { title: 'البحوث والمكتبة', summary: 'رفع البحث والبحث في المكتبة', content: 'يمكنك رفع بحثك من قسم البحوث، وستجري المنصة فحص انتحال وفحص ذكاء اصطناعي قبل الإرسال للأستاذ. المكتبة تتيح البحث عبر آلاف الأبحاث المنشورة.', quiz: { q: 'ما النسبة القصوى المقبولة للانتحال في البحث؟', a: '15' } },
@@ -1867,6 +1888,12 @@ async function main() {
     const existingcampusEvent = await prisma.campusEvent.findFirst({ where: { organizerId: ev.organizerId, title: ev.title }, select: { id: true } });
     if (!existingcampusEvent) await prisma.campusEvent.create({ data: ev });
   }
+
+  // R320 §C — the full documented job table (the corpus above owns the
+  // six corpus accounts; this pass heals them — same emails — and adds
+  // the extra jobs: رئيس قسم / عميد / نائب عميد / مسجل كلية). Idempotent.
+  const ensured = await ensureTestAccounts(prisma);
+  console.log(`✅ Test accounts ensured (${ensured} jobs on the test.ly domain).`);
 
   console.log('✅ Seed complete.');
 }

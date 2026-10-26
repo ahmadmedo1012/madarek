@@ -56,9 +56,9 @@ const ALANDALUS = {
   admins: [
     {
       userId: 'u-admin2-0000000000',
-      email: 'admin2@demo.madarek.ly',
-      firstName: 'مسجل',
-      lastName: 'عام',
+      email: 'admin2@test.ly',
+      firstName: 'المسجل',
+      lastName: 'العام',
       membershipId: 'mem-admin-alandalus',
       isActive: false,
     },
@@ -162,7 +162,7 @@ describe('OwnerInstitutionsPage — listing (r178)', () => {
     // Al-Andalus admin offers «استعادة».
     expect(screen.getByText('admin@zu.edu.ly')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'إلغاء العضوية' })).toBeInTheDocument();
-    expect(screen.getByText('admin2@demo.madarek.ly')).toBeInTheDocument();
+    expect(screen.getByText('admin2@test.ly')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'استعادة' })).toBeInTheDocument();
   });
 
@@ -341,7 +341,7 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
 
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
     const dialog = screen.getByRole('dialog');
-    fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@demo.madarek.ly' } });
+    fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@test.ly' } });
     fireEvent.change(within(dialog).getByLabelText('كلمة المرور'), { target: { value: 'Madarek-2026-Demo' } });
 
     mocks.provision.mutateAsync.mockRejectedValueOnce(new Error('404 UNKNOWN_EMAIL'));
@@ -350,7 +350,7 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
     await waitFor(() => expect(mocks.provision.mutateAsync).toHaveBeenCalledTimes(1));
     // The modal stays open — the old code closed it right after mutate().
     expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect((within(dialog).getByLabelText(/البريد الإلكتروني/) as HTMLInputElement).value).toBe('new@demo.madarek.ly');
+    expect((within(dialog).getByLabelText(/البريد الإلكتروني/) as HTMLInputElement).value).toBe('new@test.ly');
     expect((within(dialog).getByLabelText('كلمة المرور') as HTMLInputElement).value).toBe('Madarek-2026-Demo');
   });
 
@@ -360,7 +360,7 @@ describe('OwnerInstitutionsPage — keep edits on provision failure (r183-B5)', 
 
     fireEvent.click(screen.getByRole('button', { name: /تعيين مسجل عام/ }));
     const dialog = screen.getByRole('dialog');
-    fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@demo.madarek.ly' } });
+    fireEvent.change(within(dialog).getByLabelText(/البريد الإلكتروني/), { target: { value: 'new@test.ly' } });
     fireEvent.change(within(dialog).getByLabelText('كلمة المرور'), { target: { value: 'Madarek-2026-Demo' } });
 
     mocks.provision.mutateAsync.mockResolvedValueOnce({

@@ -132,7 +132,7 @@ describe('loginUser — session institution context', () => {
       makeMembership({ institutionId: 'inst-zawia-showcase' }),
     ]);
 
-    const { user, accessToken } = await loginUser('student@zu.edu.ly', 'Madarek2026!');
+    const { user, accessToken } = await loginUser('student@zu.edu.ly', 'Salam-Zawiya-2026');
 
     expect(verifyAccessToken(accessToken).inst).toBe('inst-zawia-showcase');
     expect(user.memberships).toEqual([
@@ -156,7 +156,7 @@ describe('loginUser — session institution context', () => {
       makeMembership({ institutionId: 'inst-alandalus-demo', role: 'TEACHER' }),
     ]);
 
-    const { user, accessToken } = await loginUser('student@zu.edu.ly', 'Madarek2026!');
+    const { user, accessToken } = await loginUser('student@zu.edu.ly', 'Salam-Zawiya-2026');
 
     expect(verifyAccessToken(accessToken).inst).toBeNull();
     expect(user.currentInstitution).toBeNull();
@@ -169,7 +169,7 @@ describe('loginUser — session institution context', () => {
     vi.mocked(prisma.user.findUnique).mockResolvedValue(makeUser({ role: 'OWNER' }));
     vi.mocked(prisma.membership.findMany).mockResolvedValue([]);
 
-    const { user, accessToken } = await loginUser('owner@zu.edu.ly', 'Madarek2026!');
+    const { user, accessToken } = await loginUser('owner@zu.edu.ly', 'Salam-Zawiya-2026');
 
     expect(verifyAccessToken(accessToken).inst).toBeNull();
     expect(user.memberships).toEqual([]);
@@ -183,7 +183,7 @@ describe('loginUser — session institution context', () => {
 // ─────────────────────────────────────────────────────────────────────
 describe('loginUser — reg-number across institutions', () => {
   const zawiaStudent = makeUser({ id: 'zawia-user', email: 'student@zu.edu.ly' });
-  const alandalusStudent = makeUser({ id: 'alandalus-user', email: 'student2@demo.madarek.ly' });
+  const alandalusStudent = makeUser({ id: 'alandalus-user', email: 'student2@test.ly' });
   const profile = (user: User, institutionId: string) => ({
     id: `sp-${user.id}`,
     userId: user.id,
@@ -201,7 +201,7 @@ describe('loginUser — reg-number across institutions', () => {
       profile(alandalusStudent, 'inst-alandalus-demo') as never,
     ]);
 
-    await expect(loginUser('UZ-2024-00001', 'Madarek2026!')).rejects.toMatchObject({
+    await expect(loginUser('UZ-2024-00001', 'Salam-Zawiya-2026')).rejects.toMatchObject({
       code: 'REG_NUMBER_AMBIGUOUS',
       status: 400,
       message: 'الرقم الجامعي مسجّل في أكثر من مؤسسة — سجّل الدخول بالبريد الإلكتروني أو حدّد المؤسسة',
@@ -221,7 +221,7 @@ describe('loginUser — reg-number across institutions', () => {
 
     const { user, accessToken } = await loginUser(
       'UZ-2024-00001',
-      'Madarek2026!',
+      'Salam-Zawiya-2026',
       {},
       'zawia-showcase',
     );
@@ -241,7 +241,7 @@ describe('loginUser — reg-number across institutions', () => {
   it('a reg-number with zero hits keeps the not-found path (INVALID_CREDENTIALS)', async () => {
     vi.mocked(prisma.studentProfile.findMany).mockResolvedValue([]);
 
-    await expect(loginUser('UZ-9999-99999', 'Madarek2026!')).rejects.toMatchObject({
+    await expect(loginUser('UZ-9999-99999', 'Salam-Zawiya-2026')).rejects.toMatchObject({
       code: 'INVALID_CREDENTIALS',
       status: 401,
     });
@@ -286,7 +286,7 @@ describe('selectInstitution', () => {
 describe('registerUser — institution chain consistency', () => {
   const BASE = {
     email: 'new.student@zu.edu.ly',
-    password: 'Madarek2026!',
+    password: 'Salam-Zawiya-2026',
     firstName: 'سالم',
     lastName: 'الفيتوري',
     role: 'STUDENT' as const,

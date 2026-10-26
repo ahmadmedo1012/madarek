@@ -27,6 +27,14 @@
  * standard `status` + error-envelope shape.
  */
 import type { BrowserContext, Page, Route } from '@playwright/test';
+// R320 §C — the test password comes from the single source of truth
+// so the hermetic transport's accepted credential can never drift from
+// the documented value. NOTE: Playwright's TS loader cannot follow the
+// repo-root shared/testAccounts.ts RE-EXPORT chain (it transpiles the
+// shim to CJS and named exports vanish — verified empirically), so
+// Playwright-consumed fixtures import the PHYSICAL table module
+// directly; vite/vitest consumers use the @shared alias.
+import { TEST_PASSWORD } from '../../../../backend/src/modules/auth/test-accounts.data';
 
 /* ── frozen clock ──────────────────────────────────────────────── */
 
@@ -65,7 +73,7 @@ export const STUDENT_USER: FixtureUser = {
 };
 
 /** Credentials the dynamic login endpoint accepts (backend seed twin). */
-export const VALID_LOGIN = { email: STUDENT_USER.email, password: 'Madarek2026!' } as const;
+export const VALID_LOGIN = { email: STUDENT_USER.email, password: TEST_PASSWORD } as const;
 export const WRONG_LOGIN = { email: STUDENT_USER.email, password: 'wrong-password' } as const;
 export const LOCKED_EMAIL = 'locked@zu.edu.ly';
 export const LOGIN_FAILED_MESSAGE = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
