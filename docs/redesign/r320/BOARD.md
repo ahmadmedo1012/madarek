@@ -66,6 +66,21 @@ bundle diet + red team.
 
 ## Cycle log
 
+### Cycle 1 — CLOSED (merged through 6ebac5e8; all four fleet packages green)
+
+| Package | State | Evidence |
+|---|---|---|
+| §B rename | **FIXED-with-test** | c1-RENAME b9113762: ledger 101 RENAME / 67 KEEP / 28 REWORD (docs/redesign/r320/RENAME-LEDGER.md + rename-keep.json sidecar) · roleLabels.ts front + backend twins (ADMIN «المسجل العام», QUALITY «أخصائي جودة», OWNER «مالك المنصة») · 106 files swept · belts 22+7 · remaining «الإدارة» in src = 9 hits/3 files, all KEEP (building ×4, finance office ×3, belt regex ×2) · wrap-check 30 shots (no truncation/wrap defects). Runtime proof: gate rename-scan PASS on ALL admin cells × themes (0 hits). |
+| §C accounts | **FIXED-with-test** | c1-ACCOUNTS 2d04ea91: shared/testAccounts.ts single source (physical: backend/src/modules/auth/test-accounts.data.ts, @shared alias wired vite+vitest+tsconfig) · 10 jobs @test.ly/12345678 (pending@test.ly honest-skip: no pending state in schema) · ensureTestAccounts() idempotent on every db:seed + boot via MADAREK_TEST_ACCOUNTS=1 (the env var the owner sets on Render) · demo lockout 60 s (lockDurationFor) · AuthPage hairline demo panel (تعبئة → دخول, VITE_SHOW_TEST_ACCOUNTS) · LIVE PROOF 10/10: API 200 + token AND UI @390 role-home screenshots (audits/evidence/r320/accounts/) · old creds retired (audit: only historical remains). |
+| Gate rules | **FIXED** | c1-GATE 0bffae9b: gate:r320 composer (r319 child untouched) + 5 rules — svg-collisions (SVG <text>×text/geometry: 9@390/14@1440 baseline = §A4 ticket) · duplicate-selector (65 app×app conflicts = Cycle-6 dedupe ticket) · hover-guard (184 unguarded = C2+ sweep) · rename-scan (admin routes runtime) · cleanliness (console/network per route). Pre-push: the two cheap lints in --ratchet mode. |
+| §D inventory | **FIXED** | c1-GAP f4ec2b75: PAGES-GAP.md — 15 new routes (P0 ×4: forgot-password, privacy, terms + wiring; P1 ×7; P2 ×4) + 6 thin pages + LEGAL-TODO.md (15 [يُستكمل قبل الإطلاق] rows; known-true: Render, Neon, opt-in OpenAI-compatible AI, NO mail provider) + the REAL localStorage key list + footer/consent wiring map. |
+
+**Post-merge foreman fixes (6ebac5e8):** rename-keep.json + the demo-panel group-bucket KEEP row (brief-mandated التعليم/الإدارة/النظام) · auth-demo-fill:hover PAIRED (fresh B1-class violation found by the paired lint at merge — fixed, lint 420 rules / 0 fresh) · loadRenameKeep() normalises the ledger schema.
+
+**Suites at C1 close:** front **2626/2626** (226 files) · back **1805/1805** (78 files) · tsc 0/0 · eslint 0 errors (15 pre-existing warnings) · gate:r320 quick **26 FAIL baseline / 0 regressions / 117 s** · gate:r319 child exit 0.
+
+**Cycle 2 dispatch:** §D P0/P1 pages (privacy, terms, cookies, accessibility, security, data, about, help, contact + forgot-password end-to-end + robots/sitemap/manifest + footer wiring) · landing §A2–A5 (wordmark outline, ink strip, map SVG label collisions — the gate now measures them) · desktop perf §A1 (LCP/CLS at 1440; render pipeline dominates post-fix3).
+
 ### R319 close (foreman, aac261ec)
 
 - c3-S2 (student pages B: profile, messages inbox, AI, schedule, calendar,
