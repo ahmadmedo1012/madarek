@@ -1,0 +1,490 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4173",
+    "commit": "ff7aeed6",
+    "variant": "default",
+    "grbc": false,
+    "trace": true,
+    "started": "2026-10-27T22:26:40.751Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12530,
+      "scrollYSamples": [
+        289,
+        616,
+        1311,
+        1872,
+        2487,
+        3062,
+        3600,
+        4466,
+        5041,
+        5582,
+        6341,
+        6838,
+        6867,
+        6418,
+        5853,
+        5212,
+        4535,
+        3882,
+        3191,
+        2585,
+        2148,
+        1705,
+        1215,
+        775
+      ],
+      "interactWindowMs": 8314,
+      "trace": {
+        "top": [
+          {
+            "name": "UpdateLayoutTree",
+            "count": 231,
+            "totalMs": 4465.3
+          },
+          {
+            "name": "FunctionCall",
+            "count": 5327,
+            "totalMs": 650.1
+          },
+          {
+            "name": "EventDispatch",
+            "count": 923,
+            "totalMs": 460.8
+          },
+          {
+            "name": "Paint",
+            "count": 287,
+            "totalMs": 428.8
+          },
+          {
+            "name": "Layerize",
+            "count": 144,
+            "totalMs": 347.8
+          },
+          {
+            "name": "FireAnimationFrame",
+            "count": 425,
+            "totalMs": 219.5
+          },
+          {
+            "name": "PrePaint",
+            "count": 168,
+            "totalMs": 174.5
+          },
+          {
+            "name": "Layout",
+            "count": 72,
+            "totalMs": 103
+          },
+          {
+            "name": "HitTest",
+            "count": 40,
+            "totalMs": 40
+          },
+          {
+            "name": "IntersectionObserverController::computeIntersections",
+            "count": 288,
+            "totalMs": 34.5
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_SWEEPING",
+            "count": 1,
+            "totalMs": 32.3
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_MARKING",
+            "count": 4,
+            "totalMs": 14.3
+          },
+          {
+            "name": "ScrollLayer",
+            "count": 138,
+            "totalMs": 13.1
+          },
+          {
+            "name": "MajorGC",
+            "count": 1,
+            "totalMs": 12
+          },
+          {
+            "name": "V8.GC_MARK_COMPACTOR",
+            "count": 1,
+            "totalMs": 11.8
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL",
+            "count": 45,
+            "totalMs": 11.8
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+            "count": 15,
+            "totalMs": 10.6
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_START",
+            "count": 3,
+            "totalMs": 9.2
+          },
+          {
+            "name": "V8.GC_MC_MARK_EMBEDDER_PROLOGUE",
+            "count": 2,
+            "totalMs": 9
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE",
+            "count": 2,
+            "totalMs": 5.3
+          },
+          {
+            "name": "V8.GC_MC_CLEAR",
+            "count": 1,
+            "totalMs": 3.5
+          },
+          {
+            "name": "V8.GC_MC_WEAKNESS_HANDLING",
+            "count": 1,
+            "totalMs": 3
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_COLLECTIONS",
+            "count": 1,
+            "totalMs": 3
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY",
+            "count": 1,
+            "totalMs": 2.9
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS",
+            "count": 1,
+            "totalMs": 2.3
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY_PARALLEL",
+            "count": 1,
+            "totalMs": 1.9
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS",
+            "count": 1,
+            "totalMs": 1.2
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES",
+            "count": 1,
+            "totalMs": 1
+          },
+          {
+            "name": "V8.GC_MC_MARK",
+            "count": 1,
+            "totalMs": 0.3
+          },
+          {
+            "name": "V8.GC_TIME_TO_SAFEPOINT",
+            "count": 2,
+            "totalMs": 0.3
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_STRING_TABLE",
+            "count": 1,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE",
+            "count": 1,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_MARK_ROOTS",
+            "count": 3,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_SWEEP_EXTERNAL_POINTER_TABLE",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_MAPS",
+            "count": 1,
+            "totalMs": 0.1
+          }
+        ],
+        "eventsTotal": 23499,
+        "rawDump": "/tmp/mdrk-r316-traces/trace-1440x900-scroll-default.jsonl",
+        "eventsCaptured": 24077
+      },
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 143,
+        "pctGt20": 67.1,
+        "pctGt33": 67.1,
+        "p95": 150,
+        "max": 250,
+        "avg": 57.92
+      },
+      "framesActive": {
+        "count": 113,
+        "pctGt20": 70.8,
+        "pctGt33": 70.8,
+        "p95": 183.3,
+        "max": 250,
+        "avg": 64.89
+      },
+      "activeWindowMs": 7393,
+      "longtasks": {
+        "count": 66,
+        "gt50": 66,
+        "totalMs": 7476,
+        "worst": [
+          {
+            "start": 837,
+            "dur": 573,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 11944,
+            "dur": 385,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1911,
+            "dur": 329,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9347,
+            "dur": 242,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9956,
+            "dur": 238,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 1944,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 64,
+        "gt100": 21,
+        "totalMs": 7178,
+        "worst": [
+          {
+            "start": 837,
+            "dur": 621,
+            "scripts": [
+              {
+                "dur": 573,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 6,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BU0Y3c57.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BU0Y3c57.js"
+              }
+            ]
+          },
+          {
+            "start": 11905,
+            "dur": 407,
+            "scripts": [
+              {
+                "dur": 362,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/index-C6fo5AEs.js"
+              }
+            ]
+          },
+          {
+            "start": 1905,
+            "dur": 338,
+            "scripts": [
+              {
+                "dur": 328,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 1107
+          },
+          {
+            "script": "/assets/index-C6fo5AEs.js :: FrameRequestCallback",
+            "totalMs": 467
+          },
+          {
+            "script": "/assets/index-C6fo5AEs.js :: http://localhost:4173/assets/index-C6fo5AEs.js",
+            "totalMs": 62
+          },
+          {
+            "script": "/assets/LandingPage-fQWCa9S2.js :: IdleRequestCallback",
+            "totalMs": 51
+          },
+          {
+            "script": "/assets/LandingPage-fQWCa9S2.js :: DOMWindow.onscroll",
+            "totalMs": 32
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: DIV#root.onload",
+            "totalMs": 26
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 0,
+      "docHeightEnd": 12530,
+      "dom": {
+        "totalNodes": 3133,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 98,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

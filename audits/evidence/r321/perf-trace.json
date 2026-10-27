@@ -1,0 +1,560 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4173",
+    "commit": "ff7aeed6",
+    "variant": "default",
+    "grbc": true,
+    "trace": true,
+    "started": "2026-10-27T22:23:22.183Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "default",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12530,
+      "scrollYSamples": [
+        0,
+        733,
+        1330,
+        1955,
+        2502,
+        3068,
+        3791,
+        4420,
+        5198,
+        5657,
+        6333,
+        6811,
+        7001,
+        6224,
+        5742,
+        5072,
+        4490,
+        3805,
+        3253,
+        2602,
+        2154,
+        1660,
+        1135,
+        476
+      ],
+      "interactWindowMs": 10319,
+      "trace": {
+        "top": [
+          {
+            "name": "UpdateLayoutTree",
+            "count": 236,
+            "totalMs": 5548.9
+          },
+          {
+            "name": "FunctionCall",
+            "count": 5384,
+            "totalMs": 1339.5
+          },
+          {
+            "name": "FireAnimationFrame",
+            "count": 435,
+            "totalMs": 835.7
+          },
+          {
+            "name": "EventDispatch",
+            "count": 924,
+            "totalMs": 544.2
+          },
+          {
+            "name": "Paint",
+            "count": 263,
+            "totalMs": 461.5
+          },
+          {
+            "name": "Layerize",
+            "count": 149,
+            "totalMs": 402.3
+          },
+          {
+            "name": "PrePaint",
+            "count": 173,
+            "totalMs": 243.2
+          },
+          {
+            "name": "Layout",
+            "count": 76,
+            "totalMs": 153
+          },
+          {
+            "name": "HitTest",
+            "count": 44,
+            "totalMs": 55
+          },
+          {
+            "name": "IntersectionObserverController::computeIntersections",
+            "count": 298,
+            "totalMs": 44.4
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_MARKING",
+            "count": 4,
+            "totalMs": 20.4
+          },
+          {
+            "name": "ScrollLayer",
+            "count": 137,
+            "totalMs": 19.6
+          },
+          {
+            "name": "MajorGC",
+            "count": 1,
+            "totalMs": 12.2
+          },
+          {
+            "name": "V8.GC_MARK_COMPACTOR",
+            "count": 1,
+            "totalMs": 12
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_START",
+            "count": 3,
+            "totalMs": 10.8
+          },
+          {
+            "name": "V8.GC_MC_MARK_EMBEDDER_PROLOGUE",
+            "count": 2,
+            "totalMs": 9.9
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL",
+            "count": 45,
+            "totalMs": 8.8
+          },
+          {
+            "name": "TimerFire",
+            "count": 16,
+            "totalMs": 8
+          },
+          {
+            "name": "V8.GC_MC_INCREMENTAL_EMBEDDER_TRACING",
+            "count": 15,
+            "totalMs": 7.6
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE",
+            "count": 2,
+            "totalMs": 5.9
+          },
+          {
+            "name": "V8.GC_MC_BACKGROUND_SWEEPING",
+            "count": 2,
+            "totalMs": 5.6
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY",
+            "count": 1,
+            "totalMs": 3.7
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_COPY_PARALLEL",
+            "count": 1,
+            "totalMs": 3.7
+          },
+          {
+            "name": "V8.GC_HEAP_EXTERNAL_PROLOGUE",
+            "count": 1,
+            "totalMs": 2.2
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS",
+            "count": 1,
+            "totalMs": 2.2
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_TO_NEW_ROOTS",
+            "count": 1,
+            "totalMs": 1.3
+          },
+          {
+            "name": "V8.GC_MC_MARK_ROOTS",
+            "count": 3,
+            "totalMs": 0.8
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_POINTER_TABLES",
+            "count": 1,
+            "totalMs": 0.7
+          },
+          {
+            "name": "V8.GC_MC_CLEAR",
+            "count": 1,
+            "totalMs": 0.6
+          },
+          {
+            "name": "V8.GC_MC_MARK",
+            "count": 1,
+            "totalMs": 0.3
+          },
+          {
+            "name": "V8.GC_TIME_TO_SAFEPOINT",
+            "count": 2,
+            "totalMs": 0.3
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_STRING_TABLE",
+            "count": 1,
+            "totalMs": 0.3
+          },
+          {
+            "name": "V8.GC_HEAP_EMBEDDER_TRACING_EPILOGUE",
+            "count": 1,
+            "totalMs": 0.2
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_SLOTS_MAIN",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_EXTERNAL_STRING_TABLE",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_REFERENCES_TRIVIAL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_MARK_FULL_CLOSURE_PARALLEL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_EVACUATE_UPDATE_POINTERS_PARALLEL",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_SWEEP_EXTERNAL_POINTER_TABLE",
+            "count": 1,
+            "totalMs": 0.1
+          },
+          {
+            "name": "V8.GC_MC_CLEAR_WEAK_GLOBAL_HANDLES",
+            "count": 1,
+            "totalMs": 0.1
+          }
+        ],
+        "eventsTotal": 24322,
+        "rawDump": "/tmp/mdrk-r316-traces/trace-1440x900-scroll-default.jsonl",
+        "eventsCaptured": 24918
+      },
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 146,
+        "pctGt20": 75.3,
+        "pctGt33": 75.3,
+        "p95": 183.4,
+        "max": 266.6,
+        "avg": 70.43
+      },
+      "framesActive": {
+        "count": 114,
+        "pctGt20": 83.3,
+        "pctGt33": 83.3,
+        "p95": 199.9,
+        "max": 266.6,
+        "avg": 82.01
+      },
+      "activeWindowMs": 9388,
+      "longtasks": {
+        "count": 78,
+        "gt50": 78,
+        "totalMs": 9791,
+        "worst": [
+          {
+            "start": 1018,
+            "dur": 693,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 2243,
+            "dur": 491,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 14391,
+            "dur": 352,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9612,
+            "dur": 228,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9186,
+            "dur": 226,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 2324,
+        "element": "p.reveal-up.reveal-d-3.fo-hero-lead",
+        "url": "",
+        "size": 18518
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 77,
+        "gt100": 34,
+        "totalMs": 9327,
+        "worst": [
+          {
+            "start": 972,
+            "dur": 826,
+            "scripts": [
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 5,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 7,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 10,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 693,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 26,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BU0Y3c57.js"
+              }
+            ]
+          },
+          {
+            "start": 2239,
+            "dur": 500,
+            "scripts": [
+              {
+                "dur": 491,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 14369,
+            "dur": 356,
+            "scripts": [
+              {
+                "dur": 329,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/index-C6fo5AEs.js"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 1358
+          },
+          {
+            "script": "/assets/useReveal-ncPTeizr.js :: FrameRequestCallback",
+            "totalMs": 530
+          },
+          {
+            "script": "/assets/index-C6fo5AEs.js :: FrameRequestCallback",
+            "totalMs": 475
+          },
+          {
+            "script": "/assets/react-gInupMWC.js :: BODY.ontransitionend",
+            "totalMs": 30
+          },
+          {
+            "script": "/assets/useSheetScroll-BU0Y3c57.js :: FrameRequestCallback",
+            "totalMs": 26
+          },
+          {
+            "script": "/assets/LandingPage-fQWCa9S2.js :: IdleRequestCallback",
+            "totalMs": 25
+          }
+        ]
+      },
+      "grbc": {
+        "count": 105,
+        "dSets": 154,
+        "cssVars": 515,
+        "perSec": 10.2,
+        "top": [
+          {
+            "sel": "span.reveal-up.wr.jt-station-text",
+            "reads": 8
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-1.rl-card",
+            "reads": 6
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-2.rl-card",
+            "reads": 6
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-1.pm-card",
+            "reads": 4
+          },
+          {
+            "sel": "li.reveal-up.reveal-d-3.rl-card",
+            "reads": 4
+          },
+          {
+            "sel": "div.jt",
+            "reads": 4
+          },
+          {
+            "sel": "div.wy",
+            "reads": 4
+          },
+          {
+            "sel": "section#statement.st-section",
+            "reads": 4
+          },
+          {
+            "sel": "div.bp-stage",
+            "reads": 3
+          },
+          {
+            "sel": "svg",
+            "reads": 3
+          },
+          {
+            "sel": "p.reveal-up.st-line",
+            "reads": 2
+          },
+          {
+            "sel": "p.reveal-up.reveal-d-1.st-line",
+            "reads": 2
+          }
+        ]
+      },
+      "finalScrollY": 0,
+      "docHeightEnd": 12530,
+      "dom": {
+        "totalNodes": 3133,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 98,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

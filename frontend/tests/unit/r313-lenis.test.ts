@@ -31,7 +31,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
-import {
+import { isGuestLenisIdle,
   HERON_LENIS_PARAMS,
   getLenis,
   initGuestLenis,
@@ -161,6 +161,9 @@ describe('r313 4-b — init/destroy lifecycle', () => {
     expect(getLenis()).toBeNull();
     expect(isGuestLenisOn()).toBe(false);
     expect(document.documentElement.hasAttribute('data-lenis-on')).toBe(false);
+    // R321 §A1: the idle seat is a JS flag now (the html[data-lenis-idle]
+    // attribute cost a whole-document style recalc per idle↔active flip).
+    expect(isGuestLenisIdle()).toBe(false);
     expect(document.documentElement.hasAttribute('data-lenis-idle')).toBe(false);
     expect(document.documentElement.className).not.toMatch(/lenis/);
   });
@@ -183,21 +186,24 @@ describe('r313 4-b — init/destroy lifecycle', () => {
     expect(sheetSubscriberCount()).toBe(0);
   });
 
-  it('the 150ms scroll-quiet idle marker (Heron contract)', async () => {
+  it('the 150ms scroll-quiet idle FLAG (Heron contract; R321 §A1 JS seat)', async () => {
     expect(initGuestLenis()).toBe(true);
     const html = document.documentElement;
 
     fireEvent.wheel(window, { deltaY: 100, deltaMode: 0 }); // activity
+    expect(isGuestLenisIdle()).toBe(false);
+    // the DOM stays untouched — no root-attribute churn, ever
     expect(html.hasAttribute('data-lenis-idle')).toBe(false);
 
     await new Promise((r) => setTimeout(r, 240)); // > 150ms quiet
-    expect(html.hasAttribute('data-lenis-idle')).toBe(true);
+    expect(isGuestLenisIdle()).toBe(true);
+    expect(html.hasAttribute('data-lenis-idle')).toBe(false);
 
     fireEvent.wheel(window, { deltaY: 100, deltaMode: 0 }); // wake
-    expect(html.hasAttribute('data-lenis-idle')).toBe(false);
+    expect(isGuestLenisIdle()).toBe(false);
 
     destroyGuestLenis();
-    expect(html.hasAttribute('data-lenis-idle')).toBe(false);
+    expect(isGuestLenisIdle()).toBe(false);
   });
 });
 

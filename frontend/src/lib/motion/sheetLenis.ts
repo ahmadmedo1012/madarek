@@ -43,10 +43,17 @@
  *    *class* whose name contains "lenis" (/lenis(-\w+)?/g) on each
  *    scroll-state flip, so a ".lenis-on" class would be silently
  *    deleted by the library mid-scroll.
- *  · Heron's idle contract: 150ms of scroll-quiet →
- *    html[data-lenis-idle], removed on the next activity. The toggle
- *    is the whole wiring (SheetCursor owns its own sleep); no CSS
- *    consumer is attached to it yet.
+ *  · Heron's idle contract: 150ms of scroll-quiet → the engine's
+ *    IDLE FLAG (JS-side). R321 §A1 — the flag was a
+ *    html[data-lenis-idle] ATTRIBUTE before: every idle↔active flip
+ *    mutated <html>, and an attribute change on the ROOT invalidates
+ *    the ENTIRE document's computed styles — 30–180ms UpdateLayoutTree
+ *    per crossing on the 8k-node landing (the #1 desktop scroll-jank
+ *    driver, measured by the r316 harness + CDP invalidation trace).
+ *    It had NO CSS consumer ("no visual consumer attached") — the
+ *    observability contract moves to isGuestLenisIdle() (zero DOM
+ *    cost). data-lenis-on stays: it is set ONCE per engine lifetime
+ *    and base.css hides the scrollbar with it.
  *  · reduced-motion: NEVER init — native scroll under RM.
  *  · jsdom/SSR-safe: nothing touches window at import time; the
  *    engine only comes alive through initGuestLenis().
@@ -156,17 +163,29 @@ function onLenisScroll(): void {
   bumpIdle();
 }
 
-/** 150ms of scroll-quiet → html[data-lenis-idle]; any activity removes
- *  it and restarts the timer. Toggle only — no visual consumer yet. */
+/** 150ms of scroll-quiet → the idle FLAG; any activity clears it and
+ * restarts the timer. R321 §A1 — JS-side seat: the R313 attribute
+ * seat (html[data-lenis-idle]) mutated <html> per idle↔active flip,
+ * and a root-attribute change invalidates the ENTIRE document's
+ * computed styles (30–180ms UpdateLayoutTree per crossing on the
+ * 8k-node landing — the #1 desktop scroll-jank driver, measured by
+ * the r316 harness + the CDP invalidation trace). Zero CSS consumers
+ * existed; observability rides isGuestLenisIdle(). */
+let lenisIdle = false;
+
+/** R321 §A1 — the idle observability seat (was html[data-lenis-idle]). */
+export function isGuestLenisIdle(): boolean {
+  return lenisIdle;
+}
+
 function bumpIdle(): void {
   if (typeof window === 'undefined' || typeof document === 'undefined') return;
-  const root = document.documentElement;
   if (idleTimer) window.clearTimeout(idleTimer);
-  if (root.hasAttribute('data-lenis-idle')) root.removeAttribute('data-lenis-idle');
+  if (lenisIdle) lenisIdle = false;
   idleTimer = window.setTimeout(() => {
     idleTimer = 0;
-    if (lenis && typeof document !== 'undefined') {
-      document.documentElement.setAttribute('data-lenis-idle', '');
+    if (lenis) {
+      lenisIdle = true;
     }
   }, IDLE_QUIET_MS);
 }
@@ -248,8 +267,8 @@ export function destroyGuestLenis(): void {
   }
   if (typeof document !== 'undefined') {
     document.documentElement.removeAttribute('data-lenis-on');
-    document.documentElement.removeAttribute('data-lenis-idle');
   }
+  lenisIdle = false;
   if (typeof window !== 'undefined') {
     window.removeEventListener('wheel', onInput, { capture: true });
     window.removeEventListener('touchstart', onInput, { capture: true });

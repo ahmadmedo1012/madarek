@@ -1,0 +1,283 @@
+{
+  "meta": {
+    "baseUrl": "http://localhost:4173",
+    "commit": "ff7aeed6",
+    "variant": "grain-off",
+    "grbc": false,
+    "trace": false,
+    "started": "2026-10-27T22:25:45.580Z",
+    "chromium": "/home/z/.cache/ms-playwright/chromium-1200/chrome-linux64/chrome",
+    "runs": 1
+  },
+  "results": [
+    {
+      "viewport": 1440,
+      "height": 900,
+      "cpu": 4,
+      "scenario": "scroll",
+      "variant": "grain-off",
+      "loaderSkip": true,
+      "run": 1,
+      "notes": [],
+      "docHeight": 12530,
+      "scrollYSamples": [
+        319,
+        697,
+        1251,
+        1888,
+        2463,
+        3280,
+        3831,
+        4396,
+        4969,
+        5672,
+        6115,
+        6902,
+        6962,
+        6250,
+        5826,
+        5168,
+        4510,
+        3846,
+        3255,
+        2617,
+        2165,
+        1728,
+        1191,
+        516
+      ],
+      "interactWindowMs": 8457,
+      "dmut": {
+        "count": 0,
+        "perSec": 0,
+        "top": []
+      },
+      "frames": {
+        "count": 158,
+        "pctGt20": 65.2,
+        "pctGt33": 65.2,
+        "p95": 150,
+        "max": 183.4,
+        "avg": 53.16
+      },
+      "framesActive": {
+        "count": 123,
+        "pctGt20": 73.2,
+        "pctGt33": 73.2,
+        "p95": 150,
+        "max": 183.4,
+        "avg": 60.7
+      },
+      "activeWindowMs": 7513,
+      "longtasks": {
+        "count": 60,
+        "gt50": 58,
+        "totalMs": 6502,
+        "worst": [
+          {
+            "start": 819,
+            "dur": 607,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 1839,
+            "dur": 315,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9024,
+            "dur": 184,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9813,
+            "dur": 175,
+            "attr": [
+              "window:"
+            ]
+          },
+          {
+            "start": 9214,
+            "dur": 174,
+            "attr": [
+              "window:"
+            ]
+          }
+        ]
+      },
+      "cls": {
+        "total": 0.007,
+        "loadPhase": 0.007,
+        "interactPhase": 0,
+        "topShifters": [
+          {
+            "node": "div.hydration-splash",
+            "cls": 0.007
+          }
+        ],
+        "entries": 1,
+        "interactRaw": {
+          "total": 0,
+          "count": 0,
+          "topShifters": []
+        }
+      },
+      "lcp": {
+        "ms": 384,
+        "element": "img",
+        "url": "http://localhost:4173/brand/madarek-mark.svg",
+        "size": 2304
+      },
+      "inp": {
+        "count": 0,
+        "p95": 0,
+        "worst": []
+      },
+      "loaf": {
+        "count": 62,
+        "gt100": 22,
+        "totalMs": 6498,
+        "worst": [
+          {
+            "start": 806,
+            "dur": 685,
+            "scripts": [
+              {
+                "dur": 9,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 607,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              },
+              {
+                "dur": 26,
+                "invoker": "FrameRequestCallback",
+                "src": "/assets/useSheetScroll-BU0Y3c57.js"
+              }
+            ]
+          },
+          {
+            "start": 1833,
+            "dur": 322,
+            "scripts": [
+              {
+                "dur": 315,
+                "invoker": "MessagePort.onmessage",
+                "src": "/assets/react-gInupMWC.js"
+              }
+            ]
+          },
+          {
+            "start": 10,
+            "dur": 189,
+            "scripts": [
+              {
+                "dur": 27,
+                "invoker": "http://localhost:4173/",
+                "src": "/"
+              }
+            ]
+          }
+        ],
+        "topInvokers": [
+          {
+            "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
+            "totalMs": 1181
+          },
+          {
+            "script": "/assets/useReveal-ncPTeizr.js :: FrameRequestCallback",
+            "totalMs": 407
+          },
+          {
+            "script": "/assets/index-C6fo5AEs.js :: FrameRequestCallback",
+            "totalMs": 124
+          },
+          {
+            "script": "/ :: http://localhost:4173/",
+            "totalMs": 27
+          },
+          {
+            "script": "/assets/useSheetScroll-BU0Y3c57.js :: FrameRequestCallback",
+            "totalMs": 26
+          },
+          {
+            "script": "(inline) :: PerformanceObserverCallback",
+            "totalMs": 16
+          }
+        ]
+      },
+      "grbc": null,
+      "finalScrollY": 1,
+      "docHeightEnd": 12530,
+      "dom": {
+        "totalNodes": 3133,
+        "svg": 34,
+        "pattern": 10,
+        "filterEl": 0,
+        "clipPath": 0,
+        "symbol": 0,
+        "path": 98,
+        "probe": {
+          ".jt-window": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "relative",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1267,
+            "h": 802
+          },
+          ".bp-svg": {
+            "mixBlend": "normal",
+            "filter": "none",
+            "position": "static",
+            "willChange": "auto",
+            "mask": "none",
+            "w": 1224,
+            "h": 612
+          }
+        },
+        "layerCandidates": {
+          "willChange": 0,
+          "filter": 6,
+          "mixBlend": 0,
+          "fixed": 8,
+          "backdropFilter": 4,
+          "mask": 1,
+          "contain": 0,
+          "contentVisibilityAuto": 0
+        },
+        "layerCandidateList": [
+          "canvas.sc-canvas [fixed]",
+          "div.sc-ring [fixed]",
+          "a.fo-skip-link [fixed]",
+          "div.sheet-frame [fixed]",
+          "header.fo-header.on-hide [fixed]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "article.jt-station [backdrop-filter]",
+          "img.fo-fstrip-img [filter]",
+          "g [mask]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "image [filter]",
+          "div.cb-banner [fixed]",
+          "button.et-tab [fixed]",
+          "div.toast-stack [fixed]"
+        ]
+      }
+    }
+  ]
+}

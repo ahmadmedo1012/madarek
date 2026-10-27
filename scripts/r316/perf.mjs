@@ -73,7 +73,20 @@ import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-const EXE = process.env.HOME + '/.cache/ms-playwright/chromium-1223/chrome-linux64/chrome';
+/* r321 A1: resolve the newest FULL chromium build present (the pinned
+ * 1223 full build is absent on some sandboxes — headless-shell only —
+ * so scan for whichever chromium-* full build exists). */
+const EXE = (() => {
+  const base = path.join(process.env.HOME || '', '.cache/ms-playwright');
+  try {
+    const dirs = fs.readdirSync(base).filter((d) => /^chromium-\d+$/.test(d)).sort();
+    for (const d of dirs.reverse()) {
+      const p = path.join(base, d, 'chrome-linux64/chrome');
+      if (fs.existsSync(p)) return p;
+    }
+  } catch { /* fall through */ }
+  return undefined;
+})();
 
 /* ── CLI ────────────────────────────────────────────────────────── */
 const args = process.argv.slice(2);
