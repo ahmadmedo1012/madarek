@@ -290,6 +290,7 @@ Work Log:
 
 Stage Summary:
 - R321 C1 opened. Order: A5+A6+A7+A8 (quick fixes) → A4 clipping + gate extension → A2 height ratchet → A1 desktop perf → A10 production proof harness.
+<<<<<<< HEAD
 ---
 Task ID: r321-c1-foreman-b
 Agent: foreman-B (this container, session started 21:26 UTC; foreman-A container landed batch-1 147051a3 @21:10 and batch-2 1cd79446 @21:59 — coordination entry)
@@ -336,3 +337,33 @@ Work Log:
 
 Stage Summary:
 - Main's standing gate repaired (2-line comment reword). Rule reaffirmed: the ledger scan must never see the literal in the very files that document it.
+=======
+
+---
+Task ID: r321-c1-B0
+Agent: WP-B0 (sub-agent, died at the 15-min tool deadline after capturing 49 route shots) + foreman-B completion
+Task: The §B student inventory + all-role route map — the ticket factory for the authenticated sweep.
+
+Work Log:
+- Captured 41 route screenshots @390 light + 7 @1440 (48 total) (local dev:full stack, student@test.ly, intro-skip) incl. the §A8 demo-panel open-by-default confirmation shot.
+- Foreman-B completed the census from the router (App.tsx) + code markers: 37 student-visible routes mapped to components/files; 32 carry the r319 sheet markers (verification targets); FIVE conversion targets named with line counts — T-1 OnlineExamsPages.tsx (1,951 ln, ZERO markers/PageFrame: OnlineExams + ExamTaker) · T-2 CampusMapPage (212 ln) · T-3 LivePage (255 ln) · T-4 LecturePlayerPage (1,004 ln, zero PageFrame) · T-5 CommunityPages.tsx (849 ln, the ×5-duplicate family — convert WITH the dedupe).
+- The WP queue written: B1 exams · B2 map+live · B3 lecture player · B4 community+dedupe · B-verify the rubric sweep over all ✅ routes (the 100% coverage leg).
+- All-role route map appendix: teacher 21 · admin 13 · quality 10 · owner 13 routes + the A10-proven role homes.
+
+Stage Summary:
+- docs/redesign/r321/STUDENT-SWEEP.md is the §B ticket factory + queue; evidence 48 shots (41@390 + 7@1440, all ≤150KB, dir 1.8MB); zero src changes.
+>>>>>>> dad428dc (R321 c1 WP-B0 — the student inventory + all-role route map (32 sheet-verified routes, 5 conversion targets T-1..T-5, the B1..B4 queue) + 48 route shots (41@390 + 7@1440))
+
+---
+Task ID: r321-c1-B0
+Agent: WP-B0 (sub-agent, died at the 15-min tool deadline after capturing 49 route shots) + foreman-B completion
+Task: The §B student inventory + all-role route map — the ticket factory for the authenticated sweep.
+
+Work Log:
+- Captured 41 route screenshots @390 light + 7 @1440 (48 total) (local dev:full stack, student@test.ly, intro-skip) incl. the §A8 demo-panel open-by-default confirmation shot.
+- Foreman-B completed the census from the router (App.tsx) + code markers: 37 student-visible routes mapped to components/files; 32 carry the r319 sheet markers (verification targets); FIVE conversion targets named with line counts — T-1 OnlineExamsPages.tsx (1,951 ln, ZERO markers/PageFrame: OnlineExams + ExamTaker) · T-2 CampusMapPage (212 ln) · T-3 LivePage (255 ln) · T-4 LecturePlayerPage (1,004 ln, zero PageFrame) · T-5 CommunityPages.tsx (849 ln, the ×5-duplicate family — convert WITH the dedupe).
+- The WP queue written: B1 exams · B2 map+live · B3 lecture player · B4 community+dedupe · B-verify the rubric sweep over all ✅ routes (the 100% coverage leg).
+- All-role route map appendix: teacher 21 · admin 13 · quality 10 · owner 13 routes + the A10-proven role homes.
+
+Stage Summary:
+- docs/redesign/r321/STUDENT-SWEEP.md is the §B ticket factory + queue; evidence 48 shots (41@390 + 7@1440, all ≤150KB, dir 1.8MB); zero src changes.
