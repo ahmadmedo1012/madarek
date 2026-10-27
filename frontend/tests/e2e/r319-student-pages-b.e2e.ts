@@ -224,8 +224,16 @@ test.describe('student pages B — §B2 sheet grammar (chromium · light)', () =
     }
 
     /* The honest counts as the bars' mono meta — 02 measured gaps /
-     * 02 stored conversations / 05 authored suggestions. */
-    const counts = await page.locator('.r319s-bar .r319s-count').allTextContents();
+     * 02 stored conversations / 05 authored suggestions. R320 CI fix:
+     * the counts are DATA-BOUND (gaps + conversations arrive via the
+     * mock transport after mount), and the one-shot read raced them on
+     * cold runners — the f84e6025 green run failed this exact line on
+     * attempt 1 and passed on retry, and the 2026-10-27 run lost the
+     * retry too. The auto-retrying toHaveCount(3) gate makes the read
+     * deterministic (same discipline as the h1/bar waits above). */
+    const countLoc = page.locator('.r319s-bar .r319s-count');
+    await expect(countLoc).toHaveCount(3, { timeout: 15000 });
+    const counts = await countLoc.allTextContents();
     expect(counts).toEqual(['02', '02', '05']);
 
     // The gap card (the card class sample) computes radius 0.
