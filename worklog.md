@@ -391,3 +391,5 @@ Work Log:
 
 Stage Summary:
 - §C now has its ticket factory with numbers + commands: 65/183/2230/980/757/736 rows, the C-1..C-10 queue, and three CSS defects already dead. The cycle-6 diet + gate:clean have their baseline.
+
+CORRECTION (r321-c1-C0, per the reviewer's rejection): the three hover/baseline numbers in baseline.md were measured on the PRE-fix tree — the broken banners had hidden 9 training.css :hover rules from the walker (183 pre-fix → 191 post-fix > the 185 ratchet). Rework: the 9 rules GUARDED with the @media (hover:hover) and (pointer:fine) convention in the same commit → hover-guard now 182 (≤185 ✓, −1 vs pre-fix); baseline.md §0/§3/C-7 corrected (183→182 with provenance; 2→3 pre-fix failures; 47→42 sheets). The reviewer's bisection method (restore pre-fix files → re-run → restore) adopted as the census standard.

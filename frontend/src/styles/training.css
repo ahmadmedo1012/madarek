@@ -73,10 +73,12 @@
       color var(--t-fast) var(--ease),
       transform var(--t-micro) var(--ease);
   }
+  @media (hover: hover) and (pointer: fine) {
   .filter-pill:hover {
-    color: var(--text);
-    border-color: var(--border-strong);
-    background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border-strong);
+      background: var(--surface-2);
+    }
   }
   .filter-pill:active { transform: scale(var(--press-scale)); }
   .filter-pill[aria-pressed="true"] {
@@ -140,9 +142,11 @@
       background var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease);
   }
+  @media (hover: hover) and (pointer: fine) {
   .back-link:hover {
-    color: var(--text);
-    background: var(--surface-2);
+      color: var(--text);
+      background: var(--surface-2);
+    }
   }
   @media (max-width: 640px) {
     /* r305 (2-c): كان min-block-height — خاصية غير موجودة في CSS
@@ -238,10 +242,12 @@
     border-color: color-mix(in srgb, var(--track-accent) 45%, var(--border-strong));
     color: var(--text);
   }
+  @media (hover: hover) and (pointer: fine) {
   .track-hero .btn.primary:hover,
-  .lesson-actions .btn.primary:hover {
-    background: color-mix(in srgb, var(--track-accent) 22%, var(--surface));
-    color: var(--text);
+    .lesson-actions .btn.primary:hover {
+      background: color-mix(in srgb, var(--track-accent) 22%, var(--surface));
+      color: var(--text);
+    }
   }
   .track-hero .btn.primary:disabled,
   .lesson-actions .btn.primary:disabled { color: var(--text); }
@@ -267,21 +273,27 @@
       background var(--t-fast) var(--ease),
       border-color var(--t-fast) var(--ease);
   }
+  @media (hover: hover) and (pointer: fine) {
   .lesson-row:hover { background: var(--surface-2); }
+  }
   .lesson-row:active { background: var(--surface-3); }
   /* first uncompleted lesson — the "continue here" affordance */
   .lesson-row.next {
     background: color-mix(in srgb, var(--track-accent, var(--accent)) 6%, var(--surface));
     border-color: color-mix(in srgb, var(--track-accent, var(--accent)) 28%, transparent);
   }
+  @media (hover: hover) and (pointer: fine) {
   .lesson-row.next:hover {
-    background: color-mix(in srgb, var(--track-accent, var(--accent)) 10%, var(--surface));
+      background: color-mix(in srgb, var(--track-accent, var(--accent)) 10%, var(--surface));
+    }
   }
   .lesson-row.done .lesson-row-title { color: var(--text-secondary); }
   .lesson-row.locked {
     cursor: not-allowed;
   }
+  @media (hover: hover) and (pointer: fine) {
   .lesson-row.locked:hover { background: transparent; }
+  }
   .lesson-row.locked .lesson-row-title,
   .lesson-row.locked .lesson-row-sub,
   .lesson-row.locked .lesson-row-meta { color: var(--text-muted); }
@@ -517,10 +529,12 @@
       transform var(--t-fast) var(--ease);
   }
   /* earned — full color + subtle lift */
+  @media (hover: hover) and (pointer: fine) {
   .badge-tile.earned:hover {
-    transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--rarity) 40%, var(--rule));
-    box-shadow: var(--shadow-card-h);
+      transform: translateY(-2px);
+      border-color: color-mix(in srgb, var(--rarity) 40%, var(--rule));
+      box-shadow: var(--shadow-card-h);
+    }
   }
   /* locked — desaturated tile, ghost icon well */
   .badge-tile.locked .badge-tile-title { color: var(--text-muted); }
@@ -617,7 +631,9 @@
     animation: madarek-lb-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
     animation-delay: calc(var(--motion-stagger-step) * var(--lb-i, 0));
   }
+  @media (hover: hover) and (pointer: fine) {
   .leaderboard-row:hover { background: var(--surface-2); }
+  }
 
   @keyframes madarek-lb-row-in {
     from {
@@ -779,8 +795,10 @@
        cards sit on hairlines; depth is the border step). */
     transition: border-color var(--t-fast) var(--ease);
   }
+  @media (hover: hover) and (pointer: fine) {
   .achievement:hover {
-    border-color: var(--border-strong);
+      border-color: var(--border-strong);
+    }
   }
   .achievement-icon {
     inline-size: 40px;

@@ -15,8 +15,11 @@ at-rule-ish bytes (benign to browsers, fatal to strict parsers, dead weight on e
 - `styles/r305-student.css:30,33` — the banner text contained `--fs-*/--r-*/--sp-*` and
   `--t-*/--motion-*`: the `*/` closes the comment mid-text (reworded with spaces).
 - `styles/training.css:34` — same class: `.leaderboard-*/` (reworded).
-Command: strict `postcss.parse` over all 47 `frontend/src/styles/*.css` → **0 failures**
-after the fixes (2 before). `bash scripts/check-raw-css.sh --strict` PASS.
+Command: strict `postcss.parse` over the 42 `frontend/src/styles/*.css` → **0 failures**
+after the fixes (**3 before**: r305-research-pdf-ai:769 · r305-student:30 · training.css:34).
+`bash scripts/check-raw-css.sh --strict` PASS. Reviewer bisection note: the broken banners had
+been HIDING 9 training.css `:hover` rules from the hover walker — the fix exposed them (191
+unguarded > the 185 ratchet), so the fix landed WITH the 9 guards: after = **182 ≤ 185 ✓**.
 
 ## 1 · Copy-paste (§C-2) — `npx jscpd frontend/src backend/src shared --min-tokens 40`
 
@@ -66,9 +69,11 @@ LibraryPage 1 definition (pages/student/LibraryPage.tsx). Raw: `raw/jscpd-report
   (the vanishing-text bug class; allowlist: scripts/r320/duplicate-selector-allowlist.json
   with reasoned keeps + `unloadedFiles` carve-outs). Top offenders: `.admin-faculty-card`,
   `.topbar` ×3 sheets, `.page-header`, `.auth-card` RM contexts, `select/textarea`.
-- `node scripts/r320/hover-guard-lint.mjs` → **183 unguarded `:hover` rules** outside
+- `node scripts/r320/hover-guard-lint.mjs` → **182 unguarded `:hover` rules** outside
   `@media (hover:hover) and (pointer:fine)` (styles/admin.css:377, auth.css:110/1213/1217,
-  unified-parity.css:972, …). §E rule: every hover must be guarded or allowlisted.
+  unified-parity.css:972, …). Provenance: 183 pre-fix (broken banners hid 9 training.css rules
+  from the walker) · 191 post-fix before guards · **182 after the 9 guards landed with the fix**.
+  §E rule: every hover must be guarded or allowlisted.
 
 ## 4 · Unused-CSS candidates (§C-1) — Playwright CSS coverage over the production build
 
@@ -116,7 +121,7 @@ forcing function: the next route-level growth breaks the gate — by design.
 | C-4 | AdminPages ↔ OwnerInstitutionDetailPage twin (34) | M | behavior-preserving parametrise + belts |
 | C-5 | CommunityPages ×5 dedupe + conversion (with §B B4) | M–L | see STUDENT-SWEEP T-5 |
 | C-6 | MorePages.tsx 2,157 ln / 8 routes — split per family while keeping the r319 grammar | M | nav adjacency contracts |
-| C-7 | hover-guard: 183 rules → guarded or allowlisted | M | mechanical, belt per file |
+| C-7 | hover-guard: 182 rules → guarded or allowlisted (191→182 after the banner-fix guards) | M | mechanical, belt per file |
 | C-8 | ts-prune worklist (757 rows → verified subset) + root devDeps consumers (clipper/harfbuzz/opentype) | L | false-positive mine — verify by grep before any delete |
 | C-9 | the bundle diet: 736 → ≤ 200 entry/… targets via §1/§4/§8 (the caps NEVER rise) | L | the cycle-6 headline |
 | C-10 | knip re-run at the cycle-6 tool refresh (blocked here) | S | tooling |
