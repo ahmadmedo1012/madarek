@@ -25,11 +25,11 @@ presence + iOS WebKit harness).
 
 | # | Defect | Owner | Cycle |
 |---|---|---|---|
-| A1 | Desktop perf: 1440 wheel 48/257 frames >33 ms · CLS 0.27 · LCP 21 s (owner's methodology, loader-on cold) — targets ≤2 % >20 ms · CLS ≤0.05 · LCP ≤2.5 s skip-loader / ≤4 s with | c2-PERF | 2 |
-| A2 | Footer wordmark solid grey fill #8F8F8A — Heron's is OUTLINED (fill:none · stroke:ink · ≈1.5-2px · non-scaling-stroke; dark = paper stroke) | c2-L | 2 |
-| A3 | Footer ink strip: mono label overlaps first thumbnail; thumbs ≈78 px; captions 18 px bold outweigh images — Heron: large images, small mono captions one baseline, label its own row | c2-L | 2 |
-| A4 | Map labels collide («المكتبة والبحوث»×«M2 96», «غرفة الإتقان»×furniture, «M2 150»×window rule) — collision gate must cover SVG `<text>`; name/area separate baselines ≥14 px apart | c2-L | 2 |
-| A5 | Footer has no legal/policy links at all (§D pages wire in) | c2-LEGAL | 2 |
+| A1 | Desktop perf: 1440 wheel 48/257 frames >33 ms · CLS 0.27 · LCP 21 s (owner's methodology, loader-on cold) — targets ≤2 % >20 ms · CLS ≤0.05 · LCP ≤2.5 s skip-loader / ≤4 s with | c2-PERF | 3 (open) |
+| A2 | ~~Footer wordmark solid grey fill~~ **FIXED 7234c432** — the OCR tint twin (computed #8F8F8B) retired; TRUE outline fill:none · stroke:ink 1.7px non-scaling (dark = paper stroke). Probe: 4 cells | — | 2 |
+| A3 | ~~Footer ink strip~~ **FIXED 7234c432** — images 54u→70u (99px @1440), mono captions 8.5u one baseline, [01] label its own ruled row (0 overlap, probe-verified); docH ladder ±1.25% | — | 2 |
+| A4 | ~~Map labels collide~~ **FIXED f7c4540c** — svg-collisions 9@390/14@1440 → **0/0, no allowlist**; every name/area pair on separate baselines clear of furniture | — | 2 |
+| A5 | ~~Footer has no legal/policy links~~ **FIXED c41a5560** (c2-LEGAL) — the nine-link legal row wired | — | 2 |
 
 ## §B RENAME register («الإدارة» → «المسجل العام»)
 
@@ -65,6 +65,23 @@ Cycle 5: المسجل العام + quality + owner. Cycle 6: cleanup/dedupe/dead
 bundle diet + red team.
 
 ## Cycle log
+
+### Cycle 2 — CLOSED (merged through 7234c432; §D pages + flow + §A2–A5 fixed; CI repaired)
+
+| Package | State | Evidence |
+|---|---|---|
+| §D legal/public pages (c2-LEGAL) | **FIXED-with-test** | 7787f809→c41a5560: nine public sheets + LegalSheet kit + useLegalMeta + robots/sitemap/manifest + brand icons + footer/consent wiring; LEGAL-TODO 18 rows; belt 89/89. |
+| §D forgot/reset flow (c2-FLOW) | **FIXED-with-test** | 08b1444c→2569f135: PasswordResetToken model+migration, no-oracle service (CAS claim, policy-before-burn, digest-only, equal-cost unknown path), dual limiters, @test.ly devInbox, two guest sheets; backend belt 18/18 (fd157c4c); auth.css merge conflict resolved BOTH sides. |
+| §A2 wordmark outline | **FIXED** | 7234c432: tint twin retired — fill:none · stroke 1.7px non-scaling; dark = paper stroke; probe 4 cells (audits/evidence/r320/landing/). |
+| §A3 ink strip | **FIXED** | 7234c432: 70u images (99px @1440), 8.5u mono captions one baseline, [01] its own ruled .fl-head row — 0 overlap; LENS_R 47.2 (the reference proportion); lens math on the svg box; docH ladder ±1.25% (the R319 protocol — NOTE: forcing reduced-motion inflates desktop docH +9%, a protocol artefact). |
+| §A4 map label collisions | **FIXED** | f7c4540c: svg-collisions 9@390/14@1440 → 0/0 no allowlist; five zones re-seated; camera crops verified (r312 9/9); dump probe committed. |
+| §A5 footer legal row | **FIXED** | c41a5560 (with c2-LEGAL). |
+| §A1 desktop perf | **OPEN → Cycle 3** | Render pipeline dominates post-§E-13-fix3; internal CLS 0.007 / LCP 1.80s already inside targets, but the owner's loader-on cold methodology reads LCP ~21s — the loader duration itself is the gap. Needs the perf harness + loader-policy decision. |
+| CI repair | **FIXED** | 7234c432: e2e/ios-webkit/surface-drift pinned ubuntu-24.04 (ubuntu-latest→26.04 roll; PW 1.60 has no builds); auth.css gap 2px→var(--sp-0-5) (raw-css strict PASS); bundle ceilings 712→736 / 80→82 documented (measured 730.3/80.4 — the §D route growth; r183-B8 belt re-pinned with the down-never-up note). |
+
+**Suites at C2 close:** front **2717/2717** (227 files) · back **1823/1823** (79 files) · tsc 0/0 · eslint 0 errors · raw-css --strict PASS · svg-collisions 0/0 · colors/icons/motion/CSP/parity OK · bundle gate PASS (730.5/736 · 80.4/82 · 95.7/110).
+
+**Cycle 3 queue:** §A1 desktop perf (the loader-on LCP gap + render pipeline) · student remaining pages + /settings (PAGES-GAP P1/P2: 403/500/maintenance + profile/admin-settings thin pages) · the Playwright/Ubuntu-26.04 bump (Cycle-6 dep refresh, un-pins ubuntu-24.04) · Cycle 6 diet (65-conflict duplicate-selector baseline + bundle 736→down).
 
 ### Cycle 1 — CLOSED (merged through 6ebac5e8; all four fleet packages green)
 
