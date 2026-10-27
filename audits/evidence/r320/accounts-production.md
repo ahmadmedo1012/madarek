@@ -60,11 +60,14 @@ form fields.
   unreadable glyph stubs (measured: `pf-page-title` t=113 vs `modal-card`
   t=121 at 390). Fixed the same cycle: the tour overlay now carries the
   Heron menu scrim (`--glass-bg-strong`, paper/ink @92 %) —
-  `.has-shell .modal-overlay:has(.onboarding-flow)` in `r305-shell.css` §7,
+  `.modal-overlay:has(.onboarding-flow)` in `r305-shell.css` §7,
   belt-pinned in `OnboardingFlow.test.tsx` (rule presence + token 0.92 in
-  both themes). Before/after: `registrar-top-390.jpg` (veil 40 %) vs
-  `registrar-tour-after-veil-390.jpg` (92 % scrim, stubs gone — verified
-  after the fix deploy).
+  both themes). First attempt (a9e071a3) carried a `.has-shell` prefix and
+  never matched — the modal PORTAL renders at body level, outside the
+  shell container (measured: rule in the built CSS, computed veil still
+  40 %); fixed in 5b7369f9 (prefix dropped, belt re-pinned). After-verify
+  on production: computed veil `rgba(246,246,238,0.92)` ✓ · VLM: no
+  stubs, clean uniform scrim, card edge clean, 9/10 (was 6/10).
 - `registrar-dashboard-390.jpg`: the clean dashboard after dismissing the
   tour (no mechanical text clip found by the DOM audit — the only
   `text-outside-box` hits are the four deliberate `sheet-mark` ± corner
