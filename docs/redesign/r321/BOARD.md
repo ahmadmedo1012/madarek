@@ -15,32 +15,36 @@ produced them.
 
 ## Protected ratchets (re-measured after every merge; never regress)
 
-- docH ladder (R321 A2 hardens to ±1.5 % of Heron at 11 viewports):
+- docH ladder (R321 A2 — NOW GATED: gate:r321 docH-ladder, ±1.5 % of Heron at
+  the five referenced viewports + never-raise pins at the other six):
   Heron: 1440=12,355 · 1024=9,938 · 768=12,577 · 390=11,441 · 360=10,684
-  a7e335d: 1440=12,607 (+2.0 %) · 1024=10,184 (+2.5 %) · 768=12,795 (+1.7 %) ·
-  390=11,388 (−0.5 %) · 360=10,742 (+0.5 %)
+  **c1 state (ALL WITHIN BAND): 1440=12,530 (+1.42 %) · 1024=10,083 (+1.46 %)
+  · 768=12,697 (+0.95 %) · 390=11,357 (−0.73 %) · 360=10,724 (+0.37 %)**
+  never-raise pins: 320=9,308 · 430=12,411 · 480=12,675 · 600=14,774 ·
+  820=13,808 · 1,180=10,937
 - Phone perf (390 @4×): 6/262 frames > 33 ms · p95 16.8 ms · CLS 0 · LCP 1.1 s
-- Desktop perf @1440 (a7e335d, owner's wheel-scroll harness): 115/212 frames
-  > 33 ms (54 %) · p95 50 ms · max 83 ms · CLS 0.27 · LCP 21 s (loader-on
-  cold). Targets: ≤ 2 % > 20 ms · CLS ≤ 0.05 · LCP ≤ 2.5 s skip-loader / ≤ 4 s
-  first visit.
-- Suites: vitest front 2729/2729 · back 1825/1825 · tsc 0/0/0 · eslint 0
-  errors (15 pre-existing warnings) · raw-css strict PASS · CI 10/10 green.
+- Desktop perf @1440 4× scroll (the r316 harness, loader-skip):
+  a7e335d ≈ 54 % > 33 ms (owner, loader-on cold) → c1: **75.9 % > 20 ms ·
+  p95 183 · 60 longtasks/6.8 s · CLS 0.007 ✓ · LCP 2.44 s ✓** — the ≤2 %
+  target is OPEN (the A1 decomposition map: audits/evidence/r321/a1-analysis.md).
+- Suites: vitest front 2733/2733 (+4) · back 1825/1825 · tsc 0/0/0 · eslint 0
+  errors · raw-css strict PASS · gate:r321 467 rows / 8 baseline tickets /
+  0 regressions.
 
 ## §A The ten R321 landing/public tickets
 
 | # | Defect (reproduced by owner on a7e335d) | State | Cycle |
 |---|---|---|---|
-| A1 | Desktop perf (1440): 54 % frames > 33 ms, CLS 0.27, LCP 21 s — trace SVG repaint, `<pattern>` fills, sticky header, gBCR storms, grain, loader gate; rasterise static art; `contain`; loader-skip on desktop too | OPEN | 1 |
-| A2 | Landing height creep: 1440=12,607 (+2.0 % vs Heron 12,355) · 1024=10,184 (+2.5 %) · 768=12,795 (+1.7 %). Hard ratchet: docH + every section ±1.5 % of Heron at 11 viewports | OPEN | 1 |
-| A3 | Phone hero art ≈160 px inside a 330 px window + stray tiny `≡` glyph top-left; scale elevation to window width | OPEN | 2 |
-| A4 | Legal/public sheets clipped at LEFT edge on phones (RTL overflow, clipped not scrollable — `.lg{overflow-x:clip}` hides it from scrollWidth). Fix container on EVERY public sheet at 320/360/390/430 + extend gate to assert every text element's rect ∈ [0, innerWidth] | OPEN | 1 |
-| A5 | Error pages render the code twice (kicker `ERR [500]` + mono footer `ERR · 500`) + sr-only third copy in innerText; H1 dangling `—` on its own line. Show once; `text-wrap:balance` + NBSP glue; gate: no duplicate normalised visible text per region | OPEN | 1 |
-| A6 | Decor leaks: corner marks read `+ | + | + | +` in innerText (aria-hidden does NOT remove from innerText — needs pseudo-element content); tiny orange tick at pixel (0,0) of every page | OPEN | 1 |
-| A7 | Rename leftovers: LegalPages.tsx ×2 strings, test-accounts group «الإدارة» → «الحوكمة», AuthPage comment, docs/05-setup.md, test-accounts.ts stale comments; ledger scan in CI (fail on any «الإدارة» off KEEP) | OPEN | 1 |
-| A8 | /auth: demo panel must be OPEN by default in development; mobile H1 ≈80 px/2 lines → inner-page title scale; in-row label «البريد الإلكتروني أو رقم القيد» wraps at 1440 | OPEN | 1 |
-| A9 | Map labels collide at 1440 (name vs `M2`; furniture lines through «غرفة الإتقان»); extend collision gate to SVG `<text>`/`<tspan>` bboxes | OPEN | 2 |
-| A10 | Production proof harness: after every deploy — all 10 accounts API+UI @390, every public page, robots/sitemap/manifest, landing perf harness → `audits/evidence/r321/prod/` | OPEN | 1 (harness) |
+| A1 | Desktop perf (1440): 54 % frames > 33 ms, CLS 0.27, LCP 21 s | **PARTIAL c1** — decomposition COMPLETE (audits/evidence/r321/a1-analysis.md): SVG/grain/reveals/gBCR Ruled OUT · UpdateLayoutTree 4.5 s is #1 (54 recalcs × 781 elements) · .jt-intro var chain 10 ms/frame · lenis-idle attr retired (root-attribute flips = whole-doc recalc) · c-v auto REJECTED (breaks docH ratchet) · CLS 0.007 ✓ · LCP-skip 2.44 s ✓. Remaining: the intro chain rewrite · the 756-family hunt · data-stage re-seat · loader plateau for the ≤4 s first-visit LCP (now 5.04 s) | 1→2 |
+| A2 | Landing height creep +2.0/+2.5/+1.7 % | **FIXED c1** — every main section was ALREADY Heron-exact; the entire excess was the FOOTER (+267 px). Cuts: legal row rides the © bar · wordmark en-caption retired · tablet compact cut (≤1099) · pads tightened. ALL FIVE Heron viewports within ±1.5 % + the docH-ladder GATE rule (11 viewports, ±1.5 %, never-raise) | 1 ✓ |
+| A3 | Phone hero art ≈160 px inside a 330 px window + stray `≡` glyph | OPEN | 2 |
+| A4 | Legal/public sheets clipped LEFT on phones | **FIXED c1** — minmax(0,1fr) grid guards + .lg-title clamp(3.4rem,11vw,…) + overflow-wrap:last-resort + the cookies ledger ≤767 card transform. 19 routes × 4 widths × 2 themes: 0 text rects outside [0,innerWidth]. GATED (text-in-viewport rule) | 1 ✓ |
+| A5 | Error pages: code twice + dangling `—` | **FIXED c1** — the eyebrow is the ONE carrier; coords carry the page's own word (SERVER FAULT…); sr-only twin deleted; text-wrap:balance + NBSP glue. GATED (duplicate-text rule) | 1 ✓ |
+| A6 | Decor leaks + the orange tick at (0,0) | **FIXED c1** — 12 mark families → CSS ::before (incl. AuthPage/Register/Forgot/Reset/landing/InkSketch/PlatformCanvas + the dynamic hi-marker/vc-poster codes via attr()); the tick was .cursor-dot-core's missing inert opacity:0. GATED (decor-innertext rule + the r321-decor belt) | 1 ✓ |
+| A7 | Rename leftovers | **FIXED c1** — «الحوكمة» group (type+rows+TEST_ACCOUNT_GROUPS+belts+docs+README) · LegalPages ×2 · docs/05-setup · 01-overview · 13-maintenance title · test-accounts comments · issue template. STATIC ledger scan in CI (1,007 files · 88 occ · 0 off-list · 20 reasoned keeps) | 1 ✓ |
+| A8 | /auth panel/H1/labels | **FIXED c1** — panel starts OPEN (SHOW_TEST_ACCOUNTS gate) · H1 on the r319-student masthead ladder (31.8 px @390) · labels nowrap + max-content track. Belts re-pinned | 1 ✓ |
+| A9 | Map labels collide at 1440 | OPEN | 2 |
+| A10 | Production proof harness | **foreman-B WP-A10** (claimed, in flight — coordination entry 76ecfb84) | 1 |
 
 ## §B authenticated sweep (cycles 2–5) — recipe = the settings package
 
@@ -66,8 +70,13 @@ masked-pixel ≤ 40 %, motion ≥ 90, geometry ±1.5 %).
 
 ## Cycle log
 
-### Cycle 1 — IN PROGRESS (head a7e335db)
+### Cycle 1 — the foreman-A line CLOSED at bd4253ac (A2/A4/A5/A6/A7/A8 ✓ · A1 partial · A10 = foreman-B)
 
-Work order: A4/A5/A6/A7/A8 (the one-hour fixes) → gates extension → A2
-height ratchet → A1 desktop perf → production proof harness. Then C2: A3 +
-A9 + student remaining + gate:clean baseline.
+| Batch | Commits | Content |
+|---|---|---|
+| 1 | 147051a3 | §A4 clipping + §A5 codes + §A6 decor/tick + §A7 rename + §A8 auth door (18 routes × 4 widths × 2 themes: 0 clip · code-once · 0 plus-runs · pixel-probe clean) |
+| 2 | 1cd79446 | gate:r321 (text-in-viewport · duplicate-text · decor-innertext · rename-ledger + baseline 467 rows) + the 12-family mark completion + CI ledger leg |
+| 3 | ff7aeed6 | §A2: docH back inside ±1.5 % at ALL five Heron viewports + the docH-ladder gate rule + the tablet compact cut |
+| 4 | bd4253ac | §A1 part-1: the decomposition map + lenis-idle retirement + the isolation instruments |
+
+**Cycle-1 remaining:** A1 continuation (the intro var-chain rewrite · the 756-family hunt · the loader plateau) · A3 phone hero art · A9 map labels · foreman-B's WP-A10/B0/C0/HL packages · then C2 per §I.
