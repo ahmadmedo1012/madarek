@@ -667,6 +667,11 @@
     font-size: var(--fs-sm);
   }
   .auth-forgot {
+    /* R320 §D: the control is now a <Link to="/auth/forgot-password">
+       (the real flow) — link chrome is reset so it renders exactly like
+       the button it replaces (44px floor, quiet ink, accent on hover). */
+    display: inline-flex;
+    align-items: center;
     margin-inline-start: auto;
     color: var(--text-muted);
     font-size: var(--fs-sm);
@@ -675,19 +680,11 @@
     min-block-size: 44px; /* touch floor — unconditional (S-1a) */
     border-radius: var(--r-sm);
     background: transparent; border: 0; cursor: pointer;
+    text-decoration: none;
     transition: color var(--t-fast) var(--ease);
   }
-  .auth-forgot:hover { color: var(--accent-ink); }
-
-  .auth-forgot-notice {
-    font-size: var(--fs-sm);
-    line-height: var(--lh-base);
-    background: transparent;
-    border: 1px solid var(--warning-ink);
-    color: var(--warning-ink);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-sm); /* 0 — the r313 ladder */
-    margin-block-start: var(--sp-2);
+  @media (hover: hover) {
+    .auth-forgot:hover { color: var(--accent-ink); }
   }
 
   /* ══ 5b · THE SUBMIT — the reference's fill-wipe (R315 · K-I) ════
@@ -976,6 +973,168 @@
     }
   }
 
+/* ══ 5c · FORGOT-PASSWORD FLOW (R320 §D — PAGES-GAP §5) ══════════
+     The two guest sheets (/auth/forgot-password + /auth/reset-password)
+     ride the SAME sheet grammar as the login sheet; the only NEW
+     furniture is what the flow's honesty contract adds: the
+     «no mail yet» note, the after-submit generic state, the
+     clearly-marked test-mode link panel, and the dead-link terminal
+     door. All hairline + radius 0 + 44px floors; :hover lives ONLY
+     inside (hover: hover); every color is a paired theme token. */
+
+  /* The honest «mail not configured» caveat — warning ink on the bare
+     paper, 1px warning hairline (the retired .auth-forgot-notice's own
+     register, kept for a note the visitor must actually read). */
+  .fp-mail-note {
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--warning-ink);
+    border: 1px solid var(--warning-ink);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: transparent;
+    padding: var(--sp-3) var(--sp-4);
+    margin-block-start: var(--sp-2);
+  }
+
+  /* After-submit state: the backend's generic message (strong ink) +
+     the caveat again — one polite block, no alert theatrics. */
+  .fp-sent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+    padding: var(--sp-3) var(--sp-4);
+    margin-block-start: var(--sp-2);
+  }
+  .fp-sent-message {
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+    line-height: var(--lh-base);
+  }
+  .fp-sent-note {
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+
+  /* The test-mode delivery panel — mono-voiced, clearly labelled
+     (وضع الاختبار), square hairline box. Exists ONLY when the API
+     returned devInbox (@test.ly existing accounts); its absence is
+     silence, never an empty panel. */
+  .fp-dev-inbox {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-2);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--r-sm);
+    padding: var(--sp-3);
+    margin-block-start: var(--sp-2);
+  }
+  .fp-dev-inbox-head {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-2);
+  }
+  .fp-dev-inbox-head span[dir='ltr'] {
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.06em; /* Latin mono run — may be tracked */
+  }
+  .fp-dev-inbox-note {
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+  .fp-dev-inbox-link-row {
+    display: flex;
+    align-items: stretch;
+    gap: var(--sp-2);
+  }
+  .fp-dev-inbox-link {
+    /* dir=ltr mono run: the reset URL is a Latin credential-shaped
+       string — break-all keeps the 43-char token from overflowing the
+       390px rung; the accent ink marks it as THE actionable link. */
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    line-height: var(--lh-snug);
+    color: var(--accent-ink);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm);
+    padding: var(--sp-2) var(--sp-3);
+    min-block-size: 44px; /* touch floor — unconditional */
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .fp-dev-inbox-copy {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 44px; /* touch floor — unconditional */
+    padding-inline: var(--sp-4);
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    cursor: pointer;
+    transition:
+      color var(--t-fast) var(--ease),
+      border-color var(--t-fast) var(--ease),
+      background-color var(--t-fast) var(--ease);
+  }
+  @media (hover: hover) {
+    .fp-dev-inbox-link:hover {
+      border-color: var(--accent);
+      color: var(--accent-hover);
+    }
+    .fp-dev-inbox-copy:hover {
+      color: var(--accent-fg);
+      border-color: var(--accent);
+      /* paired bg+fg: the accent fill and its dedicated foreground
+         token move together (never a lone background flip). */
+      background-color: var(--accent);
+    }
+  }
+
+  /* The dead-link terminal door — one state for unknown/expired/used
+     (no oracle), the alert register of .auth-error without being a
+     form banner (the form is gone). */
+  .fp-invalid {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--danger-ink);
+    border: 1px solid var(--danger-ink);
+    border-radius: var(--r-sm);
+    padding: var(--sp-3) var(--sp-4);
+  }
+
+  /* «اطلب رابطًا جديدًا» — the recovery door reuses the submit's
+     fill-wipe anatomy (it IS this state's primary action); link chrome
+     resets so it renders exactly like the button it stands in for. */
+  .fp-new-link {
+    text-decoration: none;
+    text-align: center;
+    margin-block-start: var(--sp-2);
+  }
 
   /* ══ 6 · REGISTER — the ruled role rows + appointment note ═══════ */
 
@@ -1251,7 +1410,10 @@
     .auth-demo-hint-close,
     .auth-demo-hint-reopen,
     .auth-error-link,
-    .auth-retry-link { transition: none; }
+    .auth-retry-link,
+    .fp-dev-inbox-copy,
+    .fp-dev-inbox-link,
+    .fp-new-link { transition: none; }
     .role-card:active,
     .auth-input-toggle:active,
     .auth-submit:active { transform: none; }

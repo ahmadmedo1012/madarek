@@ -38,6 +38,11 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+/* R320 §D (PAGES-GAP §5): the forgot-password flow's two guest sheets —
+ * same GuestRoute seat (authed visitors bounce to their role home;
+ * a signed-in visitor has no business resetting a password here). */
+const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
 
 const StudentDashboardPage = lazy(() => import('./pages/student/DashboardPage'));
 // r164-c: the student one-calendar view (schedule + assignments + exam
@@ -320,6 +325,10 @@ export function AppRoutes() {
         <Route element={<GuestRoute />}>
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/auth/register" element={<RegisterPage />} />
+          {/* R320 §D (PAGES-GAP §5): the forgot-password flow — both
+              guest sheets live INSIDE the GuestRoute block. */}
+          <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         </Route>
         {/* /auth is the canonical login route; /login is a legacy alias. */}
         <Route path="/login" element={<Navigate to="/auth" replace />} />

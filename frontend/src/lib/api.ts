@@ -102,6 +102,39 @@ export function selectInstitution(institutionId: string): Promise<AuthSessionRes
   return unwrap<AuthSessionResponse>(api.post('/auth/select-institution', { institutionId }));
 }
 
+/* ── R320 §D (PAGES-GAP §5): the forgot-password flow ──────────────
+ *
+ * Both calls are SESSION-NEUTRAL by design: the backend answers a
+ * byte-identical generic 200 envelope whether the email is registered
+ * or not (no enumeration), and ONE generic Arabic 400 for every dead
+ * token (unknown / expired / used — no token-oracle). The dev-inbox
+ * link rides the success envelope ONLY for existing @test.ly demo
+ * accounts; its absence means nothing the page is allowed to reveal. */
+
+/** POST /auth/forgot-password response body (`data` envelope unwrapped). */
+export interface ForgotPasswordResponse {
+  /** The generic no-enumeration copy — identical for known and unknown. */
+  message: string;
+  /** Test-mode delivery (@test.ly existing accounts only, dev-only). */
+  devInbox?: { mode: 'test'; url: string };
+}
+
+/** POST /auth/reset-password response body (`data` envelope unwrapped). */
+export interface ResetPasswordResponse {
+  ok: boolean;
+}
+
+/** POST /auth/forgot-password — always 200 with the generic envelope. */
+export function requestPasswordReset(email: string): Promise<ForgotPasswordResponse> {
+  return unwrap<ForgotPasswordResponse>(api.post('/auth/forgot-password', { email }));
+}
+
+/** POST /auth/reset-password — 400 BAD_REQUEST with ONE generic Arabic
+ * message for unknown/expired/used tokens (no token-oracle). */
+export function resetPassword(token: string, password: string): Promise<ResetPasswordResponse> {
+  return unwrap<ResetPasswordResponse>(api.post('/auth/reset-password', { token, password }));
+}
+
 /** GET /institutions — public listing of ACTIVE institutions. */
 export function listPublicInstitutions(): Promise<PublicInstitution[]> {
   return unwrap<PublicInstitution[]>(api.get('/institutions'));

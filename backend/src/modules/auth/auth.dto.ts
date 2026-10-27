@@ -100,3 +100,36 @@ export const changePasswordSchema = z
     newPassword: passwordSchema,
   })
   .strict();
+
+/**
+ * R320 §D (PAGES-GAP §5): POST /auth/forgot-password. Same email shape
+ * and normalization as register (trim + lowercase — emails are
+ * case-insensitive identifiers), `.strict()` so the envelope can never
+ * smuggle extra fields past a future handler edit.
+ */
+export const forgotPasswordSchema = z
+  .object({
+    email: z.string().trim().toLowerCase().email().max(120),
+  })
+  .strict();
+
+/**
+ * R320 §D (PAGES-GAP §5): POST /auth/reset-password.
+ *
+ * `token` — base64url(32 bytes) is exactly 43 chars; the 128 ceiling is
+ * deliberate headroom for a future entropy bump (never below 43 — a
+ * shorter string cannot be one of our tokens, and fat padding attempts
+ * must not reach the service). NOT trimmed: it is a SECRET, and like
+ * passwords, trimming would silently change the credential being
+ * checked.
+ *
+ * `password` — the REAL shared policy (12–72 + blocklist). The reset
+ * flow NEVER accepts a demo bypass: the @test.ly convenience ends at
+ * the dev-inbox link; the new password is a real credential.
+ */
+export const resetPasswordSchema = z
+  .object({
+    token: z.string().min(43).max(128),
+    password: passwordSchema,
+  })
+  .strict();

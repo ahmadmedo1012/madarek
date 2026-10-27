@@ -157,7 +157,11 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     const email = screen.getByLabelText('البريد الإلكتروني أو رقم القيد');
     const password = screen.getByLabelText('كلمة المرور');
     const toggle = screen.getByRole('button', { name: 'إظهار كلمة المرور' });
-    const forgot = screen.getByRole('button', { name: 'نسيت كلمة المرور؟' });
+    /* R320 override (§D — forgot-password flow): the control is a real
+     * <Link to="/auth/forgot-password"> now (the T-6 «راجع مرشدك»
+     * notice retired with the flow landing) — same seat, same keyboard
+     * sequence, real destination instead of an in-page notice. */
+    const forgot = screen.getByRole('link', { name: 'نسيت كلمة المرور؟' });
     const submit = screen.getByRole('button', { name: 'تسجيل الدخول' });
     const register = screen.getByRole('link', { name: 'أنشئ حسابك الآن' });
 
@@ -168,6 +172,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(follows(forgot, submit)).toBe(true);
     expect(follows(submit, register)).toBe(true);
     expect(register).toHaveAttribute('href', '/auth/register');
+    expect(forgot).toHaveAttribute('href', '/auth/forgot-password');
   });
 
   it('an empty submit demotes field errors to describedby-only + ONE polite countAr summary (r157 F5 alert-storm fix)', async () => {

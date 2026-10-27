@@ -77,6 +77,11 @@ const IN_PAGE_REDIRECTS: Array<{ path: string; source: string; marker: string }>
 const NON_SHELL_TITLED: Record<string, string> = {
   '/auth': 'تسجيل الدخول · مدارك',
   '/auth/register': 'إنشاء حساب جامعي · مدارك',
+  /* R320 §D (PAGES-GAP §5): the forgot-password flow's two guest
+   * sheets — same usePageTitle contract as their login sibling
+   * (rendered + pinned in the it.each below). */
+  '/auth/forgot-password': 'استعادة كلمة المرور · مدارك',
+  '/auth/reset-password': 'تعيين كلمة مرور جديدة · مدارك',
   '/404': 'الصفحة غير موجودة · مدارك',
 };
 
@@ -240,6 +245,22 @@ vi.mock('../../src/hooks/useAuth', () => ({
     isPending: false,
     isError: false,
   }),
+  // R320 §D: the forgot/reset guest sheets' mutations — idle stubs
+  // (the title pins never submit).
+  useRequestPasswordReset: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
+  useResetPassword: () => ({
+    mutateAsync: vi.fn(),
+    mutate: vi.fn(),
+    isPending: false,
+    isError: false,
+    error: null,
+  }),
 }));
 
 vi.mock('../../src/hooks/useResources', () => ({
@@ -281,18 +302,32 @@ vi.mock('../../src/hooks/useInstitutions', () => ({
 import AuthPage from '../../src/pages/AuthPage';
 import RegisterPage from '../../src/pages/RegisterPage';
 import NotFoundPage from '../../src/pages/NotFoundPage';
+import ForgotPasswordPage from '../../src/pages/auth/ForgotPasswordPage';
+import ResetPasswordPage from '../../src/pages/auth/ResetPasswordPage';
 
 describe('non-shell pages — usePageTitle sets the live document.title (2.4.2)', () => {
   it.each([
     ['/auth', AuthPage, 'تسجيل الدخول · مدارك'],
     ['/auth/register', RegisterPage, 'إنشاء حساب جامعي · مدارك'],
+    /* R320 §D: the two flow sheets render + restore the title the same
+     * way (usePageTitle contract — reset carries ?token= through a
+     * MemoryRouter initialEntries entry so the page renders its form). */
+    ['/auth/forgot-password', ForgotPasswordPage, 'استعادة كلمة المرور · مدارك'],
+    ['/auth/reset-password', ResetPasswordPage, 'تعيين كلمة مرور جديدة · مدارك'],
     ['/404', NotFoundPage, 'الصفحة غير موجودة · مدارك'],
   ] as const)('%s titles the tab and restores the previous title on unmount', (_path, Page, expected) => {
     document.title = 'العنوان السابق';
     /* r180: AuthPage mounts a (disabled-by-default) institutions query
        for the REG_NUMBER_AMBIGUOUS recovery — QueryClient needed. */
+    /* R320 §D: the two flow sheets render + restore the title the same
+     * way (usePageTitle contract — reset carries a ?token= entry so the
+     * page renders its form state, not the dead-link terminal). */
+    const initialEntry =
+      _path === '/auth/reset-password'
+        ? `/auth/reset-password?token=${'probe-token-43-chars-long-xxxxxxxxxxx'.slice(0, 43)}`
+        : _path;
     const { unmount } = render(
-      <MemoryRouter>
+      <MemoryRouter initialEntries={[initialEntry]}>
         <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
           <Page />
         </QueryClientProvider>

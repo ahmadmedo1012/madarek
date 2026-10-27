@@ -1,9 +1,22 @@
 import { Router } from 'express';
 import { env } from '../../env.js';
 import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.js';
-import { authRateLimiter, changePasswordRateLimiter } from '../middleware/rateLimit.js';
+import {
+  forgotPasswordEmailRateLimiter,
+  forgotPasswordRateLimiter,
+  resetPasswordRateLimiter,
+  changePasswordRateLimiter,
+  authRateLimiter,
+} from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
-import { changePasswordSchema, loginSchema, registerSchema, selectInstitutionSchema } from '../../modules/auth/auth.dto.js';
+import {
+  changePasswordSchema,
+  forgotPasswordSchema,
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+  selectInstitutionSchema,
+} from '../../modules/auth/auth.dto.js';
 import {
   changePassword,
   getCurrentUser,
@@ -13,6 +26,8 @@ import {
   registerUser,
   selectInstitution,
 } from '../../modules/auth/auth.service.js';
+import { requestPasswordReset, resetPassword } from '../../modules/auth/password-reset.service.js';
+import { isTestAccountEmail } from '../../modules/auth/test-accounts.data.js';
 import { parseDurationMs, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
 
@@ -180,6 +195,99 @@ router.post('/logout', optionalAuthMiddleware, async (req, res, _next) => {
   res.clearCookie(REFRESH_COOKIE, { path: '/api/v1/auth' });
   res.status(204).end();
 });
+
+/**
+ * R320 §D (PAGES-GAP §5) — step 1 of the forgot-password flow.
+ *
+ * NO USER ENUMERATION: the 200 envelope is byte-identical whether the
+ * email is registered or not (the service burns equal crypto + a
+ * same-shape DB visit on the unknown path; the generic Arabic copy
+ * never wavers). The dev-inbox link below is the ONE deliberate,
+ * documented exception-shape — and it can only ever confirm what the
+ * login panel already publishes.
+ *
+ * Delivery reality (verified: zero mail-provider code/dependencies in
+ * the repo — see LEGAL-TODO.md rows 7/8): NO email is sent, by anyone,
+ * today. Rather than pretend otherwise:
+ *  - @test.ly addresses (the BOARD §C documented demo accounts,
+ *    test-accounts.data.ts — their emails are ALREADY public in the
+ *    login panel's demo list) AND ONLY when the account actually
+ *    exists: the response carries `devInbox: { mode: 'test', url }` —
+ *    the reset link itself, honestly labelled as test-mode. The @test.ly
+ *    gate means this can never leak a real user's reset link; the
+ *    exists-gate means an unknown @test.ly address answers link-less,
+ *    same as every unknown address.
+ *  - every other domain (known or unknown): generic 200, event logged
+ *    server-side, and the PAGE copy states plainly that email delivery
+ *    is not configured yet ([يُستكمل قبل الإطلاق] — LEGAL-TODO rows
+ *    7/8). No code path silently fakes a send.
+ *
+ * Limiter stack: forgotPasswordRateLimiter (10/15min per IP, counts
+ * EVERY request — the endpoint has no failure signal to skip on) THEN
+ * forgotPasswordEmailRateLimiter (3/15min per submitted email — bounds
+ * inbox-flooding per address across all source IPs).
+ */
+router.post(
+  '/forgot-password',
+  forgotPasswordRateLimiter,
+  forgotPasswordEmailRateLimiter,
+  validate(forgotPasswordSchema),
+  async (req, res, next) => {
+    try {
+      const email = req.body.email as string;
+      const token = await requestPasswordReset(email);
+
+      const data: { message: string; devInbox?: { mode: 'test'; url: string } } = {
+        message: 'إذا كان البريد مسجلًا فستصلك رسالة خلال دقائق',
+      };
+      if (token && isTestAccountEmail(email)) {
+        // Test-mode link — @test.ly demo accounts only (reasoning in the
+        // route docblock above). Origin comes from the requesting web
+        // app itself (the browser always sends Origin on cross-origin
+        // POSTs — dev Vite → API), validated to http(s) shape so a
+        // garbage header can never reach the URL; the default is the
+        // Vite dev port for direct curl-style callers.
+        const rawOrigin =
+          typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
+            ? req.headers.origin
+            : 'http://localhost:5173';
+        const origin = rawOrigin.replace(/\/+$/, '');
+        data.devInbox = {
+          mode: 'test',
+          url: `${origin}/auth/reset-password?token=${encodeURIComponent(token)}`,
+        };
+      }
+      res.json({ data });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+/**
+ * R320 §D (PAGES-GAP §5) — step 2: consume the token, set the new
+ * password. Unknown / expired / used tokens all answer the SAME generic
+ * Arabic refusal (no token-oracle — an attacker cannot distinguish a
+ * once-valid-now-spent link from a never-existed one), and the service
+ * does the rest atomically (single-use CAS claim, real password policy,
+ * argon2 + tokenVersion bump + lockout counters in ONE conditional
+ * write — see password-reset.service.ts). failed-only per-IP limiter:
+ * the brute-force shape here is token guessing, so misses count and a
+ * successful reset is free.
+ */
+router.post(
+  '/reset-password',
+  resetPasswordRateLimiter,
+  validate(resetPasswordSchema),
+  async (req, res, next) => {
+    try {
+      await resetPassword(req.body.token, req.body.password);
+      res.json({ data: { ok: true } });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 
 router.get('/me', authMiddleware, async (req, res, next) => {
   try {

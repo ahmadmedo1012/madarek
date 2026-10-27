@@ -117,7 +117,6 @@ export default function AuthPage() {
   const location = useLocation();
   const login = useLogin();
   const selectInstitution = useSelectInstitution();
-  const [forgotNotice, setForgotNotice] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   // r178 (multi-institution): after a successful login whose session
   // carries MULTIPLE active memberships and NO auto-selected context,
@@ -427,11 +426,13 @@ export default function AuthPage() {
                   )}
                   {/* the forgot-password action belongs to the password row
                       (R315 seat; the DOM order keeps the pinned
-                      toggle → forgot keyboard sequence). */}
+                      toggle → forgot keyboard sequence). R320 §D: the
+                      T-6 «راجع مرشدك» notice is retired — the real
+                      flow (/auth/forgot-password) owns the door now. */}
                   <div className="auth-forgot-row">
-                    <button type="button" className="auth-forgot" onClick={() => setForgotNotice(true)}>
+                    <Link to="/auth/forgot-password" className="auth-forgot">
                       نسيت كلمة المرور؟
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -482,12 +483,6 @@ export default function AuthPage() {
                 </div>
               )}
             </div>
-
-            {forgotNotice && (
-              <div className="auth-forgot-notice" role="status">
-                يرجى التواصل مع المرشد الأكاديميّ في كليّتك لإعادة تعيين كلمة المرور.
-              </div>
-            )}
 
             {login.isError && (
               <div className="auth-error" role="alert">
