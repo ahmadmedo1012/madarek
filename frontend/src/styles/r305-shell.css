@@ -240,8 +240,13 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
    language (the R319 §B1 prescription) — paper at 92 % in light, ink at
    92 % in dark (--glass-bg-strong, already theme-paired) — so the page
    behind recedes to an 8 % ghost and nothing slices the card's top edge.
-   Scoped to the tour ONLY: data dialogs keep the context-keeping veil. */
-.has-shell .modal-overlay:has(.onboarding-flow) {
+   NO .has-shell prefix: the modal PORTAL renders at body level, OUTSIDE
+   the .has-shell container (measured on production — the §7 comment's
+   "inside the shell's modal port" claim was wrong; the first attempt
+   with the prefix shipped in a9e071a3 and never matched). The :has()
+   argument alone scopes this to the tour; data dialogs keep the
+   context-keeping --overlay-veil. */
+.modal-overlay:has(.onboarding-flow) {
   background: var(--glass-bg-strong);
 }
 

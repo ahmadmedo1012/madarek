@@ -230,9 +230,15 @@ describe('R320 cycle-3 — the onboarding tour veil (Heron menu scrim)', () => {
   );
 
   it('scopes the paper/ink 92% scrim to the tour overlay only', () => {
+    // NO .has-shell prefix — the modal portal renders at BODY level,
+    // outside the shell container (measured on production: the first
+    // attempt a9e071a3 carried the prefix and NEVER matched — the rule
+    // was in the built CSS yet the computed veil stayed 40 % ink).
     expect(SHELL_CSS).toMatch(
-      /\.has-shell \.modal-overlay:has\(\.onboarding-flow\)\s*\{\s*background:\s*var\(--glass-bg-strong\);?\s*\}/,
+      /(^|[^.\w-])\.modal-overlay:has\(\.onboarding-flow\)\s*\{\s*background:\s*var\(--glass-bg-strong\);?\s*\}/,
     );
+    // The dead prefixed twin must not come back.
+    expect(SHELL_CSS).not.toMatch(/\.has-shell \.modal-overlay:has\(\.onboarding-flow\)/);
     // And it must NOT leak onto every modal — data dialogs keep the
     // context-keeping --overlay-veil (the frozen components.css rule).
     expect(SHELL_CSS).not.toMatch(/\.modal-overlay\s*\{[^}]*glass-bg-strong/);
