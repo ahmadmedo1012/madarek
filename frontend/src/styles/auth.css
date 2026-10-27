@@ -936,6 +936,46 @@
   }
   .auth-register-prompt a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
 
+  /* ══ 5b · THE CONSENT LINE (R320 §D · c2-LEGAL) — the policy-consent
+     micro-module's seat (components/ConsentLine.tsx): ONE quiet line
+     with the two links every account surface owes its visitor (شروط
+     الاستخدام + سياسة الخصوصية). The .auth-register-prompt voice —
+     centered, muted ink, 44px hit-area links — so the register step-2
+     footer and the login sheet's footer read as one family. Hover is
+     hover-guarded + paired (the B1 discipline; the unguarded prompt
+     hover above is the baselined legacy, not a precedent). */
+  .auth-consent {
+    text-align: center;
+    font-size: var(--fs-sm);
+    line-height: 1.8;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .auth-consent .auth-consent-link {
+    color: var(--accent-ink);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    /* Hit-area floor — same padding-out/margin-in trick as the
+       register prompt (44px targets, undisturbed rhythm). */
+    display: inline-block;
+    padding-block: var(--sp-3);
+    margin-block: calc(-1 * var(--sp-3));
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-consent .auth-consent-link:hover {
+      color: var(--accent-strong);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+    html[data-theme='dark'] .auth-consent .auth-consent-link:hover {
+      color: var(--accent);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+  }
+
+
   /* ══ 6 · REGISTER — the ruled role rows + appointment note ═══════ */
 
   /* The chooser is a RULED BLOCK (R315 · K-I): one hairline grid, the
