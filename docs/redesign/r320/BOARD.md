@@ -30,6 +30,7 @@ presence + iOS WebKit harness).
 | A3 | ~~Footer ink strip~~ **FIXED 7234c432** — images 54u→70u (99px @1440), mono captions 8.5u one baseline, [01] label its own ruled row (0 overlap, probe-verified); docH ladder ±1.25% | — | 2 |
 | A4 | ~~Map labels collide~~ **FIXED f7c4540c** — svg-collisions 9@390/14@1440 → **0/0, no allowlist**; every name/area pair on separate baselines clear of furniture | — | 2 |
 | A5 | ~~Footer has no legal/policy links~~ **FIXED c41a5560** (c2-LEGAL) — the nine-link legal row wired | — | 2 |
+| A6 | Onboarding tour veil: the 40% ink veil let the display H1 poke 8px above the centred tour card at 390 (pf-page-title t=113 vs modal-card t=121 — read as "clipped stubs" by two VLM reviews) — **FIXED a9e071a3+5b7369f9** (the tour overlay carries the Heron menu scrim --glass-bg-strong paper/ink @92%, scoped :has(.onboarding-flow); first attempt's .has-shell prefix never matched — the modal portal renders at body level; verified on production: computed rgba(246,246,238,0.92), VLM 9/10 no stubs) | found by the §C-7 production proof | 3 |
 
 ## §B RENAME register («الإدارة» → «المسجل العام»)
 
@@ -37,12 +38,18 @@ Ledger: `RENAME-LEDGER.md` (one row per occurrence → RENAME/KEEP/REWORD + reas
 Central sources: `frontend/src/lib/roleLabels.ts` + backend twin. Technical
 identifiers unchanged (Role.ADMIN, /admin/* URLs, DB values, CSS, test ids).
 
-## §C test accounts register
+## §C test accounts register — CLOSED ON BOTH LEGS
 
 One easy account per job (`@test.ly` / `12345678`) — shared source
 `shared/testAccounts.ts`, `ensureTestAccounts()` idempotent upsert (seed +
-boot when `MADAREK_TEST_ACCOUNTS=1`), demo lockout ≤60 s, AuthPage demo panel
-(`VITE_SHOW_TEST_ACCOUNTS`), fixtures + docs. Proof: every account logs in.
+boot when `MADAREK_TEST_ACCOUNTS=1` — render.yaml now DECLARES it), demo
+lockout ≤60 s, AuthPage demo panel (`VITE_SHOW_TEST_ACCOUNTS`), fixtures +
+docs. Proof: LOCAL 10/10 (cycle 1, `accounts.md`) · **PRODUCTION 10/10**
+(cycle 3, `accounts-production.md` — API 200 + token + role home at 390 UI;
+the registrar logs in THROUGH the panel one-tap flow; the panel opens with
+10 rows). The production run caught + fixed the registrar name drift
+(«إدارة الجامعة» → «المسجل العام», twin-table lockstep + name-healing
+update branch, belt 12→14) and the onboarding tour veil defect (see §A6).
 
 ## §D missing pages register
 
@@ -82,6 +89,25 @@ bundle diet + red team.
 **Suites at C2 close:** front **2717/2717** (227 files) · back **1823/1823** (79 files) · tsc 0/0 · eslint 0 errors · raw-css --strict PASS · svg-collisions 0/0 · colors/icons/motion/CSP/parity OK · bundle gate PASS (730.5/736 · 80.4/82 · 95.7/110).
 
 **Cycle 3 queue:** §A1 desktop perf (the loader-on LCP gap + render pipeline) · student remaining pages + /settings (PAGES-GAP P1/P2: 403/500/maintenance + profile/admin-settings thin pages) · the Playwright/Ubuntu-26.04 bump (Cycle-6 dep refresh, un-pins ubuntu-24.04) · Cycle 6 diet (65-conflict duplicate-selector baseline + bundle 736→down).
+
+### Cycle 3 — IN PROGRESS (head fb5745f1)
+
+| Package | State | Evidence |
+|---|---|---|
+| §C-7 production proof + the registrar name heal | **FIXED-with-test** | 3664c111+ec9716fc: the twin-table lockstep (ACCOUNT_PROFILES registrar → المسجل العام per the ledger) + the update branch heals names + render.yaml declares MADAREK_TEST_ACCOUNTS='1'; belt 12→14 (CANONICAL_NAMES both branches, no «إدارة» in any name). PRODUCTION 10/10 (accounts-production.md): every account API 200 + token + role home @390; the demo panel opens (10 rows) and the registrar logs in via the one-tap تعبئة→دخول flow. |
+| §A6 onboarding tour veil | **FIXED-with-test** | a9e071a3+5b7369f9: the tour overlay carries the Heron menu scrim (paper/ink @92%) scoped :has(.onboarding-flow) — the .has-shell prefix of the first attempt never matched (the modal portal renders at body level; measured). OnboardingFlow belt 8→10 (rule presence + 0.92 token both themes + the dead prefixed twin forbidden). Production after-verify: computed veil rgba(246,246,238,0.92), VLM 9/10, stubs gone. |
+| P2-1/P2-2 /settings (any-authed) | **FIXED-with-test** | 5d6132b4: seven §B2 sections; ChangePasswordCard LIFTED to components/account (ONE definition — teachers had NO change-password UI, PAGES-GAP T-2); honest قريبًا seats; nav wiring every role (one label إعدادات الحساب, UserCog vs Settings icon separation, adjacency contracts intact; nav-coverage 33→34 re-pinned). Belt r320-settings-pages 10 NEW. Production-verified (settings-after.mjs): 7 bars + theme group + 3 pw fields (geometry-proven) + honest seats. |
+| P2-3/4/5 error sheets (/500 /403 /maintenance) | **FIXED-with-test** | 5d6132b4: the /404 grammar via shared ErrorSheetPage (mk-ill error-generic/forbidden/server-waking); 403's way-back follows ROLE_HOME; maintenance disabled-by-default; PAGE_TITLES rows (resolveTitle never falls to generic — route-titles-coverage re-pinned). Production: all three PASS (h1 + document.title). |
+| ADMIN nav retitle | **FIXED** | 5d6132b4: «الإعدادات» → «إعدادات المنصّة» for /admin/settings — now MATCHES the page's own H1 (pinned by r305a8 since before); the account door is the new /settings row. |
+| Suites at this checkpoint | GREEN | front **2729/2729** (228 files) · back **1825/1825** · tsc 0/0/0 · eslint 0 errors (15 pre-existing warnings) · raw-css strict PASS · dup-selector/hover-guard zero NEW vs baseline. |
+
+**Cycle 3 remaining:** §A1 desktop perf (the loader-on LCP ~21s decision) ·
+student remaining §E pages (results, AR/VR, university, live, map, lectures
+player, online exams + taker, training ×3, community, dashboard re-check) ·
+§E admin/quality/owner sweeps (cycles 4-5 per §I) · Playwright/Ubuntu bump ·
+Cycle 6 diet. **Continuation:** read this table + the r320-c3 worklog entries
+first; the settings/error package pattern (shared component + belt + nav
+wiring + production probe) is the established recipe for the §E sweeps.
 
 ### Cycle 1 — CLOSED (merged through 6ebac5e8; all four fleet packages green)
 
