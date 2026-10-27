@@ -13,6 +13,11 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 vi.mock('../../src/lib/api', () => {
   const post = vi.fn(async () => ({ data: { onboardingCompletedAt: '2026-06-03T00:00:00.000Z' } }));
@@ -199,5 +204,43 @@ describe('OnboardingFlow role frame', () => {
     });
     expect(roleIntro().querySelector(studentDesk)).not.toBeNull();
     expect(roleIntro().querySelector(teacherStand)).toBeNull();
+  });
+});
+
+/* ── R320 cycle-3 — the tour veil (production finding, admin @390) ──
+ *
+ * Measured on production: pf-page-title t=113 vs the centred tour
+ * card t=121 → the generic 40 % ink veil let the display-size H1 poke
+ * through as an 8 px sliver of giant glyphs above the card, which two
+ * independent VLM reviews read as "heavily clipped stubs". The tour is
+ * a full-bleed takeover moment: its overlay carries the Heron
+ * menu-scrim language (R319 §B1) — paper/ink at 92 % via
+ * --glass-bg-strong — so the page behind recedes to an 8 % ghost.
+ * Belt: the scoped rule exists in r305-shell.css §7 AND the token
+ * stays the 0.92 menu scrim in BOTH themes (a drift to a lighter veil
+ * re-opens the defect). */
+describe('R320 cycle-3 — the onboarding tour veil (Heron menu scrim)', () => {
+  const SHELL_CSS = readFileSync(
+    path.resolve(__dirname, '../../src/styles/r305-shell.css'),
+    'utf-8',
+  );
+  const TOKENS_CSS = readFileSync(
+    path.resolve(__dirname, '../../src/styles/tokens.css'),
+    'utf-8',
+  );
+
+  it('scopes the paper/ink 92% scrim to the tour overlay only', () => {
+    expect(SHELL_CSS).toMatch(
+      /\.has-shell \.modal-overlay:has\(\.onboarding-flow\)\s*\{\s*background:\s*var\(--glass-bg-strong\);?\s*\}/,
+    );
+    // And it must NOT leak onto every modal — data dialogs keep the
+    // context-keeping --overlay-veil (the frozen components.css rule).
+    expect(SHELL_CSS).not.toMatch(/\.modal-overlay\s*\{[^}]*glass-bg-strong/);
+  });
+
+  it('keeps --glass-bg-strong the 0.92 menu scrim in BOTH themes', () => {
+    const values = TOKENS_CSS.match(/--glass-bg-strong:\s*([^;]+);/g) ?? [];
+    expect(values).toHaveLength(2); // light + dark
+    for (const v of values) expect(v).toMatch(/0\.92/);
   });
 });

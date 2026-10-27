@@ -230,6 +230,21 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
 }
 .has-shell .onboarding-flow-skip:hover { background: var(--surface-2); }
 
+/* R320 cycle-3 (production finding, admin dashboard @390): the generic
+   40 % ink veil lets the page's display-size H1 poke through ABOVE the
+   centred tour card as an 8 px sliver of giant glyphs — measured
+   geometry: pf-page-title t=113 vs modal-card t=121 — which a human
+   reads as clipped/corrupted text (two independent VLM reviews flagged
+   "heavily clipped stubs"). The first-run tour is a full-bleed takeover
+   moment, not a context-keeping dialog: it gets Heron's menu-scrim
+   language (the R319 §B1 prescription) — paper at 92 % in light, ink at
+   92 % in dark (--glass-bg-strong, already theme-paired) — so the page
+   behind recedes to an 8 % ghost and nothing slices the card's top edge.
+   Scoped to the tour ONLY: data dialogs keep the context-keeping veil. */
+.has-shell .modal-overlay:has(.onboarding-flow) {
+  background: var(--glass-bg-strong);
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    §8 — OVERLAYS (verified — no restatements)
    ═══════════════════════════════════════════════════════════════════

@@ -106,6 +106,11 @@ async function checkDemoPanel(
     const rows = page.locator('.auth-demo-row');
     await rows.first().waitFor({ state: 'visible', timeout: 10_000 });
     const count = await rows.count();
+    // The panel sits below the login form at 390 — scroll it into the
+    // frame so the SHOT shows it (the first capture showed only the
+    // form's top half; rows were counted but not visible in evidence).
+    await rows.first().scrollIntoViewIfNeeded();
+    await page.waitForTimeout(200);
     const shot = path.join(OUT_DIR, 'demo-panel-390.jpg');
     await page.screenshot({ path: shot, type: 'jpeg', quality: 72, fullPage: false });
     return { opened: true, rows: count, screenshot: path.basename(shot) };

@@ -1,0 +1,8 @@
+{
+  "target": "http://localhost:4254",
+  "checkedAt": "2026-10-27T19:00:28.634Z",
+  "opened": false,
+  "rows": null,
+  "screenshot": null,
+  "error": "page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:4254/auth\nCall log:\n  - navigating to \"http://localhost:4254/auth\", waiting until \"domcontentloaded\"\n"
+}
