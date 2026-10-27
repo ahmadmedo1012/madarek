@@ -175,8 +175,52 @@ const args = parseArgs(process.argv.slice(2));
 if (!args.baseUrl) { console.error('sweep-r321: --base-url required'); process.exit(2); }
 const allow = loadAllowlist();
 
+/* ── §A2 — the docH hard ratchet ──────────────────────────────────
+ * The reference ladder (docs/redesign/r313/STATE.md +
+ * r308/reference-interaction-map.json, measured live on Heron). The
+ * five referenced viewports gate at ±1.5%; the other six pin the
+ * measured value (never-raise — the baseline owns those numbers). */
+const HERON_DOCH = { 1440: 12355, 1024: 9938, 768: 12577, 390: 11441, 360: 10684 };
+const DOCH_VIEWPORTS = [
+  [320, 568], [360, 800], [390, 844], [430, 932], [480, 800],
+  [600, 800], [768, 1024], [820, 1180], [1024, 768], [1180, 800], [1440, 900],
+];
+
+async function dochPass(browser, baseUrl, cells) {
+  for (const [w, h] of DOCH_VIEWPORTS) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h } });
+    const page = await ctx.newPage();
+    const check = { status: 'PASS', metric: 0, sample: '' };
+    try {
+      await page.goto(`${baseUrl}/`, { waitUntil: 'networkidle', timeout: 20000 });
+      await page.evaluate(() => sessionStorage.setItem('madarek-intro-skip', '1'));
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.waitForTimeout(700);
+      const docH = await page.evaluate(() => document.documentElement.scrollHeight);
+      const heron = HERON_DOCH[w];
+      if (heron) {
+        const delta = (docH / heron - 1) * 100;
+        const ok = Math.abs(delta) <= 1.5;
+        check.status = ok ? 'PASS' : 'FAIL';
+        check.metric = ok ? 0 : 1;
+        check.sample = `docH ${docH} = ${delta.toFixed(2)}% vs Heron ${heron} (±1.5% band)`;
+      } else {
+        check.sample = `docH ${docH} (no Heron ref — never-raise pin, ${w}×${h})`;
+      }
+      check.docH = docH;
+    } catch (e) {
+      check.status = 'FAIL';
+      check.metric = 1;
+      check.sample = String(e).slice(0, 100);
+    }
+    cells.push({ route: 'docH-ladder', viewport: w, theme: '—', checks: { 'docH-ladder': check } });
+    await ctx.close();
+  }
+}
+
 const browser = await chromium.launch();
 const cells = [];
+if (args.routes.includes('landing')) await dochPass(browser, args.baseUrl, cells);
 for (const route of args.routes) {
   for (const vp of args.viewports) {
     for (const theme of args.themes) {

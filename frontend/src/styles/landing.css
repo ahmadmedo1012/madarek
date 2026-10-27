@@ -2223,7 +2223,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .fo-fcell {
-  padding: var(--sp-4) var(--sp-3); /* 16 block / 12 inline — the reference's own cell inset (13.33px measured) */
+  padding: 14px var(--sp-3); /* 14 block / 12 inline — R321 §A2: one step under the 16/12 seat (docH ratchet); the reference's own inline inset (13.33px measured) keeps */ /* spacing-gate: allow — 14px block: the ratcheted cell inset between the 12/16 rungs (no ladder rung at 14) */
   display: grid;
   gap: var(--sp-1-5);
   align-content: start;
@@ -2381,7 +2381,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   }
 
   .fo-fcell-addr {
-    padding-block: var(--sp-3) var(--sp-2);
+    /* R321 §A2 — 12/8 → 10/6: the address band rides one step tighter
+       (the docH ratchet). */
+    padding-block: var(--sp-2-5) var(--sp-1-5);
   }
 
   /* R315 cycle-2: .fo-footer-repo RETIRED with the repo link itself
@@ -2454,13 +2456,18 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-fstrip .fo-wordmark {
     margin-block-start: 0;
     padding-inline: 14px; /* spacing-gate: allow — the '+' reg-mark corner gutters (the wordmark's own seat), not a ladder rung */
-    padding-block: 2px 4px; /* spacing-gate: allow — the reg-mark cell's own construction padding (the wordmark corner seats) */
+    /* R321 §A2 — 2/4 → 0/2: the reg-mark cell's construction padding
+       one step tighter (docH back inside ±1.5% of the reference). */
+    padding-block: 0 2px; /* spacing-gate: allow — the reg-mark cell's own construction padding (the wordmark corner seats) */
     align-content: center;
     justify-items: center;
     gap: 2px; /* spacing-gate: allow — the reg-mark grid's construction gap */
   }
 
   .fo-fstrip .fo-wordmark-en {
+    /* R321 §A2 — RETIRED from flow (see the base rule): kept here so
+       the ≥768 seat never re-seats it. */
+    display: none;
     font-size: var(--fs-xxs);
     letter-spacing: 0.2em; /* Latin mono — tracking allowed */
     white-space: nowrap;
@@ -2492,7 +2499,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   position: relative;
   display: grid;
   justify-items: center;
-  gap: 2px; /* spacing-gate: allow — the reg-mark grid's construction gap */
+  gap: 0; /* R321 §A2 — the en-line rides the svg's own box (was 2px construction gap; the docH ratchet) */
   padding-block: 2px 4px; /* spacing-gate: allow — the reg-mark cell's own construction padding */
   padding-inline: 14px; /* the reg-mark gutters keep the word's construction margins clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
   margin-block-start: var(--sp-2);
@@ -2526,8 +2533,13 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .fo-wordmark-en {
-  /* in flow BELOW the svg (never overlapping the drawn word — the
-   * §D1 OCR shot is the svg's own box) */
+  /* R321 §A2 — RETIRED from flow at EVERY width: the decorative Latin
+   * mono caption cost ~14px of footer height at the ≥1180 seats (and
+   * the docH ratchet brings the footer back inside ±1.5% of the
+   * reference); the svg's own role="img" + <title> carries the
+   * reading. The drafting voice keeps the corner reg-marks + the
+   * strip's [01] label row. */
+  display: none;
   font-size: var(--fs-xxs);
   letter-spacing: 0.2em; /* Latin mono — tracking allowed */
   color: var(--text-muted);
@@ -2747,8 +2759,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--sp-3);
-  padding-block-start: var(--sp-4);
+  gap: var(--sp-1) var(--sp-3);
+  /* R321 §A2 — sp-4 → sp-2: the bar's own rule + the strip band's
+     chrome already seat it; the footer returns inside the ±1.5% docH
+     ratchet (the R320 wordmark/strip/legal additions grew it +267px
+     over the reference). */
+  padding-block-start: var(--sp-1-5);
   padding-inline: var(--sp-3);
   border-block-start: 1px solid var(--rule);
   color: var(--text-muted);
@@ -2775,16 +2791,16 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    floor is unconditional (the footer link ladder), and the mobile rung
    wraps the nine links onto comfortable rows instead of clipping. */
 .fo-legal-row {
+  /* R321 §A2 — the row rides the © bar's line now (no own ruled band):
+   * the center cluster between the © mono and the disclosure line. */
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--sp-2) var(--sp-1);
-  padding-block: var(--sp-3);
-  padding-inline: var(--sp-3);
-  border-block-start: 1px solid var(--rule);
+  gap: var(--sp-1);
+  margin-inline: auto;
   color: var(--text-muted);
-  font-size: var(--fs-sm);
+  font-size: var(--fs-xs);
 }
 
 @media (min-width: 992px) {
@@ -5868,6 +5884,34 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 @media (max-width: 767px) {
   .fl {
     display: none;
+  }
+}
+
+/* R321 §A2 — the TABLET COMPACT CUT (768–1099): the footer's three
+   Madarek-own bands (wordmark, ink strip, legal row) ride one step
+   tighter so docH stays inside ±1.5% of the reference at 768/1024 —
+   the same register the phone already uses («its own band in its
+   compact cut»). Every feature stays visible; the ≥1180 seats are
+   untouched. */
+@media (max-width: 1099px) {
+  .fo-wordmark-svg {
+    max-inline-size: 82%;
+  }
+  .fl-svg {
+    max-inline-size: 80%;
+    margin-inline: auto;
+  }
+  /* the © bar: © + disclosure share row one; the nine legal links
+     take their own 44px-touch row under them (ONE ruled bar total). */
+  .fo-legal-row {
+    order: 3;
+    flex-basis: 100%;
+  }
+  .fo-footer-bottom {
+    row-gap: var(--sp-0-5); /* the two-row seat breathes tighter at this band */
+  }
+  .fo-fcell {
+    padding: var(--sp-3) var(--sp-3); /* 12/12 — one step tighter than the desktop 16/12 cell */
   }
 }
 

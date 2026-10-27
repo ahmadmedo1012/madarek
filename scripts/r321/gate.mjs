@@ -42,8 +42,8 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, '../..');
 const BASELINE = path.join(HERE, 'gate-baseline.json');
 
-const KNOWN = ['r320', 'text-in-viewport', 'duplicate-text', 'decor-innertext', 'rename-ledger'];
-const RUNTIME = ['text-in-viewport', 'duplicate-text', 'decor-innertext'];
+const KNOWN = ['r320', 'text-in-viewport', 'duplicate-text', 'decor-innertext', 'docH-ladder', 'rename-ledger'];
+const RUNTIME = ['text-in-viewport', 'duplicate-text', 'decor-innertext', 'docH-ladder'];
 
 function parseArgs(argv) {
   const opt = {

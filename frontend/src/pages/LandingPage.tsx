@@ -1487,33 +1487,34 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* R320 §D (c2-LEGAL · §A5): the legal row — the nine public
-              sheets as hairline-separated quiet links between the strip
-              band and the © line (the reference's own legal-row seat).
-              Every policy/public page is reachable from the footer now;
-              the mono index lives in the sheets' corner codes. */}
-          <nav className="fo-legal-row" aria-label="سياسات المنصّة وصفحاتها العامة">
-            <Link to="/legal/privacy" className="fo-legal-link">سياسة الخصوصية</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/legal/terms" className="fo-legal-link">شروط الاستخدام</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/legal/cookies" className="fo-legal-link">التخزين المحلي</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/legal/accessibility" className="fo-legal-link">إمكانية الوصول</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/legal/security" className="fo-legal-link">الأمن</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/legal/data" className="fo-legal-link">البيانات</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/about" className="fo-legal-link">عن مدارك</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/help" className="fo-legal-link">المساعدة</Link>
-            <span className="fo-legal-sep" aria-hidden="true">·</span>
-            <Link to="/contact" className="fo-legal-link">التواصل</Link>
-          </nav>
-
+          {/* R320 §D (c2-LEGAL · §A5) → R321 §A2: the nine public sheets'
+              legal links ride the © bar's own row now (ONE ruled line
+              instead of two — the footer grew +267px over the reference
+              across R320's wordmark/strip/legal additions; the §A2
+              ratchet brings docH back inside ±1.5% of Heron at every
+              measured viewport). Every policy/public page stays
+              reachable from the footer; the nav keeps its own label. */}
           <div className="fo-footer-bottom">
             <span className="fo-mono">© {year} مدارك</span>
+            <nav className="fo-legal-row" aria-label="سياسات المنصّة وصفحاتها العامة">
+              <Link to="/legal/privacy" className="fo-legal-link">سياسة الخصوصية</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/legal/terms" className="fo-legal-link">شروط الاستخدام</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/legal/cookies" className="fo-legal-link">التخزين المحلي</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/legal/accessibility" className="fo-legal-link">إمكانية الوصول</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/legal/security" className="fo-legal-link">الأمن</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/legal/data" className="fo-legal-link">البيانات</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/about" className="fo-legal-link">عن مدارك</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/help" className="fo-legal-link">المساعدة</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              <Link to="/contact" className="fo-legal-link">التواصل</Link>
+            </nav>
             <span className="fo-footer-cluster">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</span>
           </div>
         </div>

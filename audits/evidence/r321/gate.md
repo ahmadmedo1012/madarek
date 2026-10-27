@@ -1,10 +1,20 @@
-# R321 composed gate — 2026-10-27T21:54:25.666Z
+# R321 composed gate — 2026-10-27T22:17:36.163Z
 
 Runs gate:r320 as a child (which runs gate:r319) + the R321 rules: text-in-viewport (public sheets × phone widths, RECT-based) · duplicate-text (per-region normalised) · decor-innertext (marks/code) · rename-ledger (static repo scan).
 
 | key | check | result | number | sample |
 |---|---|---|---|---|
-| static|rename-ledger | rename-ledger | PASS | 0 | scanned 1006 files · 89 occurrences all covered |
+| docH-ladder|320|—|docH-ladder | docH-ladder | PASS | 0 | docH 9308 (no Heron ref — never-raise pin, 320×568) |
+| docH-ladder|360|—|docH-ladder | docH-ladder | PASS | 0 | docH 10724 = 0.37% vs Heron 10684 (±1.5% band) |
+| docH-ladder|390|—|docH-ladder | docH-ladder | PASS | 0 | docH 11357 = -0.73% vs Heron 11441 (±1.5% band) |
+| docH-ladder|430|—|docH-ladder | docH-ladder | PASS | 0 | docH 12411 (no Heron ref — never-raise pin, 430×932) |
+| docH-ladder|480|—|docH-ladder | docH-ladder | PASS | 0 | docH 12675 (no Heron ref — never-raise pin, 480×800) |
+| docH-ladder|600|—|docH-ladder | docH-ladder | PASS | 0 | docH 14774 (no Heron ref — never-raise pin, 600×800) |
+| docH-ladder|768|—|docH-ladder | docH-ladder | PASS | 0 | docH 12697 = 0.95% vs Heron 12577 (±1.5% band) |
+| docH-ladder|820|—|docH-ladder | docH-ladder | PASS | 0 | docH 13808 (no Heron ref — never-raise pin, 820×1180) |
+| docH-ladder|1024|—|docH-ladder | docH-ladder | PASS | 0 | docH 10083 = 1.46% vs Heron 9938 (±1.5% band) |
+| docH-ladder|1180|—|docH-ladder | docH-ladder | PASS | 0 | docH 10937 (no Heron ref — never-raise pin, 1180×800) |
+| docH-ladder|1440|—|docH-ladder | docH-ladder | PASS | 0 | docH 12530 = 1.42% vs Heron 12355 (±1.5% band) |
 | landing|320|light|text-in-viewport | text-in-viewport | PASS | 0 | clean |
 | landing|320|light|duplicate-text | duplicate-text | FAIL | 8 | {"region":"main","norm":"مساعدالفهم","count":6} |
 | landing|320|light|decor-innertext | decor-innertext | PASS | 0 | clean |

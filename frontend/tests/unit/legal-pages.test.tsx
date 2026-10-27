@@ -465,7 +465,7 @@ describe('R320 §D — PUBLIC_SHEET_CODES (the single sheet-code source)', () =>
 /* ═══ F · wiring ════════════════════════════════════════════════════ */
 
 describe('R320 §D — every wiring point', () => {
-  it('the landing footer legal row: nine links, hairline-separated, in the footer bottom seat', () => {
+  it('the landing footer legal row: nine links, hairline-separated, riding the © bar (R321 §A2)', () => {
     const src = read('src/pages/LandingPage.tsx');
     const row = src.match(/<nav className="fo-legal-row"[\s\S]*?<\/nav>/);
     expect(row).toBeTruthy();
@@ -477,12 +477,17 @@ describe('R320 §D — every wiring point', () => {
       expect(row![0], href).toContain(`to="${href}"`);
     }
     expect(row![0]).toContain('className="fo-legal-sep"');
-    // the row sits BETWEEN the strip band and the © line
+    // R321 §A2 re-pin: the row rides INSIDE the © bar (one ruled line
+    // instead of two — the footer returned to the ±1.5% docH band;
+    // was: its own band BETWEEN the strip and the © line).
     const stripIdx = src.indexOf('<div className="fo-fstrip">');
-    const rowIdx = src.indexOf('fo-legal-row');
     const bottomIdx = src.indexOf('fo-footer-bottom');
-    expect(stripIdx).toBeLessThan(rowIdx);
-    expect(rowIdx).toBeLessThan(bottomIdx);
+    const rowIdx = src.indexOf('fo-legal-row');
+    expect(stripIdx).toBeLessThan(bottomIdx);
+    expect(bottomIdx).toBeLessThan(rowIdx);
+    // the nav closes inside the bottom bar's own closing tag
+    const bottomClose = src.indexOf('</div>', rowIdx);
+    expect(bottomClose).toBeGreaterThan(rowIdx);
   });
 
   it('the landing.css footer language owns the legal row (.fo-legal-row/.fo-legal-link/.fo-legal-sep)', () => {

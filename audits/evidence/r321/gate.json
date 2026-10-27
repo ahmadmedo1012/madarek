@@ -1,12 +1,115 @@
 {
- "generated": "2026-10-27T21:54:25.668Z",
+ "generated": "2026-10-27T22:17:36.167Z",
  "rows": [
   {
-   "key": "static|rename-ledger",
-   "check": "rename-ledger",
+   "key": "docH-ladder|320|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 320,
+   "theme": "—",
    "status": "PASS",
    "metric": 0,
-   "sample": "scanned 1006 files · 89 occurrences all covered"
+   "sample": "docH 9308 (no Heron ref — never-raise pin, 320×568)"
+  },
+  {
+   "key": "docH-ladder|360|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 360,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 10724 = 0.37% vs Heron 10684 (±1.5% band)"
+  },
+  {
+   "key": "docH-ladder|390|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 390,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 11357 = -0.73% vs Heron 11441 (±1.5% band)"
+  },
+  {
+   "key": "docH-ladder|430|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 430,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 12411 (no Heron ref — never-raise pin, 430×932)"
+  },
+  {
+   "key": "docH-ladder|480|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 480,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 12675 (no Heron ref — never-raise pin, 480×800)"
+  },
+  {
+   "key": "docH-ladder|600|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 600,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 14774 (no Heron ref — never-raise pin, 600×800)"
+  },
+  {
+   "key": "docH-ladder|768|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 768,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 12697 = 0.95% vs Heron 12577 (±1.5% band)"
+  },
+  {
+   "key": "docH-ladder|820|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 820,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 13808 (no Heron ref — never-raise pin, 820×1180)"
+  },
+  {
+   "key": "docH-ladder|1024|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 1024,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 10083 = 1.46% vs Heron 9938 (±1.5% band)"
+  },
+  {
+   "key": "docH-ladder|1180|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 1180,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 10937 (no Heron ref — never-raise pin, 1180×800)"
+  },
+  {
+   "key": "docH-ladder|1440|—|docH-ladder",
+   "check": "docH-ladder",
+   "route": "docH-ladder",
+   "viewport": 1440,
+   "theme": "—",
+   "status": "PASS",
+   "metric": 0,
+   "sample": "docH 12530 = 1.42% vs Heron 12355 (±1.5% band)"
   },
   {
    "key": "landing|320|light|text-in-viewport",
