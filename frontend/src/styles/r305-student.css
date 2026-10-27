@@ -27,10 +27,10 @@
 
    Gate contract for every consumer (all enforced on this tree):
    colors  — var()/color-mix() ONLY, zero raw literals;
-   type/radius/spacing — token ladder ONLY (var(--fs-*/--r-*/--sp-*)),
+   type/radius/spacing — token ladder ONLY (the --fs-* , --r-* , --sp-* families)
      zero raw px declarations, and none in TSX inline styles either;
    icons   — Lucide via the Icon component;
-   motion  — --t-*/--motion-* tokens, guarded hover behind
+   motion  — the --t-* and --motion-* tokens, guarded hover behind
      @media (hover:hover) and (pointer:fine), reduced-motion safe.
    ═════════════════════════════════════════════════════════════════════ */
 

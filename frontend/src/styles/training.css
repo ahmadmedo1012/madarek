@@ -32,7 +32,7 @@
      · Touch floors key on (pointer: coarse) like the r170-e belt —
        .back-link's ≤640px rule was min-block-height (invalid property)
        and never applied anywhere; restored + belt added.
-     · Shared-family classes (.filter-pill/.back-link/.leaderboard-*/
+     · Shared-family classes (.filter-pill / .back-link / the .leaderboard-* family /
        .tier-orb/.achievement-*) serve other owners' pages too — changes
        stay register-level and are reported in the wave worklog.
    ═════════════════════════════════════════════════════════════════════ */
