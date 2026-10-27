@@ -98,3 +98,13 @@ services:
         sync: false
       - key: AI_MODELS
         sync: false
+      # R320 §C — boot-time test-account ensure. ON while the project is
+      # in development (the owner's convenience bar: one easy account per
+      # job, @test.ly / 12345678 — shared/testAccounts.ts). Idempotent
+      # create-or-HEAL upserts (password, lock state, scope, display
+      # name) on the 10 documented accounts ONLY; non-fatal on error.
+      # Deploy-time `npm run db:seed` (root build) already ensures the
+      # accounts — this belt also heals a locked/renamed account on
+      # every boot/restart. Turn OFF for launch by removing the value.
+      - key: MADAREK_TEST_ACCOUNTS
+        value: '1'

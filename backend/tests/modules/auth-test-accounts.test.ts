@@ -115,6 +115,22 @@ describe('R320 §C — isTestAccountEmail (the @test.ly demo marker)', () => {
 
 /* ── ensureTestAccounts (mocked prisma) ───────────────────────── */
 
+/** The canonical display names the two sources (ACCOUNT_PROFILES here +
+ * the seed corpus in prisma/seed.ts) must agree on. Keyed by email —
+ * RENAME-LEDGER.md row `prisma/seed.ts:342-356` is the authority. */
+const CANONICAL_NAMES: Record<string, { first: string; last: string; initials: string }> = {
+  'student@test.ly': { first: 'أحمد', last: 'الزروق', initials: 'أح' },
+  'student2@test.ly': { first: 'ليلى', last: 'المهدي', initials: 'لم' },
+  'teacher@test.ly': { first: 'سالم', last: 'البوسيفي', initials: 'سب' },
+  'head@test.ly': { first: 'محمد', last: 'الشريف', initials: 'مش' },
+  'dean@test.ly': { first: 'إبراهيم', last: 'الفيتوري', initials: 'إف' },
+  'vicedean@test.ly': { first: 'آمال', last: 'بن عيسى', initials: 'آب' },
+  'registrar@test.ly': { first: 'المسجل', last: 'العام', initials: 'مع' },
+  'faculty@test.ly': { first: 'خديجة', last: 'المرابط', initials: 'خم' },
+  'quality@test.ly': { first: 'ضمان', last: 'الجودة', initials: 'جو' },
+  'owner@test.ly': { first: 'مالك', last: 'المنصة', initials: 'مل' },
+};
+
 /** A fresh delegate-mock PrismaClient whose upserts return the demo
  * skeleton rows (ids the corpus seed also uses, so the lockstep is
  * asserted on the exact same natural keys). */
@@ -226,6 +242,66 @@ describe('R320 §C — ensureTestAccounts (idempotent upsert)', () => {
     expect(byEmail('faculty@test.ly')[0].update.scopeFacultyId).toBe('fac-zawia-it');
     expect(byEmail('registrar@test.ly')[0].update.scopeFacultyId).toBeNull();
     expect(byEmail('student@test.ly')[0].update.scopeFacultyId).toBeNull();
+  });
+
+  it('heals the DISPLAY NAME too (a row created by an older table self-converges)', async () => {
+    /* The production drift this pins: registrar@test.ly was created
+     * 2026-10-26 by the first ensure pass while ACCOUNT_PROFILES still
+     * carried the pre-rename «إدارة الجامعة»; the update branch then
+     * touched only the password, so the dead name lived on in the
+     * topbar forever. The heal branch must converge BOTH branches on
+     * the canonical profile — name included. */
+    const prisma = makePrisma();
+    await ensureTestAccounts(prisma);
+
+    const calls = prisma._spies.userUpsert.mock.calls as unknown as Array<
+      [
+        {
+          where: { email: string };
+          update: { firstName?: string; lastName?: string; avatarInitials?: string };
+          create: { firstName?: string; lastName?: string; avatarInitials?: string };
+        },
+      ]
+    >;
+    expect(calls).toHaveLength(10);
+    for (const [args] of calls) {
+      const canonical = CANONICAL_NAMES[args.where.email]!;
+      // The heal branch converges the row on the canonical name.
+      expect(args.update).toMatchObject({
+        firstName: canonical.first,
+        lastName: canonical.last,
+        avatarInitials: canonical.initials,
+      });
+      // …and the create branch never disagrees (ONE canonical profile).
+      expect(args.create).toMatchObject({
+        firstName: canonical.first,
+        lastName: canonical.last,
+        avatarInitials: canonical.initials,
+      });
+    }
+  });
+
+  it('renders the registrar as «المسجل العام» — no «إدارة» in ANY test-account name', async () => {
+    /* RENAME-LEDGER row prisma/seed.ts:342-356 (c1-RENAME) prescribed
+     * «المسجل العام» for the demo ADMIN; this twin table must agree.
+     * The rename mission: «إدارة» never appears as a role-ish label a
+     * human reads — the topbar greeting included. */
+    const prisma = makePrisma();
+    await ensureTestAccounts(prisma);
+
+    const calls = prisma._spies.userUpsert.mock.calls as unknown as Array<
+      [{ where: { email: string }; update: { firstName: string; lastName: string } }]
+    >;
+    const byEmail = (email: string) => calls.find(([a]) => a.where.email === email)![0];
+
+    expect(byEmail('registrar@test.ly').update).toMatchObject({
+      firstName: 'المسجل',
+      lastName: 'العام',
+    });
+    for (const [args] of calls) {
+      expect(`${args.update.firstName} ${args.update.lastName}`).not.toContain('إدارة');
+      expect(`${args.update.firstName} ${args.update.lastName}`).not.toContain('الادارة');
+    }
   });
 
   it('creates a membership for everyone EXCEPT the platform owner', async () => {
