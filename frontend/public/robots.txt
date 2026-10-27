@@ -1,0 +1,35 @@
+# robots.txt — مدارك (R320 §D · PAGES-GAP P2-6)
+#
+# The honest crawl contract: every PUBLIC surface is allowed (the
+# landing, the auth door + self-serve register, the public colleges
+# funnel, the guest sub-pages, and the nine legal/public sheets);
+# the five authenticated trees carry personal + institutional data and
+# stay out of crawls. No private data is linked from any allowed page.
+
+User-agent: *
+
+# the public sheets
+Allow: /
+Allow: /auth
+Allow: /auth/register
+Allow: /colleges
+Allow: /campus
+Allow: /capabilities
+Allow: /about
+Allow: /help
+Allow: /contact
+Allow: /legal/privacy
+Allow: /legal/terms
+Allow: /legal/cookies
+Allow: /legal/accessibility
+Allow: /legal/security
+Allow: /legal/data
+
+# the authenticated trees — personal + institutional data only
+Disallow: /student
+Disallow: /teacher
+Disallow: /admin
+Disallow: /quality
+Disallow: /owner
+
+Sitemap: https://madarek.onrender.com/sitemap.xml

@@ -1,0 +1,473 @@
+/* ════════════════════════════════════════════════════════════════════
+   مدارك — THE PUBLIC DOCUMENT SHEETS (R320 §D · c2-LEGAL)
+   /legal/privacy · terms · cookies · accessibility · security · data
+   + /about · /help · /contact
+   ════════════════════════════════════════════════════════════════════
+   The nine public pages share ONE document shell (pages/legal/
+   LegalSheet.tsx): the /capabilities chrome-less guest grammar —
+   GuestSheetChrome's fixed 7px frame + grain film (auth.css's
+   .auth-frame/.auth-mark/.auth-grain borrow) — wrapped around a POLICY
+   DOCUMENT instead of a marketing sheet:
+
+   · the 72ch DOCUMENT MEASURE (max-inline-size: 72ch + gutter) — a
+     readable one-column document, not a 1160px marketing grid;
+   · numbered [nn] SECTION BARS (.lg-bar) — the §B2 student SectionBar
+     register re-expressed in the public sheet's OWN lg-* classes: the
+     public chunk never imports the student kit, so the two families
+     can never share a cascade;
+   · HAIRLINE CELLS (.lg-cell) — radius 0, 1px rules, no shadows (the
+     r313 ladder);
+   · the STORAGE LEDGER table (.lg-table) — mono dir=ltr keys in their
+     own column, hairline rows, the reject-purge column;
+   · the FAQ cells (.lg-faq / .lg-faq-q / .lg-faq-a);
+   · the honest COLOPHON (.lg-colophon) — the platform's own identity
+     line + the آخر تحديث stamp (print-visible).
+
+   Discipline (the fleet gates): theme TOKENS ONLY — the dark pair is
+   automatic, there is NO html[data-theme] block in this file · every
+   :hover inside @media (hover: hover) · interactive states set the
+   color+background PAIR together · spacing on the --sp-* ladder ·
+   radius 0 everywhere · @media print collapses to ONE clean column
+   (chrome + grain + frame hidden, the policy text + the stamp kept).
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ══ 1 · THE SHELL — framed paper, sticky guest header ═══════════ */
+
+  .lg {
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: clip;
+    font-family: var(--font-sans);
+  }
+
+  /* the thin chrome bar — the /capabilities .cu-header grammar: sticky,
+     hairline, translucent paper wash, the back funnel + brand + code. */
+  .lg-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 60;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--grid-line);
+  }
+
+  .lg-header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-block-size: 56px;
+    max-inline-size: 1160px;
+    margin-inline: auto;
+    padding-inline: var(--sp-6);
+    flex-wrap: wrap; /* ≤420: the row wraps, the pill never clips. */
+  }
+
+  .lg-header-inner .btn { flex-shrink: 0; }
+
+  @media (max-width: 420px) {
+    .lg-header-inner .btn { white-space: nowrap; }
+    .lg-header-inner {
+      padding-inline: var(--sp-4);
+      row-gap: var(--sp-1-5);
+    }
+  }
+
+  .lg-header-brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--sp-2-5);
+    min-block-size: 44px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  /* the corner SHEET code — the drawing-set identity line
+     (MADAREK · LEGAL SHEET · [L-01]), Latin mono LTR at the row's
+     inline-end seat. */
+  .lg-header-code {
+    margin-inline-start: auto;
+    color: var(--text-faint);
+    font-size: var(--fs-xxs);
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* ══ 2 · THE DOCUMENT MEASURE — 72ch, window-scrolled ════════════ */
+
+  .lg-main {
+    /* the 72ch reading measure + the page gutter; the grain film
+       (.auth-grain via GuestSheetChrome) is a fixed z-0 layer — the
+       document rides z 1 above it, under the frame (z 50). */
+    max-inline-size: calc(72ch + 2 * var(--page-gutter));
+    margin-inline: auto;
+    padding-inline: var(--page-gutter);
+    padding-block: var(--sp-10) var(--sp-14);
+    display: grid;
+    gap: var(--sp-8);
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (max-width: 920px) {
+    .lg-main {
+      padding-inline: var(--page-gutter-mobile);
+      padding-block: var(--sp-8) var(--sp-12);
+      gap: var(--sp-7);
+    }
+  }
+
+  /* the title block — ONE h1 + the lede (the auth form-header voice) */
+  .lg-head {
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  .lg-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--fs-display-lg);
+    font-weight: 700;
+    line-height: var(--type-display-line-height);
+    letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
+    color: var(--text);
+  }
+
+  .lg-lede {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-inline-size: 64ch;
+  }
+
+  /* ══ 3 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
+
+  .lg-bar {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    font-family: var(--font-display);
+    font-size: var(--fs-h2);
+    font-weight: 700;
+    line-height: var(--lh-snug);
+    color: var(--text);
+  }
+
+  .lg-bar-index {
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lg-bar-title {
+    min-inline-size: 0;
+  }
+
+  /* ══ 4 · THE HAIRLINE CELL — the document's container ═══════════ */
+
+  .lg-cell {
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    padding: var(--sp-5) var(--sp-6);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  @media (max-width: 920px) {
+    .lg-cell { padding: var(--sp-4) var(--sp-5); }
+  }
+
+  .lg-p {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+
+  .lg-p strong { color: var(--text); font-weight: var(--fw-semibold); }
+
+  /* the about page's verbatim statement — the landing's identity
+     paragraph in its own display seat (the lead step, primary ink). */
+  .lg-p-statement {
+    font-size: var(--fs-body-lg);
+    line-height: 1.9;
+    color: var(--text);
+  }
+
+  .lg-list {
+    margin: 0;
+    padding-inline-start: var(--sp-6);
+    display: grid;
+    gap: var(--sp-2);
+    font-size: var(--fs-body);
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+
+  /* the mono voice — Latin runs, codes, keys (always dir=ltr in markup) */
+  .lg-mono {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .lg-code {
+    color: var(--accent-ink);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.02em;
+  }
+
+  /* the honest unknown marker — visible but tasteful */
+  .lg-pending {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 */
+    padding: var(--sp-1) var(--sp-2-5);
+    white-space: nowrap;
+  }
+
+  /* quiet in-document links (the .cu-text-link recipe, token-identical) */
+  .lg-link {
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding-block-end: var(--sp-0-5);
+  }
+
+  /* ══ 5 · THE STORAGE LEDGER TABLE ═══════════════════════════════ */
+
+  .lg-table-wrap {
+    overflow-x: auto; /* the table scrolls in place at 390 — the
+      document column never overflows (probe contract). */
+  }
+
+  .lg-table {
+    inline-size: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+    line-height: 1.6;
+  }
+
+  /* the table's own caption — the ledger's name, quiet and honest */
+  .lg-table-caption {
+    caption-side: top;
+    text-align: start;
+    padding-block-end: var(--sp-3);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-semibold);
+    color: var(--text-muted);
+  }
+
+  .lg-table th,
+  .lg-table td {
+    border-block-end: 1px solid var(--rule);
+    padding: var(--sp-3) var(--sp-3);
+    text-align: start;
+    vertical-align: top;
+    color: var(--text-secondary);
+  }
+
+  .lg-table thead th {
+    border-block-end: 1px solid var(--rule-strong);
+    color: var(--text-muted);
+    font-weight: var(--fw-semibold);
+    font-size: var(--fs-sm);
+  }
+
+  .lg-table tbody tr:last-child td { border-block-end: 0; }
+
+  .lg-table .lg-table-key {
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    color: var(--accent-ink);
+    white-space: nowrap;
+  }
+
+  /* ══ 6 · THE FAQ CELLS ══════════════════════════════════════════ */
+
+  .lg-faq {
+    display: grid;
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    border-radius: var(--r-sm); /* 0 */
+  }
+
+  .lg-faq-item {
+    display: grid;
+    gap: var(--sp-2);
+    padding: var(--sp-4) var(--sp-5);
+  }
+
+  .lg-faq-item + .lg-faq-item { border-block-start: 1px solid var(--rule); }
+
+  .lg-faq-q {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    color: var(--text);
+  }
+
+  .lg-faq-q .lg-mono {
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.06em;
+  }
+
+  .lg-faq-a {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: 1.8;
+    color: var(--text-secondary);
+  }
+
+  /* ══ 7 · THE COLOPHON — identity line + آخر تحديث ══════════════ */
+
+  .lg-colophon {
+    margin-block-start: var(--sp-2);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .lg-colophon-line {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  .lg-colophon-stamp {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .lg-colophon-stamp .lg-mono {
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+  }
+
+  /* ══ 8 · HOVER — guarded to real pointers, always the PAIR ══════ */
+
+  @media (hover: hover) and (pointer: fine) {
+    .lg-link:hover {
+      color: var(--accent-strong);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+
+    html[data-theme='dark'] .lg-link:hover {
+      color: var(--accent);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+  }
+
+  /* ══ 9 · PRINT — ONE clean column, the honest one-sheet ═════════ */
+
+  @media print {
+    /* the chrome + the film + the frame go; the document stays as ONE
+       column of numbered headings, hairline rules and the stamp —
+       PAGES-GAP §7: policies print as honest one-sheet documents.
+       Pure black on white is the print contract (screen tokens would
+       tint the sheet); the literals carry the color-gate note. */
+    .lg-header,
+    .auth-frame,
+    .auth-grain,
+    .skip-link {
+      display: none !important;
+    }
+
+    .lg {
+      background: #ffffff; /* color-gate: allow — print contract: white paper (PAGES-GAP §7) */
+      color: #000000;      /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
+    }
+
+    .lg-main {
+      max-inline-size: none;
+      padding: 0;
+      gap: var(--sp-6);
+    }
+
+    .lg-title,
+    .lg-bar,
+    .lg-bar-title,
+    .lg-p,
+    .lg-list,
+    .lg-faq-q,
+    .lg-faq-a,
+    .lg-colophon-line,
+    .lg-colophon-stamp,
+    .lg-colophon-stamp .lg-mono {
+      color: #000000; /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
+    }
+
+    .lg-cell,
+    .lg-faq {
+      background: transparent;
+      border-color: #000000; /* color-gate: allow — print contract: black hairlines (PAGES-GAP §7) */
+    }
+
+    .lg-table th,
+    .lg-table td {
+      color: #000000; /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
+      border-block-end-color: #000000; /* color-gate: allow — print hairline (PAGES-GAP §7) */
+    }
+
+    .lg-bar,
+    .lg-colophon,
+    .lg-table thead th {
+      border-block-start-color: #000000; /* color-gate: allow — print hairline (PAGES-GAP §7) */
+      border-block-end-color: #000000;   /* color-gate: allow — print hairline (PAGES-GAP §7) */
+    }
+
+    .lg-code,
+    .lg-table .lg-table-key,
+    .lg-bar-index,
+    .lg-faq-q .lg-mono,
+    .lg-pending {
+      color: #000000; /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
+    }
+
+    .lg-pending {
+      border-color: #000000; /* color-gate: allow — print hairline (PAGES-GAP §7) */
+    }
+
+    /* keep the LAST colophon (the stamp) with the text, never orphan a
+       section bar at a page foot */
+    .lg-bar,
+    .lg-cell,
+    .lg-faq-item,
+    .lg-colophon {
+      break-inside: avoid;
+    }
+
+    .lg-main {
+      break-after: page;
+    }
+  }
+}

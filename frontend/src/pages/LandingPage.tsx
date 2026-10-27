@@ -1420,10 +1420,12 @@ export default function LandingPage() {
             {/* [07] the contact cell — honest and personal-data-free (owner
                 order R315: the repo link and every owner-identity trace are
                 retired from all surfaces). The page's own early-access
-                form is the one real channel today — stated plainly. */}
+                form is the one real channel today — R320 §D promotes the
+                prose to a link: the honest-channel copy moved onto
+                /contact, the footer carries the door. */}
             <div className="fo-fcell fo-fcell-addr">
               <div className="fo-footer-heading">التواصل</div>
-              <p className="fo-footer-addr-line">التسجيل المبكر من هذه الصفحة هو قناة التواصل المتاحة حاليًا.</p>
+              <Link to="/contact" className="fo-footer-link">التواصل والتسجيل المبكر</Link>
               <p className="fo-footer-addr-line">لا بريد عام في مرحلة الإطلاق التجريبي.</p>
             </div>
 
@@ -1484,6 +1486,31 @@ export default function LandingPage() {
               <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
             </div>
           </div>
+
+          {/* R320 §D (c2-LEGAL · §A5): the legal row — the nine public
+              sheets as hairline-separated quiet links between the strip
+              band and the © line (the reference's own legal-row seat).
+              Every policy/public page is reachable from the footer now;
+              the mono index lives in the sheets' corner codes. */}
+          <nav className="fo-legal-row" aria-label="سياسات المنصّة وصفحاتها العامة">
+            <Link to="/legal/privacy" className="fo-legal-link">سياسة الخصوصية</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/terms" className="fo-legal-link">شروط الاستخدام</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/cookies" className="fo-legal-link">التخزين المحلي</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/accessibility" className="fo-legal-link">إمكانية الوصول</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/security" className="fo-legal-link">الأمن</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/data" className="fo-legal-link">البيانات</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/about" className="fo-legal-link">عن مدارك</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/help" className="fo-legal-link">المساعدة</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/contact" className="fo-legal-link">التواصل</Link>
+          </nav>
 
           <div className="fo-footer-bottom">
             <span className="fo-mono">© {year} مدارك</span>

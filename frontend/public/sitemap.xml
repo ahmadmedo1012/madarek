@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- sitemap.xml — مدارك (R320 §D · PAGES-GAP P2-7).
+     The PUBLIC routes only, 16 exactly: the 7 existing public surfaces
+     + the 9 legal/public sheets. The five authenticated trees are
+     deliberately absent (see robots.txt). Canonical base is the one
+     absolute URL index.html declares (madarek.onrender.com). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://madarek.onrender.com/</loc></url>
+  <url><loc>https://madarek.onrender.com/auth</loc></url>
+  <url><loc>https://madarek.onrender.com/auth/register</loc></url>
+  <url><loc>https://madarek.onrender.com/colleges</loc></url>
+  <url><loc>https://madarek.onrender.com/colleges/leaderboard</loc></url>
+  <url><loc>https://madarek.onrender.com/campus</loc></url>
+  <url><loc>https://madarek.onrender.com/capabilities</loc></url>
+  <url><loc>https://madarek.onrender.com/legal/privacy</loc></url>
+  <url><loc>https://madarek.onrender.com/legal/terms</loc></url>
+  <url><loc>https://madarek.onrender.com/legal/cookies</loc></url>
+  <url><loc>https://madarek.onrender.com/legal/accessibility</loc></url>
+  <url><loc>https://madarek.onrender.com/legal/security</loc></url>
+  <url><loc>https://madarek.onrender.com/legal/data</loc></url>
+  <url><loc>https://madarek.onrender.com/about</loc></url>
+  <url><loc>https://madarek.onrender.com/help</loc></url>
+  <url><loc>https://madarek.onrender.com/contact</loc></url>
+</urlset>

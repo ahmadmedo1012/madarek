@@ -36,6 +36,31 @@ export function sheetCodeForRole(role: AppRole): string {
   return SHEET_CODES[role];
 }
 
+/* ═══ R320 §D — the PUBLIC sheet codes (c2-LEGAL) ════════════════════
+ *
+ * The nine public document sheets (six /legal/* policies + /about ·
+ * /help · /contact) join the drawing-set register: each page's corner
+ * mono line derives its bracketed code from THIS map — one source, so
+ * the header, the unit belt and the footer row can never drift apart.
+ * Family prefixes ride the /capabilities precedent (`MADAREK · LEDGER
+ * SHEET · [C-02]`): L-nn for the policy sheets, C-nn for the public
+ * sheets. The label half of each corner line lives beside the pages
+ * (pages/legal/LegalSheet.tsx) — the code is the shared identity, the
+ * family word is each page's own voice. */
+export const PUBLIC_SHEET_CODES = {
+  privacy: 'L-01',
+  terms: 'L-02',
+  cookies: 'L-03',
+  accessibility: 'L-04',
+  security: 'L-05',
+  data: 'L-06',
+  contact: 'C-03',
+  about: 'C-04',
+  help: 'C-05',
+} as const;
+
+export type PublicSheetKey = keyof typeof PUBLIC_SHEET_CODES;
+
 /**
  * The ambient sheet code for the mounted shell. `undefined` = no shell
  * (guest surfaces, unit tests) → headers render no code line.

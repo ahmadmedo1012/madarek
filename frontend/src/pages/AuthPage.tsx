@@ -28,6 +28,12 @@ import {
   TEST_ACCOUNT_GROUPS,
   type TestAccount,
 } from '@shared/testAccounts';
+// R320 §D (c2-LEGAL): the login footer's consent line — Terms +
+// Privacy links only (the auth-pages' micro-module; no legal-kit
+// import). NOTE (fleet): the forgot-link region above is FLOW's
+// surface — this import + the footer line below are this branch's
+// ONLY AuthPage edits.
+import { ConsentLine } from '../components/ConsentLine';
 import type { AppRole, MembershipInfo } from '../stores/auth.store';
 import type { AxiosError } from 'axios';
 
@@ -626,6 +632,10 @@ export default function AuthPage() {
         {/* r177 → r191: the platform's own identity; the operator-rejected
             provenance slogan is gone — the honest identity stays. */}
         <strong>منصّة تعليم ذكية مستقلّة</strong> · عربية أولًا
+        {/* R320 §D (c2-LEGAL): the login footer's consent line — the same
+            two links the register flow acknowledges, at the door the
+            returning visitor actually uses. */}
+        <ConsentLine prefix="بتسجيل الدخول أنت توافق على" />
       </footer>
     </div>
   );

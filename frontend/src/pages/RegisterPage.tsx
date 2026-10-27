@@ -18,6 +18,9 @@ import { ROLE_HOME } from '../lib/nav';
 import { countAr } from '../lib/format';
 import { authErrorView } from '../lib/authErrors';
 import { isCommonPassword } from '../lib/commonPasswords';
+// R320 §D (c2-LEGAL): the consent line under the submit — the register
+// seat PAGES-GAP §4 maps (RegisterPage.tsx:655 area), both role forms.
+import { ConsentLine } from '../components/ConsentLine';
 import type { AppRole } from '../stores/auth.store';
 
 /**
@@ -656,6 +659,12 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
         {isPending && <span className="auth-submit-spinner" aria-hidden />}
         {isPending ? 'جارٍ الإنشاء…' : 'إنشاء الحساب'}
       </button>
+      {/* R320 §D (c2-LEGAL · PAGES-GAP §4): the consent line under the
+          submit — «بإنشاء الحساب أنت توافق على شروط الاستخدام وسياسة
+          الخصوصية», both links. Mounted on BOTH role forms (student
+          here, teacher below) so the acknowledgment rides whichever
+          step-2 path the visitor takes. */}
+      <ConsentLine prefix="بإنشاء الحساب أنت توافق على" />
       {/* sr-only pending mirror (r157 F5 — عقد صفحة الدخول نفسه):
           aria-busy وحده صامت؛ المنطقة المهذّبة تُعلن الانشغال. */}
       {isPending && (
@@ -809,6 +818,9 @@ function TeacherForm({ form, error, isPending, faculties, institutions, institut
         {isPending && <span className="auth-submit-spinner" aria-hidden />}
         {isPending ? 'جارٍ الإنشاء…' : 'إنشاء الحساب'}
       </button>
+      {/* R320 §D: the same consent line on the TEACHER step-2 form —
+          both registration paths acknowledge the same two policies. */}
+      <ConsentLine prefix="بإنشاء الحساب أنت توافق على" />
       {/* sr-only pending mirror (r157 F5 — عقد صفحة الدخول نفسه):
           aria-busy وحده صامت؛ المنطقة المهذّبة تُعلن الانشغال. */}
       {isPending && (
