@@ -307,3 +307,19 @@ Work Log:
 
 Stage Summary:
 - Four non-colliding work packages launched in parallel worktrees; §B/§C evidence work advances the programme while the C1 landing line is foreman-A's. All merges: rebase-first, small commits, reviewer approval, gates green.
+
+---
+Task ID: r321-c1-foreman-a-close
+Agent: foreman-A (this container)
+Task: R321 cycle 1 — the C1 landing line: A4/A5/A6/A7/A8 → gates extension → A2 height ratchet → A1 desktop perf (partial). Coordination with foreman-B per 76ecfb84 (no collisions: A10/B0/C0/HL are theirs).
+
+Work Log:
+- 147051a3 batch-1: §A4 (minmax(0,1fr) guards + .lg-title clamp + cookies ledger card transform; 152 cells → 0 clip) · §A5 (code reads once — eyebrow is the single carrier, coords carry SERVER FAULT/ACCESS DENIED/SERVICE WINDOW, sr-only twin deleted, NBSP dash glue + text-wrap:balance) · §A6 (the cursor-dot tick = the missing inert opacity:0; 4 mark families → ::before) · §A7 (الحوكمة group + LegalPages/docs/README/issue-template + rename-keep re-pinned) · §A8 (demo panel OPEN by default + H1 → the r319-student masthead ladder 31.8px@390 + labels nowrap/max-content).
+- 1cd79446 batch-2: gate:r321 composed (child gate:r320 + text-in-viewport + duplicate-text + decor-innertext + rename-ledger, own baseline 467 rows / regressions-only blocking) + the §A6 completion (8 more mark families + hi-marker/vc-poster dynamic codes via attr()) + r321-decor belt 2 NEW + CI design-gates ledger leg. The duplicate-text allowlist: 26 reasoned rows (per-item metadata/action families); the 8 remaining FAIL rows = the §C-3 «مساعد الفهم»×6 marketing-repetition ticket (baseline-pinned).
+- ff7aeed6 batch-3 (§A2): every main section was ALREADY Heron-exact (hero 887=887, map 6301≈6300 …) — the whole +252px lived in the footer (+267 vs Heron 711). Cuts: legal row rides the © bar · wordmark en-caption retired · tablet compact cut ≤1099 (wordmark 82%, strip 80%, 12/12 cells, legal own row) · pads tightened. ALL five Heron viewports inside ±1.5% (1440 +1.42 · 1024 +1.46 · 768 +0.95 · 390 −0.73 · 360 +0.37) + the docH-ladder gate rule (11 viewports; ±1.5% at the five referenced, never-raise at the six pinned). Probe: scripts/r321/doch.mjs.
+- bd4253ac batch-4 (§A1 part-1): the full decomposition (audits/evidence/r321/a1-analysis.md) — SVG raster/grain/reveals/gBCR ruled out by the variant matrix; UpdateLayoutTree 4.5s = #1 (54 recalcs × 781 elements avg); .jt-intro var chain 10ms/cycle (19× the R319 seat measurement); content-visibility REJECTED (breaks the docH ratchet + render-on-approach spikes — experiment committed); lenis-idle html-attribute retired (root-attr flip = whole-doc recalc; JS flag + belt re-pin); CLS 0.007 ✓ and LCP-skip 2.44s ✓ already inside targets; the ≤2% frames target remains OPEN with the next map written.
+- HOUSEKEEPING: scripts/r316/perf.mjs chromium path made portable (newest full build); perf.mjs EXE scan; one-off probes removed, the reusable instruments committed (a1-*, doch, footer-blocks, probe).
+
+Stage Summary:
+- C1's landing line: A2/A4/A5/A6/A7/A8 FIXED-with-evidence + gates; A1 partial (the honest decomposition + one landed fix + the next-session map). Suites: front 2733/2733 · tsc 0/0 · eslint 0 · raw-css strict PASS · gate:r321 green (0 regressions).
+- Next (C1 continuation/C2 per §I): the A1 trio (intro chain rewrite · 756-family hunt · loader plateau) · A3 phone hero art · A9 map SVG labels · foreman-B's A10/B0/C0/HL merges · student remaining pages sweep.
