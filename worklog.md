@@ -290,6 +290,7 @@ Work Log:
 
 Stage Summary:
 - R321 C1 opened. Order: A5+A6+A7+A8 (quick fixes) → A4 clipping + gate extension → A2 height ratchet → A1 desktop perf → A10 production proof harness.
+<<<<<<< HEAD
 ---
 Task ID: r321-c1-foreman-b
 Agent: foreman-B (this container, session started 21:26 UTC; foreman-A container landed batch-1 147051a3 @21:10 and batch-2 1cd79446 @21:59 — coordination entry)
@@ -336,3 +337,33 @@ Work Log:
 
 Stage Summary:
 - Main's standing gate repaired (2-line comment reword). Rule reaffirmed: the ledger scan must never see the literal in the very files that document it.
+=======
+
+---
+Task ID: r321-c1-HL
+Agent: WP-HL (sub-agent, died at the 15-min tool deadline after the run completed) + foreman-B completion
+Task: The Heron 11-viewport ladder + section census — the §A2 ±1.5% evidence + §F motion groundwork.
+
+Work Log:
+- Built scripts/r321/heron-ladder.mjs (11 viewports: 320/360/390/430/480/600/768/820/1024/1180/1440; iPhone UA ≤430; networkidle + 2s settle + +5s/+10s late-growth reads; challenge detector).
+- THE SCROLL-JACK FINDING: Heron's document is a Lenis wrapper lock (window docH == viewport; the real height lives in .main-inner.lenis) — the wrapper reading reproduces the BOARD's five reference numbers EXACTLY (1440=12,355 · 1024=9,938 · 768=12,577 · 390=11,441 · 360=10,684), so the fresh 6 new seats are the same honest metric.
+- Evidence: heron-docH.json (11 viewports, zero late-growth) · heron-sections.json (9 sections @390 · N @1440 with tops/heights) · motion.json (loader: h1 text at ~597ms, overlay gone ~9.34s — Heron's OWN loader lasts ~9s; frames-to-settle rows) · 18 section-anchored shots (≤103KB each, 996KB total) · ladder.md.
+- foreman-B added the post-batch-3 table: §A2 is NOT fully closed — 320=9,308 (+7.61% vs Heron) · 430=12,411 (−1.77%) · 600=14,774 (−6.51%) · 1180=10,937 (−5.61%) remain OUT of ±1.5%; the other seven seats green. Ticket A2-R written into ladder.md (per-band section census against Heron's table; keep the seven green seats green).
+
+Stage Summary:
+- §A2 now has a complete 11-viewport Heron reference + the four remaining seats named with exact gaps. §F has the loader-duration + section-frame anchors. Zero code changes; measurement-only evidence.
+>>>>>>> 6d9e1278 (R321 c1 WP-HL — the Heron 11-viewport ladder (Lenis-wrapper finding; the five BOARD refs reproduced exactly) + section census + §F motion groundwork + the A2-R ticket (320/430/600/1180 remain out of ±1.5%))
+
+---
+Task ID: r321-c1-HL
+Agent: WP-HL (sub-agent, died at the 15-min tool deadline after the run completed) + foreman-B completion
+Task: The Heron 11-viewport ladder + section census — the §A2 ±1.5% evidence + §F motion groundwork.
+
+Work Log:
+- Built scripts/r321/heron-ladder.mjs (11 viewports: 320/360/390/430/480/600/768/820/1024/1180/1440; iPhone UA ≤430; networkidle + 2s settle + +5s/+10s late-growth reads; challenge detector).
+- THE SCROLL-JACK FINDING: Heron's document is a Lenis wrapper lock (window docH == viewport; the real height lives in .main-inner.lenis) — the wrapper reading reproduces the BOARD's five reference numbers EXACTLY (1440=12,355 · 1024=9,938 · 768=12,577 · 390=11,441 · 360=10,684), so the fresh 6 new seats are the same honest metric.
+- Evidence: heron-docH.json (11 viewports, zero late-growth) · heron-sections.json (9 sections @390 · N @1440 with tops/heights) · motion.json (loader: h1 text at ~597ms, overlay gone ~9.34s — Heron's OWN loader lasts ~9s; frames-to-settle rows) · 18 section-anchored shots (≤103KB each, 996KB total) · ladder.md.
+- foreman-B added the post-batch-3 table: §A2 is NOT fully closed — 320=9,308 (+7.61% vs Heron) · 430=12,411 (−1.77%) · 600=14,774 (−6.51%) · 1180=10,937 (−5.61%) remain OUT of ±1.5%; the other seven seats green. Ticket A2-R written into ladder.md (per-band section census against Heron's table; keep the seven green seats green).
+
+Stage Summary:
+- §A2 now has a complete 11-viewport Heron reference + the four remaining seats named with exact gaps. §F has the loader-duration + section-frame anchors. Zero code changes; measurement-only evidence.
