@@ -1,5 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { api, unwrap, extractSessionExtras, selectInstitution, type AuthSessionResponse } from '../lib/api';
+import {
+  api,
+  unwrap,
+  extractSessionExtras,
+  selectInstitution,
+  requestPasswordReset,
+  resetPassword,
+  type AuthSessionResponse,
+} from '../lib/api';
 import { useAuthStore, type AuthUser, type AcademicPosition, type SessionInstitutionExtras } from '../stores/auth.store';
 
 interface MeProfileResponse extends AuthUser, Partial<SessionInstitutionExtras> {
@@ -134,5 +142,26 @@ export function useLogout() {
       clear();
       qc.clear();
     },
+  });
+}
+
+/* ── R320 §D (PAGES-GAP §5): the forgot-password flow ──────────────
+ *
+ * Both mutations are SESSION-NEUTRAL: neither touches the auth store
+ * nor clears the query cache. The visitor is on a GuestRoute (no
+ * session by definition), and the backend's answers are deliberately
+ * uninformative (generic 200 / generic 400) — the pages own all state
+ * presentation. On a SUCCESSFUL reset every existing session dies
+ * server-side (tokenVersion bump), which a guest has none of. */
+export function useRequestPasswordReset() {
+  return useMutation({
+    mutationFn: (email: string) => requestPasswordReset(email),
+  });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (input: { token: string; password: string }) =>
+      resetPassword(input.token, input.password),
   });
 }
