@@ -231,3 +231,22 @@ Work Log:
 
 Stage Summary:
 - Run 40560836784 on 549b92b4: ALL 10 jobs GREEN (Typecheck/Lint/Tests×3/DB/Design/Build/Surface drift/E2E/E2E iOS) — first fully green CI since 2026-10-26. Cycle 2 fully closed.
+---
+Task ID: r320-c3-accounts-production
+Agent: foreman (continuation — the owner's re-read request)
+Task: The owner asked to re-read the R320 brief and execute fully, suspecting the test accounts were skipped. Verify §C on PRODUCTION (the §C-7 "after deploy" leg), fix what the verification finds, then continue the cycle-3 queue.
+
+Work Log:
+- Re-read the brief against BOARD state: cycles 1-2 closed; the cycle-1 accounts proof was LOCAL-only ("local sandbox" in accounts.md). Production health: buildId 0d24a5b4 (latest). First production login read the registrar as «إدارة الجامعة» — the pre-rename name ON PRODUCTION.
+- Root cause chain (measured): db:seed runs ensureTestAccounts() BEFORE the corpus body; ACCOUNT_PROFILES (test-accounts.ts) still carried «إدارة الجامعة» while the corpus (seed.ts, c1-RENAME) had «المسجل العام» (parallel-fleet drift, like the auth.css conflict); the upsert's update branch healed only the password → the row created 2026-10-26 kept the dead name forever.
+- 3664c111: twin-table lockstep (registrar → المسجل/العام/مع) + the heal branch now converges firstName/lastName/avatarInitials/color (our @test.ly accounts only) + render.yaml DECLARES MADAREK_TEST_ACCOUNTS='1' (§C2 said render.yaml/.env.example — only .env.example had it) + belt 12→14 (CANONICAL_NAMES lockstep both branches; no «إدارة» in any test-account name). back 1825/1825 (+2) · tsc 0.
+- f7b85294: login-proof harness gains --out + the demo-panel leg (reopen chip → 10 rows → shot) + the registrar logs in THROUGH the panel one-tap flow on the target env.
+- Deploy watched via health buildId (0d24a5b4 → 3664c111 → f7b85294). Post-deploy verify: registrar = «المسجل العام» / «مع» ✓.
+- PRODUCTION PROOF 10/10: every account API 200 + token + role home at 390 UI (registrar via panel one-tap); panel opens with 10 rows. Evidence: audits/evidence/r320/accounts-production/{proof.json,panel.json,10 shots} + accounts-production.md.
+- NEW P2 found by the VLM review of the evidence and fixed in the same pass: the onboarding tour veil at 390 let the display H1 poke 8px above the card (pf-page-title t=113 vs modal-card t=121) — read as "heavily clipped stubs". a9e071a3: the tour overlay now carries the Heron menu scrim (--glass-bg-strong, paper/ink @92%) scoped :has(.onboarding-flow); dialogs keep the context veil. Belt OnboardingFlow 8→10. front 2719/2719 (+2) · dup-selector/hover-guard zero NEW · raw-css strict PASS.
+- ec9716fc: housekeeping — restored the cycle-1 proof.json an accidental localhost harness run had overwritten (0/10 garbage) and removed its FAIL shots + panel.json from the cycle-1 evidence dir.
+
+Stage Summary:
+- §C is now closed on BOTH legs (local cycle-1 + production §C-7). All 10 @test.ly/12345678 accounts log in on madarek.onrender.com; the demo panel works on production; the registrar reads «المسجل العام» everywhere.
+- The tour-veil fix needs its after-deploy shot (faculty@test.ly still has the tour un-dismissed — use it to verify the 92% scrim kills the stubs).
+- Next: cycle-3 main line per BOARD queue — §A1 desktop perf (loader LCP) + student remaining pages + /settings + P1/P2 error surfaces.
