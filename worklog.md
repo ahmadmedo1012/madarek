@@ -290,3 +290,20 @@ Work Log:
 
 Stage Summary:
 - R321 C1 opened. Order: A5+A6+A7+A8 (quick fixes) → A4 clipping + gate extension → A2 height ratchet → A1 desktop perf → A10 production proof harness.
+---
+Task ID: r321-c1-foreman-b
+Agent: foreman-B (this container, session started 21:26 UTC; foreman-A container landed batch-1 147051a3 @21:10 and batch-2 1cd79446 @21:59 — coordination entry)
+Task: R321 cycle 1 — parallel foreman protocol + work-package claims (no collision with foreman-A's in-flight C1 line).
+
+Work Log:
+- Fresh full clone at 1cd79446; npm install (552 pkgs); frontend build ✓ (6.4s); dev:full stack UP on this container (embedded PG :5433 works — no libicu fallback needed; api :4000, web :5173; all 10 test accounts seeded); front vitest running; playwright chromium+webkit installing.
+- Concurrent-session detection: batch-2 (gate:r321 + §A6 completion) landed AFTER this container's clone. Per the BOARD work order foreman-A's next queue is A2 → A1 → cycle close.
+- CLAIMS (worktree per package, reviewer approves every merge):
+  · WP-A10 §A10 production proof harness + first production run → scripts/r321/prod-proof.* + audits/evidence/r321/prod/ (new files only)
+  · WP-B0 §B student sweep inventory + all-role route map → docs/redesign/r321/STUDENT-SWEEP.md + audits/evidence/r321/student/ (docs/evidence only)
+  · WP-C0 §C analysis baseline (knip/jscpd/depcheck/ts-prune/dup-selector/unused-CSS census → ticket factory) → audits/evidence/r321/clean/ (report only, zero src changes)
+  · WP-HL Heron 11-viewport docH + section ladder evidence (feeds §A2's ±1.5% ratchet) + §F motion timings groundwork → scripts/r321/heron-ladder.mjs + audits/evidence/r321/ladder/ (new files only)
+- Foreman-A keeps A2 (docH ratchet) + A1 (desktop perf) — this session re-checks origin before touching any landing file; if foreman-A is inactive for >90 min this session takes the remaining C1 line per the BOARD work order.
+
+Stage Summary:
+- Four non-colliding work packages launched in parallel worktrees; §B/§C evidence work advances the programme while the C1 landing line is foreman-A's. All merges: rebase-first, small commits, reviewer approval, gates green.
