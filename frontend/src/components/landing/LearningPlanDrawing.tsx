@@ -306,13 +306,17 @@ const STRIP_SEGS: Array<[number, number]> = [
 ];
 
 export function LearningPlanDrawing() {
-  /* the raked seating — four arcs concentric on the stage platform,
-   * each spanning the room's height (the sweep was the R314 fix: the
-   * rows now wrap the stage instead of bulging off the sheet). */
+  /* the raked seating — four arcs concentric on the stage platform.
+   * R320 §A4: the sweep tightened (dy 135→90 — arcs y≈160..340): the
+   * zone-label pair (name+area on separate baselines, y=97/120) now
+   * owns the arc-free top band of the hall; before, the fan climbed
+   * to y=115 and ate every label seat (the svg-collisions gate's
+   * «قاعة المحاضرات»×seating 1210px² defect). */
   const stageCx = 1082;
   const stageCy = 250;
+  const SEAT_SWEEP_DY = 90;
   const seatRows = [290, 240, 190, 140].map((r) => {
-    const a = Math.min((55 * Math.PI) / 180, Math.asin(135 / r));
+    const a = Math.min((55 * Math.PI) / 180, Math.asin(SEAT_SWEEP_DY / r));
     const xe = stageCx - r * Math.cos(a);
     const dy = r * Math.sin(a);
     return { r, d: `M ${xe.toFixed(1)} ${(stageCy - dy).toFixed(1)} A ${r} ${r} 0 0 0 ${xe.toFixed(1)} ${(stageCy + dy).toFixed(1)}` };
@@ -451,9 +455,13 @@ export function LearningPlanDrawing() {
         {/* the AV niche + the attendance sensor mark */}
         <rect className="bp-hair bp-drawable" x="790" y="100" width="26" height="16" pathLength={1} />
         <rect className="bp-signal-fill bp-drawable" x={824} y={104} width="8" height="8" pathLength={1} />
-        {/* zone label + area */}
-        <text className="pl-name" x="930" y="126" textAnchor="middle">قاعة المحاضرات</text>
-        <text className="bp-micro" x="930" y="142" textAnchor="middle">240 M2</text>
+        {/* zone label + area — R320 §A4: separate baselines (97/120 —
+            the name and area boxes clear each other with the baseline
+            gap ≥14px rendered at every gate viewport) seated in the
+            arc-free top band, clear of the seating fan (y≥160) and
+            the AV niche (x≤832) */}
+        <text className="pl-name" x="930" y="97" textAnchor="middle">قاعة المحاضرات</text>
+        <text className="bp-micro" x="930" y="120" textAnchor="middle">240 M2</text>
       </g>
 
       {/* ═══ zone: كشك نقطة الفحص — counter + queue (stage 1) ═══ */}
@@ -471,17 +479,22 @@ export function LearningPlanDrawing() {
         {/* the checkpoint signal — the ONE orange mark in this zone */}
         <rect className="bp-signal-fill bp-drawable" x="918" y="534" width="8" height="8" pathLength={1} />
         <Door x={830} y={410} w={40} h={50} hinge="bl" />
+        {/* R320 §A4: re-spaced 622/645 — the name and area boxes clear
+            each other (the 16u gap overlapped the em-boxes); the seat
+            was already clear of the queue dots and the counter */}
         <text className="pl-name" x="930" y="622" textAnchor="middle">نقطة الفحص</text>
-        <text className="bp-micro" x="930" y="638" textAnchor="middle">36 M2</text>
+        <text className="bp-micro" x="930" y="645" textAnchor="middle">36 M2</text>
       </g>
 
       {/* ═══ zone: قاعة الاختبار — the desk grid (stage 2) ═══ */}
       <g className="pl-l-exam" aria-hidden="true">
         <rect className="pl-zone" data-zone="exam" x="424" y="78" width="329" height="307" />
-        {/* the desk grid — 5 columns × 4 rows */}
+        {/* the desk grid — 5 columns × 4 rows (R320 §A4: dropped 10u
+            down, 140→150 — the re-spaced label pair above it keeps its
+            boxes clear of the first desk row) */}
         {[0, 1, 2, 3].map((row) =>
           [0, 1, 2, 3, 4].map((col) => (
-            <Seat key={`${row}-${col}`} x={456 + col * 58} y={140 + row * 56} w={26} h={16} />
+            <Seat key={`${row}-${col}`} x={456 + col * 58} y={150 + row * 56} w={26} h={16} />
           )),
         )}
         {/* the invigilator desk */}
@@ -492,8 +505,11 @@ export function LearningPlanDrawing() {
         <line className="bp-ink bp-drawable" x1="446" y1="98" x2="451" y2="101" pathLength={1} />
         <Door x={500} y={394} w={40} h={48} hinge="tl" />
         <Door x={640} y={394} w={40} h={48} hinge="tr" />
-        <text className="pl-name" x="590" y="126" textAnchor="middle">قاعة الاختبار</text>
-        <text className="bp-micro" x="590" y="142" textAnchor="middle">150 M2</text>
+        {/* zone label + area — R320 §A4: separate baselines (118/141)
+            seated ABOVE the desk grid (now y≥150) — was 126/142 with
+            the area box eating the first desk row (216px²) */}
+        <text className="pl-name" x="590" y="118" textAnchor="middle">قاعة الاختبار</text>
+        <text className="bp-micro" x="590" y="141" textAnchor="middle">150 M2</text>
       </g>
 
       {/* ═══ zone: المكتبة — shelves + reading table (stage 2) ═══ */}
@@ -528,8 +544,14 @@ export function LearningPlanDrawing() {
         {/* the service counter */}
         <rect className="bp-fill bp-drawable" x="700" y="500" width="14" height="70" pathLength={1} />
         <Door x={500} y={410} w={40} h={50} hinge="tl" />
-        <text className="pl-name" x="530" y="648" textAnchor="middle">المكتبة والبحوث</text>
-        <text className="bp-micro" x="530" y="654" textAnchor="middle">96 M2</text>
+        {/* zone label + area — R320 §A4: re-seated from (530, 648/654 —
+            the 6u baseline gap was the gate's worst text×text defect,
+            548.7px²: the two labels printed on top of each other) to
+            the calm band below the shelves (y 622/645), clear of the
+            reading table (x≤411), the counter (x≥700) and the zone's
+            south wall */}
+        <text className="pl-name" x="530" y="622" textAnchor="middle">المكتبة والبحوث</text>
+        <text className="bp-micro" x="530" y="645" textAnchor="middle">96 M2</text>
       </g>
 
       {/* ═══ zone: غرفة الإتقان — the stepped seminar (stage 3) ═══ */}
@@ -555,8 +577,13 @@ export function LearningPlanDrawing() {
           <rect key={i} className="bp-hair bp-drawable" x={110 + i * 34} y={100 + (4 - i) * 7} width="30" height={8 + (4 - i) * 7} pathLength={1} />
         ))}
         <Door x={250} y={394} w={40} h={48} hinge="tl" />
-        <text className="pl-name" x="248" y="126" textAnchor="middle">غرفة الإتقان</text>
-        <text className="bp-micro" x="248" y="142" textAnchor="middle">84 M2</text>
+        {/* zone label + area — R320 §A4: re-seated from (248, 126/142 —
+            printed ON the mastery ladder and the stepped seminar,
+            507.9+317.2px²) to the zone's calm bottom-right (340, 350/
+            373): clear of the stepped rows (y≤320), the focus screen
+            (x=90), the [05] station chip (x≤293) and the zone door */}
+        <text className="pl-name" x="340" y="350" textAnchor="middle">غرفة الإتقان</text>
+        <text className="bp-micro" x="340" y="373" textAnchor="middle">84 M2</text>
       </g>
 
       {/* ═══ zone: الاستقبال — reception + bench (stage 3) ═══ */}

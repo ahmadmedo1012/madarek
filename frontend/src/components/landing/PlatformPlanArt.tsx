@@ -121,7 +121,11 @@ export function PlatformPlanArt() {
       <line className="prc-dim" x1="44" y1="4" x2="44" y2="28" />
       <line className="prc-dim" x1="336" y1="18" x2="336" y2="44" />
       <line className="prc-dim" x1="604" y1="4" x2="604" y2="28" />
-      <text className="bp-micro" x="322" y="19" textAnchor="middle">7200</text>
+      {/* R320 §A4: «7200» re-centred on ITS segment (44..336 → x=190;
+          it sat at x=322 directly under «14900» at x=324 — the two
+          boxes overlapped 17.6px², the gate's one text×text defect
+          outside the plan) */}
+      <text className="bp-micro" x="190" y="19" textAnchor="middle">7200</text>
       <text className="bp-micro" x="472" y="19" textAnchor="middle">7700</text>
       <text className="bp-micro" x="324" y="5" textAnchor="middle">14900</text>
 
