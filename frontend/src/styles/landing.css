@@ -2418,13 +2418,13 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   }
 
   /* the lens row: the five-column strip rides the band at its own
-   * 1000:80 measure, full-bleed width-driven on EVERY ≥768 band (the
-   * pointer math stays viewBox-relative against the strip box and
+   * 1000:100 measure (R320 §A3 — the large-drawing + mono-caption
+   * sheet, with the [01] seat label on its OWN ruled row above the
+   * drawings inside .fl), full-bleed width-driven on EVERY ≥768 band
+   * (the pointer math stays viewBox-relative against the strip box and
    * keeps working — the clamp guards already exist) */
   .fo-fstrip .fl {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: block;
     border-block: 0;
     border-block-end: 1px solid var(--rule); /* the rule between the two rows */
     background: none;
@@ -2433,7 +2433,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-fstrip .fl-svg {
     inline-size: 100%;
     block-size: auto;
-    aspect-ratio: 1000 / 80;
+    aspect-ratio: 1000 / 100;
   }
 
   /* the wordmark row — the band's typographic seat: the drawn word
@@ -2495,14 +2495,16 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   color: var(--text); /* the ink — the letterforms stroke currentColor */
 }
 
-/* the ink — R319 §D1: STROKE-ONLY outline letterforms (the reference's
- * own drafting verdict: thin uniform outlines, interior empty — paper
- * shows through), ~1.7px NON-SCALING at every rendered size (the
- * vector-effect attribute on the path + this width). The R318
- * filled-ink decision was measured at the old 101.9px ink height
- * where stroke-only failed OCR; at the full-cell-width scale tesseract
- * reads the outlined word (audits/evidence/r319/landing/
- * ocr-d1-matrix.md) — the §D1 acceptance. */
+/* the ink — R319 §D1 → R320 §A2 (owner order): STROKE-ONLY outline
+ * letterforms (the reference's own drafting verdict: thin uniform
+ * outlines, interior empty — paper shows through), ~1.7px NON-SCALING
+ * at every rendered size (the vector-effect attribute on the path +
+ * this width). In dark theme currentColor (var(--text)) IS the paper
+ * stroke — the owner's §A2 dark-mode verdict holds by construction.
+ * The R319 §D1 OCR tint twin (a 50%-ink fill under the outline —
+ * computed #8F8F8B, the exact solid grey the owner measured) is
+ * RETIRED: the reading rides the svg's role="img" + aria-label +
+ * <title>, never the raster. */
 .fo-wordmark-ink,
 .fo-wordmark-ink path {
   fill: none;
@@ -2511,25 +2513,6 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   stroke-linejoin: round;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
-}
-
-/* R319 §D1 (OCR seat): the fill twin UNDER the outline — a whisper
- * tint (15% ink into paper, ~1.13:1 on the eye) that gives the
- * hollow letterforms the mass tesseract's Arabic model needs
- * (measured: hollow outlines 1.7→9px strokes all fail OCR; the tint
- * twin reads «مدارك» at 1440+390, light+dark). Interior shading like
- * this is the drafting sheet's own register — the outline stroke
- * carries the visible letterform; the tint never reads as a filled
- * wordmark. */
-.fo-wordmark-ink-fill {
-  /* R319 §D1 (measured): the OCR matrix (audits/evidence/r319/landing/
-   * ocr-d1-matrix.md) — hollow outlines fail tesseract at every stroke
-   * weight (1.7→9px); the read stabilises at a 50% interior tone and
-   * holds across all four gate cells (1440/390 × light/dark). 50% ink
-   * is the drafting poché register — visibly lighter than the solid
-   * R318 fill, the outline stroke still carries the letterform edge. */
-  fill: color-mix(in srgb, var(--text) 50%, var(--bg));
-  stroke: none;
 }
 
 .fo-wordmark-en {
@@ -5835,15 +5818,27 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   overflow: hidden;
 }
 
+/* R320 §A3: the [01] seat label's OWN ruled row — was an absolutely-
+ * positioned chip over the strip's top band (it overlapped the first
+ * thumbnail at every ≥768 width; the owner measured it). One quiet
+ * mono row, hairline-ruled underneath, clear of the drawings. */
+.fl-head {
+  display: flex;
+  align-items: center;
+  padding: var(--sp-2) var(--sp-3);
+  border-block-end: 1px solid var(--rule);
+}
+
 .fl-svg {
   display: block;
   inline-size: 100%;
-  /* R319 §D2: the five-column strip's own 1000:80 proportion — the
-   * drawing band (54u squares + captions) IS the sheet; full-bleed
-   * width-driven at every ≥768 band, xMidYMid meet keeps all five
-   * columns + the aligned captions in frame (hidden ≤767px below). */
+  /* R320 §A3: the five-column strip's own 1000:100 proportion — the
+   * LARGE drawing band (70u squares) + the mono caption baseline IS
+   * the sheet; full-bleed width-driven at every ≥768 band, xMidYMid
+   * meet keeps all five columns + the aligned captions in frame
+   * (hidden ≤767px below). */
   block-size: auto;
-  aspect-ratio: 1000 / 80;
+  aspect-ratio: 1000 / 100;
 }
 
 /* the reference hides the image strip ≤767px (its mobile footer
@@ -5892,11 +5887,15 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .fl-labels text {
-  font-family: var(--font-sans);
-  /* R319 §D2: 12.5 viewBox units — the five captions ride ONE shared
-   * baseline (y=77); rendered 17.8px @1440 · 12.6 @1024 · 9.4 @768. */
-  font-size: 12.5px;
-  font-weight: 600;
+  /* R320 §A3 (owner order — the Heron caption register): SMALL MONO
+   * captions — the mono voice (Geist/Plex Mono for Latin/digits, IBM
+   * Plex Sans Arabic for the Arabic words — the --font-mono stack's
+   * own Arabic seat), 8.5u ≈ 11.9px @1440 (was 12.5u sans ≈ 17.8px
+   * semibold — the captions outweighed the 78px thumbnails; the
+   * owner's verdict), quiet weight, ONE shared baseline (y=94). */
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 400;
   fill: var(--text-secondary);
 }
 
@@ -5908,9 +5907,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .fl-coord {
-  position: absolute;
-  inset-block-start: 8px;
-  inset-inline-start: 12px;
+  /* R320 §A3: in-flow inside .fl-head (its OWN row) — was absolutely
+   * positioned over the drawings (the overlap defect). */
   color: var(--text-faint);
   font-size: var(--fs-xxs);
   letter-spacing: 0.05em;

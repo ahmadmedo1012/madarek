@@ -189,7 +189,13 @@ jobs:
 
   e2e:
     name: E2E (hermetic browser journeys)
-    runs-on: ubuntu-latest
+    # R320 CI fix: ubuntu-latest rolled to 26.04 on 2026-10-27 and the
+    # workspace's @playwright/test 1.60 browsers.json has no
+    # ubuntu26.04-x64 builds (install fails: "Playwright does not
+    # support chromium on ubuntu26.04-x64"). Pinned to 24.04 — the
+    # exact image these suites ran green on for every prior push —
+    # until the Playwright bump round (Cycle 6 dep refresh).
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
@@ -245,7 +251,9 @@ jobs:
   ios-webkit:
     name: E2E iOS (real WebKit, iPhone 13)
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    # R320 CI fix: same ubuntu-latest → 26.04 roll — webkit builds for
+    # 26.04 don't exist in @playwright/test 1.60. Pinned to 24.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
@@ -311,7 +319,10 @@ jobs:
 
   surface-drift:
     name: Surface drift
-    runs-on: ubuntu-latest
+    # R320 CI fix: same ubuntu-latest → 26.04 roll — the audit sweep's
+    # chromium install fails on 26.04 under @playwright/test 1.60.
+    # Pinned to 24.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     needs: [test-frontend, test-backend]
     steps:

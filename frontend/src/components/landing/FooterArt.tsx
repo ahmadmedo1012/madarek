@@ -70,18 +70,21 @@ export function FooterMarkArt() {
  * ONE composed path, drawn STROKE-ONLY (fill:none; stroke:currentColor;
  * ~1.7px non-scaling — landing.css .fo-wordmark-ink): the reference's
  * own drafting technique (heron-footer.json: "STROKE-ONLY … thin
- * uniform outlines, interior empty"), restored at the full-cell-width
- * scale where OCR reads it (the R318 filled-ink decision was measured
- * at the old 101.9px ink height; the D1 sweep:
- * audits/evidence/r319/landing/ocr-d1-matrix.md).
+ * uniform outlines, interior empty").
+ *
+ * R320 §A2 (owner order — supersedes the R319 §D1 OCR tint): the
+ * R319 acceptance added a filled TINT TWIN under the outline (50% ink
+ * into paper — computed #8F8F8B, exactly the solid grey the owner
+ * measured) so tesseract's Arabic model could read the hollow word.
+ * The owner's verdict: the wordmark must be a TRUE outline — fill:none
+ * · stroke:ink · ≈1.5–2px non-scaling, dark = paper stroke. The
+ * reading rides the svg's text alternative (role="img" + aria-label
+ * + <title>) as it always did; the OCR-tint acceptance is retired.
  *
  * The svg spans the FULL cell at every viewport (width:100%, the height
  * from the sheet's own aspect — viewBox scaling, never font-size
  * hacks): ink ≈1317×517px of the 1398px cell @1440 (94.2% — the
- * reference's own ink spans 86% of its strip). The reading rides the
- * svg's text alternative (role="img" + aria-label + <title>) — the
- * parent .fo-wordmark keeps its decorative chrome ('+' reg marks, the
- * mono line) aria-hidden. */
+ * reference's own ink spans 86% of its strip). */
 export function WordmarkArt() {
   return (
     <svg
@@ -92,15 +95,6 @@ export function WordmarkArt() {
       focusable="false"
     >
       <title>مدارك</title>
-      {/* R319 §D1 (OCR seat): the filled TINT TWIN under the outline.
-          Tesseract's Arabic model cannot read hollow outlines (measured:
-          strokes 1.7→9px all fail; the ocr-d1 matrix). A whisper tint —
-          15% ink into paper via color-mix, ~1.13:1 on the eye, the
-          drafting sheet's own interior-shading register — gives the
-          letterforms the mass OCR needs while the stroke carries the
-          visible letterform. Both orders hold: outline-dominant art +
-          «مدارك» readable by machine. */}
-      <path className="fo-wordmark-ink-fill" d={WORDMARK_SHEET.d} aria-hidden="true" />
       <path className="fo-wordmark-ink" d={WORDMARK_SHEET.d} vectorEffect="non-scaling-stroke" />
     </svg>
   );

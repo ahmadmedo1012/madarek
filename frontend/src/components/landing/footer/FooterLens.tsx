@@ -12,11 +12,18 @@
  *    stage (المحاضرة · نقطة الفحص · الاختبار · المكتبة · الإتقان) —
  *    each an EQUAL-HEIGHT ink drawing: the licensed campus ink renders
  *    (manifest.json renders[] — public-domain / CC BY-SA sources, ADAPTED
- *    ShareAlike kept), seated ASPECT-TRUE (54×54 square windows — the
- *    R318 §A7 lesson: never slice the subject) with the five captions
- *    on ONE shared baseline, centered under their columns. The retired
- *    composition sat one 148px photo thumbnail among four empty outline
- *    placeholders at uneven seats — incoherent in both states.
+ *    ShareAlike kept), seated ASPECT-TRUE (square windows — the
+ *    R318 §A7 lesson: never slice the subject).
+ *  · R320 §A3 (owner order — the Heron strip grammar): LARGE images
+ *    (the square windows grew 54u → 70u of the strip band — ≈98px
+ *    @1440, was ≈78px), SMALL MONO captions on ONE shared baseline
+ *    (the reference's own caption register: ~11.7px, quiet, one
+ *    baseline under the columns), and the [01] seat label on ITS OWN
+ *    ruled ROW above the drawings (was: an absolutely-positioned DOM
+ *    chip floating over the strip's top band — it overlapped the
+ *    first thumbnail at every ≥768 width; the owner measured it).
+ *    The viewBox grew 1000×80 → 1000×100 to seat the larger drawings
+ *    + the caption baseline with the label row outside the svg.
  *  · The SKETCH state (hairline squares only — five equal empty cells)
  *    is the strip's ground; the lens opens onto the RESOLVED state (the
  *    five ink renders + the orange stage beacons + the aligned
@@ -32,10 +39,10 @@ import { subscribeSheetFrame, wakeSheet, lerp, clamp } from '../../../lib/motion
 /* Measured reference values (digest.json footer.lens — r308 §13
  * re-confirmed): main r 99.09 of a 210-tall strip = 47.2% of the strip
  * height · pulse 1.05× · position lerp 0.09 / 0.15 · open ≈0.55s ·
- * close ≈0.8s · pulse decay ≈1s. R319 §D2 re-seats the lens on the
- * five-column strip (viewBox 1000×80) keeping the reference's own
- * proportion: 0.472 × 80 = 37.7 units. */
-const LENS_R = 37.7;
+ * close ≈0.8s · pulse decay ≈1s. R319 §D2 seated the lens on the
+ * five-column strip; R320 §A3 re-seats it on the 1000×100 sheet
+ * keeping the reference's own proportion: 0.472 × 100 = 47.2 units. */
+const LENS_R = 47.2;
 const PULSE_SCALE = 1.05;
 const LERP_MAIN = 0.09;
 const LERP_PULSE = 0.15;
@@ -43,17 +50,18 @@ const R_LERP_IN = 0.09;  /* radius easing while opening — ≈0.55s to settle *
 const R_LERP_OUT = 0.06; /* radius easing while closing — ≈0.8s to settle */
 const PULSE_LERP_OUT = 0.05; /* the pulse ring's own decay — ≈1s */
 const VB_W = 1000;
-const VB_H = 80;
+const VB_H = 100;
 
 /* the five journey stages, RTL reading order — svg x grows LTR, so the
  * FIRST stage (المحاضرة, read first in Arabic) owns the RIGHTMOST
  * column. Each column is exactly VB_W/5 wide; the ink drawing is a
- * square window centered in its column (aspect-true, no crop); the
- * caption sits on the shared baseline under its column. */
+ * square window centered in its column (aspect-true, no crop — R320
+ * §A3: 70u large windows); the caption sits on the shared baseline
+ * under its column. */
 const COL_W = VB_W / 5;
-const IMG = 54;    /* the equal-height square ink window (units) */
-const IMG_Y = 10;  /* y 10..64 — the drawing band (the 0..10 band keeps the [01] seat label clear) */
-const CAP_Y = 77;  /* ONE shared caption baseline — aligned by construction */
+const IMG = 70;    /* the equal-height square ink window (units) — R320 §A3 large images */
+const IMG_Y = 6;   /* y 6..76 — the drawing band (the [01] label rides its OWN ruled row above the svg now) */
+const CAP_Y = 94;  /* ONE shared caption baseline — aligned by construction */
 const STAGES = [
   { label: 'المحاضرة', render: '/media/renders/hero-ink-1100.webp' },
   { label: 'نقطة الفحص', render: '/media/renders/crop-garyounis-1-640.webp' },
@@ -67,6 +75,7 @@ const imgX = (i: number) => colX(i) + (COL_W - IMG) / 2;
 
 export function FooterLens() {
   const stripRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const mainRef = useRef<SVGCircleElement>(null);
   const pulseRef = useRef<SVGCircleElement>(null);
   const revealRef = useRef<SVGGElement>(null);
@@ -154,9 +163,12 @@ export function FooterLens() {
     };
 
     const local = (e: PointerEvent) => {
-      const r = strip.getBoundingClientRect();
-      target.x = clamp(((e.clientX - r.left) / r.width) * VB_W, 0, VB_W);
-      target.y = clamp(((e.clientY - r.top) / r.height) * VB_H, 0, VB_H);
+      /* R320 §A3: the pointer math maps against the SVG's own box —
+       * the strip box now carries the [01] label row above it, so
+       * strip-relative y would be compressed/distorted. */
+      const box = (svgRef.current ?? stripRef.current)!.getBoundingClientRect();
+      target.x = clamp(((e.clientX - box.left) / box.width) * VB_W, 0, VB_W);
+      target.y = clamp(((e.clientY - box.top) / box.height) * VB_H, 0, VB_H);
       wake();
     };
 
@@ -190,12 +202,22 @@ export function FooterLens() {
       ref={stripRef}
       aria-label="شريط الفحص — خلاصة مسار التعلّم"
     >
+      {/* R320 §A3: the [01] seat label on ITS OWN ruled row above the
+          drawings — was an absolutely-positioned chip over the strip's
+          top band, overlapping the first thumbnail (the owner's §A3
+          defect). One quiet mono row, hairline-ruled underneath. */}
+      <div className="fl-head">
+        <span className="fl-coord fo-mono" dir="ltr">
+          [01] CAMPUS · INK RENDER
+        </span>
+      </div>
       {/* R310 §1 (cursor ownership): NO data-cursor suppression here — the
           reference keeps its global cursor live over the footer strip while
           the lens follows as a lagging inspection instrument (one pointer +
           one instrument), and so do we. */}
       <svg
         className="fl-svg"
+        ref={svgRef}
         viewBox={`0 0 ${VB_W} ${VB_H}`}
         preserveAspectRatio="xMidYMid meet"
         role="img"
@@ -220,7 +242,7 @@ export function FooterLens() {
 
         {/* the RESOLVED layer — revealed inside the lens (or statically
             when the lens is off: touch / reduced motion). R319 §D2: the
-            FIVE licensed ink renders at EQUAL height (54×54 square,
+            FIVE licensed ink renders at EQUAL height (square,
             aspect-true — no mid-subject crop), one per journey stage,
             each with its orange stage beacon; the five captions ride
             ONE shared baseline, centered under their columns. */}
@@ -259,13 +281,6 @@ export function FooterLens() {
           <circle ref={pulseRef} className="fl-pulse" cx={VB_W / 2} cy={VB_H / 2} r="0" />
         )}
       </svg>
-
-      <span className="fl-coord fo-mono" dir="ltr" aria-hidden="true">
-        {/* R319 §D2: the seat label rides the strip's own 0..10u top band
-            (the drawings start at y=10) — clear of the five columns at
-            every ≥768 width. */}
-        [01] CAMPUS · INK RENDER
-      </span>
     </div>
   );
 }

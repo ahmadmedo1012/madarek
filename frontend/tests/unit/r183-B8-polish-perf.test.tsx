@@ -198,8 +198,14 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
     // the test pin follows the documented ceiling. §E2 owns the R318
     // ratchet: the total must go DOWN (<600) — re-pin this test down
     // with it, never up.
-    expect(script).toContain('LIMIT_TOTAL_KB = 712');
-    expect(script).toContain('LIMIT_ENTRY_KB = 80');
+    // R320 override (§D C2): the nine public sheets + the forgot/reset
+    // flow raised the documented seats 712→736 total (measured 730.3 at
+    // f7c4540c, +3.4% — route-level growth, every new page lazy) and
+    // 80→82 entry (measured 80.4 — the +11 lazy route imports). The
+    // Cycle-6 bundle-diet round owns the reduction back down; re-pin
+    // this test DOWN with it, never up.
+    expect(script).toContain('LIMIT_TOTAL_KB = 736');
+    expect(script).toContain('LIMIT_ENTRY_KB = 82');
     expect(script).toContain('LIMIT_PDF_KB = 110');
     // Fail-closed scanner errors are a distinct exit code, so a missing
     // dist can never read as a clean pass.
