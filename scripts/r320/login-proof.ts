@@ -12,7 +12,16 @@
  *   MADAREK_PG_PORT=5434 …  (the seed + boot ensure create the accounts)
  *
  * Run:  npx tsx scripts/r320/login-proof.ts \
- *         --api http://localhost:4253 --web http://localhost:4254
+ *         --api http://localhost:4253 --web http://localhost:4254 \
+ *         [--out audits/evidence/r320/accounts]
+ *
+ * Production run (§C-7 "after deploy" leg): 
+ *   npx tsx scripts/r320/login-proof.ts \
+ *     --api https://madarek.onrender.com --web https://madarek.onrender.com \
+ *     --out audits/evidence/r320/accounts-production
+ * — also proves the demo panel itself on the target env: the reopen
+ * chip opens it, 10 rows render, and the registrar logs in THROUGH
+ * the panel's one-tap تعبئة→دخول flow (not manual field fills).
  *
  * Notes:
  *   - The auth rate limiter only counts FAILED attempts
@@ -30,7 +39,6 @@ import { TEST_ACCOUNTS, type TestAccount } from '../../shared/testAccounts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, '..', '..');
-const OUT_DIR = path.join(REPO_ROOT, 'audits', 'evidence', 'r320', 'accounts');
 
 const argv = new Map<string, string>();
 for (let i = 2; i < process.argv.length; i += 2) {
@@ -38,6 +46,9 @@ for (let i = 2; i < process.argv.length; i += 2) {
 }
 const API = argv.get('api') ?? 'http://localhost:4253';
 const WEB = argv.get('web') ?? 'http://localhost:4254';
+const OUT_DIR = path.isAbsolute(argv.get('out') ?? '')
+  ? (argv.get('out') as string)
+  : path.join(REPO_ROOT, argv.get('out') ?? path.join('audits', 'evidence', 'r320', 'accounts'));
 
 const ROLE_HOME: Record<TestAccount['role'], string> = {
   STUDENT: '/student/dashboard',
@@ -58,6 +69,51 @@ interface Row {
   routeReached: string | null;
   screenshot: string | null;
   error?: string;
+}
+
+interface PanelCheck {
+  opened: boolean;
+  rows: number | null;
+  screenshot: string | null;
+  error?: string;
+}
+
+async function checkDemoPanel(
+  browser: Awaited<ReturnType<typeof chromium.launch>>,
+): Promise<PanelCheck> {
+  /* §C-4 on the TARGET env: the demo panel exists, reopens via the
+   * chip, and lists one row per documented job. Best-effort capture —
+   * a failure here is reported, never fatal to the login proofs. */
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    locale: 'ar',
+    colorScheme: 'light',
+    deviceScaleFactor: 2,
+  });
+  const page = await context.newPage();
+  try {
+    await page.addInitScript(() => {
+      try {
+        sessionStorage.setItem('madarek-intro-skip', '1');
+      } catch {
+        /* storage unavailable */
+      }
+    });
+    await page.goto(`${WEB}/auth`, { waitUntil: 'domcontentloaded', timeout: 45_000 });
+    const reopen = page.locator('.auth-demo-hint-reopen');
+    await reopen.waitFor({ state: 'visible', timeout: 20_000 });
+    await reopen.click();
+    const rows = page.locator('.auth-demo-row');
+    await rows.first().waitFor({ state: 'visible', timeout: 10_000 });
+    const count = await rows.count();
+    const shot = path.join(OUT_DIR, 'demo-panel-390.jpg');
+    await page.screenshot({ path: shot, type: 'jpeg', quality: 72, fullPage: false });
+    return { opened: true, rows: count, screenshot: path.basename(shot) };
+  } catch (err) {
+    return { opened: false, rows: null, screenshot: null, error: (err as Error).message };
+  } finally {
+    await context.close();
+  }
 }
 
 async function apiLogin(account: TestAccount): Promise<Pick<Row, 'apiStatus' | 'apiToken' | 'error'>> {
@@ -99,9 +155,24 @@ async function uiLogin(
       }
     });
     await page.goto(`${WEB}/auth`, { waitUntil: 'domcontentloaded', timeout: 45_000 });
-    await page.getByLabel('البريد الإلكتروني أو رقم القيد').fill(account.email);
-    await page.getByRole('textbox', { name: 'كلمة المرور' }).fill(account.password);
-    await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
+
+    if (account.email === 'registrar@test.ly') {
+      /* §C-7 on the TARGET env — the PANEL leg for the account the
+       * owner named: one tap تعبئة (fills both fields) then the same
+       * button flips to دخول and submits. Proves the demo panel's
+       * one-tap flow works on the deployment, not just the fields. */
+      await page.locator('.auth-demo-hint-reopen').click();
+      const fill = page.locator(
+        `.auth-demo-row:has(bdi:text-is("${account.email}")) .auth-demo-fill`,
+      );
+      await fill.first().waitFor({ state: 'visible', timeout: 10_000 });
+      await fill.click(); // تعبئة → fields filled, label flips to دخول
+      await page.getByRole('button', { name: `دخول بحساب ${account.job}` }).click();
+    } else {
+      await page.getByLabel('البريد الإلكتروني أو رقم القيد').fill(account.email);
+      await page.getByRole('textbox', { name: 'كلمة المرور' }).fill(account.password);
+      await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
+    }
 
     const expected = ROLE_HOME[account.role];
     const pattern = new RegExp(
@@ -138,6 +209,16 @@ async function main() {
 
   const browser = await chromium.launch();
   try {
+    const panel = await checkDemoPanel(browser);
+    console.log(
+      `${panel.opened && panel.rows === 10 ? '✅' : '⚠️ '} demo panel on ${WEB}: ` +
+        `opened=${panel.opened} rows=${panel.rows ?? '—'}${panel.error ? ` err=${panel.error.slice(0, 100)}` : ''}`,
+    );
+    fs.writeFileSync(
+      path.join(OUT_DIR, 'panel.json'),
+      JSON.stringify({ target: WEB, checkedAt: new Date().toISOString(), ...panel }, null, 2),
+    );
+
     for (const account of TEST_ACCOUNTS) {
       const api = await apiLogin(account);
       const ui = await uiLogin(browser, account);
