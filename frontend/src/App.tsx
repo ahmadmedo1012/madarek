@@ -169,6 +169,22 @@ const CompetitionDetailPage = lazy(() => import('./pages/competitions/Competitio
 const CampusLifePage = lazy(() => import('./pages/campus/CampusPages').then((m) => ({ default: m.CampusLifePage })));
 const CapabilitiesPage = lazy(() => import('./pages/capabilities/CapabilityPages').then((m) => ({ default: m.CapabilitiesPage })));
 
+/* R320 §D (c2-LEGAL): the nine PUBLIC document sheets — the six
+ * /legal/* policies + /about · /help · /contact. Same chrome-less
+ * guest mount as /campus + /capabilities (GuestReveal, window-scrolled
+ * for everyone — marketing sheets and policies share the reading
+ * register); the /legal/* family is additionally a DOCUMENT surface
+ * (plain native scrolling — see DOCUMENT_SURFACE_PREFIXES below). */
+const PrivacyPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ default: m.PrivacyPage })));
+const TermsPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ default: m.TermsPage })));
+const CookiesPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ default: m.CookiesPage })));
+const AccessibilityPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ default: m.AccessibilityPage })));
+const SecurityPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ default: m.SecurityPage })));
+const DataPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ default: m.DataPage })));
+const AboutPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.AboutPage })));
+const HelpPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.HelpPage })));
+const ContactPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.ContactPage })));
+
 /** Resolves the home path for an authenticated user, or `/` for guests.
  *
  *  r157 (6A4-7): the local HOME map folded onto the exported
@@ -532,6 +548,85 @@ export function AppRoutes() {
           )}
         />
 
+        {/* R320 §D (c2-LEGAL) — the nine PUBLIC document sheets, the
+            /capabilities mount pattern: chrome-less, GuestReveal,
+            window-scrolled for everyone (authed visitors read the same
+            policy sheet — no AppShell chrome around a legal document).
+            Route naming per PAGES-GAP §1: the legal family under one
+            /legal segment, the public sheets top-level. */}
+        <Route
+          path="/legal/privacy"
+          element={(
+            <GuestReveal>
+              <PrivacyPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/legal/terms"
+          element={(
+            <GuestReveal>
+              <TermsPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/legal/cookies"
+          element={(
+            <GuestReveal>
+              <CookiesPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/legal/accessibility"
+          element={(
+            <GuestReveal>
+              <AccessibilityPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/legal/security"
+          element={(
+            <GuestReveal>
+              <SecurityPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/legal/data"
+          element={(
+            <GuestReveal>
+              <DataPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/about"
+          element={(
+            <GuestReveal>
+              <AboutPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/help"
+          element={(
+            <GuestReveal>
+              <HelpPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/contact"
+          element={(
+            <GuestReveal>
+              <ContactPage />
+            </GuestReveal>
+          )}
+        />
+
         {/* Vision (any authenticated role) */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
@@ -631,8 +726,22 @@ function isShellSurface(pathname: string): boolean {
   return SHELL_SURFACE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
+/* R320 §D (c2-LEGAL) — DOCUMENT surfaces: the /legal/* policy sheets
+ * are reading documents (the PAGES-GAP §4 recommendation). They keep
+ * the browser's PLAIN native scrolling — calm for reading and printing
+ * — so the Lenis engine never mounts there for anyone. The three
+ * public sheets (/about · /help · /contact) ride the guest engine like
+ * every other marketing surface. */
+const DOCUMENT_SURFACE_PREFIXES = ['/legal'] as const;
+
+function isDocumentSurface(pathname: string): boolean {
+  return DOCUMENT_SURFACE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+}
+
 function isGuestWindowSurface(pathname: string, hasUser: boolean): boolean {
   if (isShellSurface(pathname)) return false;
+  /* documents scroll natively — the engine never mounts there. */
+  if (isDocumentSurface(pathname)) return false;
   /* signed-in visitors never see the guest surfaces: '/' and '/auth*'
      bounce to the role home, '/colleges*' renders inside AppShell. */
   if (
