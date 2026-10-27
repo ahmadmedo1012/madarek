@@ -2771,6 +2771,46 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   color: var(--text-faint);
 }
 
+/* ── R320 §D (c2-LEGAL): the POLICY LINKS row — the nine public sheets
+   as hairline-separated quiet links between the strip band and the ©
+   line. The footer's own language: the .fo-footer-link voice (muted
+   ink, quiet accent hover) on ONE wrapping row, separated by mid-dots
+   (the reference's own quiet separator register); the 44px touch
+   floor is unconditional (the footer link ladder), and the mobile rung
+   wraps the nine links onto comfortable rows instead of clipping. */
+.fo-legal-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2) var(--sp-1);
+  padding-block: var(--sp-3);
+  padding-inline: var(--sp-3);
+  border-block-start: 1px solid var(--rule);
+  color: var(--text-muted);
+  font-size: var(--fs-sm);
+}
+
+@media (min-width: 992px) {
+  .fo-legal-row {
+    padding-inline: 26px; /* spacing-gate: allow — the reference's own copyright-text inset (26.66 measured), an external constant */
+  }
+}
+
+.fo-legal-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  min-block-size: 44px; /* touch floor — the footer link ladder */
+  display: inline-flex;
+  align-items: center;
+}
+
+.fo-legal-sep {
+  color: var(--text-faint);
+  padding-inline: var(--sp-1);
+  user-select: none;
+}
+
 /* ── Hover washes — guarded to real pointers (the r283 convention) ──
    R313 (D8): the nav cell's hover is the reference's fill-wipe +
    roll — the ::before slab drops in (no background swap on the
@@ -2814,6 +2854,14 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
   .fo-footer-link:hover {
     color: var(--accent-ink);
+  }
+
+  /* R320 §D (c2-LEGAL): the policy row's quiet hover — the
+     .fo-footer-link voice, paired (color+background) per the B1
+     discipline. */
+  .fo-legal-link:hover {
+    color: var(--accent-ink);
+    background: transparent;
   }
 
   .bp-hotspot:hover {
@@ -6208,6 +6256,14 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
   .fo-footer-cluster {
     border-block-start: 1px solid var(--rule);
+  }
+
+  /* R320 §D: the policy links row on the phone rung — centered
+     wrapping rows (the 44px targets stack comfortably), same quiet
+     inline inset as the copyright band. */
+  .fo-legal-row {
+    justify-content: center;
+    padding-inline: var(--sp-3);
   }
 }
 

@@ -227,11 +227,13 @@ export function ConsentBanner() {
       <p className="cb-text">
         {/* R315 (K-C): ONE honest line — the reference's banner is a
             single sentence + a LEARN MORE link (601×38, no paragraph
-            stack). The long disclosure sentence the owner flagged
-            (4-line Arabic wrap · 175px mobile) is retired; the honest
-            substance lives on /capabilities beside the live ledger. */}
+            stack). R320 §D (c2-LEGAL): the learn-more target retargets
+            from /capabilities to /legal/cookies — a capability matrix
+            is not a storage policy (PAGES-GAP T-5); the honest
+            substance of what this banner stores now lives in the
+            policy sheet's own ledger table. */}
         يستخدم هذا الموقع التخزين المحلي.
-        <Link to="/capabilities" className="cb-more">اعرف أكثر</Link>
+        <Link to="/legal/cookies" className="cb-more">اعرف أكثر</Link>
       </p>
 
       <div className="cb-actions">
