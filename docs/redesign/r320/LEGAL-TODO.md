@@ -42,6 +42,9 @@ page ships with until the row is filled.
 | 13 | **@test.ly dev-inbox in production** — keep (labelled test mode) or retire once real mail (7/8) is live | `/auth/forgot-password` | OWNER — an operational decision | Test mode stays visibly labelled; retiring it is one flag once mail is real |
 | 14 | **About-page identity copy** — what may be said about who builds مدارك (background, funding, team — or explicitly nothing) | `/about` | OWNER | The independence paragraph verbatim (LandingPage.tsx:1346-1350): «منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها…» — nothing added |
 | 15 | **`SECURITY.txt`** (`.well-known/security.txt` — the standardized disclosure contact file) | public/ static file (pairs with 11) | OWNER (needs the real contact from 3) | Ship only when row 3 is real — an invented address in a security.txt is worse than none |
+| 16 | **Content licence** — the licence users' submissions and the platform's own rendered art/content ship under (R320 §D build: the pages state ownership honestly and stay silent on the licence) | `/legal/terms` (المحتوى) | OWNER — a real licence decision (e.g. all-rights-reserved vs CC) | «ما ترفعه وتكتبه أنت يبقى لك» + the synthetic-data disclosure; no licence named until the owner picks one |
+| 17 | **Suspension / termination policy** — when an account may be suspended or terminated, and by whom (the platform ships per-user `isActive` + lockout mechanics, but no published policy) | `/legal/terms` | OWNER — a policy decision | Omitted entirely at this build — nothing is stated that no one has decided |
+| 18 | **Contact response window** — the committed SLA for answering the early-access channel | `/contact`, `/help` | OWNER — an operational commitment | «نافذة الرد الملتزمة [يُستكمل قبل الإطلاق]» — no response-time promise until a real one exists |
 
 ## 3 · Rules for filling a row
 
@@ -55,3 +58,31 @@ page ships with until the row is filled.
    together (this file + PAGES-GAP.md §2's key table are the pages' sources of truth).
 4. No PAT/token/credential ever lands in either file — only provider NAMES and
    public URLs.
+
+## 4 · The R320 §D build note (c2-LEGAL) — every page marker → its row
+
+The nine public sheets shipped at R320 §D (branch `r320/legal`) carry
+`LEGAL_UPDATED = 2026-10-27` (row 9's interim rule: the build stamps the
+real date; the pre-launch review pass re-stamps). Every
+`[يُستكمل قبل الإطلاق]` marker the pages render maps to exactly one row
+above — the unit belt (`frontend/tests/unit/legal-pages.test.tsx`) pins
+this mirror so a page marker can never appear without its TODO row:
+
+| Page (sheet code) | Markers on the page → TODO rows |
+|---|---|
+| `/legal/privacy` [L-01] | مدة الاحتفاظ → 4 · حقوقك (التنفيذ) → 12 · مزوّد الإنتاج → 5 · شروط معالجة المحادثات → 6 · (التواصل cites row 3's honest channel) |
+| `/legal/terms` [L-02] | الهوية القانونية للمشغّل → 1 · القانون الحاكم → 2 · المحتوى silent → 16 · الإيقاف/الإنهاء silent → 17 |
+| `/legal/cookies` [L-03] | none — the storage inventory is all KNOWN-true (§1) |
+| `/legal/accessibility` [L-04] | الالتزام المستهدف + لا تقييم رسمي → 10 |
+| `/legal/security` [L-05] | سياسة الإفصاح التفصيلية → 11 · (قناة الإبلاغ tracks row 3) |
+| `/legal/data` [L-06] | سياسة الاحتفاظ → 4 · (المزوّد tracks row 5) |
+| `/about` [C-04] | من يبنيها → 14 · (الهوية tracks row 1) |
+| `/help` [C-05] | none — every FAQ answer cites a real shipped surface (استرجاع كلمة المرور states the honest no-mail truth per rows 3/7) |
+| `/contact` [C-03] | نافذة الرد الملتزمة → 18 · (القناة نفسها is row 3's honest fallback verbatim) |
+
+Static identity shipped with the suite: `public/robots.txt` (the five
+authed trees disallowed), `public/sitemap.xml` (16 public routes),
+`public/manifest.webmanifest` + `brand/icon-{180,192,512}.png` (rendered
+from the one brand mark), `index.html` manifest + apple-touch-icon links.
+`SECURITY.txt` (row 15) deliberately NOT shipped — an invented address
+in a security.txt is worse than none.
