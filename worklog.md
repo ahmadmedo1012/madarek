@@ -323,3 +323,16 @@ Work Log:
 Stage Summary:
 - C1's landing line: A2/A4/A5/A6/A7/A8 FIXED-with-evidence + gates; A1 partial (the honest decomposition + one landed fix + the next-session map). Suites: front 2733/2733 · tsc 0/0 · eslint 0 · raw-css strict PASS · gate:r321 green (0 regressions).
 - Next (C1 continuation/C2 per §I): the A1 trio (intro chain rewrite · 756-family hunt · loader plateau) · A3 phone hero art · A9 map SVG labels · foreman-B's A10/B0/C0/HL merges · student remaining pages sweep.
+
+---
+Task ID: r321-c1-ci-repair-ledger-selftrip
+Agent: foreman-B
+Task: Standing-gate repair — the rename-ledger scan self-tripped on the batch-2 ci.yml comment (uncovered=1 → CI design-gates leg red on main).
+
+Work Log:
+- Found while verifying WP-A10: `node scripts/r321/rename-ledger-scan.mjs` exit 1 on main — the ci.yml comment ADDED by batch-2 to document the scan contains the literal retired label (the gate's own evidence ran before the comment was written; the keep list covers scripts/r321/* but not the workflow file).
+- Fix: the comment reworded to describe the scan without carrying the literal ("every occurrence of the retired admin-role label") — no allowlist widening (the keep list stays 20 rows).
+- Post-fix: scanned 1014 files · 89 occurrences · 0 OFF-LIST · exit 0. The CI design-gates leg (which runs the same command) goes green on the next push.
+
+Stage Summary:
+- Main's standing gate repaired (2-line comment reword). Rule reaffirmed: the ledger scan must never see the literal in the very files that document it.
