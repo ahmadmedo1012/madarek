@@ -218,3 +218,16 @@ Work Log:
 Stage Summary:
 - Cycle 2 CLOSED: §D complete (9 public sheets + forgot/reset flow, both belted), §A2/§A3/§A4/§A5 fixed with probe evidence, CI repaired (all 5 red jobs addressed), docH ratchet held (±1.25%) with a protocol-artefact finding documented (RM inflates desktop docH +9% — measure with the R319 protocol).
 - Cycle 3 queue (BOARD): §A1 desktop perf (the loader-on LCP gap ~21s vs the ≤2.5s/≤4s targets — the loader duration itself is the decision; render pipeline post-fix3) · student remaining pages + /settings + the P1/P2 error surfaces · the Playwright/Ubuntu-26.04 bump at the Cycle-6 dep refresh (un-pins ubuntu-24.04) · the Cycle-6 diet (65 duplicate-selector conflicts + bundle 736→down).
+
+---
+Task ID: r320-c2-ci-green
+Agent: foreman (continuation)
+Task: CI fully green on main.
+
+Work Log:
+- c95a7201: /student/ai §B2 counts race hardened (auto-retrying toHaveCount — the f84e6025 green run already flaked this line).
+- 921fcd01: r305 focus-keyboard re-pinned — «نسيت كلمة المرور؟» is a Link now; the pointer-focus contract moved to the demo panel's fill button (open toggle → fill).
+- 549b92b4: E2E job timeouts 12→20 min (measured 13.4 min — borderline 12 was killing them as 'cancelled').
+
+Stage Summary:
+- Run 40560836784 on 549b92b4: ALL 10 jobs GREEN (Typecheck/Lint/Tests×3/DB/Design/Build/Surface drift/E2E/E2E iOS) — first fully green CI since 2026-10-26. Cycle 2 fully closed.
