@@ -44,9 +44,16 @@ produced them.
 | A7 | Rename leftovers | **FIXED c1** — «الحوكمة» group (type+rows+TEST_ACCOUNT_GROUPS+belts+docs+README) · LegalPages ×2 · docs/05-setup · 01-overview · 13-maintenance title · test-accounts comments · issue template. STATIC ledger scan in CI (1,007 files · 88 occ · 0 off-list · 20 reasoned keeps) | 1 ✓ |
 | A8 | /auth panel/H1/labels | **FIXED c1** — panel starts OPEN (SHOW_TEST_ACCOUNTS gate) · H1 on the r319-student masthead ladder (31.8 px @390) · labels nowrap + max-content track. Belts re-pinned | 1 ✓ |
 | A9 | Map labels collide at 1440 | OPEN | 2 |
-| A10 | Production proof harness | **foreman-B WP-A10** (claimed, in flight — coordination entry 76ecfb84) | 1 |
+### foreman-B c1 tickets (found by the wave-1 instruments)
 
-## §B authenticated sweep (cycles 2–5) — recipe = the settings package
+| # | Ticket | Evidence | Cycle |
+|---|---|---|---|
+| A8-prod | The demo panel open-by-default now ships to PRODUCTION (§A8 made default-open unconditional — `VITE_SHOW_TEST_ACCOUNTS !== '0'` in every build; every visitor sees 10 demo rows expanded). Brief: default-open is a DEVELOPMENT behaviour; production shows the collapsed chip (§K5 one-tap still reachable) | proof.md §2 note + openByDefault=true measured on prod | 2 |
+| A2-R | §A2 not fully closed at 11 viewports: 320=9,308 (+7.61 % vs Heron) · 430=12,411 (−1.77 %) · 600=14,774 (−6.51 %) · 1180=10,937 (−5.61 %) remain OUT of ±1.5 % (the batch-3 pins predated Heron refs; fresh ladder: audits/evidence/r321/ladder/ — Lenis-wrapper finding, the five BOARD refs reproduced exactly) | heron-docH.json + ladder.md §A2 UPDATE | 2 |
+
+| A10 | Production proof harness | **FIXED c1 (foreman-B)** — scripts/r321/prod-proof.ts (5 phases) + FIRST RUN on production (buildId ff7aeed6): accounts **10/10** (API+UI@390, panel one-tap) · pages **19/19** (0 console/0 failed) · statics 3/3 · docH 390=11,357 (−0.7 %) / 1440=12,530 (+1.4 %) LIVE · desktop scroll row honest-baseline 32.1 % >33 ms (§A1 owns). Reviewer APPROVED (independent re-run + numbers cross-check). Re-run after every deploy | 1 ✓ |
+
+## §B authenticated sweep (cycles 2–5) — recipe = the settings package · **inventory DONE c1 (foreman-B WP-B0)**: docs/redesign/r321/STUDENT-SWEEP.md — 37 student-visible routes mapped (32 sheet-verified · **5 conversion targets**: T-1 OnlineExamsPages.tsx 1,951 ln ZERO markers · T-2 CampusMapPage · T-3 LivePage · T-4 LecturePlayerPage · T-5 CommunityPages ×5) · queue B1 exams → B2 map+live → B3 lecture player → B4 community+dedupe → B-verify the rubric sweep (100 % coverage leg) · 48 shots
 
 student (remaining: results, jobs, AI, gamification, skills, alerts,
 messages, AR/VR, social, downloads, university, live, payment, campus map,
