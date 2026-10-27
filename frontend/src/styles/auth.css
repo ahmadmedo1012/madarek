@@ -950,6 +950,7 @@
     line-height: 1.8;
     color: var(--text-muted);
     margin: 0;
+    margin-block-start: var(--sp-2);
   }
   .auth-consent .auth-consent-link {
     color: var(--accent-ink);

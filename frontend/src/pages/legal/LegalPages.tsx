@@ -29,6 +29,11 @@ import {
  * re-stamps at launch. */
 export const LEGAL_UPDATED = '2026-10-27';
 
+/** The belt's honesty vocabulary for the security page — the shipped
+ * controls the unit belt sweeps for, so a copy edit that drops one is
+ * a deliberate act (edit this list IN THE SAME COMMIT, with the page). */
+export const SECURITY_MARKER_KEYS = ['argon2', '12-72', '15m', '7d', '403', 'CSP'] as const;
+
 /* ═══ [L-01] سياسة الخصوصية ═════════════════════════════════════════ */
 
 export function PrivacyPage() {
@@ -269,7 +274,7 @@ export function CookiesPage() {
             <tbody>
               {STORAGE_LEDGER.map((row) => (
                 <tr key={row.key}>
-                  <td className="lg-table-key">{row.key}</td>
+                  <td className="lg-table-key" dir="ltr">{row.key}</td>
                   <td>{row.purpose}</td>
                   <td>{row.kind}</td>
                   <td>{row.purge}</td>
