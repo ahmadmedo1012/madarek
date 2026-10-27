@@ -88,6 +88,82 @@ export const changePasswordRateLimiter = rateLimit({
 });
 
 /**
+ * 10 req / 15 min / IP — POST /auth/forgot-password (R320 §D).
+ *
+ * Counts EVERY request (`skipSuccessfulRequests` stays OFF): the
+ * endpoint always answers 200, so there is no failure signal for a
+ * failed-only policy to key on, and minting IS the expensive action
+ * (token row + potential dev-inbox link). The register/login class of
+ * limiter, minus the skip — an honest user asks once or twice per
+ * quarter; a minter-robot gets bounded on the first bucket.
+ */
+export const forgotPasswordRateLimiter = rateLimit({
+  windowMs: FIFTEEN_MIN,
+  max: AUTH_RATE.max,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: {
+    error: {
+      code: 'TOO_MANY_REQUESTS',
+      message: 'طلبات استعادة كثيرة — انتظر قليلاً ثم أعد المحاولة',
+    },
+  },
+});
+
+/**
+ * 3 req / 15 min / EMAIL — the per-account bucket for
+ * POST /auth/forgot-password (R320 §D).
+ *
+ * Keyed on the (normalized) submitted email, NOT the account: unknown
+ * addresses get the same protection — the endpoint is
+ * no-enumeration, so "does this email exist" cannot be a visible
+ * signal, but "nobody can ask 10 000 times for one inbox" still holds.
+ * Body-less / non-string bodies fall back to a shared no-email bucket;
+ * the per-IP limiter in front bounds that bucket anyway (both limiters
+ * run on the route, IP first — fan-out across IPs cannot escape the
+ * email key, and email rotation cannot escape the IP key).
+ */
+export const forgotPasswordEmailRateLimiter = rateLimit({
+  windowMs: FIFTEEN_MIN,
+  max: 3,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  keyGenerator: (req) => {
+    const raw = (req.body as { email?: unknown } | undefined)?.email;
+    const email = typeof raw === 'string' ? raw.trim().toLowerCase() : '';
+    return email ? `email:${email}` : 'email:no-email';
+  },
+  message: {
+    error: {
+      code: 'TOO_MANY_REQUESTS',
+      message: 'طلبات استعادة كثيرة لهذا البريد — انتظر قليلاً ثم أعد المحاولة',
+    },
+  },
+});
+
+/**
+ * 10 FAILED attempts / 15 min / IP — POST /auth/reset-password
+ * (R320 §D). Failed-only (`skipSuccessfulRequests`) exactly like the
+ * login limiter: the brute-force scenario is token GUESSING (each miss
+ * is a dead-token 400), and an honest user's successful reset is free.
+ * The successful path already burned the token, so success cannot be
+ * replayed anyway — only failures are interesting to bound.
+ */
+export const resetPasswordRateLimiter = rateLimit({
+  windowMs: FIFTEEN_MIN,
+  max: AUTH_RATE.max,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  skipSuccessfulRequests: true,
+  message: {
+    error: {
+      code: 'TOO_MANY_REQUESTS',
+      message: 'محاولات كثيرة لإعادة التعيين — انتظر قليلاً ثم أعد المحاولة',
+    },
+  },
+});
+
+/**
  * Factory for stricter per-route limiters (expensive / abuse-prone
  * endpoints like AI chat, file upload, bulk exports). Defaults: 20 req /
  * 60 s, keyed per-user when authenticated, per-IP otherwise (mirroring
