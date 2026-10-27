@@ -408,6 +408,8 @@ model User {
   competitionEntries  CompetitionEntry[]
   eventsRun           CampusEvent[]        @relation("EventOrganizer")
   eventRsvps          EventRSVP[]
+  // R320 §D (P0-3/P0-4) — the forgot-password flow's single-use tokens.
+  passwordResetTokens PasswordResetToken[]
 
   @@index([role])
   @@index([email])
@@ -1935,6 +1937,35 @@ model LoginEvent {
   @@index([success])
   @@index([createdAt])
   @@index([email])
+}
+
+// ────────────────────────────────────────────────────────────────
+//  R320 §D — forgot-password reset tokens (PAGES-GAP.md §5)
+// ────────────────────────────────────────────────────────────────
+// One single-use token per request: 32 random bytes handed to the user
+// as base64url (43 chars), stored ONLY as its sha-256 hex digest — a
+// FAST hash on purpose (unlike argon2 for passwords): the token is
+// 128-bit random + 30-min TTL, so pre-image cost is irrelevant while
+// lookup cost must stay cheap per reset attempt.
+//
+// · expiresAt = mint + 30 min; usedAt != null marks the token spent
+//   (claimed atomically via updateMany CAS on usedAt = null — no
+//   read-then-write double-spend window).
+// · ONE live token per user is enforced at MINT time (the service marks
+//   any prior outstanding token used before creating the new one); the
+//   unique tokenHash additionally makes digest collisions impossible.
+// · userId cascades: deleting a user deletes their tokens.
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique // sha-256 hex of the base64url token — NEVER the raw token
+  expiresAt DateTime // mint + 30 min (the spec's TTL)
+  usedAt    DateTime? // null = outstanding; set = claimed (single use)
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 // ────────────────────────────────────────────────────────────────
