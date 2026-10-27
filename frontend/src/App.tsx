@@ -36,6 +36,16 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
    (~10-15KB gz on every first paint, the public landing included).
    It now rides the same lazy boundary as its siblings. */
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
+/* R320 cycle-3 (PAGES-GAP P2-3/4/5): the routed error sheets — the
+ * boundary stays the crash net; these are the designed, linkable,
+ * gate-capturable states (the /404 precedent). */
+const Error500Page = lazy(() => import('./pages/Error500Page'));
+const Error403Page = lazy(() => import('./pages/Error403Page'));
+const MaintenancePage = lazy(() => import('./pages/MaintenancePage'));
+/* R320 cycle-3 (PAGES-GAP P2-1): the ANY-AUTHED account settings —
+ * mounts like /vision (no role allow): theme + change-password (every
+ * role — teachers had NO change-password UI) + honest seats. */
+const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 const AuthPage = lazy(() => import('./pages/AuthPage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 /* R320 §D (PAGES-GAP §5): the forgot-password flow's two guest sheets —
@@ -640,6 +650,9 @@ export function AppRoutes() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
             <Route path="/vision" element={<VisionGalleryPage />} />
+            {/* R320 cycle-3 (P2-1): any-authed account settings — the
+                shared door every role's nav carries (nav.ts). */}
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="/vision/:slug" element={<VisionDetailPage />} />
             <Route path="/document/:filename" element={<DocumentViewerPage />} />
             <Route path="/competitions" element={<CompetitionsIndexPage />} />
@@ -648,6 +661,12 @@ export function AppRoutes() {
         </Route>
 
         <Route path="/404" element={<NotFoundPage />} />
+        {/* R320 cycle-3 (PAGES-GAP P2-3/4/5): the routed error sheets —
+            designed + gate-capturable; the maintenance page ships
+            disabled-by-default (nothing links it until a flag exists). */}
+        <Route path="/500" element={<Error500Page />} />
+        <Route path="/403" element={<Error403Page />} />
+        <Route path="/maintenance" element={<MaintenancePage />} />
         {/* r143 (T1-h F6): unknown URLs land on the real 404 page — the
          * old catch-all silently bounced to the role home, so a typo or
          * stale link "disappeared" instead of saying it doesn't exist.

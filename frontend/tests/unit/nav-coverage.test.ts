@@ -171,11 +171,14 @@ describe('STUDENT_NAV — the r183-B7 drawer re-cut (A4 P2-3: 33 items / 3.2 scr
   // exposes no entries to them and no other surface links either route
   // (census r183-B7) — so the family collapses as a whole instead.
 
-  it('every route keeps its sidebar home — the A4 census 33, zero cuts', () => {
+  it('every route keeps its sidebar home — the A4 census 33+1, zero cuts', () => {
     // The orphan guards above stay green because NOTHING left the nav;
     // any future cut must consciously update this pin AND re-verify the
     // destination is linked from another nav item's page.
-    expect(allDestinations(STUDENT_NAV)).toHaveLength(33);
+    // R320 cycle-3 override: 33 → 34 — the ANY-AUTHED /settings door
+    // (PAGES-GAP P2-1) joined every role's nav; a deliberate ADD, the
+    // census otherwise unchanged.
+    expect(allDestinations(STUDENT_NAV)).toHaveLength(34);
   });
 
   it('the default-visible drawer is ≤16 items — A4\'s 33-row drawer folds behind 4 collapsed groups', () => {

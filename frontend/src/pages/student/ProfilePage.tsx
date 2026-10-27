@@ -1,9 +1,9 @@
-import { useEffect, useId, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
   User, Mail, GraduationCap, BookOpen, Award, ExternalLink,
   CheckCircle2, AlertCircle, Trophy, Hash, type LucideIcon,
 } from 'lucide-react';
-import { Card, FormField, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
+import { Card, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
 import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
 /* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar + the
@@ -13,13 +13,11 @@ import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/st
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import { useMyAchievements, useMyEnrollments, useMyResearch, useMyProfile } from '../../hooks/useResources';
-import {
-  useChangePassword,
-  changePasswordPolicy,
-  isWrongCurrentPassword,
-  changePasswordErrorMessage,
-} from '../../hooks/useChangePassword'; // r180-F4
-import { toast } from '../../lib/toast';
+/* R320 cycle-3 (P2-1): the change-password surface is ONE shared card
+ * now (components/account) — the teacher profile never had one and the
+ * API serves every role; /settings mounts the same card. Behavior,
+ * copy and validation are unchanged (the r180-F4 contract). */
+import { ChangePasswordCard } from '../../components/account/ChangePasswordCard';
 import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
 /* R305 Heron: the shared student vocabulary + this family's page-scoped
    refinements (the deep profile hero band, §1 of the family sheet). */
@@ -522,156 +520,6 @@ export default function ProfilePage() {
       </section>
     </PageFrame>
     </div>
-  );
-}
-
-/* ── r180-F4: تغيير كلمة المرور ────────────────────────────────
- * POST /auth/change-password via hooks/useChangePassword. The policy
- * mirror (12–72 chars + the blocklist) is the hook's own export; the
- * field copy mirrors the register form's («12 حرفًا على الأقل» /
- * «كلمة المرور شائعة جدًا…»). Honest post-success behavior, read from
- * the backend route: the tokenVersion bump kills every OTHER
- * session's refresh cookie while THIS device continues on the fresh
- * tokens the route re-issues — so the user stays logged in and the
- * copy says the other sessions may need to sign in again. */
-function ChangePasswordCard() {
-  const submit = useChangePassword();
-  const [current, setCurrent] = useState('');
-  const [next, setNext] = useState('');
-  const [confirm, setConfirm] = useState('');
-  /* Errors stay hidden until the first blur/submit (the links editor's
-   * reveal convention — a pristine form shows nothing). */
-  const [reveal, setReveal] = useState(false);
-  const [done, setDone] = useState(false);
-
-  /* Field-level validation, computed on every keystroke but gated by
-   * `reveal` at render — the same shape as the links editor. */
-  const currentError = current ? null : 'أدخل كلمة المرور الحالية.';
-  const policyCheck = next ? changePasswordPolicy.safeParse(next) : null;
-  const nextError = !next
-    ? 'أدخل كلمة المرور الجديدة.'
-    : policyCheck && !policyCheck.success
-      ? (policyCheck.error.issues[0]?.message ?? null)
-      : null;
-  const confirmError = confirm === next ? null : 'كلمتا المرور غير متطابقتين.';
-
-  /* 401 INVALID_CREDENTIALS — the current password did not verify: the
-   * backend's own Arabic copy lands ON that field so the user knows
-   * WHICH control failed. Any other failure (429 limiter, network)
-   * renders once below the form. */
-  const wrongCurrent = submit.isError && isWrongCurrentPassword(submit.error);
-  const serverMessage = submit.isError && !wrongCurrent
-    ? changePasswordErrorMessage(submit.error)
-    : null;
-  const currentFieldError = wrongCurrent
-    ? changePasswordErrorMessage(submit.error)
-    : reveal ? (currentError ?? undefined) : undefined;
-
-  const canSubmit = Boolean(current) && Boolean(next) && !nextError && next === confirm;
-
-  const onSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setReveal(true);
-    if (!canSubmit) return; // the inline field errors own this case
-    try {
-      await submit.mutateAsync({ currentPassword: current, newPassword: next });
-      setDone(true);
-      setCurrent('');
-      setNext('');
-      setConfirm('');
-      // Honest copy per the backend contract: this session re-issued
-      // its tokens (still logged in), the OTHER devices were signed
-      // out by the tokenVersion bump.
-      toast.success(
-        'تمّ تغيير كلمة المرور — قد تحتاج الجلسات الأخرى إلى تسجيل الدخول مجددًا.',
-        { title: 'تمّ التغيير' },
-      );
-    } catch {
-      // surfaced inline from submit.isError below (wrong-current field
-      // error or the general server banner)
-    }
-  };
-
-  return (
-    <Card>
-      {done && (
-        <div className="form-feedback ok" role="status" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-          <Icon icon={CheckCircle2} size={14} />
-          <span className="flex-1">
-            تمّ تغيير كلمة المرور بنجاح — بقيت جلستك الحالية مفتوحة، وقد تحتاج بقية الأجهزة إلى تسجيل الدخول مجددًا.
-          </span>
-        </div>
-      )}
-      {serverMessage && (
-        <div className="form-feedback fail" role="alert" style={{ marginBlockEnd: 'var(--sp-3)' }}>
-          <Icon icon={AlertCircle} size={14} />
-          <span className="flex-1">{serverMessage}</span>
-        </div>
-      )}
-      <form className="flex-col gap-3" onSubmit={onSubmit} noValidate>
-        <FormField
-          label="كلمة المرور الحالية"
-          id="pw-current"
-          error={currentFieldError}
-        >
-          {/* dir="ltr": passwords are overwhelmingly Latin runs; the
-              caret and masked glyphs must not bidi-flip in RTL (the
-              register form's own note). */}
-          <input
-            className="input"
-            type="password"
-            dir="ltr"
-            autoComplete="current-password"
-            value={current}
-            onChange={(e) => { setCurrent(e.target.value); setDone(false); }}
-            onBlur={() => setReveal(true)}
-            disabled={submit.isPending}
-          />
-        </FormField>
-        <FormField
-          label="كلمة المرور الجديدة"
-          id="pw-new"
-          hint="12 حرفًا على الأقل وحتى 72 حرفًا — تجنّب كلمات المرور الشائعة."
-          error={reveal ? (nextError ?? undefined) : undefined}
-        >
-          <input
-            className="input"
-            type="password"
-            dir="ltr"
-            autoComplete="new-password"
-            value={next}
-            onChange={(e) => { setNext(e.target.value); setDone(false); }}
-            onBlur={() => setReveal(true)}
-            disabled={submit.isPending}
-          />
-        </FormField>
-        <FormField
-          label="تأكيد كلمة المرور الجديدة"
-          id="pw-confirm"
-          error={reveal ? (confirmError ?? undefined) : undefined}
-        >
-          <input
-            className="input"
-            type="password"
-            dir="ltr"
-            autoComplete="new-password"
-            value={confirm}
-            onChange={(e) => { setConfirm(e.target.value); setDone(false); }}
-            onBlur={() => setReveal(true)}
-            disabled={submit.isPending}
-          />
-        </FormField>
-        <div className="flex items-center gap-2">
-          <button
-            type="submit"
-            className="btn primary"
-            disabled={submit.isPending}
-          >
-            {submit.isPending ? 'جارٍ التغيير…' : 'تغيير كلمة المرور'}
-          </button>
-        </div>
-      </form>
-    </Card>
   );
 }
 

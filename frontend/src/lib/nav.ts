@@ -6,7 +6,7 @@ import {
   ClipboardList, Microscope, School,
   FileText, FileQuestion, ShieldCheck, Activity, Compass, BookMarked, BookCopy,
   Radio, Wallet, MapPin, UserCircle, Brain, Megaphone, RefreshCw,
-  Palette, Settings, AlertTriangle, MessageCircle, Video, Globe,
+  Palette, Settings, UserCog, AlertTriangle, MessageCircle, Video, Globe,
   Download, Medal, BadgeCheck, Box, Telescope,
   Bell, Award, Landmark, Inbox,
   type LucideIcon,
@@ -134,6 +134,11 @@ export const STUDENT_NAV: NavGroup[] = [
          only — desktop had zero nav marker for it. Every role now
          carries its alerts page as a first-class sidebar item. */
       { to: '/student/alerts', icon: Bell, label: 'الإشعارات' },
+      /* R320 cycle-3 (PAGES-GAP P2-1): the ANY-AUTHED settings door —
+         every role carries it, LAST in the account group (a
+         destination, never an interrupting item; UserCog distinct
+         from the platform Settings icons in the ADMIN/OWNER navs). */
+      { to: '/settings', icon: UserCog, label: 'إعدادات الحساب' },
     ],
   },
   {
@@ -232,6 +237,10 @@ export const TEACHER_NAV: NavGroup[] = [
       { to: '/competitions', icon: Trophy, label: 'المسابقات الأكاديميّة' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
+      /* R320 cycle-3 (P2-1): teachers finally get the settings door —
+         the change-password UI existed ONLY in the student profile
+         although the API serves every role (PAGES-GAP T-2). */
+      { to: '/settings', icon: UserCog, label: 'إعدادات الحساب' },
     ],
   },
 ];
@@ -276,7 +285,11 @@ export const ADMIN_NAV: NavGroup[] = [
          sidebar home — parity with the owner role. */
       { to: '/admin/alerts', icon: Bell, label: 'الإشعارات' },
       { to: '/admin/sync', icon: RefreshCw, label: 'مزامنة الجامعة' },
-      { to: '/admin/settings', icon: Settings, label: 'الإعدادات' },
+      /* R320 cycle-3 (PAGES-GAP T-3): retitled — this is the ADMIN
+         platform sheet (identity, DB health, limits), NOT user
+         settings; the account door is /settings below (UserCog). */
+      { to: '/admin/settings', icon: Settings, label: 'إعدادات المنصّة' },
+      { to: '/settings', icon: UserCog, label: 'إعدادات الحساب' },
       { to: '/admin/community', icon: Megaphone, label: 'المجتمع الجامعي' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
@@ -317,6 +330,8 @@ export const QUALITY_NAV: NavGroup[] = [
       // colleges pages (any-auth routes) — the sidebar link follows the
       // teacher/admin grammar (Building2 · كلّيّات الجامعة).
       { to: '/colleges', icon: Building2, label: 'كلّيّات الجامعة' },
+      /* R320 cycle-3 (P2-1): the account settings door. */
+      { to: '/settings', icon: UserCog, label: 'إعدادات الحساب' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },
     ],
@@ -361,6 +376,9 @@ export const OWNER_NAV: NavGroup[] = [
          نفسها باقية كما هي. */
       { to: '/owner/notifications', icon: Bell, label: 'الإشعارات' },
       { to: '/owner/alerts', icon: AlertTriangle, label: 'التنبيهات التشغيلية' },
+      /* R320 cycle-3 (P2-1): the account settings door (UserCog — the
+         owner's /owner/system row keeps the platform Settings icon). */
+      { to: '/settings', icon: UserCog, label: 'إعدادات الحساب' },
       { to: '/owner/governance', icon: ShieldCheck, label: 'الحوكمة المتقدمة' },
       // 4-A14 P1-1: the shared roadmap entry (any-auth route).
       { to: '/vision', icon: Telescope, label: 'الابتكارات القادمة' },

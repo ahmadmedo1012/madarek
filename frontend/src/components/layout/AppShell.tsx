@@ -72,6 +72,12 @@ const PAGE_TITLES: Record<string, string> = {
   // Folded out of the student sidebar (A4 P2-1) — still a real surface
   // one click from /colleges (the leaderboard CTA), so it keeps a title.
   '/colleges/leaderboard': 'منافسة الكلّيّات',
+  /* R320 cycle-3 (PAGES-GAP P2-3/4/5): the routed error sheets — the
+     same titles the pages' own usePageTitle calls set; the map carries
+     them so resolveTitle() never falls to the generic fallback. */
+  '/500': 'خطأ في الخادم',
+  '/403': 'غير مصرّح',
+  '/maintenance': 'صيانة دورية',
 };
 
 const DYNAMIC_TITLES: Array<[RegExp, string]> = [

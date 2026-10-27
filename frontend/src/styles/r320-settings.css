@@ -1,0 +1,52 @@
+/* ═══════════════════════════════════════════════════════════════════
+   R320 cycle-3 — /settings (the ANY-AUTHED account sheet, PAGES-GAP
+   P2-1). Page-scoped family: the set-row ledger rows + the section
+   note. Everything else is borrowed registers: SectionBar/EmptyCell
+   (r319-student.css, global in @layer pages), Card/FormField
+   (components.css), ThemeToggle (r305-shell.css).
+   ═══════════════════════════════════════════════════════════════════ */
+@layer pages {
+
+  /* The quiet line under a section bar (the r319sp-sec-note register,
+     this page's own copy — self-contained, no student-sheet import). */
+  .set-note {
+    margin: 0 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    max-inline-size: var(--type-body-max-measure);
+  }
+
+  /* The account-fact ledger row: icon + title/note on the start side,
+     an optional trailing control (the theme toggle) on the end side.
+     Hairline separated — the Card supplies the frame; rows supply the
+     rhythm. Same start/end logic everywhere (RTL-native). */
+  .set-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding-block: var(--sp-3);
+  }
+  .set-row + .set-row {
+    border-block-start: 1px solid var(--rule);
+  }
+  .set-row-main {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--sp-2-5);
+    min-inline-size: 0;
+    flex: 1;
+  }
+  .set-row-title {
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    color: var(--text);
+  }
+  .set-row-note {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    margin-block-start: var(--sp-0-5);
+    overflow-wrap: anywhere;
+  }
+}
