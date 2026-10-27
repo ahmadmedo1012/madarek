@@ -291,6 +291,7 @@ Work Log:
 Stage Summary:
 - R321 C1 opened. Order: A5+A6+A7+A8 (quick fixes) → A4 clipping + gate extension → A2 height ratchet → A1 desktop perf → A10 production proof harness.
 ---
+<<<<<<< HEAD
 Task ID: r321-c1-foreman-b
 Agent: foreman-B (this container, session started 21:26 UTC; foreman-A container landed batch-1 147051a3 @21:10 and batch-2 1cd79446 @21:59 — coordination entry)
 Task: R321 cycle 1 — parallel foreman protocol + work-package claims (no collision with foreman-A's in-flight C1 line).
@@ -336,3 +337,30 @@ Work Log:
 
 Stage Summary:
 - Main's standing gate repaired (2-line comment reword). Rule reaffirmed: the ledger scan must never see the literal in the very files that document it.
+=======
+Task ID: r321-c1-A10
+Agent: WP-A10 (sub-agent, died at the 15-min tool deadline mid-run) + foreman-B completion
+Task: §A10 — the R321 production proof harness + the first production run.
+
+Work Log:
+- Built scripts/r321/prod-proof.ts (5 phases: health / accounts / pages / statics / landing; --base --out --phases CLI; honest WebKit=CI note; login-proof.ts's demo-panel one-tap reused for the registrar leg).
+- FIRST PRODUCTION RUN (buildId ff7aeed688ae, 2026-10-27T22:38Z): PASS, 0 FAIL rows — accounts 10/10 (API 200 + token + role home + h1 @390; head/dean/vicedean land /teacher/dashboard; registrar/faculty /admin/dashboard) · public pages 19/19 (200 + h1 + ZERO console errors + ZERO failed requests) · statics 3/3 (robots/Sitemap line · sitemap 16 urls · manifest JSON) · landing docH 390=11,357 (−0.7%) · 1440=12,530 (+1.4%) — the A2 cuts LIVE on production · desktop scroll row honest-baseline 32.1%>33ms p95 33.4 (§A1 owns the target) · panel openByDefault=true rows=10.
+- DISCOVERED TICKET (recorded, not fixed — AuthPage is the §A8 territory): the demo panel open-by-default now ships to PRODUCTION (§A8 brief: default-open is a DEVELOPMENT behaviour; production should show the collapsed chip — §K5 one-tap still reachable). Ticket id A8-prod on the BOARD.
+- Re-verified post-run: --phases health,statics re-run PASS (production then on b90c49cc); evidence 13 jpgs 873KB (all ≤150KB); rename-ledger-scan exit 0.
+
+Stage Summary:
+- §A10 harness exists and is proven on production; every future deploy re-runs it in one command. Evidence: audits/evidence/r321/prod/{proof.json,proof.md,13 shots}.
+>>>>>>> 670fdc75 (R321 c1 WP-A10 — the production proof harness + the first production run: accounts 10/10 · pages 19/19 · statics 3/3 · docH ratchet live (−0.7%/+1.4%) · 0 FAIL (buildId ff7aeed6) + the A8-prod ticket (panel open-by-default leaks to production))
+---
+Task ID: r321-c1-A10
+Agent: WP-A10 (sub-agent, died at the 15-min tool deadline mid-run) + foreman-B completion
+Task: §A10 — the R321 production proof harness + the first production run.
+
+Work Log:
+- Built scripts/r321/prod-proof.ts (5 phases: health / accounts / pages / statics / landing; --base --out --phases CLI; honest WebKit=CI note; login-proof.ts's demo-panel one-tap reused for the registrar leg).
+- FIRST PRODUCTION RUN (buildId ff7aeed688ae, 2026-10-27T22:38Z): PASS, 0 FAIL rows — accounts 10/10 (API 200 + token + role home + h1 @390; head/dean/vicedean land /teacher/dashboard; registrar/faculty /admin/dashboard) · public pages 19/19 (200 + h1 + ZERO console errors + ZERO failed requests) · statics 3/3 (robots/Sitemap line · sitemap 16 urls · manifest JSON) · landing docH 390=11,357 (−0.7%) · 1440=12,530 (+1.4%) — the A2 cuts LIVE on production · desktop scroll row honest-baseline 32.1%>33ms p95 33.4 (§A1 owns the target) · panel openByDefault=true rows=10.
+- DISCOVERED TICKET (recorded, not fixed — AuthPage is the §A8 territory): the demo panel open-by-default now ships to PRODUCTION (§A8 brief: default-open is a DEVELOPMENT behaviour; production should show the collapsed chip — §K5 one-tap still reachable). Ticket id A8-prod on the BOARD.
+- Re-verified post-run: --phases health,statics re-run PASS (production then on b90c49cc); evidence 13 jpgs 873KB (all ≤150KB); rename-ledger-scan exit 0.
+
+Stage Summary:
+- §A10 harness exists and is proven on production; every future deploy re-runs it in one command. Evidence: audits/evidence/r321/prod/{proof.json,proof.md,13 shots}.

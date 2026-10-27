@@ -1,0 +1,582 @@
+{
+  "target": "https://madarek.onrender.com",
+  "runAt": "2026-10-27T22:38:22.461Z",
+  "harness": "scripts/r321/prod-proof.ts",
+  "buildId": "ff7aeed688ae",
+  "engine": {
+    "name": "chromium",
+    "version": "148.0.7778.96"
+  },
+  "health": [
+    {
+      "endpoint": "/api/v1/health",
+      "httpStatus": 200,
+      "latencyMs": 674,
+      "pass": true,
+      "contentType": "application/json; charset=utf-8",
+      "ok": true,
+      "dbLatencyMs": 57,
+      "env": "production",
+      "buildId": "ff7aeed688ae"
+    },
+    {
+      "endpoint": "/health",
+      "httpStatus": 200,
+      "latencyMs": 203,
+      "contentType": "text/html; charset=UTF-8",
+      "pass": true
+    }
+  ],
+  "accounts": {
+    "panel": {
+      "openByDefault": true,
+      "reopened": true,
+      "rows": 10,
+      "reopenedRows": 10,
+      "screenshot": "demo-panel-390.jpg",
+      "pass": true
+    },
+    "rows": [
+      {
+        "job": "طالب",
+        "email": "student@test.ly",
+        "role": "STUDENT",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 888,
+        "routeReached": "/student/dashboard",
+        "routeExpected": "/student/dashboard",
+        "h1": "لوحة التحكم",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "student.jpg",
+        "shotBytes": 45155,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "طالب ثانٍ (للرسائل/المجتمع)",
+        "email": "student2@test.ly",
+        "role": "STUDENT",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 886,
+        "routeReached": "/student/dashboard",
+        "routeExpected": "/student/dashboard",
+        "h1": "لوحة التحكم",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "student2.jpg",
+        "shotBytes": 45123,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "أستاذ",
+        "email": "teacher@test.ly",
+        "role": "TEACHER",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 1094,
+        "routeReached": "/teacher/dashboard",
+        "routeExpected": "/teacher/dashboard",
+        "h1": "لوحة الأستاذ",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "teacher.jpg",
+        "shotBytes": 89361,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "رئيس قسم",
+        "email": "head@test.ly",
+        "role": "TEACHER",
+        "position": "DEPARTMENT_HEAD",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 862,
+        "routeReached": "/teacher/dashboard",
+        "routeExpected": "/teacher/dashboard",
+        "h1": "لوحة الأستاذ",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "head.jpg",
+        "shotBytes": 89445,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "عميد",
+        "email": "dean@test.ly",
+        "role": "TEACHER",
+        "position": "DEAN",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 646,
+        "routeReached": "/teacher/dashboard",
+        "routeExpected": "/teacher/dashboard",
+        "h1": "لوحة الأستاذ",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "dean.jpg",
+        "shotBytes": 44724,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "نائب عميد",
+        "email": "vicedean@test.ly",
+        "role": "TEACHER",
+        "position": "ASSOCIATE_DEAN",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 638,
+        "routeReached": "/teacher/dashboard",
+        "routeExpected": "/teacher/dashboard",
+        "h1": "لوحة الأستاذ",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "vicedean.jpg",
+        "shotBytes": 44734,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "المسجل العام",
+        "email": "registrar@test.ly",
+        "role": "ADMIN",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 801,
+        "routeReached": "/admin/dashboard",
+        "routeExpected": "/admin/dashboard",
+        "h1": "لوحة المسجل العام",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "registrar.jpg",
+        "shotBytes": 45573,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "مسجل كلية (نطاق كلية)",
+        "email": "faculty@test.ly",
+        "role": "ADMIN",
+        "scoped": true,
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 566,
+        "routeReached": "/admin/dashboard",
+        "routeExpected": "/admin/dashboard",
+        "h1": "لوحة المسجل العام",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "faculty.jpg",
+        "shotBytes": 68431,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "أخصائي جودة",
+        "email": "quality@test.ly",
+        "role": "QUALITY",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 1059,
+        "routeReached": "/quality/dashboard",
+        "routeExpected": "/quality/dashboard",
+        "h1": "لوحة الجودة",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "quality.jpg",
+        "shotBytes": 86045,
+        "shotQuality": 70,
+        "pass": true
+      },
+      {
+        "job": "مالك المنصة",
+        "email": "owner@test.ly",
+        "role": "OWNER",
+        "apiStatus": 200,
+        "apiToken": true,
+        "apiMs": 957,
+        "routeReached": "/owner/dashboard",
+        "routeExpected": "/owner/dashboard",
+        "h1": "لوحة التحكم الرئيسية",
+        "tourDismissed": false,
+        "consoleErrors": 0,
+        "pageErrors": 0,
+        "failedRequests": 0,
+        "screenshot": "owner.jpg",
+        "shotBytes": 100682,
+        "shotQuality": 70,
+        "pass": true
+      }
+    ],
+    "passed": 10,
+    "total": 10
+  },
+  "pages": {
+    "rows": [
+      {
+        "name": "landing",
+        "route": "/",
+        "httpStatus": 200,
+        "h1": "رحلة تعلم واحدةمن المحاضرة إلى الإتقان",
+        "title": "مدارك · منصّة التعليم الذكي",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 3501,
+        "pass": true
+      },
+      {
+        "name": "legal-privacy",
+        "route": "/legal/privacy",
+        "httpStatus": 200,
+        "h1": "سياسة الخصوصية",
+        "title": "سياسة الخصوصية · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 3206,
+        "pass": true
+      },
+      {
+        "name": "legal-terms",
+        "route": "/legal/terms",
+        "httpStatus": 200,
+        "h1": "شروط الاستخدام",
+        "title": "شروط الاستخدام · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2698,
+        "pass": true
+      },
+      {
+        "name": "legal-cookies",
+        "route": "/legal/cookies",
+        "httpStatus": 200,
+        "h1": "ملفات تعريف الارتباط والتخزين المحلي",
+        "title": "ملفات تعريف الارتباط والتخزين المحلي · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2693,
+        "pass": true
+      },
+      {
+        "name": "legal-accessibility",
+        "route": "/legal/accessibility",
+        "httpStatus": 200,
+        "h1": "بيان إمكانية الوصول",
+        "title": "بيان إمكانية الوصول · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2482,
+        "pass": true
+      },
+      {
+        "name": "legal-security",
+        "route": "/legal/security",
+        "httpStatus": 200,
+        "h1": "الأمن والإفصاح المسؤول",
+        "title": "الأمن والإفصاح المسؤول · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2735,
+        "pass": true
+      },
+      {
+        "name": "legal-data",
+        "route": "/legal/data",
+        "httpStatus": 200,
+        "h1": "البيانات وبيانات العرض",
+        "title": "البيانات وبيانات العرض · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2761,
+        "pass": true
+      },
+      {
+        "name": "about",
+        "route": "/about",
+        "httpStatus": 200,
+        "h1": "عن مدارك",
+        "title": "عن مدارك · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2879,
+        "pass": true
+      },
+      {
+        "name": "help",
+        "route": "/help",
+        "httpStatus": 200,
+        "h1": "المساعدة والأسئلة الشائعة",
+        "title": "المساعدة والأسئلة الشائعة · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 3584,
+        "pass": true
+      },
+      {
+        "name": "contact",
+        "route": "/contact",
+        "httpStatus": 200,
+        "h1": "التواصل والتسجيل المبكر",
+        "title": "التواصل والتسجيل المبكر · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2686,
+        "pass": true
+      },
+      {
+        "name": "auth",
+        "route": "/auth",
+        "httpStatus": 200,
+        "h1": "مرحبا بعودتك",
+        "title": "تسجيل الدخول · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 3662,
+        "pass": true
+      },
+      {
+        "name": "forgot-password",
+        "route": "/auth/forgot-password",
+        "httpStatus": 200,
+        "h1": "استعادة كلمة المرور",
+        "title": "استعادة كلمة المرور · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2818,
+        "pass": true
+      },
+      {
+        "name": "colleges",
+        "route": "/colleges",
+        "httpStatus": 200,
+        "h1": "البنية الأكاديمية التجريبية — جامعة مدارك التجريبية",
+        "title": "كلّيّات الجامعة · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 3312,
+        "pass": true
+      },
+      {
+        "name": "campus",
+        "route": "/campus",
+        "httpStatus": 200,
+        "h1": "من داخل الجامعات الليبية",
+        "title": "مدارك · منصّة التعليم الذكي",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 3120,
+        "pass": true
+      },
+      {
+        "name": "capabilities",
+        "route": "/capabilities",
+        "httpStatus": 200,
+        "h1": "قدرات موثَّقة، لا ادّعاءات",
+        "title": "مدارك · منصّة التعليم الذكي",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2716,
+        "pass": true
+      },
+      {
+        "name": "not-found",
+        "route": "/404",
+        "httpStatus": 200,
+        "h1": "هذه الصفحة تغيّبت عن الحضور",
+        "title": "الصفحة غير موجودة · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2934,
+        "pass": true
+      },
+      {
+        "name": "forbidden",
+        "route": "/403",
+        "httpStatus": 200,
+        "h1": "هذه الصفحة خارج نطاق صلاحياتك",
+        "title": "غير مصرّح · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2946,
+        "pass": true
+      },
+      {
+        "name": "server-error",
+        "route": "/500",
+        "httpStatus": 200,
+        "h1": "خللٌ من جانبنا — لا من جانبك",
+        "title": "خطأ في الخادم · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2899,
+        "pass": true
+      },
+      {
+        "name": "maintenance",
+        "route": "/maintenance",
+        "httpStatus": 200,
+        "h1": "مدارك في صيانة قصيرة",
+        "title": "صيانة دورية · مدارك",
+        "consoleErrors": [],
+        "pageErrors": [],
+        "failedRequests": [],
+        "ms": 2902,
+        "pass": true
+      }
+    ],
+    "passed": 19,
+    "total": 19
+  },
+  "statics": [
+    {
+      "file": "/robots.txt",
+      "httpStatus": 200,
+      "bytes": 919,
+      "checks": [
+        {
+          "name": "http 200",
+          "pass": true,
+          "detail": "200 (207ms)"
+        },
+        {
+          "name": "contains \"Sitemap\"",
+          "pass": true,
+          "detail": "found"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "/sitemap.xml",
+      "httpStatus": 200,
+      "bytes": 1469,
+      "checks": [
+        {
+          "name": "http 200",
+          "pass": true,
+          "detail": "200 (200ms)"
+        },
+        {
+          "name": "parses as XML",
+          "pass": true,
+          "detail": "valid"
+        },
+        {
+          "name": "≥1 <url>",
+          "pass": true,
+          "detail": "16 <url>"
+        }
+      ],
+      "pass": true
+    },
+    {
+      "file": "/manifest.webmanifest",
+      "httpStatus": 200,
+      "bytes": 988,
+      "checks": [
+        {
+          "name": "http 200",
+          "pass": true,
+          "detail": "200 (181ms)"
+        },
+        {
+          "name": "parses as JSON",
+          "pass": true,
+          "detail": "name=\"مدارك — منصّة التعليم الذكي\" short_name=\"مدارك\""
+        }
+      ],
+      "pass": true
+    }
+  ],
+  "landing": [
+    {
+      "viewport": "390x844",
+      "width": 390,
+      "height": 844,
+      "docH": 11357,
+      "heronDocH": 11441,
+      "heronDriftPct": -0.7,
+      "scroll": {
+        "wheelScrolls": 8,
+        "framesSampled": 145,
+        "framesOver33": 0,
+        "pctOver33": 0,
+        "p95Ms": 16.7,
+        "maxMs": 16.8
+      },
+      "screenshot": "landing-390.jpg",
+      "shotBytes": 30339,
+      "pass": true
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "height": 900,
+      "docH": 12530,
+      "heronDocH": 12355,
+      "heronDriftPct": 1.4,
+      "scroll": {
+        "wheelScrolls": 8,
+        "framesSampled": 112,
+        "framesOver33": 36,
+        "pctOver33": 32.1,
+        "p95Ms": 33.4,
+        "maxMs": 66.6
+      },
+      "screenshot": "landing-1440.jpg",
+      "shotBytes": 93714,
+      "pass": true
+    }
+  ],
+  "observations": [
+    "**Demo panel open-by-default on PRODUCTION** (r321 §A8 semantic): every visitor sees the 10 demo credentials expanded. §A8 asked for \"open by default in development\" — the owner should decide whether production should ship collapsed-with-chip (build with `VITE_SHOW_TEST_ACCOUNTS=0`) — RECORDED, not fixed here.",
+    "**§A1 (desktop perf) confirmed OPEN on production**: 32.1% frames >33 ms (p95 33.4 ms · max 66.6 ms over 112 frames) vs the ≤2 % target — the cycle-1 A1 work continues; these rows are the honest production baseline.",
+    "**§A2 (docH ratchet) holds on production** for this deploy: both viewports inside ±1.5% of Heron (390x844: 11357 (-0.7%) · 1440x900: 12530 (1.4%))."
+  ],
+  "summary": {
+    "overall": "PASS",
+    "fails": []
+  }
+}
