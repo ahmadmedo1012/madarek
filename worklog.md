@@ -276,3 +276,17 @@ Work Log:
 
 Stage Summary:
 - Cycle 3 checkpoint GREEN end-to-end: local gates + production probes + CI. Remaining for the next session per BOARD: §A1 desktop perf · §E student pages · cycles 4-6.
+
+---
+Task ID: r321-c1-open
+Agent: foreman
+Task: R321 final programme — open cycle 1 on a7e335db (scope guard: ONLY the madarek repo; the four smart-* clones from the stray round are out of scope and untouched).
+
+Work Log:
+- Verified state: local main == origin/main == a7e335db (R320 c3 close, CI 10/10 green on 111f7f79). Credential helper set (token never in remote URL/files/commits beyond the ~/.git-creds store).
+- Created docs/redesign/r321/BOARD.md — the ten §A tickets + ratchets + cycle order per the brief's §I work order.
+- npm install (workspaces hoisted; vite 5.4.21 / playwright 1.60 / vitest ready; local browsers: chromium ×2 — WebKit stays a CI leg).
+- Baseline frontend build started (workspace-scoped `npm run build -w frontend`; the ROOT build is forbidden — it chains backend build + db deploy + seed).
+
+Stage Summary:
+- R321 C1 opened. Order: A5+A6+A7+A8 (quick fixes) → A4 clipping + gate extension → A2 height ratchet → A1 desktop perf → A10 production proof harness.
