@@ -16,10 +16,15 @@ import { usePageTitle } from '../hooks/usePageTitle';
 
 export default function Error500Page() {
   usePageTitle('خطأ في الخادم');
+  /* §A5: NBSP glues the dash to the preceding word — the dash can
+   * never start its own line (text-wrap:balance on .nf-title re-flows
+   * the pair as one unit). */
+  const title = 'خللٌ من جانبنا\u00A0— لا من جانبك';
   return (
     <ErrorSheetPage
       code="ERR [500]"
-      title="خللٌ من جانبنا — لا من جانبك"
+      coords="SERVER FAULT"
+      title={title}
       lead="حدث خطأ داخلي أثناء تجهيز هذه الصفحة. فريق مدارك يرصد الأخطاء تلقائيًا؛ جرّب تحديث الصفحة بعد لحظات."
       illustration="error-generic"
       note="إذا استمرّ الخلل، يمكنك العودة إلى الرئيسية أو تسجيل الدخول من جديد."

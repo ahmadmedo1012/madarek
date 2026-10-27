@@ -220,17 +220,17 @@ describe('AuthPage — journey alignment (imm-5)', () => {
   it('dev demo rows FILL the form — they never submit it', async () => {
     renderPage();
 
-    // r157 F5: the panel starts collapsed — reopen it first via the
-    // quiet chip (see the collapsed-pin test below).
-    fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
+    // R321 §A8: the panel starts OPEN in development (the owner's
+    // one-tap-per-job rule) — no reopen step needed any more.
 
     /* R320 override (§C): the five per-role chips (.btn.sm.auth-demo-btn)
      * are retired — the panel is now the hairline test-account TABLE,
      * one row per job from the SHARED table (@shared/testAccounts):
-     * grouped التعليم / الإدارة / النظام, email + password visible, and
-     * a square «تعبئة» button per row. The full panel contract lives in
-     * tests/unit/r320-test-accounts-panel.test.tsx; this pin keeps the
-     * form-integrity half here (fill only, never submit). */
+     * grouped التعليم / الحوكمة / النظام (R321 §A7), email + password
+     * visible, and a square «تعبئة» button per row. The full panel
+     * contract lives in tests/unit/r320-test-accounts-panel.test.tsx;
+     * this pin keeps the form-integrity half here (fill only, never
+     * submit). */
     const fillButtons = screen.getAllByRole('button', { name: /^تعبئة حساب / });
     expect(fillButtons).toHaveLength(10);
     for (const b of fillButtons) {
@@ -256,11 +256,15 @@ describe('AuthPage — journey alignment (imm-5)', () => {
     expect(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' })).toBeInTheDocument();
   });
 
-  it('the demo hint panel starts collapsed (r157 F5) with a quiet reopen chip', () => {
+  it('R321 §A8 — the demo hint panel starts OPEN in development (dismiss → reopen chip)', () => {
     renderPage();
 
-    // Dev convenience, never the first thing a visitor reads.
-    expect(screen.queryByText('حسابات تجريبية — بيئة التطوير')).toBeNull();
+    // The owner's one-tap-per-job rule: all 10 jobs visible on load.
+    expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(10);
+
+    // Dismissible — the quiet reopen chip returns after a dismiss.
+    fireEvent.click(screen.getByRole('button', { name: 'إخفاء لوحة الحسابات التجريبية' }));
     const reopen = screen.getByRole('button', { name: 'عرض الحسابات التجريبية' });
     expect(reopen).toHaveClass('auth-demo-hint-reopen');
 

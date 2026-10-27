@@ -94,11 +94,13 @@ const ACCOUNT_PROFILES: Record<string, AccountProfileData> = {
   'registrar@test.ly': {
     /* R320 §B lockstep fix: the seed corpus (prisma/seed.ts, c1-RENAME)
        renamed this account's display name to the role's canonical name
-       «المسجل العام» — this twin table still carried the pre-rename
-       «إدارة الجامعة», so the FIRST ensure pass (which runs before the
-       corpus in db:seed) created the production row with the dead name
-       and no pass ever healed it (update touched only the password).
-       The two sources now agree; the belt pins the lockstep. */
+       «المسجل العام» — this twin table still carried the retired
+       pre-rename office name, so the FIRST ensure pass (which runs
+       before the corpus in db:seed) created the production row with
+       the dead name and no pass ever healed it (update touched only
+       the password). The two sources now agree; the belt pins the
+       lockstep. (R321 §A7: the stale literal retired from comments —
+       the ledger scan owns the history.) */
     firstName: 'المسجل', lastName: 'العام', avatarInitials: 'مع', avatarColor: '#9B6FE8',
     institution: 'zawia',
   },
@@ -250,7 +252,7 @@ export async function ensureTestAccounts(prisma: PrismaClient): Promise<number> 
     // profile — display name included. These are OUR @test.ly accounts
     // (isTestAccountEmail is the marker); no real user's name can be
     // touched here, and a row created by an older table version (the
-    // production «إدارة الجامعة» drift) self-heals on the next
+    // production pre-rename-name drift) self-heals on the next
     // db:seed / boot ensure instead of living forever.
     await prisma.user.upsert({
       where: { email: account.email },

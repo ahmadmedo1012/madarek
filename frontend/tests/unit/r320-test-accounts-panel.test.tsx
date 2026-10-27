@@ -8,13 +8,17 @@
  * backend/src/modules/auth/test-accounts.data.ts). These tests pin the
  * panel's three contracts:
  *
- *   1. RENDER — every job in the table, grouped التعليم / الإدارة /
- *      النظام, email + password VISIBLE (published test credentials).
+ *   1. RENDER — every job in the table, grouped التعليم / الحوكمة /
+ *      النظام (R321 §A7 — the governance bucket is «الحوكمة»), email +
+ *      password VISIBLE (published test credentials).
  *   2. FILL → SUBMIT — «تعبئة» fills BOTH form fields (never submits);
  *      the SAME row's button then reads «دخول» and the second tap
  *      submits the form with those credentials.
  *   3. GATE — VITE_SHOW_TEST_ACCOUNTS=0 hides the panel AND its reopen
  *      chip (default: absent var = SHOW).
+ *
+ * R321 §A8 — the panel starts OPEN in development (the owner's
+ * one-tap-per-job rule: first tap fills, second tap enters).
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -56,9 +60,11 @@ function renderPage() {
   );
 }
 
-/** Open the collapsed panel via the quiet reopen chip (r157 F5). */
+/** R321 §A8 — the panel starts OPEN (the owner's one-tap-per-job
+ * rule); the helper stays for the dismiss-and-reopen path only. */
 function openPanel() {
-  fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
+  // no-op by default — kept for symmetry with the dismiss tests that
+  // re-open via the reopen chip.
 }
 
 describe('R320 §C — the test-account login panel', () => {
@@ -146,19 +152,26 @@ describe('R320 §C — the test-account login panel', () => {
     expect(screen.queryAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(0);
   });
 
-  it('the panel starts collapsed (r157 F5) and is dismissible', () => {
+  it('the panel starts OPEN in development (R321 §A8) and is dismissible', () => {
     renderPage();
 
-    // Dev convenience, never the first thing a visitor reads.
+    // The owner's one-tap-per-job rule: the panel is the first thing a
+    // developer sees — all 10 jobs visible, no opener chip needed.
+    expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'عرض الحسابات التجريبية' })).toBeNull();
+    expect(screen.getAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(
+      TEST_ACCOUNTS.length,
+    );
+
+    // Dismissible: the quiet close returns the collapsed chip.
+    fireEvent.click(screen.getByRole('button', { name: 'إخفاء لوحة الحسابات التجريبية' }));
     expect(screen.queryByText('حسابات تجريبية — بيئة التطوير')).toBeNull();
     expect(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' })).toHaveClass(
       'auth-demo-hint-reopen',
     );
 
-    openPanel();
+    // …and the chip re-opens it (the r157 F5 affordance keeps working).
+    fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
     expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole('button', { name: 'إخفاء لوحة الحسابات التجريبية' }));
-    expect(screen.queryByText('حسابات تجريبية — بيئة التطوير')).toBeNull();
   });
 });

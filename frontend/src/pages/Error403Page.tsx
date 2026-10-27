@@ -26,6 +26,7 @@ export default function Error403Page() {
   return (
     <ErrorSheetPage
       code="ERR [403]"
+      coords="ACCESS DENIED"
       title="هذه الصفحة خارج نطاق صلاحياتك"
       lead="وصلت إلى صفحة لا يفتحها دورك في مدارك. ربّما تغيّر الرابط أو أن الصفحة مخصّصة لدور آخر."
       illustration="forbidden"

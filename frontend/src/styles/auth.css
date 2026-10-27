@@ -193,6 +193,12 @@
     font-size: var(--fs-sm);
     line-height: 1;
   }
+  /* R321 §A6 — the glyph is pseudo-element content: the marks stay
+     OUT of innerText (the R320 text spans leaked `+ | + | + | +` into
+     every sheet's innerText even inside aria-hidden — innerText only
+     respects rendering, not ARIA). Same font/size/color seat, so the
+     drawn chrome is pixel-identical. */
+  .auth-mark::before { content: '+'; }
   .auth-mark-tl { top: 0; left: 0; translate: -50% -50%; }
   .auth-mark-tr { top: 0; right: 0; translate: 50% -50%; }
   .auth-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
@@ -303,14 +309,27 @@
   }
   .auth-form-title {
     font-family: var(--font-display);
-    font-size: var(--fs-display-lg);
+    /* R321 §A8 — the INNER-PAGE title ladder (the .r319s-page
+       .pf-page-title recipe, r319-student.css §masthead — the one
+       scale every converted sheet page rides): 46.67px @1440 ·
+       4.4rem @≤991 · 3.2rem = 31.8px @≤767. The R315 display-lg seat
+       read 71px/2 lines at 390 — the owner's «≈80px» finding. */
+    font-size: var(--fs-h1);
     font-weight: var(--fw-bold);
     color: var(--text);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
-    /* R315 (K-I): the reference's display register — heavy and TIGHT
-       (line-height ~1, two lines max, no tashkeel in the markup —
-       «مرحبا بعودتك», the tanween dropped per the owner sheet rule). */
-    line-height: var(--lh-tight);
+    /* R315 (K-I): the tight display register keeps (line-height ~1,
+       two lines max, no tashkeel in the markup — «مرحبا بعودتك», the
+       tanween dropped per the owner sheet rule). */
+    line-height: var(--lh-snug);
+    /* R321 §A5 family — balanced wrapping on the narrow sheet. */
+    text-wrap: balance;
+  }
+  @media (max-width: 991px) {
+    .auth-form-title { font-size: 4.4rem; } /* type-gate: allow — ~40.5px @768, the tablet display rung (the r319-student masthead ladder) */
+  }
+  @media (max-width: 767px) {
+    .auth-form-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the r319-student masthead ladder) */
   }
   .auth-form-sub {
     font-size: var(--fs-body);
@@ -420,7 +439,11 @@
 
   .auth-cell {
     display: grid;
-    grid-template-columns: var(--sp-9) minmax(11rem, 15rem) minmax(0, 1fr);
+    /* R321 §A8: the label track sizes to its content (max-content, not
+       the capped 15rem) — the in-row labels are nowrap below, so the
+       longest label («البريد الإلكتروني أو رقم القيد») never wraps to
+       two lines beside its control at any width ≥640. */
+    grid-template-columns: var(--sp-9) minmax(11rem, max-content) minmax(0, 1fr);
     gap: var(--sp-2) var(--sp-3);
     padding-block: var(--sp-3);
     align-items: start;
@@ -447,6 +470,10 @@
     font-weight: var(--fw-semibold);
     line-height: var(--lh-snug);
     letter-spacing: 0;
+    /* R321 §A8 — the in-row label never wraps (the email row's label
+       rode two lines beside its control at 1440; the grid track above
+       now sizes to the longest nowrap label). */
+    white-space: nowrap;
     /* R315 (dom-judge auth-label-1): the reference's in-row form label
        is the MUTED seat — rgb(180,180,176) #B4B4B0 (the digest's
        disabled-gray rung), never full ink; --text-faint is the token
@@ -792,9 +819,9 @@
   }
   /* R320 §C — the test-account table: the sheet system's ruled-cell
      grammar (1px hairline rows, square cells, radius 0, mono
-     credentials), grouped التعليم / الإدارة / النظام. One row per
-     job; the password is VISIBLE by design — these are published test
-     credentials. */
+     credentials), grouped التعليم / الحوكمة / النظام (R321 §A7 — the
+     governance bucket is «الحوكمة»). One row per job; the password is
+     VISIBLE by design — these are published test credentials. */
   .auth-demo-table {
     border: 1px solid var(--rule);
     border-radius: var(--r-sm); /* 0 — the r313 ladder */
@@ -1292,6 +1319,9 @@
     font-size: var(--fs-sm);
     line-height: 1;
   }
+  /* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+     note above owns the reasoning). */
+  .nf-mark::before { content: '+'; }
   .nf-mark-tl { top: 0; left: 0; translate: -50% -50%; }
   .nf-mark-tr { top: 0; right: 0; translate: 50% -50%; }
   .nf-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
@@ -1361,6 +1391,10 @@
     font-weight: var(--fw-bold);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
     line-height: var(--lh-snug);
+    /* R321 §A5 — balanced wrapping: the /500 title's em-dash can never
+       strand on its own line (paired with the NBSP glue in the page
+       component — the dash rides the word before it). */
+    text-wrap: balance;
     color: var(--text);
   }
   .nf-sub {

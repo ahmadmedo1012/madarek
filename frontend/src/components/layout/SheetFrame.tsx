@@ -33,11 +33,14 @@ export function SheetFrame() {
     <div className="sheet-frame" aria-hidden="true">
       {/* Physical anchors (top/left/right/bottom), not logical — a
           corner is a physical seat; the auth.css .auth-mark note
-          documents why logical inline anchors drift under RTL. */}
-      <span className="sheet-mark sheet-mark-tl">+</span>
-      <span className="sheet-mark sheet-mark-tr">+</span>
-      <span className="sheet-mark sheet-mark-bl">+</span>
-      <span className="sheet-mark sheet-mark-br">+</span>
+          documents why logical inline anchors drift under RTL.
+          R321 §A6: the spans are EMPTY — the '+' glyph renders from
+          CSS ::before (r319-shell.css) so it never leaks into
+          innerText (aria-hidden alone does not remove text). */}
+      <span className="sheet-mark sheet-mark-tl" />
+      <span className="sheet-mark sheet-mark-tr" />
+      <span className="sheet-mark sheet-mark-bl" />
+      <span className="sheet-mark sheet-mark-br" />
     </div>
   );
 }

@@ -41,8 +41,8 @@ export type TestAccountRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWN
 /** Academic leadership appointment (TeacherProfile.position). */
 export type TestAccountPosition = 'DEAN' | 'ASSOCIATE_DEAN' | 'DEPARTMENT_HEAD';
 
-/** Panel grouping: التعليم = teaching/learning jobs · الإدارة = governance · النظام = platform. */
-export type TestAccountGroup = 'التعليم' | 'الإدارة' | 'النظام';
+/** Panel grouping: التعليم = teaching/learning jobs · الحوكمة = governance jobs · النظام = platform. R321 §A7 — the retired office label was still alive here (the R320 rename missed its own grouping bucket): the group word is «الحوكمة», one term per concept, consistent in code/tests/docs. */
+export type TestAccountGroup = 'التعليم' | 'الحوكمة' | 'النظام';
 
 export interface TestAccount {
   /** Arabic job label — the login panel's row label (data, not a role label). */
@@ -99,22 +99,22 @@ export const TEST_ACCOUNTS: readonly TestAccount[] = [
     position: 'ASSOCIATE_DEAN',
     group: 'التعليم',
   },
-  { job: 'المسجل العام', email: 'registrar@test.ly', password: TEST_PASSWORD, role: 'ADMIN', group: 'الإدارة' },
+  { job: 'المسجل العام', email: 'registrar@test.ly', password: TEST_PASSWORD, role: 'ADMIN', group: 'الحوكمة' },
   {
     job: 'مسجل كلية (نطاق كلية)',
     email: 'faculty@test.ly',
     password: TEST_PASSWORD,
     role: 'ADMIN',
     scoped: true,
-    group: 'الإدارة',
+    group: 'الحوكمة',
     note: 'ADMIN محصور بنطاق الكلية عبر scopeFacultyId',
   },
-  { job: 'أخصائي جودة', email: 'quality@test.ly', password: TEST_PASSWORD, role: 'QUALITY', group: 'الإدارة' },
+  { job: 'أخصائي جودة', email: 'quality@test.ly', password: TEST_PASSWORD, role: 'QUALITY', group: 'الحوكمة' },
   { job: 'مالك المنصة', email: 'owner@test.ly', password: TEST_PASSWORD, role: 'OWNER', group: 'النظام' },
 ];
 
 /** Display order of the panel groups. */
-export const TEST_ACCOUNT_GROUPS: readonly TestAccountGroup[] = ['التعليم', 'الإدارة', 'النظام'];
+export const TEST_ACCOUNT_GROUPS: readonly TestAccountGroup[] = ['التعليم', 'الحوكمة', 'النظام'];
 
 /** Case/whitespace-tolerant membership test for the demo domain. */
 export function isTestAccountEmail(email: string): boolean {

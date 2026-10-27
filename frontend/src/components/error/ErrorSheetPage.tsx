@@ -17,19 +17,28 @@ import type { MkIllustrationName } from '../illustrations/names';
  * component — one definition per grammar rule, three thin pages on
  * top (each its own lazy chunk, like /404).
  *
- * The sr-only span carries the code for assistive tech; the visible
- * mono eyebrow is aria-hidden so it is never announced twice.
+ * R321 §A5 — the code reads ONCE: the visible mono eyebrow is the
+ * single carrier (not aria-hidden, no sr-only twin — the R320 pair
+ * put the same string in innerText twice); the coordinates line
+ * carries the page's own mono WORD (SERVER FAULT, ACCESS DENIED…),
+ * never the code again. R321 §A6 — the corner plus-marks are empty
+ * spans; the glyph renders from CSS ::before so it never leaks into
+ * innerText (aria-hidden alone does NOT remove text from innerText).
  */
 export function ErrorSheetPage({
   code,
+  coords,
   title,
   lead,
   illustration,
   note,
   children,
 }: {
-  /** e.g. 'ERR [500]' — mono, LTR, uppercase. */
+  /** e.g. 'ERR [500]' — mono, LTR, uppercase. THE one visible code. */
   code: string;
+  /** The coordinates line's own mono word (e.g. 'SERVER FAULT') —
+   * never the code again (§A5: show the code once). */
+  coords: string;
   title: string;
   lead: string;
   illustration: MkIllustrationName;
@@ -41,11 +50,13 @@ export function ErrorSheetPage({
 }) {
   return (
     <main className="nf-shell">
+      {/* §A6: empty spans — the '+' glyph is CSS ::before content, so
+          the decorative marks never leak into innerText. */}
       <div className="nf-frame" aria-hidden="true">
-        <span className="nf-mark nf-mark-tl">+</span>
-        <span className="nf-mark nf-mark-tr">+</span>
-        <span className="nf-mark nf-mark-bl">+</span>
-        <span className="nf-mark nf-mark-br">+</span>
+        <span className="nf-mark nf-mark-tl" />
+        <span className="nf-mark nf-mark-tr" />
+        <span className="nf-mark nf-mark-bl" />
+        <span className="nf-mark nf-mark-br" />
       </div>
       <div className="auth-grain" aria-hidden="true" />
 
@@ -54,15 +65,17 @@ export function ErrorSheetPage({
           <Illustration name={illustration} />
         </div>
 
-        <span className="sr-only">{code}.</span>
-        <span className="nf-eyebrow" aria-hidden="true" dir="ltr">{code}</span>
+        {/* §A5: ONE carrier — the visible eyebrow announces the code
+            exactly once (aria-hidden removed; the sr-only twin deleted
+            so innerText never repeats it). */}
+        <span className="nf-eyebrow" dir="ltr">{code}</span>
 
         <h1 className="nf-title">{title}</h1>
         <p className="nf-sub">{lead}</p>
         {note && <p className="nf-sub">{note}</p>}
 
         <span className="nf-coords" aria-hidden="true" dir="ltr">
-          [0,0] &middot; {code.replace(' [', ' · ').replace(']', '')} &middot; MADAREK
+          [0,0] &middot; {coords} &middot; MADAREK
         </span>
 
         <div className="nf-actions">

@@ -53,7 +53,7 @@ export function PrivacyPage() {
       <LegalSectionBar index={1} title="ما الذي نجمعه" id="privacy-collect" />
       <LegalCell>
         <p className="lg-p">
-          عند إنشاء حساب نجمع <strong>البريد الإلكتروني، الاسم الأول والأخير، الدور</strong> (طالب أو أستاذ أو إدارة…)
+          عند إنشاء حساب نجمع <strong>البريد الإلكتروني، الاسم الأول والأخير، الدور</strong> (طالب أو أستاذ أو مسجل عام…)
           ولون الصورة الرمزية وحروفها الأولى. للطالب: الكلية والقسم والسنة الدراسية ورقم التسجيل. للأستاذ: المسمّى الأكاديمي.
         </p>
         <p className="lg-p">
@@ -61,7 +61,7 @@ export function PrivacyPage() {
         </p>
         <p className="lg-p">
           وما تكتبه داخل المنصّة يُخزَّن مع حسابك: الرسائل المباشرة والإشعارات، محادثاتك مع المساعد الأكاديمي،
-          البحوث والمواد التي ترفعها، وإجاباتك في الاختبارات. وتحتفظ الإدارة بسجلّ تدقيق لعملياتها (من فعل ماذا ومتى).
+          البحوث والمواد التي ترفعها، وإجاباتك في الاختبارات. وتحتفظ المنصّة بسجلّ تدقيق لعملياتها (من فعل ماذا ومتى).
         </p>
       </LegalCell>
 
@@ -273,11 +273,15 @@ export function CookiesPage() {
             </thead>
             <tbody>
               {STORAGE_LEDGER.map((row) => (
+                /* R321 §A4 — data-label feeds the ≤767 card
+                 * transformation (legal.css §5): each td names its
+                 * column so the mono ::before can carry the label when
+                 * the thead is re-seated as per-row card lines. */
                 <tr key={row.key}>
-                  <td className="lg-table-key" dir="ltr">{row.key}</td>
-                  <td>{row.purpose}</td>
-                  <td>{row.kind}</td>
-                  <td>{row.purge}</td>
+                  <td className="lg-table-key" dir="ltr" data-label="المفتاح">{row.key}</td>
+                  <td data-label="الغرض">{row.purpose}</td>
+                  <td data-label="الصنف">{row.kind}</td>
+                  <td data-label="يُحذف عند الرفض؟">{row.purge}</td>
                 </tr>
               ))}
             </tbody>

@@ -55,6 +55,12 @@
   border-radius: 50%;
   background: var(--accent);
   transform: translate(-50%, -50%);
+  /* R321 §A6 — the inert default the contract always promised ("layer
+     starts inert: children sit at opacity 0"): without this the core
+     parked at the layer origin (0,0) painted its bottom-right quarter
+     — the 3×3 orange tick at the very top-left pixel of EVERY desktop
+     page. data-active='true' lights it on the first pointermove. */
+  opacity: 0;
   /* state visuals ride transform/opacity only; the anchor stays JS-owned */
   transition:
     opacity var(--t-fast) var(--ease),

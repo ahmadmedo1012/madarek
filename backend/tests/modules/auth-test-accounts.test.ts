@@ -86,11 +86,11 @@ describe('R320 §C — the test-account table', () => {
     expect(TEST_ACCOUNTS.filter((a) => a.scoped)).toHaveLength(1);
   });
 
-  it('groups match the documented panel contract (التعليم 6 · الإدارة 3 · النظام 1)', () => {
-    expect(TEST_ACCOUNT_GROUPS).toEqual(['التعليم', 'الإدارة', 'النظام']);
+  it('groups match the documented panel contract (التعليم 6 · الحوكمة 3 · النظام 1 — R321 §A7: the governance bucket is «الحوكمة»)', () => {
+    expect(TEST_ACCOUNT_GROUPS).toEqual(['التعليم', 'الحوكمة', 'النظام']);
     const count = (group: string) => TEST_ACCOUNTS.filter((a) => a.group === group).length;
     expect(count('التعليم')).toBe(6);
-    expect(count('الإدارة')).toBe(3);
+    expect(count('الحوكمة')).toBe(3);
     expect(count('النظام')).toBe(1);
     // No pending@test.ly — the honest skip (no pending user state in
     // the schema); documented in the module header.

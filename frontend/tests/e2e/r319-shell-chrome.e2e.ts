@@ -40,6 +40,7 @@ interface FrameGeometry {
   pointerEvents: string;
   marks: number;
   markGlyphs: string[];
+  markText: string[];
 }
 
 async function frameGeometry(page: import('@playwright/test').Page): Promise<FrameGeometry> {
@@ -56,7 +57,11 @@ async function frameGeometry(page: import('@playwright/test').Page): Promise<Fra
       zIndex: cs.zIndex,
       pointerEvents: cs.pointerEvents,
       marks: marks.length,
-      markGlyphs: marks.map((m) => (m.textContent || '').trim()),
+      /* R321 §A6: the '+' glyph is ::before content — textContent must
+         be EMPTY (innerText leak fix); the glyph itself is read from
+         the pseudo-element's computed content. */
+      markGlyphs: marks.map((m) => getComputedStyle(m, '::before').content.replace(/^"|"$/g, '')),
+      markText: marks.map((m) => (m.textContent || '').trim()),
     };
   });
 }
@@ -109,9 +114,12 @@ for (const theme of THEMES) {
       const z = parseInt(frame.zIndex, 10);
       expect(z).toBeGreaterThan(100);
       expect(z).toBeLessThan(300);
-      // the registration marks: four plus-marks ON the corner points
+      // the registration marks: four plus-marks ON the corner points.
+      // R321 §A6 — the glyph renders from ::before content; the DOM
+      // text stays empty so innerText never leaks the decor.
       expect(frame.marks).toBeGreaterThanOrEqual(4);
       expect(frame.markGlyphs.slice(0, 4)).toEqual(['+', '+', '+', '+']);
+      expect(frame.markText).toEqual(['', '', '', '']);
     });
 
     test('the paper grain: the gate selector resolves to one fixed full-viewport film', async ({ page }) => {

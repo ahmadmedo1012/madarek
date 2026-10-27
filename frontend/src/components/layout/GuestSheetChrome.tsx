@@ -44,10 +44,12 @@ export function GuestSheetChrome({ portal = false }: { portal?: boolean }) {
   const chrome = (
     <>
       <div className="auth-frame" aria-hidden="true">
-        <span className="auth-mark auth-mark-tl">+</span>
-        <span className="auth-mark auth-mark-tr">+</span>
-        <span className="auth-mark auth-mark-bl">+</span>
-        <span className="auth-mark auth-mark-br">+</span>
+        {/* R321 §A6: empty spans — the '+' glyph is CSS ::before content
+            (auth.css), so the marks never leak into innerText. */}
+        <span className="auth-mark auth-mark-tl" />
+        <span className="auth-mark auth-mark-tr" />
+        <span className="auth-mark auth-mark-bl" />
+        <span className="auth-mark auth-mark-br" />
       </div>
       <div className="auth-grain" aria-hidden="true" />
     </>

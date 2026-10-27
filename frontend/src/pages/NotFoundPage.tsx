@@ -32,12 +32,15 @@ export default function NotFoundPage() {
           (fixed 1px #B3B3AF at the 7px inset + 10×10 mono corner plus
           marks, the .sheet-frame grammar). Everything decorative is
           aria-hidden and pointer-transparent; the sr-only span below
-          carries the code for assistive tech. */}
+          carries the code for assistive tech. R321 §A6: the mark spans
+          are EMPTY — the '+' glyph renders from CSS ::before so it
+          never leaks into innerText (aria-hidden alone does not
+          remove text from innerText). */}
       <div className="nf-frame" aria-hidden="true">
-        <span className="nf-mark nf-mark-tl">+</span>
-        <span className="nf-mark nf-mark-tr">+</span>
-        <span className="nf-mark nf-mark-bl">+</span>
-        <span className="nf-mark nf-mark-br">+</span>
+        <span className="nf-mark nf-mark-tl" />
+        <span className="nf-mark nf-mark-tr" />
+        <span className="nf-mark nf-mark-bl" />
+        <span className="nf-mark nf-mark-br" />
       </div>
       {/* c3-W6 (K-I completeness): the measured paper-grain film — the
           auth sheet's .auth-grain layer (documented cross-page borrow,

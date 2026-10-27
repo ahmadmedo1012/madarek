@@ -113,7 +113,7 @@ npm run dev:web                    # الواجهة :5173 (proxy ‏/api → :40
 |---|---|---|
 | طالب · طالب ثانٍ (للرسائل/المجتمع) | `student@test.ly` · `student2@test.ly` | التعليم |
 | أستاذ · رئيس قسم · عميد · نائب عميد | `teacher@test.ly` · `head@test.ly` · `dean@test.ly` · `vicedean@test.ly` | التعليم |
-| المسجل العام · مسجل كلية (نطاق كلية) · أخصائي جودة | `registrar@test.ly` · `faculty@test.ly` · `quality@test.ly` | الإدارة |
+| المسجل العام · مسجل كلية (نطاق كلية) · أخصائي جودة | `registrar@test.ly` · `faculty@test.ly` · `quality@test.ly` | الحوكمة |
 | مالك المنصة | `owner@test.ly` | النظام |
 
 يضاف إليها حسابان من الهيكل التجريبي الثاني (عزل المؤسسات):

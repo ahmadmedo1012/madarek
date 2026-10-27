@@ -106,6 +106,14 @@
     padding-inline: var(--page-gutter);
     padding-block: var(--sp-10) var(--sp-14);
     display: grid;
+    /* R321 §A4 — THE GRID OVERFLOW GUARD: implicit auto tracks size to
+       max-content, so a display-scale h1 whose glyph run is wider than
+       the phone column blew the track out LEFT (RTL) and the clip on
+       .lg hid it from scrollWidth. A minmax(0,1fr) track can shrink
+       below max-content — content wraps inside the column instead of
+       escaping it. EVERY grid/flex child of the measure inherits the
+       guard through this one track. */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-8);
     position: relative;
     z-index: 1;
@@ -122,13 +130,22 @@
   /* the title block — ONE h1 + the lede (the auth form-header voice) */
   .lg-head {
     display: grid;
+    /* R321 §A4 — the same minmax(0,1fr) guard one level down (the h1
+       is THIS grid's item; both grids must be shrink-safe). */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--sp-3);
   }
 
   .lg-title {
     margin: 0;
     font-family: var(--font-display);
-    font-size: var(--fs-display-lg);
+    /* R321 §A4 — the phone-scale title: ≤11vw on every phone (320 →
+       35px · 390 → 43px), the display-lg rung everywhere wider (the
+       clamp's max — tablet/desktop never shrink below the sheet
+       register). The R320 phone title (71px @390) had a max-content
+       glyph run wider than the column and, with auto grid tracks,
+       pushed the whole document left into the clip. */
+    font-size: clamp(3.4rem, 11vw, var(--fs-display-lg));
     font-weight: 700;
     line-height: var(--type-display-line-height);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
@@ -141,6 +158,11 @@
     line-height: 1.7;
     color: var(--text-secondary);
     max-inline-size: 64ch;
+    /* R321 §A4 — long unbreakable runs (URLs, emails, mono keys) wrap
+       at the glyph level ONLY when a line cannot hold them; Arabic
+       words that fit a line are never split (the §J rule — this only
+       arms the last resort). */
+    overflow-wrap: anywhere;
   }
 
   /* ══ 3 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
@@ -191,6 +213,9 @@
     font-size: var(--fs-body);
     line-height: 1.8;
     color: var(--text-secondary);
+    /* R321 §A4 — the last-resort wrap (see the .lg-lede note): only a
+       run that cannot fit a line alone ever breaks mid-run. */
+    overflow-wrap: anywhere;
   }
 
   .lg-p strong { color: var(--text); font-weight: var(--fw-semibold); }
@@ -299,6 +324,53 @@
     font-size: var(--fs-xs);
     color: var(--accent-ink);
     white-space: nowrap;
+  }
+
+  /* R321 §A4 — the ≤767 card transformation (the §B tables contract:
+     hairline cards, NO horizontal scroll). Each row becomes a ruled
+     cell; each td a labelled line (the mono ::before carries the
+     column name from the data-label attribute — the markup owns the
+     pairing, the CSS only re-seats it). The key keeps its ltr mono
+     voice; long keys wrap (overflow-wrap) instead of escaping. */
+  @media (max-width: 767px) {
+    .lg-table-wrap { overflow-x: visible; }
+    .lg-table,
+    .lg-table tbody,
+    .lg-table tr,
+    .lg-table td {
+      display: block;
+      inline-size: 100%;
+    }
+    .lg-table thead {
+      display: none; /* the labels ride each card line's ::before */
+    }
+    .lg-table caption {
+      display: block;
+      padding-block-end: var(--sp-3);
+    }
+    .lg-table tr {
+      border: 1px solid var(--rule);
+      padding: var(--sp-3) var(--sp-4);
+      border-radius: var(--r-sm); /* 0 */
+    }
+    .lg-table tr + tr { margin-block-start: var(--sp-3); }
+    .lg-table td {
+      border-block-end: 0;
+      padding: var(--sp-1) 0;
+      text-align: start;
+    }
+    .lg-table td::before {
+      content: attr(data-label);
+      display: block;
+      font-family: var(--font-mono);
+      font-size: var(--fs-xxs);
+      color: var(--text-faint);
+      padding-block-end: var(--sp-0-5);
+    }
+    .lg-table .lg-table-key {
+      white-space: normal; /* a long storage key wraps, never escapes */
+      overflow-wrap: anywhere;
+    }
   }
 
   /* ══ 6 · THE FAQ CELLS ══════════════════════════════════════════ */

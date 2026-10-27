@@ -191,12 +191,61 @@ describe('R320 cycle-3 — the routed error sheets (P2-3/4/5)', () => {
 
   it('/500 renders the designed grammar with one primary way home', () => {
     mount(<Error500Page />);
-    expect(screen.getByRole('heading', { level: 1, name: 'خللٌ من جانبنا — لا من جانبك' })).toBeInTheDocument();
+    // R321 §A5 re-pin: the em-dash is NBSP-glued to the word before it
+    // (it can never start its own line; text-wrap:balance pairs it).
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'خللٌ من جانبنا\u00A0— لا من جانبك' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('ERR [500]')).toBeInTheDocument();
     const home = screen.getByRole('link', { name: 'العودة إلى الرئيسية' });
     expect(home).toHaveAttribute('href', '/');
     // Exactly ONE primary action (the way home) — no fake retry.
     expect(document.querySelectorAll('.nf-actions .btn.primary')).toHaveLength(1);
+  });
+
+  it('R321 §A5 — the code reads ONCE: no duplicate normalised text, no code in the coordinates line', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <Error500Page />
+      </MemoryRouter>,
+    );
+    // the coordinates line carries the page's own word, never the code
+    expect(container.querySelector('.nf-coords')?.textContent).toContain('SERVER FAULT');
+    expect(container.querySelector('.nf-coords')?.textContent).not.toContain('500');
+    // the visible eyebrow is the ONE carrier (aria-hidden removed — the
+    // R320 sr-only twin put the same string in innerText twice)
+    const eyebrow = container.querySelector('.nf-eyebrow');
+    expect(eyebrow).not.toBeNull();
+    expect(eyebrow?.hasAttribute('aria-hidden')).toBe(false);
+    expect(container.querySelectorAll('.nf-scene .sr-only')).toHaveLength(0);
+    // normalised-text sweep: no two visible text nodes with the same
+    // normalised text inside the scene (the §A5 gate rule, unit-seated)
+    const normalise = (s: string) => s.replace(/[\s\p{P}\p{S}]+/gu, '').trim();
+    const seen = new Map<string, number>();
+    container
+      .querySelectorAll('.nf-scene *')
+      .forEach((el) =>
+        [...el.childNodes]
+          .filter((n) => n.nodeType === Node.TEXT_NODE && (n.textContent || '').trim())
+          .forEach((n) => {
+            const key = normalise(n.textContent || '');
+            seen.set(key, (seen.get(key) || 0) + 1);
+          }),
+      );
+    const dupes = [...seen.entries()].filter(([, n]) => n > 1);
+    expect(dupes).toEqual([]);
+  });
+
+  it('R321 §A6 — the corner plus-marks carry no text (innerText stays clean)', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <Error500Page />
+      </MemoryRouter>,
+    );
+    const marks = [...container.querySelectorAll('.nf-mark')];
+    expect(marks).toHaveLength(4);
+    // the glyph is CSS ::before content — the DOM text stays empty
+    marks.forEach((m) => expect((m.textContent || '').trim()).toBe(''));
   });
 
   it('/403 way-back follows ROLE_HOME for the signed-in role', () => {

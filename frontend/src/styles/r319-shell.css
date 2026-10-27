@@ -111,6 +111,11 @@ html[data-theme='dark'] .sheet-grain {
   font-size: var(--fs-sm);
   line-height: 1;
 }
+/* R321 §A6 — the glyph is pseudo-element content: the marks stay OUT
+   of innerText (the R320 text spans leaked `+ | + | + | +` into the
+   accessibility text even inside aria-hidden — innerText respects
+   rendering, not ARIA). Pixel-identical drawn chrome. */
+.sheet-mark::before { content: '+'; }
 .sheet-mark-tl { top: 0; left: 0; translate: -50% -50%; }
 .sheet-mark-tr { top: 0; right: 0; translate: 50% -50%; }
 .sheet-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }

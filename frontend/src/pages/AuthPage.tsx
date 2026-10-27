@@ -127,10 +127,12 @@ export default function AuthPage() {
   // (platform owner) proceeds straight to the role home — the
   // pre-r178 behavior.
   const [pendingSelection, setPendingSelection] = useState<MembershipInfo[] | null>(null);
-  // r157 F5: the demo panel starts COLLAPSED — it is a dev convenience,
-  // never the first thing a real visitor should read. A quiet reopen
-  // chip (.auth-demo-hint-reopen) keeps it one honest click away.
-  const [demoHintOpen, setDemoHintOpen] = useState(false);
+  // R321 §A8 — the demo panel starts OPEN while the project is in
+  // development (the owner's one-tap-per-job rule: first tap fills,
+  // second tap enters). The gate is still SHOW_TEST_ACCOUNTS: build
+  // with VITE_SHOW_TEST_ACCOUNTS=0 and the panel (open state included)
+  // never mounts. The collapse affordance stays for a quiet sheet.
+  const [demoHintOpen, setDemoHintOpen] = useState(SHOW_TEST_ACCOUNTS);
   // R320 §C — which test account's credentials currently fill the form
   // (that row's button flips from «تعبئة» to «دخول» — the second tap
   // submits). Null = nothing filled yet.
@@ -567,8 +569,10 @@ export default function AuthPage() {
                 </p>
                 {/* R320 §C — the hairline-cell account table (Heron sheet
                     grammar: 1px hairline rows, square cells, radius 0,
-                    mono credentials), grouped التعليم / الإدارة / النظام.
-                    Data is the shared test-account table — never forked
+                    mono credentials), grouped التعليم / الحوكمة / النظام
+                    (R321 §A7 — the governance bucket is «الحوكمة», never
+                    the retired office label). Data is the shared
+                    test-account table — never forked
                     here. The password is VISIBLE by design: these are
                     published test credentials. */}
                 <div className="auth-demo-table">

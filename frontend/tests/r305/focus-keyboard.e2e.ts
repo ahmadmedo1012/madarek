@@ -89,9 +89,9 @@ test.describe('لوحة الدخول — لوحة المفاتيح', () => {
     // type=button, no navigation, fillTestAccount only setValue's (the
     // clicked button keeps focus and stays mounted — its label flips
     // تعبئة→دخول, the element persists).
-    const demoToggle = page.getByRole('button', { name: 'عرض الحسابات التجريبية' });
-    await expect(demoToggle).toBeVisible();
-    await demoToggle.click();
+    // R321 §A8 re-pin: the panel starts OPEN in development (the owner's
+    // one-tap-per-job rule) — the reopen toggle is no longer the door;
+    // the fill button is directly visible.
     const fill = page.locator('.auth-demo-fill').first();
     await expect(fill).toBeVisible();
     await fill.click();
