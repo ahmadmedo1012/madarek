@@ -80,13 +80,23 @@ test.describe('لوحة الدخول — لوحة المفاتيح', () => {
       `:focus-visible outline-width must be > 0 (got «${kbRing.width}»)`,
     ).toBeGreaterThan(0);
 
-    // Mouse focus on a NON-submitting button (the forgot-password
-    // toggle — type=button): :focus:not(:focus-visible) must suppress
-    // the ring (no outline on pointer focus).
-    const forgot = page.getByRole('button', { name: 'نسيت كلمة المرور؟' });
-    await forgot.click();
-    await expect(forgot).toBeFocused();
-    const mouseRing = await readFocusRing(page, '.auth-forgot');
+    // Mouse focus on a NON-submitting control: :focus:not(:focus-visible)
+    // must suppress the ring (no outline on pointer focus). R320 (c2-FLOW):
+    // the retired seat was the forgot-password TOGGLE button — the flow's
+    // M3 made «نسيت كلمة المرور؟» a real <Link to="/auth/forgot-password">
+    // (a click NAVIGATES now), so the pointer-focus contract moves to the
+    // demo panel: open it with the reopen toggle, then the FILL button —
+    // type=button, no navigation, fillTestAccount only setValue's (the
+    // clicked button keeps focus and stays mounted — its label flips
+    // تعبئة→دخول, the element persists).
+    const demoToggle = page.getByRole('button', { name: 'عرض الحسابات التجريبية' });
+    await expect(demoToggle).toBeVisible();
+    await demoToggle.click();
+    const fill = page.locator('.auth-demo-fill').first();
+    await expect(fill).toBeVisible();
+    await fill.click();
+    await expect(fill).toBeFocused();
+    const mouseRing = await readFocusRing(page, '.auth-demo-fill');
     expect(
       mouseRing.style === 'none' || parseFloat(mouseRing.width) === 0,
       `mouse focus must NOT paint the ring (got style=${mouseRing.style}, width=${mouseRing.width})`,
