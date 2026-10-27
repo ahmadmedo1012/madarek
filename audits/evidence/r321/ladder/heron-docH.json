@@ -1,0 +1,609 @@
+{
+ "run": {
+  "date": "2026-10-27T22:39:38.142Z",
+  "url": "https://heronaiapp.com/",
+  "task": "r321-c1-HL (WP-HL) — Heron reference ladder evidence",
+  "browser": "chromium 148.0.7778.96 (headless)",
+  "playwright": "1.60.0",
+  "mode": "plain-headless",
+  "runtimeSec": 200,
+  "jpgTotalBytes": 995683,
+  "dirTotalBytes": 0
+ },
+ "ladder": [
+  {
+   "viewport": "320x568",
+   "width": 320,
+   "height": 568,
+   "uaClass": "iphone",
+   "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+   "networkidleMs": 2893,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 5338
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 568,
+     "contentDocH": 8650
+    },
+    "settle2s": {
+     "windowDocH": 568,
+     "contentDocH": 8650
+    },
+    "plus5s": {
+     "windowDocH": 568,
+     "contentDocH": 8650
+    },
+    "plus10s": {
+     "windowDocH": 568,
+     "contentDocH": 8650
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 8650,
+   "loader": {
+    "h1Inserted": 505,
+    "h1FirstText": 567,
+    "h1FirstVisible": 568,
+    "overlayGone": 8485,
+    "h1Appeared": 8485,
+    "samples": 423,
+    "gaveUpAt": null
+   },
+   "boardHeron": null,
+   "boardHeronMatch": false,
+   "madarekBoard": null
+  },
+  {
+   "viewport": "360x800",
+   "width": 360,
+   "height": 800,
+   "uaClass": "iphone",
+   "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+   "networkidleMs": 2949,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 5337
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 800,
+     "contentDocH": 10684
+    },
+    "settle2s": {
+     "windowDocH": 800,
+     "contentDocH": 10684
+    },
+    "plus5s": {
+     "windowDocH": 800,
+     "contentDocH": 10684
+    },
+    "plus10s": {
+     "windowDocH": 800,
+     "contentDocH": 10684
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 10684,
+   "loader": {
+    "h1Inserted": 535,
+    "h1FirstText": 600,
+    "h1FirstVisible": 601,
+    "overlayGone": 8477,
+    "h1Appeared": 8477,
+    "samples": 448,
+    "gaveUpAt": null
+   },
+   "boardHeron": 10684,
+   "boardHeronMatch": true,
+   "madarekBoard": 10742
+  },
+  {
+   "viewport": "390x844",
+   "width": 390,
+   "height": 844,
+   "uaClass": "iphone",
+   "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+   "networkidleMs": 3133,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 5337
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 844,
+     "contentDocH": 11441
+    },
+    "settle2s": {
+     "windowDocH": 844,
+     "contentDocH": 11441
+    },
+    "plus5s": {
+     "windowDocH": 844,
+     "contentDocH": 11441
+    },
+    "plus10s": {
+     "windowDocH": 844,
+     "contentDocH": 11441
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 11441,
+   "loader": {
+    "h1Inserted": 539,
+    "h1FirstText": 600,
+    "h1FirstVisible": 600,
+    "overlayGone": 8660,
+    "h1Appeared": 8660,
+    "samples": 436,
+    "gaveUpAt": null
+   },
+   "boardHeron": 11441,
+   "boardHeronMatch": true,
+   "madarekBoard": 11388
+  },
+  {
+   "viewport": "430x932",
+   "width": 430,
+   "height": 932,
+   "uaClass": "iphone",
+   "ua": "Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1",
+   "networkidleMs": 2672,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 5337
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 932,
+     "contentDocH": 12634
+    },
+    "settle2s": {
+     "windowDocH": 932,
+     "contentDocH": 12634
+    },
+    "plus5s": {
+     "windowDocH": 932,
+     "contentDocH": 12634
+    },
+    "plus10s": {
+     "windowDocH": 932,
+     "contentDocH": 12634
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 12634,
+   "loader": {
+    "h1Inserted": 247,
+    "h1FirstText": 309,
+    "h1FirstVisible": 310,
+    "overlayGone": 8215,
+    "h1Appeared": 8215,
+    "samples": 452,
+    "gaveUpAt": null
+   },
+   "boardHeron": null,
+   "boardHeronMatch": false,
+   "madarekBoard": null
+  },
+  {
+   "viewport": "480x800",
+   "width": 480,
+   "height": 800,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 2648,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 5337
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 800,
+     "contentDocH": 12585
+    },
+    "settle2s": {
+     "windowDocH": 800,
+     "contentDocH": 12585
+    },
+    "plus5s": {
+     "windowDocH": 800,
+     "contentDocH": 12585
+    },
+    "plus10s": {
+     "windowDocH": 800,
+     "contentDocH": 12585
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 12585,
+   "loader": {
+    "h1Inserted": 258,
+    "h1FirstText": 322,
+    "h1FirstVisible": 323,
+    "overlayGone": 8190,
+    "h1Appeared": 8190,
+    "samples": 444,
+    "gaveUpAt": null
+   },
+   "boardHeron": null,
+   "boardHeronMatch": false,
+   "madarekBoard": null
+  },
+  {
+   "viewport": "600x1024",
+   "width": 600,
+   "height": 1024,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 2768,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 5337
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 1024,
+     "contentDocH": 15802
+    },
+    "settle2s": {
+     "windowDocH": 1024,
+     "contentDocH": 15802
+    },
+    "plus5s": {
+     "windowDocH": 1024,
+     "contentDocH": 15802
+    },
+    "plus10s": {
+     "windowDocH": 1024,
+     "contentDocH": 15802
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 15802,
+   "loader": {
+    "h1Inserted": 269,
+    "h1FirstText": 315,
+    "h1FirstVisible": 316,
+    "overlayGone": 8138,
+    "h1Appeared": 8138,
+    "samples": 427,
+    "gaveUpAt": null
+   },
+   "boardHeron": null,
+   "boardHeronMatch": false,
+   "madarekBoard": null
+  },
+  {
+   "viewport": "768x1024",
+   "width": 768,
+   "height": 1024,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 3639,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 4239
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 1024,
+     "contentDocH": 12577
+    },
+    "settle2s": {
+     "windowDocH": 1024,
+     "contentDocH": 12577
+    },
+    "plus5s": {
+     "windowDocH": 1024,
+     "contentDocH": 12577
+    },
+    "plus10s": {
+     "windowDocH": 1024,
+     "contentDocH": 12577
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 12577,
+   "loader": {
+    "h1Inserted": 472,
+    "h1FirstText": 527,
+    "h1FirstVisible": 528,
+    "overlayGone": 8432,
+    "h1Appeared": 8432,
+    "samples": 379,
+    "gaveUpAt": null
+   },
+   "boardHeron": 12577,
+   "boardHeronMatch": true,
+   "madarekBoard": 12795
+  },
+  {
+   "viewport": "820x1180",
+   "width": 820,
+   "height": 1180,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 2629,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 4242
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 1180,
+     "contentDocH": 13925
+    },
+    "settle2s": {
+     "windowDocH": 1180,
+     "contentDocH": 13925
+    },
+    "plus5s": {
+     "windowDocH": 1180,
+     "contentDocH": 13925
+    },
+    "plus10s": {
+     "windowDocH": 1180,
+     "contentDocH": 13925
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 13925,
+   "loader": {
+    "h1Inserted": 248,
+    "h1FirstText": 275,
+    "h1FirstVisible": 275,
+    "overlayGone": 8264,
+    "h1Appeared": 8264,
+    "samples": 446,
+    "gaveUpAt": null
+   },
+   "boardHeron": null,
+   "boardHeronMatch": false,
+   "madarekBoard": null
+  },
+  {
+   "viewport": "1024x768",
+   "width": 1024,
+   "height": 768,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 2935,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 4483
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 768,
+     "contentDocH": 9938
+    },
+    "settle2s": {
+     "windowDocH": 768,
+     "contentDocH": 9938
+    },
+    "plus5s": {
+     "windowDocH": 768,
+     "contentDocH": 9938
+    },
+    "plus10s": {
+     "windowDocH": 768,
+     "contentDocH": 9938
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 9938,
+   "loader": {
+    "h1Inserted": 474,
+    "h1FirstText": 557,
+    "h1FirstVisible": 557,
+    "overlayGone": 8793,
+    "h1Appeared": 8793,
+    "samples": 440,
+    "gaveUpAt": null
+   },
+   "boardHeron": 9938,
+   "boardHeronMatch": true,
+   "madarekBoard": 10184
+  },
+  {
+   "viewport": "1180x900",
+   "width": 1180,
+   "height": 900,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 3869,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 4484
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 900,
+     "contentDocH": 11587
+    },
+    "settle2s": {
+     "windowDocH": 900,
+     "contentDocH": 11587
+    },
+    "plus5s": {
+     "windowDocH": 900,
+     "contentDocH": 11587
+    },
+    "plus10s": {
+     "windowDocH": 900,
+     "contentDocH": 11587
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 11587,
+   "loader": {
+    "h1Inserted": 261,
+    "h1FirstText": 340,
+    "h1FirstVisible": 340,
+    "overlayGone": 8907,
+    "h1Appeared": 8907,
+    "samples": 399,
+    "gaveUpAt": null
+   },
+   "boardHeron": null,
+   "boardHeronMatch": false,
+   "madarekBoard": null
+  },
+  {
+   "viewport": "1440x900",
+   "width": 1440,
+   "height": 900,
+   "uaClass": "desktop",
+   "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.0.0 Safari/537.36",
+   "networkidleMs": 5005,
+   "gotoTimedOut": false,
+   "challenge": {
+    "blocked": false,
+    "title": "Heron AI | Works inside your design tools",
+    "textLen": 4484
+   },
+   "scrollRoot": {
+    "kind": "lenis-wrapper",
+    "wrapperSel": ".main-inner.lenis"
+   },
+   "reads": {
+    "atNetworkidle": {
+     "windowDocH": 900,
+     "contentDocH": 12355
+    },
+    "settle2s": {
+     "windowDocH": 900,
+     "contentDocH": 12355
+    },
+    "plus5s": {
+     "windowDocH": 900,
+     "contentDocH": 12355
+    },
+    "plus10s": {
+     "windowDocH": 900,
+     "contentDocH": 12355
+    }
+   },
+   "deltas": {
+    "networkidleToSettle": 0,
+    "settleToPlus5": 0,
+    "plus5ToPlus10": 0
+   },
+   "docH": 12355,
+   "loader": {
+    "h1Inserted": 331,
+    "h1FirstText": 496,
+    "h1FirstVisible": 500,
+    "overlayGone": 9488,
+    "h1Appeared": 9488,
+    "samples": 280,
+    "gaveUpAt": null
+   },
+   "boardHeron": 12355,
+   "boardHeronMatch": true,
+   "madarekBoard": 12607
+  }
+ ]
+}

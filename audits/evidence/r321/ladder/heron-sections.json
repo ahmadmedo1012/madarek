@@ -1,0 +1,341 @@
+{
+ "run": {
+  "date": "2026-10-27T22:39:38.142Z",
+  "url": "https://heronaiapp.com/",
+  "task": "r321-c1-HL (WP-HL) — Heron reference ladder evidence",
+  "browser": "chromium 148.0.7778.96 (headless)",
+  "playwright": "1.60.0",
+  "mode": "plain-headless",
+  "runtimeSec": 200,
+  "jpgTotalBytes": 995683,
+  "dirTotalBytes": 0
+ },
+ "viewports": {
+  "390": {
+   "viewport": "390x844",
+   "docH": 11441,
+   "strategy": "S1: .main-content > * → section/footer",
+   "sections": [
+    {
+     "index": 1,
+     "tag": "section",
+     "cls": "home-hero",
+     "wrapTag": "home-hero-wrap",
+     "top": 0,
+     "height": 828,
+     "label": "AN AI AGENT THAT WORKS I",
+     "labelSource": "heading"
+    },
+    {
+     "index": 2,
+     "tag": "section",
+     "cls": "home-intro",
+     "wrapTag": "home-intro-wrap",
+     "top": 828,
+     "height": 847,
+     "label": "THE REPETITIVE PARTS OF ",
+     "labelSource": "heading"
+    },
+    {
+     "index": 3,
+     "tag": "section",
+     "cls": "home-problem",
+     "wrapTag": "home-problem-wrap",
+     "top": 1675,
+     "height": 869,
+     "label": "YOUR DESIGN TOOLS DO WHA",
+     "labelSource": "heading"
+    },
+    {
+     "index": 4,
+     "tag": "section",
+     "cls": "home-map",
+     "wrapTag": "home-map-wrap",
+     "top": 2545,
+     "height": 4819,
+     "label": "RIGHT THERE WITH YOU",
+     "labelSource": "heading"
+    },
+    {
+     "index": 5,
+     "tag": "section",
+     "cls": "home-platform",
+     "wrapTag": "home-platform-wrap",
+     "top": 7364,
+     "height": 558,
+     "label": "HERON CHAT WIDGET",
+     "labelSource": "heading"
+    },
+    {
+     "index": 6,
+     "tag": "section",
+     "cls": "home-why",
+     "wrapTag": "home-why-wrap",
+     "top": 7922,
+     "height": 806,
+     "label": "BUILT TO WORK THE WAY YO",
+     "labelSource": "heading"
+    },
+    {
+     "index": 7,
+     "tag": "section",
+     "cls": "home-usecase",
+     "wrapTag": "home-usecase-wrap",
+     "top": 8728,
+     "height": 948,
+     "label": "MADE FOR THE PEOPLE IN T",
+     "labelSource": "heading"
+    },
+    {
+     "index": 8,
+     "tag": "section",
+     "cls": "cta",
+     "wrapTag": "home-cta-wrap",
+     "top": 9676,
+     "height": 500,
+     "label": "SEE WHAT HERON CAN DO IN",
+     "labelSource": "heading"
+    },
+    {
+     "index": 9,
+     "tag": "footer",
+     "cls": "footer",
+     "wrapTag": "footer-wrap",
+     "top": 10176,
+     "height": 1265,
+     "label": "AN AI AGENT THAT WORKS I",
+     "labelSource": "heading"
+    }
+   ],
+   "sumHeights": 11440,
+   "reach": 11441,
+   "coverage": 100,
+   "fixedSticky": {
+    "candidates": [
+     {
+      "sel": "div.main-deco",
+      "pos": "fixed",
+      "w": 390,
+      "h": 844
+     },
+     {
+      "sel": "div.cookie-banner.bg-global",
+      "pos": "fixed",
+      "w": 374,
+      "h": 93
+     },
+     {
+      "sel": "header.header",
+      "pos": "fixed",
+      "w": 374,
+      "h": 50
+     },
+     {
+      "sel": "div.awwwards",
+      "pos": "fixed",
+      "w": 53,
+      "h": 166
+     },
+     {
+      "sel": "div.home-map-main-stick-inner",
+      "pos": "sticky",
+      "w": 374,
+      "h": 828
+     }
+    ],
+    "picked": [
+     {
+      "sel": "header.header",
+      "pos": "fixed",
+      "w": 374,
+      "h": 50
+     },
+     {
+      "sel": "div.home-map-main-stick-inner",
+      "pos": "sticky",
+      "w": 374,
+      "h": 828
+     },
+     {
+      "sel": "div.cookie-banner.bg-global",
+      "pos": "fixed",
+      "w": 374,
+      "h": 93
+     }
+    ]
+   }
+  },
+  "1440": {
+   "viewport": "1440x900",
+   "docH": 12355,
+   "strategy": "S1: .main-content > * → section/footer",
+   "sections": [
+    {
+     "index": 1,
+     "tag": "section",
+     "cls": "home-hero",
+     "wrapTag": "home-hero-wrap",
+     "top": 0,
+     "height": 887,
+     "label": "AN AI AGENT THAT WORKS I",
+     "labelSource": "heading"
+    },
+    {
+     "index": 2,
+     "tag": "section",
+     "cls": "home-intro",
+     "wrapTag": "home-intro-wrap",
+     "top": 887,
+     "height": 723,
+     "label": "THE REPETITIVE PARTS OF ",
+     "labelSource": "heading"
+    },
+    {
+     "index": 3,
+     "tag": "section",
+     "cls": "home-problem",
+     "wrapTag": "home-problem-wrap",
+     "top": 1609,
+     "height": 743,
+     "label": "YOUR DESIGN TOOLS DO WHA",
+     "labelSource": "heading"
+    },
+    {
+     "index": 4,
+     "tag": "section",
+     "cls": "home-map",
+     "wrapTag": "home-map-wrap",
+     "top": 2352,
+     "height": 6300,
+     "label": "RIGHT THERE WITH YOU",
+     "labelSource": "heading"
+    },
+    {
+     "index": 5,
+     "tag": "section",
+     "cls": "home-platform",
+     "wrapTag": "home-platform-wrap",
+     "top": 8652,
+     "height": 710,
+     "label": "HERON DASHBOARD",
+     "labelSource": "heading"
+    },
+    {
+     "index": 6,
+     "tag": "section",
+     "cls": "home-why",
+     "wrapTag": "home-why-wrap",
+     "top": 9362,
+     "height": 698,
+     "label": "OBSERVE",
+     "labelSource": "heading"
+    },
+    {
+     "index": 7,
+     "tag": "section",
+     "cls": "home-usecase",
+     "wrapTag": "home-usecase-wrap",
+     "top": 10060,
+     "height": 887,
+     "label": "MADE FOR THE PEOPLE IN T",
+     "labelSource": "heading"
+    },
+    {
+     "index": 8,
+     "tag": "section",
+     "cls": "cta",
+     "wrapTag": "home-cta-wrap",
+     "top": 10947,
+     "height": 698,
+     "label": "cta",
+     "labelSource": "class"
+    },
+    {
+     "index": 9,
+     "tag": "footer",
+     "cls": "footer",
+     "wrapTag": "footer-wrap",
+     "top": 11645,
+     "height": 711,
+     "label": "THANKS FOR REACHING OUT!",
+     "labelSource": "heading"
+    }
+   ],
+   "sumHeights": 12357,
+   "reach": 12356,
+   "coverage": 100,
+   "fixedSticky": {
+    "candidates": [
+     {
+      "sel": "div.cursor",
+      "pos": "fixed",
+      "w": 1440,
+      "h": 900
+     },
+     {
+      "sel": "div.main-deco",
+      "pos": "fixed",
+      "w": 1440,
+      "h": 900
+     },
+     {
+      "sel": "div.cookie-banner.bg-global",
+      "pos": "fixed",
+      "w": 601,
+      "h": 38
+     },
+     {
+      "sel": "header.header",
+      "pos": "fixed",
+      "w": 1427,
+      "h": 56
+     },
+     {
+      "sel": "div.awwwards",
+      "pos": "fixed",
+      "w": 44,
+      "h": 139
+     },
+     {
+      "sel": "div.home-map-inner",
+      "pos": "sticky",
+      "w": 1427,
+      "h": 887
+     },
+     {
+      "sel": "div#w-node-_75baf6a4-340f-1f03-d74c-b509873ecb1b",
+      "pos": "sticky",
+      "w": 1427,
+      "h": 145
+     },
+     {
+      "sel": "canvas#canvas-cursor",
+      "pos": "fixed",
+      "w": 1440,
+      "h": 900
+     }
+    ],
+    "picked": [
+     {
+      "sel": "header.header",
+      "pos": "fixed",
+      "w": 1427,
+      "h": 56
+     },
+     {
+      "sel": "div.home-map-inner",
+      "pos": "sticky",
+      "w": 1427,
+      "h": 887
+     },
+     {
+      "sel": "div.cookie-banner.bg-global",
+      "pos": "fixed",
+      "w": 601,
+      "h": 38
+     }
+    ]
+   }
+  }
+ }
+}
