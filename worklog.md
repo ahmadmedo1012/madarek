@@ -377,3 +377,17 @@ Work Log:
 
 Stage Summary:
 - docs/redesign/r321/STUDENT-SWEEP.md is the §B ticket factory + queue; evidence 48 shots (41@390 + 7@1440, all ≤150KB, dir 1.8MB); zero src changes.
+
+---
+Task ID: r321-c1-C0
+Agent: WP-C0 (sub-agent, died at the 15-min tool deadline after building the tooling) + foreman-B completion
+Task: The §C clean baseline — the ticket factory (report only + three found defects fixed).
+
+Work Log:
+- Tooling built+run: jscpd (980 clones · 9.77 % lines · css 516/tsx 272/ts 192; top: landing.css self ×47 · Admin↔Owner ×34 · tokens↔unified-parity ×33) · ts-prune (fe 366 · be 391 raw worklist rows — mostly false positives, verified-by-grep rule written) · depcheck (per-tree CLEAN; root lock artifacts verified used: zod 37/query 35/zustand 8/resolvers 10; framer-motion/date-fns/uuid/dnd-kit/react-markdown = lock residue only) · knip BLOCKED (oxc ArrayBuffer failure — recorded BLOCKED-with-reason) · in-repo lints (65 dup-selector conflicts · 183 unguarded hovers) · CSS coverage harness (28 routes × 3 roles × theme flips → 5,627 rules parsed · 2,230 unused-static candidates 39.6 % · 10 sheets N/A) · copy census (بيانات العرض ×2 · real-ui ×3 · [LIVE] ×3 · مساعد الفهم ×1 file = the 8 pinned §C-3 cells) · bundle table (736.0/736 zero-headroom on main; §E diet targets).
+- FOUND+FIXED 3 REAL DEFECTS (committed separately): banner comments shipping as raw CSS in 3 sheets (r305-research-pdf-ai lost its /* line; r305-student + training carried */ inside banner text). Strict parse 0 failures after.
+- baseline.md + baseline rows + the C-1..C-10 prioritised ticket list + raw reports (gz) committed under audits/evidence/r321/clean/.
+- Gates on the tree: tsc 0 · vitest 2733/2733 · raw-css --strict PASS · bundle 735.8/736 PASS (the comment fixes shaved 0.2 KB) · ledger 0.
+
+Stage Summary:
+- §C now has its ticket factory with numbers + commands: 65/183/2230/980/757/736 rows, the C-1..C-10 queue, and three CSS defects already dead. The cycle-6 diet + gate:clean have their baseline.

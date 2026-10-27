@@ -1,0 +1,366 @@
+shared/testAccounts.ts:120 - isTestAccountEmail
+shared/testAccounts.ts:125 - testAccountForJob
+shared/testAccounts.ts:39 - TestAccountRole
+shared/testAccounts.ts:42 - TestAccountPosition
+shared/testAccounts.ts:45 - TestAccountGroup
+shared/testAccounts.ts:62 - TEST_PASSWORD
+shared/testAccounts.ts:65 - TEST_ACCOUNTS_DOMAIN
+frontend/src/App.tsx:324 - AppRoutes (used in module)
+frontend/src/App.tsx:718 - RoutedCursorManager (used in module)
+frontend/src/App.tsx:788 - GuestLenisMount (used in module)
+frontend/src/components/CountUp.tsx:27 - CountUp
+frontend/src/components/ErrorBoundary.tsx:31 - isChunkLoadError (used in module)
+frontend/src/components/ErrorBoundary.tsx:56 - ErrorBoundary (used in module)
+frontend/src/components/Illustration.tsx:52 - IllustrationProps (used in module)
+frontend/src/components/LibyaFlag.tsx:6 - LibyaFlag
+frontend/src/components/StarMark.tsx:54 - StarFigure
+frontend/src/data/colleges.config.ts:268 - collegeIcon
+frontend/src/data/colleges.config.ts:47 - CollegeIdentityProfile (used in module)
+frontend/src/data/testimonials.config.ts:18 - Testimonial (used in module)
+frontend/src/data/testimonials.config.ts:38 - TESTIMONIALS
+frontend/src/data/university-media.ts:252 - RoleKey (used in module)
+frontend/src/data/university-media.ts:307 - RoleShowcase (used in module)
+frontend/src/data/university.facts.ts:37 - CAMPUS_CITIES
+frontend/src/hooks/useChangePassword.ts:34 - ChangePasswordInput (used in module)
+frontend/src/hooks/useMagnetic.ts:15 - useMagnetic
+frontend/src/hooks/useMilestone.ts:26 - MilestoneState (used in module)
+frontend/src/hooks/useOnboardingState.ts:31 - OnboardingFrame (used in module)
+frontend/src/hooks/useOnboardingState.ts:33 - OnboardingState (used in module)
+frontend/src/hooks/useOwner.ts:122 - RealtimeMetrics (used in module)
+frontend/src/hooks/useOwner.ts:129 - AiMetrics (used in module)
+frontend/src/hooks/useOwner.ts:150 - LoginAnalytics (used in module)
+frontend/src/hooks/useOwner.ts:158 - PlatformSetting (used in module)
+frontend/src/hooks/useOwner.ts:178 - GovernanceMetrics (used in module)
+frontend/src/hooks/useOwner.ts:231 - OwnerEducation (used in module)
+frontend/src/hooks/useOwner.ts:246 - OwnerSystem (used in module)
+frontend/src/hooks/useResources.ts:562 - normalizeOfferingGradeRow
+frontend/src/hooks/useResources.ts:115 - OfferingAnalytics
+frontend/src/hooks/useResources.ts:133 - RecordAttendanceInput
+frontend/src/hooks/useResources.ts:164 - TeacherMaterial
+frontend/src/hooks/useResources.ts:184 - TeacherAssignmentRow
+frontend/src/hooks/useResources.ts:266 - SendMessageInput
+frontend/src/hooks/useResources.ts:289 - CreateAssignmentInput
+frontend/src/hooks/useResources.ts:317 - CreateMaterialInput
+frontend/src/hooks/useResources.ts:353 - UploadMaterialFileInput
+frontend/src/hooks/useResources.ts:363 - MATERIAL_UPLOAD_TIMEOUT_MS
+frontend/src/hooks/useResources.ts:406 - CurriculumSuggestion
+frontend/src/hooks/useResources.ts:422 - TeacherFullProfile
+frontend/src/hooks/useResources.ts:470 - UpdateTeacherProfilePayload
+frontend/src/hooks/useResources.ts:502 - OfferingGradeItem
+frontend/src/hooks/useResources.ts:516 - UpsertOfferingGradesInput
+frontend/src/hooks/useResources.ts:557 - OfferingGradeWireRow
+frontend/src/hooks/useResources.ts:111 - ResumeState
+frontend/src/hooks/useResources.ts:137 - StudentResults
+frontend/src/hooks/useResources.ts:236 - MatrixCourse
+frontend/src/hooks/useResources.ts:252 - Gap
+frontend/src/hooks/useResources.ts:320 - CoursesCatalogMeta
+frontend/src/hooks/useResources.ts:326 - CoursesCatalogPage
+frontend/src/hooks/useResources.ts:371 - MyProfile
+frontend/src/hooks/useResources.ts:103 - NotificationsFeedPage
+frontend/src/hooks/useResources.ts:111 - NOTIFICATIONS_FEED_LIMIT
+frontend/src/hooks/useResources.ts:25 - Course
+frontend/src/hooks/useResources.ts:51 - BooksMeta
+frontend/src/hooks/useResources.ts:57 - BooksPage
+frontend/src/hooks/useResources.ts:128 - LoanWriteResult
+frontend/src/hooks/useResources.ts:167 - MyLabStats
+frontend/src/hooks/useResources.ts:243 - JobsPayload
+frontend/src/hooks/useResources.ts:291 - ArExperience
+frontend/src/hooks/useResources.ts:308 - Faculty
+frontend/src/hooks/useResources.ts:82 - CreateAnnouncementInput
+frontend/src/hooks/useResources.ts:121 - CompetitionDetail
+frontend/src/hooks/useResources.ts:146 - CreateCompetitionInput
+frontend/src/hooks/useResources.ts:164 - EnterCompetitionInput
+frontend/src/hooks/useResources.ts:244 - CreateCampusEventInput
+frontend/src/hooks/useResources.ts:301 - CreateStudyRoomInput
+frontend/src/hooks/useResources.ts:327 - StudyRoomMembershipInput
+frontend/src/hooks/useResources.ts:12 - AdminStats
+frontend/src/hooks/useResources.ts:62 - AdminReports
+frontend/src/hooks/useResources.ts:95 - AdminCoursesMeta
+frontend/src/hooks/useResources.ts:313 - AdminTeacherOption
+frontend/src/hooks/useResources.ts:418 - AdminPapersMeta
+frontend/src/hooks/useResources.ts:447 - TeacherSuggestionResponse
+frontend/src/hooks/useResources.ts:521 - StudentEnrollment
+frontend/src/hooks/useResources.ts:546 - EnrollmentOffering
+frontend/src/hooks/useResources.ts:88 - PaperAnnotation
+frontend/src/hooks/useResources.ts:159 - UploadPaperFileVars
+frontend/src/hooks/useResources.ts:403 - isLectureFinished
+frontend/src/hooks/useResources.ts:63 - LectureDetail
+frontend/src/hooks/useResources.ts:222 - ChapterWriteInput
+frontend/src/hooks/useResources.ts:227 - ChapterPatchInput
+frontend/src/hooks/useResources.ts:285 - CheckpointWriteInput
+frontend/src/hooks/useResources.ts:294 - CheckpointPatchInput
+frontend/src/hooks/useResources.ts:343 - OfferingFull
+frontend/src/hooks/useResources.ts:384 - NextLectureInput
+frontend/src/hooks/useResources.ts:10 - SubmissionStatusFE
+frontend/src/hooks/useResources.ts:71 - SubmitAssignmentInput
+frontend/src/hooks/useResources.ts:410 - tagStartExamResponse
+frontend/src/hooks/useResources.ts:42 - QuestionCategoryRow
+frontend/src/hooks/useResources.ts:229 - ModerationQueueItem
+frontend/src/hooks/useResources.ts:309 - ManualExamGradeInput
+frontend/src/hooks/useResources.ts:373 - SavedAnswerValue
+frontend/src/hooks/useResources.ts:392 - StartExamResponse
+frontend/src/hooks/useResources.ts:401 - StartExamWire
+frontend/src/hooks/useResources.ts:496 - AttemptReview
+frontend/src/hooks/useResources.ts:21 - UserAchievement
+frontend/src/hooks/useResources.ts:32 - UserSkill
+frontend/src/hooks/useResources.ts:44 - LeaderEntry
+frontend/src/hooks/useResources.ts:67 - TrainingLevel
+frontend/src/hooks/useResources.ts:107 - TrainingTrackDetail
+frontend/src/hooks/useResources.ts:147 - CompleteLessonResult
+frontend/src/hooks/useResources.ts:174 - TrainingMeSummary
+frontend/src/hooks/useResources.ts:190 - UserBadgeRow
+frontend/src/hooks/useResources.ts:207 - TrainingCertificate
+frontend/src/hooks/useResources.ts:225 - LeaderboardRow
+frontend/src/hooks/useResources.ts:26 - MyPermissions
+frontend/src/hooks/useResources.ts:47 - AiConfig
+frontend/src/hooks/useResources.ts:64 - AiConversation
+frontend/src/hooks/useReveal.ts:362 - useReveal (used in module)
+frontend/src/hooks/useRoleAccent.ts:22 - RoleAccentKey (used in module)
+frontend/src/hooks/useSectionProgress.ts:79 - useSectionProgress
+frontend/src/lib/api.ts:21 - AuthSessionUser (used in module)
+frontend/src/lib/api.ts:32 - PublicInstitution (used in module)
+frontend/src/lib/api.ts:123 - ResetPasswordResponse (used in module)
+frontend/src/lib/authErrors.ts:18 - AuthErrorView (used in module)
+frontend/src/lib/calendar.ts:38 - tripoliDayKey (used in module)
+frontend/src/lib/calendar.ts:53 - tripoliTime (used in module)
+frontend/src/lib/calendar.ts:21 - AUDIENCE_TZ (used in module)
+frontend/src/lib/calendar.ts:60 - CivilDate (used in module)
+frontend/src/lib/calendar.ts:163 - ScheduleSourceInput (used in module)
+frontend/src/lib/calendar.ts:201 - DatedEventInput (used in module)
+frontend/src/lib/calendar.ts:225 - ExamEventInput (used in module)
+frontend/src/lib/courseMeta.ts:23 - DEFAULT_COURSE_TINT (used in module)
+frontend/src/lib/courseMeta.ts:65 - ExamKindKey (used in module)
+frontend/src/lib/courseMeta.ts:110 - GradeBand (used in module)
+frontend/src/lib/materialHref.ts:44 - MaterialHrefInput (used in module)
+frontend/src/lib/materialHref.ts:50 - MaterialHref (used in module)
+frontend/src/lib/nav.ts:22 - NavItem (used in module)
+frontend/src/lib/nav.ts:41 - STUDENT_NAV (used in module)
+frontend/src/lib/nav.ts:171 - TEACHER_NAV (used in module)
+frontend/src/lib/nav.ts:248 - ADMIN_NAV (used in module)
+frontend/src/lib/nav.ts:300 - QUALITY_NAV (used in module)
+frontend/src/lib/nav.ts:341 - OWNER_NAV (used in module)
+frontend/src/lib/overlayStack.ts:81 - OverlayStackEntry (used in module)
+frontend/src/lib/overlayStack.ts:95 - OverlayStackApi (used in module)
+frontend/src/lib/overlayStack.ts:126 - OVERLAY_HISTORY_MARKER (used in module)
+frontend/src/lib/pdfUpload.ts:31 - isPdfFile (used in module)
+frontend/src/lib/pdfUpload.ts:93 - sniffPdfMagicBytes (used in module)
+frontend/src/lib/pdfUpload.ts:28 - PDF_MAX_BYTES (used in module)
+frontend/src/lib/pdfUpload.ts:56 - PDF_MAGIC_PREFIX (used in module)
+frontend/src/lib/queryClient.ts:15 - shouldRetryQuery (used in module)
+frontend/src/lib/queryClient.ts:11 - QUERY_MAX_RETRIES (used in module)
+frontend/src/lib/roleLabels.ts:42 - ROLE_DASHBOARD_LABELS (used in module)
+frontend/src/lib/roleLabels.ts:59 - AUTH_DEMO_ROLE_LABELS
+frontend/src/lib/scrollLock.ts:88 - isScrollLocked
+frontend/src/lib/scrollLock.ts:39 - SCROLL_LOCK_BODY_CLASS (used in module)
+frontend/src/lib/search.ts:42 - stripAlPrefix (used in module)
+frontend/src/lib/theme.ts:12 - ThemeSurface (used in module)
+frontend/src/lib/theme.ts:96 - __test__
+frontend/src/lib/toast.ts:26 - ToastAction (used in module)
+frontend/src/lib/toast.ts:32 - ToastOptions (used in module)
+frontend/src/lib/vision.ts:7 - VisionStatus (used in module)
+frontend/src/stores/onboarding.store.ts:27 - ONBOARDING_LAST_FRAME (used in module)
+frontend/src/stores/theme.store.ts:5 - ResolvedTheme (used in module)
+frontend/src/stores/ui.store.ts:9 - PALETTE_RECENTS_CAP (used in module)
+frontend/src/utils/numbers.ts:2 - toWestern (used in module)
+frontend/src/utils/numbers.ts:42 - getCachedNumberFormat (used in module)
+frontend/src/components/charts/index.ts:7 - ChartFrame
+frontend/src/components/charts/index.ts:8 - ChartFrameProps
+frontend/src/components/charts/index.ts:8 - ChartTable
+frontend/src/components/curriculum/ChapterBuilder.tsx:51 - ChapterFormModal (used in module)
+frontend/src/components/curriculum/CheckpointBuilder.tsx:80 - CheckpointFormModal (used in module)
+frontend/src/components/curriculum/curriculumValidation.ts:15 - LECTURE_MEDIA_URL_PATTERN (used in module)
+frontend/src/components/curriculum/curriculumValidation.ts:18 - MAX_MEDIA_SEC (used in module)
+frontend/src/components/curriculum/curriculumValidation.ts:21 - MAX_ORDINAL (used in module)
+frontend/src/components/curriculum/index.ts:12 - CurriculumAuthoringPanel
+frontend/src/components/illustrations/BrandLoader.tsx:40 - BrandLoaderProps (used in module)
+frontend/src/components/illustrations/Illustration.tsx:86 - IllustrationProps (used in module)
+frontend/src/components/illustrations/names.ts:16 - MK_ILLUSTRATION_NAMES (used in module)
+frontend/src/components/landing/ElevationDrawing.tsx:73 - ELEVATION_VB (used in module)
+frontend/src/components/landing/ElevationDrawing.tsx:75 - ElevationVariant (used in module)
+frontend/src/components/landing/HeroInkWindow.tsx:24 - HERO_FRAME
+frontend/src/components/landing/MediaFrame.tsx:19 - MediaFrameProps (used in module)
+frontend/src/components/landing/ProductFrame.tsx:23 - ProductFrameProps (used in module)
+frontend/src/components/landing/SheetLoader.tsx:78 - SheetLoaderProps (used in module)
+frontend/src/components/landing/SheetLoader.tsx:484 - INTRO_SEEN_KEY (used in module)
+frontend/src/components/landing/StatementArt.tsx:32 - STATEMENT_ART_VB
+frontend/src/components/landing/VideoCard.tsx:22 - VideoCardProps (used in module)
+frontend/src/components/landing/WhyScene.tsx:30 - WhyStage (used in module)
+frontend/src/components/landing/WhyScene.tsx:45 - WHY_STAGES (used in module)
+frontend/src/components/layout/AppShell.tsx:109 - resolveTitle (used in module)
+frontend/src/components/layout/BottomNav.tsx:123 - BOTTOM_NAV_BY_ROLE (used in module)
+frontend/src/components/messages/MessageComposeModal.tsx:37 - RecipientGroup (used in module)
+frontend/src/components/messages/MessageComposeModal.tsx:42 - MessageComposeModalProps (used in module)
+frontend/src/components/messages/MessagesInbox.tsx:183 - groupMessagesByDay (used in module)
+frontend/src/components/messages/MessagesInbox.tsx:154 - MessageDayGroup (used in module)
+frontend/src/components/messages/MessagesInbox.tsx:225 - ComposeRenderArgs (used in module)
+frontend/src/components/motion/CursorManager.tsx:94 - resolveCursorState (used in module)
+frontend/src/components/motion/CursorManager.tsx:76 - CursorState (used in module)
+frontend/src/components/motion/CursorManager.tsx:78 - CursorManagerProps (used in module)
+frontend/src/components/motion/index.ts:26 - useReducedMotion
+frontend/src/components/motion/index.ts:27 - PageTransition
+frontend/src/components/motion/index.ts:28 - Skeleton
+frontend/src/components/motion/index.ts:29 - SkeletonVariant
+frontend/src/components/motion/index.ts:30 - Reveal
+frontend/src/components/motion/index.ts:30 - RevealGroup
+frontend/src/components/motion/index.ts:35 - CursorManager
+frontend/src/components/motion/index.ts:38 - GuestReveal
+frontend/src/components/motion/Parallax.tsx:40 - Parallax
+frontend/src/components/motion/Parallax.tsx:26 - ParallaxProps (used in module)
+frontend/src/components/motion/SectionAccent.tsx:22 - SectionAccentProps (used in module)
+frontend/src/components/motion/useSectionAccent.ts:40 - UseSectionAccentOpts (used in module)
+frontend/src/components/motion/useSectionAccent.ts:47 - UseSectionAccentResult (used in module)
+frontend/src/components/onboarding/MilestoneScene.tsx:101 - MilestoneSceneProps (used in module)
+frontend/src/components/onboarding/OnboardingFlow.tsx:102 - OnboardingFlowProps (used in module)
+frontend/src/components/overlays/anchoredPosition.ts:57 - computeAnchoredPosition (used in module)
+frontend/src/components/overlays/anchoredPosition.ts:35 - AnchorPlacement (used in module)
+frontend/src/components/overlays/anchoredPosition.ts:37 - AnchoredPosition (used in module)
+frontend/src/components/overlays/index.ts:34 - Modal
+frontend/src/components/overlays/index.ts:35 - ModalProps
+frontend/src/components/overlays/index.ts:37 - Sheet
+frontend/src/components/overlays/index.ts:38 - SheetProps
+frontend/src/components/overlays/index.ts:38 - SheetSide
+frontend/src/components/overlays/index.ts:40 - Toast
+frontend/src/components/overlays/index.ts:40 - ToastStack
+frontend/src/components/overlays/index.ts:41 - ToastProps
+frontend/src/components/overlays/index.ts:41 - ToastVariant
+frontend/src/components/overlays/index.ts:43 - Popover
+frontend/src/components/overlays/index.ts:44 - PopoverProps
+frontend/src/components/overlays/index.ts:46 - Dropdown
+frontend/src/components/overlays/index.ts:46 - DropdownItem
+frontend/src/components/overlays/index.ts:46 - DropdownSeparator
+frontend/src/components/overlays/index.ts:47 - DropdownProps
+frontend/src/components/overlays/index.ts:47 - DropdownItemProps
+frontend/src/components/overlays/index.ts:49 - Tooltip
+frontend/src/components/overlays/index.ts:50 - TooltipProps
+frontend/src/components/overlays/index.ts:52 - Lightbox
+frontend/src/components/overlays/index.ts:53 - LightboxProps
+frontend/src/components/overlays/index.ts:55 - CommandPalette
+frontend/src/components/overlays/index.ts:56 - CommandPaletteProps
+frontend/src/components/overlays/index.ts:58 - NotificationPanel
+frontend/src/components/overlays/index.ts:59 - NotificationPanelProps
+frontend/src/components/overlays/Sheet.tsx:57 - SheetSize (used in module)
+frontend/src/components/overlays/useDelayedUnmount.ts:43 - DelayedUnmount (used in module)
+frontend/src/components/paper/ScanResults.tsx:24 - plagiarismTier (used in module)
+frontend/src/components/paper/ScanResults.tsx:31 - aiTier (used in module)
+frontend/src/components/paper/ScanResults.tsx:22 - ScanTier (used in module)
+frontend/src/components/patterns/index.ts:5 - PageFrame
+frontend/src/components/patterns/index.ts:6 - PageFrameWidth
+frontend/src/components/patterns/index.ts:8 - PageHeader
+frontend/src/components/patterns/index.ts:9 - PageBreadcrumb
+frontend/src/components/patterns/index.ts:11 - SectionHeader
+frontend/src/components/patterns/index.ts:13 - RowList
+frontend/src/components/patterns/index.ts:13 - RowItem
+frontend/src/components/patterns/index.ts:14 - RowListProps
+frontend/src/components/patterns/index.ts:14 - RowItemProps
+frontend/src/components/patterns/index.ts:16 - SplitView
+frontend/src/components/patterns/index.ts:18 - StatLine
+frontend/src/components/patterns/index.ts:19 - StatLineItem
+frontend/src/components/patterns/index.ts:21 - FilterBar
+frontend/src/components/patterns/index.ts:22 - FilterBarSearch
+frontend/src/components/patterns/index.ts:24 - TodayList
+frontend/src/components/patterns/index.ts:25 - TodayItem
+frontend/src/components/pdf/loadError.ts:23 - PdfLoadFailureKind (used in module)
+frontend/src/components/pdf/loadError.ts:30 - PdfLoadFailure (used in module)
+frontend/src/components/pdf/searchFold.ts:60 - foldWithIndex (used in module)
+frontend/src/components/pdf/searchFold.ts:77 - matchTerms (used in module)
+frontend/src/components/pdf/searchFold.ts:203 - findFoldedRanges (used in module)
+frontend/src/components/pdf/searchFold.ts:51 - FoldedText (used in module)
+frontend/src/components/pdf/searchFold.ts:148 - PageScan (used in module)
+frontend/src/components/player/VideoPlayerChrome.tsx:70 - VideoPlayerChromeProps (used in module)
+frontend/src/components/primitives/index.tsx:46 - Card
+frontend/src/components/primitives/index.tsx:120 - MetricCard
+frontend/src/components/primitives/index.tsx:215 - Badge
+frontend/src/components/primitives/index.tsx:234 - ProgressBar
+frontend/src/components/primitives/index.tsx:318 - AlertRow
+frontend/src/components/primitives/index.tsx:519 - UserAvatar
+frontend/src/components/primitives/index.tsx:550 - Pill
+frontend/src/components/primitives/index.tsx:591 - SectionTitle
+frontend/src/components/primitives/index.tsx:604 - Tabs
+frontend/src/components/primitives/index.tsx:32 - ThemeColor (used in module)
+frontend/src/components/primitives/index.tsx:34 - Button
+frontend/src/components/primitives/index.tsx:34 - Input
+frontend/src/components/primitives/index.tsx:34 - FormField
+frontend/src/components/primitives/index.tsx:35 - ButtonVariant
+frontend/src/components/primitives/index.tsx:35 - ButtonSize
+frontend/src/components/primitives/index.tsx:36 - PageHeader
+frontend/src/components/primitives/index.tsx:39 - StatStrip
+frontend/src/components/primitives/index.tsx:39 - Sparkline
+frontend/src/components/primitives/index.tsx:39 - ProgressRing
+frontend/src/components/primitives/index.tsx:39 - LedgerPanel
+frontend/src/components/primitives/index.tsx:39 - LedgerRow
+frontend/src/components/primitives/index.tsx:39 - WeekRow
+frontend/src/components/primitives/index.tsx:42 - StatTone
+frontend/src/components/primitives/index.tsx:42 - StatCellData
+frontend/src/components/primitives/index.tsx:42 - SparkTone
+frontend/src/components/primitives/index.tsx:42 - ZoneTone
+frontend/src/components/primitives/index.tsx:42 - LedgerRowProps
+frontend/src/components/primitives/index.tsx:316 - AlertColor (used in module)
+frontend/src/components/primitives/index.tsx:509 - __test__
+frontend/src/components/primitives/States.tsx:298 - KpiSkeleton (used in module)
+frontend/src/components/student/index.ts:3 - SectionBar
+frontend/src/components/student/index.ts:3 - BarCount
+frontend/src/components/student/index.ts:4 - RulerGauge
+frontend/src/components/student/index.ts:4 - semesterWeeks
+frontend/src/components/student/index.ts:5 - CourseBar
+frontend/src/components/student/index.ts:6 - StatusChip
+frontend/src/components/student/index.ts:6 - dueChip
+frontend/src/components/student/index.ts:6 - dueDays
+frontend/src/components/student/index.ts:6 - STATUS_CHIP_TONES
+frontend/src/components/student/index.ts:7 - StatusChipTone
+frontend/src/components/student/index.ts:8 - WeekStrip
+frontend/src/components/student/index.ts:9 - EmptyCell
+frontend/src/components/student/RulerGauge.tsx:36 - SemesterWeeks (used in module)
+frontend/src/lib/illustrations/index.tsx:77 - loadScene
+frontend/src/lib/illustrations/index.tsx:86 - SceneFallback
+frontend/src/lib/illustrations/index.tsx:37 - IllustrationName (used in module)
+frontend/src/lib/illustrations/index.tsx:43 - V1_ILLUSTRATION_NAMES
+frontend/src/lib/illustrations/index.tsx:50 - SceneProps (used in module)
+frontend/src/lib/illustrations/index.tsx:63 - SceneComponent (used in module)
+frontend/src/lib/illustrations/index.tsx:70 - SCENE_REGISTRY (used in module)
+frontend/src/lib/motion/introGate.ts:66 - introPlayedInDocument
+frontend/src/lib/motion/introGate.ts:71 - resetIntroDocumentGateForTests
+frontend/src/lib/motion/introGate.ts:236 - loaderCurveAt (used in module)
+frontend/src/lib/motion/introGate.ts:45 - INTRO_SKIP_KEY (used in module)
+frontend/src/lib/motion/introGate.ts:47 - SessionLike (used in module)
+frontend/src/lib/motion/introGate.ts:81 - IntroEnvironment (used in module)
+frontend/src/lib/motion/introGate.ts:158 - LOADER_CURVE (used in module)
+frontend/src/lib/motion/introGate.ts:181 - LOADER_GATE_PCT (used in module)
+frontend/src/lib/motion/introGate.ts:184 - LOADER_DONE_MS (used in module)
+frontend/src/lib/motion/introGate.ts:186 - LOADER_TAIL_MS (used in module)
+frontend/src/lib/motion/introGate.ts:193 - LOADER_ACCEL_MAX (used in module)
+frontend/src/lib/motion/pointer.ts:29 - lerp (used in module)
+frontend/src/lib/motion/pointer.ts:34 - distance (used in module)
+frontend/src/lib/motion/pointer.ts:41 - shouldStop (used in module)
+frontend/src/lib/motion/pointer.ts:26 - MIN_VIEWPORT (used in module)
+frontend/src/lib/motion/pointer.ts:45 - PointerPoint (used in module)
+frontend/src/lib/motion/sheetConductor.ts:171 - sheetSubscriberCount
+frontend/src/lib/motion/sheetConductor.ts:176 - isSheetRunning
+frontend/src/lib/motion/sheetConductor.ts:223 - dist
+frontend/src/lib/motion/sheetConductor.ts:41 - SheetFrameFn (used in module)
+frontend/src/lib/motion/sheetGeometry.ts:117 - rectContains
+frontend/src/lib/motion/sheetGeometry.ts:20 - FitResult (used in module)
+frontend/src/lib/motion/sheetGeometry.ts:135 - CardAnchor (used in module)
+frontend/src/lib/motion/sheetGeometry.ts:145 - CardPlacement (used in module)
+frontend/src/lib/motion/sheetGeometry.ts:152 - CARD_LAYOUT_DEFAULTS (used in module)
+frontend/src/lib/motion/sheetLenis.ts:182 - isGuestLenisOn
+frontend/src/lib/motion/sheetLenis.ts:67 - HERON_LENIS_PARAMS (used in module)
+frontend/src/lib/motion/tokens.ts:120 - getMotionDuration
+frontend/src/lib/motion/tokens.ts:140 - getMotionEase
+frontend/src/lib/motion/tokens.ts:36 - MotionDurationName (used in module)
+frontend/src/lib/motion/tokens.ts:47 - MotionEaseName (used in module)
+frontend/src/lib/motion/useSheetScroll.ts:50 - ScrollMetrics (used in module)
+frontend/src/lib/motion/useSheetScroll.ts:76 - SheetRect (used in module)
+frontend/src/lib/motion/useSheetScroll.ts:85 - SheetScrollOptions (used in module)
+frontend/src/pages/colleges/filter-colleges.ts:32 - FilterResult (used in module)
+frontend/src/pages/colleges/filter-colleges.ts:62 - FilterableCollege (used in module)
+frontend/src/pages/owner/OwnerInstitutionDetailPage.tsx:94 - dedupeFacultyCensus (used in module)
+frontend/src/pages/owner/OwnerInstitutionDetailPage.tsx:77 - FacultyCensusEntry (used in module)
+frontend/src/pages/student/aiReplyFormat.ts:29 - stripInlineMarkdown (used in module)
+frontend/src/pages/student/aiReplyFormat.ts:19 - ReplyBlock (used in module)
+frontend/src/components/landing/chrome/ConsentBanner.tsx:45 - ConsentDecision (used in module)
+frontend/src/components/landing/chrome/ConsentBanner.tsx:47 - ConsentState (used in module)
+frontend/src/components/landing/chrome/ConsentBanner.tsx:88 - MadarekConsentApi (used in module)
+frontend/src/components/landing/journey/SectionDrawing.tsx:31 - SECTION_VB (used in module)
+frontend/src/components/landing/journey/WordReveal.tsx:49 - WordRevealProps (used in module)
+frontend/src/components/landing/journey/WordReveal.tsx:79 - ScrubRevealProps (used in module)
+frontend/src/lib/illustrations/scenes/onboarding/role-intro.tsx:29 - SceneOnboardingRoleIntroProps (used in module)

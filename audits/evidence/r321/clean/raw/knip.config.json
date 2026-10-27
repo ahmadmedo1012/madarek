@@ -1,0 +1,49 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "workspaces": {
+    ".": {
+      "entry": [
+        "scripts/**/*.{mjs,js,ts,sh}",
+        "tools/**/*.{js,mjs,json}",
+        "shared/**/*.ts"
+      ],
+      "project": [
+        "scripts/**/*.{mjs,js,ts}",
+        "tools/**/*.{js,mjs}",
+        "shared/**/*.ts"
+      ]
+    },
+    "frontend": {
+      "entry": [
+        "src/main.tsx",
+        "vite.config.ts",
+        "vitest.config.ts",
+        "playwright.config.ts",
+        "tests/setup.ts",
+        "tests/**/*.{test,spec}.{ts,tsx}",
+        "tests/**/*.e2e.ts",
+        "tests/audit/{drift,routes,run-drift,promote-baseline}.ts",
+        "tests/ios/*.ts",
+        "tests/capture/*.ts"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx}",
+        "tests/**/*.ts",
+        "tests/**/*.tsx"
+      ]
+    },
+    "backend": {
+      "entry": [
+        "src/index.ts",
+        "prisma/seed.ts",
+        "vitest.config.ts",
+        "tests/**/*.test.ts"
+      ],
+      "project": [
+        "src/**/*.ts",
+        "tests/**/*.ts",
+        "prisma/**/*.ts"
+      ]
+    }
+  }
+}
