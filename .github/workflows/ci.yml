@@ -195,8 +195,11 @@ jobs:
     # support chromium on ubuntu26.04-x64"). Pinned to 24.04 — the
     # exact image these suites ran green on for every prior push —
     # until the Playwright bump round (Cycle 6 dep refresh).
+    # R320 CI fix #3: timeout 12→20 — the job measured 13.4min on
+    # 2026-10-27 (e2e 5.0m + r305 2.1m + install/npm ci + runner
+    # variance); 12 was borderline before the §C/§D suites grew it.
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -253,8 +256,9 @@ jobs:
     if: github.event_name == 'push'
     # R320 CI fix: same ubuntu-latest → 26.04 roll — webkit builds for
     # 26.04 don't exist in @playwright/test 1.60. Pinned to 24.04.
+    # R320 CI fix #3: timeout 12→20 (same measured overage as e2e).
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
