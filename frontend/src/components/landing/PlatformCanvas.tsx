@@ -38,20 +38,20 @@ export function PlatformCanvas() {
     <div className="pr-drawing" aria-hidden="true">
       {/* the four drafting corner ± marks (the drawing cell's
           registration, centered on the cell's own corners) */}
-      <span className="pr-panel-mark pr-panel-mark--tl" aria-hidden="true">+</span>
-      <span className="pr-panel-mark pr-panel-mark--tr" aria-hidden="true">+</span>
-      <span className="pr-panel-mark pr-panel-mark--bl" aria-hidden="true">+</span>
-      <span className="pr-panel-mark pr-panel-mark--br" aria-hidden="true">+</span>
+      <span className="pr-panel-mark pr-panel-mark--tl" aria-hidden="true" />
+      <span className="pr-panel-mark pr-panel-mark--tr" aria-hidden="true" />
+      <span className="pr-panel-mark pr-panel-mark--bl" aria-hidden="true" />
+      <span className="pr-panel-mark pr-panel-mark--br" aria-hidden="true" />
 
       {/* the toolbar strip — the drawing cell's top ruler */}
       <div className="pr-bar">
-        <span className="pr-bar-plus" dir="ltr">+</span>
+        <span className="pr-bar-plus" dir="ltr" />
         <span className="pr-bar-ticks" />
         <span className="pr-bar-label" dir="ltr">
           SHEET 05 · SCALE 1:100
         </span>
         <span className="pr-bar-ticks" />
-        <span className="pr-bar-plus" dir="ltr">+</span>
+        <span className="pr-bar-plus" dir="ltr" />
       </div>
 
       {/* the plan canvas — the drawing ON the sheet's paper */}

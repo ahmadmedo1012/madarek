@@ -1120,6 +1120,10 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   line-height: 1;
 }
 
+/* R321 §A6 — the glyph is pseudo-element content (out of innerText; the
+   .auth-mark note in auth.css owns the reasoning). */
+.bp-plus::before { content: '+'; }
+
 .bp-plus-tl { inset-block-start: 6px; inset-inline-start: 3px; }
 .bp-plus-tr { inset-block-start: 6px; inset-inline-end: 3px; }
 .bp-plus-bl { inset-block-end: 6px; inset-inline-start: 3px; }
@@ -1136,6 +1140,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   line-height: 1;
   opacity: 0.9;
 }
+
+/* R321 §A6 — pseudo-element glyph, out of innerText (the .bp-plus note). */
+.bp-dmark::before { content: '+'; }
 
 .bp-dmark-tl { inset-block-start: 11px; inset-inline-start: 11px; }
 .bp-dmark-tr { inset-block-start: 11px; inset-inline-end: 11px; }
@@ -1864,6 +1871,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   font-size: var(--fs-sm);
   line-height: 1;
 }
+/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+   note in auth.css owns the reasoning). */
+.fo-cta-sketch-mark::before { content: '+'; }
 
 .fo-cta-sketch-tl { inset-block-start: 6px; inset-inline-start: 8px; }
 .fo-cta-sketch-tr { inset-block-start: 6px; inset-inline-end: 8px; }
@@ -2534,6 +2544,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   font-size: var(--fs-sm);
   line-height: 1;
 }
+/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+   note in auth.css owns the reasoning). */
+.fo-wordmark-reg::before { content: '+'; }
 
 .fo-wordmark-reg-tl { inset-block-start: 0; inset-inline-start: 0; }
 .fo-wordmark-reg-tr { inset-block-start: 0; inset-inline-end: 0; }
@@ -4040,6 +4053,15 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   font-size: var(--fs-xxs);
   opacity: 0.82;
 }
+
+/* R321 §A6 — the code renders from attr(): the marker's mono code
+   stays out of innerText (the .auth-mark note owns the reasoning). */
+.hi-marker-code::before { content: attr(data-code); }
+
+/* the instrument card's Arabic label + body ride attr() too — the
+   whole hi-card is aria-hidden decor (§A6: out of innerText). */
+.hi-marker-label::before { content: attr(data-label); }
+.hi-marker-body::before { content: attr(data-body); }
 
 .hi-marker-label {
   color: var(--text-on-accent);
@@ -7643,6 +7665,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .pr-panel-mark--tr { inset-block-start: 0.24rem; inset-inline-end: 0.24rem; }
   .pr-panel-mark--bl { inset-block-end: 0.24rem; inset-inline-start: 0.24rem; }
   .pr-panel-mark--br { inset-block-end: 0.24rem; inset-inline-end: 0.24rem; }
+  /* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+     note in auth.css owns the reasoning). */
+  .pr-panel-mark::before { content: '+'; }
 
   /* the toolbar strip — the drawing cell's top ruler */
   .pr-bar {
@@ -7660,6 +7685,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     font-size: var(--fs-mono-md);
     line-height: 1;
   }
+  /* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+     note in auth.css owns the reasoning). */
+  .pr-bar-plus::before { content: '+'; }
 
   .pr-bar-ticks {
     flex: 1;

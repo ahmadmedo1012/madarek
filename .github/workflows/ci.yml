@@ -320,6 +320,11 @@ jobs:
       # اصطناعية تثبت أن كل فئة عمياء تُكتشف وأن العلامات المعيبة
       # تُرفض وأن الفشل يُغلق مغلقًا. تعمل بلا node_modules.
       - run: bash scripts/test-raw-css-gate.sh
+      # R321 §A7 — the STATIC ledger scan: every «الإدارة» in the
+      # working trees must be covered by scripts/r321/r321-rename-keep.json
+      # (one term per concept: the role is «المسجل العام», the governance
+      # bucket is «الحوكمة»). Dependency-free (node:fs only).
+      - run: node scripts/r321/rename-ledger-scan.mjs
 
   surface-drift:
     name: Surface drift

@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T08:07:47.494Z",
+ "generated": "2026-10-27T21:42:43.550Z",
  "baseUrl": "http://127.0.0.1:4257",
  "routes": [
   "landing",
@@ -28,25 +28,16 @@
      "metric": 0
     },
     "svg-collisions": {
-     "status": "FAIL",
-     "metric": 9,
-     "textText": 5,
-     "textGeom": 4,
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
      "allowlisted": 0,
      "svgs": 15,
      "texts": 43,
      "geoms": 373,
      "camOverride": true,
-     "samples": [
-      "text×text «قاعة المحاضرات» × «240 M2» 54.8px² @188,3365",
-      "text×text «المكتبة والبحوث» × «96 M2» 42.5px² @170,3533",
-      "text×text «قاعة الاختبار» × «150 M2» 16px² @186,3383",
-      "text×text «نقطة الفحص» × «36 M2» 13.3px² @286,3528",
-      "text×text «غرفة الإتقان» × «84 M2» 13.3px² @87,3383",
-      "«قاعة المحاضرات» × bp-hair.bp-drawable 635.1px² @173,3353",
-      "«240 M2» × bp-hair.bp-drawable 60.7px² @211,3369",
-      "«غرفة الإتقان» × bp-hair.bp-drawable 23.4px² @82,3383"
-     ]
+     "samples": []
     },
     "cleanliness/console": {
      "status": "FAIL",
@@ -79,25 +70,16 @@
      "metric": 0
     },
     "svg-collisions": {
-     "status": "FAIL",
-     "metric": 14,
-     "textText": 6,
-     "textGeom": 8,
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
      "allowlisted": 0,
      "svgs": 28,
      "texts": 59,
      "geoms": 502,
      "camOverride": false,
-     "samples": [
-      "text×text «المكتبة والبحوث» × «96 M2» 548.7px² @634,3440",
-      "text×text «قاعة المحاضرات» × «240 M2» 155.7px² @1049,2904",
-      "text×text «قاعة الاختبار» × «150 M2» 155.7px² @693,2904",
-      "text×text «نقطة الفحص» × «36 M2» 129.8px² @1053,3423",
-      "text×text «غرفة الإتقان» × «84 M2» 129.8px² @338,2904",
-      "text×text «7200» × «14900» 18.2px² @1226,8982",
-      "«قاعة المحاضرات» × bp-hair.bp-drawable 1210.4px² @1032,2887",
-      "«240 M2» × bp-hair.bp-drawable 754.3px² @1049,2904"
-     ]
+     "samples": []
     },
     "cleanliness/console": {
      "status": "FAIL",
@@ -130,25 +112,16 @@
      "metric": 0
     },
     "svg-collisions": {
-     "status": "FAIL",
-     "metric": 9,
-     "textText": 5,
-     "textGeom": 4,
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
      "allowlisted": 0,
      "svgs": 15,
      "texts": 43,
      "geoms": 373,
      "camOverride": true,
-     "samples": [
-      "text×text «قاعة المحاضرات» × «240 M2» 54.8px² @188,3373",
-      "text×text «المكتبة والبحوث» × «96 M2» 42.5px² @170,3540",
-      "text×text «قاعة الاختبار» × «150 M2» 16px² @186,3390",
-      "text×text «نقطة الفحص» × «36 M2» 13.3px² @286,3535",
-      "text×text «غرفة الإتقان» × «84 M2» 13.3px² @87,3390",
-      "«قاعة المحاضرات» × bp-hair.bp-drawable 635.1px² @173,3360",
-      "«240 M2» × bp-hair.bp-drawable 60.7px² @211,3376",
-      "«غرفة الإتقان» × bp-hair.bp-drawable 23.4px² @82,3391"
-     ]
+     "samples": []
     },
     "cleanliness/console": {
      "status": "FAIL",
@@ -181,25 +154,16 @@
      "metric": 0
     },
     "svg-collisions": {
-     "status": "FAIL",
-     "metric": 14,
-     "textText": 6,
-     "textGeom": 8,
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
      "allowlisted": 0,
      "svgs": 28,
      "texts": 59,
      "geoms": 502,
      "camOverride": false,
-     "samples": [
-      "text×text «المكتبة والبحوث» × «96 M2» 548.7px² @634,3442",
-      "text×text «قاعة المحاضرات» × «240 M2» 155.7px² @1049,2906",
-      "text×text «قاعة الاختبار» × «150 M2» 155.7px² @693,2906",
-      "text×text «نقطة الفحص» × «36 M2» 129.8px² @1053,3426",
-      "text×text «غرفة الإتقان» × «84 M2» 129.8px² @338,2906",
-      "text×text «7200» × «14900» 18.2px² @1226,8985",
-      "«قاعة المحاضرات» × bp-hair.bp-drawable 1210.4px² @1032,2890",
-      "«240 M2» × bp-hair.bp-drawable 754.3px² @1049,2906"
-     ]
+     "samples": []
     },
     "cleanliness/console": {
      "status": "FAIL",
@@ -384,7 +348,7 @@
      "occurrences": 0,
      "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 5,
+     "keepEntries": 4,
      "drawerOpened": true,
      "samples": []
     },
@@ -430,7 +394,7 @@
      "occurrences": 0,
      "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 5,
+     "keepEntries": 4,
      "drawerOpened": false,
      "samples": []
     },
@@ -476,7 +440,7 @@
      "occurrences": 0,
      "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 5,
+     "keepEntries": 4,
      "drawerOpened": true,
      "samples": []
     },
@@ -522,7 +486,7 @@
      "occurrences": 0,
      "uniqueLabels": 0,
      "kept": 0,
-     "keepEntries": 5,
+     "keepEntries": 4,
      "drawerOpened": false,
      "samples": []
     },
@@ -570,8 +534,8 @@
    "counts": {
     "lint": "duplicate-selector",
     "exit": 1,
-    "rules": 5565,
-    "sheets": 41,
+    "rules": 5677,
+    "sheets": 43,
     "conflictsApp": 65,
     "conflictsArtifact": 129,
     "harmless": 184,
@@ -585,7 +549,7 @@
     "stale": 0,
     "sample": [
      "styles/admin.css:402 ↔ styles/components.css:3862 .admin-faculty-card [box-shadow]",
-     "styles/auth.css:1198 ↔ styles/polish.css:2605 .auth-card [animation]",
+     "styles/auth.css:1432 ↔ styles/polish.css:2605 .auth-card [animation]",
      "styles/base.css:107 ↔ styles/components.css:965 select [color]"
     ]
    },
@@ -598,21 +562,21 @@
    "theme": "—",
    "check": "hover-guard",
    "status": "FAIL",
-   "metric": 184,
+   "metric": 183,
    "exitCode": 1,
    "counts": {
     "lint": "hover-guard",
     "exit": 1,
-    "hoverRules": 290,
-    "sheets": 41,
-    "unguarded": 185,
-    "fresh": 184,
+    "hoverRules": 297,
+    "sheets": 43,
+    "unguarded": 184,
+    "fresh": 183,
     "allowlisted": 1,
     "stale": 0,
     "sample": [
      "styles/admin.css:377 .settings-links a:hover @ (root)",
-     "styles/auth.css:1009 .role-card:hover .role-card-index,\n  .role-card:focus-visible .role-ca @ (root)",
-     "styles/auth.css:1031 .role-card:hover .role-card-sub,\n  .role-card:focus-visible .role-card @ (root)"
+     "styles/auth.css:110 .auth-back-home:hover @ (root)",
+     "styles/auth.css:1213 .role-card:hover,\n  .role-card:focus-visible @ (root)"
     ]
    },
    "sample": "styles/admin.css:377 .settings-links a:hover @ (root)"
@@ -624,10 +588,10 @@
   "viewport": "—",
   "theme": "—",
   "check": "r319-gate",
-  "status": "PASS",
-  "metric": 0,
-  "exitCode": 0,
-  "tail": "[mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [gate:r319] 1 FAIL · 0 WARN · 0 cell error(s) · 0 regression"
+  "status": "FAIL",
+  "metric": 1,
+  "exitCode": 1,
+  "tail": "[mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [gate:r319] 2 FAIL · 0 WARN · 0 cell error(s) · 1 regression"
  },
  "rows": [
   {
@@ -646,9 +610,9 @@
    "viewport": 390,
    "theme": "light",
    "check": "svg-collisions",
-   "status": "FAIL",
-   "metric": 9,
-   "sample": "text×text «قاعة المحاضرات» × «240 M2» 54.8px² @188,3365"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "landing|390|light|cleanliness/console",
@@ -686,9 +650,9 @@
    "viewport": 1440,
    "theme": "light",
    "check": "svg-collisions",
-   "status": "FAIL",
-   "metric": 14,
-   "sample": "text×text «المكتبة والبحوث» × «96 M2» 548.7px² @634,3440"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "landing|1440|light|cleanliness/console",
@@ -726,9 +690,9 @@
    "viewport": 390,
    "theme": "dark",
    "check": "svg-collisions",
-   "status": "FAIL",
-   "metric": 9,
-   "sample": "text×text «قاعة المحاضرات» × «240 M2» 54.8px² @188,3373"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "landing|390|dark|cleanliness/console",
@@ -766,9 +730,9 @@
    "viewport": 1440,
    "theme": "dark",
    "check": "svg-collisions",
-   "status": "FAIL",
-   "metric": 14,
-   "sample": "text×text «المكتبة والبحوث» × «96 M2» 548.7px² @634,3442"
+   "status": "PASS",
+   "metric": 0,
+   "sample": "—"
   },
   {
    "key": "landing|1440|dark|cleanliness/console",
@@ -1127,7 +1091,7 @@
    "theme": "—",
    "check": "hover-guard",
    "status": "FAIL",
-   "metric": 184,
+   "metric": 183,
    "sample": "styles/admin.css:377 .settings-links a:hover @ (root)"
   },
   {
@@ -1136,16 +1100,16 @@
    "viewport": "—",
    "theme": "—",
    "check": "r319-gate",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "[mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [gate:r319] 1 FAIL · 0 WARN · 0 cell error(s) · 0 regression"
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "[mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [gate:r319] 2 FAIL · 0 WARN · 0 cell error(s) · 1 regression"
   }
  ],
  "summary": {
-  "fails": 26,
+  "fails": 23,
   "warns": 0,
-  "regressions": 0,
+  "regressions": 1,
   "errorCells": 0,
-  "exit": 0
+  "exit": 1
  }
 }

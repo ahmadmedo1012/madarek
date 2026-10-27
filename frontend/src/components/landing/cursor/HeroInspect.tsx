@@ -611,9 +611,9 @@ export function HeroInspect() {
               style={{ ['--c-w' as string]: `${m.w}px`, ['--c-h' as string]: `${m.h}px` }}
               aria-hidden="true"
             >
-              <span className="hi-marker-code fo-mono" dir="ltr">[{m.code}]</span>
-              <span className="hi-marker-label">{m.labelAr}</span>
-              <span className="hi-marker-body">{m.bodyAr}</span>
+              <span className="hi-marker-code fo-mono" dir="ltr" data-code={`[${m.code}]`} />
+              <span className="hi-marker-label" data-label={m.labelAr} />
+              <span className="hi-marker-body" data-body={m.bodyAr} />
             </div>
           );
         })}
@@ -647,9 +647,9 @@ export function HeroInspect() {
               data-marker={m.id}
               data-open={open ? 'on' : 'off'}
             >
-              <span className="hi-marker-code fo-mono" dir="ltr">[{m.code}]</span>
-              <span className="hi-marker-label">{m.labelAr}</span>
-              <span className="hi-marker-body">{m.bodyAr}</span>
+              <span className="hi-marker-code fo-mono" dir="ltr" data-code={`[${m.code}]`} />
+              <span className="hi-marker-label" data-label={m.labelAr} />
+              <span className="hi-marker-body" data-body={m.bodyAr} />
             </div>
           );
         })}

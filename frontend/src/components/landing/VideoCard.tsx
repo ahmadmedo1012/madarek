@@ -79,9 +79,7 @@ export function VideoCard({ video, variant = 'primary' }: VideoCardProps) {
                 the single primary control; the duration chip and the
                 kind label set expectations before any bytes move. */}
             <div className="vc-poster" aria-hidden="true">
-              <span className="vc-poster-mark fo-mono" dir="ltr">
-                [▶]
-              </span>
+              <span className="vc-poster-mark fo-mono" dir="ltr" data-code="[▶]" />
               <span className="vc-poster-lines" />
             </div>
             <div className="vc-body">

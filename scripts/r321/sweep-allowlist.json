@@ -1,0 +1,120 @@
+{
+  "$comment": "R321 sweep allowlist — intentional visible-text repeats (scripts/r321/sweep-r321.mjs duplicate-text rule). A row matches by normalised-text prefix; add `route` to scope to one route. Decor rules (mark-text, code-twice) have NO allowlist by design.",
+  "duplicateText": [
+    {
+      "norm": "تسجيلالدخول",
+      "reason": "the auth sheet's primary action + the header door — two different controls, one honest label"
+    },
+    {
+      "norm": "العودةالىالصفحةالرئيسية",
+      "reason": "guest-sheet back buttons can repeat across header + footer exits",
+      "route": "legal-privacy"
+    },
+    {
+      "norm": "مدارك",
+      "reason": "the brand word legitimately repeats (header brand + footer wordmark + copy)"
+    },
+    {
+      "norm": "12345678",
+      "reason": "the published test password appears once per demo row BY DESIGN (10 rows)"
+    },
+    {
+      "norm": "يستكملقبلالإطلاق",
+      "reason": "the [يُستكمل قبل الإطلاق] PendingTag — one honest marker per pending fact (LEGAL-TODO rows)"
+    },
+    {
+      "norm": "أساسي",
+      "reason": "the storage-ledger table's category column — data repeats per row BY DESIGN"
+    },
+    {
+      "norm": "تعبئة",
+      "reason": "one fill button per demo row (10 rows) — the R320 §C panel contract"
+    },
+    {
+      "norm": "دخول",
+      "reason": "the flipped fill button reads دخول once filled — per-row state label"
+    },
+    {
+      "norm": "آخرتحديث",
+      "reason": "the colophon stamp + the privacy sheet's own section bar share the label — two different contexts, one honest term"
+    },
+    {
+      "norm": "نقطةفحص",
+      "reason": "two checkpoint cards in different landing sections share the term (statement pains + chapters) — content, not copy drift"
+    },
+    {
+      "norm": "20261027",
+      "reason": "the legal suite's updated-date stamp renders in the head meta line AND the colophon — the classic document pattern (two regions)"
+    },
+    {
+      "norm": "testly",
+      "reason": "the help sheet mentions the @test.ly demo domain twice in honest copy (support + the accounts pointer)"
+    },
+    {
+      "norm": "الحياةالجامعية",
+      "reason": "campus: the nav label + the page's own section title"
+    },
+    {
+      "norm": "سؤالقصيرداخلالمحاضرةيصححفوراقبلالمتابعة",
+      "reason": "the checkpoint card's one-line definition appears in the statement pains AND the chapters walkthrough — the same honest fact in two sections"
+    },
+    {
+      "norm": "جامعةبنغازي",
+      "reason": "campus media captions name the university per photo (Commons attribution)"
+    },
+    {
+      "norm": "مراجعةبحث",
+      "reason": "the research-library card's one-liner appears in the statement pains AND the chapters walkthrough — one honest fact, two sections"
+    },
+    {
+      "norm": "CCBYSA40",
+      "reason": "the Commons CC BY-SA 4.0 attribution repeats per campus photo — the license name is per-item metadata"
+    },
+    {
+      "norm": "أنشئحسابكالجامعي",
+      "reason": "the landing's two CTA seats (hero + closing) share the one action label — the funnel's own convention"
+    },
+    {
+      "norm": "جامعةطرابلس",
+      "reason": "campus media captions name the university per photo (same family as بنغازي)"
+    },
+    {
+      "norm": "محاكاةقيدالتطوير",
+      "reason": "the honest 'simulation under development' tag rides every early-stage capability card (the PendingTag family)"
+    },
+    {
+      "norm": "SHEETFIELD06",
+      "reason": "the campus media cards share the one sheet-field code stamp (the drafting chrome's own family)"
+    },
+    {
+      "norm": "عرضتوضيحي",
+      "reason": "the honest demo-data disclosure tag rides every demo element (§J KEEP: demo-data disclosure is mandated, per-card)"
+    },
+    {
+      "norm": "Publicdomain",
+      "reason": "the Commons license name repeats per campus photo — per-item attribution metadata"
+    },
+    {
+      "norm": "فيديوتوثيقيمنالقناةالرسميةللجامعة",
+      "reason": "the campus videos share the one honest credit line (each video's per-item attribution)"
+    },
+    {
+      "norm": "أجواءامتحاناتنهايةالفصلبكلياتجامعةمصراتة",
+      "reason": "the campus photo's caption names its subject; the gallery + lightbox both carry it (two regions, one honest caption)"
+    },
+    {
+      "norm": "شاهدالفيديو",
+      "reason": "one action label per video card (the per-item action family, like the demo rows' تعبئة)"
+    }
+  ],
+  "clipContainers": [
+    {
+      "sel": ".fo-ticker",
+      "reason": "the capabilities + universities MARQUEES — the track paints items outside the clip window by design (infinite crawl)"
+    },
+    {
+      "sel": ".jt",
+      "reason": "the journey scene (pinned map stage + phone readable twins) — the plan is wider than the phone viewport and the .jt-side camera pans it across the chapters (R312 camera crops, verified 9/9)"
+    }
+  ]
+}

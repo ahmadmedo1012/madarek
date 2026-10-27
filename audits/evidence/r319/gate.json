@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-26T08:07:04.279Z",
+ "generated": "2026-10-27T21:42:00.408Z",
  "baseUrl": "http://127.0.0.1:4257",
  "routes": [
   "landing",
@@ -97,7 +97,7 @@
        "pass": "shell",
        "status": "PASS",
        "failCount": 0,
-       "measured": 96,
+       "measured": 102,
        "unknown": 0
       }
      ],
@@ -193,7 +193,7 @@
        "pass": "shell",
        "status": "PASS",
        "failCount": 0,
-       "measured": 144,
+       "measured": 150,
        "unknown": 0
       }
      ],
@@ -289,7 +289,7 @@
        "pass": "shell",
        "status": "PASS",
        "failCount": 0,
-       "measured": 96,
+       "measured": 102,
        "unknown": 0
       }
      ],
@@ -385,14 +385,14 @@
        "pass": "shell",
        "status": "PASS",
        "failCount": 0,
-       "measured": 144,
+       "measured": 150,
        "unknown": 0
       }
      ],
      "gradientWarn": 0,
      "unknown": 0,
      "samples": [],
-     "budgetOverruns": 1
+     "budgetOverruns": 2
     }
    }
   },
@@ -407,7 +407,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 104,
+     "lines": 100,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -483,10 +483,10 @@
     },
     "shell/bar-bleed": {
      "status": "PASS",
-     "behindBarCount": 6,
+     "behindBarCount": 4,
      "barAlpha": 1,
      "metric": 0,
-     "sample": "6 behind bar, bar opaque — nothing visible through"
+     "sample": "4 behind bar, bar opaque — nothing visible through"
     },
     "shell/padding-reserve": {
      "status": "PASS",
@@ -496,14 +496,14 @@
       "content-inner": 128
      },
      "need": 85.9,
-     "bottomClear": false,
-     "bottomBehind": 2,
+     "bottomClear": true,
+     "bottomBehind": 0,
      "metric": 0,
-     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
     },
     "shell/drawer-clip": {
      "status": "PASS",
-     "scrollFits": "1054≤546",
+     "scrollFits": "1100≤546",
      "overflowY": "auto",
      "lastLabel": "خدمات الجامعة",
      "lastLabelInside": true,
@@ -556,7 +556,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 109,
+     "lines": 105,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -618,7 +618,7 @@
     "material/chrome-radius": {
      "status": "PASS",
      "offenders": 0,
-     "swept": 48,
+     "swept": 49,
      "metric": 0,
      "sample": ""
     },
@@ -683,7 +683,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 104,
+     "lines": 100,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -759,10 +759,10 @@
     },
     "shell/bar-bleed": {
      "status": "PASS",
-     "behindBarCount": 6,
+     "behindBarCount": 4,
      "barAlpha": 1,
      "metric": 0,
-     "sample": "6 behind bar, bar opaque — nothing visible through"
+     "sample": "4 behind bar, bar opaque — nothing visible through"
     },
     "shell/padding-reserve": {
      "status": "PASS",
@@ -772,14 +772,14 @@
       "content-inner": 128
      },
      "need": 85.9,
-     "bottomClear": false,
-     "bottomBehind": 2,
+     "bottomClear": true,
+     "bottomBehind": 0,
      "metric": 0,
-     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+     "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
     },
     "shell/drawer-clip": {
      "status": "PASS",
-     "scrollFits": "1054≤546",
+     "scrollFits": "1100≤546",
      "overflowY": "auto",
      "lastLabel": "خدمات الجامعة",
      "lastLabelInside": true,
@@ -832,7 +832,7 @@
      "failCount": 0,
      "metric": 0,
      "allowlisted": 0,
-     "lines": 109,
+     "lines": 105,
      "rlmDateCount": 0,
      "samples": [],
      "numerals": {
@@ -894,7 +894,7 @@
     "material/chrome-radius": {
      "status": "PASS",
      "offenders": 0,
-     "swept": 48,
+     "swept": 49,
      "metric": 0,
      "sample": ""
     },
@@ -945,10 +945,10 @@
   }
  ],
  "paired": {
-  "status": "PASS",
-  "exitCode": 0,
-  "tail": "✓ paired-state lint PASS — 420 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fresh violations.",
-  "metric": 0
+  "status": "FAIL",
+  "exitCode": 1,
+  "tail": "Fix by the paired pattern: base routes background: var(--_bg); color: var(--_fg); ⏎ every state rule sets --_bg AND --_fg together (or both properties directly). ⏎ Known-good exceptions: scripts/r319/",
+  "metric": 1
  },
  "rows": [
   {
@@ -1659,7 +1659,7 @@
    "check": "shell/bar-bleed",
    "status": "PASS",
    "metric": 0,
-   "sample": "6 behind bar, bar opaque — nothing visible through"
+   "sample": "4 behind bar, bar opaque — nothing visible through"
   },
   {
    "key": "student-dashboard|390|light|shell/padding-reserve",
@@ -1669,7 +1669,7 @@
    "check": "shell/padding-reserve",
    "status": "PASS",
    "metric": 0,
-   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
   },
   {
    "key": "student-dashboard|390|light|shell/drawer-clip",
@@ -1959,7 +1959,7 @@
    "check": "shell/bar-bleed",
    "status": "PASS",
    "metric": 0,
-   "sample": "6 behind bar, bar opaque — nothing visible through"
+   "sample": "4 behind bar, bar opaque — nothing visible through"
   },
   {
    "key": "student-dashboard|390|dark|shell/padding-reserve",
@@ -1969,7 +1969,7 @@
    "check": "shell/padding-reserve",
    "status": "PASS",
    "metric": 0,
-   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll 2 under dock"
+   "sample": "pad 128px (content:80/content-inner:128) vs need 86px (bar 77.9 + safe 0 + 8) · bottom-scroll clear"
   },
   {
    "key": "student-dashboard|390|dark|shell/drawer-clip",
@@ -2157,16 +2157,16 @@
    "viewport": "—",
    "theme": "—",
    "check": "paired",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "✓ paired-state lint PASS — 420 state rules scanned across 40 sheets; 145 XOR rule(s), all allowlisted with reasons; 0 fresh violations."
+   "status": "FAIL",
+   "metric": 1,
+   "sample": "Fix by the paired pattern: base routes background: var(--_bg); color: var(--_fg); ⏎ every state rule sets --_bg AND --_fg together (or both properties directly). ⏎ Known-good exceptions: scripts/r319/"
   }
  ],
  "summary": {
-  "fails": 1,
+  "fails": 2,
   "warns": 0,
-  "regressions": 0,
+  "regressions": 1,
   "errorCells": 0,
-  "exit": 0
+  "exit": 1
  }
 }

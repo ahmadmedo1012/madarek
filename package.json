@@ -41,7 +41,8 @@
     "gate:r319": "node scripts/r319/gate.mjs",
     "gate:r320": "node scripts/r320/gate.mjs",
     "lint:r320": "node scripts/r320/duplicate-selector-lint.mjs && node scripts/r320/hover-guard-lint.mjs",
-    "db:verify": "node scripts/db-verify.mjs"
+    "db:verify": "node scripts/db-verify.mjs",
+    "gate:r321": "node scripts/r321/gate.mjs"
   },
   "prepare": "git config core.hooksPath .githooks",
   "devDependencies": {

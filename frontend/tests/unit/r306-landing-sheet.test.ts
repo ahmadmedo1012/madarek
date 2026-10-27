@@ -226,8 +226,13 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // and the drafting chrome (rulers, + marks, dashed inner frame,
     // ± marks) stays on the window
     expect(liveTsx).toMatch(/className="bp-ruler bp-ruler-t"/);
-    expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl"\>\+/);
-    expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl"\>\+/);
+    // R321 §A6 re-pin: the marks render their glyph from CSS ::before
+    // content (out of innerText) — the spans are EMPTY now; the glyph
+    // contract moved to the stylesheet rules.
+    expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl" \/>/);
+    expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl" \/>/);
+    expect(live).toMatch(/\.bp-plus::before\s*\{\s*content:\s*'\+'/);
+    expect(live).toMatch(/\.bp-dmark::before\s*\{\s*content:\s*'\+'/);
     expect(live).toMatch(/\.fo-hero-window \.bp-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
     // the render pipeline is reproducible + committed (repo root)
     expect(read('../scripts/r314/ink-render.mjs')).toContain('OVERRIDES');

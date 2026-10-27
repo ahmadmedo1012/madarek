@@ -25,7 +25,7 @@ Other solutions you tried or considered.
 
 - [ ] العميل / الزائر | Customer
 - [ ] صاحب العمل | Business owner
-- [ ] الإدارة | Admin
+- [ ] المسجل العام | Admin
 - [ ] آخر | Other:
 
 ## 📸 مراجع | References

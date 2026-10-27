@@ -329,6 +329,10 @@
   font-size: var(--fs-h2);
 }
 
+/* R321 §A6 — the [▶] glyph renders from attr(): out of innerText
+   (the .auth-mark note in auth.css owns the reasoning). */
+.vc-poster-mark::before { content: attr(data-code); }
+
 .vc-poster-lines {
   position: absolute;
   inset-block-start: 50%;
@@ -613,6 +617,9 @@
   font-size: var(--fs-sm);
   line-height: 1;
 }
+/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+   note in auth.css owns the reasoning). */
+.inkm-sketch-mark::before { content: '+'; }
 
 .inkm-sketch-mark-tl { inset-block-start: 6px; inset-inline-start: 8px; }
 .inkm-sketch-mark-tr { inset-block-start: 6px; inset-inline-end: 8px; }

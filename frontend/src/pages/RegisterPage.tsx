@@ -302,10 +302,10 @@ export default function RegisterPage() {
           shared with the login sheet): the full-page drafting frame +
           the measured paper grain film. Decorative only. */}
       <div className="auth-frame" aria-hidden="true">
-        <span className="auth-mark auth-mark-tl">+</span>
-        <span className="auth-mark auth-mark-tr">+</span>
-        <span className="auth-mark auth-mark-bl">+</span>
-        <span className="auth-mark auth-mark-br">+</span>
+        <span className="auth-mark auth-mark-tl" />
+        <span className="auth-mark auth-mark-tr" />
+        <span className="auth-mark auth-mark-bl" />
+        <span className="auth-mark auth-mark-br" />
       </div>
       <div className="auth-grain" aria-hidden="true" />
 

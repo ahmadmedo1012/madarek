@@ -1,0 +1,105 @@
+{
+  "$comment": "R321 §A7 — the static ledger-scan allowlist (scripts/r321/rename-ledger-scan.mjs). Every surviving «الإدارة» in the scanned trees must match a row here (file prefix + phrase; phrase '' = file-level wildcard for tooling that necessarily names the retired label). One term per concept: the role is «المسجل العام», the governance bucket is «الحوكمة».",
+  "keeps": [
+    {
+      "file": "frontend/src/data/university-media.ts",
+      "phrase": "الإدارة المركزية",
+      "reason": "the university BUILDING (Central Administration, Benghazi University) — Commons photo captions/alt, not the role"
+    },
+    {
+      "file": "frontend/src/data/university-media.ts",
+      "phrase": "مبنى الإدارة",
+      "reason": "the administration BUILDING's architectural detail photo (name + caption)"
+    },
+    {
+      "file": "frontend/src/pages/student/PaymentPage.tsx",
+      "phrase": "الإدارة الماليّة",
+      "reason": "the FINANCE OFFICE (R320 KEEP) — fees announcements + contact card"
+    },
+    {
+      "file": "frontend/src/pages/student/PaymentPage.tsx",
+      "phrase": "من الإدارة",
+      "reason": "office hours accredited by the administration inside the finance-office card (R320 KEEP)"
+    },
+    {
+      "file": "backend/src/lib/__tests__/roleLabels.test.ts",
+      "phrase": "",
+      "reason": "the rename BELT itself — its regex and test names necessarily name the retired label to forbid it"
+    },
+    {
+      "file": "scripts/r320/",
+      "phrase": "",
+      "reason": "the R320 rename-scan TOOLING — rule names/docs reference the label they police"
+    },
+    {
+      "file": "scripts/r321/",
+      "phrase": "",
+      "reason": "the R321 ledger-scan TOOLING — same class (the scanner names what it forbids)"
+    },
+    {
+      "file": "docs/redesign/r320/RENAME-LEDGER.md",
+      "phrase": "",
+      "reason": "the ledger document itself — the historical record of the R320 rename decisions"
+    },
+    {
+      "file": "docs/redesign/r320/rename-keep.json",
+      "phrase": "",
+      "reason": "the R320 keep sidecar (superseded by this file for scan purposes, kept as the c1-RENAME record)"
+    },
+    {
+      "file": "docs/redesign/r320/BOARD.md",
+      "phrase": "",
+      "reason": "the R320 board's historical cycle log"
+    },
+    {
+      "file": "docs/redesign/r321/BOARD.md",
+      "phrase": "",
+      "reason": "the R321 board quotes the ticket text that names the retired label"
+    },
+    {
+      "file": "frontend/tests/unit/r320-rename-belt.test.ts",
+      "phrase": "",
+      "reason": "the R320 rename BELT — names the retired label to forbid it"
+    },
+    {
+      "file": "frontend/tests/e2e/r319-auth-stack.e2e.ts",
+      "phrase": "لوحة الإدارة",
+      "reason": "historical rename note (was → now) in a test comment"
+    },
+    {
+      "file": "frontend/tests/unit/AdminConsolePages.test.tsx",
+      "phrase": "لوحة * الإدارة",
+      "reason": "historical rename notes (was → now) — the assertions pin the NEW label"
+    },
+    {
+      "file": "frontend/tests/unit/loading-closure.test.tsx",
+      "phrase": "لوحة الإدارة",
+      "reason": "historical rename note (R320 override comment)"
+    },
+    {
+      "file": "frontend/tests/unit/r305-topbar-cluster.test.tsx",
+      "phrase": "«الإدارة»",
+      "reason": "historical rename note (was → now)"
+    },
+    {
+      "file": "frontend/tests/unit/r305a8-admin-core-heron.test.tsx",
+      "phrase": "لوحة الإدارة",
+      "reason": "historical rename note (R320 override comment)"
+    },
+    {
+      "file": "backend/tests/modules/auth-test-accounts.test.ts",
+      "phrase": "الادارة",
+      "reason": "the belt assertion itself (.not.toContain) — names the label to forbid it"
+    },
+    {
+      "file": "docs/design/",
+      "phrase": "",
+      "reason": "historical design specs (r191 era) — frozen records, not live copy"
+    },
+    {
+      "file": "CHANGELOG.md",
+      "phrase": "",
+      "reason": "the immutable release history — 30 occurrences across past rounds"
+    }
+  ]
+}

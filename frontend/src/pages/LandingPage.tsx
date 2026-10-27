@@ -842,17 +842,17 @@ export default function LandingPage() {
                 <span className="bp-ruler bp-ruler-b" />
                 <span className="bp-ruler bp-ruler-s" />
                 <span className="bp-ruler bp-ruler-e" />
-                <span className="bp-plus bp-plus-tl">+</span>
-                <span className="bp-plus bp-plus-tr">+</span>
-                <span className="bp-plus bp-plus-bl">+</span>
-                <span className="bp-plus bp-plus-br">+</span>
+                <span className="bp-plus bp-plus-tl" />
+                <span className="bp-plus bp-plus-tr" />
+                <span className="bp-plus bp-plus-bl" />
+                <span className="bp-plus bp-plus-br" />
                 {/* R315 (B1 · A.3): the small ± registration marks at the
                     dashed inner frame's corners (the reference's inner
                     drafting chrome, 15–20px inside the window edge). */}
-                <span className="bp-dmark bp-dmark-tl">+</span>
-                <span className="bp-dmark bp-dmark-tr">+</span>
-                <span className="bp-dmark bp-dmark-bl">+</span>
-                <span className="bp-dmark bp-dmark-br">+</span>
+                <span className="bp-dmark bp-dmark-tl" />
+                <span className="bp-dmark bp-dmark-tr" />
+                <span className="bp-dmark bp-dmark-bl" />
+                <span className="bp-dmark bp-dmark-br" />
               </div>
             </div>
           </RevealCssClass>
@@ -1230,10 +1230,10 @@ export default function LandingPage() {
                 marks + coordinates, pure line work, decorative. */}
             <div className="fo-cta-sketch" aria-hidden="true">
               <span className="fo-cta-sketch-grid" />
-              <span className="fo-cta-sketch-mark fo-cta-sketch-tl">+</span>
-              <span className="fo-cta-sketch-mark fo-cta-sketch-tr">+</span>
-              <span className="fo-cta-sketch-mark fo-cta-sketch-bl">+</span>
-              <span className="fo-cta-sketch-mark fo-cta-sketch-br">+</span>
+              <span className="fo-cta-sketch-mark fo-cta-sketch-tl" />
+              <span className="fo-cta-sketch-mark fo-cta-sketch-tr" />
+              <span className="fo-cta-sketch-mark fo-cta-sketch-bl" />
+              <span className="fo-cta-sketch-mark fo-cta-sketch-br" />
               <span className="fo-cta-sketch-coord fo-mono" dir="ltr">[CTA · RESOLVE]</span>
             </div>
           </div>
@@ -1464,10 +1464,10 @@ export default function LandingPage() {
           <div className="fo-fstrip">
             <FooterLens />
             <div className="fo-wordmark">
-              <span className="fo-wordmark-reg fo-wordmark-reg-tl" aria-hidden="true">+</span>
-              <span className="fo-wordmark-reg fo-wordmark-reg-tr" aria-hidden="true">+</span>
-              <span className="fo-wordmark-reg fo-wordmark-reg-bl" aria-hidden="true">+</span>
-              <span className="fo-wordmark-reg fo-wordmark-reg-br" aria-hidden="true">+</span>
+              <span className="fo-wordmark-reg fo-wordmark-reg-tl" aria-hidden="true" />
+              <span className="fo-wordmark-reg fo-wordmark-reg-tr" aria-hidden="true" />
+              <span className="fo-wordmark-reg fo-wordmark-reg-bl" aria-hidden="true" />
+              <span className="fo-wordmark-reg fo-wordmark-reg-br" aria-hidden="true" />
 
               {/* ── the ONE full-cell-width cut — REAL Alexandria 700
                   letterforms of «مدارك» shaped by harfbuzz (م initial
