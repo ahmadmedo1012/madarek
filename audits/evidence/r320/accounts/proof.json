@@ -3,100 +3,90 @@
     "job": "طالب",
     "email": "student@test.ly",
     "role": "STUDENT",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/student/dashboard",
+    "screenshot": "student.jpg"
   },
   {
     "job": "طالب ثانٍ (للرسائل/المجتمع)",
     "email": "student2@test.ly",
     "role": "STUDENT",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/student/dashboard",
+    "screenshot": "student2.jpg"
   },
   {
     "job": "أستاذ",
     "email": "teacher@test.ly",
     "role": "TEACHER",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/teacher/dashboard",
+    "screenshot": "teacher.jpg"
   },
   {
     "job": "رئيس قسم",
     "email": "head@test.ly",
     "role": "TEACHER",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/teacher/dashboard",
+    "screenshot": "head.jpg"
   },
   {
     "job": "عميد",
     "email": "dean@test.ly",
     "role": "TEACHER",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/teacher/dashboard",
+    "screenshot": "dean.jpg"
   },
   {
     "job": "نائب عميد",
     "email": "vicedean@test.ly",
     "role": "TEACHER",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/teacher/dashboard",
+    "screenshot": "vicedean.jpg"
   },
   {
     "job": "المسجل العام",
     "email": "registrar@test.ly",
     "role": "ADMIN",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/admin/dashboard",
+    "screenshot": "registrar.jpg"
   },
   {
     "job": "مسجل كلية (نطاق كلية)",
     "email": "faculty@test.ly",
     "role": "ADMIN",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/admin/dashboard",
+    "screenshot": "faculty.jpg"
   },
   {
     "job": "أخصائي جودة",
     "email": "quality@test.ly",
     "role": "QUALITY",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/quality/dashboard",
+    "screenshot": "quality.jpg"
   },
   {
     "job": "مالك المنصة",
     "email": "owner@test.ly",
     "role": "OWNER",
-    "apiStatus": 0,
-    "apiToken": false,
-    "routeReached": null,
-    "screenshot": null,
-    "error": "fetch failed"
+    "apiStatus": 200,
+    "apiToken": true,
+    "routeReached": "/owner/dashboard",
+    "screenshot": "owner.jpg"
   }
 ]
