@@ -250,3 +250,19 @@ Stage Summary:
 - §C is now closed on BOTH legs (local cycle-1 + production §C-7). All 10 @test.ly/12345678 accounts log in on madarek.onrender.com; the demo panel works on production; the registrar reads «المسجل العام» everywhere.
 - The tour-veil fix needs its after-deploy shot (faculty@test.ly still has the tour un-dismissed — use it to verify the 92% scrim kills the stubs).
 - Next: cycle-3 main line per BOARD queue — §A1 desktop perf (loader LCP) + student remaining pages + /settings + P1/P2 error surfaces.
+---
+Task ID: r320-c3-settings-package
+Agent: foreman (continuation)
+Task: Cycle-3 build: the ANY-AUTHED /settings + the routed error sheets (PAGES-GAP P2-1..P2-5) + nav wiring — the teacher change-password gap closed.
+
+Work Log:
+- 5d6132b4: /settings (ProtectedRoute+AppShell like /vision) — seven §B2 sections (المظهر ThemeToggle+/me sync · تغيير كلمة المرور · معلومات الحساب والتحقق honest /auth/me facts · الإشعارات/اللغة/الجلسات honest قريبًا EmptyCells · بياناتي via /contact+/legal/privacy). ChangePasswordCard LIFTED verbatim from ProfilePage §[04] to components/account (ONE definition; ProfilePage re-imports — its suite stayed green = behavior-preserving). r320-settings.css (tokens only, @layer pages).
+- Nav wiring: ONE /settings row per role labeled إعدادات الحساب (the cross-role one-label rule caught my student/admin label drift at the nav-coverage gate — unified), LAST in the account groups (the r171a adjacency contract profile→messages→alerts intact), UserCog vs the platform Settings icons. ADMIN /admin/settings row retitled إعدادات المنصّة (matches its page H1 pinned by r305a8). nav-coverage 33→34 re-pinned with the R320 override note.
+- Error sheets: /500 /403 /maintenance via the shared ErrorSheetPage (the /404 grammar: sheet frame + grain + mk-ill scene + mono code eyebrow + one primary way home; 403 way-back = ROLE_HOME; maintenance disabled-by-default with honest copy). PAGE_TITLES rows added (route-titles-coverage green).
+- Belt r320-settings-pages 10 NEW (nav wiring ×3 incl. unique-icon rule + settings ×4 + error ×3). Gates: front 2729/2729 (+10) · tsc 0/0/0 · eslint 0 errors · raw-css strict PASS · dup-selector/hover-guard zero new vs baseline.
+- Deploy watched (health buildId → 5d6132b4). Production verification (scripts/r320/settings-after.mjs, committed): teacher@test.ly → /settings PASS (7 bars, theme group, 3 password fields geometry-proven y=710/795/907 h=44 — the VLM's "one field" read on the tall fullpage shot was a false positive, disproven mechanically), honest seats قريبًا×2+العربية+عبر الطلب; /500 /403 /maintenance all PASS (h1 + document.title). Shots: audits/evidence/r320/settings/.
+- fb5745f1 evidence commit + BOARD cycle-3 table (§C closed both legs · §A6 fixed · P2-1..P2-5 fixed; remaining: §A1 perf + §E student pages + cycles 4-6).
+
+Stage Summary:
+- Cycle-3's settings/error block COMPLETE and production-verified. The §C accounts story fully closed (local + production). The §E sweep recipe is established (shared component + belt + nav wiring + production probe).
+- Next session: §A1 desktop perf (loader LCP decision) OR the student remaining §E pages (results, online exams + taker, lectures player, training ×3, live, map, university, AR/VR, community, dashboard re-check) — then cycles 4-6 per §I.
