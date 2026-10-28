@@ -17,21 +17,22 @@ BT Grotesk.
 | Cycle | Packages | State |
 |---|---|---|
 | C1 | kill-list quick kills · design system + fonts · Heron extraction · scroll spec · desktop perf | **4/5 MERGED + reviewer DONE** (perf → C2 wave) |
+| C2 | hero + statement + problem transplants (accept ≥ 9) | **hero + statement + pains MERGED** (map→C3, platform/why/roles/CTA→C4; independent re-review pending) |
 
 ## §1 KILL LIST (V1–V12) — tracked to zero
 
 | # | Defect | Source(s) | State | Evidence |
 |---|---|---|---|---|
 | V1 | Debug/revision/coordinate text shown to users | LandingPage.tsx `[R313]—MADAREK·…` row + `.fo-cta-corners` runtime coords + writer · Elevation/LearningPlan `MDRK · …` + `SCALE … · UNITS M` · JourneyScene `[01–04] · LIVE` + station `meta` jargon · WhyScene labels | **FIXED c1 (WP-1a + foreman tail)** — innerText sweep zero at 1440+390; reviewer-found tails also killed (`[SECTION A-A · 1:200]`, `[CTA · RESOLVE]`); REMAINING (deferred by design): hero `[LIVE]` tag (C2) · `SHEET 05 · SCALE 1:100` / `VIEW-A/B · 1280×800` / `real-ui` ×6 (C4 platform) · `[06]` in ledger + «RTL» Latin (C2 copy pass) | audits/evidence/r322/kill-v1/ + review-c1/ |
-| V2 | Map intro broken: duplicate giant headlines + orphan 12px paragraph + empty plan grid | JourneyScene.tsx `.jt-intro*` | OPEN (C3) | — |
+| V2 | Map intro broken: duplicate giant headlines + orphan 12px paragraph + empty plan grid | JourneyScene.tsx `.jt-intro*` | OPEN (C3 — also the 809px map-end dead band) | — |
 | V3 | «مقدمة» card = black slab with void, covers plan rooms | JourneyScene.tsx intro card | OPEN (C3) | — |
 | V4 | Voids/blank bands: ≈250px under role cards (1440); ≈160px bands on phone | landing.css sections | OPEN (C2+) | — |
 | V5 | Type too heavy/inconsistent: 100% w700, 5–6 ad-hoc display sizes 60–85.55px; tablet-band amplification; phone one-word lines | landing.css display ladder | **FIXED c1 (WP-1d)** — the d1/d2/d3/st rungs on the measured Heron ladder: 46.67/40/33.33/23.33px @1440 · 36.86 @768 (Heron 36.83) · 31.74 @390 (Heron 31.76) · 47.57 @991 (Heron tablet) — 100% w600/500 IBM Plex Sans Arabic; the 991/767 amplification dead by construction (px floors); VLM hero 7.5→**9.0** | audits/evidence/r322/dsys/type-census-after.md |
 | V6 | Platform cluttered: blurry screenshots + pasted tooltips/chips | PlatformCanvas/ProductFrame | OPEN (C4) | — |
 | V7 | Edge tab clips body copy at 1440 | EdgeTab + r314-chrome.css | **FIXED c1 (WP-1a)** — slim rail at ≥992 inside frame margin, geometry-proven no intersection; ≤991 gutter marker | audits/evidence/r322/kill-v1/ |
-| V8 | Orphan paragraphs & broken 12-col grid (problem section) | landing.css | OPEN (C2) | — |
+| V8 | Orphan paragraphs & broken 12-col grid (problem section) | landing.css | **FIXED c2 (WP-2c/2d)** — the 4 pains columns on ONE grid (x=1087/736/385/33) with the head bottom-aligned to the same edges (213=213); the 217px orphan lede dies | audits/evidence/r322/statement/ |
 | V9 | Map label contrast/collisions in transitions | JourneyScene + landing.css | OPEN (C3) | — |
-| V10 | Phone hero art tiny (~160px in 330px window); map card clips «شاهد»; red marker at x=0 | HeroInkWindow + journey mobile | **PARTIAL c1** — the x=0 marker (`.et-mark`) hidden <768 (foreman fix 3f7ff14a); art-scale + «شاهد» clip OPEN (C2/C3) | review-c1/ |
+| V10 | Phone hero art tiny (~160px in 330px window); map card clips «شاهد»; red marker at x=0 | HeroInkWindow + journey mobile | **MOSTLY FIXED c2** — hero art 350px full-width @390 (the TIGHT HERO_FRAME viewBox); x=0 marker hidden <768; «شاهد» clip OPEN (C3 map card) | audits/evidence/r322/hero/ |
 | V11 | Desktop jank: 106/215 frames >33ms, p95 50ms, CLS 0.27, LCP 21s (loader-on) | A1 continuation | OPEN (WP 1-e) | audits/evidence/r321/a1-analysis.md |
 | V12 | Older tickets: legal clip (FIXED R321-A4), dup ERR (FIXED A5), decor `+` (FIXED A6), «الإدارة» (FIXED A7), demo panel (A8-prod **FIXED c1 WP-1a** — dev-only open, prod collapsed chip), authed pages unfinished (sweep continues) | — | PARTIAL | R321 board |
 
@@ -64,9 +65,10 @@ Gaps: Lenis literal options · Webflow IX2 params (rebuild from evidence shots +
 
 | Section/Page | Reviewer 1 (C1 baseline) | Notes | Mean | Defects left | Locked |
 |---|---|---|---|---|---|
-| Hero | 5.9 → **re-review pending post-1-d** (VLM hero 9.0 after type fix) | C1 pre-migration baseline | 5.9 | C2 owns (composition/CTA leap) | — |
-| Statement | 6.1 | pre-1-d | 6.1 | C2 | — |
-| Pains | 5.9 | pre-1-d | 5.9 | C2 (V8 grid) | — |
+| Hero | 5.9 baseline → **transplanted c2** (VLM 8.5 "the grammar is respected perfectly") | independent re-review pending | 8.5* | — | — |
+| Statement | 6.1 baseline → **transplanted c2** (VLM 9+ "a masterclass in minimalist architectural branding") | independent re-review pending | 9.0* | — | — |
+| Pains | 5.9 baseline → **transplanted c2** (VLM ~8.2 "world-class system"; V8 geometry-proven closed) | independent re-review pending | 8.2* | — | — |
+(* = VLM advisory; the three-independent-reviewer pass per §3 still pending) |
 | Map | **4.2** | pre-1-d | 4.2 | C3 (V2/V3/V9 + 809px dead band) | — |
 | Product | 4.9 | pre-1-d | 4.9 | C4 (V6) | — |
 | Why | 5.2 | pre-1-d | 5.2 | C4 | — |
@@ -115,7 +117,15 @@ protect it. Basis: `audits/evidence/r321/a1-analysis.md` (UpdateLayoutTree
 | Heron extraction ×4 + scroll spec | 1-c | heron | **MERGED** — 14 JSONs + 5 .md + media inventory, docH 0% drift, no-text-copy verified |
 | Type-scale implementation (V5) | 1-d | dsys-impl + foreman | **MERGED (85560006 → fdc0394c)** — census 4 rungs exact, docH ladder 12413/10002/12499/11368/10782 all in band, 2735 green, VLM 9.0 |
 | Independent reviewer (C1 visual verdict) | 1-r | reviewer | **DONE** — 5.5/10 baseline, V1/V7/V4 verdicts, 10 defects filed (REPORT.md) |
-| Desktop perf trace + intro chain | 1-e | — | QUEUED (C2 wave) |
+| Desktop perf trace + intro chain | 1-e | — | QUEUED (next wave) |
+| Hero transplant (2-b) | 2-b | hero agent + foreman | **MERGED (a3da4d0b)** — V10 fixed, two-band grammar, VLM 8.5 |
+| Statement+pains transplant (2-c/2-d) | 2-c/2d | statement agent + foreman CSS | **MERGED (a26ac4b8)** — V8 closed, 6+6 split + open columns, VLM 9+/8.2, docH all in band |
+
+Cycle-2 verification on merged main (a26ac4b8): docH 12,373 @1440 (+0.15% of
+Heron) · 12,531 @768 (−0.4%) · 11,444 @390 (−0.03%!) · 10,834 @360 (+1.4%) ·
+12,417 @430 — all five belts in band; vitest 2735/2735; lint 0; tsc 0;
+raw-css PASS; funnel 5+5 frozen (the statement's action is the #live
+discovery anchor, NOT a sixth register CTA).
 
 Foreman verification on merged main (e9ded0ff→e0fab65d): lint 0 errors/15
 pre-existing warnings · typecheck clean · vitest 229 files/2735 tests ·
