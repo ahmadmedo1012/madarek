@@ -8,8 +8,8 @@
   "cpu": 4,
   "cadence": "19×660px @250ms (≈12.5k px)",
   "categories": "devtools.timeline,disabled-by-default-devtools.timeline.frame,disabled-by-default-devtools.timeline.invalidationTracking,disabled-by-default-blink.style",
-  "generatedAt": "2026-10-28T16:56:49.971Z",
-  "head": "e4d1be3"
+  "generatedAt": "2026-10-28T22:24:47.942Z",
+  "head": "bcbd395"
  },
  "sessions": {
   "s1": {
@@ -2085,17 +2085,17 @@
     "docH": 12373
    },
    "census": {
-    "totalNodes": 3191,
-    "svg": 30,
-    "path": 94,
+    "totalNodes": 2154,
+    "svg": 24,
+    "path": 68,
     "layers": {
-     "willChange": 0,
+     "willChange": 10,
      "filter": 6,
      "mixBlend": 0,
      "fixed": 8,
-     "backdropFilter": 4,
+     "backdropFilter": 0,
      "mask": 1,
-     "contain": 0,
+     "contain": 2,
      "contentVisibilityAuto": 0
     },
     "layerCandidates": [
@@ -2104,249 +2104,95 @@
      "a.fo-skip-link [fixed]",
      "div.sheet-frame [fixed]",
      "header.fo-header [fixed]",
-     "article.jt-station [backdrop-filter]",
-     "article.jt-station [backdrop-filter]",
-     "article.jt-station [backdrop-filter]",
-     "article.jt-station [backdrop-filter]",
+     "div.jt-map-col [contain:layout paint]",
+     "div.jt-window [will-change:transform]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "p.jt-card.jt-card1 [will-change:opacity, transform]",
+     "p.jt-card.jt-card2 [will-change:opacity, transform]",
+     "div.jt-close [contain:layout paint]",
      "img.fo-fstrip-img [filter]",
      "g.[object.SVGAnimatedString] [mask]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
-     "image.[object.SVGAnimatedString] [filter]",
-     "div.cb-banner [fixed]",
-     "button.et-tab [fixed]",
-     "div.toast-stack [fixed]"
+     "image.[object.SVGAnimatedString] [filter]"
     ]
    },
    "frames": {
-    "count": 233,
-    "gt20": 110,
-    "gt33": 110,
-    "pctGt20": 47.2,
-    "pctGt33": 47.2,
-    "p50": 16.8,
-    "p95": 133.3,
-    "max": 416.7,
-    "avg": 45.13
+    "count": 353,
+    "gt20": 91,
+    "gt33": 91,
+    "pctGt20": 25.8,
+    "pctGt33": 25.8,
+    "p50": 16.7,
+    "p95": 50,
+    "max": 166.6,
+    "avg": 22.52
    },
    "framesActive": {
-    "count": 178,
-    "gt20": 101,
-    "gt33": 101,
-    "pctGt20": 56.7,
-    "pctGt33": 56.7,
-    "p50": 33.3,
-    "p95": 149.9,
-    "max": 416.7,
-    "avg": 52.24
+    "count": 297,
+    "gt20": 81,
+    "gt33": 81,
+    "pctGt20": 27.3,
+    "pctGt33": 27.3,
+    "p50": 16.7,
+    "p95": 50,
+    "max": 166.6,
+    "avg": 22.78
    },
-   "activeWindowMs": 9298,
+   "activeWindowMs": 6768,
    "framesMapBand": {
-    "count": 79,
-    "gt20": 56,
-    "gt33": 56,
-    "pctGt20": 70.9,
-    "pctGt33": 70.9,
-    "p50": 66.6,
-    "p95": 249.9,
-    "max": 416.7,
-    "avg": 73.2
+    "count": 175,
+    "gt20": 36,
+    "gt33": 36,
+    "pctGt20": 20.6,
+    "pctGt33": 20.6,
+    "p50": 16.7,
+    "p95": 33.4,
+    "max": 50.1,
+    "avg": 20.67
    },
    "longtasks": {
-    "count": 55,
-    "gt50": 53,
-    "totalMs": 5552,
+    "count": 5,
+    "gt50": 4,
+    "totalMs": 462,
     "worst": [
      {
-      "start": 8991,
-      "dur": 416
+      "start": 2931,
+      "dur": 170
      },
      {
-      "start": 8179,
-      "dur": 265
+      "start": 10194,
+      "dur": 121
      },
      {
-      "start": 8693,
-      "dur": 255
+      "start": 3112,
+      "dur": 63
      },
      {
-      "start": 8475,
-      "dur": 218
+      "start": 8239,
+      "dur": 58
      },
      {
-      "start": 6929,
-      "dur": 186
-     },
-     {
-      "start": 3129,
-      "dur": 156
-     },
-     {
-      "start": 12880,
-      "dur": 155
-     },
-     {
-      "start": 5008,
-      "dur": 139
+      "start": 3221,
+      "dur": 50
      }
     ]
    },
    "cls": {
-    "total": 0.248,
-    "interact": 0.241
+    "total": 0.01,
+    "interact": 0.003
    },
    "topShifts": [
     {
-     "t": 8930,
-     "value": 0.231,
-     "sources": [
-      {
-       "node": "svg",
-       "prev": [
-        106,
-        51,
-        1259,
-        797
-       ],
-       "cur": [
-        531,
-        186,
-        834,
-        529
-       ]
-      },
-      {
-       "node": "p.jt-side-note",
-       "prev": [
-        0,
-        0,
-        0,
-        0
-       ],
-       "cur": [
-        81,
-        608,
-        425,
-        65
-       ]
-      },
-      {
-       "node": "ul.jt-checklist",
-       "prev": [
-        81,
-        388,
-        85,
-        285
-       ],
-       "cur": [
-        81,
-        469,
-        425,
-        140
-       ]
-      },
-      {
-       "node": "div.jt-side",
-       "prev": [
-        81,
-        0,
-        1,
-        900
-       ],
-       "cur": [
-        81,
-        225,
-        426,
-        449
-       ]
-      },
-      {
-       "node": "figure.jt-side-section",
-       "prev": [
-        120,
-        226,
-        46,
-        162
-       ],
-       "cur": [
-        81,
-        226,
-        425,
-        242
-       ]
-      }
-     ]
-    },
-    {
-     "t": 9374,
-     "value": 0.01,
-     "sources": [
-      {
-       "node": "svg",
-       "prev": [
-        531,
-        0,
-        834,
-        412
-       ],
-       "cur": [
-        565,
-        0,
-        800,
-        401
-       ]
-      },
-      {
-       "node": "div.jt-progress",
-       "prev": [
-        531,
-        425,
-        834,
-        1
-       ],
-       "cur": [
-        565,
-        414,
-        800,
-        1
-       ]
-      },
-      {
-       "node": "span",
-       "prev": [
-        608,
-        414,
-        758,
-        1
-       ],
-       "cur": [
-        565,
-        414,
-        800,
-        1
-       ]
-      },
-      {
-       "node": "div.jt-side",
-       "prev": [
-        81,
-        0,
-        426,
-        372
-       ],
-       "cur": [
-        81,
-        0,
-        460,
-        380
-       ]
-      }
-     ]
-    },
-    {
-     "t": 416,
+     "t": 391,
      "value": 0.007,
      "sources": [
       {
@@ -2365,140 +2211,163 @@
        ]
       }
      ]
+    },
+    {
+     "t": 5498,
+     "value": 0.001,
+     "sources": [
+      {
+       "node": "aside.jt-intro",
+       "prev": [
+        596,
+        631,
+        233,
+        45
+       ],
+       "cur": [
+        596,
+        545,
+        233,
+        131
+       ]
+      }
+     ]
+    },
+    {
+     "t": 7021,
+     "value": 0.001,
+     "sources": [
+      {
+       "node": "aside.jt-intro",
+       "prev": [
+        596,
+        545,
+        233,
+        131
+       ],
+       "cur": [
+        596,
+        631,
+        233,
+        45
+       ]
+      }
+     ]
     }
    ],
    "lcp": {
-    "t": 1708,
-    "size": 16967,
-    "node": "p.reveal-up.reveal-d-3.fo-hero-lead",
-    "url": ""
+    "t": 420,
+    "size": 2304,
+    "node": "img",
+    "url": "http://127.0.0.1:4317/brand/madarek-mark.svg"
    },
    "loaf": {
-    "count": 56,
-    "totalMs": 6411,
+    "count": 12,
+    "totalMs": 2099,
     "worst": [
      {
-      "start": 713,
-      "dur": 533,
+      "start": 1110,
+      "dur": 695,
       "scripts": [
        {
-        "dur": 11,
+        "dur": 573,
         "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
-       },
-       {
-        "dur": 442,
-        "invoker": "MessagePort.onmessage",
-        "src": "/assets/react-gInupMWC.js"
-       },
-       {
-        "dur": 28,
-        "invoker": "FrameRequestCallback",
-        "src": "/assets/useSheetScroll-BMbDJBwk.js"
-       },
+       }
+      ]
+     },
+     {
+      "start": 722,
+      "dur": 385,
+      "scripts": [
        {
         "dur": 5,
-        "invoker": "FrameRequestCallback",
-        "src": "/assets/useSheetScroll-BMbDJBwk.js"
-       }
-      ]
-     },
-     {
-      "start": 8948,
-      "dur": 426,
-      "scripts": [
-       {
-        "dur": 22,
-        "invoker": "IMG[src=\"/media/product/student-lecture-player-720.webp\"].on",
+        "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
        },
        {
-        "dur": 45,
-        "invoker": "DOMWindow.onscroll",
-        "src": "/assets/LandingPage-BOxRKOdu.js"
-       },
-       {
-        "dur": 27,
-        "invoker": "DOMWindow.onscroll",
-        "src": "/assets/useSheetScroll-BMbDJBwk.js"
-       },
-       {
-        "dur": 252,
-        "invoker": "FrameRequestCallback",
-        "src": "/assets/useReveal-Cc5T3For.js"
-       }
-      ]
-     },
-     {
-      "start": 1632,
-      "dur": 351,
-      "scripts": [
-       {
-        "dur": 340,
+        "dur": 368,
         "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
        }
       ]
      },
      {
-      "start": 8177,
-      "dur": 240,
-      "scripts": []
-     },
-     {
-      "start": 8693,
-      "dur": 237,
+      "start": 2914,
+      "dur": 182,
       "scripts": [
        {
-        "dur": 37,
-        "invoker": "DOMWindow.onscroll",
-        "src": "/assets/LandingPage-BOxRKOdu.js"
+        "dur": 6,
+        "invoker": "DOMWindow.onwheel",
+        "src": "/assets/index-Bs98oIVM.js"
+       },
+       {
+        "dur": 149,
+        "invoker": "FrameRequestCallback",
+        "src": ""
        }
       ]
+     },
+     {
+      "start": 140,
+      "dur": 157,
+      "scripts": [
+       {
+        "dur": 53,
+        "invoker": "http://127.0.0.1:4317/assets/index-Bs98oIVM.js",
+        "src": "/assets/index-Bs98oIVM.js"
+       },
+       {
+        "dur": 91,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
+       }
+      ]
+     },
+     {
+      "start": 7,
+      "dur": 125,
+      "scripts": []
      }
     ],
     "topInvokers": [
      {
       "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
-      "totalMs": 941
-     },
-     {
-      "script": "/assets/useReveal-Cc5T3For.js :: FrameRequestCallback",
-      "totalMs": 332
-     },
-     {
-      "script": "/assets/index-Dj0_Itxh.js :: FrameRequestCallback",
-      "totalMs": 173
-     },
-     {
-      "script": "/assets/LandingPage-BOxRKOdu.js :: DOMWindow.onscroll",
-      "totalMs": 142
+      "totalMs": 1105
      },
      {
       "script": "(inline) :: FrameRequestCallback",
-      "totalMs": 135
+      "totalMs": 149
      },
      {
-      "script": "/assets/index-Dj0_Itxh.js :: http://127.0.0.1:4317/assets/index-Dj0_Itxh.js",
-      "totalMs": 58
+      "script": "/assets/index-Bs98oIVM.js :: FrameRequestCallback",
+      "totalMs": 107
      },
      {
-      "script": "(inline) :: PerformanceObserverCallback",
-      "totalMs": 41
+      "script": "/assets/index-Bs98oIVM.js :: http://127.0.0.1:4317/assets/index-Bs98oIVM.js",
+      "totalMs": 53
      },
      {
-      "script": "/assets/useSheetScroll-BMbDJBwk.js :: FrameRequestCallback",
-      "totalMs": 33
+      "script": "/assets/LandingPage-C9zl3jQz.js :: DOMWindow.onscroll",
+      "totalMs": 30
+     },
+     {
+      "script": "/assets/useReveal-aWxwLBIF.js :: IntersectionObserverCallback",
+      "totalMs": 20
+     },
+     {
+      "script": "/assets/LandingPage-C9zl3jQz.js :: IdleRequestCallback",
+      "totalMs": 9
+     },
+     {
+      "script": "/assets/index-Bs98oIVM.js :: DOMWindow.onwheel",
+      "totalMs": 6
      }
     ]
    },
    "grbc": {
-    "count": 96,
+    "count": 85,
     "top": [
-     {
-      "sel": "span.reveal-up.wr.jt-station-text",
-      "reads": 8
-     },
      {
       "sel": "li.reveal-up.reveal-d-1.rl-card",
       "reads": 6
@@ -2516,10 +2385,6 @@
       "reads": 4
      },
      {
-      "sel": "div.jt",
-      "reads": 4
-     },
-     {
       "sel": "div.bp-stage",
       "reads": 3
      },
@@ -2528,884 +2393,892 @@
       "reads": 3
      },
      {
-      "sel": "div.wy",
+      "sel": "div.jt",
       "reads": 3
      },
      {
-      "sel": "h2#statement-title.st-title",
-      "reads": 3
+      "sel": "div.reveal-up.reveal-d-2.st-body",
+      "reads": 2
+     },
+     {
+      "sel": "div.reveal-up.reveal-d-3.st-partner",
+      "reads": 2
+     },
+     {
+      "sel": "h2#pm-title.reveal-up.reveal-d-1.pm-title",
+      "reads": 2
      }
     ]
    },
    "scrollYSamples": [
     {
-     "y": 386,
-     "t": 3293
+     "y": 408,
+     "t": 3108
     },
     {
-     "y": 746,
-     "t": 3691
+     "y": 810,
+     "t": 3539
     },
     {
-     "y": 1439,
-     "t": 4046
+     "y": 1481,
+     "t": 3889
     },
     {
-     "y": 1962,
-     "t": 4378
+     "y": 1960,
+     "t": 4198
     },
     {
-     "y": 2590,
-     "t": 4723
+     "y": 2611,
+     "t": 4531
     },
     {
-     "y": 3538,
-     "t": 5311
+     "y": 3441,
+     "t": 4895
     },
     {
-     "y": 4162,
-     "t": 5884
+     "y": 3945,
+     "t": 5208
     },
     {
-     "y": 4817,
-     "t": 6351
+     "y": 4902,
+     "t": 5640
     },
     {
-     "y": 5557,
-     "t": 6920
+     "y": 5405,
+     "t": 5990
     },
     {
-     "y": 6214,
-     "t": 7384
+     "y": 6189,
+     "t": 6403
     },
     {
-     "y": 6924,
-     "t": 8045
+     "y": 6602,
+     "t": 6707
     },
     {
-     "y": 7810,
-     "t": 9408
+     "y": 7342,
+     "t": 7042
     },
     {
-     "y": 7981,
-     "t": 9723
+     "y": 8020,
+     "t": 7392
     },
     {
-     "y": 8795,
-     "t": 10288
+     "y": 8729,
+     "t": 7777
     },
     {
-     "y": 9443,
-     "t": 10795
+     "y": 9313,
+     "t": 8187
     },
     {
-     "y": 9925,
-     "t": 11174
+     "y": 9898,
+     "t": 8511
     },
     {
-     "y": 10616,
-     "t": 11537
+     "y": 10502,
+     "t": 8791
     },
     {
-     "y": 11144,
-     "t": 11831
+     "y": 11137,
+     "t": 9107
     },
     {
-     "y": 11419,
-     "t": 12141
+     "y": 11417,
+     "t": 9406
     }
    ],
    "wheelEvents": [
     {
-     "t": 3131,
+     "t": 2934,
      "y": 0,
      "dy": 660
     },
     {
-     "t": 3637,
-     "y": 619,
+     "t": 3513,
+     "y": 632,
      "dy": 660
     },
     {
-     "t": 3998,
-     "y": 1250,
+     "t": 3829,
+     "y": 1236,
      "dy": 660
     },
     {
-     "t": 4346,
-     "y": 1891,
+     "t": 4191,
+     "y": 1889,
      "dy": 660
     },
     {
-     "t": 4649,
-     "y": 2516,
+     "t": 4516,
+     "y": 2538,
      "dy": 660
     },
     {
-     "t": 5242,
-     "y": 3265,
+     "t": 4830,
+     "y": 3186,
      "dy": 660
     },
     {
-     "t": 5801,
-     "y": 3937,
+     "t": 5198,
+     "y": 3874,
      "dy": 660
     },
     {
-     "t": 6310,
-     "y": 4589,
+     "t": 5529,
+     "y": 4519,
      "dy": 660
     },
     {
-     "t": 6828,
-     "y": 5242,
+     "t": 5970,
+     "y": 5218,
      "dy": 660
     },
     {
-     "t": 7289,
-     "y": 5898,
+     "t": 6296,
+     "y": 5852,
      "dy": 660
     },
     {
-     "t": 7924,
-     "y": 6583,
+     "t": 6697,
+     "y": 6532,
      "dy": 660
     },
     {
-     "t": 8996,
-     "y": 7257,
+     "t": 7003,
+     "y": 7140,
      "dy": 660
     },
     {
-     "t": 9706,
-     "y": 7918,
+     "t": 7382,
+     "y": 7824,
      "dy": 660
     },
     {
-     "t": 10142,
-     "y": 8507,
+     "t": 7688,
+     "y": 8478,
      "dy": 660
     },
     {
-     "t": 10721,
-     "y": 9218,
+     "t": 8138,
+     "y": 9183,
      "dy": 660
     },
     {
-     "t": 11125,
-     "y": 9859,
+     "t": 8496,
+     "y": 9828,
      "dy": 660
     },
     {
-     "t": 11509,
-     "y": 10482,
+     "t": 8782,
+     "y": 10426,
      "dy": 660
     },
     {
-     "t": 11810,
-     "y": 11110,
+     "t": 9098,
+     "y": 11101,
      "dy": 660
     },
     {
-     "t": 12112,
-     "y": 11413,
+     "t": 9397,
+     "y": 11412,
      "dy": 660
     }
    ],
    "docH": 12373,
-   "fontsReadyAt": 282,
+   "fontsReadyAt": 299,
    "fontChecks": {
     "400-arabic": true,
     "500-arabic": true,
     "600-arabic": true,
     "700-arabic": true
    },
-   "interactWindowMs": 10524,
+   "interactWindowMs": 7983,
    "traceAnchors": {
     "wheelPairs": 19,
-    "offsetMs": 3296040.2,
-    "spreadMs": 1.2
+    "offsetMs": 23119547.4,
+    "spreadMs": 2.7
    },
    "trace": {
-    "events": 91476,
+    "events": 62088,
     "rawDump": "/tmp/mdrk-r322-traces/trace-1440-scroll-traced.jsonl",
-    "rawMB": 26.7,
+    "rawMB": 42.4,
     "bandTraceWindowMs": {
-     "start": 3300184.2,
-     "end": 3305951.2
+     "start": 23123524.4,
+     "end": 23127124.4
     },
     "selfTimeTop": [
      {
-      "name": "UpdateLayoutTree",
-      "count": 317,
-      "selfMs": 3885.2,
-      "totalMs": 3891.3
+      "name": "FunctionCall",
+      "count": 5376,
+      "selfMs": 1238.5,
+      "totalMs": 1266.7
      },
      {
-      "name": "FunctionCall",
-      "count": 5131,
-      "selfMs": 1708.7,
-      "totalMs": 1725.9
+      "name": "UpdateLayoutTree",
+      "count": 536,
+      "selfMs": 1136.6,
+      "totalMs": 1151.9
      },
      {
       "name": "Layerize",
-      "count": 234,
-      "selfMs": 1024.2,
-      "totalMs": 1033.6
-     },
-     {
-      "name": "FireAnimationFrame",
-      "count": 631,
-      "selfMs": 871.9,
-      "totalMs": 878.4
-     },
-     {
-      "name": "Paint",
-      "count": 483,
-      "selfMs": 814.5,
-      "totalMs": 824.4
+      "count": 355,
+      "selfMs": 1039.7,
+      "totalMs": 1056.3
      },
      {
       "name": "EventDispatch",
-      "count": 842,
-      "selfMs": 788.9,
-      "totalMs": 803.5
+      "count": 814,
+      "selfMs": 719.1,
+      "totalMs": 728.7
+     },
+     {
+      "name": "Paint",
+      "count": 589,
+      "selfMs": 599.8,
+      "totalMs": 605.6
+     },
+     {
+      "name": "FireAnimationFrame",
+      "count": 997,
+      "selfMs": 571.1,
+      "totalMs": 577.1
      },
      {
       "name": "PrePaint",
-      "count": 253,
-      "selfMs": 355,
-      "totalMs": 361.3
+      "count": 375,
+      "selfMs": 217.6,
+      "totalMs": 223.9
      },
      {
       "name": "Layout",
-      "count": 57,
-      "selfMs": 213,
-      "totalMs": 213.2
-     },
-     {
-      "name": "HitTest",
-      "count": 39,
-      "selfMs": 49.4,
-      "totalMs": 54.6
-     },
-     {
-      "name": "IntersectionObserverController::computeIntersections",
-      "count": 468,
-      "selfMs": 43.4,
-      "totalMs": 44
+      "count": 23,
+      "selfMs": 50.8,
+      "totalMs": 50.9
      },
      {
       "name": "V8.GC_MC_INCREMENTAL_START",
       "count": 1,
-      "selfMs": 41.4,
-      "totalMs": 41.4
-     },
-     {
-      "name": "ScrollLayer",
-      "count": 182,
-      "selfMs": 16.6,
-      "totalMs": 18
-     },
-     {
-      "name": "MajorGC",
-      "count": 1,
-      "selfMs": 12.4,
-      "totalMs": 12.4
-     },
-     {
-      "name": "V8.GC_MARK_COMPACTOR",
-      "count": 1,
-      "selfMs": 12.1,
-      "totalMs": 12.1
+      "selfMs": 44.4,
+      "totalMs": 44.4
      },
      {
       "name": "V8.GC_MC_MARK_EMBEDDER_PROLOGUE",
       "count": 2,
-      "selfMs": 8.9,
-      "totalMs": 8.9
+      "selfMs": 33.9,
+      "totalMs": 33.9
+     },
+     {
+      "name": "IntersectionObserverController::computeIntersections",
+      "count": 711,
+      "selfMs": 30.6,
+      "totalMs": 31.9
+     },
+     {
+      "name": "HitTest",
+      "count": 33,
+      "selfMs": 25.5,
+      "totalMs": 25.5
+     },
+     {
+      "name": "ScrollLayer",
+      "count": 306,
+      "selfMs": 23.7,
+      "totalMs": 23.9
+     },
+     {
+      "name": "MajorGC",
+      "count": 1,
+      "selfMs": 14,
+      "totalMs": 14
+     },
+     {
+      "name": "V8.GC_MARK_COMPACTOR",
+      "count": 1,
+      "selfMs": 13.8,
+      "totalMs": 13.8
      },
      {
       "name": "V8.GC_MC_INCREMENTAL",
-      "count": 18,
-      "selfMs": 8.9,
-      "totalMs": 8.9
+      "count": 6,
+      "selfMs": 11.5,
+      "totalMs": 11.5
      }
     ],
     "byNameTop": [
      {
-      "name": "UpdateLayoutTree",
-      "count": 317,
-      "totalMs": 3891.3
+      "name": "FunctionCall",
+      "count": 5376,
+      "totalMs": 1266.7
      },
      {
-      "name": "FunctionCall",
-      "count": 5131,
-      "totalMs": 1725.9
+      "name": "UpdateLayoutTree",
+      "count": 536,
+      "totalMs": 1151.9
      },
      {
       "name": "Layerize",
-      "count": 234,
-      "totalMs": 1033.6
-     },
-     {
-      "name": "FireAnimationFrame",
-      "count": 631,
-      "totalMs": 878.4
-     },
-     {
-      "name": "Paint",
-      "count": 483,
-      "totalMs": 824.4
+      "count": 356,
+      "totalMs": 1056.3
      },
      {
       "name": "EventDispatch",
-      "count": 842,
-      "totalMs": 803.5
+      "count": 814,
+      "totalMs": 728.7
+     },
+     {
+      "name": "Paint",
+      "count": 589,
+      "totalMs": 605.6
+     },
+     {
+      "name": "FireAnimationFrame",
+      "count": 997,
+      "totalMs": 577.1
      },
      {
       "name": "PrePaint",
-      "count": 253,
-      "totalMs": 361.3
+      "count": 375,
+      "totalMs": 223.9
      },
      {
       "name": "Layout",
-      "count": 57,
-      "totalMs": 213.2
-     },
-     {
-      "name": "HitTest",
-      "count": 39,
-      "totalMs": 54.6
-     },
-     {
-      "name": "IntersectionObserverController::computeIntersections",
-      "count": 468,
-      "totalMs": 44
+      "count": 23,
+      "totalMs": 50.9
      },
      {
       "name": "V8.GC_MC_INCREMENTAL_START",
       "count": 3,
-      "totalMs": 41.4
-     },
-     {
-      "name": "V8.GC_MC_BACKGROUND_MARKING",
-      "count": 5,
-      "totalMs": 36
-     },
-     {
-      "name": "ScrollLayer",
-      "count": 182,
-      "totalMs": 18
-     },
-     {
-      "name": "MajorGC",
-      "count": 1,
-      "totalMs": 12.4
-     },
-     {
-      "name": "V8.GC_MARK_COMPACTOR",
-      "count": 1,
-      "totalMs": 12.1
+      "totalMs": 44.4
      },
      {
       "name": "V8.GC_MC_MARK_EMBEDDER_PROLOGUE",
       "count": 2,
-      "totalMs": 8.9
+      "totalMs": 33.9
+     },
+     {
+      "name": "IntersectionObserverController::computeIntersections",
+      "count": 711,
+      "totalMs": 31.9
+     },
+     {
+      "name": "HitTest",
+      "count": 33,
+      "totalMs": 25.5
+     },
+     {
+      "name": "ScrollLayer",
+      "count": 306,
+      "totalMs": 23.9
+     },
+     {
+      "name": "V8.GC_MC_BACKGROUND_MARKING",
+      "count": 8,
+      "totalMs": 15.8
+     },
+     {
+      "name": "MajorGC",
+      "count": 1,
+      "totalMs": 14
+     },
+     {
+      "name": "V8.GC_MARK_COMPACTOR",
+      "count": 1,
+      "totalMs": 13.8
      }
     ],
     "functionCallTop": [
      {
-      "fn": "f @ /assets/LandingPage-BOxRKOdu.js",
-      "count": 182,
-      "totalMs": 463.2
+      "fn": "f @ /assets/LandingPage-C9zl3jQz.js",
+      "count": 306,
+      "totalMs": 459.8
      },
      {
-      "fn": "(anonymous) @ /assets/useReveal-Cc5T3For.js",
-      "count": 6,
-      "totalMs": 327.2
-     },
-     {
-      "fn": "no @ /assets/index-Dj0_Itxh.js",
-      "count": 211,
-      "totalMs": 219.3
+      "fn": "no @ /assets/index-Bs98oIVM.js",
+      "count": 335,
+      "totalMs": 209.9
      },
      {
       "fn": "loop @ ",
-      "count": 234,
-      "totalMs": 183.7
+      "count": 355,
+      "totalMs": 188.7
      },
      {
-      "fn": "(anonymous) @ /assets/useSheetScroll-BMbDJBwk.js",
-      "count": 630,
-      "totalMs": 113.4
+      "fn": "(anonymous) @ /assets/useSheetScroll-BFQDpQJO.js",
+      "count": 999,
+      "totalMs": 140.7
+     },
+     {
+      "fn": "A @ /assets/LandingPage-C9zl3jQz.js",
+      "count": 306,
+      "totalMs": 50.7
+     },
+     {
+      "fn": "I.e.obs.IntersectionObserver.threshold @ /assets/useReveal-aWxwLBIF.js",
+      "count": 27,
+      "totalMs": 44.4
+     },
+     {
+      "fn": "Zh.onNativeScroll @ /assets/index-Bs98oIVM.js",
+      "count": 306,
+      "totalMs": 40.5
+     },
+     {
+      "fn": "w @ /assets/useSheetScroll-BFQDpQJO.js",
+      "count": 918,
+      "totalMs": 33.9
      },
      {
       "fn": "yu @ /assets/react-gInupMWC.js",
-      "count": 1832,
-      "totalMs": 108.2
+      "count": 730,
+      "totalMs": 31.8
      },
      {
-      "fn": "w @ /assets/useSheetScroll-BMbDJBwk.js",
-      "count": 546,
-      "totalMs": 67.4
-     },
-     {
-      "fn": "I.e.obs.IntersectionObserver.threshold @ /assets/useReveal-Cc5T3For.js",
-      "count": 34,
-      "totalMs": 62.3
-     },
-     {
-      "fn": "PerformanceObserver.observe.entryTypes @ ",
-      "count": 83,
-      "totalMs": 54.4
-     },
-     {
-      "fn": "M @ /assets/LandingPage-BOxRKOdu.js",
-      "count": 182,
-      "totalMs": 38.3
-     },
-     {
-      "fn": "Zh.onNativeScroll @ /assets/index-Dj0_Itxh.js",
-      "count": 182,
-      "totalMs": 20.6
-     },
-     {
-      "fn": "onWheel @ /assets/index-Dj0_Itxh.js",
+      "fn": "onWheel @ /assets/index-Bs98oIVM.js",
       "count": 19,
-      "totalMs": 19.2
+      "totalMs": 15.7
      },
      {
-      "fn": "k @ /assets/LandingPage-BOxRKOdu.js",
-      "count": 182,
-      "totalMs": 15.8
+      "fn": "k @ /assets/LandingPage-C9zl3jQz.js",
+      "count": 306,
+      "totalMs": 14.5
      },
      {
-      "fn": "T @ /assets/useReveal-Cc5T3For.js",
-      "count": 143,
-      "totalMs": 9.4
+      "fn": "T @ /assets/useReveal-aWxwLBIF.js",
+      "count": 257,
+      "totalMs": 14.1
+     },
+     {
+      "fn": "window.addEventListener.passive @ ",
+      "count": 19,
+      "totalMs": 6.9
+     },
+     {
+      "fn": "L @ /assets/useReveal-aWxwLBIF.js",
+      "count": 257,
+      "totalMs": 5
      }
     ],
     "invalidations": {
-     "total": 13378,
+     "total": 8154,
      "topNodes": [
-      {
-       "node": "line class='pl-hatch bp-drawable'",
-       "reason": "Invalidation set matched class",
-       "total": 756,
-       "inBand": 756,
-       "byKind": {
-        "styleInvalidator": 756
-       }
-      },
-      {
-       "node": "line class='pl-hatch bp-drawable'",
-       "reason": "Related style rule",
-       "total": 756,
-       "inBand": 756,
-       "byKind": {
-        "style": 756
-       }
-      },
-      {
-       "node": "line class='pl-hatch bp-drawable'",
-       "reason": "SVG changed",
-       "total": 756,
-       "inBand": 756,
-       "byKind": {
-        "layout": 756
-       }
-      },
       {
        "node": "line class='bp-hair pm-draw'",
        "reason": "Animation",
-       "total": 706,
-       "inBand": 571,
+       "total": 938,
+       "inBand": 781,
        "byKind": {
-        "style": 706
-       }
-      },
-      {
-       "node": "rect class='bp-hair pm-draw'",
-       "reason": "Animation",
-       "total": 423,
-       "inBand": 361,
-       "byKind": {
-        "style": 423
-       }
-      },
-      {
-       "node": "rect class='bp-hair bp-drawable'",
-       "reason": "Animation",
-       "total": 298,
-       "inBand": 298,
-       "byKind": {
-        "style": 298
-       }
-      },
-      {
-       "node": "SPAN class='wr-i'",
-       "reason": "Related style rule",
-       "total": 282,
-       "inBand": 253,
-       "byKind": {
-        "style": 282
+        "style": 938
        }
       },
       {
        "node": "SPAN class='hi-marker-dot'",
        "reason": "Animation",
-       "total": 702,
-       "inBand": 234,
+       "total": 1065,
+       "inBand": 522,
        "byKind": {
-        "style": 702
+        "style": 1065
        }
       },
       {
-       "node": "circle class='pl-dot'",
-       "reason": "SVG changed",
-       "total": 232,
-       "inBand": 232,
-       "byKind": {
-        "layout": 232
-       }
-      },
-      {
-       "node": "SPAN class='wr-i'",
+       "node": "rect class='bp-hair pm-draw'",
        "reason": "Animation",
-       "total": 214,
-       "inBand": 214,
+       "total": 583,
+       "inBand": 500,
        "byKind": {
-        "style": 214
-       }
-      },
-      {
-       "node": "SPAN class='wr-w'",
-       "reason": "Invalidation set matched tagName",
-       "total": 213,
-       "inBand": 213,
-       "byKind": {
-        "styleInvalidator": 213
-       }
-      },
-      {
-       "node": "SPAN class='wr-w'",
-       "reason": "Related style rule",
-       "total": 213,
-       "inBand": 213,
-       "byKind": {
-        "style": 213
-       }
-      },
-      {
-       "node": "SPAN class='wr-i'",
-       "reason": "Invalidation set matched tagName",
-       "total": 213,
-       "inBand": 213,
-       "byKind": {
-        "styleInvalidator": 213
-       }
-      },
-      {
-       "node": "circle class='pl-dot bp-drawable'",
-       "reason": "Invalidation set matched class",
-       "total": 162,
-       "inBand": 162,
-       "byKind": {
-        "styleInvalidator": 162
-       }
-      },
-      {
-       "node": "circle class='pl-dot bp-drawable'",
-       "reason": "Related style rule",
-       "total": 162,
-       "inBand": 162,
-       "byKind": {
-        "style": 162
-       }
-      },
-      {
-       "node": "rect class='bp-hair bp-drawable'",
-       "reason": "Invalidation set matched class",
-       "total": 162,
-       "inBand": 162,
-       "byKind": {
-        "styleInvalidator": 162
-       }
-      },
-      {
-       "node": "rect class='bp-hair bp-drawable'",
-       "reason": "Related style rule",
-       "total": 162,
-       "inBand": 162,
-       "byKind": {
-        "style": 162
-       }
-      },
-      {
-       "node": "circle class='pl-dot bp-drawable'",
-       "reason": "SVG changed",
-       "total": 162,
-       "inBand": 162,
-       "byKind": {
-        "layout": 162
+        "style": 583
        }
       },
       {
        "node": "DIV class='fo-hero-work-track'",
        "reason": "Animation",
-       "total": 468,
-       "inBand": 156,
+       "total": 710,
+       "inBand": 348,
        "byKind": {
-        "style": 468
+        "style": 710
        }
       },
       {
        "node": "DIV class='fo-ticker-track'",
        "reason": "Animation",
-       "total": 468,
-       "inBand": 156,
+       "total": 710,
+       "inBand": 348,
        "byKind": {
-        "style": 468
-       }
-      },
-      {
-       "node": "line class='bp-hair bp-drawable'",
-       "reason": "Animation",
-       "total": 154,
-       "inBand": 154,
-       "byKind": {
-        "style": 154
-       }
-      },
-      {
-       "node": "rect class='bp-hair bp-drawable'",
-       "reason": "SVG changed",
-       "total": 150,
-       "inBand": 150,
-       "byKind": {
-        "layout": 150
-       }
-      },
-      {
-       "node": "line class='bp-drawable'",
-       "reason": "Invalidation set matched class",
-       "total": 132,
-       "inBand": 132,
-       "byKind": {
-        "styleInvalidator": 132
-       }
-      },
-      {
-       "node": "line class='bp-drawable'",
-       "reason": "Related style rule",
-       "total": 132,
-       "inBand": 132,
-       "byKind": {
-        "style": 132
-       }
-      },
-      {
-       "node": "line class='bp-drawable'",
-       "reason": "SVG changed",
-       "total": 132,
-       "inBand": 132,
-       "byKind": {
-        "layout": 132
+        "style": 710
        }
       },
       {
        "node": "line class='bp-dash pm-draw'",
        "reason": "Animation",
-       "total": 127,
-       "inBand": 112,
+       "total": 177,
+       "inBand": 161,
        "byKind": {
-        "style": 127
+        "style": 177
+       }
+      },
+      {
+       "node": "text class='bp-micro'",
+       "reason": "Invalidation set matched class",
+       "total": 115,
+       "inBand": 115,
+       "byKind": {
+        "styleInvalidator": 115
+       }
+      },
+      {
+       "node": "text class='bp-micro'",
+       "reason": "Related style rule",
+       "total": 115,
+       "inBand": 115,
+       "byKind": {
+        "style": 115
+       }
+      },
+      {
+       "node": "rect class='bp-ink pm-draw'",
+       "reason": "Animation",
+       "total": 134,
+       "inBand": 110,
+       "byKind": {
+        "style": 134
+       }
+      },
+      {
+       "node": "rect class='pl-zone'",
+       "reason": "Animation",
+       "total": 82,
+       "inBand": 82,
+       "byKind": {
+        "style": 82
+       }
+      },
+      {
+       "node": "SPAN class='fo-mono'",
+       "reason": "Animation",
+       "total": 78,
+       "inBand": 78,
+       "byKind": {
+        "style": 78
+       }
+      },
+      {
+       "node": "P class='jt-intro-finding'",
+       "reason": "Animation",
+       "total": 78,
+       "inBand": 78,
+       "byKind": {
+        "style": 78
+       }
+      },
+      {
+       "node": "line class='bp-signal pm-draw'",
+       "reason": "Animation",
+       "total": 90,
+       "inBand": 70,
+       "byKind": {
+        "style": 90
+       }
+      },
+      {
+       "node": "circle class='bp-ink pm-draw'",
+       "reason": "Animation",
+       "total": 90,
+       "inBand": 67,
+       "byKind": {
+        "style": 90
+       }
+      },
+      {
+       "node": "line class='bp-ink pm-draw'",
+       "reason": "Animation",
+       "total": 90,
+       "inBand": 67,
+       "byKind": {
+        "style": 90
+       }
+      },
+      {
+       "node": "P class='jt-card jt-card1'",
+       "reason": "Inline CSS style declaration was mutated",
+       "total": 52,
+       "inBand": 52,
+       "byKind": {
+        "style": 52
+       }
+      },
+      {
+       "node": "P class='jt-card jt-card2'",
+       "reason": "Inline CSS style declaration was mutated",
+       "total": 49,
+       "inBand": 49,
+       "byKind": {
+        "style": 49
+       }
+      },
+      {
+       "node": "LI class='reveal-up reveal-d-1 pm-col in-view'",
+       "reason": "Animation",
+       "total": 66,
+       "inBand": 46,
+       "byKind": {
+        "style": 66
+       }
+      },
+      {
+       "node": "rect class='bp-dash pm-draw'",
+       "reason": "Animation",
+       "total": 45,
+       "inBand": 39,
+       "byKind": {
+        "style": 45
+       }
+      },
+      {
+       "node": "path class='bp-signal pm-draw'",
+       "reason": "Animation",
+       "total": 45,
+       "inBand": 39,
+       "byKind": {
+        "style": 45
+       }
+      },
+      {
+       "node": "circle class='bp-hair pm-draw'",
+       "reason": "Animation",
+       "total": 45,
+       "inBand": 35,
+       "byKind": {
+        "style": 45
+       }
+      },
+      {
+       "node": "P class='reveal-up reveal-d-2 chapters-lede in-view'",
+       "reason": "Animation",
+       "total": 33,
+       "inBand": 33,
+       "byKind": {
+        "style": 33
+       }
+      },
+      {
+       "node": "circle class='bp-signal pm-draw'",
+       "reason": "Animation",
+       "total": 45,
+       "inBand": 32,
+       "byKind": {
+        "style": 45
+       }
+      },
+      {
+       "node": "H2 id='chapters-title' class='reveal-up reveal-d-1 chapters-title in-v",
+       "reason": "Animation",
+       "total": 32,
+       "inBand": 32,
+       "byKind": {
+        "style": 32
+       }
+      },
+      {
+       "node": "LI class='reveal-up reveal-d-3 pm-col in-view'",
+       "reason": "Animation",
+       "total": 32,
+       "inBand": 31,
+       "byKind": {
+        "style": 32
+       }
+      },
+      {
+       "node": "text class='pl-name'",
+       "reason": "Invalidation set matched class",
+       "total": 30,
+       "inBand": 30,
+       "byKind": {
+        "styleInvalidator": 30
        }
       }
      ]
     },
     "resolves": {
-     "total": 49302,
-     "distinctNodes": 2519,
+     "total": 19684,
+     "distinctNodes": 2178,
      "topNodes": [
       {
-       "node": "line.pl-hatch.bp-drawable",
-       "resolves": 13857
+       "node": "meta",
+       "resolves": 3635
       },
       {
        "node": "#text",
-       "resolves": 6742
+       "resolves": 3493
       },
       {
-       "node": "circle.pl-dot.bp-drawable",
-       "resolves": 2725
-      },
-      {
-       "node": "meta",
-       "resolves": 2179
-      },
-      {
-       "node": "line.bp-drawable",
-       "resolves": 1861
-      },
-      {
-       "node": "span.wr-i",
-       "resolves": 971
-      },
-      {
-       "node": "line.bp-hair.pm-draw",
-       "resolves": 924
-      },
-      {
-       "node": "span.wr-w",
-       "resolves": 921
-      },
-      {
-       "node": "g.bp-hair",
-       "resolves": 847
-      },
-      {
-       "node": "text.bp-micro",
-       "resolves": 821
-      },
-      {
-       "node": "span.fo-mono",
-       "resolves": 804
-      },
-      {
-       "node": "rect.pl-wall.bp-drawable",
-       "resolves": 793
-      },
-      {
-       "node": "circle.bp-drawable",
-       "resolves": 714
-      },
-      {
-       "node": "line.bp-gridline.bp-drawable",
-       "resolves": 684
+       "node": "line.pl-hatch.bp-drawable",
+       "resolves": 1159
       },
       {
        "node": "line.bp-drawable.bp-hair",
-       "resolves": 656
+       "resolves": 739
       },
       {
-       "node": "rect.pl-paper.bp-drawable",
-       "resolves": 616
-      },
-      {
-       "node": "rect.bp-hair.pm-draw",
-       "resolves": 572
-      },
-      {
-       "node": "g.pl-win-g",
-       "resolves": 478
+       "node": "line.bp-drawable",
+       "resolves": 579
       },
       {
        "node": "rect.bp-drawable.bp-hair",
-       "resolves": 474
+       "resolves": 558
       },
       {
-       "node": "span.fo-ticker-item",
-       "resolves": 440
+       "node": "span.wr-w",
+       "resolves": 516
       },
       {
-       "node": "path.bp-drawable",
-       "resolves": 362
+       "node": "span.wr-i",
+       "resolves": 433
       },
       {
-       "node": "circle.pl-dot",
-       "resolves": 330
-      },
-      {
-       "node": "link",
-       "resolves": 310
+       "node": "span.fo-mono",
+       "resolves": 417
       },
       {
        "node": "#comment",
-       "resolves": 245
+       "resolves": 363
       },
       {
        "node": "title",
-       "resolves": 235
+       "resolves": 357
+      },
+      {
+       "node": "g.bp-hair",
+       "resolves": 314
+      },
+      {
+       "node": "path.bp-drawable",
+       "resolves": 285
+      },
+      {
+       "node": "text.bp-micro",
+       "resolves": 261
+      },
+      {
+       "node": "rect.bp-hair.bp-drawable",
+       "resolves": 252
+      },
+      {
+       "node": "span.fo-hero-work-item",
+       "resolves": 232
       },
       {
        "node": "circle.st-shade-dot",
-       "resolves": 216
+       "resolves": 232
+      },
+      {
+       "node": "g",
+       "resolves": 166
+      },
+      {
+       "node": "circle.st-stipple-outline",
+       "resolves": 144
+      },
+      {
+       "node": "line.prc-dim",
+       "resolves": 129
+      },
+      {
+       "node": "rect.bp-drawable.bp-ink",
+       "resolves": 116
+      },
+      {
+       "node": "strong",
+       "resolves": 110
+      },
+      {
+       "node": "circle.pl-dot.bp-drawable",
+       "resolves": 108
+      },
+      {
+       "node": "p.jt-intro-finding",
+       "resolves": 106
+      },
+      {
+       "node": "circle.bp-hair.bp-drawable",
+       "resolves": 100
+      },
+      {
+       "node": "text.pl-name",
+       "resolves": 86
       }
      ]
     },
     "paints": {
-     "total": 483,
-     "inBand": 269,
-     "outBand": 214,
-     "inBandMs": 379.3,
+     "total": 589,
+     "inBand": 346,
+     "outBand": 243,
+     "inBandMs": 427.6,
      "distinctLayers": 1,
      "topNodes": [
       {
        "node": "#document",
-       "paints": 128,
-       "ms": 610.3
+       "paints": 180,
+       "ms": 481
       },
       {
        "node": "DIV class='jt-pin'",
-       "paints": 95,
-       "ms": 178.2
+       "paints": 116,
+       "ms": 36.3
       },
       {
-       "node": "SPAN class='wr-i'",
-       "paints": 87,
-       "ms": 1.8
+       "node": "DIV class='jt-window'",
+       "paints": 71,
+       "ms": 56.4
       },
       {
        "node": "LI class='reveal-up reveal-d-1 pm-col in-view'",
-       "paints": 55,
-       "ms": 9.5
+       "paints": 60,
+       "ms": 9.7
       },
       {
        "node": "LI class='reveal-up reveal-d-2 pm-col in-view'",
-       "paints": 32,
-       "ms": 6.5
+       "paints": 37,
+       "ms": 5.2
       },
       {
        "node": "LI class='reveal-up reveal-d-3 pm-col in-view'",
-       "paints": 29,
-       "ms": 4.3
+       "paints": 37,
+       "ms": 5.1
+      },
+      {
+       "node": "SPAN class='wr-i'",
+       "paints": 32,
+       "ms": 0.2
       },
       {
        "node": "DIV class='prf-card prf-card--chat'",
        "paints": 12,
-       "ms": 1.7
+       "ms": 2.1
       },
       {
        "node": "DIV class='fo-ticker-track'",
        "paints": 4,
-       "ms": 0.4
-      },
-      {
-       "node": "SPAN class='reveal-up wr jt-station-text in-view'",
-       "paints": 4,
-       "ms": 2.2
+       "ms": 0.6
       },
       {
        "node": "SPAN class='wy-stage-verb'",
        "paints": 3,
-       "ms": 0.1
+       "ms": 0.4
       },
       {
        "node": "LI class='reveal-up reveal-d-1 rl-card in-view'",
        "paints": 3,
-       "ms": 0.7
+       "ms": 0.4
       },
       {
        "node": "LI class='reveal-up reveal-d-2 rl-card in-view'",
        "paints": 3,
-       "ms": 0.1
+       "ms": 0.7
       },
       {
        "node": "HEADER class='fo-header on-scroll on-hide'",
        "paints": 2,
-       "ms": 1
+       "ms": 0.9
       },
       {
        "node": "LI class='reveal-up reveal-d-3 rl-card in-view'",
@@ -3415,67 +3288,66 @@
      ]
     },
     "styleRecalc": {
-     "count": 317,
-     "totalMs": 3891.3,
-     "inBandMs": 2992.8,
+     "count": 536,
+     "totalMs": 1151.9,
+     "inBandMs": 319.2,
      "clusters": {
-      "1-99": 251,
+      "1-99": 498,
       "2000+": 2,
-      "100-399": 22,
-      "700-999": 42
+      "100-399": 36
      },
      "worst": [
       {
-       "tsMs": 3305116.9,
-       "durMs": 246,
-       "elementCount": 754,
-       "inBand": true
-      },
-      {
-       "tsMs": 3304224.1,
-       "durMs": 203.8,
-       "elementCount": 936,
-       "inBand": true
-      },
-      {
-       "tsMs": 3304774.3,
-       "durMs": 186.2,
-       "elementCount": 754,
-       "inBand": true
-      },
-      {
-       "tsMs": 3304520.2,
-       "durMs": 162.6,
-       "elementCount": 754,
-       "inBand": true
-      },
-      {
-       "tsMs": 3302979.2,
-       "durMs": 151.9,
-       "elementCount": 931,
-       "inBand": true
-      },
-      {
-       "tsMs": 3308923.9,
-       "durMs": 138.9,
-       "elementCount": 2711,
+       "tsMs": 23122489.9,
+       "durMs": 140.5,
+       "elementCount": 2250,
        "inBand": false
       },
       {
-       "tsMs": 3299186.8,
-       "durMs": 134.6,
-       "elementCount": 2711,
+       "tsMs": 23129744.5,
+       "durMs": 101.5,
+       "elementCount": 2250,
        "inBand": false
       },
       {
-       "tsMs": 3301055.5,
-       "durMs": 115.6,
-       "elementCount": 931,
+       "tsMs": 23127887.2,
+       "durMs": 34.5,
+       "elementCount": 108,
+       "inBand": false
+      },
+      {
+       "tsMs": 23125282,
+       "durMs": 31.5,
+       "elementCount": 15,
        "inBand": true
+      },
+      {
+       "tsMs": 23127788.2,
+       "durMs": 28.8,
+       "elementCount": 25,
+       "inBand": false
+      },
+      {
+       "tsMs": 23123086.9,
+       "durMs": 26.5,
+       "elementCount": 15,
+       "inBand": false
+      },
+      {
+       "tsMs": 23123787,
+       "durMs": 26.4,
+       "elementCount": 3,
+       "inBand": true
+      },
+      {
+       "tsMs": 23127288.4,
+       "durMs": 26,
+       "elementCount": 108,
+       "inBand": false
       }
      ]
     },
-    "droppedFrames": 396,
+    "droppedFrames": 121,
     "wheelDispatchCount": 19
    }
   },
@@ -3491,17 +3363,17 @@
     "docH": 12373
    },
    "census": {
-    "totalNodes": 3191,
-    "svg": 30,
-    "path": 94,
+    "totalNodes": 2154,
+    "svg": 24,
+    "path": 68,
     "layers": {
-     "willChange": 0,
+     "willChange": 10,
      "filter": 6,
      "mixBlend": 0,
      "fixed": 8,
-     "backdropFilter": 4,
+     "backdropFilter": 0,
      "mask": 1,
-     "contain": 0,
+     "contain": 2,
      "contentVisibilityAuto": 0
     },
     "layerCandidates": [
@@ -3510,249 +3382,95 @@
      "a.fo-skip-link [fixed]",
      "div.sheet-frame [fixed]",
      "header.fo-header [fixed]",
-     "article.jt-station [backdrop-filter]",
-     "article.jt-station [backdrop-filter]",
-     "article.jt-station [backdrop-filter]",
-     "article.jt-station [backdrop-filter]",
+     "div.jt-map-col [contain:layout paint]",
+     "div.jt-window [will-change:transform]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "p.jt-card.jt-card1 [will-change:opacity, transform]",
+     "p.jt-card.jt-card2 [will-change:opacity, transform]",
+     "div.jt-close [contain:layout paint]",
      "img.fo-fstrip-img [filter]",
      "g.[object.SVGAnimatedString] [mask]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
-     "image.[object.SVGAnimatedString] [filter]",
-     "div.cb-banner [fixed]",
-     "button.et-tab [fixed]",
-     "div.toast-stack [fixed]"
+     "image.[object.SVGAnimatedString] [filter]"
     ]
    },
    "frames": {
-    "count": 245,
-    "gt20": 116,
-    "gt33": 116,
-    "pctGt20": 47.3,
-    "pctGt33": 47.3,
+    "count": 363,
+    "gt20": 80,
+    "gt33": 80,
+    "pctGt20": 22,
+    "pctGt33": 22,
     "p50": 16.7,
-    "p95": 100,
-    "max": 166.6,
-    "avg": 39.39
+    "p95": 33.4,
+    "max": 100,
+    "avg": 21.35
    },
    "framesActive": {
-    "count": 188,
-    "gt20": 109,
-    "gt33": 109,
-    "pctGt20": 58,
-    "pctGt33": 58,
-    "p50": 33.3,
-    "p95": 100.1,
-    "max": 166.6,
-    "avg": 44.95
+    "count": 305,
+    "gt20": 69,
+    "gt33": 69,
+    "pctGt20": 22.6,
+    "pctGt33": 22.6,
+    "p50": 16.7,
+    "p95": 33.4,
+    "max": 100,
+    "avg": 21.47
    },
-   "activeWindowMs": 8454,
+   "activeWindowMs": 6557,
    "framesMapBand": {
-    "count": 86,
-    "gt20": 62,
-    "gt33": 62,
-    "pctGt20": 72.1,
-    "pctGt33": 72.1,
-    "p50": 66.6,
-    "p95": 133.2,
-    "max": 166.6,
-    "avg": 61.43
+    "count": 174,
+    "gt20": 35,
+    "gt33": 35,
+    "pctGt20": 20.1,
+    "pctGt33": 20.1,
+    "p50": 16.7,
+    "p95": 33.4,
+    "max": 50,
+    "avg": 20.11
    },
    "longtasks": {
-    "count": 52,
-    "gt50": 50,
-    "totalMs": 4396,
+    "count": 5,
+    "gt50": 4,
+    "totalMs": 372,
     "worst": [
      {
-      "start": 8581,
-      "dur": 164
+      "start": 3087,
+      "dur": 115
      },
      {
-      "start": 8983,
-      "dur": 153
+      "start": 10103,
+      "dur": 95
      },
      {
-      "start": 3355,
-      "dur": 144
+      "start": 7942,
+      "dur": 61
      },
      {
-      "start": 5957,
-      "dur": 142
+      "start": 3631,
+      "dur": 51
      },
      {
-      "start": 7647,
-      "dur": 132
-     },
-     {
-      "start": 12254,
-      "dur": 130
-     },
-     {
-      "start": 8857,
-      "dur": 116
-     },
-     {
-      "start": 8746,
-      "dur": 107
+      "start": 3533,
+      "dur": 50
      }
     ]
    },
    "cls": {
-    "total": 0.246,
-    "interact": 0.239
+    "total": 0.01,
+    "interact": 0.003
    },
    "topShifts": [
     {
-     "t": 8809,
-     "value": 0.219,
-     "sources": [
-      {
-       "node": "svg",
-       "prev": [
-        106,
-        51,
-        1259,
-        797
-       ],
-       "cur": [
-        509,
-        179,
-        857,
-        543
-       ]
-      },
-      {
-       "node": "p.jt-side-note",
-       "prev": [
-        0,
-        0,
-        0,
-        0
-       ],
-       "cur": [
-        81,
-        603,
-        402,
-        65
-       ]
-      },
-      {
-       "node": "ul.jt-checklist",
-       "prev": [
-        81,
-        393,
-        85,
-        275
-       ],
-       "cur": [
-        81,
-        463,
-        402,
-        140
-       ]
-      },
-      {
-       "node": "div.jt-side",
-       "prev": [
-        81,
-        0,
-        1,
-        900
-       ],
-       "cur": [
-        81,
-        231,
-        403,
-        439
-       ]
-      },
-      {
-       "node": "figure.jt-side-section",
-       "prev": [
-        120,
-        232,
-        46,
-        162
-       ],
-       "cur": [
-        81,
-        232,
-        402,
-        232
-       ]
-      }
-     ]
-    },
-    {
-     "t": 8957,
-     "value": 0.016,
-     "sources": [
-      {
-       "node": "svg",
-       "prev": [
-        509,
-        179,
-        857,
-        543
-       ],
-       "cur": [
-        553,
-        193,
-        812,
-        514
-       ]
-      },
-      {
-       "node": "div.jt-progress",
-       "prev": [
-        509,
-        734,
-        857,
-        1
-       ],
-       "cur": [
-        553,
-        720,
-        812,
-        1
-       ]
-      },
-      {
-       "node": "span",
-       "prev": [
-        600,
-        720,
-        765,
-        1
-       ],
-       "cur": [
-        596,
-        720,
-        769,
-        1
-       ]
-      },
-      {
-       "node": "div.jt-side",
-       "prev": [
-        81,
-        231,
-        403,
-        439
-       ],
-       "cur": [
-        81,
-        220,
-        448,
-        460
-       ]
-      }
-     ]
-    },
-    {
-     "t": 389,
+     "t": 345,
      "value": 0.007,
      "sources": [
       {
@@ -3773,144 +3491,180 @@
      ]
     },
     {
-     "t": 9094,
-     "value": 0.004,
+     "t": 5504,
+     "value": 0.001,
      "sources": [
       {
-       "node": "svg",
+       "node": "aside.jt-intro",
        "prev": [
-        553,
-        82,
-        812,
-        514
+        596,
+        631,
+        233,
+        45
        ],
        "cur": [
-        565,
-        86,
-        801,
-        507
+        596,
+        545,
+        233,
+        131
+       ]
+      }
+     ]
+    },
+    {
+     "t": 6938,
+     "value": 0.001,
+     "sources": [
+      {
+       "node": "aside.jt-intro",
+       "prev": [
+        596,
+        545,
+        233,
+        131
+       ],
+       "cur": [
+        596,
+        631,
+        233,
+        45
+       ]
+      }
+     ]
+    },
+    {
+     "t": 1438,
+     "value": 0,
+     "sources": [
+      {
+       "node": "span.fo-hero-work-item",
+       "prev": [
+        473,
+        840,
+        130,
+        21
+       ],
+       "cur": [
+        467,
+        840,
+        136,
+        21
        ]
       },
       {
-       "node": "div.jt-progress",
+       "node": "span.fo-hero-work-item",
        "prev": [
-        553,
-        610,
-        812,
-        1
+        359,
+        840,
+        90,
+        21
        ],
        "cur": [
-        565,
-        606,
-        801,
-        1
+        354,
+        840,
+        90,
+        21
        ]
       },
       {
-       "node": "span",
+       "node": "span.fo-hero-work-item",
        "prev": [
-        607,
-        606,
-        758,
-        1
+        214,
+        840,
+        121,
+        21
        ],
        "cur": [
-        565,
-        606,
-        801,
-        1
+        210,
+        840,
+        120,
+        21
        ]
       },
       {
-       "node": "div.jt-side",
+       "node": "span.fo-hero-work-item",
        "prev": [
-        81,
+        79,
+        840,
+        111,
+        21
+       ],
+       "cur": [
+        76,
+        840,
         110,
-        448,
-        460
-       ],
-       "cur": [
-        81,
-        107,
-        459,
-        465
+        21
        ]
       }
      ]
     }
    ],
    "lcp": {
-    "t": 376,
-    "size": 2304,
-    "node": "img",
-    "url": "http://127.0.0.1:4317/brand/madarek-mark.svg"
+    "t": 1588,
+    "size": 16967,
+    "node": "p.reveal-up.reveal-d-3.fo-hero-lead",
+    "url": ""
    },
    "loaf": {
-    "count": 48,
-    "totalMs": 5403,
+    "count": 13,
+    "totalMs": 1921,
     "worst": [
      {
-      "start": 1501,
-      "dur": 669,
+      "start": 648,
+      "dur": 444,
       "scripts": [
        {
-        "dur": 651,
+        "dur": 26,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
+       },
+       {
+        "dur": 15,
         "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
        }
       ]
      },
      {
-      "start": 690,
-      "dur": 452,
+      "start": 1600,
+      "dur": 293,
+      "scripts": [
+       {
+        "dur": 286,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
+       }
+      ]
+     },
+     {
+      "start": 1102,
+      "dur": 210,
       "scripts": [
        {
         "dur": 11,
         "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
-       }
-      ]
-     },
-     {
-      "start": 1154,
-      "dur": 331,
-      "scripts": [
-       {
-        "dur": 206,
-        "invoker": "MessagePort.onmessage",
-        "src": "/assets/react-gInupMWC.js"
        },
        {
-        "dur": 29,
+        "dur": 154,
         "invoker": "FrameRequestCallback",
-        "src": "/assets/useSheetScroll-BMbDJBwk.js"
-       },
-       {
-        "dur": 54,
-        "invoker": "FrameRequestCallback",
-        "src": "/assets/useSheetScroll-BMbDJBwk.js"
+        "src": "/assets/useSheetScroll-BFQDpQJO.js"
        }
       ]
      },
      {
-      "start": 7,
-      "dur": 179,
-      "scripts": [
-       {
-        "dur": 58,
-        "invoker": "http://127.0.0.1:4317/assets/index-Dj0_Itxh.js",
-        "src": "/assets/index-Dj0_Itxh.js"
-       }
-      ]
+      "start": 8,
+      "dur": 125,
+      "scripts": []
      },
      {
-      "start": 188,
-      "dur": 177,
+      "start": 3077,
+      "dur": 125,
       "scripts": [
        {
-        "dur": 85,
-        "invoker": "MessagePort.onmessage",
-        "src": "/assets/react-gInupMWC.js"
+        "dur": 105,
+        "invoker": "FrameRequestCallback",
+        "src": ""
        }
       ]
      }
@@ -3918,35 +3672,31 @@
     "topInvokers": [
      {
       "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
-      "totalMs": 953
+      "totalMs": 477
+     },
+     {
+      "script": "/assets/useSheetScroll-BFQDpQJO.js :: FrameRequestCallback",
+      "totalMs": 154
      },
      {
       "script": "(inline) :: FrameRequestCallback",
-      "totalMs": 133
+      "totalMs": 105
      },
      {
-      "script": "/assets/index-Dj0_Itxh.js :: FrameRequestCallback",
-      "totalMs": 117
+      "script": "/assets/useReveal-aWxwLBIF.js :: IntersectionObserverCallback",
+      "totalMs": 95
      },
      {
-      "script": "/assets/useSheetScroll-BMbDJBwk.js :: FrameRequestCallback",
+      "script": "/assets/index-Bs98oIVM.js :: FrameRequestCallback",
       "totalMs": 83
      },
      {
-      "script": "/assets/useReveal-Cc5T3For.js :: FrameRequestCallback",
-      "totalMs": 64
+      "script": "/assets/index-Bs98oIVM.js :: http://127.0.0.1:4317/assets/index-Bs98oIVM.js",
+      "totalMs": 52
      },
      {
-      "script": "/assets/index-Dj0_Itxh.js :: http://127.0.0.1:4317/assets/index-Dj0_Itxh.js",
-      "totalMs": 58
-     },
-     {
-      "script": "(inline) :: PerformanceObserverCallback",
+      "script": "/assets/LandingPage-C9zl3jQz.js :: IdleRequestCallback",
       "totalMs": 43
-     },
-     {
-      "script": "/assets/LandingPage-BOxRKOdu.js :: IdleRequestCallback",
-      "totalMs": 33
      }
     ]
    },
@@ -3956,188 +3706,188 @@
    },
    "scrollYSamples": [
     {
-     "y": 384,
-     "t": 3541
+     "y": 359,
+     "t": 3227
     },
     {
-     "y": 804,
-     "t": 3910
+     "y": 673,
+     "t": 3584
     },
     {
-     "y": 1377,
-     "t": 4270
+     "y": 1311,
+     "t": 3902
     },
     {
-     "y": 1953,
-     "t": 4589
+     "y": 2069,
+     "t": 4274
     },
     {
-     "y": 2600,
-     "t": 4969
+     "y": 2794,
+     "t": 4617
     },
     {
-     "y": 3443,
-     "t": 5500
+     "y": 3271,
+     "t": 4899
     },
     {
-     "y": 4201,
-     "t": 6144
+     "y": 3929,
+     "t": 5234
     },
     {
-     "y": 4827,
-     "t": 6652
+     "y": 4817,
+     "t": 5635
     },
     {
-     "y": 5475,
-     "t": 7180
+     "y": 5273,
+     "t": 5974
     },
     {
-     "y": 6222,
-     "t": 7780
+     "y": 6044,
+     "t": 6334
     },
     {
-     "y": 6890,
-     "t": 8382
+     "y": 6561,
+     "t": 6621
     },
     {
-     "y": 7618,
-     "t": 9137
+     "y": 7336,
+     "t": 6986
     },
     {
-     "y": 8073,
-     "t": 9468
+     "y": 7975,
+     "t": 7314
     },
     {
-     "y": 8689,
-     "t": 9810
+     "y": 8817,
+     "t": 7725
     },
     {
-     "y": 9344,
-     "t": 10192
+     "y": 9251,
+     "t": 8079
     },
     {
-     "y": 9944,
-     "t": 10541
+     "y": 9865,
+     "t": 8399
     },
     {
-     "y": 10561,
-     "t": 10882
+     "y": 10538,
+     "t": 8715
     },
     {
-     "y": 11167,
-     "t": 11202
+     "y": 11142,
+     "t": 9034
     },
     {
-     "y": 11422,
-     "t": 11502
+     "y": 11418,
+     "t": 9331
     }
    ],
    "wheelEvents": [
     {
-     "t": 3359,
+     "t": 3089,
      "y": 0,
      "dy": 660
     },
     {
-     "t": 3891,
-     "y": 623,
+     "t": 3533,
+     "y": 605,
      "dy": 660
     },
     {
-     "t": 4248,
-     "y": 1243,
+     "t": 3893,
+     "y": 1241,
      "dy": 660
     },
     {
-     "t": 4570,
-     "y": 1880,
+     "t": 4206,
+     "y": 1869,
      "dy": 660
     },
     {
-     "t": 4890,
-     "y": 2526,
+     "t": 4578,
+     "y": 2546,
      "dy": 660
     },
     {
-     "t": 5439,
-     "y": 3261,
+     "t": 4889,
+     "y": 3198,
      "dy": 660
     },
     {
-     "t": 5959,
-     "y": 3929,
+     "t": 5222,
+     "y": 3857,
      "dy": 660
     },
     {
-     "t": 6582,
-     "y": 4605,
+     "t": 5578,
+     "y": 4517,
      "dy": 660
     },
     {
-     "t": 7085,
-     "y": 5246,
+     "t": 5939,
+     "y": 5203,
      "dy": 660
     },
     {
-     "t": 7651,
-     "y": 5912,
+     "t": 6288,
+     "y": 5850,
      "dy": 660
     },
     {
-     "t": 8277,
-     "y": 6585,
+     "t": 6607,
+     "y": 6488,
      "dy": 660
     },
     {
-     "t": 8985,
-     "y": 7248,
+     "t": 6905,
+     "y": 7132,
      "dy": 660
     },
     {
-     "t": 9447,
-     "y": 7895,
+     "t": 7292,
+     "y": 7841,
      "dy": 660
     },
     {
-     "t": 9774,
-     "y": 8496,
+     "t": 7606,
+     "y": 8469,
      "dy": 660
     },
     {
-     "t": 10155,
-     "y": 9149,
+     "t": 8049,
+     "y": 9183,
      "dy": 660
     },
     {
-     "t": 10480,
-     "y": 9808,
+     "t": 8379,
+     "y": 9793,
      "dy": 660
     },
     {
-     "t": 10866,
-     "y": 10492,
+     "t": 8706,
+     "y": 10466,
      "dy": 660
     },
     {
-     "t": 11169,
-     "y": 11100,
+     "t": 9023,
+     "y": 11107,
      "dy": 660
     },
     {
-     "t": 11482,
-     "y": 11417,
+     "t": 9321,
+     "y": 11413,
      "dy": 660
     }
    ],
    "docH": 12373,
-   "fontsReadyAt": 367,
+   "fontsReadyAt": 274,
    "fontChecks": {
     "400-arabic": true,
     "500-arabic": true,
     "600-arabic": true,
     "700-arabic": true
    },
-   "interactWindowMs": 9672
+   "interactWindowMs": 7770
   },
   "s2native": {
    "session": "s2-native",

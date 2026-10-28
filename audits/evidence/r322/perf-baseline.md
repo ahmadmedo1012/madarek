@@ -301,3 +301,22 @@ Every figure in this report was re-verified against the committed
 final harness pass; a handful of §2/§4/§5 figures carried from an
 intermediate run were re-pinned to the committed data in the
 verification commit.
+
+## §8 — C3 map transplant: the before/after (measured on the WP-3b tree, same harness, 4× CPU @1440)
+
+| metric | baseline (main 2894646) | after the transplant | delta |
+|---|---|---|---|
+| S2clean frames >33ms | 58.0% | **22%** | −62% relative |
+| S2clean p95 | 100.1ms | **33.4ms** | −67% |
+| S2clean max | 166.6ms | 100ms | −40% |
+| S2 traced frames >33ms | 56.7% | 25.8% | −55% relative |
+| **CLS (scroll session)** | **0.246** | **0.01** | **−96% — the pin-end expansion is DEAD** |
+
+The three C3 architecture mandates delivered exactly their predicted yield (§7 items
+1–3: the inherited-var walk is dead — direct opacity writes; the layers are
+opacity-only; the closing column reserves its geometry). The remaining distance to
+the ≥98% ≤20ms target rides the §7 items 5–7 (animation promotion, grain, loader
+policy) — C4's menu, recorded as tickets.
+
+Command: `node scripts/r322/perf-baseline.mjs --sessions s2clean,s2` (self-served
+preview of `npm run build -w frontend`).
