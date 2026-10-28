@@ -71,10 +71,15 @@
     }
     </script>
     <!-- Self-hosted IBM Plex (src/styles/fonts.css) — preload the two most
-         critical arabic subsets: body 400 + display 700. crossorigin is
-         required because fonts are always fetched in CORS mode. -->
+         critical arabic subsets: body 400 + display 600. crossorigin is
+         required because fonts are always fetched in CORS mode.
+         R322 (3-b · perf-baseline §7-4): the preload re-pin 700 → 600 —
+         the R322 C1 type system renders 400/500/600 ONLY (the 700 face
+         is dead weight competing with the LCP face's preload slot: at
+         Fast-3G the display font queued behind the dead 700 while the
+         LCP h1 waited — the single cheapest LCP cut on first visit). -->
     <link rel="preload" href="/fonts/plex-sans-arabic-400-normal-arabic.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/plex-sans-arabic-700-normal-arabic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/plex-sans-arabic-600-normal-arabic.woff2" as="font" type="font/woff2" crossorigin />
     <script>
       (function () {
         try {
