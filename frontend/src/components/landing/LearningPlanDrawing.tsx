@@ -83,9 +83,18 @@ export const PLAN_VB = { w: 1200, h: 760 } as const;
  * the plan's palette is pinned to the measured drafting primaries in
  * BOTH themes while the stage machine / draw-in / wash opacity in
  * landing.css keep driving every element. The finding-room rules
- * mirror the landing.css stage selectors (+.jt-plan specificity) so
+ * mirror the landing.css wash selectors (+.jt-plan specificity) so
  * the ACTIVE zone's label, area and door marker read white on the
- * solid #FA3600 fill. */
+ * solid #FA3600 fill.
+ *
+ * R322 (3-b) — the map transplant: the plan's build is now the SIX
+ * PROGRESSIVE OPACITY LAYERS (the `data-xl` group tags below — the
+ * R310 stage-keyed dash draw-in is retired; landing.css + the driver
+ * crossfade the groups wholesale). The wash seat re-keys from
+ * `.jt[data-stage]` to `.jt[data-wash]` (JourneyScene's bounded room
+ * highlight, keyed to the layer builds) — and the LIBRARY finally
+ * owns a beat: `[04]` warms while its wing builds (the R310
+ * "the library door stays quiet" story closes with the transplant). */
 const PLAN_INK_CSS = `
   .jt .jt-plan .pl-sheet  { fill: #F6F6EE; }
   .jt .jt-plan .pl-wall   { fill: #282828; }
@@ -106,10 +115,11 @@ const PLAN_INK_CSS = `
      the stage flips; the pigment stays pinned here). */
   .jt .jt-plan .pl-chip   { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
   .jt .jt-plan .pl-leader { stroke: #B3B3AF; stroke-width: 2.3; fill: none; }
-  .jt[data-stage='0'] .jt-plan .pl-leader[data-station='0'],
-  .jt[data-stage='1'] .jt-plan .pl-leader[data-station='1'],
-  .jt[data-stage='2'] .jt-plan .pl-leader[data-station='2'],
-  .jt[data-stage='3'] .jt-plan .pl-leader[data-station='4'] {
+  .jt[data-wash='lecture'] .jt-plan .pl-leader[data-station='0'],
+  .jt[data-wash='checkpoint'] .jt-plan .pl-leader[data-station='1'],
+  .jt[data-wash='exam'] .jt-plan .pl-leader[data-station='2'],
+  .jt[data-wash='library'] .jt-plan .pl-leader[data-station='3'],
+  .jt[data-wash='mastery'] .jt-plan .pl-leader[data-station='4'] {
     stroke: #FA3600; stroke-dasharray: 4 3;
   }
   .jt .jt-plan .bp-micro  { fill: #62625F; }
@@ -127,18 +137,21 @@ const PLAN_INK_CSS = `
      #FA3600 (≥3:1, the register's own bar for the decorative plan).
      Heron's register has no scrub-lit rooms at all — the wash itself
      is the active signal; the label stays the quiet ink annotation. */
-  .jt[data-stage='0'] .jt-plan .pl-l-lecture .pl-name,
-  .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .pl-name,
-  .jt[data-stage='2'] .jt-plan .pl-l-exam .pl-name,
-  .jt[data-stage='3'] .jt-plan .pl-l-mastery .pl-name { fill: #282828; }
-  .jt[data-stage='0'] .jt-plan .pl-l-lecture .bp-micro,
-  .jt[data-stage='1'] .jt-plan .pl-l-checkpoint .bp-micro,
-  .jt[data-stage='2'] .jt-plan .pl-l-exam .bp-micro,
-  .jt[data-stage='3'] .jt-plan .pl-l-mastery .bp-micro { fill: #282828; }
-  .jt[data-stage='0'] .jt-plan .pl-station[data-station='0'],
-  .jt[data-stage='1'] .jt-plan .pl-station[data-station='1'],
-  .jt[data-stage='2'] .jt-plan .pl-station[data-station='2'],
-  .jt[data-stage='3'] .jt-plan .pl-station[data-station='4'] { fill: #FFFFFF; font-weight: 700; }
+  .jt[data-wash='lecture'] .jt-plan .pl-l-lecture .pl-name,
+  .jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .pl-name,
+  .jt[data-wash='exam'] .jt-plan .pl-l-exam .pl-name,
+  .jt[data-wash='library'] .jt-plan .pl-l-library .pl-name,
+  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .pl-name { fill: #282828; }
+  .jt[data-wash='lecture'] .jt-plan .pl-l-lecture .bp-micro,
+  .jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .bp-micro,
+  .jt[data-wash='exam'] .jt-plan .pl-l-exam .bp-micro,
+  .jt[data-wash='library'] .jt-plan .pl-l-library .bp-micro,
+  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .bp-micro { fill: #282828; }
+  .jt[data-wash='lecture'] .jt-plan .pl-station[data-station='0'],
+  .jt[data-wash='checkpoint'] .jt-plan .pl-station[data-station='1'],
+  .jt[data-wash='exam'] .jt-plan .pl-station[data-station='2'],
+  .jt[data-wash='library'] .jt-plan .pl-station[data-station='3'],
+  .jt[data-wash='mastery'] .jt-plan .pl-station[data-station='4'] { fill: #FFFFFF; font-weight: 700; }
 `;
 
 /* the section drawing's own pigment sheet — the SAME paper-artifact
@@ -433,8 +446,8 @@ export function LearningPlanDrawing() {
         ))}
       </g>
 
-      {/* ═══ zone: قاعة المحاضرات — raked seating + stage (stage 0) ═══ */}
-      <g className="pl-l-lecture" aria-hidden="true">
+      {/* ═══ zone: قاعة المحاضرات — raked seating + stage (layer 1) ═══ */}
+      <g className="pl-l-lecture" data-xl="1" aria-hidden="true">
         <rect className="pl-zone" data-zone="lecture" x="764" y="78" width="358" height="307" />
         {/* the stage platform + screen wall (reading start, RTL) */}
         <rect className="bp-fill bp-drawable" x="1058" y="180" width="48" height="140" pathLength={1} />
@@ -466,8 +479,8 @@ export function LearningPlanDrawing() {
         <text className="bp-micro" x="930" y="120" textAnchor="middle">240 M2</text>
       </g>
 
-      {/* ═══ zone: كشك نقطة الفحص — counter + queue (stage 1) ═══ */}
-      <g className="pl-l-checkpoint" aria-hidden="true">
+      {/* ═══ zone: كشك نقطة الفحص — counter + queue (layer 2) ═══ */}
+      <g className="pl-l-checkpoint" data-xl="2" aria-hidden="true">
         <rect className="pl-zone" data-zone="checkpoint" x="764" y="475" width="358" height="185" />
         {/* the counter */}
         <rect className="bp-fill bp-drawable" x="880" y="530" width="170" height="16" pathLength={1} />
@@ -488,8 +501,8 @@ export function LearningPlanDrawing() {
         <text className="bp-micro" x="930" y="645" textAnchor="middle">36 M2</text>
       </g>
 
-      {/* ═══ zone: قاعة الاختبار — the desk grid (stage 2) ═══ */}
-      <g className="pl-l-exam" aria-hidden="true">
+      {/* ═══ zone: قاعة الاختبار — the desk grid (layer 3) ═══ */}
+      <g className="pl-l-exam" data-xl="3" aria-hidden="true">
         <rect className="pl-zone" data-zone="exam" x="424" y="78" width="329" height="307" />
         {/* the desk grid — 5 columns × 4 rows (R320 §A4: dropped 10u
             down, 140→150 — the re-spaced label pair above it keeps its
@@ -514,8 +527,9 @@ export function LearningPlanDrawing() {
         <text className="bp-micro" x="590" y="141" textAnchor="middle">150 M2</text>
       </g>
 
-      {/* ═══ zone: المكتبة — shelves + reading table (stage 2) ═══ */}
-      <g className="pl-l-library" aria-hidden="true">
+      {/* ═══ zone: المكتبة — shelves + reading table (layer 4, with
+          the entry reception below — the south band builds together) ═══ */}
+      <g className="pl-l-library" data-xl="4" aria-hidden="true">
         <rect className="pl-zone" data-zone="library" x="304" y="475" width="449" height="185" />
         {/* shelf runs with book ticks */}
         <rect className="bp-fill bp-drawable" x="360" y="506" width="330" height="12" pathLength={1} />
@@ -556,8 +570,8 @@ export function LearningPlanDrawing() {
         <text className="bp-micro" x="530" y="645" textAnchor="middle">96 M2</text>
       </g>
 
-      {/* ═══ zone: غرفة الإتقان — the stepped seminar (stage 3) ═══ */}
-      <g className="pl-l-mastery" aria-hidden="true">
+      {/* ═══ zone: غرفة الإتقان — the stepped seminar (layer 5) ═══ */}
+      <g className="pl-l-mastery" data-xl="5" aria-hidden="true">
         <rect className="pl-zone" data-zone="mastery" x="78" y="78" width="335" height="307" />
         {/* the stepped rows facing the west focus wall */}
         {[0, 1, 2].map((i) => (
@@ -588,8 +602,9 @@ export function LearningPlanDrawing() {
         <text className="bp-micro" x="340" y="373" textAnchor="middle">84 M2</text>
       </g>
 
-      {/* ═══ zone: الاستقبال — reception + bench (stage 3) ═══ */}
-      <g className="pl-l-entry" aria-hidden="true">
+      {/* ═══ zone: الاستقبال — reception + bench (layer 4, with the
+          library — the south band builds together) ═══ */}
+      <g className="pl-l-entry" data-xl="4" aria-hidden="true">
         {/* the L reception counter */}
         <rect className="bp-fill bp-drawable" x="100" y="560" width="120" height="14" pathLength={1} />
         <rect className="bp-fill bp-drawable" x="206" y="560" width="14" height="60" pathLength={1} />
@@ -602,8 +617,9 @@ export function LearningPlanDrawing() {
         <text className="pl-name" x="196" y="516" textAnchor="middle">الاستقبال</text>
       </g>
 
-      {/* ═══ the annotations — journey path + stations + dims (stage 3) ═══ */}
-      <g className="pl-l-annot" aria-hidden="true">
+      {/* ═══ the annotations — journey path + stations + dims (layer 6 —
+          the completed drawing) ═══ */}
+      <g className="pl-l-annot" data-xl="6" aria-hidden="true">
         {/* the journey path — the corridor spine, RTL: the section cut
             line A-A rides its ends (the flags tie the sheet to the
             closing column's section view — the C4-A multi-view sheet) */}
