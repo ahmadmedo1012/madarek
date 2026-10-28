@@ -311,11 +311,12 @@ describe('R305 player — the now-playing block is the page’s ONE deep band', 
     expect(page.match(/r305s-band--deep/g)?.length).toBe(1);
     // The secondary runs re-derive from the band ink.
     expect(page.match(/r305s-band-secondary/g)?.length).toBe(2);
-    // r168a re-pin: h1 lecture title · h2 panel · h3 sections — unchanged.
+    // R321 override (WP-B3): the outline contract holds in the sheet
+    // grammar — h1 lecture title (kept) + SectionBar h2 boards replace
+    // the retired h2 panel / h3 sec-title rungs.
     expect(page).toContain('<h1 className="lecture-meta-title">');
-    expect(page).toContain('<h2 className="lecture-panel-title">داخل المحاضرة</h2>');
-    expect(page).toContain('<h3 className="lecture-panel-sec-title">');
-    expect(page).toContain('فصول المحاضرة</h3>');
+    expect(page).toContain('<SectionBar');
+    expect(page.match(/<SectionBar/g)?.length ?? 0).toBeGreaterThanOrEqual(2); // 2 literal mounts (the third board rides the shared row family)
     // The r299 landmark contract (labelled section, never aside) holds.
     expect(page).toMatch(/<section[^>]*lecture-aside[^>]*aria-label="محتويات المحاضرة"/);
   });

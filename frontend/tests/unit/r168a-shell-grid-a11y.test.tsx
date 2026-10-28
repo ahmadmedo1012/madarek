@@ -110,12 +110,16 @@ describe('r168a — lecture player owns a heading outline', () => {
    *  attachments panel — the heading OUTLINE contract survives: lecture
    *  title = h1, the panel («داخل المحاضرة») = h2, panel sections
    *  (نقاط التفاعل / فصول المحاضرة) = h3. */
-  it('lecture title is the h1; the attachments panel is the h2; its sections are h3', () => {
+  it('lecture title is the h1; the content boards are the h2s (R321 override — the B3 sheet conversion retired the Card panel)', () => {
     const page = stripJsx(read('src/pages/student/LecturePlayerPage.tsx'));
+    // R321 override (WP-B3): the r168a outline contract (an owned
+    // heading outline around the lecture) holds in the sheet grammar —
+    // h1 lecture title (kept) + the SectionBar h2 boards ([02][03][04])
+    // replacing the retired h2 lecture-panel-title / h3 sec-titles.
     expect(page).toContain('<h1 className="lecture-meta-title">');
-    expect(page).toContain('<h2 className="lecture-panel-title">داخل المحاضرة</h2>');
-    expect(page).toContain('<h3 className="lecture-panel-sec-title">');
-    expect(page).toContain('فصول المحاضرة</h3>');
+    expect(page).toContain("<SectionBar");
+    expect(page).toContain('className="lecture-aside"');
+    expect(page.match(/<SectionBar/g)?.length ?? 0).toBeGreaterThanOrEqual(2); // 2 literal mounts (the third board rides the shared row family)
   });
 
   it('the tag swap stays pixel-identical (margin reset at source)', () => {

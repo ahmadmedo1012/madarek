@@ -490,3 +490,16 @@ T-5 (STUDENT-SWEEP §3): pages/community/CommunityPages.tsx — the §C-5 «×5�
 
 ### Stage Summary
 B4 delivered the CENSUS (the ×5 = five route rows of ONE already-merged component — the honest correction of the §C-5 label), the in-file byte-near dedupe (×2 composer chrome → ONE parametrised set, a11y verbatim), and the full sheet-system conversion of CommunityPages.tsx (.r321c-page root + family sheet ladder + [02]-[04] SectionBar boards + BarCount + hatched EmptyCell + kept ErrorState/skeletons, all queries/posting flows/roles/copy untouched). All gates green, 10/10 belt pins untouched, 390 probe green, evidence shot committed. The true cross-file dedupe mass (PostsFeedPanel↔SocialPage ~180 ln) + the posts/rooms hairline adoption are recorded as the exact remainder for the foreman.
+
+---
+Task ID: r321-c1-b3b4-mergefix
+Agent: foreman-B
+Task: The B3+B4 merge fix — the merged-tree full suite caught 2 source-pin failures the branch-level spot runs missed; re-pinned per the R321 override rule.
+
+Work Log:
+- The merged tree's full 2733 run failed 2 pins: r168a-shell-grid-a11y (h2 lecture-panel-title + h3 sec-titles in the player source) + R305-courses-heron (the same pins inside the band test) — B3 legitimately retired the Card panel for SectionBar boards, but the branch-level runs hadn't included these two files.
+- Re-pinned to the sheet grammar with R321 override notes: the outline contract (h1 lecture title kept + the SectionBar h2 boards + the lecture-aside landmark kept) holds; the pins now assert the live truth (2 literal SectionBar mounts; the third board rides the shared row family).
+- Both files 25/25; full suite 2733/2733 on the merged tree.
+
+Stage Summary:
+- The full-suite discipline caught the gap the spot runs missed; the r168a/R305 a11y contracts survive the conversion re-pinned.
