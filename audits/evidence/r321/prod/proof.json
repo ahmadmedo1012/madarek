@@ -1,8 +1,8 @@
 {
   "target": "https://madarek.onrender.com",
-  "runAt": "2026-10-27T22:38:22.461Z",
+  "runAt": "2026-10-28T02:00:29.871Z",
   "harness": "scripts/r321/prod-proof.ts",
-  "buildId": "ff7aeed688ae",
+  "buildId": "5928c69a4ce3",
   "engine": {
     "name": "chromium",
     "version": "148.0.7778.96"
@@ -11,18 +11,18 @@
     {
       "endpoint": "/api/v1/health",
       "httpStatus": 200,
-      "latencyMs": 674,
+      "latencyMs": 632,
       "pass": true,
       "contentType": "application/json; charset=utf-8",
       "ok": true,
-      "dbLatencyMs": 57,
+      "dbLatencyMs": 64,
       "env": "production",
-      "buildId": "ff7aeed688ae"
+      "buildId": "5928c69a4ce3"
     },
     {
       "endpoint": "/health",
       "httpStatus": 200,
-      "latencyMs": 203,
+      "latencyMs": 190,
       "contentType": "text/html; charset=UTF-8",
       "pass": true
     }
@@ -43,7 +43,7 @@
         "role": "STUDENT",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 888,
+        "apiMs": 1053,
         "routeReached": "/student/dashboard",
         "routeExpected": "/student/dashboard",
         "h1": "لوحة التحكم",
@@ -52,7 +52,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "student.jpg",
-        "shotBytes": 45155,
+        "shotBytes": 54083,
         "shotQuality": 70,
         "pass": true
       },
@@ -62,7 +62,7 @@
         "role": "STUDENT",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 886,
+        "apiMs": 1136,
         "routeReached": "/student/dashboard",
         "routeExpected": "/student/dashboard",
         "h1": "لوحة التحكم",
@@ -71,7 +71,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "student2.jpg",
-        "shotBytes": 45123,
+        "shotBytes": 45109,
         "shotQuality": 70,
         "pass": true
       },
@@ -81,7 +81,7 @@
         "role": "TEACHER",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 1094,
+        "apiMs": 927,
         "routeReached": "/teacher/dashboard",
         "routeExpected": "/teacher/dashboard",
         "h1": "لوحة الأستاذ",
@@ -90,7 +90,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "teacher.jpg",
-        "shotBytes": 89361,
+        "shotBytes": 89381,
         "shotQuality": 70,
         "pass": true
       },
@@ -101,7 +101,7 @@
         "position": "DEPARTMENT_HEAD",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 862,
+        "apiMs": 639,
         "routeReached": "/teacher/dashboard",
         "routeExpected": "/teacher/dashboard",
         "h1": "لوحة الأستاذ",
@@ -110,7 +110,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "head.jpg",
-        "shotBytes": 89445,
+        "shotBytes": 89522,
         "shotQuality": 70,
         "pass": true
       },
@@ -121,16 +121,16 @@
         "position": "DEAN",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 646,
+        "apiMs": 738,
         "routeReached": "/teacher/dashboard",
         "routeExpected": "/teacher/dashboard",
         "h1": "لوحة الأستاذ",
-        "tourDismissed": false,
+        "tourDismissed": true,
         "consoleErrors": 0,
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "dean.jpg",
-        "shotBytes": 44724,
+        "shotBytes": 89439,
         "shotQuality": 70,
         "pass": true
       },
@@ -141,16 +141,16 @@
         "position": "ASSOCIATE_DEAN",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 638,
+        "apiMs": 651,
         "routeReached": "/teacher/dashboard",
         "routeExpected": "/teacher/dashboard",
         "h1": "لوحة الأستاذ",
-        "tourDismissed": false,
+        "tourDismissed": true,
         "consoleErrors": 0,
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "vicedean.jpg",
-        "shotBytes": 44734,
+        "shotBytes": 89319,
         "shotQuality": 70,
         "pass": true
       },
@@ -160,7 +160,7 @@
         "role": "ADMIN",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 801,
+        "apiMs": 639,
         "routeReached": "/admin/dashboard",
         "routeExpected": "/admin/dashboard",
         "h1": "لوحة المسجل العام",
@@ -169,7 +169,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "registrar.jpg",
-        "shotBytes": 45573,
+        "shotBytes": 44959,
         "shotQuality": 70,
         "pass": true
       },
@@ -180,7 +180,7 @@
         "scoped": true,
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 566,
+        "apiMs": 742,
         "routeReached": "/admin/dashboard",
         "routeExpected": "/admin/dashboard",
         "h1": "لوحة المسجل العام",
@@ -189,7 +189,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "faculty.jpg",
-        "shotBytes": 68431,
+        "shotBytes": 78325,
         "shotQuality": 70,
         "pass": true
       },
@@ -199,7 +199,7 @@
         "role": "QUALITY",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 1059,
+        "apiMs": 889,
         "routeReached": "/quality/dashboard",
         "routeExpected": "/quality/dashboard",
         "h1": "لوحة الجودة",
@@ -208,7 +208,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "quality.jpg",
-        "shotBytes": 86045,
+        "shotBytes": 86067,
         "shotQuality": 70,
         "pass": true
       },
@@ -218,7 +218,7 @@
         "role": "OWNER",
         "apiStatus": 200,
         "apiToken": true,
-        "apiMs": 957,
+        "apiMs": 676,
         "routeReached": "/owner/dashboard",
         "routeExpected": "/owner/dashboard",
         "h1": "لوحة التحكم الرئيسية",
@@ -227,7 +227,7 @@
         "pageErrors": 0,
         "failedRequests": 0,
         "screenshot": "owner.jpg",
-        "shotBytes": 100682,
+        "shotBytes": 86136,
         "shotQuality": 70,
         "pass": true
       }
@@ -246,7 +246,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 3501,
+        "ms": 3677,
         "pass": true
       },
       {
@@ -258,7 +258,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 3206,
+        "ms": 2801,
         "pass": true
       },
       {
@@ -270,7 +270,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2698,
+        "ms": 2857,
         "pass": true
       },
       {
@@ -282,7 +282,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2693,
+        "ms": 2610,
         "pass": true
       },
       {
@@ -294,7 +294,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2482,
+        "ms": 2822,
         "pass": true
       },
       {
@@ -306,7 +306,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2735,
+        "ms": 2501,
         "pass": true
       },
       {
@@ -318,7 +318,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2761,
+        "ms": 2637,
         "pass": true
       },
       {
@@ -330,7 +330,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2879,
+        "ms": 2814,
         "pass": true
       },
       {
@@ -342,7 +342,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 3584,
+        "ms": 2773,
         "pass": true
       },
       {
@@ -354,7 +354,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2686,
+        "ms": 2470,
         "pass": true
       },
       {
@@ -366,7 +366,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 3662,
+        "ms": 2848,
         "pass": true
       },
       {
@@ -378,7 +378,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2818,
+        "ms": 3138,
         "pass": true
       },
       {
@@ -390,7 +390,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 3312,
+        "ms": 3581,
         "pass": true
       },
       {
@@ -402,7 +402,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 3120,
+        "ms": 3270,
         "pass": true
       },
       {
@@ -414,7 +414,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2716,
+        "ms": 2540,
         "pass": true
       },
       {
@@ -426,7 +426,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2934,
+        "ms": 2621,
         "pass": true
       },
       {
@@ -438,7 +438,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2946,
+        "ms": 2961,
         "pass": true
       },
       {
@@ -450,7 +450,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2899,
+        "ms": 2589,
         "pass": true
       },
       {
@@ -462,7 +462,7 @@
         "consoleErrors": [],
         "pageErrors": [],
         "failedRequests": [],
-        "ms": 2902,
+        "ms": 3080,
         "pass": true
       }
     ],
@@ -478,7 +478,7 @@
         {
           "name": "http 200",
           "pass": true,
-          "detail": "200 (207ms)"
+          "detail": "200 (188ms)"
         },
         {
           "name": "contains \"Sitemap\"",
@@ -496,7 +496,7 @@
         {
           "name": "http 200",
           "pass": true,
-          "detail": "200 (200ms)"
+          "detail": "200 (185ms)"
         },
         {
           "name": "parses as XML",
@@ -519,7 +519,7 @@
         {
           "name": "http 200",
           "pass": true,
-          "detail": "200 (181ms)"
+          "detail": "200 (174ms)"
         },
         {
           "name": "parses as JSON",
@@ -540,14 +540,14 @@
       "heronDriftPct": -0.7,
       "scroll": {
         "wheelScrolls": 8,
-        "framesSampled": 145,
+        "framesSampled": 144,
         "framesOver33": 0,
         "pctOver33": 0,
-        "p95Ms": 16.7,
+        "p95Ms": 16.8,
         "maxMs": 16.8
       },
       "screenshot": "landing-390.jpg",
-      "shotBytes": 30339,
+      "shotBytes": 30340,
       "pass": true
     },
     {
@@ -559,20 +559,20 @@
       "heronDriftPct": 1.4,
       "scroll": {
         "wheelScrolls": 8,
-        "framesSampled": 112,
-        "framesOver33": 36,
-        "pctOver33": 32.1,
+        "framesSampled": 121,
+        "framesOver33": 32,
+        "pctOver33": 26.4,
         "p95Ms": 33.4,
-        "maxMs": 66.6
+        "maxMs": 66.8
       },
       "screenshot": "landing-1440.jpg",
-      "shotBytes": 93714,
+      "shotBytes": 93817,
       "pass": true
     }
   ],
   "observations": [
     "**Demo panel open-by-default on PRODUCTION** (r321 §A8 semantic): every visitor sees the 10 demo credentials expanded. §A8 asked for \"open by default in development\" — the owner should decide whether production should ship collapsed-with-chip (build with `VITE_SHOW_TEST_ACCOUNTS=0`) — RECORDED, not fixed here.",
-    "**§A1 (desktop perf) confirmed OPEN on production**: 32.1% frames >33 ms (p95 33.4 ms · max 66.6 ms over 112 frames) vs the ≤2 % target — the cycle-1 A1 work continues; these rows are the honest production baseline.",
+    "**§A1 (desktop perf) confirmed OPEN on production**: 26.4% frames >33 ms (p95 33.4 ms · max 66.8 ms over 121 frames) vs the ≤2 % target — the cycle-1 A1 work continues; these rows are the honest production baseline.",
     "**§A2 (docH ratchet) holds on production** for this deploy: both viewports inside ±1.5% of Heron (390x844: 11357 (-0.7%) · 1440x900: 12530 (1.4%))."
   ],
   "summary": {

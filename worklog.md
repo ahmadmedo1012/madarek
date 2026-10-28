@@ -410,3 +410,15 @@ Stage Summary:
 CORRECTION (r321-c1-B1a, per the reviewer's rejection — both blocking defects fixed):
 1. Evidence integrity: the after-390 pair had captured /auth (the shot script created NEW contexts per shot — the login session died with them). Re-captured in ONE session; the h1 now reads «[01] الاختبارات الإلكترونية» on the captured page; shots 57/52KB.
 2. Masthead arithmetic: 2.25rem read 18.75px @1440 (fluid root 8.333px) and INVERTED h1<h2 at every band ≥768. Fixed to 3.78rem/3rem/3.2rem — measured ladder now 1440: 31.5>26.67 · 1024: 22.4>18.96 · 768: 27.63>25.78 · 390: 31.76>19.85, all h1 ≤32px. raw-css --strict PASS; OnlineExamsPages 42/42 + r305-shell-states 19/19; dup-selector 65 · hover 183 (base) · ledger 0.
+
+---
+Task ID: r321-c1-prod-reproof
+Agent: foreman-B
+Task: The after-deploy §A10 leg on the merged cycle-1 tree (5928c69a) — the reviewer's recommendation.
+
+Work Log:
+- Merged-main verification: tsc 0 · front 2733/2733 · bundle 736.0/736 PASS (entry 80.8/82 · pdf 95.7/110) · hover-guard 182 (≤185, the rework's −1) · dup-selector 65 · ledger 0 off-list.
+- Deploy watched (health buildId → 5928c69a4ce3); the FULL 5-phase prod-proof re-run: accounts 10/10 · public pages 19/19 (0 console/0 failed) · statics 3/3 · landing docH + scroll rows all PASS — overall PASS, zero FAIL rows, evidence refreshed at audits/evidence/r321/prod/.
+
+Stage Summary:
+- §A10's after-deploy leg proven on the very tree that carries A10+HL+B0+C0+B1a. Cycle-1's foreman-B line is production-verified end-to-end.
