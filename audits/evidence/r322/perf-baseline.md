@@ -86,18 +86,21 @@ Self-time by trace event (main thread; children subtracted):
 | 9 | HitTest | 39 | 49 | |
 | 10 | IntersectionObserver compute | 468 | 43 | reveals |
 
-Named JS (FunctionCall totals): `f @ LandingPage-BOxRKOdu.js` 636ms
-(the JourneyScene driver `onscroll`) · `no @ index-Dj0_Itxh.js` 374ms
-(Lenis `raf`) · `loop @ (inline)` 205ms (the conductor rAF) ·
-`useReveal` 104ms · `useSheetScroll` 58ms. LoAF invokers:
+Named JS (FunctionCall totals): `f @ LandingPage-BOxRKOdu.js` 463ms
+×182 (the JourneyScene driver `onscroll`) · `(anonymous) @
+useReveal-Cc5T3For.js` 327ms ×6 (the reveal settle loop) ·
+`no @ index-Dj0_Itxh.js` 219ms ×211 (Lenis `raf`) · `loop @ (inline)`
+184ms ×234 (the conductor rAF) · `(anonymous) @ useSheetScroll`
+113ms ×630. LoAF invokers:
 `react-gInupMWC.js :: MessagePort.onmessage` **941ms** (React's
 scheduler — reveal-triggered re-renders) · `useReveal ::
 FrameRequestCallback` 332ms · `index (Lenis) :: FrameRequestCallback`
 173ms · `LandingPage :: DOMWindow.onscroll` 142ms.
 
 The conductor + Lenis stack the R321 decomposition suspected is REAL
-but **not the majority**: rAF-related JS ≈ 1.6s vs style+paint+layer
-≈ 5.7s. The style/paint side is the C3 target.
+but **not the majority**: the whole driver JS stack ≈ 1.3s vs
+style+paint+layer ≈ 5.7s (≈4.4×). The style/paint side is the C3
+target.
 
 ## 3. The 756-family — SOLVED (it is the plan's own drawables)
 
@@ -127,7 +130,7 @@ section, it is the plan's own hatch/dot/hair drawables. The R319 seat
 probe (0.058ms/cycle on `.jt-plan`) measured a quiet tree with a
 forced flush — with the invalidation sets armed by live scroll the
 same write costs the 756-walk: UpdateLayoutTree families of
-**754–932 elements × 42 events** + **2,711-element families × 2**
+**754–936 elements × 42 events** + **2,711-element families × 2**
 (the `.jt[data-stage]` flips at stage boundaries — the R321 27ms
 stage-flip cost, still present) + 22 mid-size (100–399).
 
@@ -139,12 +142,13 @@ stage-flip cost, still present) + 22 mid-size (100–399).
   every style/paint invalidation repaints into the single root layer.
 - Paint records in-band (269): **`DIV.jt-pin` × 95 (178ms)** — the
   sticky map viewport repaints ~once per frame during the pin — plus
-  **`#document` × 128 (610ms total, clips up to 1440×5335!)** —
-  whole-document paint records riding the reveal/entrance animations
-  outside the band's own work. `span.wr-i` × 87, the pains'
-  `li.pm-col.in-view` × 116 (the draw-in transitions), the stations'
-  `article.jt-station` sit behind `backdrop-filter` ×4 (a real-GPU
-  paint cost flagged for C3/C4).
+  **`#document` × 128 (610ms total — clip rectangles up to
+  1440×7465; 42 of the 128 records cover >3,000px of page height,
+  ≈300ms of paint)** — whole-document paint records riding the
+  reveal/entrance animations outside the band's own work.
+  `span.wr-i` × 87, the pains' `li.pm-col.in-view` × 116 (the draw-in
+  transitions), the stations' `article.jt-station` sit behind
+  `backdrop-filter` ×4 (a real-GPU paint cost flagged for C3/C4).
 - Layerize 1,024ms — the layer tree is rebuilt per commit because no
   stable layer exists to reuse.
 
@@ -161,16 +165,18 @@ Scroll-session CLS 0.246–0.261 (all three S2 runs). Load-phase (S1/S1-net)
 is 0.007–0.011 — V11's 0.27 is NOT the loader. The two shifts that
 make it:
 
-1. **0.187 @ pin end (t≈9.98s of the session)** — the `.jt-side`
-   expanding capability column opens (`data-open="on"` at pin ≥ .93):
-   `div.jt-side` 1px→344px wide, `ul.jt-checklist` + `p.jt-side-note`
-   + `figure.jt-side-section` resize/appear, and **the plan SVG itself
-   resizes (1259×797 → 916×580)** because the flex pin re-flows the
-   window — one layout transition, five shifted sources, 76% of the
-   total CLS.
-2. **0.039 @ the same window** — the follow-on settle: `div.jt-side`
-   continues growing, `svg` + `div.jt-progress` + `span` (the hairline
-   fill) move with it.
+1. **0.219 @ pin end (t=8.81s page-time, clean run — 0.231 traced /
+   0.169 native)** — the `.jt-side` expanding capability column opens
+   (`data-open="on"` at pin ≥ .93, JourneyScene.tsx:550):
+   `div.jt-side` 1px→403px wide (426 traced), `ul.jt-checklist` +
+   `p.jt-side-note` + `figure.jt-side-section` resize/appear, and
+   **the plan SVG itself resizes (1259×797 → 857×543 clean; 834×529
+   traced)** because the flex pin re-flows the window — one layout
+   transition, five shifted sources, ≈89% of the total CLS.
+2. **0.010–0.056 follow-on settle @ the same window (0.016 clean)** —
+   `div.jt-side` continues growing, `svg` + `div.jt-progress` + `span`
+   (the hairline fill) move with it; the 1× native run breaks the
+   same settle into three smaller steps (0.056 + 0.017 + 0.011).
 
 Fix root: the pin-end expansion animates LAYOUT (width) of a flex
 child — reserve the final geometry or animate opacity/clip only, and
@@ -234,7 +240,8 @@ gate.
    the 756-element inherited walk dies at the element that reads it.
    (The `.jt-intro` line mapping needs `--wr-p` written per line
    directly — the R321 recommendation, now measured again: wr-i/wr-w
-   ≈ 2,000 invalidations.) Alternative with the same yield: drive the
+   = 1,892 style resolves + ≈1,135 invalidations, ALL in-band.)
+   Alternative with the same yield: drive the
    8 layer opacities as direct JS `style.opacity` writes (no custom
    property at all — opacity does not inherit, descendants never recalc).
 2. **Pre-rasterise the static art** (Paint 815ms + Layerize 1,024ms +
@@ -252,8 +259,10 @@ gate.
 4. **Re-pin the font preload** (LCP-first 5.73s → ~3.5s expected at
    3G): `400+700` → `400+600` Arabic (the faces the C1 type system
    actually renders; 700 is dead weight competing with the LCP face).
-5. **Promote or retire the infinite/reveal animations** (2,157+
-   "Animation" invalidations during scroll; 5,900 during load):
+5. **Promote or retire the infinite/reveal animations** (≈3,600
+   "Animation" invalidations during scroll — 27% of the 13,378; the
+   three infinite animations alone invalidate 5,922 times during
+   load):
    `will-change: opacity` (or `transform`-only keyframes) for
    `hi-pulse`, the two marquees, and the `reveal-up` set during their
    transition window; `pm-draw`'s stroke-dashoffset transitions (C4)
@@ -269,9 +278,9 @@ gate.
 
 Holds (verified again): gBCR read storm ABSENT (96 reads per full
 descent — the R318/R319 batch holds); the two-phase rAF
-read→write contract holds (Layout 213ms total, 57 events); Lenis +
-conductor JS ≈ 1.6s of 7.3s main-thread — keep the single-clock
-architecture, it is not the bottleneck.
+read→write contract holds (Layout 213ms total, 57 events); the whole
+driver JS stack ≈ 1.3s vs ≈ 5.7s style+paint+layer — keep the
+single-clock architecture, it is not the bottleneck.
 
 ## Artifacts
 
@@ -286,3 +295,9 @@ architecture, it is not the bottleneck.
   builds nothing, serves `frontend/dist` itself, kills the server on exit)
 - `scripts/r322/_anchor-probe.mjs` — the trace-anchor verification
   probe (EventDispatch-wheel ↔ performance.now() pairing, spread 1.2–1.4ms)
+
+Every figure in this report was re-verified against the committed
+`perf.json` (and the raw trace for the paint-clip sizes) after the
+final harness pass; a handful of §2/§4/§5 figures carried from an
+intermediate run were re-pinned to the committed data in the
+verification commit.
