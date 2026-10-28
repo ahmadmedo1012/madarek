@@ -1271,12 +1271,16 @@
      seats, arabic + latin subsets), so this layer ships zero font
      bytes; Alexandria 600/700 stays wired for legacy consumers.
 
-   Type rungs: the vw mid-term is BAND-INDEPENDENT — the tablet-band
-   root spike (991 → 11.883px root) can never re-amplify a display
-   rung — while the rem bounds ride the fluid root so phone minimums
-   hold. @1440 targets are the R313-measured Heron heading ladder
-   (h1 46.67 · h2 40 · h3 33.33px). ALL VALUES PROVISIONAL — re-pin
-   after the Heron extraction lands (task 1-c) per DESIGN.md §4.c.
+   Type rungs: FINAL (the 1-d re-pin, measured from the Heron
+   extraction's own ladder — task 1-c landed; the rungs are no longer
+   provisional). px FLOORS are band-independent like the vw mid-terms
+   (the 767-band root spike — 19.52px — can never touch them); rem
+   CAPS ride the desktop root exactly like the R313 ladder; the 4.8vw
+   mid-terms reproduce Heron's 768/991 values exactly (36.9px @768 ·
+   47.6px @991 — its own tablet behavior, never the 85.55px
+   amplification). @1440 = Heron's measured display ladder (h1 46.67 ·
+   h2 40 · statement 33.33 · card 23.33px); @390 floors = its phone
+   sizes (H1/H2 31.74px = 3.2rem · cards 23.33px · statement 22.1px).
    Display weights 400–600 ONLY (the 800/900 era ends; --fw-medium/
    --fw-semibold resolve them); leading 1.05/1.10/1.15 per rung rides
    literals at the consumer (the --lh-* rungs predate R322 and stay).
@@ -1295,15 +1299,31 @@
 @layer tokens {
 
   :root {
-    /* ─── R322 · the ONE display scale (DESIGN.md §4.c) ───────────────
+    /* ─── R322 · the ONE display scale (DESIGN.md §4.c) — FINAL 1-d re-pin
        D1 — one per page, the H1 (hero/opens): weight 600, lh 1.05.
-       D2 — the section statement (H2): weight 500, lh 1.10.
+       D2 — the section statement (H2): weight 600, lh 1.10.
        D3 — the card title (H3): weight 500, lh 1.15.
+       ST — the statement-band scrub title (the special seat): weight 600, lh 1.10.
        text-wrap: balance at the consumer; zero tashkeel; zero
-       letter-spacing on Arabic (permanent exception 2). */
-    --fs-d1: clamp(2.5rem, 3.25vw, 5.6rem);   /* 46.7px @1440 · 24.8px @390 · 62px cap @1920 */
-    --fs-d2: clamp(2.25rem, 2.78vw, 5.3rem);  /* 40px    @1440 · 22.3px @390 (Heron h2) */
-    --fs-d3: clamp(1.875rem, 2.3vw, 4rem);    /* 33.1px  @1440 · 18.6px @390 (Heron h3) */
+       letter-spacing on Arabic (permanent exception 2).
+
+       FINAL RE-PIN (1-d) — computed from the Heron extraction ladder
+       (roots 8.33px @1440 · 9.21 @768 · 9.92 @390 · 11.88 @991 ·
+       19.52 @767-band): the px FLOORS kill the 767-band root spike by
+       construction (the provisional rem floors would have resolved
+       2.5rem → 48.8px @767 — the V5 blowup reborn inside the mobile
+       band), the rem CAPS ride the desktop root like the R313 ladder,
+       and the 4.8vw mid-term reproduces Heron's 768/991 values
+       EXACTLY. Floors are Heron's own phone sizes: H1/H2 3.2rem/
+       31.76px @390 · cards 23.33px · statement band 22.1px — type
+       GROWS at phone widths (31.74 vs the provisional 24.8px floor),
+       which is the brief's legibility intent. Evidence: the
+       extraction ladder (docs/redesign/r322/heron/*.md) +
+       audits/evidence/r322/dsys/type-census-after.md. */
+    --fs-d1: clamp(31.74px, 4.8vw, 5.6rem);  /* 46.7 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390 — Heron's own ladder */
+    --fs-d2: clamp(31.74px, 4.8vw, 4.8rem);  /* 40 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390 */
+    --fs-d3: clamp(23.33px, 2.8vw, 2.8rem);  /* 23.3 @1440 · 23.3 @768/390 (flat, like Heron's card titles) */
+    --fs-st:  clamp(22.1px, 2.87vw, 4rem);   /* the statement-band scrub seat: 33.3 @1440 · 22.1 @768/390 */
 
     /* ─── R322 · the rem spacing scale (DESIGN.md §4.b) ───────────────
        Eleven rungs, rem on the fluid root — the ONLY allowed values

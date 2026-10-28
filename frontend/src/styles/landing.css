@@ -42,6 +42,15 @@
   color: var(--text);
   overflow-x: clip;
   font-family: var(--font-sans);
+  /* R322 (1-d) — the display voice re-seat: every landing title seat
+     resolves --font-display, and the R322 blind-vote face (IBM Plex
+     Sans Arabic 400/500/600 — fonts.css, zero added bytes) takes the
+     voice LANDING-LOCALLY (the .landing scope override — the narrowest
+     correct level: the app's legacy --font-display consumers keep
+     Alexandria until the authenticated-screen packages re-seat them;
+     the global token re-pin is NOT this package's diff). Alexandria
+     keeps its 600/700 cuts wired for those app seats. */
+  --font-display: var(--font-sans);
 }
 
 /* ── The sheet frame (R313 · D9) — the FULL-PAGE drafting frame: a
@@ -277,11 +286,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
 /* the compact logotype beside the mark (the reference wordmark is
    102×15 beside its 32×36 mark; «مدارك» holds the same seat at the
    Arabic display weight — the measured cell proportion, not the old
-   oversized h3 block). */
+   oversized h3 block). R322 (1-d): the logotype joins the display
+   voice (IBM Plex Sans Arabic via the .landing --font-display
+   re-seat) at weight 600 — the display voice's top rung; the 700
+   logotype era ends with the display tier's. */
 .fo-brand-name {
   font-family: var(--font-display);
   font-size: 2.4rem;   /* ≈20px @1440 — the measured logo-cell scale */
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -863,21 +875,22 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 
 .fo-hero-title {
   font-family: var(--font-display);
-  /* R315 (B1 · A.2): the display canon — the --fs-h1 ladder rung
-     (5.6rem = 46.67px @1440, the measured reference h1), w700,
-     line-height 1.0. The 2-line split «رحلة تعلم واحدة / من
-     المحاضرة إلى الإتقان» holds exactly 2 lines at 1440 AND 390 on
-     this rung (measured, _local/b1-preview) — the largest ladder size
-     that does; the tablet band re-clamps for the narrower measure.
-     Arabic stays UNVOCALISED (zero tashkeel — the display canon; the
-     diacritics collided with the line above), no tracking (cursive
-     joins). lh 1.0 is the canonical measure; the +0.05 below is the
-     minimum Alexandria's ascender/descender metrics need to keep the
-     two unvocalised lines clear of each other (measured — without it
-     «ق»'s descender rides «م»'s shoulder). */
-  font-size: var(--fs-h1);
-  font-weight: 700;
+  /* R322 (1-d): the H1 joins the D1 rung — --fs-d1 (the Heron-measured
+     5.6rem h1 @1440, band-independent clamp; see tokens.css R322),
+     weight 600 (the display voice's top rung — the 700 era ends),
+     lh 1.05 (the D1 leading; also the minimum IBM Plex Sans Arabic's
+     ascender/descender metrics need to keep the two unvocalised lines
+     clear of each other — the R315 Alexandria note transfers),
+     text-wrap: balance. The 2-line split «رحلة تعلم واحدة / من
+     المحاضرة إلى الإتقان» holds 2 lines at every belt on the rung
+     (measured post-migration). Arabic stays UNVOCALISED (zero
+     tashkeel — the display canon), no tracking (cursive joins). The
+     per-belt re-clamps below RETIRE with this seat (the rung is
+     band-independent — that is its whole point). */
+  font-size: var(--fs-d1);
+  font-weight: 600;
   line-height: 1.05;
+  text-wrap: balance;
   letter-spacing: 0;
   color: var(--text);
   margin: 0;
@@ -1400,9 +1413,18 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .st-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: var(--type-display-line-height);
+  /* R322 (1-d FINAL): the statement band's scrub title takes the
+     SPECIAL statement seat — --fs-st (Heron's own per-char color-
+     scrub title: 4rem/33.33px w600 @1440 → 2.4rem/22.1px @768 →
+     2.4rem/23.8px @390, band-independent), weight 600, lh 1.10 (the
+     scrub spans' overflow wrappers need the headroom), balance. NOT
+     the D2 rung — Heron sizes the scrub title a rung under its
+     section H2s; the 60px --fs-display-lg seat and its 1.28 display
+     leading retire with this migration. */
+  font-size: var(--fs-st);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -1463,14 +1485,23 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .chapters-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: var(--type-display-line-height);
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance).
+     This seat ESCAPED the ≤767 re-pin list and rendered 71.45px
+     @390 / 140.5px @767 (the census + the root probe — the V5
+     «one-word lines» headline, verbatim); the band-independent rung
+     fixes every belt at once — no mobile re-pin needed ever again. */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
 .chapters-lede {
-  font-size: var(--fs-body);
+  /* R322 (1-d): the reading ledes join the body band's --fs-body-lg
+     rung (15px @1440 — the brief §4 15–17px body band; landing-local,
+     --fs-body itself keeps its app consumers). */
+  font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -1495,9 +1526,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .pm-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: var(--type-display-line-height);
+  /* R322 (1-d): joins the D2 rung (the problem/pains H2 — Heron's
+     own 4.8rem h2 @1440; weight 600, lh 1.10, balance). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -1507,7 +1541,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .pm-lede {
-  font-size: var(--fs-body);
+  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
+  font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -1576,9 +1611,13 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 .pm-card-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  font-weight: 700;
-  line-height: 1.25;
+  /* R322 (1-d): the card title joins the D3 rung — --fs-d3 (Heron's
+     h3 33.1px @1440 → 18.6px @390, band-independent), weight 500,
+     lh 1.15, balance. */
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -1628,15 +1667,18 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .rl-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: var(--type-display-line-height);
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
 /* the section lede (the honest promise: every card says the truth) */
 .rl-lede {
-  font-size: var(--fs-body);
+  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
+  font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
   max-inline-size: 64ch;
@@ -1671,9 +1713,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 .rl-card-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  font-weight: 700;
-  line-height: 1.2;
+  /* R322 (1-d): joins the D3 rung (weight 500 · lh 1.15 · balance). */
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -1812,9 +1856,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .fo-cta-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: 1.15;
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance —
+     the ad-hoc 1.15 literal retires with the 60px seat). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -1918,9 +1965,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .wy-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: var(--type-display-line-height);
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -1931,7 +1980,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .wy-lede {
-  font-size: var(--fs-body);
+  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
+  font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -2054,9 +2104,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .wy-stage-verb {
   font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  font-weight: 700;
-  line-height: 1.2;
+  /* R322 (1-d): the why-stage verb joins the D3 rung (weight 500 ·
+     lh 1.15 · balance); the per-belt re-pins below retire. */
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -2981,12 +3034,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     margin-block-start: var(--sp-3);
   }
 
-  /* the largest size that holds EXACTLY 2 lines in the 56% tablet
-   * cell (the --fs-h1 token's 51.6px @768 would need 3 — the 2-line
-   * canon wins; measured, documented per the R315 H1 rule). */
-  .fo-hero-title {
-    font-size: clamp(30px, 4.55vw, 40px);
-  }
+  /* R322 (1-d) — the tablet hero-title re-clamp RETIRES: the D1 rung
+   * (--fs-d1) is band-independent, so the ≤991 counter-amplification
+   * clamp is obsolete. Measured on the rung: 47.6px @991 · 36.9px
+   * @768 — Heron's own tablet h1 (4rem @768 on its 9.21px root), and
+   * the 2-line canon holds in the 56% tablet cell (the old clamp's
+   * whole job was capping the rem spike the rung no longer has). */
 
   .st-spread {
     grid-template-columns: minmax(0, 1fr);
@@ -3087,10 +3140,10 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     margin-block-start: 0;
   }
 
-  .fo-hero-title {
-    font-size: clamp(30px, 8.4vw, 40px);
-    line-height: 1.15;
-  }
+  /* R322 (1-d) — the mobile hero-title re-clamp RETIRES with the D1
+   * rung (31.74px floor across the phone band, rising on the 4.8vw
+   * mid-term to 36.9px @767 — the 8.4vw clamp was another band
+   * counter-measure; lh rides the base 1.05). */
 
   .fo-hero-side-foot {
     justify-content: space-between;
@@ -3179,17 +3232,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-cta { padding-block: var(--sp-8) var(--sp-7); }
   .fo-footer-inner { padding-block: var(--sp-5) var(--sp-4); }
 
-  /* the sheet titles drop a rung (the reference's mobile headings are
-     compact uppercase blocks, not desktop display sizes) */
-  .pm-title,
-  .pr-title,
-  .wy-title,
-  .rl-title,
-  .st-title,
-  .fo-cta-title {
-    font-size: clamp(24px, 7.4vw, 34px);
-    line-height: 1.2;
-  }
+  /* R322 (1-d) — the rung seats (pm/wy/rl/cta titles) resolve the
+   * band-independent --fs-d2 at this belt too: the V13 px re-pin
+   * retires (31.74px floor @390 — no rem spike, no one-word lines).
+   * .st-title rides the --fs-st statement seat and .pr-title joined
+   * the D2 rung in the FINAL re-pin — its ≤767 clamp retires in the
+   * R314 cycle-2 block below. */
 
   .pm-card {
     gap: var(--sp-3);
@@ -3216,9 +3264,10 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     line-height: 1.55;
   }
 
-  .pm-card-title {
-    font-size: var(--fs-body);
-  }
+  /* R322 (1-d) — the .pm-card-title mobile body-scale re-pin retires:
+   * the D3 rung governs (18.6px @390 — Heron's own mobile item-title
+   * is 2rem/19.8px @390, so the rung lands IN the reference's league,
+   * not below it). */
 
   /* the why machine: the stacked captures under each item fold; the
      item = number + title + one line (~180px) */
@@ -3230,10 +3279,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     gap: var(--sp-1-5);
   }
 
-  /* the roles grid: 2-col cells compact to ~170px tiles */
-  .rl-card-title {
-    font-size: var(--fs-body);
-  }
+  /* R322 (1-d) — the .rl-card-title mobile body-scale re-pin retires
+   * (the D3 rung governs, as .pm-card-title above). */
 
   .rl-card-num {
     font-size: var(--fs-xxs);
@@ -3623,9 +3670,18 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .pr-title {
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
-  line-height: var(--type-display-line-height);
+  /* R322 (1-d FINAL): the product H2 joins the D2 rung like every
+     section statement (weight 600 · lh 1.10 · balance). The interim
+     R318 §A5 h4 sheet-title seat (3.2rem/26.67px @1440) is re-pinned
+     by this scale migration: the census-after caught this seat OFF
+     the rungs at 28.86px @390 (its ≤767 px clamp) — the only
+     display-size survivor at phone widths; the rung lands it at
+     31.74px like every H2. The ≤767 clamp and the ≥992 sheet-title
+     literal retire below. */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -5217,9 +5273,16 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   padding-inline: var(--page-gutter);
   text-align: center;
   font-family: var(--font-display);
-  font-size: clamp(28px, 3.4vw, 52px);
-  font-weight: 700;
-  line-height: 1.12;
+  /* R322 (1-d FINAL): the map statement takes the SPECIAL statement
+     seat --fs-st — Heron's own statement-title scale (4rem/33.33px
+     @1440 → 2.4rem/22.1px @768 → 2.4rem/23.8px @390), weight 600 ·
+     lh 1.10 · balance. The raw clamp(28px, 3.4vw, 52px) seat
+     retires. The map's full rework belongs to C3; this seat just
+     joins the measured scale. */
+  font-size: var(--fs-st);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
   color: var(--text);
   pointer-events: none;
   z-index: 3;
@@ -5297,9 +5360,17 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 .jt-intro-title {
   margin: 0;
   padding: var(--sp-2-5) var(--sp-3);
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  /* R322 (1-d FINAL): the intro card's title bar joins the D3 rung —
+     the card-scale seat (23.33px @1440 → 23.33px @390, flat like
+     Heron's card titles), weight 500, lh 1.15, display voice,
+     balance; the 0.04em tracking retires with it (zero letter-
+     spacing on Arabic — permanent exception 2). The intro card's
+     own rework is C3's package; this seat just joins the scale. */
+  font-family: var(--font-display);
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
   border-block-end: 1px solid color-mix(in srgb, var(--bg) 22%, transparent);
   /* R318 §A2 — the colour is pinned LOCALLY: base.css paints every <p>
      with var(--text-secondary) (the generic paragraph ink), which on
@@ -5474,9 +5545,15 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
 .jt-station-verb {
   font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: 700;
+  /* R322 (1-d): the station verb joins the D3 rung — --fs-d3 (33.1px
+     @1440 → 18.6px @390, band-independent), weight 500, lh 1.15,
+     balance. This seat escaped the ≤767 re-pin list and rendered
+     47.63px @390 / 93.7px @767 on the raw --fs-h2 rem (the census);
+     the rung fixes every belt at once. */
+  font-size: var(--fs-d3);
+  font-weight: 500;
   line-height: 1.15;
+  text-wrap: balance;
   color: var(--text);
 }
 
@@ -5595,9 +5672,14 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     display: block;
     margin: 0 0 var(--sp-4);
     font-family: var(--font-display);
-    font-size: clamp(26px, 7vw, 34px);
-    font-weight: 700;
-    line-height: 1.18;
+    /* R322 (1-d FINAL): the ≤991 readable twin joins the --fs-st
+       statement seat with its pin-instance sibling (weight 600 ·
+       lh 1.10 · balance; the clamp(26px, 7vw, 34px) seat retires —
+       22.1px flat on phones, Heron's own mobile statement title). */
+    font-size: var(--fs-st);
+    font-weight: 600;
+    line-height: 1.1;
+    text-wrap: balance;
     color: var(--text);
   }
 
@@ -6068,10 +6150,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     min-block-size: 0;
   }
 
-  .pr-title {
-    font-size: clamp(24px, 7.4vw, 34px);
-    line-height: 1.2;
-  }
+  /* R322 (1-d FINAL) — the .pr-title ≤767 clamp RETIRES: the product
+   * H2 joined the D2 rung (the census-after caught it off-scale at
+   * 28.86px @390 — the only display-size survivor at phone widths);
+   * the rung's px floor owns the belt (31.74px @390, band-independent
+   * — the mobile-band root spike can never touch it). */
 
   .pr-head {
     gap: var(--sp-2);
@@ -6131,8 +6214,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     display: none;
   }
 
-  /* ── wy: 995 → 825 (target 806) — the stage verbs ride the sheet
-     titles' own mobile clamp; the rail tightens one rung ── */
+  /* ── wy: 995 → 825 (target 806) — R322 (1-d): the stage-verb re-pin
+     RETIRES (the D3 rung governs — 18.6px flat on phones, Heron's
+     own mobile item-title league); the rail tightens one rung ── */
   .wy-section {
     padding-block: var(--sp-6) var(--sp-5);
   }
@@ -6142,10 +6226,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     margin-block-end: var(--sp-4);
   }
 
-  .wy-stage-verb {
-    font-size: clamp(22px, 7.4vw, 28px);
-    line-height: 1.2;
-  }
+  /* R322 (1-d) — the ≤640 .wy-stage-verb clamp retires (D3 rung). */
 
   .wy-stage {
     padding-block: var(--sp-1);
@@ -6345,13 +6426,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .rl-section { padding-block: var(--sp-5) var(--sp-4); }
   .fo-cta { padding-block: var(--sp-8) var(--sp-7); }
 
-  /* 2 — the sheet titles ride the reference's tablet rung (the K-H
-   * hero clamp family: 34.9px @768 → 40px @991; the 7.2rem desktop
-   * display rung wrapped heads 255–350px tall in this slice) */
-  .pm-title, .pr-title, .wy-title, .rl-title, .st-title, .fo-cta-title {
-    font-size: clamp(30px, 4.55vw, 40px);
-    line-height: 1.15;
-  }
+  /* 2 — R322 (1-d): the sheet-title tablet clamp RETIRES — the rung
+   * seats resolve the band-independent --fs-d2 here too (36.9px @768
+   * → 47.6px @991 — Heron's own tablet ladder), and .pr-title never
+   * renders in this slice (.pr-head display:none, rule 5 below). The
+   * 7.2rem-era heads that wrapped 255–350px tall are gone with the
+   * rung itself. */
 
   /* 3 — statement: the reference's intro body is 377 @768 (img beside
    * body); ours keeps the two-ticker grammar, the three statement
@@ -6383,7 +6463,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    * to the reference's main-inner rhythm (524 there; rail 840 → ~653,
    * band 1053 → 877) */
   .wy-stage { padding: var(--sp-1) var(--sp-2-5); gap: var(--sp-0-25); }
-  .wy-stage-verb { font-size: var(--fs-h4); }
+  /* R322 (1-d) — the tablet .wy-stage-verb re-pin retires (D3 rung). */
   .wy-stage-text { line-height: 1.45; }
 
   /* 7 — usecase: the roles grid breathes at the reference's tablet
@@ -6911,10 +6991,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     row-gap: 0.2rem;
   }
 
-  .wy-stage-verb {
-    font-size: 2.82rem;
-    line-height: 1.2;
-  }
+  /* R322 (1-d) — the ≤479 .wy-stage-verb rem re-pin (2.82rem = 28px
+     @390 on the spiked root) RETIRES: the D3 rung governs (18.6px
+     flat — Heron's own mobile item-title league). */
 
   .wy-stage-num {
     font-size: 1.31rem; /* mono numeral — the Latin ladder */
@@ -7126,17 +7205,13 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     --fs-xxs: 1.3101rem;
   }
 
-  /* 3 — the type rungs: the reference's own measured seats (its
-   * titles are NOT clamps — 39.08px @480 / 58.63 @720 measured).
-   * The H1 keeps the +0.05 Alexandria leading (the measured glyph
-   * floor — «ق»'s descender rides «م»'s shoulder at 1.0) */
-  .fo-hero-title { font-size: 3.2rem; line-height: 1.05; }
-  .pm-title, .pr-title, .wy-title, .rl-title {
-    font-size: 3.2rem;
-    line-height: 1;
-  }
-  .st-title, .fo-cta-title { font-size: 2.4rem; line-height: 1.1; }
-  .wy-stage-verb { font-size: 3.2rem; line-height: 1; }
+  /* 3 — R322 (1-d) — the 480–767 title re-pins RETIRE: those 3.2/2.4rem
+   * seats rode the mobile-band root (19.52px @767 — the probe) and
+   * rendered 39.1–62.5px titles inside this belt; every seat now
+   * resolves its band-independent rung (D1 hero 31.74px · D2
+   * statements 31.74px · D3 cards 23.33px — Heron's own phone
+   * ladder, and .pr-title rides the D2 rung too). The H1's 1.05
+   * leading rides the base. */
 
   /* 4 — the hero seat: the reference's own 4.4rem top measure (the
    * 63px window pad + the band's 20px pad fold into it — measured
@@ -7448,12 +7523,17 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
   .fo-hero-title {
     grid-area: title;
-    /* the measured compact rung: 2 lines at 24px @844 keep the strip
+    /* R322 (1-d): the pocket's compact cap now routes through the D1
+     * rung — min(--fs-d1, 24px): 2 lines at ≤24px @844 keep the strip
      * inside its statement-top paper (the 2-line canon holds — the
      * br split is untouched); the 24px cap holds the same compact
      * measure across the whole pocket (915×412 measured: strip 111px,
-     * 7px of paper over the ticker hairline) */
-    font-size: clamp(22px, 2.85vw, 24px);
+     * 7px of paper over the ticker hairline). The rung itself is
+     * ~40px @844 (the 4.8vw mid-term) — the cap is this instrument's
+     * own measured bound (the strip band is pinned to the statement's
+     * paper, like the .chapters dvh rungs: a layout instrument, not a
+     * type choice). */
+    font-size: min(var(--fs-d1), 24px);
     line-height: 1.05;
   }
 
@@ -7518,8 +7598,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    351/584.5/451.2 → the 3/5/4 column split 346.7/577.8/462.2):
 
      · cols 1–3 (reading start) — THE SHEET (.pr-head): the [05] mono
-       label row + the h4-scale sheet-title (3.2rem = 26.67px @1440,
-       weight 600 — the reference's own h4 rung) + the muted sub, then
+       label row + the sheet title (R322 1-d: the D2 rung — 40px
+       @1440, weight 600, like every section H2; the interim R318 h4
+       sheet-title literal retired) + the muted sub, then
        the DRAWING CELL (.pr-drawing — the plan ON the sheet's paper:
        toolbar strip + plan view + annotation pin) filling the sheet's
        remaining height inside the SAME hairline frame. The title can
@@ -7604,16 +7685,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     background-position: center;
   }
 
-  /* the h4-scale sheet-title — the reference's own rung (BT Grotesk
-   * 26.67px / 600 / lh 1): OUR honest wording at the reference's
-   * scale, seated inside the sheet's frame. */
-  .pr-title {
-    font-family: var(--font-display);
-    font-size: 3.2rem;
-    font-weight: 600;
-    line-height: 1.15;
-    color: var(--text);
-  }
+  /* R322 (1-d FINAL) — the ≥992 sheet-title literal (3.2rem — the
+   * interim R318 §A5 h4 seat) RETIRES: .pr-title resolves the D2
+   * rung from its base rule like every section H2 (40px @1440 ·
+   * weight 600 · lh 1.10 · balance); only the frame-level anatomy of
+   * this sheet grid is this block's business. */
 
   /* the muted sub — the reference's 13.33px sheet sub-copy */
   .pr-lede {
@@ -7975,4 +8051,47 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .st-art {
     block-size: 15.5rem; /* 129px @1440 — inside the floor's 199px slack, 115px @1280 of 168 */
   }
+}
+
+/* ═══ R322 (1-d) — the mobile breathing pass (docH back into the band) ══
+   The D-rung migration shrank the map band by 466px @390 — the
+   V5-bloated .chapters-title alone was 457px tall there (five
+   one-word lines at 71.45px; it renders 31.74px / two balanced lines
+   on the D2 rung now) — and docH fell to 10846 (the Heron band floor
+   is 11269). The air returns as the map section's own PADDING + its
+   flow margins, ONLY from the --space-* scale (the migration's rule:
+   never by inflating type back). The svh traversal rungs
+   (--jt-row-h) are untouched — the map's full rework is C3's package.
+   Scope: ≤767 only (the tablet belt holds docH @768 on the rung
+   mid-terms alone: 12499, in band). FINAL-floor measurements (the
+   1-d re-pin raised the phone floors — D1/D2 24.8→31.74 · D3
+   18.6→23.33 · ST 22.3→22.1 — the growth consuming most of this
+   pass's added air): @390 docH 11368 (band 11269–11612, Heron 11441)
+   · @360 10782 (band 10523–10844, Heron 10684) — both in band with
+   this block EXACTLY as the interim run left it (zero further
+   padding edits: type was never inflated NOR deflated to fit). */
+@media (max-width: 767px) {
+  /* the runway rung — the --space-12xl token's own documented role
+   * (the pinned-story runway class); 56px → 119px @390 */
+  .chapters {
+    padding-block: var(--space-12xl);
+  }
+
+  .chapters-head {
+    padding-block-start: var(--space-6xl);   /* 40 → 59.5px @390 */
+    margin-block-end: var(--space-6xl);      /* 40 → 59.5px @390 */
+  }
+
+  /* the stacked flow's fixed parts take one --space-* rung each */
+  .jt-stations { gap: var(--space-4xl); }        /* 16 → 39.7px ×3 gaps */
+  .jt-flow { margin-block-end: var(--space-4xl); } /* 20 → 39.7px */
+  .jt-cam { margin-block-end: var(--space-3xl); }  /* 16 → 29.8px */
+  .jt-statement-m { margin-block-end: var(--space-3xl); } /* 16 → 29.8px */
+  .jt-intro-m { margin-block-end: var(--space-4xl); }     /* 20 → 39.8px */
+
+  /* the closing column breathes with the band (its hairline frame
+   * keeps its own construction paddings) */
+  .jt-side { padding-block: var(--space-3xl); }
+  .jt-checklist { padding: var(--space-3xl); }
+  .jt-side-section { padding: var(--space-3xl); }
 }
