@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  MapPin, Building2, Phone, ExternalLink, ArrowLeft, Info,
-} from 'lucide-react';
-import { Card, Badge } from '../../components/primitives';
-import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
-import { PageFrame, PageHeader, SectionHeader, RowList, RowItem } from '../../components/patterns';
+import { ExternalLink, ArrowLeft, Info } from 'lucide-react';
+/* R321 (c1 · WP-B2) — the §B2 kit: the mono-indexed section title
+ * bar, the honest mono count + the hatched empty cell. */
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
+import { ErrorState, Skeleton } from '../../components/primitives/States';
+import { PageFrame, PageHeader, RowList, RowItem } from '../../components/patterns';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResources';
@@ -14,6 +14,14 @@ import { formatNum } from '../../utils/numbers';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
+ * student page mounts (SectionBar/BarCount/EmptyCell + the family's
+ * unlayered masthead tail precedent). */
+import '../../styles/r319-student.css';
+/* R321 (c1 · WP-B2): the map/live family's own harmonics — the
+ * .r321m-page opt-in root + the inner-scale masthead re-seat (the
+ * r321-exams.css contract); family-unique rules only. */
+import '../../styles/r321-map-live.css';
 
 /**
  * Honest campus directory.
@@ -24,7 +32,12 @@ import '../../styles/r305-student-supplemental.css';
  * moment is the city-footprint band below: real faculty counts per
  * city derived from the /faculties payload, doubling as the directory
  * filter. A true interactive campus map remains a facilities-data
- * follow-up (see the note card at the bottom of the page).
+ * follow-up (see the note at the bottom of the page).
+ *
+ * R321 (c1 · WP-B2) — the page joins the sheet system: the Card walls
+ * are gone (the band/contact boards are §B2 title bars + rows on the
+ * page paper); the campus-city-* band ART keeps its student.css
+ * anatomy verbatim — only the frame around it converted.
  */
 
 /** Arabic counted-noun forms for the counts on this page:
@@ -56,23 +69,44 @@ export default function CampusMapPage() {
   const visible = city === 'all' ? faculties : faculties.filter((f) => f.city === city);
 
   return (
+    /* R321 (c1 · WP-B2) — the page joins the sheet system: ONE
+     * .r321m-page opt-in root (the r321-exams.css contract — the
+     * inner-page masthead re-seat keys off it). The shell owns the
+     * frame + grain + the SHEET line; the patterns PageHeader owns
+     * the one display h1 at the inner rung. */
+    <div className="r321m-page">
     <PageFrame width="default">
       <PageHeader
+        index="01"
+        eyebrow="خدمات الجامعة"
         title="دليل الحرم الجامعيّ"
         description={
           'كلّيّات جامعة مدارك التجريبية بحسب الحرم، مع روابط لصفحاتها التفصيليّة — بيانات عرض اصطناعية.'
         }
       />
 
-      {/* The campus "map" — an honest footprint band (real counts per
-          city; the bar length is proportional to the faculty count) that
-          doubles as the directory filter. This band is the page's
-          authored moment: the bars grow in on entrance. */}
-      <Card
-        title="انتشار الكليّات على المدن"
-        icon={MapPin}
-        subtitle="طول كل شريط يتناسب مع عدد الكليّات المسجَّلة في المدينة — انقر مدينة لتصفية الدليل."
-      >
+      {/* [02] the campus "map" — an honest footprint band (real counts
+          per city; the bar length is proportional to the faculty
+          count) that doubles as the directory filter. This band is
+          the page's authored moment: the bars grow in on entrance.
+          R321 B2: only the Card WALL around it retired — the band sits
+          on the page paper under its own §B2 bar, its campus-city-*
+          ART untouched. */}
+      <section className="ml-sec" aria-labelledby="map-sec-footprint">
+        <SectionBar
+          index="02"
+          title="انتشار الكليّات على المدن"
+          id="map-sec-footprint"
+          meta={
+            !facs.isPending && !facs.isError && faculties.length > 0 ? (
+              <BarCount
+                n={faculties.length}
+                srLabel={arCount(faculties.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة')}
+              />
+            ) : undefined
+          }
+        />
+        <p className="ml-sec-note">طول كل شريط يتناسب مع عدد الكليّات المسجَّلة في المدينة — انقر مدينة لتصفية الدليل.</p>
         {facs.isPending ? (
           <div className="flex-col gap-2" aria-busy="true">
             {[0, 1, 2, 3].map((i) => (
@@ -124,29 +158,42 @@ export default function CampusMapPage() {
             ))}
           </div>
         )}
-      </Card>
+      </section>
 
-      {/* Directory — the band above owns the error state, so this
+      {/* [03] Directory — the band above owns the error state, so this
           section only renders its honest empty state with data loaded.
-          R304: the grid of link tiles becomes a RowList of whole-row
-          links (`to` — the 44px row IS the tap target; the city Badge
-          and department count ride the meta line, never nested
-          interactives). */}
+          R304: the grid of link tiles became a RowList of whole-row
+          links (`to` — the 44px row IS the tap target; the city and
+          department count ride the meta line, never nested
+          interactives). R321 B2: the SectionHeader became the §B2
+          title bar (the honest filtered count as mono meta), and the
+          city rides a bdi-isolated text run with hairline separators
+          (the purple Badge pill retired with the Card walls). */}
       {facs.isError ? null : (
-        <section aria-label="دليل الكليّات">
-          <SectionHeader
+        <section className="ml-sec" aria-labelledby="map-sec-directory">
+          <SectionBar
+            index="03"
             title={city === 'all' ? 'جميع الكليّات' : `كلّيّات ${city}`}
-            description={facs.isSuccess ? arCount(visible.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة') : undefined}
+            id="map-sec-directory"
+            meta={
+              facs.isSuccess ? (
+                <BarCount
+                  n={visible.length}
+                  srLabel={arCount(visible.length, 'كلّيّة واحدة', 'كلّيّتان', 'كليّات', 'كلّيّة')}
+                />
+              ) : undefined
+            }
           />
           <RowList
             loading={facs.isPending}
             aria-label="دليل الكليّات"
             empty={
-              <EmptyState
-                icon={Building2}
-                title="لا توجد كلّيّات في هذه المدينة"
-                illustration="empty-list"
-                description="جرِّب اختيار مدينة أخرى من انتشار الكليّات الأعلى."
+              /* R321 B2 — the empty filter bucket is the sheet's
+                 reserved-but-empty region: the hatched EmptyCell, same
+                 honest copy. */
+              <EmptyCell
+                label="لا توجد كلّيّات في هذه المدينة"
+                note="جرِّب اختيار مدينة أخرى من انتشار الكليّات الأعلى."
               />
             }
           >
@@ -161,11 +208,11 @@ export default function CampusMapPage() {
                 }
                 title={f.name}
                 meta={
-                  <>
-                    <Badge color="purple">{f.city}</Badge>
-                    {' '}
+                  <span className="r305s-meta-row">
+                    <bdi>{f.city}</bdi>
+                    <span className="r305s-meta-sep" aria-hidden />
                     {arCount(f.departments.length, 'قسم واحد', 'قسمان', 'أقسام', 'قسماً')}
-                  </>
+                  </span>
                 }
               />
             ))}
@@ -173,17 +220,25 @@ export default function CampusMapPage() {
         </section>
       )}
 
-      <Card title="معلومات التواصل" icon={Phone}>
-        <div className="grid-2" style={{ gap: 'var(--sp-3)' }}>
-          <div className="fact-tile">
-            <span className="text-xxs text-subtle">الهاتف</span>
-            <bdi dir="ltr" className="font-mono text-sm">+218 23 762659</bdi>
-            <bdi dir="ltr" className="font-mono text-sm">+218 23 762882</bdi>
+      {/* [04] Contact — the fact-tile wall became hairline rows on the
+          page paper (label rung + mono LTR values); the honest
+          map-in-development note keeps its campus-map-note family. */}
+      <section className="ml-sec" aria-labelledby="map-sec-contact">
+        <SectionBar index="04" title="معلومات التواصل" id="map-sec-contact" />
+        <div className="ml-facts">
+          <div className="ml-fact">
+            <span className="ml-fact-label">الهاتف</span>
+            <span className="ml-fact-values">
+              <bdi dir="ltr" className="font-mono text-sm">+218 23 762659</bdi>
+              <bdi dir="ltr" className="font-mono text-sm">+218 23 762882</bdi>
+            </span>
           </div>
-          <div className="fact-tile">
-            <span className="text-xxs text-subtle">البريد الإلكتروني</span>
-            <bdi dir="ltr" className="font-mono text-sm">info@demo.madarek.ly</bdi>
-            <bdi dir="ltr" className="font-mono text-sm">ico@demo.madarek.ly</bdi>
+          <div className="ml-fact">
+            <span className="ml-fact-label">البريد الإلكتروني</span>
+            <span className="ml-fact-values">
+              <bdi dir="ltr" className="font-mono text-sm">info@demo.madarek.ly</bdi>
+              <bdi dir="ltr" className="font-mono text-sm">ico@demo.madarek.ly</bdi>
+            </span>
           </div>
         </div>
 
@@ -197,7 +252,7 @@ export default function CampusMapPage() {
             </a>
           </span>
         </div>
-      </Card>
+      </section>
 
       {/* R305 Heron: a card holding one link is box noise — the
           cross-link rides the copper rail instead. */}
@@ -208,5 +263,6 @@ export default function CampusMapPage() {
         </Link>
       </div>
     </PageFrame>
+    </div>
   );
 }

@@ -1,0 +1,148 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R321 (c1 · WP-B2) — CampusMap + Live join the SHEET SYSTEM
+   (§B student sweep, the r321-exams.css family contract).
+
+   Scope: /student/map (CampusMapPage) + /student/live (LivePage) —
+   the two small same-family PageFrame adopters (T-2/T-3 in the §B
+   student sweep's conversion targets). Both pages import this sheet
+   directly after the shared §B2 anatomy sheet (r319-student.css —
+   the SectionBar/BarCount/EmptyCell component styles + the family's
+   unlayered masthead tail precedent) and opt in via ONE shared
+   `.r321m-page` root (the `.r319s-page`/`.r321x-page` twin — the
+   pages.css keying, the AppShell mounts nothing new).
+
+   THE SHEET CHROME IS NOT HERE (and neither is the §B2 component
+   anatomy). The shared shell owns the 7px frame + grain + the
+   ambient `SHEET S-01 · STUDENT` line on every authenticated route;
+   r319-student.css carries the SectionBar/EmptyCell/mono-count
+   grammar. This sheet carries ONLY what is unique to the map/live
+   family on top of both:
+
+     · §1 the paper-rows section rhythm — the old Card walls are gone
+       (the CampusMap band/contact Cards, the Live section stacks), so
+       every board is a SectionBar + hairline rows sitting directly on
+       the page paper; a board whose whole body is the hatched
+       EmptyCell keeps the same breath a populated board's last row
+       leaves before the page's next section.
+     · §2 the under-bar note rung — the honest copy the old Card
+       subtitles / SectionHeader descriptions carried (preserved
+       verbatim) seats as a quiet note under its §B2 bar (the
+       r305c-sec-note register, this family's own copy).
+     · §3 the contact facts — the CampusMap «معلومات التواصل» Card
+       wall is gone; the phone/email facts print as hairline rows
+       directly on the page paper (label + mono values, the §B2 row
+       grammar; the fact-tile ground tiles retire with the wall).
+     · §4 (the unlayered tail) the inner-scale masthead re-seat —
+       both pages are INNER tool pages (a directory + a broadcast
+       schedule inside the student section, not section covers), so
+       their one display h1 seats at the INNER scale: ≤32px at every
+       band, the r321-exams ladder (31.5px @1440 / ~27.6px @768 /
+       31.8px @390).
+
+   What stays in its own family, untouched: the campus-city-* band
+   ART (student.css — the bars-grow-in city-footprint moment, this
+   page's authored "map"), the .campus-map-note, the .live-chip /
+   .live-dot honest LIVE pulse + the .live-row-icon wells, the
+   .r305s-chip register (r305-student.css), and the RowList/RowItem
+   row anatomy (patterns.css) — this sheet adds no rule over any of
+   them.
+
+   Gate contract (this tree): var()/color-mix() colors only · token
+   ladder for radius/spacing · zero :hover STATE rules of our own ·
+   static texture, nothing for the RM belt to collapse.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · the hatched-empty breath (the paper-rows rhythm) ─────────
+     The boards are section bars + rows on the page paper; when the
+     EmptyCell IS the section's whole body it keeps the same breath a
+     populated board leaves under its last row before the page's next
+     section (the r321-exams §1 twin). */
+  .r321m-page .ml-sec .r319s-empty {
+    margin-block-end: var(--sp-4);
+  }
+
+  /* ── 2 · the under-bar note rung ──────────────────────────────────
+     Honest copy preserved verbatim from the old Card subtitles /
+     SectionHeader descriptions — one quiet muted line under its §B2
+     bar (the r319sp-sec-note register carried into this family's own
+     sheet: pages that don't load the academic family sheet). */
+  .r321m-page .ml-sec-note {
+    margin: 0 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    max-inline-size: var(--type-body-max-measure);
+  }
+
+  /* ── 3 · the contact facts — hairline rows on the page paper ──────
+     The fact-tile ground tiles retire with the Card wall: each fact is
+     a hairline row (label rung + the mono LTR values isolated in
+     bdi), the block framed by the row grammar alone — top rule under
+     the bar, one separator between, closing rule before the note. */
+  .r321m-page .ml-facts {
+    display: flex;
+    flex-direction: column;
+    border-block-end: 1px solid var(--rule);
+  }
+  .r321m-page .ml-fact {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+    padding-block: var(--sp-3);
+    border-block-start: 1px solid var(--rule);
+  }
+  .r321m-page .ml-fact-label {
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+  .r321m-page .ml-fact-values {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-1);
+  }
+}
+
+/* ═══ UNLAYERED TAIL — the masthead re-seat (cascade reasoning) ═══════
+   Same house pattern as r319-student.css's own unlayered tail:
+   patterns.css ships `.pf-page-title` UNLAYERED (font-size var(--fs-h2)
+   — 40px @1440, 47.6px @390 on the fluid root), and @layer pages can
+   never beat an unlayered rule regardless of specificity — so the ONE
+   masthead override sits outside the layer stack, keyed off this
+   family's own `.r321m-page` root (this sheet is page-chunked — only
+   /student/map + /student/live load it). The re-seat: the INNER-PAGE
+   display rung — one display voice per page (the masthead's), at
+   ≤32px on every band (31.5px @1440 / ~27.6px @768 / 31.8px @390 —
+   the r321-exams ladder, the ≤32px inner brief), the Alexandria
+   display canon carried over from the family tail. The section h2s
+   answer at the SectionBar register (26.7px @1440 / 19.8px @390) —
+   the one display voice rule holds without the cover pages' giant
+   word. */
+.r321m-page .pf-page-title {
+  font-family: var(--font-display);
+  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the inner-page display rung (the cover pages' 46.67px is not these pages' brief), the r321-exams ladder */
+  font-weight: var(--fw-bold);
+  line-height: 1.05;      /* the Alexandria display canon */
+  letter-spacing: 0;      /* Arabic joins — never tracked */
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+@media (max-width: 991px) {
+  .r321m-page .pf-page-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy */
+}
+@media (max-width: 767px) {
+  .r321m-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
+}
+
+/* Reduced-motion belt: this sheet's material is static texture (three
+   spacing/type rungs + hairlines — nothing animates, nothing to
+   collapse). Kept as the explicit contract, mirroring the family
+   sheets. */
+@media (prefers-reduced-motion: reduce) {
+  .r321m-page .ml-sec .r319s-empty,
+  .r321m-page .ml-sec-note,
+  .r321m-page .ml-fact {
+    transition: none;
+  }
+}
