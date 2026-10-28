@@ -1879,14 +1879,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 .fo-cta-sketch-bl { inset-block-end: 6px; inset-inline-start: 8px; }
 .fo-cta-sketch-br { inset-block-end: 6px; inset-inline-end: 8px; }
 
-.fo-cta-sketch-coord {
-  position: absolute;
-  inset-block-end: 8px;
-  inset-inline-start: 10px;
-  color: var(--text-muted);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.05em;
-}
+/* R322 V1 tail: .fo-cta-sketch-coord ([CTA · RESOLVE]) is deleted
+   with its markup — a coordinate tag is not content. */
 
 /* the title block reads as a two-column ruled table inside the
    closing section (the hero's ex-metadata grid, compact) */
@@ -5383,20 +5377,14 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 .jt-side-section figcaption {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--sp-2);
   margin-block-start: var(--sp-2);
   font-size: var(--fs-xxs);
   color: var(--text-muted);
 }
 
-.jt-side-section figcaption .fo-mono {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.04em;
-}
+/* R322 V1 tail: the figcaption mono scale-note
+   ([SECTION A-A · 1:200]) is deleted with its span — dimension notes
+   are debug text; the Arabic caption stands alone. */
 
 @media (max-width: 991px) {
   .jt-side-section {

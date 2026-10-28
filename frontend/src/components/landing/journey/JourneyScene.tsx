@@ -630,10 +630,10 @@ export function JourneyScene() {
               tag is not content. */}
           <figure className="jt-side-section">
             <SectionDrawing />
-            <figcaption>
-              قطاع A-A · مسطح التعلّم
-              <span className="fo-mono" dir="ltr">[SECTION A-A · 1:200]</span>
-            </figcaption>
+            {/* R322 V1 tail (reviewer-found): the [SECTION A-A · 1:200]
+                mono scale-note is deleted — dimension notes are debug
+                text; the Arabic caption carries the cut's identity. */}
+            <figcaption>قطاع A-A · مسطح التعلّم</figcaption>
           </figure>
           <ul className="jt-checklist">
             {CHECKLIST.map((c) => (

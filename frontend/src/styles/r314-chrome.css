@@ -545,6 +545,17 @@ html[data-theme='dark'] .cb-more:focus-visible {
   }
 }
 
+/* R322 V10 (reviewer-confirmed 4/4 phone shots): below 768px the edge
+   chrome is GONE — Heron shows no edge element on phones, and the
+   flush x=0 orange square read as a stray dev-tool artifact, not a
+   drafting mark. The gutter marker stays a 768–991 tablet-only mark
+   (where the page frame's gutter makes it read as deliberate). */
+@media only screen and (max-width: 767px) {
+  .et-tab {
+    display: none;
+  }
+}
+
 /* ── Reduced motion — no nudge (the raw-ladder kill already zeroes
    --t-fast; pinned here as the belt). ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {

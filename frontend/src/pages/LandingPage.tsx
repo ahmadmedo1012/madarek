@@ -1201,14 +1201,16 @@ export default function LandingPage() {
 
             {/* the sketch panel — the drafting-sheet sketch (the
                 reference's cta sketch image): the grid + registration
-                marks + coordinates, pure line work, decorative. */}
+                marks, pure line work, decorative. R322 V1 tail: the
+                [CTA · RESOLVE] mono coord is deleted with its
+                .fo-cta-sketch-coord seat — a coordinate tag is not
+                content. */}
             <div className="fo-cta-sketch" aria-hidden="true">
               <span className="fo-cta-sketch-grid" />
               <span className="fo-cta-sketch-mark fo-cta-sketch-tl" />
               <span className="fo-cta-sketch-mark fo-cta-sketch-tr" />
               <span className="fo-cta-sketch-mark fo-cta-sketch-bl" />
               <span className="fo-cta-sketch-mark fo-cta-sketch-br" />
-              <span className="fo-cta-sketch-coord fo-mono" dir="ltr">[CTA · RESOLVE]</span>
             </div>
           </div>
 
