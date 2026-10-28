@@ -105,6 +105,18 @@
     {
       "norm": "شاهدالفيديو",
       "reason": "one action label per video card (the per-item action family, like the demo rows' تعبئة)"
+    },
+    {
+      "norm": "صفحةالقدرات",
+      "reason": "two text links to the SAME live-capabilities destination (the live head + the product caption) — one honest destination label"
+    },
+    {
+      "norm": "مفهوما",
+      "reason": "the statement's own sentence uses the word twice (WordReveal leaf nodes) — prose, not copy drift"
+    },
+    {
+      "norm": "مصفوفةالإتقان",
+      "reason": "one term per concept — the mastery-matrix feature name across its section seats (the مدارك pattern)"
     }
   ],
   "clipContainers": [
@@ -115,6 +127,10 @@
     {
       "sel": ".jt",
       "reason": "the journey scene (pinned map stage + phone readable twins) — the plan is wider than the phone viewport and the .jt-side camera pans it across the chapters (R312 camera crops, verified 9/9)"
+    },
+    {
+      "sel": ".fo-hero-work",
+      "reason": "the C2 hero work MARQUEE — the dual-track seamless loop paints items outside the clip window by design (overflow:hidden crawl, the same contract as .fo-ticker; the aria-hidden twin carries the loop)"
     }
   ]
 }

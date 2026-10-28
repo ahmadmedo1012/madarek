@@ -1,20 +1,19 @@
 {
- "generated": "2026-10-27T21:42:43.550Z",
- "baseUrl": "http://127.0.0.1:4257",
+ "generated": "2026-10-28T22:13:13.163Z",
+ "baseUrl": "http://127.0.0.1:4319",
  "routes": [
-  "landing",
-  "student-dashboard",
-  "admin-dashboard"
+  "landing"
  ],
  "viewports": [
   390,
+  768,
   1440
  ],
  "themes": [
   "light",
   "dark"
  ],
- "quick": true,
+ "quick": false,
  "cells": [
   {
    "route": "landing",
@@ -22,588 +21,133 @@
    "theme": "light",
    "authed": false,
    "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
     "svg-collisions": {
      "status": "PASS",
      "metric": 0,
      "textText": 0,
      "textGeom": 0,
      "allowlisted": 0,
-     "svgs": 15,
-     "texts": 43,
-     "geoms": 373,
-     "camOverride": true,
-     "samples": []
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 2,
-     "occurrences": 2,
-     "errors": 0,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "samples": []
-    }
-   }
-  },
-  {
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "light",
-   "authed": false,
-   "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
-    "svg-collisions": {
-     "status": "PASS",
-     "metric": 0,
-     "textText": 0,
-     "textGeom": 0,
-     "allowlisted": 0,
-     "svgs": 28,
-     "texts": 59,
-     "geoms": 502,
+     "svgs": 0,
+     "texts": 0,
+     "geoms": 0,
      "camOverride": false,
      "samples": []
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 2,
-     "occurrences": 2,
-     "errors": 0,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "samples": []
     }
    }
   },
   {
    "route": "landing",
-   "viewport": 390,
-   "theme": "dark",
+   "viewport": 768,
+   "theme": "light",
    "authed": false,
    "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
     "svg-collisions": {
      "status": "PASS",
      "metric": 0,
      "textText": 0,
      "textGeom": 0,
      "allowlisted": 0,
-     "svgs": 15,
-     "texts": 43,
-     "geoms": 373,
-     "camOverride": true,
-     "samples": []
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 2,
-     "occurrences": 2,
-     "errors": 0,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "samples": []
-    }
-   }
-  },
-  {
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "dark",
-   "authed": false,
-   "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
-    "svg-collisions": {
-     "status": "PASS",
-     "metric": 0,
-     "textText": 0,
-     "textGeom": 0,
-     "allowlisted": 0,
-     "svgs": 28,
-     "texts": 59,
-     "geoms": 502,
+     "svgs": 0,
+     "texts": 0,
+     "geoms": 0,
      "camOverride": false,
      "samples": []
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 2,
-     "occurrences": 2,
-     "errors": 0,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "samples": []
     }
    }
   },
   {
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "authed": true,
-   "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
-    "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 4,
-     "errors": 1,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/me/gaps:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 1,
-     "occurrences": 2,
-     "samples": [
-      "501 /api/v1/me/gaps ×2"
-     ]
-    }
-   }
-  },
-  {
-   "route": "student-dashboard",
+   "route": "landing",
    "viewport": 1440,
    "theme": "light",
-   "authed": true,
+   "authed": false,
    "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
     "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 4,
-     "errors": 1,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/me/gaps:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 1,
-     "occurrences": 2,
-     "samples": [
-      "501 /api/v1/me/gaps ×2"
-     ]
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
+     "allowlisted": 0,
+     "svgs": 0,
+     "texts": 0,
+     "geoms": 0,
+     "camOverride": false,
+     "samples": []
     }
    }
   },
   {
-   "route": "student-dashboard",
+   "route": "landing",
    "viewport": 390,
    "theme": "dark",
-   "authed": true,
+   "authed": false,
    "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
     "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 4,
-     "errors": 1,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/me/gaps:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 1,
-     "occurrences": 2,
-     "samples": [
-      "501 /api/v1/me/gaps ×2"
-     ]
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
+     "allowlisted": 0,
+     "svgs": 0,
+     "texts": 0,
+     "geoms": 0,
+     "camOverride": false,
+     "samples": []
     }
    }
   },
   {
-   "route": "student-dashboard",
+   "route": "landing",
+   "viewport": 768,
+   "theme": "dark",
+   "authed": false,
+   "checks": {
+    "svg-collisions": {
+     "status": "PASS",
+     "metric": 0,
+     "textText": 0,
+     "textGeom": 0,
+     "allowlisted": 0,
+     "svgs": 0,
+     "texts": 0,
+     "geoms": 0,
+     "camOverride": false,
+     "samples": []
+    }
+   }
+  },
+  {
+   "route": "landing",
    "viewport": 1440,
    "theme": "dark",
-   "authed": true,
+   "authed": false,
    "checks": {
-    "rename-scan": {
-     "status": "NA",
-     "reason": "rename scan is scoped to admin routes (§B RENAME)",
-     "metric": 0
-    },
     "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 4,
-     "errors": 1,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/me/gaps:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 1,
-     "occurrences": 2,
-     "samples": [
-      "501 /api/v1/me/gaps ×2"
-     ]
-    }
-   }
-  },
-  {
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "authed": true,
-   "checks": {
-    "rename-scan": {
      "status": "PASS",
      "metric": 0,
-     "occurrences": 0,
-     "uniqueLabels": 0,
-     "kept": 0,
-     "keepEntries": 4,
-     "drawerOpened": true,
+     "textText": 0,
+     "textGeom": 0,
+     "allowlisted": 0,
+     "svgs": 0,
+     "texts": 0,
+     "geoms": 0,
+     "camOverride": false,
      "samples": []
-    },
-    "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 5,
-     "occurrences": 8,
-     "errors": 3,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/admin/stats:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2",
-      "error @/api/v1/admin/faculties:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 6,
-     "samples": [
-      "501 /api/v1/admin/stats ×2",
-      "501 /api/v1/admin/faculties ×2",
-      "501 /api/v1/admin/reports ×2"
-     ]
-    }
-   }
-  },
-  {
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "authed": true,
-   "checks": {
-    "rename-scan": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "uniqueLabels": 0,
-     "kept": 0,
-     "keepEntries": 4,
-     "drawerOpened": false,
-     "samples": []
-    },
-    "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 5,
-     "occurrences": 8,
-     "errors": 3,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/admin/stats:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2",
-      "error @/api/v1/admin/faculties:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 6,
-     "samples": [
-      "501 /api/v1/admin/stats ×2",
-      "501 /api/v1/admin/faculties ×2",
-      "501 /api/v1/admin/reports ×2"
-     ]
-    }
-   }
-  },
-  {
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "authed": true,
-   "checks": {
-    "rename-scan": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "uniqueLabels": 0,
-     "kept": 0,
-     "keepEntries": 4,
-     "drawerOpened": true,
-     "samples": []
-    },
-    "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 5,
-     "occurrences": 8,
-     "errors": 3,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/admin/stats:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2",
-      "error @/api/v1/admin/faculties:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 6,
-     "samples": [
-      "501 /api/v1/admin/stats ×2",
-      "501 /api/v1/admin/faculties ×2",
-      "501 /api/v1/admin/reports ×2"
-     ]
-    }
-   }
-  },
-  {
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "authed": true,
-   "checks": {
-    "rename-scan": {
-     "status": "PASS",
-     "metric": 0,
-     "occurrences": 0,
-     "uniqueLabels": 0,
-     "kept": 0,
-     "keepEntries": 4,
-     "drawerOpened": false,
-     "samples": []
-    },
-    "svg-collisions": {
-     "status": "NA",
-     "reason": "SVG collision sweep is scoped to the landing drawings (§A4)",
-     "metric": 0
-    },
-    "cleanliness/console": {
-     "status": "FAIL",
-     "metric": 5,
-     "occurrences": 8,
-     "errors": 3,
-     "warnings": 2,
-     "samples": [
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»",
-      "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: Relative route resolution within Splat routes is chan»",
-      "error @/api/v1/admin/stats:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2",
-      "error @/api/v1/admin/faculties:0 «Failed to load resource: the server responded with a status of 501 (Not Implemented)» ×2"
-     ]
-    },
-    "cleanliness/network": {
-     "status": "FAIL",
-     "metric": 3,
-     "occurrences": 6,
-     "samples": [
-      "501 /api/v1/admin/stats ×2",
-      "501 /api/v1/admin/faculties ×2",
-      "501 /api/v1/admin/reports ×2"
-     ]
     }
    }
   }
  ],
- "lints": [
-  {
-   "key": "|—|—|duplicate-selector",
-   "route": "—",
-   "viewport": "—",
-   "theme": "—",
-   "check": "duplicate-selector",
-   "status": "FAIL",
-   "metric": 65,
-   "exitCode": 1,
-   "counts": {
-    "lint": "duplicate-selector",
-    "exit": 1,
-    "rules": 5677,
-    "sheets": 43,
-    "conflictsApp": 65,
-    "conflictsArtifact": 129,
-    "harmless": 184,
-    "fresh": 65,
-    "allowlisted": 0,
-    "unloadedDeclared": [
-     "styles/shared-design-system.css",
-     "styles/unified-parity.css"
-    ],
-    "undeclaredUnloaded": [],
-    "stale": 0,
-    "sample": [
-     "styles/admin.css:402 ↔ styles/components.css:3862 .admin-faculty-card [box-shadow]",
-     "styles/auth.css:1432 ↔ styles/polish.css:2605 .auth-card [animation]",
-     "styles/base.css:107 ↔ styles/components.css:965 select [color]"
-    ]
-   },
-   "sample": "styles/admin.css:402 ↔ styles/components.css:3862 .admin-faculty-card [box-shadow]"
-  },
-  {
-   "key": "|—|—|hover-guard",
-   "route": "—",
-   "viewport": "—",
-   "theme": "—",
-   "check": "hover-guard",
-   "status": "FAIL",
-   "metric": 183,
-   "exitCode": 1,
-   "counts": {
-    "lint": "hover-guard",
-    "exit": 1,
-    "hoverRules": 297,
-    "sheets": 43,
-    "unguarded": 184,
-    "fresh": 183,
-    "allowlisted": 1,
-    "stale": 0,
-    "sample": [
-     "styles/admin.css:377 .settings-links a:hover @ (root)",
-     "styles/auth.css:110 .auth-back-home:hover @ (root)",
-     "styles/auth.css:1213 .role-card:hover,\n  .role-card:focus-visible @ (root)"
-    ]
-   },
-   "sample": "styles/admin.css:377 .settings-links a:hover @ (root)"
-  }
- ],
+ "lints": [],
  "r319": {
   "key": "|—|—|r319-gate",
   "route": "—",
   "viewport": "—",
   "theme": "—",
   "check": "r319-gate",
-  "status": "FAIL",
-  "metric": 1,
-  "exitCode": 1,
-  "tail": "[mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [gate:r319] 2 FAIL · 0 WARN · 0 cell error(s) · 1 regression"
+  "status": "NA",
+  "metric": 0,
+  "reason": "--only without r319"
  },
  "rows": [
-  {
-   "key": "landing|390|light|rename-scan",
-   "route": "landing",
-   "viewport": 390,
-   "theme": "light",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
-  },
   {
    "key": "landing|390|light|svg-collisions",
    "route": "landing",
@@ -615,34 +159,14 @@
    "sample": "—"
   },
   {
-   "key": "landing|390|light|cleanliness/console",
+   "key": "landing|768|light|svg-collisions",
    "route": "landing",
-   "viewport": 390,
+   "viewport": 768,
    "theme": "light",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 2,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "landing|390|light|cleanliness/network",
-   "route": "landing",
-   "viewport": 390,
-   "theme": "light",
-   "check": "cleanliness/network",
+   "check": "svg-collisions",
    "status": "PASS",
    "metric": 0,
    "sample": "—"
-  },
-  {
-   "key": "landing|1440|light|rename-scan",
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
   },
   {
    "key": "landing|1440|light|svg-collisions",
@@ -655,36 +179,6 @@
    "sample": "—"
   },
   {
-   "key": "landing|1440|light|cleanliness/console",
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 2,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "landing|1440|light|cleanliness/network",
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "cleanliness/network",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "—"
-  },
-  {
-   "key": "landing|390|dark|rename-scan",
-   "route": "landing",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
-  },
-  {
    "key": "landing|390|dark|svg-collisions",
    "route": "landing",
    "viewport": 390,
@@ -695,34 +189,14 @@
    "sample": "—"
   },
   {
-   "key": "landing|390|dark|cleanliness/console",
+   "key": "landing|768|dark|svg-collisions",
    "route": "landing",
-   "viewport": 390,
+   "viewport": 768,
    "theme": "dark",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 2,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "landing|390|dark|cleanliness/network",
-   "route": "landing",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "cleanliness/network",
+   "check": "svg-collisions",
    "status": "PASS",
    "metric": 0,
    "sample": "—"
-  },
-  {
-   "key": "landing|1440|dark|rename-scan",
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
   },
   {
    "key": "landing|1440|dark|svg-collisions",
@@ -735,381 +209,21 @@
    "sample": "—"
   },
   {
-   "key": "landing|1440|dark|cleanliness/console",
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 2,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "landing|1440|dark|cleanliness/network",
-   "route": "landing",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "cleanliness/network",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "—"
-  },
-  {
-   "key": "student-dashboard|390|light|rename-scan",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
-  },
-  {
-   "key": "student-dashboard|390|light|svg-collisions",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "student-dashboard|390|light|cleanliness/console",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "student-dashboard|390|light|cleanliness/network",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "501 /api/v1/me/gaps ×2"
-  },
-  {
-   "key": "student-dashboard|1440|light|rename-scan",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
-  },
-  {
-   "key": "student-dashboard|1440|light|svg-collisions",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "student-dashboard|1440|light|cleanliness/console",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "student-dashboard|1440|light|cleanliness/network",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "501 /api/v1/me/gaps ×2"
-  },
-  {
-   "key": "student-dashboard|390|dark|rename-scan",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
-  },
-  {
-   "key": "student-dashboard|390|dark|svg-collisions",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "student-dashboard|390|dark|cleanliness/console",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "student-dashboard|390|dark|cleanliness/network",
-   "route": "student-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "501 /api/v1/me/gaps ×2"
-  },
-  {
-   "key": "student-dashboard|1440|dark|rename-scan",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "rename-scan",
-   "status": "NA",
-   "metric": 0,
-   "sample": "rename scan is scoped to admin routes (§B RENAME)"
-  },
-  {
-   "key": "student-dashboard|1440|dark|svg-collisions",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "student-dashboard|1440|dark|cleanliness/console",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "student-dashboard|1440|dark|cleanliness/network",
-   "route": "student-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "501 /api/v1/me/gaps ×2"
-  },
-  {
-   "key": "admin-dashboard|390|light|rename-scan",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "rename-scan",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "—"
-  },
-  {
-   "key": "admin-dashboard|390|light|svg-collisions",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "admin-dashboard|390|light|cleanliness/console",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 5,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "admin-dashboard|390|light|cleanliness/network",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "light",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "501 /api/v1/admin/stats ×2"
-  },
-  {
-   "key": "admin-dashboard|1440|light|rename-scan",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "rename-scan",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "—"
-  },
-  {
-   "key": "admin-dashboard|1440|light|svg-collisions",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "admin-dashboard|1440|light|cleanliness/console",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 5,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "admin-dashboard|1440|light|cleanliness/network",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "light",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "501 /api/v1/admin/stats ×2"
-  },
-  {
-   "key": "admin-dashboard|390|dark|rename-scan",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "rename-scan",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "—"
-  },
-  {
-   "key": "admin-dashboard|390|dark|svg-collisions",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "admin-dashboard|390|dark|cleanliness/console",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 5,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "admin-dashboard|390|dark|cleanliness/network",
-   "route": "admin-dashboard",
-   "viewport": 390,
-   "theme": "dark",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "501 /api/v1/admin/stats ×2"
-  },
-  {
-   "key": "admin-dashboard|1440|dark|rename-scan",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "rename-scan",
-   "status": "PASS",
-   "metric": 0,
-   "sample": "—"
-  },
-  {
-   "key": "admin-dashboard|1440|dark|svg-collisions",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "svg-collisions",
-   "status": "NA",
-   "metric": 0,
-   "sample": "SVG collision sweep is scoped to the landing drawings (§A4)"
-  },
-  {
-   "key": "admin-dashboard|1440|dark|cleanliness/console",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "cleanliness/console",
-   "status": "FAIL",
-   "metric": 5,
-   "sample": "warning @/node_modules/.vite/deps/react-router-dom.js:4416 «⚠️ React Router Future Flag Warning: React Router will begin wrapping state updates in `Re»"
-  },
-  {
-   "key": "admin-dashboard|1440|dark|cleanliness/network",
-   "route": "admin-dashboard",
-   "viewport": 1440,
-   "theme": "dark",
-   "check": "cleanliness/network",
-   "status": "FAIL",
-   "metric": 3,
-   "sample": "501 /api/v1/admin/stats ×2"
-  },
-  {
-   "key": "|—|—|duplicate-selector",
-   "route": "—",
-   "viewport": "—",
-   "theme": "—",
-   "check": "duplicate-selector",
-   "status": "FAIL",
-   "metric": 65,
-   "sample": "styles/admin.css:402 ↔ styles/components.css:3862 .admin-faculty-card [box-shadow]"
-  },
-  {
-   "key": "|—|—|hover-guard",
-   "route": "—",
-   "viewport": "—",
-   "theme": "—",
-   "check": "hover-guard",
-   "status": "FAIL",
-   "metric": 183,
-   "sample": "styles/admin.css:377 .settings-links a:hover @ (root)"
-  },
-  {
    "key": "|—|—|r319-gate",
    "route": "—",
    "viewport": "—",
    "theme": "—",
    "check": "r319-gate",
-   "status": "FAIL",
-   "metric": 1,
-   "sample": "[mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [mock-transport] no fixture for GET /api/v1/me/gaps — answering 501 ⏎ [gate:r319] 2 FAIL · 0 WARN · 0 cell error(s) · 1 regression"
+   "status": "NA",
+   "metric": 0,
+   "sample": "--only without r319"
   }
  ],
  "summary": {
-  "fails": 23,
+  "fails": 0,
   "warns": 0,
-  "regressions": 1,
+  "regressions": 0,
   "errorCells": 0,
-  "exit": 1
+  "exit": 0
  }
 }

@@ -83,8 +83,12 @@ test.describe('R308 — محطات الفحص (the inspection stations)', () => 
     await station.click();
     await expect(station).toHaveAttribute('aria-pressed', 'true');
     /* the label is real content, not a tooltip (r309: the card is a
-     * sibling of the button — .hi-card carries the visible copy) */
-    await expect(page.locator('.hi-card[data-marker="cp"] .hi-marker-label')).toContainText('نقطة فحص');
+     * sibling of the button — .hi-card carries the visible copy).
+     * R321 §A6 override (re-pinned R322 3-b): the card's marks carry
+     * NO DOM text — the label/body render from data-* attributes via
+     * CSS content (the decor-innertext gate); the readable contract
+     * re-seats on the attribute + the button's own accessible name. */
+    await expect(page.locator('.hi-card[data-marker="cp"] .hi-marker-label')).toHaveAttribute('data-label', 'نقطة فحص');
     /* the reset control appears once a station is open */
     const reset = page.locator('.hi-reset');
     await expect(reset).toBeVisible();

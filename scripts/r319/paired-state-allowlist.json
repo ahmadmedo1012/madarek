@@ -185,14 +185,6 @@
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .fo-hero-disclosure:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing.css :: .fo-hero-discover:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
       "key": "landing.css :: .fo-nav-link:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
@@ -543,14 +535,6 @@
     {
       "key": "unified-parity.css :: .badge:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing.css :: .fo-hero-discover:hover::before",
-      "reason": "WIPE-LAYER fill — the ::before carries no text (the label's own hover rule pairs color+background on the element); this is the r318 AA signal ground #DB3A00 light / --accent dark (c2-L2 D7: white label 4.55:1), the layered-button pattern"
-    },
-    {
-      "key": "landing.css :: html[data-theme='dark'] .fo-hero-discover:hover::before",
-      "reason": "WIPE-LAYER fill — dark twin of .fo-hero-discover:hover::before; no text in the layer, the element's own hover rule carries the paired label"
     },
     {
       "key": "landing.css :: html[data-theme='dark'] .fo-text-link:hover",
