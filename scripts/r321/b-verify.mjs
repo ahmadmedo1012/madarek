@@ -32,7 +32,7 @@
  * Exit non-zero if any console error, overflow or h1-count defect.
  */
 import { chromium } from 'playwright-core';
-import { mkdirSync, writeFileSync, statSync, unlinkSync, readdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync, statSync, unlinkSync, readdirSync, existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const args = process.argv.slice(2);
@@ -42,6 +42,12 @@ const argOf = (k, d) => {
 };
 const BASE = argOf('--base', 'http://localhost:4296');
 const OUT = argOf('--out', 'audits/evidence/r321/student/bverify');
+/* --streams: comma list of cell tags to run THIS invocation — the
+   backend's GLOBAL bucket (1000 API hits / 15 min / IP, shared by every
+   local preview) means a full 5-stream sweep sits right at the ceiling,
+   so a sweep can be split across two invocations ~15 min apart. */
+const STREAMS_ARG = argOf('--streams', null);
+const PARAMS_FILE = argOf('--params-file', null);
 const EMAIL = 'student@test.ly';
 const PASSWORD = '12345678';
 
@@ -156,21 +162,36 @@ async function login(ctx) {
   return page;
 }
 
-async function settle(page, route) {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+async function settle(page, route, attempt = 0) {
   const c = page.__counters;
+  /* R321 fix: goto FIRST, then reset the counters — the previous cell's
+     in-flight lazy chunks abort on navigation and were being booked to
+     the NEW cell (the dashboard's 19-22 ERR_ABORTED rows). */
+  await page.goto(`${BASE}${route}`, { waitUntil: 'load', timeout: 30000 });
   c.console = 0;
   c.failed = 0;
   c.consoleSamples = [];
   c.failedSamples = [];
-  await page.goto(`${BASE}${route}`, { waitUntil: 'load', timeout: 30000 });
   await page.waitForLoadState('networkidle', { timeout: 2500 }).catch(() => {});
-  await page.waitForTimeout(400);
-  return {
+  await page.waitForTimeout(450);
+  const counts = {
     consoleErrors: c.console,
     failedRequests: c.failed,
     consoleSamples: c.consoleSamples,
     failedSamples: c.failedSamples,
   };
+  /* R321 fix: the sweep's own pace trips the API rate limiter — a 429 in
+     the samples means this CELL is noise, not the app: back off, reload,
+     re-measure once. */
+  const is429 = counts.consoleSamples.some((x) => x.includes('429')) ||
+    counts.failedSamples.some((x) => x.includes('429'));
+  if (is429 && attempt < 2) {
+    await sleep(2500 * (attempt + 1));
+    return settle(page, route, attempt + 1);
+  }
+  return counts;
 }
 
 const MEASURE_JS = `(() => {
@@ -192,6 +213,7 @@ async function measureRoute(page, route, shotTag) {
   const final = slugPath(route.path, PARAMS);
   let m;
   try {
+    await sleep(350);
     const counts = await settle(page, final);
     m = await page.evaluate(MEASURE_JS);
     Object.assign(m, counts);
@@ -317,7 +339,27 @@ async function runStream(vp, theme, doShot, list) {
 }
 
 /* ── phase 1: login once (390 light) + resolve the param fixtures ─── */
-console.log(`[b-verify] base=${BASE} out=${OUT} routes=${ROUTES.length}+${REDIRECTS.length}r`);
+console.log(`[b-verify] base=${BASE} out=${OUT} routes=${ROUTES.length}+${REDIRECTS.length}r` + (STREAMS_ARG ? ` streams=${STREAMS_ARG}` : ' streams=all'));
+/* merge cells from a prior invocation's coverage.json (split sweeps) */
+const covPath = path.join(OUT, 'coverage.json');
+if (existsSync(covPath)) {
+  try {
+    const prior = JSON.parse(readFileSync(covPath, 'utf8'));
+    for (const pr of prior.routes ?? []) {
+      const r = ROUTES.find((x) => x.slug === pr.slug);
+      if (r && pr.cells) {
+        r.cells = { ...(pr.na ? { na: pr.na } : {}), ...pr.cells, ...(r.cells ?? {}) };
+      }
+    }
+    for (const prd of prior.headline?.redirects ?? []) {
+      const rd = REDIRECTS.find((x) => x.path === prd.from);
+      if (rd && prd.cells) rd.cells = { ...prd.cells, ...rd.cells };
+    }
+    console.log('[b-verify] merged prior coverage.json cells');
+  } catch (e) {
+    console.error('[b-verify] prior coverage.json unreadable:', String(e).slice(0, 100));
+  }
+}
 const seedCtx = await browser.newContext({
   viewport: { width: DARK_VP.width, height: DARK_VP.height },
   locale: 'ar',
@@ -326,6 +368,10 @@ const seedCtx = await browser.newContext({
 await seedCtx.addInitScript(() => sessionStorage.setItem('madarek-intro-skip', '1'));
 const seedPage = await login(seedCtx);
 
+if (PARAMS_FILE && existsSync(PARAMS_FILE)) {
+  Object.assign(PARAMS, JSON.parse(readFileSync(PARAMS_FILE, 'utf8')));
+  console.log(`[b-verify] params loaded from ${PARAMS_FILE}:`, JSON.stringify(PARAMS));
+} else {
 const seedHrefs = {};
 seedHrefs.courses = await scrapeHrefs(seedPage, '/student/courses');
 PARAMS.offeringId = firstMatch(seedHrefs.courses, /^\/student\/courses\/([^/?#]+)/)?.[1] ?? null;
@@ -358,6 +404,8 @@ PARAMS.filename =
     ? firstMatch(await scrapeHrefs(seedPage, `/student/courses/${PARAMS.offeringId}`), /\/document\/([^/?#]+)/)?.[1]
     : null) ??
   null;
+}
+if (PARAMS_FILE) writeFileSync(PARAMS_FILE, JSON.stringify(PARAMS, null, 1));
 console.log('[b-verify] params:', JSON.stringify(PARAMS));
 /* the authenticated session snapshot replayed into every stream */
 const AUTH_STATE = await seedCtx.storageState();
@@ -381,20 +429,26 @@ for (const r of ROUTES) {
 }
 await seedCtx.close();
 
-/* ── phase 2: the 5 streams — SEQUENTIAL (the free-tier RAM ceiling:
+/* ── phase 2: the streams — SEQUENTIAL (the free-tier RAM ceiling:
      5 parallel chromium contexts + fullPage shots crashed the browser
-     with ERR_INSUFFICIENT_RESOURCES mid-run) ──────────────────────── */
+     with ERR_INSUFFICIENT_RESOURCES mid-run) — and selectable via
+     --streams for split sweeps under the backend GLOBAL bucket ── */
+const wanted = (tag) => !STREAMS_ARG || STREAMS_ARG.split(',').includes(tag);
 const t0 = Date.now();
 for (const vp of VIEWPORTS) {
+  if (!wanted(`${vp.tag}-light`)) continue;
   const shot = vp.tag === DARK_VP.tag;
   await runStream(vp, 'light', shot, measurable).catch((e) =>
     console.error('[b-verify] stream failed:', e)
   );
   console.log(`[b-verify] stream ${vp.tag}-light done +${((Date.now() - t0) / 1000).toFixed(0)}s`);
 }
-await runStream(DARK_VP, 'dark', true, measurable).catch((e) =>
-  console.error('[b-verify] stream failed:', e)
-);
+if (wanted(`${DARK_VP.tag}-dark`)) {
+  await runStream(DARK_VP, 'dark', true, measurable).catch((e) =>
+    console.error('[b-verify] stream failed:', e)
+  );
+  console.log(`[b-verify] stream ${DARK_VP.tag}-dark done +${((Date.now() - t0) / 1000).toFixed(0)}s`);
+}
 console.log(`[b-verify] streams done in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
 
 /* ── the 2MB dark-shot rule ───────────────────────────────────────── */

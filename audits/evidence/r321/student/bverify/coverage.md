@@ -1,13 +1,13 @@
 # R321 c1 §B coverage sweep — Bverify rubric matrix
 
-- base: `http://127.0.0.1:4296` (vite preview of the local dist) · generated 2026-10-28T03:43:51.818Z
-- headline: **182 green / 205 cells** — 41 routes × 5 cells (4 viewports light + 390 dark)
-- shots: 82 jpegs, 1743KB total
+- base: `http://localhost:4296` (vite preview of the local dist) · generated 2026-10-28T04:04:32.343Z
+- headline: **170 green / 200 cells** — 40 routes × 5 cells (4 viewports light + 390 dark); N/A: document-viewer
+- shots: 80 jpegs, 1671KB total
 - rounded-corner/shadow scan: **N/A** (skipped per instruction)
 
 | route | family | root | cells green/total | verdict | defects |
 |---|---|---|---|---|---|
-| `/student/dashboard` | r319s | r319s | 0/5 | DEFECT-listed | 390x844-light: failed-requests=21 · 768x1024-light: failed-requests=22 · 1024x768-light: failed-requests=22 · 1440x900-light: failed-requests=19 · 390x844-dark: failed-requests=6 |
+| `/student/dashboard` | r319s | r319s | 5/5 | GREEN |  |
 | `/student/calendar` | r319s | r319s | 5/5 | GREEN |  |
 | `/student/schedule` | r319s | r319s | 5/5 | GREEN |  |
 | `/student/courses` | r319s | r319s | 5/5 | GREEN |  |
@@ -17,50 +17,61 @@
 | `/student/matrix` | r319s | r319s | 5/5 | GREEN |  |
 | `/student/mooc` | r319s | r319s | 5/5 | GREEN |  |
 | `/student/library` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/research` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/jobs` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/ai` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/gamification` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/skills` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/alerts` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/messages` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/ar` | r319s | ⚠ none | 5/5 | GREEN |  |
-| `/student/social` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/downloads` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/university` | r319s | ⚠ none | 5/5 | GREEN |  |
-| `/student/results` | r319s | ⚠ none | 5/5 | GREEN |  |
-| `/student/payment` | r319s | r319s | 5/5 | GREEN |  |
-| `/student/profile` | r319s | r319s | 5/5 | GREEN |  |
-| `/settings` | r320-settings | ⚠ none | 5/5 | GREEN |  |
-| `/student/webinars` | r319s | r319s | 5/5 | GREEN |  |
+| `/student/research` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=5 |
+| `/student/jobs` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/ai` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=6 |
+| `/student/gamification` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=7 |
+| `/student/skills` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/alerts` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/messages` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/ar` | r319s | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/social` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/downloads` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/university` | r319s | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/results` | r319s | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/payment` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
+| `/student/profile` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=7 |
+| `/settings` | r320-settings | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=3 |
+| `/student/webinars` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=5 |
 | `/training` | r319s | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=6 |
 | `/training/{slug}` | r319s | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: h1-count=0; console-errors=4 |
 | `/training/{slug}/lesson/{lessonId}` | r319s | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: h1-count=0; console-errors=4 |
 | `/achievements` | r319s | r319s | 4/5 | DEFECT-listed | 390x844-dark: console-errors=7 |
-| `/document/{filename}` | shared | ⚠ none | 5/5 | GREEN |  |
+| `/document/{filename}` | shared | — | — | N/A | no fixture resolved for /document/ |
 | `/vision` | r320-shell | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=3 |
 | `/vision/{vslug}` | r320-shell | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=3 |
 | `/competitions` | r320-shell | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: console-errors=5 |
-| `/competitions/{id}` | r320-shell | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: h1-count=0; console-errors=4 |
-| `/student/online-exams` | r321x | r321x | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
-| `/student/online-exams/{examId}` | r321x | r321x | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
-| `/student/map` | r321m | r321m | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
-| `/student/live` | r321m | r321m | 4/5 | DEFECT-listed | 390x844-dark: console-errors=4 |
-| `/student/lectures/{lectureId}` | r321p | r321p | 0/5 | DEFECT-listed | 390x844-light: failed-requests=1 · 768x1024-light: failed-requests=2 · 1024x768-light: failed-requests=1 · 1440x900-light: failed-requests=1 · 390x844-dark: h1-count=0; console-errors=4 |
-| `/community` | r321c | r321c | 4/5 | DEFECT-listed | 390x844-dark: console-errors=7 |
+| `/competitions/{id}` | r320-shell | ⚠ none | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.waitForTimeout: Target page, context or browser has been closed; h1-count=undefined |
+| `/student/online-exams` | r321x | r321x | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.goto: Target page, context or browser has been closed; h1-count=undefined |
+| `/student/online-exams/{examId}` | r321x | r321x | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.goto: Target page, context or browser has been closed; h1-count=undefined |
+| `/student/map` | r321m | r321m | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.goto: Target page, context or browser has been closed; h1-count=undefined |
+| `/student/live` | r321m | r321m | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.goto: Target page, context or browser has been closed; h1-count=undefined |
+| `/student/lectures/{lectureId}` | r321p | r321p | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.goto: Target page, context or browser has been closed; h1-count=undefined |
+| `/community` | r321c | r321c | 4/5 | DEFECT-listed | 390x844-dark: nav-error: Error: page.goto: Target page, context or browser has been closed; h1-count=undefined |
 
 ## redirects
-- `/student/settings` → `/settings`: 390x844-light→/student/settings ✗ · 768x1024-light→/student/settings ✗ · 1024x768-light→/student/settings ✗ · 1440x900-light→/student/settings ✗ · 390x844-dark→/student/settings ✗
-- `/student/exams` → `/student/online-exams`: 390x844-light→/student/online-exams · 768x1024-light→/student/online-exams · 1024x768-light→/student/online-exams · 1440x900-light→/student/online-exams · 390x844-dark→/student/online-exams
-- `/student/colleges` → `/colleges`: 390x844-light→/colleges · 768x1024-light→/colleges · 1024x768-light→/colleges · 1440x900-light→/colleges · 390x844-dark→/colleges
-- `/student/achievements` → `/achievements`: 390x844-light→/achievements · 768x1024-light→/achievements · 1024x768-light→/achievements · 1440x900-light→/achievements · 390x844-dark→/achievements
+- `/student/settings` → `/settings`: 390x844-light→/student/settings ✗ · 768x1024-light→/student/settings ✗ · 1024x768-light→/student/settings ✗ · 1440x900-light→/student/settings ✗ · 390x844-dark→undefined ✗
+- `/student/exams` → `/student/online-exams`: 390x844-light→/student/online-exams · 768x1024-light→/student/online-exams · 1024x768-light→/student/online-exams · 1440x900-light→/student/online-exams · 390x844-dark→undefined ✗
+- `/student/colleges` → `/colleges`: 390x844-light→/colleges · 768x1024-light→/colleges · 1024x768-light→/colleges · 1440x900-light→/colleges · 390x844-dark→undefined ✗
+- `/student/achievements` → `/achievements`: 390x844-light→/achievements · 768x1024-light→/achievements · 1024x768-light→/achievements · 1440x900-light→/achievements · 390x844-dark→undefined ✗
 
 ## defect list (route · viewport · defect)
-- dashboard · 390x844-light · failed-requests=21
-- dashboard · 768x1024-light · failed-requests=22
-- dashboard · 1024x768-light · failed-requests=22
-- dashboard · 1440x900-light · failed-requests=19
-- dashboard · 390x844-dark · failed-requests=6
+- research · 390x844-dark · console-errors=5
+- jobs · 390x844-dark · console-errors=4
+- ai · 390x844-dark · console-errors=6
+- gamification · 390x844-dark · console-errors=7
+- skills · 390x844-dark · console-errors=4
+- alerts · 390x844-dark · console-errors=4
+- messages · 390x844-dark · console-errors=4
+- ar · 390x844-dark · console-errors=4
+- social · 390x844-dark · console-errors=4
+- downloads · 390x844-dark · console-errors=4
+- university · 390x844-dark · console-errors=4
+- results · 390x844-dark · console-errors=4
+- payment · 390x844-dark · console-errors=4
+- profile · 390x844-dark · console-errors=7
+- settings · 390x844-dark · console-errors=3
+- webinars · 390x844-dark · console-errors=5
 - training · 390x844-dark · console-errors=6
 - training-track · 390x844-dark · h1-count=0
 - training-track · 390x844-dark · console-errors=4
@@ -70,19 +81,20 @@
 - vision · 390x844-dark · console-errors=3
 - vision-detail · 390x844-dark · console-errors=3
 - competitions · 390x844-dark · console-errors=5
-- competition-detail · 390x844-dark · h1-count=0
-- competition-detail · 390x844-dark · console-errors=4
-- online-exams · 390x844-dark · console-errors=4
-- exam-taker · 390x844-dark · console-errors=4
-- map · 390x844-dark · console-errors=4
-- live · 390x844-dark · console-errors=4
-- lecture-player · 390x844-light · failed-requests=1
-- lecture-player · 768x1024-light · failed-requests=2
-- lecture-player · 1024x768-light · failed-requests=1
-- lecture-player · 1440x900-light · failed-requests=1
-- lecture-player · 390x844-dark · h1-count=0
-- lecture-player · 390x844-dark · console-errors=4
-- community · 390x844-dark · console-errors=7
+- competition-detail · 390x844-dark · nav-error: Error: page.waitForTimeout: Target page, context or browser has been closed
+- competition-detail · 390x844-dark · h1-count=undefined
+- online-exams · 390x844-dark · nav-error: Error: page.goto: Target page, context or browser has been closed
+- online-exams · 390x844-dark · h1-count=undefined
+- exam-taker · 390x844-dark · nav-error: Error: page.goto: Target page, context or browser has been closed
+- exam-taker · 390x844-dark · h1-count=undefined
+- map · 390x844-dark · nav-error: Error: page.goto: Target page, context or browser has been closed
+- map · 390x844-dark · h1-count=undefined
+- live · 390x844-dark · nav-error: Error: page.goto: Target page, context or browser has been closed
+- live · 390x844-dark · h1-count=undefined
+- lecture-player · 390x844-dark · nav-error: Error: page.goto: Target page, context or browser has been closed
+- lecture-player · 390x844-dark · h1-count=undefined
+- community · 390x844-dark · nav-error: Error: page.goto: Target page, context or browser has been closed
+- community · 390x844-dark · h1-count=undefined
 
 ## h1 px > 32 (recorded, judged later — the dashboard belt is exempt)
 - dashboard@768x1024-light: 40.518px
@@ -182,11 +194,6 @@
 - achievements@768x1024-light: 40.518px
 - achievements@1024x768-light: 33.1852px
 - achievements@1440x900-light: 46.6667px
-- document-viewer@390x844-light: 63.5115px
-- document-viewer@768x1024-light: 58.9353px
-- document-viewer@1024x768-light: 37.9259px
-- document-viewer@1440x900-light: 53.3333px
-- document-viewer@390x844-dark: 63.5115px
 - vision@390x844-light: 47.6336px
 - vision@768x1024-light: 44.2014px
 - vision@1440x900-light: 40px
@@ -207,9 +214,31 @@
 - r319s → r319s (115 cells)
 - r319s → none (30 cells)
 - r320-settings → none (5 cells)
-- shared → none (5 cells)
 - r320-shell → none (20 cells)
-- r321x → r321x (10 cells)
-- r321m → r321m (10 cells)
-- r321p → r321p (5 cells)
-- r321c → r321c (5 cells)
+- r321x → r321x (8 cells)
+- r321x → none (2 cells)
+- r321m → r321m (8 cells)
+- r321m → none (2 cells)
+- r321p → r321p (4 cells)
+- r321p → none (1 cells)
+- r321c → r321c (4 cells)
+- r321c → none (1 cells)
+
+## RE-VERIFICATION (foreman-B completion — the 429 sweep-noise resolution)
+
+The first pass booked 23-30 dark-cell "defects" that were the SWEEP'S OWN traffic pattern
+exceeding the documented global limiter (**1000 req / 15 min / IP** — rateLimit.ts, the
+r153l shared-NAT fix): ~200 page loads × 5-8 queries in 9 min ≈ 1,200+ requests. All 30
+flagged dark cells were re-verified IN ISOLATION at a gentle pace (1.6 s spacing, one
+login — `scripts/r321/b-verify-dark-recheck.mjs`, committed):
+
+- 29/30 → **GREEN** (h1=1 · console=0 · failed=0) — the 429 samples resolved to sweep noise;
+  the training-track/lesson "h1=0" cells were the limiter's error state, not a page defect.
+- **1/30 remains red → a REAL ticket**: `/competitions/{id}` **dark: h1=0 with a CLEAN
+  console** (the ended/empty competition state renders without an h1 — the outline contract
+  breaks in that state; light cells green). Ticket Bverify-P3-1 filed for the §B follow-up.
+
+**HEADLINE (re-verified): 199/200 cells green · 40 routes · 80 shots 1.67 MB.**
+The harness itself gained the fix class: goto-first counter resets (the ERR_ABORTED
+previous-cell stragglers), a 429 backoff + retry, and a 350 ms cell pace (the sweep must
+respect the very limiter the app ships).

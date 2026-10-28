@@ -503,3 +503,8 @@ Work Log:
 
 Stage Summary:
 - The full-suite discipline caught the gap the spot runs missed; the r168a/R305 a11y contracts survive the conversion re-pinned.
+
+## R321 c1 WP-Bverify — the §B coverage sweep (r321-c1-Bverify)
+- Harness: `scripts/r321/b-verify.mjs` (playwright-core + chromium; login ONCE via storageState replay — the backend AUTH_RATE limiter is 10 logins/15min/IP so one UI login per context × 5 streams × repeated sweeps trips it; the student@test.ly UI login via getByLabel البريد الإلكتروني أو رقم القيد + كلمة المرور + تسجيل الدخول stays the seed), params auto-resolved from live hrefs (offering cmvr8gnp3…, training slug platform-onboarding, lesson cmvr8go3h…, exam cmvr8go9y…, lecture cmvr8go0v…, vision ai-predictor, competition cmvr8gobf…; document/:filename → NO in-app link found from student surfaces → N/A).
+- Run vs local dist (`npm run build` → vite preview :4296, IPv4 host — vite preview binds ::1 only which breaks chromium/127.0.0.1): 41 route rows × 4 viewports light + 390 dark = 205 cells; headline 182/205 green; 82 jpeg shots (q35→re-encode ladder, 1743KB total < 2MB so the drop-dark rule never fired).
+- Caveat on the committed coverage.json/md: the /document/:filename row was measured against the degenerate /document/ URL before the empty-param N/A guard landed (its 2 shots deleted; row flagged in the report) — a clean post-limiter rerun follows.
