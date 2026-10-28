@@ -32,7 +32,6 @@ export interface WhyStage {
   verbAr: string;
   titleAr: string;
   textAr: string;
-  meta: string;
   captureId: string;
 }
 
@@ -41,14 +40,15 @@ export interface WhyStage {
  * lives. Honest pairing: the capture's own caption names the surface;
  * stage 03 (اختبر) covers the assessment instruments together (the
  * auto-graded exams + the research library) — both live capabilities,
- * one honest sentence. */
+ * one honest sentence. R322 V1 kill: the English jargon metas
+ * ('live · lectures' … 'live · mastery') are deleted — the Arabic
+ * textAr line and the capture caption carry the facts. */
 export const WHY_STAGES: WhyStage[] = [
   {
     num: '01',
     verbAr: 'شاهد',
     titleAr: 'المحاضرة التفاعلية',
     textAr: 'محاضرة مسجَّلة بنقاط فحص تُصحَّح فورًا، وحضور يُحتسب تلقائيًا.',
-    meta: 'live · lectures',
     captureId: 'student-lecture-player',
   },
   {
@@ -56,7 +56,6 @@ export const WHY_STAGES: WhyStage[] = [
     verbAr: 'تحقّق',
     titleAr: 'لوحة الطالب',
     textAr: 'تابع يومك ومهامّك وتقدّمك — نظرة واحدة تخبرك أين أنت الآن.',
-    meta: 'live · dashboard',
     captureId: 'student-dashboard',
   },
   {
@@ -64,7 +63,6 @@ export const WHY_STAGES: WhyStage[] = [
     verbAr: 'اختبر',
     titleAr: 'الاختبارات والبحوث',
     textAr: 'اختبارات بأربعة أنواع، وتصحيح تلقائي للموضوعي، وبحوث تُفهرَس في مكتبة تُبحث بالعربية.',
-    meta: 'live · exams + research',
     captureId: 'student-library',
   },
   {
@@ -72,7 +70,6 @@ export const WHY_STAGES: WhyStage[] = [
     verbAr: 'أتقن',
     titleAr: 'مصفوفة الإتقان',
     textAr: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.',
-    meta: 'live · mastery',
     captureId: 'student-matrix',
   },
 ];
@@ -112,7 +109,6 @@ export function WhyScene() {
             <span className="wy-stage-verb">{s.verbAr}</span>
             <span className="wy-stage-title">{s.titleAr}</span>
             <span className="wy-stage-text">{s.textAr}</span>
-            <span className="wy-stage-meta fo-mono" dir="ltr">{s.meta}</span>
           </li>
         ))}
       </ol>

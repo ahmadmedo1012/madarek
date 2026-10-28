@@ -377,42 +377,47 @@ html[data-theme='dark'] .cb-more:focus-visible {
    §2 — et · the edge vertical tab (V12 → R315 mirrored seat)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* R315 (K-B/§6) — the MIRRORED edge tab: the reference's .awwwards
-   badge seats the PHYSICAL right edge (44.16×139.45 @1440, right
-   0.8rem, top 50%, z999, NO breakpoint — visible at every width);
-   the RTL layout flow mirrors, so Madarek's own tab seats the
-   PHYSICAL LEFT edge at the same measured geometry — away from the
-   RTL H1's inline-start edge (the owner's §0-H heading-clip defect).
+/* R322 (§1 V7) — the SLIM RAIL (the owner's rule: the edge tab must
+   NEVER overlap text — a slim rail at ≥992px inside the frame margin
+   with the page content inset from it). The R315 mirrored seat kept
+   the PHYSICAL LEFT edge (away from the RTL H1's inline-start edge)
+   but at the reference's measured 44.16px band the paper slab crossed
+   the flowing body copy at every ≥992 width (measured: the problem
+   lede «…المشكلات…» and the hero's «اكتشف المزيد» both lost line
+   tails behind the tab). The seat is unchanged; the BODY is now a
+   2.08rem paper rail drawn INSIDE the frame margin — flush with the
+   sheet-frame's own 7px inset line (landing.css .sheet-frame), its
+   outer 1px hairline riding exactly on the frame line it replaces
+   under itself, an inner hairline facing the content. The button
+   keeps the ≥44px touch floor as a TRANSPARENT hit area (the same
+   pointer grammar the ≤991 gutter marker already rides); the landing
+   bands carry the matching content inset (landing.css, R322 V7 note).
    z 55 stays on the repo ladder (above the frame hairline 50, below
-   the masthead 60 — the R314 mapping, intent preserved). Paper ground
-   (--bg), a single 1px --rule hairline on the OUTER (physical left)
-   edge. */
+   the masthead 60 — the R314 mapping, intent preserved). */
 .et-tab {
   position: fixed;
   inset-block-start: 50%;
-  left: 0.8rem;                   /* measured 0.8rem offset — mirrored seat */
+  left: 7px;                     /* R322 V7: flush with the sheet-frame's
+                                    7px inset — inside the frame margin */
   z-index: 55;
   transform: translateY(-50%);
-  inline-size: 5.3rem;            /* 44.16px @1440 — the measured band */
-  min-block-size: 16.72rem;       /* 139.45px @1440 — measured */
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--sp-2-5);
-  padding-block: var(--sp-2);
-  padding-inline: 0;
-  background: var(--bg);
+  align-items: flex-end;          /* RTL: inline-end = the physical LEFT
+                                     edge — the rail hugs the frame line */
+  inline-size: 44px;             /* the ≥44px touch floor — transparent */
+  min-block-size: 16.72rem;      /* 139.45px @1440 — measured */
+  padding: 0;
+  background: transparent;
   border: 0;
-  border-left: 1px solid var(--rule);   /* the OUTER edge hairline —
-                                           #B3B3AF light · #4A4A48 dark */
   cursor: pointer;
   /* Hover nudge: +4px toward the content (the mirrored direction;
-     240ms measured → --t-fast, the nearest motion rung). */
+     240ms measured → --t-fast, the nearest motion rung). The content
+     inset clears the nudged rail (rail+nudge = 7+2.08+0.5 rem). */
   transition: transform var(--t-fast) var(--ease);
 }
 
-/* Hover/focus: the tab nudges RIGHT (toward the content — the
+/* Hover/focus: the rail nudges RIGHT (toward the content — the
    mirrored direction); the translateY(-50%) centring is preserved
    inside the same transform. */
 .et-tab:hover,
@@ -420,7 +425,29 @@ html[data-theme='dark'] .cb-more:focus-visible {
   transform: translateY(-50%) translateX(4px);
 }
 
-/* The small orange square (~14×14 @1440) at the tab's TOP —
+/* The visible rail body — the R322 V7 slim rail. IN FLOW (the button
+   sizes to the rail's content, so the rotated label always sits on the
+   rail's paper — never hanging past it). Physical left/right on
+   purpose: the tab seats a PHYSICAL edge (mirrored chrome), so the
+   rail's hairlines are spelled physically like the R315 seat's own
+   border-left. The rotated label's line-height is pinned to 1.2 so
+   the vertical line box fits the rail's paper band. */
+.et-rail {
+  flex: none;
+  inline-size: 2.08rem;          /* 17.33px @1440 — the slim rail */
+  min-block-size: 16.72rem;      /* the measured tab height floor */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--sp-2-5);
+  padding-block: var(--sp-2);
+  background: var(--bg);
+  border-left: 1px solid var(--rule);   /* rides the frame line */
+  border-right: 1px solid var(--rule);  /* the inner edge hairline */
+}
+
+/* The small orange square (~14×14 @1440) at the rail's TOP —
    var(--accent) ground with the tiny white 4-pointed star stroked in
    --accent-fg (#FFFFFF light · warm ink dark — the label-on-accent
    seat). Madarek's own mark; no award badge, ever. */
@@ -442,12 +469,14 @@ html[data-theme='dark'] .cb-more:focus-visible {
    NOT applied — tracking on Arabic cursive breaks the letter joining
    (verified live: the label read as isolated glyphs); the repo's own
    typographic canon bans it ("tracking/weight are banned on Arabic
-   cursive", tokens.css dark block). */
+   cursive", tokens.css dark block). R322 V7: line-height 1.2 keeps the
+   rotated line box inside the 2.08rem rail. */
 .et-label {
   font-family: var(--font-mono);
   font-size: var(--fs-mono-sm);
   font-weight: var(--fw-medium);
   color: var(--text-muted);
+  line-height: 1.2;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   white-space: nowrap;
@@ -471,16 +500,22 @@ html[data-theme='dark'] .cb-more:focus-visible {
      overlapping tab; the marker never reaches content, and the
      desktop tab has always ridden above the frame line.
    The rotated label is display:none (the aria-label carries the
-   name); EdgeTab.tsx is untouched. */
+   name); the R322 .et-rail wrapper is a display:contents passthrough
+   here (EdgeTab.tsx). */
 @media only screen and (max-width: 991px) {
   .et-tab {
     left: 0;                       /* flush — the marker lives in the gutter */
     inline-size: 44px;              /* the touch floor — transparent hit area */
     min-block-size: 44px;
     padding: 0;
-    gap: 0;
     background: transparent;
     border: 0;
+  }
+
+  /* R322 V7: the rail wrapper is a pure passthrough at ≤991px — the
+     marker grammar below anchors .et-mark straight to the button. */
+  .et-rail {
+    display: contents;
   }
 
   /* no desktop nudge — the marker never leans into the content band. */

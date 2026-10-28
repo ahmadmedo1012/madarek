@@ -392,28 +392,9 @@ export default function LandingPage() {
   /* R313 (D11): the exit sweep is installed at the GUEST boundary
    * (GuestReveal — every public-page navigation), no longer scoped to
    * the landing root. */
-  /* R308 — the CTA's corner coordinates: real document-space values
-   * of the section's corners, written once the layout settles. */
-  const ctaRef = useRef<HTMLElement>(null);
-  const ctaCoordsRef = useRef<HTMLParagraphElement>(null);
-  useEffect(() => {
-    const write = () => {
-      const cta = ctaRef.current;
-      const out = ctaCoordsRef.current;
-      if (!cta || !out) return;
-      const r = cta.getBoundingClientRect();
-      const top = Math.round(window.scrollY + r.top);
-      const left = Math.round(window.scrollX + r.left);
-      out.textContent = `[0,${top}] [${left},0] [${Math.round(left + r.width)},0] [0,${Math.round(top + r.height)}]`;
-    };
-    write();
-    const t = window.setTimeout(write, 600);
-    window.addEventListener('resize', write, { passive: true });
-    return () => {
-      window.clearTimeout(t);
-      window.removeEventListener('resize', write);
-    };
-  }, []);
+  /* R308's corner-coordinate writer (the [0,…] [0,0] debug readout) is
+   * retired with the R322 V1 kill — revision tags and coordinates are
+   * not content; no element reads this section's geometry anymore. */
   // F2-5 (r157): mobile-menu contract — Escape closes + refocuses the
   // burger (its aria-label flips with the state). r307: an open menu
   // also closes on an outside tap (touch users get no blur event from
@@ -1189,20 +1170,13 @@ export default function LandingPage() {
           </RevealCssClass>
         </section>
 
-        {/* ═══ [8] الخاتمة (the reference's cta) — the coordinates row,
-            the title block (the sheet's metadata grid, moved from the
-            hero), the sketch panel, and the resolve. The colleges
-            registry strip carries the #colleges anchor. ═══ */}
-        <section className="fo-cta" id="vision" ref={ctaRef} aria-label="ابدأ رحلتك — أنشئ حسابك">
-          <p className="fo-cta-coords fo-mono" dir="ltr" aria-hidden="true">
-            [R313] — MADAREK · {year} · INDEPENDENT
-          </p>
-          {/* r308 — the corner coordinate labels: real document-space
-              values of this section's corners (the reference's CTA
-              corner grammar), written once the layout settles. */}
-          <p className="fo-cta-corners fo-mono" ref={ctaCoordsRef} dir="ltr" aria-hidden="true">
-            [0,0] [0,0] [0,0] [0,0]
-          </p>
+        {/* ═══ [8] الخاتمة (the reference's cta) — the title block
+            (the sheet's metadata grid, moved from the hero), the
+            sketch panel, and the resolve. The colleges registry strip
+            carries the #colleges anchor. R322 V1: the [R313] revision
+            row + the r308 corner-coordinate readout are deleted —
+            debug text is not content. ═══ */}
+        <section className="fo-cta" id="vision" aria-label="ابدأ رحلتك — أنشئ حسابك">
           <div className="fo-cta-grid">
             <div className="fo-cta-inner">
               <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
