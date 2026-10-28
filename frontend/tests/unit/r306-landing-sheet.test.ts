@@ -212,7 +212,17 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // pinned band (measured ≈822px @390×844, −0.5% of the R314 826 pin).
     expect(mq).toMatch(/\.fo-hero-window \.bp-stage\s*\{[\s\S]*?min-block-size:\s*38vh/s);
     expect(mq).toMatch(/\.fo-hero-window \.bp-svg\s*\{[\s\S]*?block-size:\s*auto/s);
-    expect(mq).toMatch(/\.fo-hero-title\s*\{[\s\S]*?font-size:\s*clamp\(30px/s);
+    // R322 override (1-d FINAL · the type-scale migration): the ≤767 H1
+    // re-clamp RETIRED — the D1 rung (--fs-d1, band-independent) governs
+    // from the base seat: 31.74px floor across the phone band (Heron's
+    // own 3.2rem phone h1), rising on the 4.8vw mid-term to 36.9px
+    // @767. The old clamp(30px, 8.4vw, 40px) was a counter-measure
+    // against the fluid root's mobile-band spike (root 19.52px @767),
+    // which the rung's px-anchored floor kills by construction; the
+    // 2-line H1 strip measure holds on the rung (measured ≤767:
+    // h=67px = exactly 2 lines @390 AND @360).
+    expect(mq).not.toMatch(/\.fo-hero-title\s*\{/);
+    expect(live).toMatch(/\.fo-hero-title\s*\{[\s\S]*?font-size:\s*var\(--fs-d1\)/s);
   });
 
   it('the SVG carries a full Arabic description (the drawing is informative, not decorative clutter)', () => {

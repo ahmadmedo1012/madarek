@@ -311,11 +311,13 @@ R305 copy), `CHANGELOG.md`, the release reports in `docs/releases/`.
 > `docs/redesign/r322/BRIEF.md` §4). Nothing above is rewritten — this section
 > documents OVERRIDES that later packages apply: the grid, the spacing scale,
 > the ONE display type scale, and the confirmed material. The tokens land
-> ADDITIVELY in `tokens.css` (`--fs-d1/d2/d3` · `--space-*` · `--grid-*`);
-> no page consumes them yet (task 1-d owns the migration; this package must
-> not restyle anything). Measured basis: `audits/evidence/r322/dsys/`
+> ADDITIVELY in `tokens.css` (`--fs-d1/d2/d3` + `--fs-st` · `--space-*` ·
+> `--grid-*`); the type rungs are FINAL (re-pinned by the 1-d migration off
+> the Heron extraction's own ladder) and the landing display seats consume
+> them now. Measured basis: `audits/evidence/r322/dsys/`
 > (`type-census.md` — the live landing type sweep; `font-vote.md` — the
-> blind 3-reviewer display-face election).
+> blind 3-reviewer display-face election; `type-census-after.md` — the
+> post-migration sweep).
 
 ### 4.a Grid — 12 columns, rem on the fluid root, logical-only
 
@@ -355,20 +357,30 @@ already ships self-hosted, so this layer adds ZERO font bytes. Hierarchy
 transfers through SIZE + the 500/600 rungs (no uppercase, no letter-spacing —
 permanent exceptions 2).
 
-| Rung | Role (one per…) | Token | clamp() — PROVISIONAL | @1440 | @390 | weight | leading |
+| Rung | Role (one per…) | Token | clamp() — FINAL (1-d) | @1440 | @390 | weight | leading |
 |---|---|---|---|---|---|---|---|
-| **D1** | page (the H1) | `--fs-d1` | `clamp(2.5rem, 3.25vw, 5.6rem)` | 46.7px | 24.8px | 600 | 1.05 |
-| **D2** | section (the statement) | `--fs-d2` | `clamp(2.25rem, 2.78vw, 5.3rem)` | 40px | 22.3px | 500 | 1.10 |
-| **D3** | card (the title) | `--fs-d3` | `clamp(1.875rem, 2.3vw, 4rem)` | 33.1px | 18.6px | 500 | 1.15 |
+| **D1** | page (the H1) | `--fs-d1` | `clamp(31.74px, 4.8vw, 5.6rem)` | 46.7px | 31.74px | 600 | 1.05 |
+| **D2** | section (the statement) | `--fs-d2` | `clamp(31.74px, 4.8vw, 4.8rem)` | 40px | 31.74px | 600 | 1.10 |
+| **D3** | card (the title) | `--fs-d3` | `clamp(23.33px, 2.8vw, 2.8rem)` | 23.33px | 23.33px | 500 | 1.15 |
+| **ST** | the statement-band scrub title | `--fs-st` | `clamp(22.1px, 2.87vw, 4rem)` | 33.33px | 22.1px | 600 | 1.10 |
 
-- **Derivation:** the @1440 targets ARE the R313-measured Heron heading ladder
-  (h1 46.67 · h2 40 · h3 33.33px) — the census (`type-census.md`) proved the
-  current display tier runs 60–85.55px (up to +114% over Heron's h2) at five
-  to six ad-hoc sizes, all weight 700. The vw mid-term is **band-independent**
-  — the fluid root's tablet band can never amplify a rung again (the 991 →
-  85.55px spike is impossible by construction); the rem bounds ride the fluid
-  root so phone minimums stay legible. **PROVISIONAL — re-pin after the Heron
-  extraction lands.**
+- **Derivation (FINAL — the 1-d re-pin):** the rungs ARE the Heron
+  extraction's own display ladder (task 1-c; roots 8.33px @1440 · 9.21
+  @768 · 9.92 @390 · 11.88 @991 · 19.52 @767-band): h1 5.6rem/46.67px ·
+  h2 4.8rem/40px · statement title 4rem/33.33px · card title
+  2.8rem/23.33px @1440, phone sizes 3.2rem/31.76px (H1/H2) · 2.4rem
+  (statement) · 2.4rem (cards) @390. px FLOORS are band-independent
+  (the 767-band root spike — 19.52px — can never touch them; the
+  provisional rem floors would have resolved 2.5rem → 48.8px @767,
+  the V5 blowup reborn), rem CAPS ride the desktop root like the R313
+  ladder, and the 4.8vw mid-terms reproduce Heron's 768/991 values
+  EXACTLY (36.9px @768 · 47.6px @991 — its own tablet behavior, never
+  the 85.55px amplification the census caught). The census
+  (`type-census.md`) proved the pre-R322 tier ran 60–85.55px at five
+  to six ad-hoc sizes, all weight 700; the after sweep
+  (`type-census-after.md`) shows the migrated sheet at four rung
+  values. Weights: D1/D2/ST 600 · D3 500 (the brief caps display at
+  400–600; Heron itself uses 600 below desktop).
 - **`text-wrap: balance`** on every display rung; zero tashkeel in display
   copy; zero letter-spacing on Arabic (joins).
 - **Body:** 15–17px at leading ≈1.7 — the existing `--fs-body-lg`

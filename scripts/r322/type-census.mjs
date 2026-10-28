@@ -11,6 +11,9 @@
 // black-ish weights»).
 // Evidence: audits/evidence/r322/dsys/type-census.json (+ .md summary).
 // Usage: node scripts/r322/type-census.mjs   (Vite must be up on :5175)
+//   CENSUS_SUFFIX=after → writes type-census-after.{json,md} + a neutral
+//   reading section (the 1-d migration's AFTER census; the default run
+//   keeps the 1-b "before" narrative + filenames untouched).
 import { chromium } from 'playwright';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -21,10 +24,13 @@ const BASE = 'http://localhost:5175/';
 const OUT_DIR = path.join(ROOT, 'audits', 'evidence', 'r322', 'dsys');
 const SHOT_DIR = path.join(OUT_DIR, 'shots');
 const SHOT_SUFFIX = process.env.SHOT_SUFFIX || 'before';
+const SUFFIX = process.env.CENSUS_SUFFIX ? `-${process.env.CENSUS_SUFFIX}` : '';
 const VIEWPORTS = [
   { name: '1440', width: 1440, height: 900 },
   { name: '991', width: 991, height: 900 }, // the tablet band's widest edge — root 11.88px
+  { name: '768', width: 768, height: 1024 },
   { name: '390', width: 390, height: 844 },
+  { name: '360', width: 360, height: 800 }, // R322 1-d: the floor belt — d1/d2 hold 31.74px
 ];
 const SELECTOR = 'h1,h2,h3,h4,h5,h6,p,span,a,button,li,figcaption,strong,em';
 
@@ -121,7 +127,7 @@ for (const vp of VIEWPORTS) {
 await browser.close();
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
-fs.writeFileSync(path.join(OUT_DIR, 'type-census.json'), JSON.stringify(report, null, 2));
+fs.writeFileSync(path.join(OUT_DIR, `type-census${SUFFIX}.json`), JSON.stringify(report, null, 2));
 
 // ── the terse MD summary (hand-checkable numbers) ──
 const lines = [];
@@ -151,17 +157,29 @@ for (const vp of VIEWPORTS) {
   lines.push(`**Distinct display sizes:** ${sizes.join(' · ')} (${sizes.length} sizes) · **distinct weights:** ${weights.join(' · ')}`);
   lines.push('');
 }
-lines.push('## Reading (the V5 verdict against the numbers)');
-lines.push('');
-lines.push('- The landing display tier runs on ONE ladder token (`--fs-display-lg`, 7.2rem)');
-lines.push('  but the FLUID ROOT amplifies it per band — the tablet band (991px → root');
-lines.push('  11.88px) pushes the same 7.2rem to ~85px, which is where the owner’s');
-lines.push('  «80–110px» reading comes from; the mobile band re-inflates it after the');
-lines.push('  ≤767 re-pins. Re-pin happens in the R322 scale (DESIGN.md §R322).');
-lines.push('- Every display combo above rides weight 700 (Alexandria 700 — the heaviest');
-lines.push('  WIRED cut; the R322 brief ends the 800/900 era and re-weights 400–600).');
-lines.push('');
-fs.writeFileSync(path.join(OUT_DIR, 'type-census.md'), lines.join('\n'));
+if (SUFFIX) {
+  // the AFTER run (R322 1-d): tables only — the reading lives in the
+  // hand-checked census-after companion, not a hardcoded narrative.
+  lines.push('');
+  lines.push('## Reading');
+  lines.push('');
+  lines.push('Tables are machine-measured post-migration output. The');
+  lines.push('hand-checked verdict (seat→rung mapping, band checks, docH)');
+  lines.push('lives in the 1-d census-after companion notes.');
+  lines.push('');
+} else {
+  lines.push('## Reading (the V5 verdict against the numbers)');
+  lines.push('');
+  lines.push('- The landing display tier runs on ONE ladder token (`--fs-display-lg`, 7.2rem)');
+  lines.push('  but the FLUID ROOT amplifies it per band — the tablet band (991px → root');
+  lines.push('  11.88px) pushes the same 7.2rem to ~85px, which is where the owner’s');
+  lines.push('  «80–110px» reading comes from; the mobile band re-inflates it after the');
+  lines.push('  ≤767 re-pins. Re-pin happens in the R322 scale (DESIGN.md §R322).');
+  lines.push('- Every display combo above rides weight 700 (Alexandria 700 — the heaviest');
+  lines.push('  WIRED cut; the R322 brief ends the 800/900 era and re-weights 400–600).');
+  lines.push('');
+}
+fs.writeFileSync(path.join(OUT_DIR, `type-census${SUFFIX}.md`), lines.join('\n'));
 console.log(`census done: ${VIEWPORTS.map((v) => `${v.name}=${report.viewports[String(v.name)].displayTierCount} display / ${report.viewports[String(v.name)].sweptElements} swept`).join(' · ')}`);
-console.log(`json → ${path.join(OUT_DIR, 'type-census.json')}`);
-console.log(`md   → ${path.join(OUT_DIR, 'type-census.md')}`);
+console.log(`json → ${path.join(OUT_DIR, `type-census${SUFFIX}.json`)}`);
+console.log(`md   → ${path.join(OUT_DIR, `type-census${SUFFIX}.md`)}`);
