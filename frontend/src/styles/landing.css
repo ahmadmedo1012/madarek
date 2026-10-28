@@ -1392,23 +1392,54 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
             the title unmasks word-by-word, scrub-linked + reversible
             to the scroll. R313 (D7 §2): the band holds ~80vh (the
             reference's 723px / 5.9%). ═══ */
+/* ═══ [2] البيان — R322 (2-c): the measured 6+6 split transplant.
+   The square ink art cell rides inline-start (the reading start in
+   RTL — the reference's LEFT cell mirrored); the body column rides
+   inline-end behind a 1px strong hairline on its inline-start edge,
+   holding ONLY the scrub title + one CTA (content pad 6.4/15/3.2/15rem
+   — the reference's own cell, the 15rem side gutter is the band's
+   personality), closed by the partner strip. The old .st-spread /
+   .st-copy / .st-lines trio (statement 6.1: orphan text rows on no
+   grid) retires with the transplant. Every spacing value rides the
+   --space-* scale. ═══ */
 .st-section {
-  padding-block: var(--sp-7);
-  min-block-size: 80vh;
-}
-
-.st-spread {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  gap: var(--sp-10);
-  align-items: start;
+  padding-block: var(--space-8xl);
   border-block-start: 1px solid var(--rule-strong);
-  padding-block-start: var(--sp-8);
 }
 
-.st-copy {
+.st-grid {
   display: grid;
-  gap: var(--sp-3);
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  align-items: stretch;
+}
+
+.st-art-cell {
+  min-inline-size: 0;
+  display: grid;
+}
+
+/* the square massing study fills its 6-col cell edge to edge at
+   every breakpoint — the artwork's own 1:1 aspect drives the band
+   (the reference's 1766×1766 contain equivalent), dark twin included. */
+.st-art-cell .st-art-svg {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.st-body-col {
+  min-inline-size: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  border-inline-start: 1px solid var(--rule-strong);
+  padding: var(--space-8xl) var(--space-12xl) var(--space-4xl) var(--space-12xl);
+}
+
+.st-body {
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4xl);
 }
 
 .st-title {
@@ -1419,40 +1450,62 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
      2.4rem/23.8px @390, band-independent), weight 600, lh 1.10 (the
      scrub spans' overflow wrappers need the headroom), balance. NOT
      the D2 rung — Heron sizes the scrub title a rung under its
-     section H2s; the 60px --fs-display-lg seat and its 1.28 display
-     leading retire with this migration. */
+     section H2s. */
   font-size: var(--fs-st);
   font-weight: 600;
   line-height: 1.1;
   text-wrap: balance;
   color: var(--text);
+  margin: 0;
 }
 
-.st-lines {
+/* the reference's statement CTA (16.34×5rem — the measured button
+   mass, one per band): rides the .btn grammar with the fill-wipe
+   hover; the st-cta seat only pins the measured size. */
+.st-cta {
+  padding-inline: var(--space-4xl);
+  min-block-size: 5rem;
+  font-size: var(--fs-body-lg);
+}
+
+/* the partner strip — the reference's label-row + logo-track + desc
+   anatomy riding the documented-universities crawl (honest: توثيق
+   وسائط لا شراكة — the desc carries the media-disclosure line). */
+.st-partner {
   display: grid;
-  gap: var(--sp-4);
+  gap: var(--space-sm);
+  padding-block-start: var(--space-lg);
+  border-block-start: 1px solid var(--rule);
 }
 
-.st-line {
-  display: grid;
-  gap: var(--sp-1);
-  padding-block: var(--sp-3);
-  border-block-end: 1px solid var(--rule);
+.st-partner-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
 }
 
-.st-line:last-child {
-  border-block-end: 0;
+.st-partner-label {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
 }
 
-.st-line strong {
-  font-size: var(--fs-body);
-  font-weight: 700;
-  color: var(--text);
+.st-partner .fo-ticker {
+  inline-size: 100%;
 }
 
-.st-line span {
-  font-size: var(--fs-body);
+.st-partner .fo-ticker-item {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.st-partner-desc {
+  margin: 0;
+  font-size: var(--fs-xs);
   line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.st-partner-desc .fo-text-link {
   color: var(--text-secondary);
 }
 
@@ -1506,25 +1559,44 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   color: var(--text-secondary);
 }
 
-/* ═══ التحديات (R313 · D7 §3) — the four pains: numbered cards with
-   draw-in line art (the reference's home-problem grammar: [01]–[04],
-   homeProblemDraw-style stroke draws + the 6.4rem hover grid). Each
-   pain is answered by a live capability; the full matrix lives on
-   /capabilities. The band holds ~82vh (the reference's 743px). ═══ */
+/* ═══ التحديات (R322 · 2-d) — the four pains on Heron's OPEN
+   COLUMN grammar: a head row (kicker + H2 at the reading-start
+   content line, sub note at the far column's edge, bottoms aligned)
+   over four UNBOXED columns — mono keyword + ghost 2-digit index
+   meta row, dashed rule, the drawing in its centered art zone,
+   title + body + the honest live-capability answer. V8 closed: the
+   head and the columns share ONE grid (the old boxed .pm-cards and
+   the 217px orphan lede die). @768 wraps 2×2; ≤767 becomes the snap
+   carousel with the reference's dot rail. ═══ */
 .pm-section {
-  padding-block: var(--sp-7);
+  padding-block: var(--space-8xl);
   border-block-start: 1px solid var(--rule-strong);
-  min-block-size: 82vh;
 }
 
+.pm-frame {
+  display: grid;
+  gap: var(--space-6xl);
+}
+
+/* the head — title-wrap at the reading start (7 cols), sub at the
+   far edge (5 cols), BOTTOMS aligned like the reference's head row. */
 .pm-head {
   display: grid;
-  gap: var(--sp-3);
-  max-inline-size: 64ch;
-  margin-block-end: var(--sp-8);
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: var(--space-4xl);
+  margin: 0;
+}
+
+.pm-title-wrap {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
 }
 
 .pm-title {
+  margin: 0;
   font-family: var(--font-display);
   /* R322 (1-d): joins the D2 rung (the problem/pains H2 — Heron's
      own 4.8rem h2 @1440; weight 600, lh 1.10, balance). */
@@ -1540,80 +1612,103 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   color: var(--accent-ink);
 }
 
-.pm-lede {
-  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
+.pm-sub {
+  /* the far-edge note — the body band's --fs-body-lg rung, natural
+     width, no max-ch box (the reference's sub sits on the column's
+     own measure, not a reading-measure island). */
+  margin: 0;
   font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
 }
 
-.pm-cards {
+/* the four open columns — one 4-up hairline grammar, no boxes. */
+.pm-cols {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--sp-4);
+  gap: var(--space-3xl);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.pm-card {
-  position: relative;
+.pm-col {
+  min-inline-size: 0;
   display: grid;
-  gap: var(--sp-2);
   align-content: start;
-  padding: var(--sp-4);
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
 }
 
-/* the 6.4rem drawing-sheet grid — revealed on card hover (the
-   reference's problem-card grammar), an opacity-tuned overlay */
-.pm-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 6.4rem 6.4rem;
-  opacity: 0;
-  transition: opacity var(--t-base) var(--ease);
+/* the meta row — mono keyword + ghost index + the orange dot, closed
+   by the dashed rule (the reference's own meta grammar). */
+.pm-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding-block-end: var(--space-md);
+  border-block-end: 1px dashed var(--rule-strong);
 }
 
-.pm-card-num {
-  color: var(--accent-ink);
-  font-size: var(--fs-xs);
+.pm-keyword {
+  color: var(--text-secondary);
+  font-size: var(--fs-xxs);
+}
+
+.pm-index {
+  margin-inline-start: auto;
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+.pm-dot {
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--accent);
+  flex: none;
+  translate: 0 -1px;
+}
+
+/* the drawing zone — the reference's 36rem art cell holding the
+   centered 20×20rem drawing (PainArt's own 200×200 viewBox). */
+.pm-artzone {
+  display: grid;
+  place-items: center;
+  min-block-size: 24rem;
+  padding-block: var(--space-xl) 0;
 }
 
 .pm-art {
   display: block;
-  inline-size: 100%;
-  block-size: auto;
+  inline-size: 20rem;
+  block-size: 20rem;
 }
 
-/* the draw-in: pathLength-normalized strokes resolve with the card's
-   reveal (staggered per card); RM collapses to the complete drawing */
+/* the draw-in: pathLength-normalized strokes resolve with the
+   column's reveal (staggered per column); RM collapses to the
+   complete drawing (the RM belt below). */
 .pm-art .pm-draw {
   stroke-dasharray: 1 1;
   stroke-dashoffset: 1;
   transition: stroke-dashoffset var(--t-cinema) var(--ease);
 }
 
-.pm-card.in-view .pm-art .pm-draw {
+.pm-col.in-view .pm-art .pm-draw {
   stroke-dashoffset: 0;
 }
 
-.pm-cards .pm-card:nth-child(2).in-view .pm-art .pm-draw { transition-delay: var(--t-micro); }
-.pm-cards .pm-card:nth-child(3).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 2); }
-.pm-cards .pm-card:nth-child(4).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 3); }
+.pm-cols .pm-col:nth-child(2).in-view .pm-art .pm-draw { transition-delay: var(--t-micro); }
+.pm-cols .pm-col:nth-child(3).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 2); }
+.pm-cols .pm-col:nth-child(4).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 3); }
 
-.pm-card-title {
+.pm-content {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.pm-item-title {
   margin: 0;
   font-family: var(--font-display);
-  /* R322 (1-d): the card title joins the D3 rung — --fs-d3 (Heron's
-     h3 33.1px @1440 → 18.6px @390, band-independent), weight 500,
-     lh 1.15, balance. */
+  /* R322 (1-d): the item title joins the D3 rung — Heron's own
+     item-title 2.8rem (23.33px @1440), weight 500, lh 1.15, balance. */
   font-size: var(--fs-d3);
   font-weight: 500;
   line-height: 1.15;
@@ -1621,33 +1716,159 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   color: var(--text);
 }
 
-.pm-card-text {
+.pm-item-sub {
   margin: 0;
   font-size: var(--fs-sm);
   line-height: 1.7;
   color: var(--text-secondary);
 }
 
-.pm-card-answer {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
+/* the honest answer — the live-capability line every pain keeps
+   (non-negotiable): the dashed top rule mirrors the meta row. */
+.pm-item-answer {
   margin: 0;
-  padding-block-start: var(--sp-1-5);
-  border-block-start: 1px solid var(--rule);
+  /* the VLM review's one spacing note: a full --space-lg of air
+     before the answer rule (the head's generous rhythm carries down
+     the column — the answer is the column's terminal anchor). */
+  padding-block-start: var(--space-lg);
+  border-block-start: 1px dashed var(--rule-strong);
   font-size: var(--fs-xs);
   font-weight: 600;
   color: var(--accent-ink);
 }
 
-.pm-card-answer svg {
-  color: var(--accent-ink);
-  flex: none;
+/* ≤767 — the reference's swiper: the columns become the snap
+   carousel, the dot rail follows the snap position (the JS above
+   drives .is-active; a tap centers its column). Dots 2.02×0.2rem. */
+.pm-dots {
+  display: none;
 }
 
-.pm-foot {
-  margin-block-start: var(--sp-6);
+@media (max-width: 767px) {
+  .pm-head {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .pm-cols {
+    grid-auto-flow: column;
+    grid-auto-columns: 82%;
+    gap: var(--space-lg);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-lg);
+    padding-block-end: var(--space-md);
+    scrollbar-width: thin;
+  }
+
+  .pm-col {
+    scroll-snap-align: center;
+  }
+
+  .pm-artzone {
+    min-block-size: 0;
+    padding-block: var(--space-lg) 0;
+  }
+
+  .pm-art {
+    inline-size: 16rem;
+    block-size: 16rem;
+  }
+
+  .pm-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+
+  .pm-dot-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: var(--space-sm);
+    cursor: pointer;
+    /* ≥44px touch floor via the padding belt (the rail is decorative
+       navigation — the columns themselves scroll). */
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    display: grid;
+    place-items: center;
+  }
+
+  .pm-dot-bar {
+    display: block;
+    inline-size: 2.02rem;
+    block-size: 0.2rem;
+    background: var(--rule-strong);
+    transition: background var(--t-fast) var(--ease);
+  }
+
+  .pm-dot-btn.is-active .pm-dot-bar {
+    background: var(--accent);
+  }
 }
+
+/* R322 (2-d) — the ≤479 pocket (the 360 belt rides +2.6% over
+   Heron without it): the phone item-title takes Heron's own 390 rung
+   (2rem — the d3 floor's 23.33px is the 390+ belt), and the section
+   bands/artzone step one rung down the scale. All values measured
+   from problem-390.md: item-title 2rem lh1.2 · art 16.5rem ·
+   slide 31.45rem wide. */
+@media (max-width: 479px) {
+  .pm-section {
+    padding-block: var(--space-6xl);
+  }
+
+  .pm-frame {
+    gap: var(--space-3xl);
+  }
+
+  .pm-head {
+    gap: var(--space-3xl);
+  }
+
+  .pm-item-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .pm-artzone {
+    padding-block: 0;
+  }
+
+  .pm-content {
+    gap: var(--space-sm);
+  }
+
+  .pm-cols {
+    grid-auto-columns: 88%;
+  }
+
+  .st-section {
+    padding-block: var(--space-6xl);
+  }
+
+  .st-body-col {
+    padding-block-start: var(--space-3xl);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .pm-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4xl) var(--space-3xl);
+  }
+
+  .pm-artzone {
+    min-block-size: 0;
+  }
+
+  .pm-art {
+    inline-size: 16rem;
+    block-size: 16rem;
+  }
+}
+
 
 /* ═══ الأدوار (R313 · D7 §7) — the ruled hairline grid: the five
    verified platform roles + three honest personas, one card grammar
@@ -2011,7 +2232,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     gap: var(--sp-3);
   }
 
-  .pm-head p,
+  /* R322 (2-d): .pm-head p retires from this shared rule — the new
+     .pm-sub carries the transplant's own measure (no max-ch island). */
   .wy-head p,
   .pr-head p,
   .rl-head p {
@@ -2032,28 +2254,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
  * rail folds to 2×2 (four cards beside the capture stack).
  * Desktop-scoped: the V13 mobile bands keep their own rules below. ── */
 @media (min-width: 992px) {
-  .pm-head {
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 26rem);
-    grid-template-areas:
-      'label lede'
-      'title lede';
-    align-items: end;
-    column-gap: var(--sp-8);
-    max-inline-size: none;
-    margin-block-end: var(--sp-6);
-  }
-
-  /* R315 cycle-3 (W3 — the desktop law): 89.15rem = 528 @1024 · 660
-   * @1280 · 743 @1440 · 990 @1920 — the manifest's constant-rem quartet
-   * (the old 82.5vh share was a 900px-height tuning, wrong at every
-   * other desktop height). */
-  .pm-section {
-    min-block-size: 89.15rem;
-  }
-
-  .pm-head > .fo-label { grid-area: label; }
-  .pm-head > .pm-title { grid-area: title; }
-  .pm-head > .pm-lede { grid-area: lede; }
+  /* R322 (2-d) — the R314 head-areas grid (label/lede lanes) and the
+     R315 89.15rem min-block-size BOTH RETIRE: the new .pm-head
+     (title-wrap 7fr | sub 5fr, bottoms aligned, base-level) is the
+     measured head; the section is content-sized (V4: no forced voids).
+     The .pm-section min-block-size and the pm-head area pins die with
+     this comment — the base block owns the whole seat now. */
 
   .wy-head {
     grid-template-columns: minmax(0, 1fr) minmax(15rem, 26rem);
@@ -2936,11 +3142,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     color: color-mix(in srgb, var(--bg) 72%, transparent);
   }
 
-  /* the 6.4rem drawing grid on the pain cards (the reference's
-     problem-card hover grammar) */
-  .pm-card:hover::before {
-    opacity: 0.45;
-  }
+  /* R322 (2-d): the boxed-card hover grid retires with the boxes. */
 }
 
 /* ── Keyboard path (r172a §3 — ONE focus language): the nav's
@@ -3035,9 +3237,16 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    * the 2-line canon holds in the 56% tablet cell (the old clamp's
    * whole job was capping the rem spike the rung no longer has). */
 
-  .st-spread {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-6);
+  /* R322 (2-c) re-pin: Heron KEEPS the 6+6 split @768 (section
+     57.22rem — the square shrinks to its cell, ~40.9rem); the stack
+     is the ≤767 phone form alone. The side gutters step 12xl→4xl on
+     the belt (the 15rem isolation pads are the desktop's own). */
+  .st-body-col {
+    padding: var(--space-4xl) var(--space-4xl) var(--space-3xl);
+  }
+
+  .st-grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
   }
 
   .chapters-head {
@@ -3046,9 +3255,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     align-items: start;
   }
 
-  .pm-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  /* R322 (2-d): the pains' 2-up wrap rides the new
+     (768–991) .pm-cols block in the transplant section. */
 
   .rl-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3144,31 +3352,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     inline-size: 100%;
   }
 
-  /* R313 (D7): the new families' flow rules — the pains stack, the
-     why-section collapses to the readable rail + stacked captures, the
-     roles grid pairs up, the title block returns to one column */
-  .pm-cards {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .pm-card {
-    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
-    align-items: center;
-    gap: var(--sp-4);
-  }
-
-  .pm-card-num,
-  .pm-card-title,
-  .pm-card-text,
-  .pm-card-answer {
-    grid-column: 2;
-  }
-
-  .pm-art {
-    grid-column: 1;
-    grid-row: 1 / span 4;
-    max-inline-size: 14rem;
-  }
+  /* R322 (2-d): the R313 pains flow rules retire — the transplant's
+     own ≤767 carousel + 768–991 2-up blocks own the whole seat. */
 
   .rl-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3194,9 +3379,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     border-block-end: 0;
   }
 
-  .st-spread {
-    padding-block-start: var(--sp-6);
-  }
+  /* R322 (2-c): .st-spread pads retire with the class. */
 
   .fo-cta {
     padding-block: var(--sp-10);
@@ -3233,30 +3416,10 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    * the D2 rung in the FINAL re-pin — its ≤767 clamp retires in the
    * R314 cycle-2 block below. */
 
-  .pm-card {
-    gap: var(--sp-3);
-    padding: var(--sp-3);
-  }
-
-  .pm-art {
-    max-inline-size: 7rem;
-  }
-
-  /* the pain cards compact to art-beside-text rows (~180px): the
-     answer line folds into the text (parity over verbosity) */
-  .pm-card {
-    padding: var(--sp-2-5);
-    grid-template-columns: minmax(0, 7rem) minmax(0, 1fr);
-  }
-
-  .pm-card-answer {
-    display: none;
-  }
-
-  .pm-card-text {
-    font-size: var(--fs-sm);
-    line-height: 1.55;
-  }
+  /* R322 (2-d): the V13 pm-card compaction retires — the ≤767
+     carousel block in the transplant section owns the pains now
+     (the honest answer line NEVER folds away again — it is the
+     pains' non-negotiable). */
 
   /* R322 (1-d) — the .pm-card-title mobile body-scale re-pin retires:
    * the D3 rung governs (18.6px @390 — Heron's own mobile item-title
@@ -3317,9 +3480,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     display: none;
   }
 
-  .st-line {
-    padding-block: var(--sp-2);
-  }
+  /* R322 (2-c): the .st-line mobile pads retire with the class. */
 
   /* the why rail + stacked captures tighten */
   .wy {
@@ -3461,23 +3622,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     padding: var(--sp-2-5);
   }
 
-  /* the pains: the art drops on phones (the text carries the meaning —
-     the art is decorative aria-hidden); the cards become single-column */
-  .pm-card {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-2);
-  }
-
-  .pm-card-num,
-  .pm-card-title,
-  .pm-card-text,
-  .pm-card-answer {
-    grid-column: auto;
-  }
-
-  .pm-art {
-    display: none;
-  }
+  /* R322 (2-d): the pains' phone art-drop retires — the carousel
+     keeps the drawings (Heron's own mobile problem swiper shows the
+     art; the art stays decorative aria-hidden). */
 
   .rl-cards {
     grid-template-columns: minmax(0, 1fr);
@@ -6421,10 +6568,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    * 7.2rem-era heads that wrapped 255–350px tall are gone with the
    * rung itself. */
 
-  /* 3 — statement: the reference's intro body is 377 @768 (img beside
-   * body); ours keeps the two-ticker grammar, the three statement
-   * lines tighten to the body's row rhythm (644 → 527) */
-  .st-line { padding-block: var(--sp-0-5); line-height: 1.5; }
+  /* 3 — statement: R322 (2-c) — the transplant's own 6+6 stack owns
+   * the belt (the .st-line trims retire with the class). */
 
   /* 4 — CTA folds + trims (1010 → 541): the sketch slab and the meta
    * table's last rows retire (the reference's tablet CTA is the
@@ -6495,10 +6640,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .cg-strip { padding-block: var(--sp-1); }
   .fo-cta-grid { gap: var(--sp-3); }
 
-  /* statement final trims (577 → ≤527: the three lines ride the
-   * reference's row rhythm — 13px floor text, tighter leading) */
-  .st-line { padding-block: var(--sp-0-25); line-height: 1.4; }
-  .st-spread { row-gap: var(--sp-2); }
+  /* statement final trims — R322 (2-c): retired with .st-line/.st-spread. */
 
   /* footer row grammar (the reference's tablet main = 672: menus in
    * ONE 3-col row, then the contact grid with the mark in the third
@@ -6516,12 +6658,26 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-fcell-strip { display: none; }
   .fo-fcell-tagline { padding-block-end: var(--sp-2); }
 
-  /* batch-3b micro-trims (768: cta 566→541, statement 545→527) */
+  /* batch-3b micro-trims (768: cta 566→541) — statement rows retired
+   * with their classes (R322 2-c). */
   .fo-cta-inner { gap: var(--sp-2); }
   .fo-cta-lede { line-height: 1.5; }
   .fo-cta-actions { padding-block-start: 0; }
-  .st-spread { row-gap: var(--sp-1); }
-  .st-line { line-height: 1.3; }
+}
+
+/* R322 (2-c) — the phone stack: @390 the cells stack vertically
+   (Heron's own 85.41rem statement band; the square keeps the full
+   reading width, the body cell opens under it). */
+@media (max-width: 767px) {
+  .st-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .st-body-col {
+    padding: var(--space-4xl) var(--space-xl) var(--space-3xl);
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--rule-strong);
+  }
 }
 
 /* ═══ R315 cycle-3 (W3) — THE DESKTOP LAW (≥992): constant-rem bands ══
@@ -6615,17 +6771,17 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
  * shrink with the cards below 1440 instead of holding the 768px-root
  * wrap height. Line-heights step to the reference's own compact rows. */
 @media (min-width: 992px) {
-  .st-section, .pm-section, .pr-section, .wy-section, .rl-section {
+  .pr-section, .wy-section, .rl-section {
     padding-block: 3.84rem;
   }
+
+  /* R322 (2-c/2-d): .st/.pm sections keep the transplant's own
+     --space-8xl bands (content-sized, the V4 void discipline). */
   .fo-cta { padding-block: 4.8rem 3.84rem; }
 
-  .pm-head { margin-block-end: 2.88rem; }
-  .pm-cards { gap: 1.92rem; }
-  .pm-card { padding: 1.92rem; }
-  .pm-art { inline-size: auto; block-size: 20rem; }
-  .pm-card-text { line-height: 1.55; }
-  .pm-foot { margin-block-start: 2.88rem; }
+  /* R322 (2-d): the pm rules of the W3 law retire — the transplant's
+     base block owns the pains' desktop geometry (the section bands
+     ride --space-8xl; content-sized, no constant-rem pins). */
 
   .pr-head { margin-block-end: 4.8rem; }
   .pr-note { margin-block-start: 2.88rem; }
@@ -6745,10 +6901,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    * 5.93px root — the 13px canon floor keeps the documented rest):
    * the problem head/foot margins and the why head/note margins step
    * to the floor the bands' canon content needs */
-  .st-line { padding-block: var(--sp-0-25); line-height: 1.4; }
-  .pm-card { padding: var(--sp-2); }
-  .pm-head { margin-block-end: 1.44rem; }
-  .pm-foot { margin-block-start: 1.44rem; }
+  /* R322 (2-c/2-d): the st-line/pm-card/pm-foot trims retire with
+     the classes; .pm-head's margin rides the .pm-frame gap now. */
+  .pm-head { margin-block-end: 0; }
   .wy-section { padding-block: 2.88rem; }
   .wy-head { margin-block-end: 1.44rem; }
   .wy-note { margin-block-start: 1.44rem; }
@@ -6901,49 +7056,18 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     margin-block-start: 4.03rem;
   }
 
-  /* the statement band's own tickers drop their crawl margin — the flex
-   * distribution owns the gaps (the hero's boot ticker keeps its seat) */
-  .st-section > .fo-ticker {
-    margin-block-start: 0;
-  }
+  /* R322 (2-c): the statement's direct-child ticker rule retires —
+     the crawl rides inside .st-partner now (its own gap owns it). */
 
   .fo-ticker-track {
     padding-block: 1.01rem;
   }
 
-  .st-spread {
-    padding-block-start: 2.42rem;
-    row-gap: 2.42rem;
-  }
-
-  .st-copy { gap: 1.21rem; }
-  .st-lines { gap: 1.61rem; }
-  .st-line { padding-block: 0.81rem; }
-
-  /* ── problem — the cards ride the rem rhythm; the numeral row joins
-   * the mono rem ladder (Latin-only) at the reference's row height ── */
+  /* R322 (2-c/2-d): the statement + problem rem-rhythm rules retire —
+     the transplant's own blocks (≤767 carousel + the base seats) own
+     the whole belt; the sections ride --space-8xl pads. */
+  .st-section { padding-block: 4.03rem 3.22rem; }
   .pm-section { padding-block: 4.03rem 3.22rem; }
-
-  .pm-head {
-    gap: 1.21rem;
-    margin-block-end: 3.22rem;
-  }
-
-  .pm-lede { line-height: 1.5; }
-
-  .pm-cards { gap: 1.61rem; }
-
-  .pm-card {
-    padding: 1.01rem;
-    row-gap: 1.21rem;
-  }
-
-  .pm-card-num {
-    font-size: 1.31rem; /* mono numeral — the Latin ladder, no Arabic floor */
-    line-height: 1.2;
-  }
-
-  .pm-card-text { line-height: 1.4; }
 
   /* ── platform — the reference's phone cell is the head + the one
    * composition (517 @390); the note link row folds here like the
@@ -7306,14 +7430,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    * seats below extend the ≤640 verified phone forms across the whole
    * tier; the sp references re-resolve to §2's rem rungs, so 641–767
    * renders the scaled phone composition exactly like 480–640. */
-  .pm-card {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-2);
-  }
-  .pm-card-num, .pm-card-title, .pm-card-text, .pm-card-answer {
-    grid-column: auto;
-  }
-  .pm-art { display: none; }
+  /* R322 (2-d): the 641–767 pains sliver retires — the 768–991
+     2-up block owns this belt (min-width 641 extends it below via
+     the shared tier rule above). */
   .pm-section { padding-block: var(--sp-8) var(--sp-6); }
 
   .pr-section .prf-cards { display: none; }
@@ -8016,29 +8135,13 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   stroke-width: 1.2;
 }
 
-/* C — the statement band's drafted panorama (c4-C: the s01 verdict).
- *   Hidden below 992 (content-bound bands — the pinned mobile/tablet
- *   compositions never see it); at ≥992 it seats in the floor's slack. */
-.st-art { display: none; }
-
+/* C — R322 (2-c): the old .st-art wrapper (desktop-only panorama
+ *   seat) retires with the class — the transplant's .st-art-cell owns
+ *   the square massing study at EVERY breakpoint now. */
 .st-art-svg {
   display: block;
   inline-size: 100%;
-  block-size: 100%;
-}
-
-@media (min-width: 992px) {
-  .st-art {
-    display: block;
-    margin-block-start: 2.4rem; /* spacing-gate: allow — the measured air gap under the universities ticker, an external constant */
-    block-size: 10.5rem; /* 62px @1024 — inside the 86.7rem floor's 94px slack */
-  }
-}
-
-@media (min-width: 1280px) {
-  .st-art {
-    block-size: 15.5rem; /* 129px @1440 — inside the floor's 199px slack, 115px @1280 of 168 */
-  }
+  block-size: auto;
 }
 
 /* ═══ R322 (1-d) — the mobile breathing pass (docH back into the band) ══
