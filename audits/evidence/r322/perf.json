@@ -8,8 +8,8 @@
   "cpu": 4,
   "cadence": "19×660px @250ms (≈12.5k px)",
   "categories": "devtools.timeline,disabled-by-default-devtools.timeline.frame,disabled-by-default-devtools.timeline.invalidationTracking,disabled-by-default-blink.style",
-  "generatedAt": "2026-10-28T22:24:47.942Z",
-  "head": "bcbd395"
+  "generatedAt": "2026-10-28T23:58:38.566Z",
+  "head": "78ce6ee"
  },
  "sessions": {
   "s1": {
@@ -3367,7 +3367,7 @@
     "svg": 24,
     "path": 68,
     "layers": {
-     "willChange": 10,
+     "willChange": 11,
      "filter": 6,
      "mixBlend": 0,
      "fixed": 8,
@@ -3391,6 +3391,7 @@
      "g.[object.SVGAnimatedString] [will-change:opacity]",
      "g.[object.SVGAnimatedString] [will-change:opacity]",
      "g.[object.SVGAnimatedString] [will-change:opacity]",
+     "g.[object.SVGAnimatedString] [will-change:opacity]",
      "p.jt-card.jt-card1 [will-change:opacity, transform]",
      "p.jt-card.jt-card2 [will-change:opacity, transform]",
      "div.jt-close [contain:layout paint]",
@@ -3399,68 +3400,79 @@
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]",
-     "image.[object.SVGAnimatedString] [filter]",
      "image.[object.SVGAnimatedString] [filter]"
     ]
    },
    "frames": {
-    "count": 363,
-    "gt20": 80,
-    "gt33": 80,
-    "pctGt20": 22,
-    "pctGt33": 22,
+    "count": 327,
+    "gt20": 86,
+    "gt33": 86,
+    "pctGt20": 26.3,
+    "pctGt33": 26.3,
     "p50": 16.7,
-    "p95": 33.4,
-    "max": 100,
-    "avg": 21.35
+    "p95": 50,
+    "max": 133.3,
+    "avg": 23.44
    },
    "framesActive": {
-    "count": 305,
-    "gt20": 69,
-    "gt33": 69,
-    "pctGt20": 22.6,
-    "pctGt33": 22.6,
+    "count": 267,
+    "gt20": 80,
+    "gt33": 80,
+    "pctGt20": 30,
+    "pctGt33": 30,
     "p50": 16.7,
-    "p95": 33.4,
-    "max": 100,
-    "avg": 21.47
+    "p95": 50,
+    "max": 99.9,
+    "avg": 24.22
    },
-   "activeWindowMs": 6557,
+   "activeWindowMs": 6468,
    "framesMapBand": {
-    "count": 174,
-    "gt20": 35,
-    "gt33": 35,
-    "pctGt20": 20.1,
-    "pctGt33": 20.1,
+    "count": 150,
+    "gt20": 37,
+    "gt33": 37,
+    "pctGt20": 24.7,
+    "pctGt33": 24.7,
     "p50": 16.7,
-    "p95": 33.4,
-    "max": 50,
-    "avg": 20.11
+    "p95": 50,
+    "max": 66.7,
+    "avg": 22.33
    },
    "longtasks": {
-    "count": 5,
-    "gt50": 4,
-    "totalMs": 372,
+    "count": 9,
+    "gt50": 9,
+    "totalMs": 718,
     "worst": [
      {
-      "start": 3087,
-      "dur": 115
+      "start": 10161,
+      "dur": 140
      },
      {
-      "start": 10103,
-      "dur": 95
+      "start": 3209,
+      "dur": 114
      },
      {
-      "start": 7942,
-      "dur": 61
+      "start": 8092,
+      "dur": 76
      },
      {
-      "start": 3631,
-      "dur": 51
+      "start": 3722,
+      "dur": 74
      },
      {
-      "start": 3533,
-      "dur": 50
+      "start": 3497,
+      "dur": 72
+     },
+     {
+      "start": 7904,
+      "dur": 68
+     },
+     {
+      "start": 3618,
+      "dur": 63
+     },
+     {
+      "start": 3799,
+      "dur": 59
      }
     ]
    },
@@ -3470,7 +3482,7 @@
    },
    "topShifts": [
     {
-     "t": 345,
+     "t": 407,
      "value": 0.007,
      "sources": [
       {
@@ -3491,212 +3503,152 @@
      ]
     },
     {
-     "t": 5504,
-     "value": 0.001,
+     "t": 5587,
+     "value": 0.002,
      "sources": [
       {
        "node": "aside.jt-intro",
        "prev": [
-        596,
-        631,
+        1105,
+        829,
         233,
         45
        ],
        "cur": [
-        596,
-        545,
+        1105,
+        743,
         233,
         131
+       ]
+      },
+      {
+       "node": "div.jt-intro-body",
+       "prev": [
+        1106,
+        830,
+        232,
+        62
+       ],
+       "cur": [
+        1106,
+        786,
+        231,
+        86
        ]
       }
      ]
     },
     {
-     "t": 6938,
+     "t": 6965,
      "value": 0.001,
      "sources": [
       {
        "node": "aside.jt-intro",
        "prev": [
-        596,
-        545,
+        1105,
+        743,
         233,
         131
        ],
        "cur": [
-        596,
-        631,
+        1105,
+        829,
         233,
         45
-       ]
-      }
-     ]
-    },
-    {
-     "t": 1438,
-     "value": 0,
-     "sources": [
-      {
-       "node": "span.fo-hero-work-item",
-       "prev": [
-        473,
-        840,
-        130,
-        21
-       ],
-       "cur": [
-        467,
-        840,
-        136,
-        21
-       ]
-      },
-      {
-       "node": "span.fo-hero-work-item",
-       "prev": [
-        359,
-        840,
-        90,
-        21
-       ],
-       "cur": [
-        354,
-        840,
-        90,
-        21
-       ]
-      },
-      {
-       "node": "span.fo-hero-work-item",
-       "prev": [
-        214,
-        840,
-        121,
-        21
-       ],
-       "cur": [
-        210,
-        840,
-        120,
-        21
-       ]
-      },
-      {
-       "node": "span.fo-hero-work-item",
-       "prev": [
-        79,
-        840,
-        111,
-        21
-       ],
-       "cur": [
-        76,
-        840,
-        110,
-        21
        ]
       }
      ]
     }
    ],
    "lcp": {
-    "t": 1588,
-    "size": 16967,
-    "node": "p.reveal-up.reveal-d-3.fo-hero-lead",
-    "url": ""
+    "t": 388,
+    "size": 2304,
+    "node": "img",
+    "url": "http://127.0.0.1:4317/brand/madarek-mark.svg"
    },
    "loaf": {
-    "count": 13,
-    "totalMs": 1921,
+    "count": 21,
+    "totalMs": 2794,
     "worst": [
      {
-      "start": 648,
-      "dur": 444,
+      "start": 1495,
+      "dur": 708,
       "scripts": [
        {
-        "dur": 26,
+        "dur": 702,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
+       }
+      ]
+     },
+     {
+      "start": 704,
+      "dur": 480,
+      "scripts": [
+       {
+        "dur": 5,
         "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
        },
        {
-        "dur": 15,
-        "invoker": "MessagePort.onmessage",
-        "src": "/assets/react-gInupMWC.js"
-       }
-      ]
-     },
-     {
-      "start": 1600,
-      "dur": 293,
-      "scripts": [
-       {
-        "dur": 286,
-        "invoker": "MessagePort.onmessage",
-        "src": "/assets/react-gInupMWC.js"
-       }
-      ]
-     },
-     {
-      "start": 1102,
-      "dur": 210,
-      "scripts": [
-       {
-        "dur": 11,
+        "dur": 5,
         "invoker": "MessagePort.onmessage",
         "src": "/assets/react-gInupMWC.js"
        },
        {
-        "dur": 154,
-        "invoker": "FrameRequestCallback",
-        "src": "/assets/useSheetScroll-BFQDpQJO.js"
+        "dur": 8,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
+       },
+       {
+        "dur": 393,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
        }
       ]
      },
      {
-      "start": 8,
-      "dur": 125,
+      "start": 214,
+      "dur": 168,
+      "scripts": [
+       {
+        "dur": 87,
+        "invoker": "MessagePort.onmessage",
+        "src": "/assets/react-gInupMWC.js"
+       }
+      ]
+     },
+     {
+      "start": 1199,
+      "dur": 161,
       "scripts": []
      },
      {
-      "start": 3077,
-      "dur": 125,
-      "scripts": [
-       {
-        "dur": 105,
-        "invoker": "FrameRequestCallback",
-        "src": ""
-       }
-      ]
+      "start": 9,
+      "dur": 154,
+      "scripts": []
      }
     ],
     "topInvokers": [
      {
       "script": "/assets/react-gInupMWC.js :: MessagePort.onmessage",
-      "totalMs": 477
+      "totalMs": 1275
      },
      {
-      "script": "/assets/useSheetScroll-BFQDpQJO.js :: FrameRequestCallback",
-      "totalMs": 154
+      "script": "/assets/index-27bFjAi5.js :: FrameRequestCallback",
+      "totalMs": 123
      },
      {
       "script": "(inline) :: FrameRequestCallback",
-      "totalMs": 105
+      "totalMs": 104
      },
      {
-      "script": "/assets/useReveal-aWxwLBIF.js :: IntersectionObserverCallback",
-      "totalMs": 95
+      "script": "/assets/LandingPage-C4iIb59N.js :: DOMWindow.onscroll",
+      "totalMs": 48
      },
      {
-      "script": "/assets/index-Bs98oIVM.js :: FrameRequestCallback",
-      "totalMs": 83
-     },
-     {
-      "script": "/assets/index-Bs98oIVM.js :: http://127.0.0.1:4317/assets/index-Bs98oIVM.js",
-      "totalMs": 52
-     },
-     {
-      "script": "/assets/LandingPage-C9zl3jQz.js :: IdleRequestCallback",
-      "totalMs": 43
+      "script": "/assets/LandingPage-C4iIb59N.js :: IdleRequestCallback",
+      "totalMs": 46
      }
     ]
    },
@@ -3706,188 +3658,188 @@
    },
    "scrollYSamples": [
     {
-     "y": 359,
-     "t": 3227
+     "y": 0,
+     "t": 3325
     },
     {
-     "y": 673,
-     "t": 3584
+     "y": 746,
+     "t": 3797
     },
     {
-     "y": 1311,
-     "t": 3902
+     "y": 1382,
+     "t": 4102
     },
     {
-     "y": 2069,
-     "t": 4274
+     "y": 1944,
+     "t": 4415
     },
     {
-     "y": 2794,
-     "t": 4617
+     "y": 2599,
+     "t": 4728
     },
     {
-     "y": 3271,
-     "t": 4899
+     "y": 3247,
+     "t": 5023
     },
     {
-     "y": 3929,
-     "t": 5234
+     "y": 3905,
+     "t": 5322
     },
     {
-     "y": 4817,
-     "t": 5635
+     "y": 4633,
+     "t": 5659
     },
     {
-     "y": 5273,
-     "t": 5974
+     "y": 5236,
+     "t": 5984
     },
     {
-     "y": 6044,
-     "t": 6334
+     "y": 5924,
+     "t": 6315
     },
     {
-     "y": 6561,
-     "t": 6621
+     "y": 6551,
+     "t": 6624
     },
     {
-     "y": 7336,
-     "t": 6986
+     "y": 7528,
+     "t": 7017
     },
     {
-     "y": 7975,
-     "t": 7314
+     "y": 7986,
+     "t": 7369
     },
     {
-     "y": 8817,
-     "t": 7725
+     "y": 8732,
+     "t": 7710
     },
     {
-     "y": 9251,
-     "t": 8079
+     "y": 9276,
+     "t": 8028
     },
     {
-     "y": 9865,
-     "t": 8399
+     "y": 9878,
+     "t": 8360
     },
     {
-     "y": 10538,
-     "t": 8715
+     "y": 10611,
+     "t": 8773
     },
     {
-     "y": 11142,
-     "t": 9034
+     "y": 11183,
+     "t": 9108
     },
     {
-     "y": 11418,
-     "t": 9331
+     "y": 11420,
+     "t": 9396
     }
    ],
    "wheelEvents": [
     {
-     "t": 3089,
+     "t": 3212,
      "y": 0,
      "dy": 660
     },
     {
-     "t": 3533,
-     "y": 605,
+     "t": 3725,
+     "y": 619,
      "dy": 660
     },
     {
-     "t": 3893,
-     "y": 1241,
+     "t": 4084,
+     "y": 1250,
      "dy": 660
     },
     {
-     "t": 4206,
-     "y": 1869,
+     "t": 4399,
+     "y": 1871,
      "dy": 660
     },
     {
-     "t": 4578,
-     "y": 2546,
+     "t": 4711,
+     "y": 2525,
      "dy": 660
     },
     {
-     "t": 4889,
-     "y": 3198,
+     "t": 5011,
+     "y": 3172,
      "dy": 660
     },
     {
-     "t": 5222,
-     "y": 3857,
+     "t": 5312,
+     "y": 3830,
      "dy": 660
     },
     {
-     "t": 5578,
-     "y": 4517,
+     "t": 5628,
+     "y": 4489,
      "dy": 660
     },
     {
-     "t": 5939,
-     "y": 5203,
+     "t": 5959,
+     "y": 5162,
      "dy": 660
     },
     {
-     "t": 6288,
-     "y": 5850,
+     "t": 6296,
+     "y": 5854,
      "dy": 660
     },
     {
      "t": 6607,
-     "y": 6488,
+     "y": 6477,
      "dy": 660
     },
     {
-     "t": 6905,
-     "y": 7132,
+     "t": 6901,
+     "y": 7130,
      "dy": 660
     },
     {
-     "t": 7292,
-     "y": 7841,
+     "t": 7329,
+     "y": 7855,
      "dy": 660
     },
     {
-     "t": 7606,
-     "y": 8469,
+     "t": 7671,
+     "y": 8482,
      "dy": 660
     },
     {
-     "t": 8049,
-     "y": 9183,
+     "t": 8009,
+     "y": 9137,
      "dy": 660
     },
     {
-     "t": 8379,
-     "y": 9793,
+     "t": 8329,
+     "y": 9807,
      "dy": 660
     },
     {
-     "t": 8706,
-     "y": 10466,
+     "t": 8724,
+     "y": 10477,
      "dy": 660
     },
     {
-     "t": 9023,
-     "y": 11107,
+     "t": 9094,
+     "y": 11153,
      "dy": 660
     },
     {
-     "t": 9321,
-     "y": 11413,
+     "t": 9377,
+     "y": 11414,
      "dy": 660
     }
    ],
    "docH": 12373,
-   "fontsReadyAt": 274,
+   "fontsReadyAt": 307,
    "fontChecks": {
     "400-arabic": true,
     "500-arabic": true,
     "600-arabic": true,
     "700-arabic": true
    },
-   "interactWindowMs": 7770
+   "interactWindowMs": 7680
   },
   "s2native": {
    "session": "s2-native",

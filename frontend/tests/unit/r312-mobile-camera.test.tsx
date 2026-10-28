@@ -196,30 +196,43 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(JOURNEY_SRC).toMatch(/<aside className="jt-intro" aria-label=\{INTRO_TITLE_AR\}>/);
   });
 
-  it('the camera key table mirrors the plan geometry (the narrated rooms at the sheet aspect)', () => {
+  it('the camera key table mirrors the plan geometry (the narrated rooms, two crop families)', () => {
     /* seven keys over the 5.52s movie: the full overview through the
      * statement era → each narrated room in turn → the completed
-     * overview at the close. The crop family is LANDSCAPE at the
-     * sheet's own aspect (560/355 ≈ 1200/760) — the CSS box is pinned
-     * to the full-sheet aspect, so every key fills the box exactly:
-     * no letterbox, and a viewBox pan can never resize the element. */
-    expect(JOURNEY_SRC).toMatch(/const CAM_KEYS: ReadonlyArray<readonly \[number, CamRect\]> = \[/);
+     * overview at the close. R322 3-b-fix override (review-c3 R1#5/
+     * R2#4): TWO crop families — TABLET keeps the LANDSCAPE sheet
+     * aspect (560/355 ≈ 1200/760); PHONE adds the PORTRAIT family
+     * (460×600) so the plan element fills ~75% of the full-height
+     * sticky window (the 26%-area plan + the mid-map dead band both
+     * die). Every key still fills its element exactly (the CSS
+     * aspect-ratio matches the family), a viewBox pan can never
+     * resize the element, and the overview keys still ride PLAN_VB. */
+    expect(JOURNEY_SRC).toMatch(/const CAM_KEYS_SHEET: ReadonlyArray<readonly \[number, CamRect\]> = \[/);
+    expect(JOURNEY_SRC).toMatch(/const CAM_KEYS_PHONE: ReadonlyArray<readonly \[number, CamRect\]> = \[/);
     const rects = [...JOURNEY_SRC.matchAll(/\[(\d+), (\d+), (\d+), (\d+)\]/g)]
       .map((m) => [Number(m[1]), Number(m[2]), Number(m[3]), Number(m[4])] as const);
-    /* the four pinned room nodes (lecture / checkpoint / exam /
-     * mastery — the narrated rooms of the findings) */
+    /* the four pinned sheet-family room nodes (lecture / checkpoint /
+     * exam / mastery — the narrated rooms of the findings) */
     expect(rects).toContainEqual([640, 54, 560, 355]);
     expect(rects).toContainEqual([640, 390, 560, 355]);
     expect(rects).toContainEqual([308, 54, 560, 355]);
     expect(rects).toContainEqual([0, 54, 560, 355]);
-    /* every rect inside the sheet; the room crops at the sheet aspect */
+    /* the phone family's portrait crops (460×600) — same rooms,
+     * portrait slices for the full-height window */
+    expect(rects).toContainEqual([713, 0, 460, 600]);
+    expect(rects).toContainEqual([358, 0, 460, 600]);
+    /* every rect inside the sheet; each family's crops at its OWN
+     * aspect (the sheet family at 1200/760, the phone family at
+     * 460/600 — the CSS aspect-ratio per band matches) */
     for (const [x, y, w, h] of rects) {
       expect(x).toBeGreaterThanOrEqual(0);
       expect(y).toBeGreaterThanOrEqual(0);
       expect(x + w).toBeLessThanOrEqual(PLAN_VB.w);
       expect(y + h).toBeLessThanOrEqual(PLAN_VB.h);
       if (w !== PLAN_VB.w) {
-        expect(Math.abs(w / h - PLAN_VB.w / PLAN_VB.h)).toBeLessThan(0.01);
+        const sheetFamily = Math.abs(w / h - PLAN_VB.w / PLAN_VB.h) < 0.01;
+        const phoneFamily = Math.abs(w / h - 460 / 600) < 0.01;
+        expect(sheetFamily || phoneFamily).toBe(true);
       }
     }
     /* the overview keys ride the PLAN_VB constants (never literals) */

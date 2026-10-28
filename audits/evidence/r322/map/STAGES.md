@@ -44,3 +44,28 @@ Shots: `state-<nn>-<slug>-<bp>.jpg` (18 files, q70, 748KB total). Scroll values 
 - 6 XOR paired-state violations in auth/training CSS (pre-existing, unmasked by the stale cleanup) → §B/clean wave.
 - r320 gate owner-dashboard cleanliness rows (mock-transport gaps) → gate-baseline hygiene ticket.
 - The 3 hover cards (Heron's desktop-only hover furniture, 23.51rem) — NOT transplanted this cycle (IX2-unreachable in the capture); candidate for the C4 polish pass.
+
+## §9 — the fix round (review-c3: R1 6.6 / R2 7.2 / R3 7.5 → the consolidated defect list closed)
+
+All three reviewers REJECTED the first pass; every numbered defect closed:
+
+| defect (reviewer) | fix |
+|---|---|
+| Orange wash 7–40× cap (R1#1/R2#1/R3#3) | `.pl-zone` active = 0.035 tint + 1.5-unit accent OUTLINE (≈0.5% of frame @1440); signal = outline + chip + marker, never a slab |
+| Plan 48.8% of Heron area (R1#2/R2#2) | the closing column became an ABSOLUTE OVERLAY (opacity+rise reveal, CLS-free); the plan column runs FULL FRAME WIDTH — `.jt-window` 1370/1331px wide × 843/813 tall @1440 (was 796×504) |
+| Dark plaques 1.02:1 (R3#1) | `.jt-card` ink pinned #282828 (the paper artifact's own ink, both themes) |
+| Statement ground 8.12% ink vs 0.00% (R1#3) | the envelope JOINS layer 1 (data-xl); the unconditional station/frame-text overrides DELETED — stage 0 = frame hairlines only |
+| Intro card floats 157px (R1#4/R2#3) | re-anchored to the PLAN COLUMN corner: inset-inline-START + inset-block-END 3.2rem (the mirrored corner, opposite the closing overlay) |
+| Mobile dead band 40–50% (R1#5/R2#4) | `.jt-map-in` = FULL VIEWPORT HEIGHT sticky (100dvh − 57px − safe-area); the plan + card stack centred inside |
+| Mobile plan 26% of area (R2#2) | the PORTRAIT phone crop family (460×600) + aspect-ratio 460/600 @≤767 — the plan element fills ~75% of the full-height window |
+| Findings display:none outside stages 2–4 (R3#2) | the visually-hidden pattern (absolute + clip-path inset(50%)) — the r168b pins stay in the a11y tree at every stage |
+| Station chips 3.76:1 (R3#4) | active marker fill → `--accent-ink` (AA at glyph size) |
+| Statement-era orange 0% (R1 minor) | the persistent 10px furniture spot on the frame's inline-end rail (`.jt-pin::after`) |
+
+Gates re-run on the fixed tree: vitest **2738/2738** · tsc 0 · lint 0 errors · raw-css PASS ·
+docH ladder noRM **all 5 bands + 6 pins in band (identical to the first pass)** ·
+svg-collisions landing **0 FAIL** · r321 sweep: text-in-viewport green, duplicate-text =
+the product prf-* farm only (V6, C4) · CLS **0.01** (the overlay reveal is layout-free) ·
+s2clean 26.3% frames >33ms (22% first pass — within run variance; the remaining menu
+is §7-5..7 = C4's). Mobile probes: mapIn=787 @390 (full height) · win=425 (was 206) ·
+@1440 win=813 (was 504).

@@ -215,17 +215,27 @@ function clamp01(x: number): number {
 /* ── The ≤991 camera (the R312 camera, evolved onto the 6-state clock)
  * The sheet's viewBox pans between the narrated rooms while the sticky
  * window holds: the full overview through the statement era → each
- * room in turn (the R319 crop nodes, re-derived at the SHEET'S OWN
- * 1.5789 aspect — a landscape crop family, so the SVG's box (pinned
- * to the full-sheet aspect by CSS) is filled EXACTLY at every key:
- * no letterbox, and a viewBox pan can never resize the element —
- * zero layout work per crop frame) → the completed overview at the
- * close. Quantized whole viewBox units + change-gated writes (the
- * R318 C2-S1 discipline — an interpolated rect never re-invalidates
- * the plan raster twice for the same value). */
+ * room in turn → the completed overview at the close. TWO crop
+ * families (R322 3-b-fix, review-c3 R1#5/R2#4: the mobile dead band
+ * + the 26%-area plan):
+ *  · TABLET 768–991 — the SHEET-aspect landscape family (the R319 crop
+ *    nodes at 1.5789): the tablet window is 753px wide, the landscape
+ *    plan fills it honestly.
+ *  · PHONE ≤767 — the PORTRAIT family (460×600, aspect 0.767): the
+ *    sticky window is FULL VIEWPORT HEIGHT (the 40–50% mid-map dead
+ *    band dies by construction), so the plan element must be TALL to
+ *    fill it — portrait crops zoom each room to a readable scale and
+ *    the element's CSS aspect-ratio matches the crop exactly (no
+ *    letterbox, and a viewBox pan can never resize the element — zero
+ *    layout work per crop frame). The overview beats keep CAM_FULL
+ *    (meet: the complete plan, centered, paper bands on paper).
+ * Quantized whole viewBox units + change-gated writes (the R318 C2-S1
+ * discipline — an interpolated rect never re-invalidates the plan
+ * raster twice for the same value). */
 type CamRect = readonly [number, number, number, number];
 const CAM_FULL: CamRect = [0, 0, PLAN_VB.w, PLAN_VB.h];
-const CAM_KEYS: ReadonlyArray<readonly [number, CamRect]> = [
+/* the tablet family — the sheet's own landscape aspect (1.5789) */
+const CAM_KEYS_SHEET: ReadonlyArray<readonly [number, CamRect]> = [
   [2.2, CAM_FULL],
   [2.8, [640, 54, 560, 355]], // the lecture hall (the stage + raked seating)
   [3.4, [640, 390, 560, 355]], // the checkpoint kiosk (the counter + queue)
@@ -234,15 +244,29 @@ const CAM_KEYS: ReadonlyArray<readonly [number, CamRect]> = [
   [5.0, [0, 54, 560, 355]], // the mastery room (the stepped seminar)
   [5.52, CAM_FULL], // the completed overview at the close
 ];
+/* the phone family — portrait 460×600 crops centred on the same rooms
+ * (clamped to the sheet): the visible artwork area @390 grows from
+ * 26% of Heron's stack to ~82%, and the tall element + the full-height
+ * sticky window retire the mid-map dead band entirely. */
+const CAM_KEYS_PHONE: ReadonlyArray<readonly [number, CamRect]> = [
+  [2.2, CAM_FULL],
+  [2.8, [713, 0, 460, 600]], // the lecture hall + its corridor reach
+  [3.4, [713, 160, 460, 600]], // the checkpoint kiosk band
+  [4.0, [358, 0, 460, 600]], // the exam hall + the reading rooms
+  [4.6, [298, 160, 460, 600]], // the library + reception band
+  [5.0, [15, 0, 460, 600]], // the mastery room + the entry court
+  [5.52, CAM_FULL], // the completed overview at the close
+];
 
-function camRectAt(t: number): CamRect {
-  if (t <= CAM_KEYS[0]![0]) return CAM_KEYS[0]![1];
-  const last = CAM_KEYS[CAM_KEYS.length - 1]!;
+function camRectAt(t: number, phone: boolean): CamRect {
+  const keys = phone ? CAM_KEYS_PHONE : CAM_KEYS_SHEET;
+  if (t <= keys[0]![0]) return keys[0]![1];
+  const last = keys[keys.length - 1]!;
   if (t >= last[0]) return last[1];
   let i = 0;
-  while (i < CAM_KEYS.length - 2 && t > CAM_KEYS[i + 1]![0]) i += 1;
-  const [t0, a] = CAM_KEYS[i]!;
-  const [t1, b] = CAM_KEYS[i + 1]!;
+  while (i < keys.length - 2 && t > keys[i + 1]![0]) i += 1;
+  const [t0, a] = keys[i]!;
+  const [t1, b] = keys[i + 1]!;
   const u = clamp01((t - t0) / (t1 - t0));
   return [
     a[0] + (b[0] - a[0]) * u,
@@ -280,19 +304,25 @@ function restoreCam(track: HTMLElement): void {
  * lands in the same frame; jsdom without matchMedia falls through to
  * the desktop path, which keeps the unit belts deterministic). */
 let mobileQuery: MediaQueryList | null = null;
+let phoneQuery: MediaQueryList | null = null;
 let reducedQuery: MediaQueryList | null = null;
 let mmSource: typeof window.matchMedia | null = null;
 
-function viewportState(): { mobile: boolean; reduced: boolean } {
+function viewportState(): { mobile: boolean; phone: boolean; reduced: boolean } {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-    return { mobile: false, reduced: false };
+    return { mobile: false, phone: false, reduced: false };
   }
   if (mmSource !== window.matchMedia) {
     mmSource = window.matchMedia;
     mobileQuery = window.matchMedia('(max-width: 991px)');
+    phoneQuery = window.matchMedia('(max-width: 767px)');
     reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   }
-  return { mobile: !!mobileQuery?.matches, reduced: !!reducedQuery?.matches };
+  return {
+    mobile: !!mobileQuery?.matches,
+    phone: !!phoneQuery?.matches,
+    reduced: !!reducedQuery?.matches,
+  };
 }
 
 /* the statement plaques' in/out recipe — Heron's own: fade + 24px rise
@@ -370,7 +400,7 @@ export function JourneyScene() {
     ({ vh, rect, traversal, pin }) => {
       const track = trackRef.current;
       if (!track) return;
-      const { mobile, reduced } = viewportState();
+      const { mobile, phone, reduced } = viewportState();
 
       /* the map clock — sticky-pin progress in pin units (negative
        * before the pin engages, >1 after release). Desktop: the track
@@ -503,7 +533,7 @@ export function JourneyScene() {
       /* 6 · the ≤991 camera — the room crops ride the finding timeline;
        * the ≥992px crossing restores the full sheet exactly once. */
       if (mobile) {
-        writeCamBox(track, camRectAt(t));
+        writeCamBox(track, camRectAt(t, phone));
         camDirtyRef.current = true;
       } else if (camDirtyRef.current) {
         restoreCam(track);
