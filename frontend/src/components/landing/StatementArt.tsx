@@ -1,23 +1,20 @@
 /**
- * StatementArt — R315 cycle-4 (c4-C · the s01 verdict): the statement
- * band's LARGE drafted architectural illustration.
+ * StatementArt — R315 cycle-4 (c4-C) → R322 (2-c · the Heron intro
+ * transplant): the statement band's SQUARE drafted architectural
+ * illustration.
  *
- * The re-verdicted judge (fresh masked pairs, 1440×900): "reference's
- * large architectural illustration w/ orange sun + pixel-art rows
- * COMPLETELY ABSENT, replaced by list-based text bars" — and at the
- * mid-band frame: "reference's large solid black polygonal map block
- * absent". This original ink composition seats an abstracted campus
- * MASSING STUDY in the reference's own language (never Heron's
- * artwork): a tall tower mass with vertical-fin hatching and a solid
- * poché shadow mass, stepped podium blocks, an orange circular sun
- * rising behind the tower's shoulder, and a foreground row-band of
- * small drafted blocks and figures — the "pixel-art rows" grammar.
- *
- * Seating law (zero drift): the SVG rides the statement band's OWN
- * measured air under the 86.7rem desktop floor (landing.css `.st-art`
- * — hidden below 992 where every statement band is content-bound, so
- * the pinned mobile/tablet/landscape compositions never see it). The
- * honest statement copy above it is untouched.
+ * The measured reference seat (docs/redesign/r322/heron/statement.md):
+ * a square ink cell — the 1766×1766 contain-fitted illustration filling
+ * the 6-column art cell edge to edge (85.64×86.73rem @1440, a perfect
+ * square at 768/390). The old 1386×132 panorama strip could never fill
+ * that seat (10.5:1 in a 1:1 box); this re-composition plants the SAME
+ * original ink vocabulary — the tall tower mass with vertical-fin
+ * hatching and the solid poché shadow, the stepped podium blocks, the
+ * ONE orange sun rising behind the tower's shoulder, the row-band of
+ * small drafted blocks and figures, the dashed journey path, the ground
+ * datum with its hatched strip — as a TALL-FORMAT massing study (never
+ * Heron's artwork; the grammar is ours, drawn in the site's own
+ * bp-ink/bp-hair/st-* token classes).
  *
  * Ink language: the same token ladder as the hero elevation
  * (ElevationDrawing) — bp-ink structure lines, bp-hair detail work
@@ -25,15 +22,16 @@
  * cross-hatch / dense-shade / vertical-fins / light-stipple pattern
  * family (own `-st` defs ids — the two artworks never share a defs
  * cell), ONE solid poché mass (var(--text)) and ONE orange sun
- * (var(--accent)). RTL reading: the composition starts at the right
- * (the tower) and resolves toward the left (the figures' rows) — the
- * mirrored equivalent of the reference's left-anchored study.
+ * (var(--accent)). RTL reading: the composition starts at the top of
+ * the tower (upper right) and resolves DOWN the skyline toward the
+ * figures' rows at the ground — the tall-format equivalent of the
+ * hero elevation's own mirrored reading.
  */
-export const STATEMENT_ART_VB = { w: 1386, h: 132 } as const;
+export const STATEMENT_ART_VB = { w: 1000, h: 1000 } as const;
 
-/* A drafted row-band cell — the "pixel-art rows" foreground mark.
+/* A drafted row-band cell — the foreground "pixel row" mark.
  * `fill` seats the dense shade value (the dark cells among the
- * outlined ones — the pixel-contrast the reference's rows carry). */
+ * outlined ones — the pixel-contrast the rows carry). */
 function RowCell({ x, y, w, h, fill }: { x: number; y: number; w: number; h: number; fill?: boolean }) {
   return (
     <rect
@@ -47,12 +45,12 @@ function RowCell({ x, y, w, h, fill }: { x: number; y: number; w: number; h: num
 }
 
 /* A drafted figure — a thin vertical stroke + a solid head dot, the
- * shorthand the reference's row bands read as (small drafted figures). */
-function Figure({ x }: { x: number }) {
+ * shorthand the row bands read as (small drafted figures). */
+function Figure({ x, ground }: { x: number; ground: number }) {
   return (
     <g className="bp-hair" aria-hidden="true">
-      <line className="bp-drawable" x1={x} y1={120} x2={x} y2={84} />
-      <circle className="st-poché" cx={x} cy={80} r={2.8} />
+      <line className="bp-drawable" x1={x} y1={ground} x2={x} y2={ground - 44} />
+      <circle className="st-poché" cx={x} cy={ground - 52} r={5} />
     </g>
   );
 }
@@ -61,136 +59,147 @@ export function StatementArt() {
   return (
     <svg
       className="st-art-svg"
-      viewBox="0 0 1386 132"
+      viewBox="0 0 1000 1000"
       role="img"
-      aria-label="دراسة كتل لممر جامعي بأسلوب الرسم الحبري: برج تعليمي بارز تطل عليه شمس برتقالية، وكتل متدرجة تنزل نحو صفوف صغيرة من الكتل والمقاعد على خط الأرض، مع مسار متقطع يتجه من الحرم نحو الصفوف"
+      aria-label="دراسة كتل حبرية لحرم جامعي: برج تعليمي بارز تطلّ عليه شمس برتقالية، وكتل متدرّجة تنزل نحو صفوف صغيرة من الكتل والمقاعد على خط الأرض، ومسار متقطّع يربط البرج بالصفوف"
       preserveAspectRatio="xMidYMid meet"
     >
       <defs>
         {/* the cross-hatch lattice — roof/shadow planes (both diagonal
             families in one tile, exactly the hero's bp-xhatch grammar) */}
-        <pattern id="st-xhatch-st" width="8" height="8" patternUnits="userSpaceOnUse">
-          <path className="st-xhatch-line" d="M0,0 L8,8" />
-          <path className="st-xhatch-line" d="M8,0 L0,8" />
+        <pattern id="st-xhatch-st" width="9" height="9" patternUnits="userSpaceOnUse">
+          <path className="st-xhatch-line" d="M0,0 L9,9" />
+          <path className="st-xhatch-line" d="M9,0 L0,9" />
         </pattern>
         {/* the dense shade stipple — cast shadows + the filled row cells */}
-        <pattern id="st-shade-st" width="6" height="6" patternUnits="userSpaceOnUse">
-          <circle className="st-shade-dot" cx="1" cy="1" r="0.85" />
-          <circle className="st-shade-dot" cx="4" cy="2.5" r="0.85" />
-          <circle className="st-shade-dot" cx="2" cy="5" r="0.85" />
-          <circle className="st-shade-dot" cx="5.5" cy="5.5" r="0.85" />
+        <pattern id="st-shade-st" width="7" height="7" patternUnits="userSpaceOnUse">
+          <circle className="st-shade-dot" cx="1" cy="1" r="1" />
+          <circle className="st-shade-dot" cx="4.5" cy="2.5" r="1" />
+          <circle className="st-shade-dot" cx="2.5" cy="5.5" r="1" />
+          <circle className="st-shade-dot" cx="6" cy="6" r="1" />
         </pattern>
         {/* the vertical fins — the modernist shadow-return value */}
-        <pattern id="st-fins-st" width="5" height="5" patternUnits="userSpaceOnUse">
-          <line className="st-fins-line" x1="0" y1="0" x2="0" y2="5" />
+        <pattern id="st-fins-st" width="6" height="6" patternUnits="userSpaceOnUse">
+          <line className="st-fins-line" x1="0" y1="0" x2="0" y2="6" />
         </pattern>
         {/* the light wall stipple — the mid-tone concrete value */}
-        <pattern id="st-stipple-st" width="8" height="8" patternUnits="userSpaceOnUse">
-          <circle className="st-shade-dot" cx="1.5" cy="1.5" r="0.75" />
-          <circle className="st-shade-dot" cx="5.5" cy="3" r="0.75" />
-          <circle className="st-shade-dot" cx="2.5" cy="5.5" r="0.75" />
-          <circle className="st-shade-dot" cx="6.5" cy="6.5" r="0.75" />
+        <pattern id="st-stipple-st" width="9" height="9" patternUnits="userSpaceOnUse">
+          <circle className="st-shade-dot" cx="1.5" cy="1.5" r="0.85" />
+          <circle className="st-shade-dot" cx="6" cy="3" r="0.85" />
+          <circle className="st-shade-dot" cx="2.5" cy="6" r="0.85" />
+          <circle className="st-shade-dot" cx="7" cy="7.5" r="0.85" />
         </pattern>
       </defs>
 
       {/* ═══ the sun — ONE solid orange circle, drawn first so the
           tower's wireframe lines + fins pass over it (the reference's
           own z-order: the sun sits BEHIND the drawing). RTL-mirrored
-          seat: the reference's upper-right sun reads upper-LEFT here. ═══ */}
-      <circle className="st-sun" cx="1160" cy="40" r="36" aria-hidden="true" />
+          seat: the reference's upper-right sun reads upper-RIGHT here
+          too (the reading start in RTL), rising behind the tower's
+          shoulder. ═══ */}
+      <circle className="st-sun" cx="700" cy="215" r="120" aria-hidden="true" />
 
-      {/* ═══ the tower — the reading start (RTL): a tall mass with a
-          setback cap, vertical-fin hatching, a window ladder on its
-          light face, and the solid poché shadow mass on its far edge
-          (the reference's "large solid black polygonal block"). ═══ */}
+      {/* ═══ the tower — the composition's reading start (upper right):
+          a tall mass with a setback cap + the signal square echo, a
+          window ladder on its light face, the fin-hatched shadow
+          return over the sun's edge, and the solid poché mass stepping
+          down its far edge (the "large solid black polygonal block"). ═══ */}
       <g aria-hidden="true">
         {/* the setback cap + the mastery pin echo (the hero's signal
             square grammar, one small accent on the skyline) */}
-        <rect className="bp-drawable bp-ink" x="1180" y="6" width="108" height="8" />
-        <rect className="bp-signal-fill" x="1229" y="1" width="10" height="10" />
-        {/* the body */}
-        <rect className="bp-drawable bp-ink" x="1164" y="14" width="140" height="106" />
-        {/* the window ladder — the light face's grid */}
-        {[28, 49, 70, 91, 112].map((y) => (
-          <line key={y} className="bp-drawable bp-hair" x1="1170" y1={y} x2="1194" y2={y} />
+        <rect className="bp-drawable bp-ink" x="752" y="70" width="168" height="26" />
+        <rect className="bp-signal-fill" x="820" y="52" width="16" height="16" />
+        {/* the body — from the cap down to the ground */}
+        <rect className="bp-drawable bp-ink" x="736" y="96" width="200" height="804" />
+        {/* the window ladder — the light face's grid (the reading-start
+            face, lit; the ladder reads as floors) */}
+        {[168, 240, 312, 384, 456, 528, 600, 672, 744, 816].map((y) => (
+          <line key={y} className="bp-drawable bp-hair" x1="746" y1={y} x2="790" y2={y} />
         ))}
-        <line className="bp-drawable bp-hair" x1="1182" y1="16" x2="1182" y2="118" />
+        <line className="bp-drawable bp-hair" x1="768" y1="100" x2="768" y2="898" />
         {/* the fin-hatched shadow face (over the sun's edge — wireframe
             ink in front of the orange, the reference's z-order) */}
-        <rect className="st-fins-fill" x="1196" y="16" width="60" height="102" aria-hidden="true" />
-        {/* the solid poché mass — the deep shadow polygon on the far
-            edge, stepped like the reference's black map block */}
-        <polygon
-          className="st-poché"
-          points="1304,14 1304,120 1258,120 1258,50 1278,14"
-          aria-hidden="true"
-        />
+        <rect className="st-fins-fill" x="794" y="102" width="88" height="800" aria-hidden="true" />
         {/* the fin band's bounding hairlines (read the texture as a
             drafted bay, not a smudge) */}
-        <line className="bp-drawable bp-hair" x1="1196" y1="16" x2="1196" y2="118" />
-        <line className="bp-drawable bp-hair" x1="1256" y1="16" x2="1256" y2="118" />
+        <line className="bp-drawable bp-hair" x1="794" y1="102" x2="794" y2="898" />
+        <line className="bp-drawable bp-hair" x1="882" y1="102" x2="882" y2="898" />
+        {/* the solid poché mass — the deep shadow polygon on the far
+            edge, stepping down the tower's shoulder like the
+            reference's black map block */}
+        <polygon
+          className="st-poché"
+          points="936,96 936,900 884,900 884,470 902,96"
+          aria-hidden="true"
+        />
+        {/* the entrance — door ticks at the ground line */}
+        <line className="bp-drawable bp-hair" x1="762" y1="900" x2="762" y2="830" />
+        <line className="bp-drawable bp-hair" x1="786" y1="900" x2="786" y2="830" />
       </g>
 
-      {/* ═══ the podium — the tower's base block: roof hatch band,
+      {/* ═══ the podium — the tower's base block: hatched roof band,
           cast-shadow strip, door ticks at the ground line. ═══ */}
       <g aria-hidden="true">
-        <rect className="bp-drawable bp-ink" x="1040" y="58" width="124" height="62" />
-        <rect className="st-xhatch-fill" x="1042" y="60" width="120" height="8" aria-hidden="true" />
-        <rect className="st-shade-fill" x="1042" y="70" width="120" height="9" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="1070" y1="120" x2="1070" y2="102" />
-        <line className="bp-drawable bp-hair" x1="1096" y1="120" x2="1096" y2="102" />
-        <line className="bp-drawable bp-hair" x1="1122" y1="120" x2="1122" y2="102" />
+        <rect className="bp-drawable bp-ink" x="560" y="560" width="176" height="340" />
+        <rect className="st-xhatch-fill" x="563" y="563" width="170" height="26" aria-hidden="true" />
+        <rect className="st-shade-fill" x="563" y="595" width="170" height="24" aria-hidden="true" />
+        <line className="bp-drawable bp-hair" x1="600" y1="900" x2="600" y2="808" />
+        <line className="bp-drawable bp-hair" x1="640" y1="900" x2="640" y2="808" />
+        <line className="bp-drawable bp-hair" x1="680" y1="900" x2="680" y2="808" />
       </g>
 
-      {/* ═══ the mid masses — the stepped campus blocks descending
-          toward the reading end: block A (hatched roof + window ticks),
-          block B (fin-hatched shadow return), block C (clean + doors). ═══ */}
+      {/* ═══ the mid masses — the stepped campus blocks descending the
+          skyline toward the reading end: A (hatched roof + window
+          ticks), B (fin-hatched shadow return), C (clean + doors). ═══ */}
       <g aria-hidden="true">
         {/* block A */}
-        <rect className="bp-drawable bp-ink" x="880" y="52" width="90" height="68" />
-        <rect className="st-xhatch-fill" x="882" y="54" width="86" height="8" aria-hidden="true" />
-        {[72, 88, 104].map((y) => (
-          <line key={y} className="bp-drawable bp-hair" x1="890" y1={y} x2="960" y2={y} />
+        <rect className="bp-drawable bp-ink" x="392" y="470" width="152" height="430" />
+        <rect className="st-xhatch-fill" x="395" y="473" width="146" height="22" aria-hidden="true" />
+        {[540, 600, 660, 720, 780].map((y) => (
+          <line key={y} className="bp-drawable bp-hair" x1="410" y1={y} x2="528" y2={y} />
         ))}
         {/* block B */}
-        <rect className="bp-drawable bp-ink" x="764" y="72" width="96" height="48" />
-        <rect className="st-fins-fill" x="766" y="74" width="14" height="44" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="786" y1="72" x2="786" y2="120" />
+        <rect className="bp-drawable bp-ink" x="252" y="620" width="130" height="280" />
+        <rect className="st-fins-fill" x="255" y="623" width="26" height="274" aria-hidden="true" />
+        <line className="bp-drawable bp-hair" x1="284" y1="620" x2="284" y2="900" />
         {/* block C */}
-        <rect className="bp-drawable bp-ink" x="640" y="84" width="100" height="36" />
-        <line className="bp-drawable bp-hair" x1="664" y1="120" x2="664" y2="102" />
-        <line className="bp-drawable bp-hair" x1="690" y1="120" x2="690" y2="102" />
-        <line className="bp-drawable bp-hair" x1="716" y1="120" x2="716" y2="102" />
+        <rect className="bp-drawable bp-ink" x="120" y="726" width="124" height="174" />
+        <line className="bp-drawable bp-hair" x1="152" y1="900" x2="152" y2="800" />
+        <line className="bp-drawable bp-hair" x1="184" y1="900" x2="184" y2="800" />
+        <line className="bp-drawable bp-hair" x1="216" y1="900" x2="216" y2="800" />
       </g>
 
-      {/* ═══ the long reading slab — the low wing that carries the
-          foreground rows: stippled wall + hatched roof band + doors. ═══ */}
-      <g aria-hidden="true">
-        <rect className="bp-drawable bp-ink" x="222" y="92" width="408" height="28" />
-        <rect className="st-xhatch-fill" x="224" y="94" width="404" height="6" aria-hidden="true" />
-        <rect className="st-stipple-fill" x="224" y="102" width="404" height="16" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="252" y1="120" x2="252" y2="106" />
-        <line className="bp-drawable bp-hair" x1="292" y1="120" x2="292" y2="106" />
-        <line className="bp-drawable bp-hair" x1="560" y1="120" x2="560" y2="106" />
-        <line className="bp-drawable bp-hair" x1="600" y1="120" x2="600" y2="106" />
+      {/* ═══ the journey — the dashed path from the tower's podium down
+          the stepped skyline to the row band (the hero's own journey
+          grammar, arrow at the reading-forward end + station ticks). ═══ */}
+      <g className="bp-l-journey" aria-hidden="true">
+        <line className="bp-dash" x1="648" y1="432" x2="648" y2="528" />
+        <line className="bp-dash" x1="648" y1="528" x2="468" y2="528" />
+        <line className="bp-dash" x1="468" y1="528" x2="468" y2="616" />
+        <line className="bp-dash" x1="468" y1="616" x2="308" y2="616" />
+        <line className="bp-dash" x1="308" y1="616" x2="308" y2="676" />
+        <polyline className="bp-drawable bp-ink" points="300,668 308,684 316,668" />
+        {/* the station ticks tying the path to the masses it serves */}
+        <line className="bp-drawable bp-hair" x1="648" y1="528" x2="648" y2="552" />
+        <line className="bp-drawable bp-hair" x1="468" y1="616" x2="468" y2="640" />
       </g>
 
       {/* ═══ the row band — the "pixel-art rows": two offset rows of
-          small drafted cells along the ground line, a few cells filled
-          with the dense shade value, plus the drafted figures standing
-          among them (the campus's people — the reading destination). ═══ */}
+          small drafted cells along the ground line at the composition's
+          open corner (the campus's people — the reading destination),
+          plus the drafted figures standing among them. ═══ */}
       <g aria-hidden="true">
         {/* the back row — taller cells */}
-        {Array.from({ length: 16 }, (_, i) => 252 + i * 21).map((x, i) => (
-          <RowCell key={x} x={x} y={100} w={12} h={20} fill={i === 3 || i === 11} />
+        {Array.from({ length: 10 }, (_, i) => 60 + i * 36).map((x, i) => (
+          <RowCell key={x} x={x} y={838} w={24} h={62} fill={i === 2 || i === 7} />
         ))}
         {/* the front row — offset half a pitch, shallower cells */}
-        {Array.from({ length: 15 }, (_, i) => 262 + i * 21).map((x, i) => (
-          <RowCell key={x} x={x} y={108} w={12} h={12} fill={i === 7} />
+        {Array.from({ length: 9 }, (_, i) => 78 + i * 36).map((x, i) => (
+          <RowCell key={x} x={x} y={862} w={24} h={38} fill={i === 5} />
         ))}
-        {/* the figures — five drafted people among the rows */}
-        {[312, 356, 428, 474, 548].map((x) => (
-          <Figure key={x} x={x} />
+        {/* the figures — four drafted people among the rows */}
+        {[130, 202, 274, 346].map((x) => (
+          <Figure key={x} x={x} ground={836} />
         ))}
       </g>
 
@@ -198,40 +207,24 @@ export function StatementArt() {
           bookend) + the low entrance mass at the composition's close. ═══ */}
       <g aria-hidden="true">
         <g className="bp-hair">
-          <path className="bp-drawable" d="M64,120 v-30" />
-          <path className="bp-drawable" d="M64,94 c-6,-8 -12,-12 -19,-14" />
-          <path className="bp-drawable" d="M64,92 c6,-9 12,-13 18,-17" />
-          <circle className="st-stipple-outline" cx="64" cy="76" r="16" />
-          <circle className="st-stipple-outline" cx="52" cy="86" r="11" />
-          <circle className="st-stipple-outline" cx="76" cy="84" r="12" />
+          <path className="bp-drawable" d="M52,900 v-96" />
+          <path className="bp-drawable" d="M52,816 c-20,-26 -38,-38 -60,-45" />
+          <path className="bp-drawable" d="M52,810 c20,-29 38,-42 58,-54" />
+          <circle className="st-stipple-outline" cx="52" cy="762" r="52" />
+          <circle className="st-stipple-outline" cx="16" cy="794" r="36" />
+          <circle className="st-stipple-outline" cx="90" cy="786" r="38" />
         </g>
-        <rect className="bp-drawable bp-ink" x="100" y="98" width="100" height="22" />
-        <rect className="st-xhatch-fill" x="102" y="100" width="96" height="5" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="128" y1="120" x2="128" y2="108" />
-        <line className="bp-drawable bp-hair" x1="152" y1="120" x2="152" y2="108" />
-        <line className="bp-drawable bp-hair" x1="176" y1="120" x2="176" y2="108" />
-      </g>
-
-      {/* ═══ the journey — the dashed RTL path from the campus down to
-          the row band (the hero's own journey grammar, arrow at the
-          reading-forward end). ═══ */}
-      <g className="bp-l-journey" aria-hidden="true">
-        <line className="bp-dash" x1="666" y1="44" x2="1040" y2="44" />
-        <polyline className="bp-drawable bp-ink" points="664,38 652,44 664,50" />
-        {/* the station ticks tying the path to its two ends */}
-        <line className="bp-drawable bp-hair" x1="1040" y1="44" x2="1040" y2="56" />
-        <line className="bp-drawable bp-hair" x1="656" y1="44" x2="656" y2="60" />
       </g>
 
       {/* ═══ the ground — the datum line, the cast-shadow band under
           the whole skyline, the hatched ground strip, and the drafting
           ticks at both ends. ═══ */}
       <g className="bp-l-ground" aria-hidden="true">
-        <line className="bp-drawable bp-ink bp-ink-2" x1="8" y1="120" x2="1378" y2="120" />
-        <rect className="st-shade-fill" x="40" y="121" width="1264" height="8" aria-hidden="true" />
-        <rect className="st-xhatch-fill" x="8" y="121" width="1370" height="11" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="95" y1="125" x2="105" y2="115" />
-        <line className="bp-drawable bp-hair" x1="1265" y1="125" x2="1275" y2="115" />
+        <line className="bp-drawable bp-ink bp-ink-2" x1="16" y1="900" x2="984" y2="900" />
+        <rect className="st-shade-fill" x="60" y="903" width="820" height="26" aria-hidden="true" />
+        <rect className="st-xhatch-fill" x="16" y="903" width="970" height="36" aria-hidden="true" />
+        <line className="bp-drawable bp-hair" x1="120" y1="914" x2="152" y2="882" />
+        <line className="bp-drawable bp-hair" x1="848" y1="914" x2="880" y2="882" />
       </g>
     </svg>
   );

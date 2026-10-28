@@ -108,32 +108,48 @@ const DOCUMENTED_UNIVERSITIES = [
   'جامعة سبها',
 ] as const;
 
-/* ── The four pains (R313 · D7 §3) — the honest inverse of the live
- * ledger: each pain names a real gap in Libyan higher-ed today and is
- * answered by a capability that WORKS in the system (the full matrix
- * lives on /capabilities). No invented statistics — only the pains the
- * product itself was built to solve, framed from the ledger's truth. */
+/* ── The statement (R322 · 2-c — the Heron home-intro transplant): the
+ * manifesto the scrub-title carries. Same role/length class as the
+ * reference's 127-char intro statement (≈6 scrub lines @1440), honest —
+ * the four clauses name the four live capabilities (lecture · grading ·
+ * mastery · research), the closing pair the honest registry claim. */
+const STATEMENT_TEXT =
+  'منصّة واحدة تدير الرحلة كلها: المحاضرة تُبنى وتُقاس، والواجب يُصحّح ويُعاد، ' +
+  'والإتقان يُرسَم مفهومًا مفهومًا، والبحث يُفهرَس ويبقى. سجلّ واحد للقسم والكلية — يعمل اليوم، ويكبر مع كل فصل.';
+
+/* ── The four pains (R313 · D7 §3 → R322 · 2-d on Heron's open
+ * columns) — the honest inverse of the live ledger: each pain names a
+ * real gap in Libyan higher-ed today and is answered by a capability
+ * that WORKS in the system (the full matrix lives on /capabilities).
+ * No invented statistics — only the pains the product itself was built
+ * to solve, framed from the ledger's truth. The `keyword` is the
+ * reference's own meta-row seat (mono Latin, ~6–8ch); `num` is the
+ * ghost 2-digit index riding the row's far edge. */
 const PAINS = [
   {
     num: '01',
+    keyword: 'LECTURE',
     title: 'محاضرة بلا أثر مقيس',
     text: 'تُلقى المحاضرة ثم ينتهي أثرها: لا نقطة فحص تُثبِّت الفهم، ولا حضور يُحتسب تلقائيًا.',
     answer: 'الجواب: المحاضرات التفاعلية بنقاط الفحص',
   },
   {
     num: '02',
+    keyword: 'GRADING',
     title: 'تصحيح يأتي متأخرًا',
     text: 'تمرّ أسابيع قبل أن يعرف الطالب خطأه — وفرصة المراجعة تكون قد فاتت.',
     answer: 'الجواب: التصحيح التلقائي للموضوعي',
   },
   {
     num: '03',
+    keyword: 'MASTERY',
     title: 'غياب خريطة الإتقان',
     text: 'الطالب يعرف درجته النهائية، لا مفاهيمه الناقصة ولا خطوته التالية.',
     answer: 'الجواب: مصفوفة الإتقان لكل مفهوم',
   },
   {
     num: '04',
+    keyword: 'ARCHIVE',
     title: 'بحوث تُسلَّم وتُنسى',
     text: 'البحث يُقدَّم ورقيًا ثم يختفي: لا فهرسة ولا بحث عربي ولا مراجعة معلَّمة تبقى.',
     answer: 'الجواب: مكتبة البحوث بالفهرسة العربية',
@@ -372,22 +388,109 @@ export default function LandingPage() {
     return () => document.body.classList.remove('mdrk-grain');
   }, []);
 
-  /* R308 — the statement title's scrub driver: --wr-p (0..1) rides
-   * the section's traversal; the word masks resolve + reverse with
-   * it (imperative, zero renders — the useSheetScroll contract).
-   * R318 (C2): idempotent write (same-string setProperty still
-   * invalidates style every frame). */
+  /* R308 → R322 (2-c) — the statement title's scrub driver, re-pinned
+   * to the reference's own anchors (scroll-spec.md): the trigger is
+   * the TITLE (not the section), center-based — start «center
+   * bottom+=10%» (title center at 0.9vh), end «center top+=40%»
+   * (center at 0.4vh). --wr-p (0..1) rides that traversal; the word
+   * colors resolve + reverse with it (imperative, zero renders — the
+   * useSheetScroll contract; R318 C2's idempotent write kept). */
   const statementRef = useRef<HTMLElement>(null);
+  const statementTitleRef = useRef<HTMLHeadingElement>(null);
   let lastWrP = '';
-  useSheetScroll(statementRef, ({ rect, vh }) => {
+  useSheetScroll(statementTitleRef, ({ rect, vh }) => {
     const el = statementRef.current;
     if (!el) return;
-    const p = clamp((vh * 0.9 - rect.top) / (vh * 0.8), 0, 1).toFixed(4);
+    const center = rect.top + rect.height / 2;
+    const p = clamp((vh * 0.9 - center) / (vh * 0.5), 0, 1).toFixed(4);
     if (p !== lastWrP) {
       el.style.setProperty('--wr-p', p);
       lastWrP = p;
     }
   });
+
+  /* R322 (2-d) — the pains' ≤767 snap carousel + the reference's dot
+   * rail. Pure CSS scroll-snap owns the swipe (no swiper dep); this
+   * belt only (a) makes the scroll region keyboard-focusable inside
+   * the tier, (b) mirrors the snap position onto the dots (the
+   * closest-to-center column wins — direction-agnostic, safe in RTL),
+   * and (c) lets a dot tap center its column. ≥768 the carousel is a
+   * plain grid: the listener detaches, the dots hide, tabIndex
+   * releases. Reduced motion: the tap jumps without smoothing (the
+   * page's RM canon). */
+  const pmColsRef = useRef<HTMLOListElement>(null);
+  const pmDotsRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const cols = pmColsRef.current;
+    const dots = pmDotsRef.current;
+    if (!cols || !dots || typeof window.matchMedia !== 'function') return undefined;
+    const mm = window.matchMedia('(max-width: 767px)');
+    const btns = Array.from(dots.querySelectorAll<HTMLButtonElement>('.pm-dot-btn'));
+    const reduced =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const setActive = (i: number) => {
+      btns.forEach((b, j) => {
+        b.classList.toggle('is-active', j === i);
+        b.setAttribute('aria-current', j === i ? 'true' : 'false');
+      });
+    };
+    const nearest = () => {
+      const c = cols.getBoundingClientRect();
+      const mid = (c.left + c.right) / 2;
+      let best = 0;
+      let bd = Infinity;
+      Array.from(cols.children).forEach((child, j) => {
+        const r = child.getBoundingClientRect();
+        const d = Math.abs((r.left + r.right) / 2 - mid);
+        if (d < bd) {
+          bd = d;
+          best = j;
+        }
+      });
+      return best;
+    };
+    const onScroll = () => setActive(nearest());
+    const onTap = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      const btn = target?.closest?.('.pm-dot-btn') as HTMLButtonElement | null;
+      if (!btn) return;
+      const i = btns.indexOf(btn);
+      const child = cols.children[i];
+      if (child) {
+        child.scrollIntoView({
+          behavior: reduced ? 'auto' : 'smooth',
+          block: 'nearest',
+          inline: 'center',
+        });
+      }
+    };
+    const apply = (on: boolean) => {
+      cols.tabIndex = on ? 0 : -1;
+      btns.forEach((b) => {
+        b.tabIndex = on ? 0 : -1;
+      });
+      dots.toggleAttribute('data-on', on);
+      if (on) {
+        cols.addEventListener('scroll', onScroll, { passive: true });
+        dots.addEventListener('click', onTap);
+        onScroll();
+      } else {
+        cols.removeEventListener('scroll', onScroll);
+        dots.removeEventListener('click', onTap);
+      }
+    };
+    const onMm = (e: MediaQueryList | MediaQueryListEvent) => apply(e.matches);
+    onMm(mm);
+    const listener = (e: MediaQueryListEvent) => onMm(e);
+    mm.addEventListener('change', listener);
+    return () => {
+      mm.removeEventListener('change', listener);
+      cols.removeEventListener('scroll', onScroll);
+      dots.removeEventListener('click', onTap);
+    };
+  }, []);
 
   /* R313 (D11): the exit sweep is installed at the GUEST boundary
    * (GuestReveal — every public-page navigation), no longer scoped to
@@ -914,111 +1017,145 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ═══ [2] البيان — the statement (the reference's intro): the
-            scrub-revealed declaration + the documented-universities
-            ticker. r308: the title unmasks word-by-word, scrub-linked +
-            reversible to the scroll. R322 (2-b): the capabilities
-            ticker retired from this band — the extraction seats the
-            work marquee INSIDE the hero's content band
-            (home-hero-work), so the family moved home (the hero's
-            .fo-hero-work strip above); this band opens on the
-            statement itself. ═══ */}
+        {/* ═══ [2] البيان — the statement (the reference's home-intro):
+            R322 (2-c) — the measured 6+6 split transplant. The square
+            ink art cell rides inline-start (right in RTL — the reading
+            start, exactly the reference's LEFT cell mirrored); the
+            body column rides inline-end behind a 1px hairline on its
+            inline-start edge, holding ONLY the scrub-revealed manifesto
+            + one CTA (content pad 6.4/15/3.2/15rem — the 15rem side
+            gutter is the band's whole personality), closed by the
+            partner strip (the documented-universities crawl in the
+            reference's label-row + logo-track + desc anatomy). The
+            capabilities crawl and the three persona rows RETIRE from
+            the band (§6: ONE statement, no orphan text — the honest
+            disclosure lives in the pains answers + /capabilities, the
+            personas are the roles band's own). ═══ */}
         <section id="statement" className="st-section" ref={statementRef} aria-labelledby="statement-title">
-          <div className="st-spread">
-            <div className="st-copy">
-              <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
-              <h2 id="statement-title" className="st-title">
-                <ScrubReveal text="منصّة واحدة تخدم الرحلة كلها" />
-              </h2>
+          <div className="st-grid">
+            {/* the art cell — the square massing study fills the 6-col
+                cell edge to edge (the reference's 1766×1766 contain
+                equivalent) at EVERY breakpoint (its aspect drives the
+                tablet/phone band exactly like Heron's own img). */}
+            <div className="st-art-cell">
+              <StatementArt />
             </div>
-            <div className="st-lines">
-              <RevealCssClass as="p" className="st-line">
-                <strong>للطالب</strong>
-                <span>تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</span>
-              </RevealCssClass>
-              <RevealCssClass as="p" className="st-line" delay={1}>
-                <strong>للأستاذ</strong>
-                <span>تبني المحاضرة والاختبار، وتصحّح الواجبات بملاحظات مكتوبة، وترى من يحتاجك الآن.</span>
-              </RevealCssClass>
-              <RevealCssClass as="p" className="st-line" delay={2}>
-                <strong>للمسجل العام</strong>
-                <span>تدير الكليات والمقرّرات والصلاحيات، وترى مؤسّستك حيّة على مستوى كل قسم.</span>
-              </RevealCssClass>
-            </div>
-          </div>
 
-          {/* the universities ticker — the documented institutions
-              (photos + official-channel videos live on /campus). The
-              same crawl grammar as the hero band, honest content. */}
-          <div className="fo-ticker fo-ticker--universities" aria-label="جامعات ليبية موثّقة في الوسائط">
-            <div className="fo-ticker-track" aria-hidden="false">
-              {DOCUMENTED_UNIVERSITIES.map((u, i) => (
-                <span key={u} className="fo-ticker-item">
-                  <span className="fo-mono" dir="ltr">[U{String(i + 1).padStart(2, '0')}]</span>
-                  {u}
-                </span>
-              ))}
-            </div>
-            <div className="fo-ticker-track" aria-hidden="true">
-              {DOCUMENTED_UNIVERSITIES.map((u, i) => (
-                <span key={u} className="fo-ticker-item">
-                  <span className="fo-mono" dir="ltr">[U{String(i + 1).padStart(2, '0')}]</span>
-                  {u}
-                </span>
-              ))}
-            </div>
-          </div>
+            {/* the body column — the manifesto cell over the partner
+                strip (the reference's own two-row stack, pinned to the
+                column's bottom edge). */}
+            <div className="st-body-col">
+              <RevealCssClass as="div" className="st-body" delay={2}>
+                <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
+                <h2 id="statement-title" className="st-title" ref={statementTitleRef}>
+                  <ScrubReveal text={STATEMENT_TEXT} className="st-scrub" />
+                </h2>
+                <a href="#live" className="btn ghost st-cta">
+                  شاهد التحديات
+                  <Icon icon={ArrowLeft} size={14} aria-hidden="true" />
+                </a>
+              </RevealCssClass>
 
-          {/* R315 cycle-4 (c4-C · the s01 verdict): the band's LARGE
-              drafted architectural illustration — an original campus
-              massing study (the tower's solid poché mass, the orange
-              sun, the row-band of small drafted blocks + figures) in
-              the reference's family. Seated in the band's OWN measured
-              air under the 86.7rem desktop floor (.st-art — hidden
-              below 992 where every statement band is content-bound,
-              zero drift by construction); the honest statement copy
-              above is untouched. */}
-          <div className="st-art">
-            <StatementArt />
+              {/* the partner strip — the reference's label row + logo
+                  track + desc. OUR figures are the documented
+                  universities (the same honest crawl grammar, now with
+                  the dashed separators between the cells); the desc
+                  carries the media-disclosure line. */}
+              <RevealCssClass as="div" className="st-partner" delay={3}>
+                <div className="st-partner-row">
+                  <span className="st-partner-label fo-mono" dir="ltr">UNIVERSITIES</span>
+                </div>
+                <div className="fo-ticker st-partner-track" aria-label="جامعات ليبية موثّقة في الوسائط">
+                  <div className="fo-ticker-track" aria-hidden="false">
+                    {DOCUMENTED_UNIVERSITIES.map((u, i) => (
+                      <span key={u} className="fo-ticker-item">
+                        <span className="fo-mono" dir="ltr">[U{String(i + 1).padStart(2, '0')}]</span>
+                        {u}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="fo-ticker-track" aria-hidden="true">
+                    {DOCUMENTED_UNIVERSITIES.map((u, i) => (
+                      <span key={u} className="fo-ticker-item">
+                        <span className="fo-mono" dir="ltr">[U{String(i + 1).padStart(2, '0')}]</span>
+                        {u}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <p className="st-partner-desc">
+                  توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
+                  <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
+                </p>
+              </RevealCssClass>
+            </div>
           </div>
         </section>
 
-        {/* ═══ [3] التحديات — the four pains (the reference's problem
-            section): numbered cards with draw-in line art, each pain
-            answered by a live capability. The full capability matrix
-            lives on /capabilities (linked from the section foot). ═══ */}
+        {/* ═══ [3] التحديات — the four pains (the reference's
+            home-problem): R322 (2-d) — the OPEN COLUMN transplant on
+            the section's shared grid (V8 closed). A head row (kicker +
+            H2 at the reading-start content line, sub note at the far
+            column's edge, bottoms aligned like the reference) over
+            four unboxed columns — mono keyword + ghost 2-digit index
+            meta row, dashed rule, the 20×20rem drawing in its 36rem
+            zone, title + body + the live-capability answer. Every edge
+            rides the same 4-up hairline grammar the head aligns to;
+            @768 it wraps 2×2, @390 it becomes the snap carousel with
+            the reference's dot rail. Each pain keeps its honest
+            answered-by-a-live-capability line (non-negotiable). ═══ */}
         <section id="live" className="pm-section" aria-labelledby="pm-title">
-          <div className="pm-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> التحديات</span>
-            <RevealCssClass as="h2" className="pm-title" delay={1} id="pm-title">
-              أربعة أوجاع من <em>التعليم العالي الليبي</em>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="pm-lede" delay={2}>
-              ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها.
-              تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.
-            </RevealCssClass>
-          </div>
-
-          <ol className="pm-cards">
-            {PAINS.map((p, i) => (
-              <RevealCssClass
-                as="li"
-                key={p.num}
-                className="pm-card"
-                delay={((i % 3) + 1) as 1 | 2 | 3}
-              >
-                <span className="pm-card-num fo-mono" dir="ltr">[{p.num}]</span>
-                <PainArt kind={p.num} />
-                <h3 className="pm-card-title">{p.title}</h3>
-                <p className="pm-card-text">{p.text}</p>
-                <p className="pm-card-answer"><Icon icon={Check} size={13} /> {p.answer}</p>
+          <div className="pm-frame">
+            <header className="pm-head">
+              <div className="pm-title-wrap">
+                <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> التحديات</span>
+                <RevealCssClass as="h2" className="pm-title" delay={1} id="pm-title">
+                  أربعة أوجاع من <em>التعليم العالي الليبي</em>
+                </RevealCssClass>
+              </div>
+              <RevealCssClass as="p" className="pm-sub" delay={2}>
+                ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها؛
+                تحت كل وجع بند يعمل اليوم، والسجل الكامل في
+                <Link to="/capabilities" className="fo-text-link">صفحة القدرات</Link>.
               </RevealCssClass>
-            ))}
-          </ol>
+            </header>
 
-          <RevealCssClass as="p" className="pm-foot" delay={3}>
-            <Link to="/capabilities" className="fo-text-link">السجل الكامل — ما يعمل اليوم وإلى أين</Link>
-          </RevealCssClass>
+            <ol className="pm-cols" ref={pmColsRef} aria-label="الأوجاع الأربعة">
+              {PAINS.map((p, i) => (
+                <RevealCssClass
+                  as="li"
+                  key={p.num}
+                  className="pm-col"
+                  delay={((i % 3) + 1) as 1 | 2 | 3}
+                >
+                  <div className="pm-meta">
+                    <span className="pm-keyword fo-mono" dir="ltr">{p.keyword}</span>
+                    <span className="pm-index fo-mono" dir="ltr">{p.num}</span>
+                    <span className="pm-dot" aria-hidden="true" />
+                  </div>
+                  <div className="pm-artzone">
+                    <PainArt kind={p.num} />
+                  </div>
+                  <div className="pm-content">
+                    <h3 className="pm-item-title">{p.title}</h3>
+                    <p className="pm-item-sub">{p.text}</p>
+                    <p className="pm-item-answer">{p.answer}</p>
+                  </div>
+                </RevealCssClass>
+              ))}
+            </ol>
+
+            {/* ≤767 only — the reference's swiper dot rail (2.02×0.2rem
+                dots, 1st active): one button per column, the active dot
+                follows the snap position, a tap centers its column. */}
+            <div className="pm-dots" ref={pmDotsRef} aria-hidden="true">
+              {PAINS.map((p) => (
+                <button key={p.num} type="button" className="pm-dot-btn" data-pm-num={p.num} tabIndex={-1}>
+                  <span className="pm-dot-bar" />
+                </button>
+              ))}
+            </div>
+          </div>
         </section>
 
         {/* ═══ [4] الفصول — the pinned map (the reference's 51%
