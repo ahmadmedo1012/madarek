@@ -19,6 +19,9 @@
  *
  * R321 §A8 — the panel starts OPEN in development (the owner's
  * one-tap-per-job rule: first tap fills, second tap enters).
+ * R322 override (board A8-prod) — open-by-default is DEV-only now:
+ * a production build starts with the collapsed chip unless
+ * VITE_SHOW_TEST_ACCOUNTS=1 pins the panel open (pinned below).
  */
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -173,5 +176,39 @@ describe('R320 §C — the test-account login panel', () => {
     // …and the chip re-opens it (the r157 F5 affordance keeps working).
     fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
     expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
+  });
+
+  /* R322 override (board A8-prod): open-by-default is a DEV behaviour
+   * now — a production build starts with the COLLAPSED chip (still one
+   * tap away) unless VITE_SHOW_TEST_ACCOUNTS=1 pins the panel open for
+   * demo presentations. The R321 §A8 test above keeps the dev half. */
+  it('R322 A8-prod — a production build starts with the COLLAPSED chip (one tap away)', () => {
+    vi.stubEnv('DEV', false);
+    renderPage();
+
+    // Not open on load — the quiet sheet shows the reopen chip only…
+    expect(screen.queryByText('حسابات تجريبية — بيئة التطوير')).toBeNull();
+    expect(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' })).toHaveClass(
+      'auth-demo-hint-reopen',
+    );
+
+    // …and one honest tap still opens it (the funnel affordance holds).
+    fireEvent.click(screen.getByRole('button', { name: 'عرض الحسابات التجريبية' }));
+    expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(
+      TEST_ACCOUNTS.length,
+    );
+  });
+
+  it('R322 A8-prod — VITE_SHOW_TEST_ACCOUNTS=1 pins the panel OPEN even in a production build', () => {
+    vi.stubEnv('DEV', false);
+    vi.stubEnv('VITE_SHOW_TEST_ACCOUNTS', '1');
+    renderPage();
+
+    expect(screen.getByText('حسابات تجريبية — بيئة التطوير')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'عرض الحسابات التجريبية' })).toBeNull();
+    expect(screen.getAllByRole('button', { name: /^تعبئة حساب / })).toHaveLength(
+      TEST_ACCOUNTS.length,
+    );
   });
 });

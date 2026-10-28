@@ -5,6 +5,9 @@ interface ImportMetaEnv {
   // R320 §C — the test-account login panel's visibility gate:
   // absent = SHOW (default on while the project is in development);
   // '0' hides the panel everywhere (build with VITE_SHOW_TEST_ACCOUNTS=0).
+  // R322 A8-prod: '1' forces the panel OPEN by default even in a
+  // production build (demo presentations); production builds otherwise
+  // show the collapsed chip — open-by-default is a DEV behaviour.
   readonly VITE_SHOW_TEST_ACCOUNTS?: string;
   // Vite built-ins
   readonly DEV: boolean;

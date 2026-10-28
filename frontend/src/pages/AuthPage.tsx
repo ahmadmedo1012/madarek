@@ -97,8 +97,20 @@ type LoginInputs = z.infer<typeof loginSchema>;
  *  (Vite replaces the expression statically, so the `'0'` build folds
  *  the gate to a constant and dead-code-eliminates the panel). The
  *  read lives INSIDE the component so the test belt can stub the env
- *  per-render. */
+ *  per-render.
+ *
+ *  R322 (board A8-prod) — OPEN-BY-DEFAULT is a DEVELOPMENT behaviour
+ *  only: a production build shows the COLLAPSED chip («عرض الحسابات
+ *  التجريبية» — still one tap away) unless `VITE_SHOW_TEST_ACCOUNTS=1`
+ *  explicitly forces the open panel (demo presentations). The R321
+ *  mobile improvements (H1 scale, nowrap in-row labels) are untouched. */
 const showTestAccounts = () => import.meta.env.VITE_SHOW_TEST_ACCOUNTS !== '0';
+
+/** R322 A8-prod — the demo panel's initial state: open in dev, or when
+ *  `VITE_SHOW_TEST_ACCOUNTS === '1'` pins it open; collapsed chip
+ *  otherwise (production default). */
+const demoOpenByDefault = () =>
+  import.meta.env.DEV || import.meta.env.VITE_SHOW_TEST_ACCOUNTS === '1';
 
 /** Deep link a visitor was trying to reach when ProtectedRoute bounced
  *  them here (ProtectedRoute passes `state={{ from: location }}`). Only
@@ -127,12 +139,17 @@ export default function AuthPage() {
   // (platform owner) proceeds straight to the role home — the
   // pre-r178 behavior.
   const [pendingSelection, setPendingSelection] = useState<MembershipInfo[] | null>(null);
-  // R321 §A8 — the demo panel starts OPEN while the project is in
-  // development (the owner's one-tap-per-job rule: first tap fills,
-  // second tap enters). The gate is still SHOW_TEST_ACCOUNTS: build
-  // with VITE_SHOW_TEST_ACCOUNTS=0 and the panel (open state included)
-  // never mounts. The collapse affordance stays for a quiet sheet.
-  const [demoHintOpen, setDemoHintOpen] = useState(SHOW_TEST_ACCOUNTS);
+  // R321 §A8 + R322 A8-prod — the demo panel starts OPEN while the
+  // project is in development (the owner's one-tap-per-job rule: first
+  // tap fills, second tap enters); a PRODUCTION build starts with the
+  // collapsed chip (still one tap away) unless
+  // VITE_SHOW_TEST_ACCOUNTS=1 pins it open. The gate is still
+  // SHOW_TEST_ACCOUNTS: build with VITE_SHOW_TEST_ACCOUNTS=0 and the
+  // panel (open state included) never mounts. The collapse affordance
+  // stays for a quiet sheet.
+  const [demoHintOpen, setDemoHintOpen] = useState(
+    SHOW_TEST_ACCOUNTS && demoOpenByDefault(),
+  );
   // R320 §C — which test account's credentials currently fill the form
   // (that row's button flips from «تعبئة» to «دخول» — the second tap
   // submits). Null = nothing filled yet.
