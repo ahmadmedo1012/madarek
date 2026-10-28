@@ -273,9 +273,14 @@ describe('r306 — the honest ledger is a hairline table', () => {
     expect(campusCss).toMatch(/\.lv-row\s*\{[^}]*border-block-end:\s*1px solid var\(--rule\)/);
     expect(live).not.toContain('.lv-window');
     expect(liveTsx).not.toContain('lv-window');
-    // the landing's own ruled family: the four pain cards
-    expect(live).toMatch(/\.pm-card\s*\{[^}]*border:\s*1px solid var\(--rule\)/);
-    expect(liveTsx).toContain('className="pm-card"');
+    // R322 override (2-d): the four pains are Heron's OPEN COLUMNS
+    // now (.pm-col — no boxed cards): the ruled-row contract rides the
+    // meta row's dashed rule + the column family; the boxed .pm-card
+    // grammar (border + surface slab) is RETIRED with the boxes.
+    expect(live).toMatch(/\.pm-meta\s*\{[\s\S]*?border-block-end:\s*1px dashed var\(--rule-strong\)/s);
+    expect(liveTsx).toContain('className="pm-col"');
+    expect(live).not.toMatch(/\.pm-card\s*\{/);
+    expect(liveTsx).not.toContain('className="pm-card"');
   });
 
   /* R315 override (K-E): the chapters 05–06 demo ledger rows + their
