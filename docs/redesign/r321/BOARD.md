@@ -53,7 +53,7 @@ produced them.
 
 | A10 | Production proof harness | **FIXED c1 (foreman-B)** — scripts/r321/prod-proof.ts (5 phases) + FIRST RUN on production (buildId ff7aeed6): accounts **10/10** (API+UI@390, panel one-tap) · pages **19/19** (0 console/0 failed) · statics 3/3 · docH 390=11,357 (−0.7 %) / 1440=12,530 (+1.4 %) LIVE · desktop scroll row honest-baseline 32.1 % >33 ms (§A1 owns). Reviewer APPROVED (independent re-run + numbers cross-check). Re-run after every deploy | 1 ✓ |
 
-## §B authenticated sweep (cycles 2–5) — recipe = the settings package · **inventory DONE c1 (foreman-B WP-B0)**: docs/redesign/r321/STUDENT-SWEEP.md — 37 student-visible routes mapped (32 sheet-verified · **5 conversion targets**: T-1 OnlineExamsPages.tsx 1,951 ln ZERO markers · T-2 CampusMapPage · T-3 LivePage · T-4 LecturePlayerPage · T-5 CommunityPages ×5) · queue B1 exams → B2 map+live → B3 lecture player → B4 community+dedupe → B-verify the rubric sweep (100 % coverage leg) · **PROGRESS c1 (foreman-B, all reviewer-approved)**: B1a+B1b DONE (the exams list + taker chrome in the sheet system, r321-exams.css; state machine untouched) · B2 DONE (CampusMap + Live, r321-map-live.css) · REMAIN: B3 (LecturePlayerPage 1,004 ln, zero PageFrame) · B4 (CommunityPages ×5 dedupe+conversion) · B-verify (the full routes × 390/768/1440 × light/dark matrix + dark pairs the branches owe + the seeded live/practice fixtures) · 48 shots
+## §B authenticated sweep (cycles 2–5) — recipe = the settings package · **inventory DONE c1 (foreman-B WP-B0)**: docs/redesign/r321/STUDENT-SWEEP.md — 37 student-visible routes mapped (32 sheet-verified · **5 conversion targets**: T-1 OnlineExamsPages.tsx 1,951 ln ZERO markers · T-2 CampusMapPage · T-3 LivePage · T-4 LecturePlayerPage · T-5 CommunityPages ×5) · queue B1 exams → B2 map+live → B3 lecture player → B4 community+dedupe → B-verify the rubric sweep (100 % coverage leg) · **PROGRESS c1 (foreman-B, all reviewer-approved)**: B1a+B1b DONE (the exams list + taker chrome in the sheet system, r321-exams.css; state machine untouched) · B2 DONE (CampusMap + Live, r321-map-live.css) · B3 DONE (the lecture player chrome — .r321p-page + r321-player-page.css, engine byte-untouched) · B4 DONE (community: census corrected the ×5 to route-rows-since-r299; the real composer twins deduped; .r321c-page) · **B-verify DONE: 199/200 cells green (40 routes × 4 viewports × light + 390 dark, 80 shots 1.67 MB — the 29 dark "defects" were the sweep's own 429 noise vs the documented 1000req/15min limiter, re-verified in isolation)** · Tickets born: Bverify-P3-1 (competition-detail dark: h1=0 in the ended/empty state) · B4-rem (PostsFeedPanel↔SocialPage ~180-ln clone + posts/rooms hairline adoption) · B3-rem (the old LectureSkeleton shimmer + dead .lecture-panel-* rules in student.css) · 48 shots
 
 student (remaining: results, jobs, AI, gamification, skills, alerts,
 messages, AR/VR, social, downloads, university, live, payment, campus map,
@@ -76,6 +76,24 @@ errors, bundle caps only DOWN (736 → targets §E: main ≤ 200 KB gz, route
 masked-pixel ≤ 40 %, motion ≥ 90, geometry ±1.5 %).
 
 ## Cycle log
+
+### Cycle 1 — foreman-B close (8f061a25 + bverify merge; production re-proven)
+
+| Ticket | State | Evidence |
+|---|---|---|
+| A10 prod-proof | **FIXED** | harness + 2 production runs (ff7aeed6 + 5928c69a: accounts 10/10 · pages 19/19 · statics 3/3 · landing 2/2 · 0 FAIL) |
+| A2-R ladder | **EVIDENCED** | 11-viewport Heron ladder (Lenis-wrapper finding); 4 seats remain out of ±1.5% (320/430/600/1180) — foreman-A's A2 line |
+| A8-prod | **TICKETED** | the demo panel open-by-default ships to production (dev-only per the brief) — AuthPage owner line |
+| B0 inventory | **FIXED** | STUDENT-SWEEP.md: 37 routes mapped · 5 targets named · the B1..B4 queue |
+| C0 clean baseline | **FIXED** | jscpd 980 · CSS 2,230/5,627 candidates · ts-prune 757 rows · dup-selector 65 · hover 182 · bundle 736.0/736 · the C-1..C-10 factory + 3 raw-CSS banner defects killed |
+| B1a/B1b exams | **FIXED** | list + taker in the sheet system (reviewer-approved ×2 passes each) · belt 42/42 |
+| B2 map+live | **FIXED** | .r321m conversion, reviewer-approved |
+| B3 player | **FIXED** | .r321p chrome conversion, engine untouched, reviewer-approved · 2 source pins re-pinned (R321 override) |
+| B4 community | **FIXED** | census-corrected dedupe + conversion, reviewer-approved after the alef fix |
+| B-verify | **FIXED** | 199/200 green (the re-verified matrix) · Bverify-P3-1 filed |
+| CI repair | **FIXED** | the ledger scan self-trip (batch-2's ci.yml comment) — reworded, scan green |
+
+Cycle-1 foreman-B line: **11 work packages merged, every one through a separate reviewer** (2 REJECTs caught real defects — the hidden-hover ratchet break + the auth-page shot bug + the inverted masthead + the dropped alef — and were fixed before merge). Gates on the final tree: front 2733/2733 · tsc 0/0 · raw-css strict PASS · hover 182≤185 · dup-selector 65 (baseline) · ledger 0 · bundle 736.0/736. Remaining for the cycle per §K: foreman-A's A1-trio + A3 + A9 (untouched ≥2.5 h — the A2-R/A8-prod/Bverify-P3-1/B4-rem tickets above are queued for whoever takes the line next).
 
 ### Cycle 1 — the foreman-A line CLOSED at bd4253ac (A2/A4/A5/A6/A7/A8 ✓ · A1 partial · A10 = foreman-B)
 
