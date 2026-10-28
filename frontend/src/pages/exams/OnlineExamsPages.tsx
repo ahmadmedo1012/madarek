@@ -15,6 +15,12 @@ import {
 } from 'lucide-react';
 import { Card, Badge, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
+/* R321 B1a — the sheet-system kit: the frame + the patterns masthead
+ * (aliased — the primitives PageHeader stays imported for the quality
+ * moderation screen below), and the §B2 anatomy the converted family
+ * mounts (SectionBar/BarCount/EmptyCell — the JobsPage recipe). */
+import { PageFrame, PageHeader as PatternPageHeader } from '../../components/patterns';
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { Illustration as MkIllustration } from '../../components/illustrations/Illustration';
 import { Skeleton, ListSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
@@ -39,6 +45,14 @@ import '../../styles/teacher-quality.css'; // R304 — the family sheet (oex- se
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-schedule.css';
 import '../../styles/r305-teacher-quality.css'; // R305 — the Heron layer (oex2- section lives here)
+/* ── R321 B1a (student sweep) — the exams LIST joins the sheet system:
+ * the shared §B2 anatomy sheet (page-chunked like every converted
+ * family page — the JobsPage/SettingsPage precedent), then THIS
+ * family's own harmonics (the .r321x-page opt-in root + the
+ * inner-scale masthead re-seat; family-unique rules only, the
+ * r319-student-pages.css contract). ── */
+import '../../styles/r319-student.css';
+import '../../styles/r321-exams.css';
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
@@ -258,19 +272,43 @@ export default function OnlineExamsPage() {
   );
 
   return (
-    <div className="hr-scope">
-      <div className="page">
-        {/* R305 Heron — the exams brow above the page header. */}
-        <span className="hr-brow oex2-brow">مركز الاختبارات</span>
-        <PageHeader
-        title="الاختبارات الإلكترونية"
-        subtitle="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
-      />
+    /* R321 B1a (student sweep) — the LIST joins the sheet system: ONE
+     * .r321x-page opt-in root mirrors the family's .r319s-page
+     * (r321-exams.css keys its family-unique rules off this root). The
+     * old .hr-scope + .page + brow + primitives-PageHeader stack is
+     * retired for this page only — the shell owns frame + grain + the
+     * SHEET line, the patterns PageHeader owns the one display h1. */
+    <div className="r321x-page">
+      <PageFrame width="default">
+        <PatternPageHeader
+          index="01"
+          eyebrow="مركز الاختبارات"
+          title="الاختبارات الإلكترونية"
+          description="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
+        />
 
-      {q.isPending ? (
-        /* Shape-matched loading — the real surface is a row list, so the
-           skeleton rows mirror the row anatomy (icon well + lines). */
-        <Card title="اختبارات متاحة لك الآن" icon={ClipboardCheck}>
+        {/* [02] the startable board — the bar renders in every state
+            (skeleton rows under it while pending, the honest error
+            under it, the hatched empty under it), the mono count only
+            once resolved (the JobsPage honest-meta rule; countAr stays
+            the screen-reader phrase). */}
+        <SectionBar
+          index="02"
+          title="اختبارات متاحة لك الآن"
+          id="oex-sec-available"
+          meta={
+            !q.isPending && !q.isError && available.length > 0 ? (
+              <BarCount
+                n={available.length}
+                srLabel={countAr(available.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+              />
+            ) : undefined
+          }
+        />
+
+        {q.isPending ? (
+          /* Shape-matched loading — the real surface is a row list, so the
+             skeleton rows mirror the row anatomy (icon well + lines). */
           <div className="oex-rows" aria-hidden>
             {[0, 1, 2, 3].map((i) => (
               <div key={i} className="oex-skel">
@@ -283,24 +321,17 @@ export default function OnlineExamsPage() {
               </div>
             ))}
           </div>
-        </Card>
-      ) : q.isError ? (
-        <ErrorState error={q.error} onRetry={() => void q.refetch()} />
-      ) : (
-        <>
-          {/* 22-c (A4 P2-3): counted nouns — «1 اختبار» broke the
-              glossary (Latin digit + wrong noun form). countAr is
-              already imported for the timer aria-label. */}
-          <Card
-            title="اختبارات متاحة لك الآن"
-            icon={ClipboardCheck}
-            subtitle={countAr(available.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
-          >
+        ) : q.isError ? (
+          <ErrorState error={q.error} onRetry={() => void q.refetch()} />
+        ) : (
+          <section className="oex-sec" aria-labelledby="oex-sec-available">
             {available.length === 0 && (
-              <EmptyState
-                illustration="empty-list"
-                title="لا توجد اختبارات متاحة حالياً"
-                description={
+              /* R321 B1a — the empty board is the sheet's reserved-but-
+                 empty region: the hatched EmptyCell (the §B2 family
+                 grammar), same honest copy the old EmptyState carried. */
+              <EmptyCell
+                label="لا توجد اختبارات متاحة حالياً"
+                note={
                   unavailable.length > 0
                     ? 'بعض اختباراتك لم يفتح بابها بعد أو أُغلق — مواعيدها في القائمة أدناه.'
                     : 'سماؤك صافية الليلة — ستُضيء النجوم هنا فور اعتماد مكتب الجودة ومُقرِّريك الاختبارات.'
@@ -311,41 +342,58 @@ export default function OnlineExamsPage() {
                 section's row container is a named list and every row a
                 listitem — startable rows keep their link semantics via
                 the listitem wrapper (never role on the anchor itself,
-                which would strip the implicit link role). */}
-            <div className="oex-rows" role="list" aria-label="اختبارات متاحة لك الآن">
-              {available.map((e) => <ExamCard key={e.id} exam={e} canStart />)}
-            </div>
-          </Card>
+                which would strip the implicit link role). An empty
+                board renders NO list element at all (the hatched cell
+                above IS the state). */}
+            {available.length > 0 && (
+              <div className="oex-rows" role="list" aria-label="اختبارات متاحة لك الآن">
+                {available.map((e) => <ExamCard key={e.id} exam={e} canStart />)}
+              </div>
+            )}
+          </section>
+        )}
 
-          {/* 15-h P1-5 — windowed exams outside their open window stay
-              visible with their real schedule («يفتح …» / «أغلق باب
-              التسليم») instead of masquerading as startable. */}
-          {unavailable.length > 0 && (
-            <Card
+        {/* 15-h P1-5 — windowed exams outside their open window stay
+            visible with their real schedule («يفتح …» / «أغلق باب
+            التسليم») instead of masquerading as startable. */}
+        {!q.isPending && !q.isError && unavailable.length > 0 && (
+          <section className="oex-sec" aria-labelledby="oex-sec-unavailable">
+            <SectionBar
+              index="03"
               title="اختبارات غير متاحة الآن"
-              icon={CalendarClock}
-              subtitle={countAr(unavailable.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
-            >
-              <div className="oex-rows" role="list" aria-label="اختبارات غير متاحة الآن">
-                {unavailable.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
-              </div>
-            </Card>
-          )}
+              id="oex-sec-unavailable"
+              meta={(
+                <BarCount
+                  n={unavailable.length}
+                  srLabel={countAr(unavailable.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+                />
+              )}
+            />
+            <div className="oex-rows" role="list" aria-label="اختبارات غير متاحة الآن">
+              {unavailable.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
+            </div>
+          </section>
+        )}
 
-          {taken.length > 0 && (
-            <Card
+        {!q.isPending && !q.isError && taken.length > 0 && (
+          <section className="oex-sec" aria-labelledby="oex-sec-taken">
+            <SectionBar
+              index="04"
               title="اختبارات أجريتها"
-              icon={FileText}
-              subtitle={countAr(taken.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
-            >
-              <div className="oex-rows" role="list" aria-label="اختبارات أجريتها">
-                {taken.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
-              </div>
-            </Card>
-          )}
-        </>
-      )}
-      </div>
+              id="oex-sec-taken"
+              meta={(
+                <BarCount
+                  n={taken.length}
+                  srLabel={countAr(taken.length, ['اختبار واحد', 'اختباران', 'اختبارات', 'اختباراً'])}
+                />
+              )}
+            />
+            <div className="oex-rows" role="list" aria-label="اختبارات أجريتها">
+              {taken.map((e) => <ExamCard key={e.id} exam={e} canStart={false} />)}
+            </div>
+          </section>
+        )}
+      </PageFrame>
     </div>
   );
 }

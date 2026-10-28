@@ -1,0 +1,102 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R321 (c1 · WP-B1a) — the student ONLINE-EXAMS LIST joins
+   the SHEET SYSTEM (§B sweep, the JobsPage/SettingsPage family twin).
+
+   Scope: /student/online-exams — the LIST only (OnlineExamsPage in
+   pages/exams/OnlineExamsPages.tsx). The exam TAKER
+   (/student/online-exams/:id) and the quality moderation queue are
+   deliberately NOT converted by this sheet — the taker is B1b's own
+   pass (keyboard/scroll/answer-state/timer UX is the highest-risk
+   surface in §B), so it keeps its .hr-scope + R304/R305 grammar and
+   opts into nothing here. The page imports this sheet directly after
+   the shared §B2 anatomy sheet (r319-student.css — the
+   SectionBar/BarCount/EmptyCell component styles + the family's
+   unlayered masthead tail precedent).
+
+   THE SHEET CHROME IS NOT HERE (and neither is the §B2 component
+   anatomy). The shared shell owns the 7px frame + grain + the ambient
+   `SHEET S-01 · STUDENT` line on every authenticated route;
+   r319-student.css carries the SectionBar/EmptyCell/mono-count
+   component grammar. The page opts in via ONE `.r321x-page` root (the
+   `.r319s-page` twin — pages.css keying, the AppShell mounts nothing
+   new). This sheet carries ONLY what is unique to the exams family on
+   top of both:
+
+     · §1 the inner-scale masthead re-seat — the exams list is an
+       INNER page (a tool page inside the student section, not a
+       section cover), so its one display h1 seats at the INNER scale:
+       ≤32px at every band (the r319 tail re-seats the family's cover
+       pages to the 46.67px display rung; this page's brief pins the
+       inner rung instead — 31.5px @1440 / 31.8px @390).
+     · §2 the paper-rows section rhythm — the old Card walls are gone;
+       the three boards (available / unavailable / taken) are hairline
+       row lists sitting directly on the page paper, so consecutive
+       sections carry one honest breath between the last row of one
+       board and the next board's title bar.
+
+   Gate contract (this tree): var()/color-mix() colors only · token
+   ladder for radius/spacing · zero :hover STATE rules of our own (the
+   oex-row hover grammar stays where it lives, teacher-quality.css) ·
+   static texture, nothing for the RM belt to collapse.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · The paper-rows section rhythm ────────────────────────────
+     Rows sit on the page paper (no card frame to give each board a
+     wall), so the NEXT board's title bar needs one honest breath
+     after the previous board's last row hairline. Scoped to the
+     page's own opt-in root — the oex- row anatomy (hairlines, icon
+     wells, chips, hover tint) keeps its teacher-quality.css §5 rules
+     verbatim; this sheet adds only the seating between boards. */
+  .r321x-page .oex-sec + .oex-sec {
+    margin-block-start: var(--sp-8);
+  }
+
+  /* The hatched empty board keeps the same breath under its bar as a
+     populated one (the EmptyCell is the SECTION's whole body then,
+     not a prelude to rows). */
+  .r321x-page .oex-sec .r319s-empty {
+    margin-block-end: var(--sp-4);
+  }
+}
+
+/* ═══ UNLAYERED TAIL — the masthead re-seat (cascade reasoning) ═══════
+   Same house pattern as r319-student.css's own unlayered tail:
+   patterns.css ships `.pf-page-title` UNLAYERED (font-size var(--fs-h2)
+   — 40px @1440, 47.6px @390 on the fluid root), and @layer pages can
+   never beat an unlayered rule regardless of specificity — so the ONE
+   masthead override sits outside the layer stack, keyed off this
+   page's own `.r321x-page` root (this sheet is page-chunked — no other
+   route loads it). The re-seat: the INNER-PAGE display rung — one
+   display voice per page (the masthead's), at ≤32px on every band
+   (31.5px @1440 / ~30px @768 / 31.8px @390), the Alexandria display
+   canon carried over from the family tail. The section h2s answer at
+   the SectionBar register (26.7px @1440 / 19.8px @390) — the one
+   display voice rule holds without the cover-page's giant word. */
+.r321x-page .pf-page-title {
+  font-family: var(--font-display);
+  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px; the reviewer's measured 2.25rem read 18.75px and INVERTED the h1/h2 hierarchy at every band ≥768), the inner-page display rung (the cover pages' 46.67px is not this page's brief) */
+  font-weight: var(--fw-bold);
+  line-height: 1.05;      /* the Alexandria display canon */
+  letter-spacing: 0;      /* Arabic joins — never tracked */
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+@media (max-width: 991px) {
+  .r321x-page .pf-page-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy */
+}
+@media (max-width: 767px) {
+  .r321x-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
+}
+
+/* Reduced-motion belt: this sheet's material is static texture (one
+   spacing rung + type seating — nothing animates, nothing to
+   collapse). Kept as the explicit contract, mirroring the family
+   sheets. */
+@media (prefers-reduced-motion: reduce) {
+  .r321x-page .oex-sec,
+  .r321x-page .oex-sec .r319s-empty {
+    transition: none;
+  }
+}

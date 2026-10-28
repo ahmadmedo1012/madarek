@@ -377,3 +377,20 @@ Work Log:
 
 Stage Summary:
 - docs/redesign/r321/STUDENT-SWEEP.md is the §B ticket factory + queue; evidence 48 shots (41@390 + 7@1440, all ≤150KB, dir 1.8MB); zero src changes.
+
+---
+Task ID: r321-c1-B1a
+Agent: WP-B1a (sub-agent, died at the 15-min tool deadline mid-conversion) + foreman-B completion
+Task: §B B1a — the student ONLINE-EXAMS LIST joins the sheet system (STUDENT-SWEEP T-1, first half).
+
+Work Log:
+- The agent converted OnlineExamsPage (109+/61− in pages/exams/OnlineExamsPages.tsx): ONE .r321x-page opt-in root + PageFrame(default) + the patterns PageHeader (index 01 · eyebrow مركز الاختبارات · ONE display h1 at the inner ≤32px scale) + the three boards (available 02 / unavailable 03 / taken 04) re-seated from Card walls to SectionBar + BarCount mono counts (sr labels via countAr) + hairline row lists on the page paper + the hatched EmptyCell empty state with the same honest copy + shape-matched skeleton rows + ErrorState; the empty board renders NO list element. New family sheet r321-exams.css (102 ln, the r319-student-pages contract: family-unique rules only — §1 the inner-scale masthead re-seat ≤32px, §2 the paper-rows section rhythm; zero own :hover rules; var()/color-mix only; the taker + quality screens deliberately untouched — B1b's pass).
+- Incident + recovery (the agent's deadline death): its npm install followed the worktree's node_modules SYMLINKS and corrupted the SHARED root tree — 35 .bin shims rewritten as self-referential stubs (vitest/vite/tsc/tsx/eslint/playwright…) = every bin-driven tool hung silently; foreman-B diagnosed (self-exec shim loop), removed the 35 stubs, npm install recreated proper links; vitest verified 5/5 then full 2733/2733. FLEET RULE hardened: sub-agents get NO install rights, and the foreman re-scans .bin integrity after every agent.
+- Foreman completion: restored the EmptyState import (the unconverted taker/quality screens still use it — tsc 0/0 after), verified: OnlineExamsPages unit belt 42/42 + 5 related suites (113 tests green) · raw-css --strict PASS · dup-selector 65 (baseline, no new) · hover 183 (b1 base pre-dates the c0 rework's 182; no new of its own — zero :hover rules added) · ledger 0 off-list · bundle gate PASS · after shots captured @390 light/dark + 1440 (all ≤150KB) beside the agent's before pair.
+
+Stage Summary:
+- T-1's list half converted on branch r321/wp-b1, fully gated; B1b (the exam TAKER conversion — keyboard/timer/answer-state UX, the highest-risk §B surface) remains open with the recipe proven.
+
+CORRECTION (r321-c1-B1a, per the reviewer's rejection — both blocking defects fixed):
+1. Evidence integrity: the after-390 pair had captured /auth (the shot script created NEW contexts per shot — the login session died with them). Re-captured in ONE session; the h1 now reads «[01] الاختبارات الإلكترونية» on the captured page; shots 57/52KB.
+2. Masthead arithmetic: 2.25rem read 18.75px @1440 (fluid root 8.333px) and INVERTED h1<h2 at every band ≥768. Fixed to 3.78rem/3rem/3.2rem — measured ladder now 1440: 31.5>26.67 · 1024: 22.4>18.96 · 768: 27.63>25.78 · 390: 31.76>19.85, all h1 ≤32px. raw-css --strict PASS; OnlineExamsPages 42/42 + r305-shell-states 19/19; dup-selector 65 · hover 183 (base) · ledger 0.
