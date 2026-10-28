@@ -52,11 +52,11 @@ landmarks, focus order, reduced-motion = complete static page · dark pair verif
 | /student/webinars | WebinarsPage | pages/student/WebinarsPage.tsx | ✅ | webinars-390.jpg |
 | /training · /training/:slug · /training/:slug/lesson/:lessonId | TrainingCatalog/Track/LessonPage | pages/student/TrainingPages.tsx | ✅ | training-{,track-,lesson-}390.jpg |
 | /achievements (← /student/achievements) | AchievementsPage | pages/student/TrainingPages.tsx | ✅ | achievements-390.jpg |
-| **/student/online-exams** | OnlineExamsPage | **pages/exams/OnlineExamsPages.tsx (1,951 ln)** | ❌ **0 markers, 0 PageFrame** | online-exams-390.jpg (+1440) |
-| **/student/online-exams/:id** | ExamTakerPage | **pages/exams/OnlineExamsPages.tsx** | ❌ | exam-taker-390.jpg |
-| **/student/map** | CampusMapPage | pages/student/CampusMapPage.tsx (212 ln) | ❌ no r319 (PageFrame yes) | map-390.jpg |
+| /student/online-exams | OnlineExamsPage | pages/exams/OnlineExamsPages.tsx | ✅ **r321x (B1a merged)** — .r321x-page + PageFrame + SectionBar boards + BarCount + hatched EmptyCell + r321-exams.css; h1 31.5px@1440 / 31.76px@390 (reviewer-measured) | online-exams-390.jpg (+1440) + b1a-after-* |
+| /student/online-exams/:id | ExamTakerPage | pages/exams/OnlineExamsPages.tsx | ✅ **r321x-taker (B1b merged)** — chrome-only conversion, state machine byte-untouched (reviewer diff-verified); begin/done/result h1s at the inner rung; sticky bars squared | exam-taker-390.jpg + b1b-taker-390.jpg |
+| /student/map | CampusMapPage | pages/student/CampusMapPage.tsx | ✅ **r321m (B2 merged)** — 3 SectionBars + BarCount + hairline rows; map art untouched | map-390.jpg + b2-map-390.jpg |
 | **/student/lectures/:lectureId** | LecturePlayerPage | pages/student/LecturePlayerPage.tsx (1,004 ln) | ❌ 0 markers, 0 PageFrame | lecture-player-390.jpg (+1440) |
-| **/student/live** | LivePage | pages/student/LivePage.tsx (255 ln) | ❌ no r19 | live-390.jpg |
+| /student/live | LivePage | pages/student/LivePage.tsx | ✅ **r321m (B2 merged)** — [02]/[03]/[04] boards + hatched EmptyCell (populated boards need a seeded fixture) | live-390.jpg + b2-live-390.jpg |
 | **/community (← /student/community)** | CommunityPage | **pages/community/CommunityPages.tsx (849 ln)** | ❌ no r319 — the ×5-duplicate family | community-390.jpg (+1440) |
 | /student/exams → /student/online-exams | Navigate | — | redirect | — |
 | /student/colleges → /colleges | Navigate | — | redirect | — |
