@@ -1,15 +1,13 @@
 /* ═════════════════════════════════════════════════════════════════════
-   MADAREK — R321 (c1 · WP-B1a) — the student ONLINE-EXAMS LIST joins
-   the SHEET SYSTEM (§B sweep, the JobsPage/SettingsPage family twin).
+   MADAREK — R321 (c1 · WP-B1a/B1b) — the student ONLINE-EXAMS family
+   joins the SHEET SYSTEM (§B sweep, the JobsPage/SettingsPage twin).
 
-   Scope: /student/online-exams — the LIST only (OnlineExamsPage in
-   pages/exams/OnlineExamsPages.tsx). The exam TAKER
-   (/student/online-exams/:id) and the quality moderation queue are
-   deliberately NOT converted by this sheet — the taker is B1b's own
-   pass (keyboard/scroll/answer-state/timer UX is the highest-risk
-   surface in §B), so it keeps its .hr-scope + R304/R305 grammar and
-   opts into nothing here. The page imports this sheet directly after
-   the shared §B2 anatomy sheet (r319-student.css — the
+   Scope: pages/exams/OnlineExamsPages.tsx — the LIST
+   (/student/online-exams, B1a) AND the exam TAKER
+   (/student/online-exams/:id, B1b — this pass). The quality
+   moderation queue is still NOT converted (its own §C batch); it
+   opts into nothing here. Both screens import this sheet directly
+   after the shared §B2 anatomy sheet (r319-student.css — the
    SectionBar/BarCount/EmptyCell component styles + the family's
    unlayered masthead tail precedent).
 
@@ -17,10 +15,11 @@
    anatomy). The shared shell owns the 7px frame + grain + the ambient
    `SHEET S-01 · STUDENT` line on every authenticated route;
    r319-student.css carries the SectionBar/EmptyCell/mono-count
-   component grammar. The page opts in via ONE `.r321x-page` root (the
-   `.r319s-page` twin — pages.css keying, the AppShell mounts nothing
-   new). This sheet carries ONLY what is unique to the exams family on
-   top of both:
+   component grammar. Each screen opts in via ONE `.r321x-page` root
+   (the `.r319s-page` twin — pages.css keying, the AppShell mounts
+   nothing new); the taker adds the `.r321x-taker` modifier so its
+   own harmonics can never leak at the LIST. This sheet carries ONLY
+   what is unique to the exams family on top of both:
 
      · §1 the inner-scale masthead re-seat — the exams list is an
        INNER page (a tool page inside the student section, not a
@@ -29,15 +28,25 @@
        pages to the 46.67px display rung; this page's brief pins the
        inner rung instead — 31.5px @1440 / 31.8px @390).
      · §2 the paper-rows section rhythm — the old Card walls are gone;
-       the three boards (available / unavailable / taken) are hairline
-       row lists sitting directly on the page paper, so consecutive
-       sections carry one honest breath between the last row of one
-       board and the next board's title bar.
+       the boards are hairline row lists sitting directly on the page
+       paper, so consecutive sections carry one honest breath between
+       the last row of one board and the next board's title bar.
+     · §3 (B1b) the TAKER paper — the begin/done/result moments sit
+       on the sheet (no Card wall), their pinned .oex-result-title h1
+       re-seats at the SAME inner rung (§4 below); the live attempt's
+       question board seats ONE SectionBar + mono BarCount, the
+       question cells sit on the paper with hairline separators
+       (radius 0, no shadows), and the sticky instrument bars square
+       their corners to match. The state machine (timer / autosave /
+       qmap / submit / IntersectionObserver band math) is UNTOUCHED —
+       the sticky .oex-bar keeps its exact painted height, so the
+       bandTop 120/160px scroll tracking cannot desync.
 
    Gate contract (this tree): var()/color-mix() colors only · token
    ladder for radius/spacing · zero :hover STATE rules of our own (the
-   oex-row hover grammar stays where it lives, teacher-quality.css) ·
-   static texture, nothing for the RM belt to collapse.
+   oex- row/choice/dot hover grammar stays where it lives,
+   teacher-quality.css) · static texture, nothing for the RM belt to
+   collapse.
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
@@ -58,6 +67,47 @@
      not a prelude to rows). */
   .r321x-page .oex-sec .r319s-empty {
     margin-block-end: var(--sp-4);
+  }
+
+  /* ── 3 · B1b — the TAKER paper (the live attempt board) ───────────
+     The question cells sit directly on the page paper (the old Card
+     walls are gone — hairline grammar, radius 0, no shadows): one
+     hairline rule breathes between consecutive questions, and the
+     cell body carries the block rhythm the old card padding gave
+     it. The oex- inner anatomy (prompt / choices / save-state chips
+     / qmap dots) keeps its teacher-quality.css §5 rules verbatim —
+     only the seating changes. */
+  .r321x-taker .oex-qlist {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .r321x-taker .oex-qlist .oex-q + .oex-q {
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .r321x-taker .oex-q-card {
+    padding-block: var(--sp-5);
+  }
+
+  /* The sticky command bar + the docked submit bar square their
+     corners (hairline instruments, not card walls). The border stays
+     the 1px rule teacher-quality.css paints — only the radius joins
+     the sheet. */
+  .r321x-taker .oex-bar {
+    border-radius: 0;
+  }
+
+  @media (max-width: 920px) {
+    .r321x-taker .oex-submit-bar {
+      border-radius: 0;
+    }
+  }
+
+  /* The jump-target landing ring follows its cell's square corners
+     (the teacher-quality rule rounds it to the old card's --r-lg). */
+  .r321x-taker .oex-q:focus {
+    border-radius: 0;
   }
 }
 
@@ -90,13 +140,46 @@
   .r321x-page .pf-page-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
 }
 
+/* ═══ UNLAYERED TAIL — the taker moment-title re-seat (B1b) ══════════════
+   Same cascade reasoning as the masthead above (an @layer pages rule
+   can never beat an unlayered one): the taker's three moment screens
+   (begin / done / result) carried their h1 inline as
+   H1_AS_H2_STYLE — var(--fs-h2) on the fluid root read 40px @1440 /
+   47.6px @390, over the ≤32px inner brief, and an inline declaration
+   can only be retired by removing it — so the conversion moved the
+   seat here, keyed off the taker's own `.r321x-taker` modifier (the
+   belt pins the class: .oex-result-title stays on the h1 verbatim;
+   the sheet now owns the size). The ACTIVE screen's h1
+   (.oex-bar-title) is deliberately NOT re-seated: it is the sticky
+   instrument's label, and its painted 16px rung is what the
+   IntersectionObserver band math (bandTop 120/160px) mirrors —
+   one h1 per screen either way, ≤32px everywhere. */
+.r321x-taker .oex-result-title {
+  margin: 0;                /* the .empty-state column's gap owns the breath */
+  font-family: var(--font-display);
+  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the same inner-page display rung the masthead seats at (§ above) */
+  font-weight: var(--fw-bold);
+  line-height: 1.05;      /* the Alexandria display canon */
+  letter-spacing: 0;      /* Arabic joins — never tracked */
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+@media (max-width: 991px) {
+  .r321x-taker .oex-result-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), the tablet inner-page rung */
+}
+@media (max-width: 767px) {
+  .r321x-taker .oex-result-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the phone display rung (the ≤32px brief, kept) */
+}
+
 /* Reduced-motion belt: this sheet's material is static texture (one
-   spacing rung + type seating — nothing animates, nothing to
-   collapse). Kept as the explicit contract, mirroring the family
-   sheets. */
+   spacing rung + type seating + hairline seating — nothing animates,
+   nothing to collapse). Kept as the explicit contract, mirroring the
+   family sheets. */
 @media (prefers-reduced-motion: reduce) {
   .r321x-page .oex-sec,
-  .r321x-page .oex-sec .r319s-empty {
+  .r321x-page .oex-sec .r319s-empty,
+  .r321x-taker .oex-qlist .oex-q,
+  .r321x-taker .oex-q-card {
     transition: none;
   }
 }
