@@ -14,6 +14,14 @@
    Arabic (body, Latin runs included) + Geist Mono / IBM Plex Mono
    (technical micro-labels). Archivo (OFL) remains the documented
    future addition if a distinct Latin display voice is ever required.
+   R322 (design-director edition, DESIGN.md §R322): the blind
+   3-reviewer font vote (audits/evidence/r322/dsys/font-vote.md)
+   re-seats the DISPLAY voice onto IBM Plex Sans Arabic 400/500/600 —
+   ALREADY self-hosted below, so R322 adds zero font bytes and zero
+   @font-face rules. Alexandria 600/700 stays wired untouched for its
+   legacy consumers until the display seats migrate (task 1-d); the
+   800/900 display era ends with this round (display weights 400–600
+   only per the owner brief §4).
    Replaces the render-blocking fonts.googleapis.com request chain
    (preconnect ×2 → css2 stylesheet → gstatic files) that used to sit
    in <head>. This file must be imported FIRST in main.tsx so the

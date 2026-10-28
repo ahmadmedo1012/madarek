@@ -1246,3 +1246,86 @@
     }
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   R322 — the DESIGN DIRECTOR layer (DESIGN.md §R322; additive only)
+   ═════════════════════════════════════════════════════════════════════
+   Round R322's owner brief (docs/redesign/r322/BRIEF.md §4) orders the
+   system re-founded on measured evidence before any page restyles. This
+   block adds the NEW canonical seats — the ONE display scale, the rem
+   spacing scale, the 12-column grid props — WITHOUT mutating a single
+   existing token (hundreds of legacy consumers resolve the names above;
+   task 1-d migrates consumers onto these rungs, never the reverse).
+   NO page consumes this layer yet; the landing screenshot is
+   pixel-identical with or without it (verified in
+   audits/evidence/r322/dsys/shots/).
+
+   Evidence chain (audits/evidence/r322/dsys/):
+   · type-census.md — the live sweep that proved the V5 defect: 5–6
+     ad-hoc display sizes (60–85.55px @1440/991), 100% weight 700, and
+     the fluid root's tablet band amplifying --fs-display-lg to
+     85.55px at 991 (the owner's «80–110px» reading, quantified).
+   · font-vote.md — the blind 3-reviewer display-face election:
+     IBM Plex Sans Arabic 26.5/30 (two #1, one #2). The display voice
+     moves onto Plex 400/500/600 — ALREADY self-hosted (fonts.css
+     seats, arabic + latin subsets), so this layer ships zero font
+     bytes; Alexandria 600/700 stays wired for legacy consumers.
+
+   Type rungs: the vw mid-term is BAND-INDEPENDENT — the tablet-band
+   root spike (991 → 11.883px root) can never re-amplify a display
+   rung — while the rem bounds ride the fluid root so phone minimums
+   hold. @1440 targets are the R313-measured Heron heading ladder
+   (h1 46.67 · h2 40 · h3 33.33px). ALL VALUES PROVISIONAL — re-pin
+   after the Heron extraction lands (task 1-c) per DESIGN.md §4.c.
+   Display weights 400–600 ONLY (the 800/900 era ends; --fw-medium/
+   --fw-semibold resolve them); leading 1.05/1.10/1.15 per rung rides
+   literals at the consumer (the --lh-* rungs predate R322 and stay).
+
+   Spacing: eleven rem rungs on the fluid root — the ONLY allowed
+   spacing values once migration starts (a stylelint rule is planned
+   to enforce the list; the px --sp-* ladder above stays untouched
+   for legacy consumers — values differ by design: --space-2xl 2rem
+   ≈ 16.7px @1440 vs --sp-2 8px; do NOT mix them in one rule).
+
+   Grid: 12 columns; margin/gutter in rem; logical properties only
+   (inline-start/end) so RTL is native. PROVISIONAL — re-pin after
+   the Heron extraction lands (measured header cells 137px/166.67px
+   @1440 are the derivation source). ═══════════════════════════ */
+
+@layer tokens {
+
+  :root {
+    /* ─── R322 · the ONE display scale (DESIGN.md §4.c) ───────────────
+       D1 — one per page, the H1 (hero/opens): weight 600, lh 1.05.
+       D2 — the section statement (H2): weight 500, lh 1.10.
+       D3 — the card title (H3): weight 500, lh 1.15.
+       text-wrap: balance at the consumer; zero tashkeel; zero
+       letter-spacing on Arabic (permanent exception 2). */
+    --fs-d1: clamp(2.5rem, 3.25vw, 5.6rem);   /* 46.7px @1440 · 24.8px @390 · 62px cap @1920 */
+    --fs-d2: clamp(2.25rem, 2.78vw, 5.3rem);  /* 40px    @1440 · 22.3px @390 (Heron h2) */
+    --fs-d3: clamp(1.875rem, 2.3vw, 4rem);    /* 33.1px  @1440 · 18.6px @390 (Heron h3) */
+
+    /* ─── R322 · the rem spacing scale (DESIGN.md §4.b) ───────────────
+       Eleven rungs, rem on the fluid root — the ONLY allowed values
+       for new code (stylelint enforcement planned with the 1-d
+       migration). ≈px @1440 in the comments. */
+    --space-xs:  0.25rem;   /* ≈2px    — hairline nudges, optical alignment */
+    --space-sm:  0.5rem;    /* ≈4px    — chip/pair rhythm */
+    --space-md:  0.75rem;   /* ≈6px    — compact-control padding */
+    --space-lg:  1rem;      /* ≈8px    — the base rhythm */
+    --space-xl:  1.5rem;    /* ≈12.5px — card inner padding */
+    --space-2xl: 2rem;      /* ≈17px   — card/group gaps */
+    --space-3xl: 3rem;      /* ≈25px   — intra-section blocks */
+    --space-4xl: 4rem;      /* ≈33px   — section padding */
+    --space-6xl: 6rem;      /* ≈50px   — section breathing */
+    --space-8xl: 8rem;      /* ≈67px   — page bands */
+    --space-12xl: 12rem;    /* ≈100px  — the pinned-story runway class */
+
+    /* ─── R322 · the grid props (DESIGN.md §4.a) ──────────────────────
+       12 columns; margins/gutter in rem on the fluid root. Logical
+       properties only at the consumers (inline-start/end). */
+    --grid-cols: 12;
+    --grid-margin: 4rem;    /* ≈33px @1440 · ≈40px @390 — PROVISIONAL */
+    --grid-gutter: 1.5rem;  /* ≈12.5px @1440 — PROVISIONAL */
+  }
+}
