@@ -967,6 +967,19 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   background: var(--accent);
 }
 
+/* R322 V7 — the discover link's edge-rail inset (≥992px only): the
+ * far-end cell seats the link flush with the sheet frame's left line
+ * (the R315 A.2 measured seat), which put its text tail under the
+ * .et-tab slab (measured: «اكتشف المزيد» lost ~32px @1440). The
+ * slim rail owns [7px, 7px+2.08rem] + the 4px nudge; the 2.88rem
+ * inline-end margin (physical left in the page's RTL) clears the
+ * nudged rail with a ~14px gap @1440. */
+@media (min-width: 992px) {
+  .fo-hero-discover {
+    margin-inline-end: 2.88rem;
+  }
+}
+
 .fo-hero-discover-arrow {
   transition: translate var(--t-base) var(--ease);
 }
@@ -2155,10 +2168,16 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 /* R314 (cycle-2 §7 heights) — the desktop colophon stack: the three
  * bands butt hairline-to-hairline (grid → strip band → legal row),
  * the measured reference composition (355 + 314 + 42 = 711). The
- * ≤991px flow keeps its own paddings (the V13 mobile band). */
+ * ≤991px flow keeps its own paddings (the V13 mobile band).
+ * R322 V7 (the edge-rail inset): the colophon's three bands inset
+ * from the .et-tab slim rail (r314-chrome.css — [7px, 7px+2.08rem]
+ * + the 4px nudge) on the physical-left (inline-end in the page's
+ * RTL) edge, mirroring the content bands' 4rem rail inset above; the
+ * frame's own right seat (1433 @1440) is untouched. */
 @media (min-width: 992px) {
   .fo-footer-inner {
     padding-block: 0;
+    padding-inline-end: 2.56rem; /* R322 V7 — the edge-rail inset */
     gap: 0;
   }
 }
@@ -6474,7 +6493,12 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .st-section { min-block-size: 86.7rem; }
   .pr-section { min-block-size: 85.2rem; }
 
-  /* the sheet measure rides the frame like every reference band */
+  /* the sheet measure rides the frame like every reference band.
+   * R322 V7 (the edge-rail inset): the physical-left (inline-end in
+   * the page's RTL) padding steps one rung up so no band's text ever
+   * sits under the .et-tab slim rail (r314-chrome.css — rail spans
+   * [7px, 7px+2.08rem] + the 4px hover nudge; 4rem clears it with a
+   * ~9px gap @1440 and rides the root at every tier). */
   .st-section,
   .pm-section,
   .chapters,
@@ -6484,6 +6508,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-cta {
     max-inline-size: none;
     padding-inline: 3.2rem; /* spacing-gate: allow — the reference's own measured section padding (3.2rem, content 1373.4 @1440), an external constant */
+    padding-inline-end: 4rem; /* R322 V7 — the edge-rail inset (see the note above) */
   }
 
   /* hero + roles = the 100vh − 1.6rem quartet (the reference's usecase

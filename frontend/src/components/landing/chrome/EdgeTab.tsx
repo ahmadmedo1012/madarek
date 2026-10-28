@@ -1,22 +1,27 @@
 /**
  * EdgeTab — R314 (V12) — the right-edge vertical chrome tab.
  *
- * An ORIGINAL tab in the reference's measured geometry (fixed to the
- * right viewport edge, vertically centred, ~26×140, paper ground, a
- * 1px hairline on the outer edge, a small orange square with a tiny
- * mark at the top, rotated vertical mono label) — carrying Madarek's
- * OWN honest label «منصّة مستقلّة · مدارك <year>» (the year COMPUTED at
- * render in Arabic-Indic digits — r315 C4-D: the ٢٠٢٦ hardcode went
- * stale at the 2027 rollover). NEVER the reference's
- * "Site of the Day"/awwwards badge or any award claim — Madarek claims
- * no awards.
+ * An ORIGINAL tab in the reference's measured geometry (vertically
+ * centred, paper ground, a 1px hairline on the outer edge, a small
+ * orange square with a tiny mark at the top, rotated vertical mono
+ * label) — carrying Madarek's OWN honest label «منصّة مستقلّة · مدارك
+ * <year>» (the year COMPUTED at render in Arabic-Indic digits — r315
+ * C4-D: the ٢٠٢٦ hardcode went stale at the 2027 rollover). NEVER the
+ * reference's "Site of the Day"/awwwards badge or any award claim —
+ * Madarek claims no awards.
+ *
+ * R322 (§1 V7 — the owner's overlap rule): the ≥992px tab is a SLIM
+ * RAIL inside the frame margin (never a 44px slab over body copy);
+ * ≤991px it stays the R318 §A10 gutter marker. The .et-rail span is
+ * the visible rail body; the button keeps the ≥44px transparent
+ * touch floor around it.
  *
  * Click scrolls to the landing's colophon footer (`.fo-footer` — the
- * identity/legal surface); keyboard-operable as a real <button>; hidden
- * below 768px (the reference hides its tab on mobile); the hover nudge
- * collapses under prefers-reduced-motion. Below the masthead in the
- * stacking order (z 55 vs the header's 60 — the spec's "below header,
- * e.g. 900" mapped onto the repo's actual chrome ladder).
+ * identity/legal surface); keyboard-operable as a real <button>; the
+ * hover nudge collapses under prefers-reduced-motion. Below the
+ * masthead in the stacking order (z 55 vs the header's 60 — the
+ * spec's "below header, e.g. 900" mapped onto the repo's actual
+ * chrome ladder).
  */
 import { useCallback } from 'react';
 
@@ -54,31 +59,37 @@ export function EdgeTab() {
       onClick={scrollToFooter}
       aria-label="الانتقال إلى أسفل الصفحة — هوية المنصّة ومعلوماتها"
     >
-      {/* the small orange square (~14×14) with a tiny white 4-pointed
-          star — Madarek's own mark, drawn bespoke (the StarMark
-          primitive strokes itself in --accent, invisible on an accent
-          ground, so the tab uses the white-stroke variant) */}
-      <span className="et-mark" aria-hidden="true">
-        <svg
-          viewBox="0 0 24 24"
-          width="12"
-          height="12"
-          fill="none"
-          focusable="false"
-          style={{ display: 'block' }}
-        >
-          {/* the 4-pointed star — two long rays + two short, stroked */}
-          <path
-            d="M12 3 L14.2 9.8 L21 12 L14.2 14.2 L12 21 L9.8 14.2 L3 12 L9.8 9.8 Z"
-            stroke="var(--accent-fg)"
-            strokeWidth="1.5"
-            strokeLinejoin="round"
-          />
-        </svg>
+      {/* R322 (V7): .et-rail — the visible slim-rail body (≥992px:
+          the 2.08rem paper rail inside the frame margin; ≤991px:
+          display:contents so the R318 §A10 gutter-marker grammar in
+          r314-chrome.css anchors .et-mark straight to the button). */}
+      <span className="et-rail" aria-hidden="true">
+        {/* the small orange square (~14×14) with a tiny white 4-pointed
+            star — Madarek's own mark, drawn bespoke (the StarMark
+            primitive strokes itself in --accent, invisible on an accent
+            ground, so the tab uses the white-stroke variant) */}
+        <span className="et-mark" aria-hidden="true">
+          <svg
+            viewBox="0 0 24 24"
+            width="12"
+            height="12"
+            fill="none"
+            focusable="false"
+            style={{ display: 'block' }}
+          >
+            {/* the 4-pointed star — two long rays + two short, stroked */}
+            <path
+              d="M12 3 L14.2 9.8 L21 12 L14.2 14.2 L12 21 L9.8 14.2 L3 12 L9.8 9.8 Z"
+              stroke="var(--accent-fg)"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        {/* the rotated vertical mono label — Madarek's own honest line
+            (no award claims): «منصّة مستقلّة · مدارك <computed year>» */}
+        <span className="et-label">{`منصّة مستقلّة · مدارك ${yearAr()}`}</span>
       </span>
-      {/* the rotated vertical mono label — Madarek's own honest line
-          (no award claims): «منصّة مستقلّة · مدارك <computed year>» */}
-      <span className="et-label" aria-hidden="true">{`منصّة مستقلّة · مدارك ${yearAr()}`}</span>
     </button>
   );
 }
