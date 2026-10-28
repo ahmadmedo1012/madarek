@@ -1,0 +1,146 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R321 (c1 · WP-B3) — the LECTURE PLAYER page joins the
+   SHEET SYSTEM (§B student sweep, the r321-exams/r321-map-live family
+   contract).
+
+   Scope: pages/student/LecturePlayerPage.tsx — /student/lectures/:lectureId
+   (T-4 in the §B student sweep). The page opts in via ONE `.r321p-page`
+   root (the `.r319s-page`/`.r321x-page`/`.r321m-page` twin — pages.css
+   keying, the AppShell mounts nothing new) + a PageFrame, and imports
+   this sheet directly after the shared §B2 anatomy sheet
+   (r319-student.css — the SectionBar/BarCount/EmptyCell component
+   styles).
+
+   THE SHEET CHROME IS NOT HERE (and neither is the §B2 component
+   anatomy). The shared shell owns the 7px frame + grain + the ambient
+   `SHEET S-01 · STUDENT` line on every authenticated route;
+   r319-student.css carries the SectionBar/EmptyCell/mono-count
+   grammar. THE PLAYER ENGINE IS NOT HERE EITHER: player.css (the
+   .vpc scrub/speed/fullscreen chrome) keeps its family verbatim — only
+   its SEATING (the paper around the stage) converts. This sheet
+   carries ONLY what is unique to the player page family on top:
+
+     · §1 the side-panel wall retires — the boards («نقاط التفاعل» /
+       «فصول المحاضرة» / «مواد المقرّر») are §B2 title bars + hairline
+       rows sitting directly on the page paper; the sticky instrument
+       column keeps its scroll-with-the-player behavior (transparent —
+       it stays inside its own grid track, nothing slides under it).
+     · §2 the under-bar note rung — the honest answered-count copy the
+       old section-title meta carried (preserved verbatim) seats as a
+       quiet note under its §B2 bar (the ml-sec-note register).
+     · §3 the paper seats — the description paragraph and the keyboard
+       legend lose their Card/section paddings and sit on the paper;
+       the [01] mono index rides the now-playing band's OWN ink (the
+       deep band flips per theme — the page-index must inherit it,
+       never the page-ground faint ink).
+     · §4 (the unlayered tail) the inner-scale masthead re-seat — the
+       lecture title (the page's ONE display h1, seated in the
+       now-playing band under the video, this page's authored moment)
+       re-seats at the INNER scale: ≤32px at every band, the
+       r321-exams ladder (31.5px @1440 / ~27.6px @768 / 31.8px @390).
+       The color is deliberately NOT re-seated: the band owns the h1's
+       ink (.r305c-now .lecture-meta-title { color: inherit } stays
+       the winner — an unlayered color declaration would strand the
+       title on the page ground and vanish it on the ink band).
+
+   Gate contract (this tree): var()/color-mix() colors only · token
+   ladder for radius/spacing · zero :hover STATE rules of our own (the
+   cp-row/chapter-row hover grammar stays in student.css) · static
+   texture, nothing for the RM belt to collapse.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 1 · the side-panel wall retires — boards on the page paper ───
+     The old .lecture-panel Card wall (surface ground + hairline frame
+     + --r-lg) retires with the sheet: the boards sit on the page
+     paper, one honest breath between them (the column's own gap
+     rhythm — the aside's sp-4). The sticky + max-block-size +
+     overflow scroll-with-the-player behavior keeps its student.css
+     rules verbatim — the transparent column still tracks the video
+     without a wall (it never leaves its grid track). */
+  .r321p-page .lecture-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-4);
+    background: none;
+    border: 0;
+    border-radius: 0;
+  }
+
+  /* ── 2 · the under-bar note rung ──────────────────────────────────
+     The honest answered-count copy the old section-title meta carried
+     (preserved verbatim) seats as ONE quiet muted note under its §B2
+     bar — the r321m .ml-sec-note register carried into this family's
+     own sheet. */
+  .r321p-page .lecture-sec-note {
+    margin: 0 0 var(--sp-3);
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+    line-height: var(--lh-base);
+    max-inline-size: var(--type-body-max-measure);
+  }
+
+  /* ── 3 · the paper seats ──────────────────────────────────────────
+     The description paragraph loses its Card paddings (the frame's
+     flex gap owns the breath now), and the keyboard legend sits flush
+     with the boards' paper edge. */
+  .r321p-page .lecture-desc {
+    margin: 0;
+  }
+  .r321p-page .lecture-keys {
+    padding-inline: 0;
+  }
+
+  /* The [01] mono index rides the band's OWN ink: PageHeader renders
+     the page index in the page-ground faint color; inside the deep
+     band that would vanish in light theme — inherit the h1's band
+     ink instead (the band flips with the theme, the index follows). */
+  .r321p-page .lecture-meta-title .page-index {
+    color: inherit;
+  }
+}
+
+/* ═══ UNLAYERED TAIL — the masthead re-seat (cascade reasoning) ═══════
+   Same house pattern as r319-student.css's own unlayered tail:
+   student.css ships `.lecture-meta-title` inside @layer pages
+   (font-size var(--type-headline-size-md) — the 22px body headline
+   rung), and @layer pages can never beat an unlayered rule regardless
+   of specificity — so the ONE display re-seat sits outside the layer
+   stack, keyed off this page's own `.r321p-page` root (this sheet is
+   page-chunked — only /student/lectures/:lectureId loads it). The
+   re-seat: the INNER-PAGE display rung — one display voice per page
+   (the band title's), at ≤32px on every band (31.5px @1440 / ~27.6px
+   @768 / 31.8px @390 — the r321-exams ladder, the ≤32px inner brief),
+   the Alexandria display canon. NO color declaration here (see the
+   §4 note above — the band owns the ink). The section h2s answer at
+   the SectionBar register (26.7px @1440 / 19.8px @390) — the one
+   display voice rule holds. */
+.r321p-page .lecture-meta-title {
+  font-family: var(--font-display);
+  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the inner-page display rung (the cover pages' 46.67px is not this page's brief), the r321-exams ladder */
+  font-weight: var(--fw-bold);
+  line-height: 1.05;      /* the Alexandria display canon */
+  letter-spacing: 0;      /* Arabic joins — never tracked */
+  overflow-wrap: break-word;
+}
+@media (max-width: 991px) {
+  .r321p-page .lecture-meta-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy */
+}
+@media (max-width: 767px) {
+  .r321p-page .lecture-meta-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
+}
+
+/* Reduced-motion belt: this sheet's material is static texture (one
+   spacing rung + the type/ink seats — nothing animates, nothing to
+   collapse). Kept as the explicit contract, mirroring the family
+   sheets. */
+@media (prefers-reduced-motion: reduce) {
+  .r321p-page .lecture-panel,
+  .r321p-page .lecture-sec-note,
+  .r321p-page .lecture-desc,
+  .r321p-page .lecture-keys,
+  .r321p-page .lecture-meta-title {
+    transition: none;
+  }
+}

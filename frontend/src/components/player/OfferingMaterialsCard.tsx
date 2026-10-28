@@ -3,11 +3,15 @@ import {
   FileText, FileArchive, Image, Presentation, Video,
   type LucideIcon,
 } from 'lucide-react';
-import { Card } from '../primitives';
+/* R321 (c1 · WP-B3): the attachments board joins the sheet — the Card
+ * wall retires; the board is a §B2 title bar + the SAME list rows on
+ * the page paper. The component is consumed by LecturePlayerPage only,
+ * which loads r319-student.css (the §B2 anatomy). */
+import { SectionBar, BarCount } from '../student';
 import { Icon } from '../Icon';
 import { useOfferingFull } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
-import { formatDateAr } from '../../lib/format';
+import { countAr, formatDateAr } from '../../lib/format';
 import { MATERIAL_TYPE_LABEL, type MaterialType } from '../../lib/courseMeta';
 
 /* r164d (course flow): the player's materials card — "materials within
@@ -45,8 +49,18 @@ export function OfferingMaterialsCard({ offeringId }: { offeringId: string | und
   // Fail-soft: nothing while pending (the card appends when data
   // lands) and nothing on error (the course page remains the source).
   if (!offeringId || q.isPending || q.isError || materials.length === 0) return null;
+  /* R321 (c1 · WP-B3): the board bar seats the paper (the old Card
+     title/icontoggle became the §B2 mono-indexed title bar + the
+     honest mono count — same title text, same rows, same fail-soft
+     contract verbatim). */
   return (
-    <Card title="مواد المقرّر" icon={FileText}>
+    <section className="lecture-sec" aria-labelledby="lec-sec-mat">
+      <SectionBar
+        index="04"
+        title="مواد المقرّر"
+        id="lec-sec-mat"
+        meta={<BarCount n={materials.length} srLabel={countAr(materials.length, ['مادة واحدة', 'مادّتان', 'مواد', 'مادة'])} />}
+      />
       <div className="flex-col gap-2">
         {materials.map((m) => {
           const label = MATERIAL_TYPE_LABEL[m.type as keyof typeof MATERIAL_TYPE_LABEL] ?? m.type;
@@ -78,6 +92,6 @@ export function OfferingMaterialsCard({ offeringId }: { offeringId: string | und
           );
         })}
       </div>
-    </Card>
+    </section>
   );
 }

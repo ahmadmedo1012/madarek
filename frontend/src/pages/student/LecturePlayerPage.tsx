@@ -4,8 +4,13 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   CheckCircle2, ChevronLeft, ChevronRight, ListVideo, Play, Sparkles, XCircle, AlertCircle,
 } from 'lucide-react';
-import { Badge, Card } from '../../components/primitives';
+import { Badge } from '../../components/primitives';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
+/* R321 (c1 · WP-B3) — the sheet seating: PageFrame (the paper column)
+ * + the §B2 kit (the mono-indexed section title bar, the honest mono
+ * count, the hatched empty cell). */
+import { PageFrame } from '../../components/patterns';
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
@@ -21,6 +26,14 @@ import { formatInt } from '../../utils/numbers';
  * refines the surfaces around it. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-courses.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
+ * student page mounts (SectionBar/BarCount/EmptyCell + the family's
+ * unlayered masthead tail precedent). */
+import '../../styles/r319-student.css';
+/* R321 (c1 · WP-B3): the player page's own harmonics — the .r321p-page
+ * opt-in root, the retired panel wall + the inner-scale masthead
+ * re-seat (the r321-exams.css contract); family-unique rules only. */
+import '../../styles/r321-player-page.css';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
  * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,
@@ -94,7 +107,8 @@ const OPTION_MARKS = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
    jumped when data landed and the error state had no way back). */
 function LectureSkeleton() {
   return (
-    <div className="page" aria-busy="true" aria-live="polite">
+    <div className="r321p-page">
+    <PageFrame width="default" aria-busy="true" aria-live="polite">
       <Skeleton width={150} height={32} rounded="var(--r-md)" />
       <div className="lecture-shell">
         <div className="lecture-main">
@@ -122,6 +136,7 @@ function LectureSkeleton() {
           </div>
         </div>
       </div>
+    </PageFrame>
     </div>
   );
 }
@@ -329,7 +344,8 @@ export default function LecturePlayerPage() {
   // (useLecture stays `enabled: false` → isPending never resolves).
   if (!lectureId) {
     return (
-      <div className="page">
+      <div className="r321p-page">
+      <PageFrame width="default">
         <EmptyState
           icon={ListVideo}
           title="لم يتم تحديد محاضرة"
@@ -337,18 +353,21 @@ export default function LecturePlayerPage() {
           description="الرابط لا يتضمّن محاضرة — اختر محاضرة من المقرر للمتابعة."
           action={<Link className="btn ghost sm" to="/student/courses">العودة إلى مقرراتي</Link>}
         />
+      </PageFrame>
       </div>
     );
   }
   if (isPending) return <LectureSkeleton />;
   if (isError || !data) {
     return (
-      <div className="page">
+      <div className="r321p-page">
+      <PageFrame width="default">
         <Link to="/student/courses" className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
           <Icon icon={ChevronRight} size={13} />
           العودة إلى مقرراتي
         </Link>
         <ErrorState error={error} onRetry={() => refetch()} />
+      </PageFrame>
       </div>
     );
   }
@@ -482,7 +501,14 @@ export default function LecturePlayerPage() {
   const siblingsLoading = siblingsQ.isPending;
 
   return (
-    <div className="page">
+    /* R321 (c1 · WP-B3) — the page joins the sheet system: ONE
+     * .r321p-page opt-in root (the r321-exams.css contract) + the
+     * PageFrame paper column. The player ENGINE (player.css .vpc
+     * scrub/speed/fullscreen chrome, the watch-report state machine,
+     * the checkpoint modal) is byte-untouched — only the SEATING
+     * around it converted. */
+    <div className="r321p-page">
+    <PageFrame width="default">
       <Link to={`/student/courses/${data.offering.id}`} className="btn ghost sm" style={{ alignSelf: 'flex-start' }}>
         {/* ChevronRight = the RTL back direction (mirrors auth-back-home
             and DocumentViewerPage); ChevronLeft pointed "forward". */}
@@ -614,7 +640,13 @@ export default function LecturePlayerPage() {
               <span className="text-xs text-subtle r305s-band-secondary">المحاضرة {data.ordinal}</span>
               {completed && <Badge color="green" icon={CheckCircle2}>مكتملة</Badge>}
             </div>
-            <h1 className="lecture-meta-title">{data.title}</h1>
+            {/* R321 B3: the [01] mono gutter index rides the h1 the
+                PageHeader grammar renders it in — on the band it
+                inherits the band's own ink (the family sheet's §3). */}
+            <h1 className="lecture-meta-title">
+              <span className="page-index" aria-hidden="true" dir="ltr">[01]</span>
+              {data.title}
+            </h1>
             <div className="lecture-meta-sub r305s-band-secondary">
               د. {data.offering.teacher.firstName} {data.offering.teacher.lastName} ·{' '}
               <bdi className="font-mono">{formatMmSs(currentSec)} / {formatMmSs(reportTotalSec)}</bdi>
@@ -788,10 +820,11 @@ export default function LecturePlayerPage() {
             )}
           </nav>
 
+          {/* R321 B3: the description Card wall is gone — the prose
+              sits directly on the page paper (the frame's flex gap
+              owns the breath). */}
           {data.description && (
-            <Card>
-              <p className="lecture-desc">{data.description}</p>
-            </Card>
+            <p className="lecture-desc">{data.description}</p>
           )}
         </div>
 
@@ -799,8 +832,12 @@ export default function LecturePlayerPage() {
             (interaction points + chapters) live in ONE calm panel beside
             the video — detail attached to the item, not a stack of
             sibling cards. ≤1024px the panel re-flows below the player.
-            The panel title is the section's h2 (r168a heading outline:
-            lecture title = h1, panel = h2, panel sections = h3). */}
+            R321 (c1 · WP-B3): the panel WALL retires — the boards are
+            §B2 title bars + hairline rows on the page paper (the
+            sticky scroll-with-the-player behavior keeps its student.css
+            rules verbatim); the boards carry the §B2 h2s (one h1 per
+            route, sections answer with h2s — the r168a one-h1 outline
+            holds, no skipped rungs). */}
         {/* r299 (final C): a labeled <section> (region), not <aside>
             (complementary) — the panel is PART of the lecture view, and
             an aside nested inside the shell's main landmark trips axe's
@@ -809,17 +846,22 @@ export default function LecturePlayerPage() {
             outline (h2 panel / h3 sections) — only the landmark role
             changes. */}
         <section className="lecture-aside" aria-label="محتويات المحاضرة" id="lecture-contents">
-          <section className="lecture-panel">
-            <h2 className="lecture-panel-title">داخل المحاضرة</h2>
+          <div className="lecture-panel">
 
             {data.checkpoints.length > 0 && (
-              <div className="lecture-panel-sec">
-                <h3 className="lecture-panel-sec-title">
-                  نقاط التفاعل
-                  <span className="lecture-panel-sec-meta">
-                    أُجيب عن {formatInt(checkpointsAnswered)} من {formatInt(checkpointsTotal)}
-                  </span>
-                </h3>
+              <section className="lecture-sec" aria-labelledby="lec-sec-cp">
+                <SectionBar
+                  index="02"
+                  title="نقاط التفاعل"
+                  id="lec-sec-cp"
+                  meta={<BarCount n={checkpointsTotal} srLabel={countAr(checkpointsTotal, ['نقطة تفاعل واحدة', 'نقطتا تفاعل', 'نقاط تفاعل', 'نقطة تفاعل'])} />}
+                />
+                {/* R321 B3: the honest answered-count copy the old
+                    section-title meta carried, verbatim — one quiet
+                    note under the §B2 bar (the ml-sec-note register). */}
+                <p className="lecture-sec-note">
+                  أُجيب عن {formatInt(checkpointsAnswered)} من {formatInt(checkpointsTotal)}
+                </p>
                 <div className="cp-list">
                   {data.checkpoints.map((c) => {
                     const answered = answeredCheckpointIds.has(c.id);
@@ -842,12 +884,17 @@ export default function LecturePlayerPage() {
                     );
                   })}
                 </div>
-              </div>
+              </section>
             )}
 
-            {data.chapters.length > 0 ? (
-              <div className="lecture-panel-sec">
-                <h3 className="lecture-panel-sec-title">فصول المحاضرة</h3>
+            <section className="lecture-sec" aria-labelledby="lec-sec-ch">
+              <SectionBar
+                index="03"
+                title="فصول المحاضرة"
+                id="lec-sec-ch"
+                meta={<BarCount n={data.chapters.length} srLabel={countAr(data.chapters.length, ['فصل واحد', 'فصلان', 'فصول', 'فصلاً'])} />}
+              />
+              {data.chapters.length > 0 ? (
                 <div className="chapter-list">
                   {data.chapters.map((ch, i) => {
                     const isActive = currentSec >= ch.startSec && currentSec < ch.endSec;
@@ -877,17 +924,19 @@ export default function LecturePlayerPage() {
                     );
                   })}
                 </div>
-              </div>
-            ) : (
-              <p className="lecture-panel-empty">
-                لم تُقسَّم هذه المحاضرة إلى فصول — شاهدها كاملة دون تنقّل.
-              </p>
-            )}
+              ) : (
+                // R321 B3 — the honest no-chapters copy, now the sheet's
+                // hatched EmptyCell (same words, the reserved region).
+                <EmptyCell label="لا فصول مقسَّمة" note="لم تُقسَّم هذه المحاضرة إلى فصول — شاهدها كاملة دون تنقّل." />
+              )}
+            </section>
 
             {/* R304 — the keyboard contract of the chrome, surfaced where
                 the chapters live (Space/K play, arrows ±10s, F fullscreen,
                 M mute — the same keys VideoPlayerChrome handles). */}
-            <div className="lecture-panel-sec lecture-keys" aria-label="اختصارات لوحة المفاتيح">
+            {/* R321 B3: flush with the boards' paper edge (the family
+                sheet's §3). */}
+            <div className="lecture-keys" aria-label="اختصارات لوحة المفاتيح">
               <span className="lecture-keys-row">
                 <kbd className="kbd" dir="ltr">Space</kbd>
                 <span>تشغيل / إيقاف</span>
@@ -905,7 +954,7 @@ export default function LecturePlayerPage() {
                 <span>كتم الصوت</span>
               </span>
             </div>
-          </section>
+          </div>
 
           {/* r164d (course flow): the offering's materials, one scroll
               away from the video (reads the course page's cached /full
@@ -999,6 +1048,7 @@ export default function LecturePlayerPage() {
           </div>
         </div>
       </Modal>
+    </PageFrame>
     </div>
   );
 }
