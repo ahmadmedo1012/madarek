@@ -94,7 +94,6 @@ interface JourneyStage {
   verbAr: string;
   titleAr: string;
   textAr: string;
-  meta: string;
 }
 
 const STAGES_J: JourneyStage[] = [
@@ -103,30 +102,31 @@ const STAGES_J: JourneyStage[] = [
     verbAr: 'شاهد',
     titleAr: 'المحاضرة التفاعلية',
     textAr: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضور يُحتسب تلقائيًا عند الإكمال.',
-    meta: 'live · lectures',
   },
   {
     num: '02',
     verbAr: 'تحقّق',
     titleAr: 'نقاط الفحص',
     textAr: 'سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.',
-    meta: 'live · checkpoints',
   },
   {
     num: '03',
     verbAr: 'اختبر',
     titleAr: 'الاختبارات الإلكترونية',
     textAr: 'بنك أسئلة بأربعة أنواع وقوالب جاهزة، وتصحيح تلقائي للأسئلة الموضوعية.',
-    meta: 'live · exams',
   },
   {
     num: '04',
     verbAr: 'أتقن',
     titleAr: 'مصفوفة الإتقان',
     textAr: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.',
-    meta: 'live · mastery',
   },
 ];
+
+/* R322 V1 kill: the stages' English jargon metas ('live · lectures' …
+ * 'live · mastery') are deleted — the rendered '02 · live ·
+ * checkpoints' strip line was debug-family text; the Arabic
+ * honest-ledger lines (textAr + the CHECKLIST) carry the facts. */
 
 /* The capability checklist — the expanding column at pin end. Every
  * line is a live capability (the honest ledger); the closing note
@@ -428,11 +428,13 @@ function PlanWindow({ cam = false }: { cam?: boolean }) {
       <div className="jt-progress" aria-hidden="true">
         <span />
       </div>
-      {/* the status strip — the current station, stacked + faded */}
+      {/* the status strip — the current station, stacked + faded
+          (R322 V1: the English jargon meta is deleted; the bare
+          [01]-style index carries the stage) */}
       <div className="jt-status" aria-hidden="true">
         {STAGES_J.map((s) => (
           <span key={s.num} className="jt-status-line">
-            <span className="fo-mono" dir="ltr">{s.num} · {s.meta}</span>
+            <span className="fo-mono" dir="ltr">{s.num}</span>
           </span>
         ))}
       </div>
@@ -623,7 +625,9 @@ export function JourneyScene() {
             chrome (landing.css hides the panel ≤991px — the stacked
             readable ladder keeps its measured band heights). */}
         <div className="jt-side" ref={sideRef} data-open="off">
-          <span className="jt-side-label fo-mono" dir="ltr">[01–04] · LIVE</span>
+          {/* R322 V1 kill: the '[01–04] · LIVE' mono side label is
+              deleted with its .jt-side-label CSS — a floating status
+              tag is not content. */}
           <figure className="jt-side-section">
             <SectionDrawing />
             <figcaption>

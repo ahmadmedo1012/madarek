@@ -1754,9 +1754,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 /* R314 (cycle-2 §7 heights): the cta band tightens to the reference's
- * 698px (from 755) — the coords row, the title block's margins and the
- * registry strip give back the ~57px. The floor rides the same share
- * (77.5vh = 698 @900); desktop-scoped. */
+ * 698px (from 755) — the title block's margins and the registry strip
+ * give back the ~57px (R322 V1: the coords row is deleted). The floor
+ * rides the same share (77.5vh = 698 @900); desktop-scoped. */
 @media (min-width: 992px) {
   .fo-cta {
     padding-block: var(--sp-8) var(--sp-7);
@@ -1766,15 +1766,6 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
      * 77.5vh share was exact at 900px height only: −47 @1080, +30 @768 —
      * the reference's band is width-driven, not height-driven. */
     min-block-size: 83.75rem;
-  }
-
-  .fo-cta-coords {
-    padding-block-end: var(--sp-2);
-    margin-block-end: var(--sp-5);
-  }
-
-  .fo-cta-corners {
-    margin-block-start: var(--sp-1);
   }
 
   .fo-cta .fo-hero-meta {
@@ -1787,14 +1778,9 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   }
 }
 
-.fo-cta-coords {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-  border-block-end: 1px solid var(--rule);
-  padding-block-end: var(--sp-3);
-  margin-block-end: var(--sp-6);
-  text-align: start;
-}
+/* R322 V1 kill: .fo-cta-coords (the [R313] revision row) and
+ * .fo-cta-corners (the r308 [0,…] corner readout) are deleted with
+ * their markup — revision tags and coordinates are not content. */
 
 /* the resolve + the sketch panel read side by side (the reference's
    cta composition: copy + sketch image) */
@@ -2073,10 +2059,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   color: var(--text-secondary);
 }
 
-.wy-stage-meta {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-}
+/* R322 V1 kill: .wy-stage-meta (the English jargon 'live · …' row)
+ * is deleted with its markup. */
 
 /* the capture stack — one frame per stage, cross-fading (opacity
    only; never layout). The stack keeps ONE frame's height. */
@@ -5170,8 +5154,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
    the status strip; the paper-ground chip seat mirrors it exactly at
    the frame's opposite (top) corner. Chrome only: aria-hidden in the
    markup, and the cam twin itself is display:none at ≥992px so the
-   desktop pin (its own door markers + the [01–04] · LIVE side label)
-   never sees it. */
+   desktop pin (its own door markers) never sees it. */
 .jt-idx {
   position: absolute;
   inset-block-start: 12px;
@@ -5409,13 +5392,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   visibility: visible;
 }
 
-.jt-side-label {
-  display: block;
-  padding: var(--sp-2) var(--sp-3);
-  color: var(--accent-ink);
-  font-size: var(--fs-xxs);
-  border-block-end: 1px solid var(--rule);
-}
+/* R322 V1 kill: .jt-side-label (the '[01–04] · LIVE' floating status
+ * tag) is deleted with its markup. */
 
 .jt-checklist {
   display: grid;
@@ -6011,13 +5989,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   transform: scaleX(0);
 }
 
-/* ── the CTA corner coordinates ────────────────────────────────────── */
-.fo-cta-corners {
-  margin-block-start: var(--sp-2);
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.05em;
-}
+/* R322 V1 kill: the .fo-cta-corners base block (the r308 corner
+   coordinate readout) is deleted with its markup. */
 
 /* R313 — the hold-plateau snap now lives on the why-section's active
    verb (wy-snap, declared with the .wy family); the vision status
@@ -6197,19 +6170,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     margin-block-start: var(--sp-2);
   }
 
-  /* ── cta: 669 → 512 (target 500) — the coords/title/resolve rows
-     tighten; the meta readout keeps all four honest rows ── */
+  /* ── cta: 669 → 512 (target 500) — the title/resolve rows tighten
+     (R322 V1: the coords/corners rows are deleted); the meta readout
+     keeps all four honest rows ── */
   .fo-cta {
     padding-block: var(--sp-5) var(--sp-4);
-  }
-
-  .fo-cta-coords {
-    padding-block-end: var(--sp-2);
-    margin-block-end: var(--sp-3);
-  }
-
-  .fo-cta-corners {
-    margin-block-start: 0;
   }
 
   .fo-cta-inner {
@@ -6376,12 +6341,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
   /* 4 — CTA folds + trims (1010 → 541): the sketch slab and the meta
    * table's last rows retire (the reference's tablet CTA is the
-   * mobile-grade head/main/deco rows); the coords row + registry
-   * strip tighten to the reference's row rhythm */
+   * mobile-grade head/main/deco rows; R322 V1: the coords/corners
+   * rows are deleted); the registry strip tightens to the reference's
+   * row rhythm */
   .fo-cta-sketch { display: none; }
   .fo-cta .fo-meta-row:nth-last-child(-n + 2) { display: none; }
-  .fo-cta-coords { margin-block-end: var(--sp-2); padding-block-end: var(--sp-2); }
-  .fo-cta-corners { margin-block-start: 0; }
   .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
   .fo-meta-row { padding-block: var(--sp-0-5); }
   .cg-strip { padding-block: var(--sp-2); }
@@ -6439,8 +6403,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .fo-footer { min-block-size: 103.1rem; }
 
   /* CTA final trims (578 → ≤541 @768: the floor pins, the content must
-   * fit under it — coords row + registry strip tighten one more rung) */
-  .fo-cta-coords { margin-block-end: var(--sp-1); }
+   * fit under it — the registry strip tightens one more rung; R322 V1:
+   * the coords/corners rows are deleted) */
   .cg-strip { padding-block: var(--sp-1); }
   .fo-cta-grid { gap: var(--sp-3); }
 
@@ -6584,8 +6548,6 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .rl-head { margin-block-end: 4.8rem; }
   .rl-more { margin-block-start: 1.92rem; }
 
-  .fo-cta-coords { margin-block-end: 2.4rem; padding-block-end: 0.96rem; }
-  .fo-cta-corners { margin-block-start: 0.48rem; }
   .fo-cta-inner { gap: 1.92rem; }
   .fo-cta-lede { line-height: 1.6; }
   .fo-cta .fo-hero-meta { margin-block-start: 2.4rem; }
@@ -6663,9 +6625,7 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 @media (min-width: 992px) and (max-width: 1024px) {
   .fo-cta-sketch { display: none; }
   .fo-cta .fo-meta-row:nth-last-child(-n + 2) { display: none; }
-  .fo-cta-corners { display: none; }
   .fo-cta { padding-block: var(--sp-6) var(--sp-5); }
-  .fo-cta-coords { margin-block-end: var(--sp-2); padding-block-end: var(--sp-2); }
   .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
   .fo-cta-grid { grid-template-columns: minmax(0, 1fr); }
   .fo-fcell-strip { display: none; }
@@ -6705,8 +6665,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
      reference's own tablet map shows the plan ALONE (its caption
      chrome hidden at 768–1024), and our strip struck station 4's
      title (gate: .jt-status × .jt-station-title 1669.6px² @1024,
-     both themes). The stations' own [01–04] · meta mono labels carry
-     the index; ≥1025 keeps the strip (1440 measured green). */
+     both themes). The stations' own [01–04] index labels carry the
+     index; ≥1025 keeps the strip (1440 measured green). */
   .jt-status { display: none; }
 }
 
@@ -6931,9 +6891,8 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
     line-height: 1.2;
   }
 
-  .wy-stage-num,
-  .wy-stage-meta {
-    font-size: 1.31rem; /* mono rows — the Latin ladder */
+  .wy-stage-num {
+    font-size: 1.31rem; /* mono numeral — the Latin ladder */
     line-height: 1.2;
   }
 
@@ -6968,22 +6927,11 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 
   .rl-more { margin-block-start: 0.81rem; }
 
-  /* ── cta — the reference's phone band is coords + title + line +
-   * button (500 @390): the meta readout keeps its first two honest
-   * rows, rows 3–6 fold (the tablet band folds 5–6) ── */
+  /* ── cta — the reference's phone band is title + line + button
+   * (500 @390; R322 V1: the coords/corners debug rows are deleted):
+   * the meta readout keeps its first two honest rows, rows 3–6 fold
+   * (the tablet band folds 5–6) ── */
   .fo-cta { padding-block: 2.02rem 1.61rem; }
-
-  .fo-cta-coords {
-    font-size: 1.31rem; /* mono coords — the Latin ladder */
-    line-height: 1.2;
-    padding-block-end: 0.81rem;
-    margin-block-end: 1.21rem;
-  }
-
-  .fo-cta-corners {
-    font-size: 1.31rem; /* mono corners — the Latin ladder */
-    line-height: 1.2;
-  }
 
   .fo-cta-inner { gap: 1.21rem; }
   .fo-cta-lede { line-height: 1.5; }
@@ -7302,8 +7250,6 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
   .rl-more { margin-block-start: var(--sp-2); }
 
   .fo-cta { padding-block: var(--sp-5) var(--sp-4); }
-  .fo-cta-coords { padding-block-end: var(--sp-2); margin-block-end: var(--sp-3); }
-  .fo-cta-corners { margin-block-start: 0; }
   .fo-cta-inner { gap: var(--sp-3); }
   .fo-cta-lede { line-height: 1.55; }
   .fo-cta-actions { gap: var(--sp-2); }

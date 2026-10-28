@@ -195,12 +195,10 @@ export function ElevationArt({
             pathLength={1}
           />
         ))}
-        {!entrance && (
-          <>
-            <text className="bp-micro" x="1404" y="46" textAnchor="end">MDRK · CAMPUS · ELEV A-A</text>
-            <text className="bp-micro" x="36" y="46">SCALE 1:200 · UNITS M</text>
-          </>
-        )}
+        {/* R322 V1 kill: the sheet's title-block mono labels
+            (MDRK · CAMPUS · ELEV A-A / SCALE 1:200 · UNITS M) are
+            deleted — dimension/scale notes are debug text, not
+            content. */}
       </g>
       )}
 

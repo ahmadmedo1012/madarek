@@ -365,9 +365,11 @@ export function LearningPlanDrawing() {
             </text>
           </g>
         ))}
-        {/* the sheet title block — mono chrome, rides the frame */}
-        <text className="bp-micro" x="1140" y="36" textAnchor="end">MDRK · LEARNING FLOOR · PLAN</text>
-        <text className="bp-micro" x="60" y="36">SCALE 1:150 · UNITS M</text>
+        {/* R322 V1 kill: the sheet's title-block mono labels
+            (MDRK · LEARNING FLOOR · PLAN / SCALE 1:150 · UNITS M) are
+            deleted — the long label also clipped mid-word at real
+            sizes (the owner's «MDRK · LI»); scale notes are debug
+            text, not content. */}
       </g>
 
       {/* ═══ the envelope — poché wall masses + the corridor spine ═══ */}
