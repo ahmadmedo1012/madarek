@@ -302,3 +302,93 @@ R305 copy), `CHANGELOG.md`, the release reports in `docs/releases/`.
 
 القضاة (`scripts/r314/*` + `audits/evidence/r314/`) هم وحدهم من يغلق
 الصفوف — لا إغلاق ذاتيًا. النتيجة الجارية: `PARITY.md`.
+
+---
+
+## R322 — design director edition (tokens + scale)
+
+> Round R322's additive system layer (owner brief:
+> `docs/redesign/r322/BRIEF.md` §4). Nothing above is rewritten — this section
+> documents OVERRIDES that later packages apply: the grid, the spacing scale,
+> the ONE display type scale, and the confirmed material. The tokens land
+> ADDITIVELY in `tokens.css` (`--fs-d1/d2/d3` · `--space-*` · `--grid-*`);
+> no page consumes them yet (task 1-d owns the migration; this package must
+> not restyle anything). Measured basis: `audits/evidence/r322/dsys/`
+> (`type-census.md` — the live landing type sweep; `font-vote.md` — the
+> blind 3-reviewer display-face election).
+
+### 4.a Grid — 12 columns, rem on the fluid root, logical-only
+
+- **12 columns** (`--grid-cols: 12`); margins and gutter expressed in **rem on
+  the fluid root** so the grid breathes with the type exactly like the
+  reference: `--grid-margin: 4rem` (≈33px @1440 / ≈40px @390) ·
+  `--grid-gutter: 1.5rem` (≈12.5px @1440). **PROVISIONAL — re-pin after the
+  Heron extraction lands** (task 1-c; the brief's measured header cells
+  137px/166.67px @1440 and the 4-up/3-up hairline grids are the derivation
+  source, not these first values).
+- **Logical properties only** (`inline-start/end`, `margin-inline`, …) — RTL
+  is native; no physical left/right in any new rule. Every section's edges
+  land on the ONE shared grid (the V8 fix is structural, per-section grids
+  are forbidden once migration starts).
+
+### 4.b Spacing scale (rem) — the ONLY allowed values
+
+`0.25 · 0.5 · 0.75 · 1 · 1.5 · 2 · 3 · 4 · 6 · 8 · 12` — eleven rungs, rem on
+the fluid root (≈px @1440: 2 · 4 · 6 · 8 · 12.5 · 17 · 25 · 33 · 50 · 67 ·
+100). Tokens `--space-xs … --space-12xl`. **A stylelint rule will enforce this
+list** (planned with the migration package — noted here as the contract). The
+px `--sp-*` ladder stays untouched for the hundreds of legacy consumers; new
+R322 code consumes `--space-*` only. No vertical gap may exceed 1.5× its
+section's own padding unless it is a pinned-scroll runway with visible motion
+(the V4 law, carried into the scale's contract).
+
+### 4.c Type scale — ONE display scale (the V5 fix)
+
+**Chosen display face: IBM Plex Sans Arabic** — the blind 3-reviewer election
+(Arabic typographer / Swiss-minimalist director / RTL accessibility
+specialist; tally 26.5/30, two #1 ranks) sits in
+`audits/evidence/r322/dsys/font-vote.md`. **Display weights 400/500/600 ONLY**
+(the 800/900 era ends; 700 remains the body-emphasis weight, never display).
+Alexandria 600/700 stays self-hosted and untouched for legacy consumers until
+1-d migrates the display seats — Plex 400/500/600 (arabic + latin subsets)
+already ships self-hosted, so this layer adds ZERO font bytes. Hierarchy
+transfers through SIZE + the 500/600 rungs (no uppercase, no letter-spacing —
+permanent exceptions 2).
+
+| Rung | Role (one per…) | Token | clamp() — PROVISIONAL | @1440 | @390 | weight | leading |
+|---|---|---|---|---|---|---|---|
+| **D1** | page (the H1) | `--fs-d1` | `clamp(2.5rem, 3.25vw, 5.6rem)` | 46.7px | 24.8px | 600 | 1.05 |
+| **D2** | section (the statement) | `--fs-d2` | `clamp(2.25rem, 2.78vw, 5.3rem)` | 40px | 22.3px | 500 | 1.10 |
+| **D3** | card (the title) | `--fs-d3` | `clamp(1.875rem, 2.3vw, 4rem)` | 33.1px | 18.6px | 500 | 1.15 |
+
+- **Derivation:** the @1440 targets ARE the R313-measured Heron heading ladder
+  (h1 46.67 · h2 40 · h3 33.33px) — the census (`type-census.md`) proved the
+  current display tier runs 60–85.55px (up to +114% over Heron's h2) at five
+  to six ad-hoc sizes, all weight 700. The vw mid-term is **band-independent**
+  — the fluid root's tablet band can never amplify a rung again (the 991 →
+  85.55px spike is impossible by construction); the rem bounds ride the fluid
+  root so phone minimums stay legible. **PROVISIONAL — re-pin after the Heron
+  extraction lands.**
+- **`text-wrap: balance`** on every display rung; zero tashkeel in display
+  copy; zero letter-spacing on Arabic (joins).
+- **Body:** 15–17px at leading ≈1.7 — the existing `--fs-body-lg`
+  (`max(13px, 1.8rem)` = 15px @1440) is the correct R322 body rung; 1-d
+  re-pins `--fs-body` onto it during migration (the 13.33px `txt-16` parity
+  rung is superseded by the brief's 15–17px body band).
+- **Mono labels:** 11–12px, Latin-only, uppercase, short, `dir="ltr"` —
+  `--fs-mono-md` (11.67px @1440) is the rung; Arabic never rides the mono
+  stack (per-script fallback unchanged).
+
+### 4.d Material — confirmed (R313 pins hold; zero drift in the tokens)
+
+paper `#F6F6EE` (`--bg`/`--neutral-50`) · ink `#282828` (`--text`/
+`--neutral-900`) · orange `#FA3600` (`--accent`) · hairline `#B3B3AF`
+(`--rule`/`--neutral-300`) · guides `#E0E0DA` (`--border`/`--neutral-200`) ·
+radius 0 · no shadows · grain · dashed inner frame — every value verified
+against `tokens.css` live (light theme; the dark pair swaps paper↔ink, orange
+constant). **Drift notes found (documentation, not tokens):** (1) the §2 table
+above still prints the pre-R313 light ground `#F6F8FA` — §0/D1 is the
+authority (`#F6F6EE`); (2) the TYPE had drifted (census: 5–6 display sizes,
+100% weight 700) — §4.c is the repair. Orange stays an accent ≤5% of area per
+screen except designed full-bleed moments; `--accent-ink` `#C72E00` carries
+accent TEXT (5.16:1 AA).
