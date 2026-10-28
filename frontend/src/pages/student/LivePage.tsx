@@ -14,24 +14,43 @@
  * whole-row link — its trailing slot carries the real join/recording
  * anchors, and a row that is itself a link must never nest an
  * interactive control (patterns contract).
+ *
+ * R321 (c1 · WP-B2) — the page joins the sheet system (the CampusMap
+ * family twin): ONE .r321m-page opt-in root (the r321-exams.css
+ * contract), the SectionHeader stacks became §B2 title bars with
+ * honest mono counts, the empty boards are hatched EmptyCells, and
+ * the status pills ride the square r305s-chip register (tone on the
+ * dot). The .live-chip/.live-dot honest LIVE pulse and the
+ * .live-row-icon wells keep their student.css family untouched.
  */
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
-import { Radio, Calendar, ExternalLink, Clock, Video } from 'lucide-react';
-import { Badge } from '../../components/primitives';
-import { EmptyState, ErrorState } from '../../components/primitives/States';
+import { ExternalLink, Clock } from 'lucide-react';
+/* R321 (c1 · WP-B2) — the §B2 kit: the mono-indexed section title
+ * bar, the honest mono count + the hatched empty cell. */
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
+import { ErrorState } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import {
-  PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine,
+  PageFrame, PageHeader, RowList, RowItem, StatLine,
 } from '../../components/patterns';
 import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
 
 import { formatDate, formatInt } from '../../utils/numbers';
+import { countAr } from '../../lib/format';
 
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
 import '../../styles/r305-student.css';
 import '../../styles/r305-student-supplemental.css';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
+ * student page mounts (SectionBar/BarCount/EmptyCell + the family's
+ * unlayered masthead tail precedent). */
+import '../../styles/r319-student.css';
+/* R321 (c1 · WP-B2): the map/live family's own harmonics — the
+ * .r321m-page opt-in root + the inner-scale masthead re-seat (the
+ * r321-exams.css contract); family-unique rules only. */
+import '../../styles/r321-map-live.css';
 
 export default function LivePage() {
   const { data: sessions, isPending, isError, error, refetch } = useLiveSessions();
@@ -51,7 +70,9 @@ export default function LivePage() {
   const recent = useMemo(() => ended.slice(0, 8), [ended]);
 
   /* The header's one live-status answer — quiet while the query is
-     pending, an honest chip/badge once settled. */
+     pending, the honest pulse chip / quiet chip once settled (the
+     neutral answer rides the square r305s-chip register; the old
+     Badge pill retired with the sheet conversion). */
   const headerStatus = !isPending
     ? live.length > 0
       ? (
@@ -61,13 +82,21 @@ export default function LivePage() {
           </span>
         )
       : !isError
-        ? <Badge>لا بثّ مباشر الآن</Badge>
+        ? (
+            <span className="r305s-chip">
+              <span className="r305s-chip-dot" aria-hidden />
+              لا بثّ مباشر الآن
+            </span>
+          )
         : undefined
     : undefined;
 
   return (
+    <div className="r321m-page">
     <PageFrame width="default">
       <PageHeader
+        index="01"
+        eyebrow="المعامل والتقنيات"
         title="البث المباشر"
         description="الجلسات الحيّة لمقرّراتك المسجَّلة — انضمّ للبثّ المباشر، وستجد التسجيلات هنا بعد انتهاء كل جلسة."
         actions={headerStatus}
@@ -105,29 +134,38 @@ export default function LivePage() {
               list gets ONE honest empty state; the per-status sections
               keep their stable slots (15-j §3 #10: "is anything on
               air?" deserves a stable answer) only when the schedule
-              has ANY content. */}
+              has ANY content. R321 B2: the one empty state is the
+              sheet's hatched EmptyCell. */}
           {list.length === 0 ? (
-            <EmptyState
-              illustration="empty-list"
-              icon={Video}
-              title="لا توجد بثوث بعد"
-              description="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
+            <EmptyCell
+              label="لا توجد بثوث بعد"
+              note="لا توجد بثوث مرتبطة بمقرراتك بعد. حال نشر أساتذتك جلسة جديدة، ستظهر هنا تلقائياً."
             />
           ) : (
             <>
-              <section aria-label="جلسات مباشرة الآن">
-                <SectionHeader
+              <section className="ml-sec" aria-labelledby="live-sec-live">
+                <SectionBar
+                  index="02"
                   title="مباشرة الآن"
-                  description={live.length > 0 ? 'انضمّ إلى أيّ جلسة بنقرة واحدة' : undefined}
+                  id="live-sec-live"
+                  meta={
+                    live.length > 0 ? (
+                      <BarCount
+                        n={live.length}
+                        srLabel={countAr(live.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                      />
+                    ) : undefined
+                  }
                 />
+                {live.length > 0 && (
+                  <p className="ml-sec-note">انضمّ إلى أيّ جلسة بنقرة واحدة</p>
+                )}
                 <RowList
                   aria-label="الجلسات المباشرة الآن"
                   empty={(
-                    <EmptyState
-                      illustration="empty-list"
-                      icon={Radio}
-                      title="لا بثّ مباشرة الآن"
-                      description="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
+                    <EmptyCell
+                      label="لا بثّ مباشرة الآن"
+                      note="لا توجد جلسات نشطة لمقرراتك في هذه اللحظة؛ راجع الجلسات القادمة في القائمة أدناه."
                     />
                   )}
                 >
@@ -135,16 +173,26 @@ export default function LivePage() {
                 </RowList>
               </section>
 
-              <section aria-label="الجلسات القادمة">
-                <SectionHeader title="جلسات قادمة" />
+              <section className="ml-sec" aria-labelledby="live-sec-upcoming">
+                <SectionBar
+                  index="03"
+                  title="جلسات قادمة"
+                  id="live-sec-upcoming"
+                  meta={
+                    upcoming.length > 0 ? (
+                      <BarCount
+                        n={upcoming.length}
+                        srLabel={countAr(upcoming.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                      />
+                    ) : undefined
+                  }
+                />
                 <RowList
                   aria-label="الجلسات القادمة"
                   empty={(
-                    <EmptyState
-                      illustration="empty-list"
-                      icon={Calendar}
-                      title="لا توجد جلسات مجدولة"
-                      description="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
+                    <EmptyCell
+                      label="لا توجد جلسات مجدولة"
+                      note="لا توجد جلسات مجدولة لمقرراتك حالياً. سيظهر هنا أي بثّ يجدوله أساتذتك."
                     />
                   )}
                 >
@@ -153,11 +201,22 @@ export default function LivePage() {
               </section>
 
               {recent.length > 0 && (
-                <section aria-label="الجلسات المنتهية">
-                  <SectionHeader
+                <section className="ml-sec" aria-labelledby="live-sec-ended">
+                  <SectionBar
+                    index="04"
                     title="جلسات منتهية"
-                    description="أحدث الجلسات المنتهية — قد تتوفر لها تسجيلات"
+                    id="live-sec-ended"
+                    meta={(
+                      /* The board prints the rows it shows (the latest
+                          window); the StatLine above keeps the honest
+                          ENDED total. */
+                      <BarCount
+                        n={recent.length}
+                        srLabel={countAr(recent.length, ['جلسة واحدة', 'جلستان', 'جلسات', 'جلسة'])}
+                      />
+                    )}
                   />
+                  <p className="ml-sec-note">أحدث الجلسات المنتهية — قد تتوفر لها تسجيلات</p>
                   <RowList aria-label="الجلسات المنتهية">
                     {recent.map((s) => <StudentSessionRow key={s.id} session={s} />)}
                   </RowList>
@@ -168,15 +227,19 @@ export default function LivePage() {
         </>
       )}
     </PageFrame>
+    </div>
   );
 }
 
 /**
  * One session row (RowItem anatomy — no whole-row link). The join/
  * recording anchors ride the trailing slot as real <a> targets; the
- * status Badge keeps the stable status answer. The course emoji is
+ * status chip keeps the stable status answer. The course emoji is
  * DATA from the course record (icon policy: EmojiIcon is the
- * data-layer emoji → Lucide bridge only).
+ * data-layer emoji → Lucide bridge only). R321 B2: the status rides
+ * the square r305s-chip register — tone on the dot, the honest
+ * Arabic words the chip body (the amber/green/red Badge pills
+ * retired); the LIVE pulse keeps its .live-chip family.
  */
 function StudentSessionRow({
   session: s,
@@ -232,11 +295,17 @@ function StudentSessionRow({
               مباشر
             </span>
           )}
-          {s.status === 'SCHEDULED' && <Badge color="amber">مجدولة</Badge>}
+          {s.status === 'SCHEDULED' && (
+            <span className="r305s-chip r305s-chip--warning">
+              <span className="r305s-chip-dot" aria-hidden />
+              مجدولة
+            </span>
+          )}
           {ended && (
-            <Badge color={s.status === 'CANCELLED' ? 'red' : 'green'}>
+            <span className={`r305s-chip ${s.status === 'CANCELLED' ? 'r305s-chip--danger' : 'r305s-chip--success'}`}>
+              <span className="r305s-chip-dot" aria-hidden />
               {s.status === 'CANCELLED' ? 'ملغاة' : 'منتهية'}
-            </Badge>
+            </span>
           )}
           {canJoin && s.joinUrl && (
             <a href={s.joinUrl} target="_blank" rel="noreferrer" className="btn primary sm">
