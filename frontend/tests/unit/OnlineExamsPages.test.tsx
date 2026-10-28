@@ -417,13 +417,17 @@ describe('ExamTakerPage resume (D5)', () => {
 
     expect(screen.getByRole('button', { name: 'متابعة الاختبار' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'بدء الاختبار' })).toBeNull();
-    // 6A6-finding-3: the begin screen's title is an h1 (page outline)
-    // pinned back to the h2 metrics inline — the tag and both style
-    // declarations are pinned (jsdom resolves no CSS custom properties,
-    // so the authored var() strings are the computed truth here).
+    // 6A6-finding-3: the begin screen's title is an h1 (page outline).
+    // R321 override (WP-B1b): the taker joined the sheet system — the
+    // moment h1s now seat at the INNER display rung via the family
+    // sheet (.r321x-taker .oex-result-title — 31.5px @1440 /
+    // ~31.8px @390, the ≤32px brief), so the 6A6 inline h2-metrics pin
+    // (var(--fs-h2) read 40px+ on the fluid root) is retired: the
+    // sheet owns the size, no inline style may shadow it.
     const beginTitle = screen.getByText('متابعة الاختبار', { selector: 'h1' });
-    expect(beginTitle.style.fontSize).toBe('var(--fs-h2)');
-    expect(beginTitle.style.lineHeight).toBe('var(--lh-snug)');
+    expect(beginTitle.className).toBe('oex-result-title');
+    expect(beginTitle.style.fontSize).toBe('');
+    expect(beginTitle.style.lineHeight).toBe('');
     expect(screen.getByText(/الوقت لم يتوقف منذ البدء/)).toBeTruthy();
   });
 });
@@ -1132,7 +1136,7 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     expect(screen.getByRole('textbox', { name: /سؤال قصير/ })).toBeTruthy();
   });
 
-  it('promotes the done/result page titles to h1 pinned to the h2 metrics inline (6A6)', async () => {
+  it('promotes the done/result page titles to h1 seated at the sheet inner rung (6A6 · R321 B1b)', async () => {
     vi.useFakeTimers();
 
     // The deep-link completed screen (GRADED attempt, graded kind).
@@ -1141,12 +1145,17 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     ];
     const done = renderTaker();
     const doneH1 = screen.getByText('لقد أكملت هذا الاختبار مسبقاً', { selector: 'h1' });
-    // 4C-d: the title class moved to the page-scoped sheet (online-exams.css
-    // `.oex-result-title`) — the promoted-h1 contract itself is unchanged
-    // (h1 + the h2 metrics pinned inline via H1_AS_H2_STYLE).
+    // 4C-d: the title keeps its page-scoped sheet class (online-exams
+    // `.oex-result-title`). R321 override (WP-B1b): the promoted-h1
+    // contract keeps the tag + the class pin, but the old inline
+    // H1_AS_H2_STYLE pair is retired — the family sheet r321-exams.css
+    // seats `.r321x-taker .oex-result-title` at the INNER display rung
+    // (31.5px @1440 / ~31.8px @390 — the ≤32px brief; var(--fs-h2)
+    // measured 40px @1440 / 47.6px @390 on the fluid root), so the
+    // sheet owns the size and no inline style may shadow it.
     expect(doneH1.className).toBe('oex-result-title');
-    expect(doneH1.style.fontSize).toBe('var(--fs-h2)');
-    expect(doneH1.style.lineHeight).toBe('var(--lh-snug)');
+    expect(doneH1.style.fontSize).toBe('');
+    expect(doneH1.style.lineHeight).toBe('');
     done.unmount();
 
     // The post-submit result screen.
@@ -1165,8 +1174,10 @@ describe('ExamTakerPage submit & autosave integrity (16-E1)', () => {
     });
     const resultH1 = screen.getByText('مبروك — لقد اجتزت الاختبار!', { selector: 'h1' });
     expect(resultH1.className).toBe('oex-result-title');
-    expect(resultH1.style.fontSize).toBe('var(--fs-h2)');
-    expect(resultH1.style.lineHeight).toBe('var(--lh-snug)');
+    // R321 override (WP-B1b) — same seat as the done twin: the sheet
+    // owns the size (see the pin above).
+    expect(resultH1.style.fontSize).toBe('');
+    expect(resultH1.style.lineHeight).toBe('');
   });
 
   it('speaks the server’s window guards in Arabic on the start path (15-h P1-5)', async () => {

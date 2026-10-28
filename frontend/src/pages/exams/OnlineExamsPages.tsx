@@ -230,12 +230,16 @@ function withQid(prev: ReadonlySet<string>, qid: string, present: boolean): Read
 
 /* 6A6-finding-3 — the taker's begin / completed / result screens are
    each a page whose heading IS the page title, so the tag must be h1
-   for the document outline. base.css differentiates h1 from h2 by
-   size, so the inline style pins the promoted h1 back to the authored
-   h2 metrics (--fs-h2 = 22px, --lh-snug = 1.2 → 26.4px; the weight
-   is the shared heading rule) — visual parity without touching any
-   CSS file. */
-const H1_AS_H2_STYLE = { fontSize: 'var(--fs-h2)', lineHeight: 'var(--lh-snug)' } as const;
+   for the document outline. R321 B1b (student sweep): the inline
+   H1_AS_H2_STYLE pin is retired with the sheet conversion — the var(
+   --fs-h2) seat read 40px @1440 on the fluid root (the 22px note in
+   the old comment predated the Heron ladder), over the ≤32px inner
+   brief. The h1s keep the belt-pinned .oex-result-title class and now
+   seat at the INNER display rung (31.5px @1440 / ~31.8px @390) via
+   the family sheet r321-exams.css — one seat, three moment screens.
+   The ACTIVE screen's h1 (.oex-bar-title) stays the instrument size
+   on purpose: its 16px rung pins the sticky-bar height that the
+   IntersectionObserver band math (bandTop 120/160px) mirrors. */
 
 /* ═══════════════ Student exam list ═══════════════ */
 export default function OnlineExamsPage() {
@@ -1101,13 +1105,15 @@ export function ExamTakerPage() {
     const expired = myAttempt?.status === 'EXPIRED';
     const verdict = exam ? attemptVerdictChip(exam) : null;
     return (
-      <div className="hr-scope">
-      <div className="page">
-        <Link to="/student/online-exams" className="back-link">
-          <Icon icon={ChevronRight} size={14} />
-          العودة إلى الاختبارات
-        </Link>
-        <Card>
+      <div className="r321x-page r321x-taker">
+        <PageFrame width="default">
+          <Link to="/student/online-exams" className="back-link">
+            <Icon icon={ChevronRight} size={14} />
+            العودة إلى الاختبارات
+          </Link>
+          {/* R321 B1b — the done moment joins the sheet paper (the Card
+              wall is gone); the pinned .oex-result-title h1 seats at
+              the INNER display rung via the family sheet. */}
           {/* 5-A6 plan-7 — verdict lockup: icon → title → grade → badge
               read as one tight group (the grade and its verdict badge
               are a single decision), generous break before the action. */}
@@ -1122,7 +1128,7 @@ export function ExamTakerPage() {
                  hourglass — a missed deadline is not a celebration. */
               <MkIllustration name="exam-complete" size={140} />
             )}
-            <h1 className="oex-result-title" style={H1_AS_H2_STYLE}>
+            <h1 className="oex-result-title">
               {expired ? 'انتهت مدة هذه المحاولة' : 'لقد أكملت هذا الاختبار مسبقاً'}
             </h1>
             {expired ? (
@@ -1190,8 +1196,7 @@ export function ExamTakerPage() {
               العودة للقائمة
             </button>
           </div>
-        </Card>
-      </div>
+        </PageFrame>
       </div>
     );
   }
@@ -1199,16 +1204,18 @@ export function ExamTakerPage() {
   // Initial state — show "Begin" prompt
   if (!attempt && !result) {
     return (
-      <div className="hr-scope">
-      <div className="page">
-        <Link to="/student/online-exams" className="back-link">
-          <Icon icon={ChevronRight} size={14} />
-          العودة إلى الاختبارات
-        </Link>
-        <Card>
+      <div className="r321x-page r321x-taker">
+        <PageFrame width="default">
+          <Link to="/student/online-exams" className="back-link">
+            <Icon icon={ChevronRight} size={14} />
+            العودة إلى الاختبارات
+          </Link>
+          {/* R321 B1b — the begin moment joins the sheet paper (the
+              Card wall is gone); the h1 takes the same .oex-result-title
+              inner-rung seat the belt pins on the result moments. */}
           <div className="empty-state">
             <Icon icon={ClipboardCheck} size={32} style={{ color: 'var(--accent)' }} />
-            <h1 style={{ margin: 'var(--sp-3) 0 var(--sp-2)', ...H1_AS_H2_STYLE }}>
+            <h1 className="oex-result-title">
               {hasLiveAttempt ? 'متابعة الاختبار' : 'هل أنت مستعد للبدء؟'}
             </h1>
             <p className="text-sm text-muted oex-begin-note">
@@ -1236,8 +1243,7 @@ export function ExamTakerPage() {
               {start.isPending ? 'جارٍ التحضير…' : examsQ.isPending ? 'جارٍ التحقق…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
             </button>
           </div>
-        </Card>
-      </div>
+        </PageFrame>
       </div>
     );
   }
@@ -1249,13 +1255,14 @@ export function ExamTakerPage() {
     // never render the «لم يجتز» failure the student has not earned.
     const awaitingManual = result.passed === null;
     return (
-      <div className="hr-scope">
-      <div className="page">
-        <Link to="/student/online-exams" className="back-link">
-          <Icon icon={ChevronRight} size={14} />
-          العودة إلى الاختبارات
-        </Link>
-        <Card>
+      <div className="r321x-page r321x-taker">
+        <PageFrame width="default">
+          <Link to="/student/online-exams" className="back-link">
+            <Icon icon={ChevronRight} size={14} />
+            العودة إلى الاختبارات
+          </Link>
+          {/* R321 B1b — the result moment joins the sheet paper (the
+              Card wall is gone); same pinned .oex-result-title seat. */}
           {/* 5-A6 plan-7 — verdict lockup (see the done-state screen). */}
           <div className="empty-state oex-result">
             {/* The finished moment speaks the same state-graphics language
@@ -1264,7 +1271,7 @@ export function ExamTakerPage() {
                 the verdict badge below owns the pass/fail/awaiting
                 semantics, exactly like the twin's lockup. */}
             <MkIllustration name="exam-complete" size={140} />
-            <h1 className="oex-result-title" style={H1_AS_H2_STYLE}>
+            <h1 className="oex-result-title">
               {awaitingManual ? 'تم تسليم اختبارك' : result.passed ? 'مبروك — لقد اجتزت الاختبار!' : 'الاختبار انتهى'}
             </h1>
             {/* The authored moment — the grade reveal: the real score
@@ -1304,8 +1311,7 @@ export function ExamTakerPage() {
               العودة للقائمة
             </button>
           </div>
-        </Card>
-      </div>
+        </PageFrame>
       </div>
     );
   }
@@ -1329,8 +1335,8 @@ export function ExamTakerPage() {
     .filter((n): n is number => n !== null);
 
   return (
-    <div className="hr-scope">
-    <div className="page">
+    <div className="r321x-page r321x-taker">
+    <PageFrame width="default">
       {/* r165a: the one live screen that had NO way out. While a submit
           error keeps the retry path (a network fault — never a terminal
           answer, those settle the attempt above), the student gets the
@@ -1418,7 +1424,36 @@ export function ExamTakerPage() {
       </div>
       {urgentNote && <span className="visually-hidden" role="alert">{urgentNote}</span>}
 
-      <div className="flex-col gap-3">
+      {/* R321 B1b — the question board joins the hairline grammar: ONE
+          SectionBar seats the paper (mono BarCount = the question
+          count), the question cells sit directly on the paper (the
+          Card walls are gone — hairline separators, radius 0, no
+          shadows), and the zero-question paper renders the hatched
+          EmptyCell instead of an empty list. The sticky .oex-bar
+          instrument above is composition-untouched ON PURPOSE: its
+          painted height pins the IntersectionObserver band math
+          (bandTop 120/160px) — a size change there would desync the
+          current-question tracker. */}
+      <section className="oex-sec" aria-labelledby="oex-sec-questions">
+        <SectionBar
+          index="01"
+          title="أسئلة الاختبار"
+          id="oex-sec-questions"
+          meta={(
+            <BarCount
+              n={attempt.questions.length}
+              srLabel={countAr(attempt.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
+            />
+          )}
+        />
+        {attempt.questions.length === 0 && (
+          <EmptyCell
+            label="لا توجد أسئلة في هذا الاختبار"
+            note="لم يُعتمد أي سؤال لهذه الورقة بعد — يمكنك تسليم المحاولة كما هي أو مراجعة قائمة الاختبارات."
+          />
+        )}
+        {attempt.questions.length > 0 && (
+        <div className="oex-qlist">
         {attempt.questions.map((q, i) => {
           /* 5-A6 P2-3 — the save-state chip at the question footer: the
               positive signal pairs the existing failure chip (failed →
@@ -1435,7 +1470,7 @@ export function ExamTakerPage() {
              scroll-margin clears the sticky bar). */
           return (
             <div key={q.id} id={`exam-q-${q.id}`} className="oex-q" tabIndex={-1}>
-              <Card className="oex-q-card">
+              <div className="oex-q-card">
                 {/* 15-g P1-5 — the prompt is the accessible name of both
                     answer fields: number + prompt ids are referenced by the
                     textarea (aria-labelledby) and the choice group
@@ -1528,11 +1563,13 @@ export function ExamTakerPage() {
                     </span>
                   </div>
                 )}
-              </Card>
+              </div>
             </div>
           );
         })}
-      </div>
+        </div>
+        )}
+      </section>
 
       {/* 5-A6 P2-2 — the submit bar carries the unanswered count inline
           (not only inside the confirm dialog) and is bottom-sticky on
@@ -1575,7 +1612,7 @@ export function ExamTakerPage() {
         }}
         onCancel={() => setConfirming(false)}
       />
-    </div>
+    </PageFrame>
     </div>
   );
 }
