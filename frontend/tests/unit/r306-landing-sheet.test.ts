@@ -150,7 +150,14 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     expect(liveTsx).toContain('<HeroInkWindow />');
     const ink = read('src/components/landing/HeroInkWindow.tsx');
     expect(ink).toContain('className="bp-svg"');
-    expect(ink).toMatch(/viewBox="0 0 1440 720"/);
+    // R322 override (2-b · the measured transplant): the viewBox is
+    // now the TIGHT frame around the elevation's ink (HERO_FRAME —
+    // exported, single source) instead of the fixed 1440×720 window:
+    // the ink owns the FULL art-band width (the measured img-inner
+    // grammar — 96.3% of band width at the reference). The exported
+    // frame is the contract; the literal 1440×720 pin retires.
+    expect(ink).toContain('export const HERO_FRAME');
+    expect(ink).toMatch(/viewBox=\{`\$\{HERO_FRAME\.x\} \$\{HERO_FRAME\.y\}/);
     // the elevation seats through the exported HERO_SEAT transform (one
     // artwork, one coordinate story — HeroInspect remaps through it)
     expect(ink).toContain('HERO_SEAT');
@@ -201,17 +208,19 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     const mq =
       [...live.matchAll(/@media \(max-width: 767px\)\s*\{([\s\S]*?)\n\}\s*\n/g)]
         .map((m) => m[1] as string)
-        .find((b) => /\.fo-hero-window \.bp-stage/.test(b)) ?? '';
-    // the window keeps a defined mass on small screens; the strip
-    // cells stack under it (the 390 reference tiles); the annotation
-    // cards flow under the drawing per HeroInspect's own ≤760 contract.
-    // R315 (B1 · A.1/A.2) override: the seat changes, the measure
-    // holds — the elevation is WIDTH-driven (inline-size: 100%,
-    // block-size: auto — the whole drawing always fits, letterboxed on
-    // paper inside the 38vh floor) and the 2-line H1 strip keeps the
-    // pinned band (measured ≈822px @390×844, −0.5% of the R314 826 pin).
-    expect(mq).toMatch(/\.fo-hero-window \.bp-stage\s*\{[\s\S]*?min-block-size:\s*38vh/s);
-    expect(mq).toMatch(/\.fo-hero-window \.bp-svg\s*\{[\s\S]*?block-size:\s*auto/s);
+        .find((b) => /\.fo-hero-art \.bp-stage/.test(b)) ?? '';
+    // R322 override (2-b · the measured transplant): the window family
+    // renamed .fo-hero-window → .fo-hero-art (the art BAND of the
+    // two-band hero). The seat changes, the measure holds — the
+    // elevation stays WIDTH-driven at the BASE level now (inline-size:
+    // 100%, block-size: auto on .fo-hero-art .bp-svg — the whole
+    // drawing always fits, full band width on every viewport), so the
+    // ≤767 media query only carries the stage-chrome suppression; the
+    // art-mass + stacked-cells pins move to the base seats. The 2-line
+    // H1 strip measure holds on the D1 rung (measured ≤767: h=67px =
+    // exactly 2 lines @390 AND @360).
+    expect(live).toMatch(/\.fo-hero-art \.bp-svg\s*\{[\s\S]*?inline-size:\s*100%/s);
+    expect(live).toMatch(/\.fo-hero-art \.bp-svg\s*\{[\s\S]*?block-size:\s*auto/s);
     // R322 override (1-d FINAL · the type-scale migration): the ≤767 H1
     // re-clamp RETIRED — the D1 rung (--fs-d1, band-independent) governs
     // from the base seat: 31.74px floor across the phone band (Heron's
@@ -243,7 +252,10 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl" \/>/);
     expect(live).toMatch(/\.bp-plus::before\s*\{\s*content:\s*'\+'/);
     expect(live).toMatch(/\.bp-dmark::before\s*\{\s*content:\s*'\+'/);
-    expect(live).toMatch(/\.fo-hero-window \.bp-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
+    // R322 override (2-b): the dashed inner frame rides the renamed
+    // .fo-hero-art .bp-stage::before seat (same 1px dashed rule,
+    // proximity-revealed as before).
+    expect(live).toMatch(/\.fo-hero-art \.bp-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
     // the render pipeline is reproducible + committed (repo root)
     expect(read('../scripts/r314/ink-render.mjs')).toContain('OVERRIDES');
   });
@@ -312,7 +324,13 @@ describe('r306 — the funnel/a11y contracts carried forward', () => {
 
   it('the honest numbers still compute from the registry (no invented adoption)', () => {
     expect(liveTsx).toContain("from '../data/colleges.config'");
-    expect(liveTsx).toContain('LIVE_CAPABILITIES');
+    // R322 override (2-b): the landing's marquee rides HERO_WORK_ITEMS
+    // (the live-capability ledger's own short work labels — same
+    // registry truth, shorter strings); the honest COUNT still
+    // computes from LIVE_CAPABILITIES (LIVE_COUNT, the meta grid's
+    // [NN] cell) — the no-invented-numbers contract is unchanged.
+    expect(liveTsx).toContain('HERO_WORK_ITEMS');
+    expect(liveTsx).toContain('LIVE_COUNT');
     expect(liveTsx).toContain('formatInt(colleges.length)');
   });
 });

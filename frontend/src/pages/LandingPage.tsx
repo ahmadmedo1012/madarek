@@ -11,7 +11,7 @@ import { colleges } from '../data/colleges.config';
 import {
   PRODUCT_CAPTURES, ROLE_CAPTURES, ROLE_SHOWCASES,
 } from '../data/university-media';
-import { LIVE_COUNT } from '../data/landing-ledger';
+import { HERO_WORK_ITEMS, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 import { ProductFrame } from '../components/landing/ProductFrame';
@@ -902,98 +902,118 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ [1] HERO — R314 «الحقيقة البصرية» (V1/V2/V10): the
-            reference's exact composition — ONE framed ink window (the
-            building ≈65% of the viewport height, centred, own subject +
-            own licence — never Heron's artwork) with the corner +
-            marks, ruler ticks and the local inspection instrument; then
-            a 133px bottom strip of cells: the GIANT tight H1 at the
-            inline-start edge (3 lines, 46.67px/1.0 measured), the intro
-            paragraph + honest [LIVE] disclosure, and the DISCOVER MORE
-            link with the orange arrow. The thin-line elevation, the
-            stage panel and the in-hero ticker retire (the ticker rides
-            the intro band per the reference's 9-section structure). ═══ */}
+        {/* ═══ [1] HERO — R322 (2-b): the measured Heron transplant.
+            ONE art band (the whole elevation, ink filling the band
+            width on transparent paper inside the drafting frame —
+            the measured img-inner grammar) over ONE content band
+            (H1 cols 1–7 ‖ 1px divider ‖ sub + register CTA + the
+            work marquee cols 8–12 — the measured 16.01rem band, so
+            the CTA sits BESIDE the headline's optical center, no
+            leap across whitespace). The [LIVE] disclosure chip and
+            the discover link cell retire with the transplant (the
+            honest demo-data disclosure lives in the platform frames;
+            Heron's content band carries neither). Our own artwork,
+            our own copy — never Heron's. ═══ */}
         <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
-          <RevealCssClass as="div" className="fo-hero-window" delay={2}>
-            <div className="bp-stage" data-cursor="none">
-              {/* The ink rendering rides the SAME 1440×640 viewBox frame
-                  (.bp-svg) so the HeroInspect instrument, its guides and
-                  its honest station markers keep ONE coordinate system. */}
-              <HeroInkWindow />
-              <HeroInspect />
-              <div className="bp-rulers" aria-hidden="true">
-                <span className="bp-ruler bp-ruler-t" />
-                <span className="bp-ruler bp-ruler-b" />
-                <span className="bp-ruler bp-ruler-s" />
-                <span className="bp-ruler bp-ruler-e" />
-                <span className="bp-plus bp-plus-tl" />
-                <span className="bp-plus bp-plus-tr" />
-                <span className="bp-plus bp-plus-bl" />
-                <span className="bp-plus bp-plus-br" />
-                {/* R315 (B1 · A.3): the small ± registration marks at the
-                    dashed inner frame's corners (the reference's inner
-                    drafting chrome, 15–20px inside the window edge). */}
-                <span className="bp-dmark bp-dmark-tl" />
-                <span className="bp-dmark bp-dmark-tr" />
-                <span className="bp-dmark bp-dmark-bl" />
-                <span className="bp-dmark bp-dmark-br" />
+          {/* ── the art band — the elevation on transparent paper ── */}
+          <div className="fo-hero-art">
+            <RevealCssClass as="div" className="fo-hero-art-frame" delay={2}>
+              <div className="bp-stage" data-cursor="none">
+                {/* The ink rides the TIGHT viewBox frame (.bp-svg —
+                    HeroInkWindow) so the drawing owns the full band
+                    width; the HeroInspect instrument, its guides and
+                    its honest station markers keep ONE coordinate
+                    system through the same frame. */}
+                <HeroInkWindow />
+                <HeroInspect />
+                <div className="bp-rulers" aria-hidden="true">
+                  <span className="bp-ruler bp-ruler-t" />
+                  <span className="bp-ruler bp-ruler-b" />
+                  <span className="bp-ruler bp-ruler-s" />
+                  <span className="bp-ruler bp-ruler-e" />
+                  <span className="bp-plus bp-plus-tl" />
+                  <span className="bp-plus bp-plus-tr" />
+                  <span className="bp-plus bp-plus-bl" />
+                  <span className="bp-plus bp-plus-br" />
+                  {/* the dashed measure lines across the paper — the
+                      reference's own ruler overlay grammar (measured
+                      dashed grid + brand-red marker lines spanning
+                      the art box, op .64). */}
+                  <span className="bp-measure bp-measure-h bp-measure-h1" />
+                  <span className="bp-measure bp-measure-h bp-measure-h2" />
+                  <span className="bp-measure bp-measure-v bp-measure-v1" />
+                  <span className="bp-measure bp-measure-v bp-measure-v2" />
+                  <span className="bp-measure bp-measure-marker bp-measure-m1" />
+                  <span className="bp-measure bp-measure-marker bp-measure-m2" />
+                  {/* R315 (B1 · A.3): the small ± registration marks at
+                      the dashed inner frame's corners (the reference's
+                      inner drafting chrome). */}
+                  <span className="bp-dmark bp-dmark-tl" />
+                  <span className="bp-dmark bp-dmark-tr" />
+                  <span className="bp-dmark bp-dmark-bl" />
+                  <span className="bp-dmark bp-dmark-br" />
+                </div>
+              </div>
+            </RevealCssClass>
+          </div>
+
+          {/* ── the content band — the measured 16.01rem strip:
+              H1 cell (cols 1–7) ‖ 1px divider ‖ sub cell (cols 8–12:
+              lead + the register CTA, then the work marquee). ── */}
+          <div className="fo-hero-content">
+            <div className="fo-hero-title-cell">
+              <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
+                {/* the display canon holds (R315 B1 · A.2 / R322 1-d):
+                  UNVOCALISED Arabic (zero tashkeel), 2 lines, the D1
+                  rung (--fs-d1 — the Heron-measured h1 ladder), w600,
+                  lh 1.05, text-wrap balance. */}
+                رحلة تعلم واحدة
+                <br />
+                من المحاضرة إلى الإتقان
+              </RevealCssClass>
+            </div>
+
+            <div className="fo-hero-sub-cell">
+              <div className="fo-hero-sub-row">
+                <RevealCssClass as="p" className="fo-hero-lead" delay={3}>
+                  محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
+                  تجربة عربية واحدة لخمسة أدوار وثلاث شرائح.
+                </RevealCssClass>
+                {/* the funnel contract (r164b → r188, kept): the hero's
+                    register CTA — flush inline-end of the sub cell,
+                    beside the lead, in the headline's own band. */}
+                <RevealCssClass as="div" className="fo-hero-actions" delay={4}>
+                  <Link to="/auth/register" className="btn accent lg fo-hero-cta">
+                    أنشئ حسابك الجامعي
+                    <Icon icon={ArrowLeft} size={16} />
+                  </Link>
+                </RevealCssClass>
+              </div>
+
+              {/* the work marquee — the reference's home-hero-work strip
+                  (72.2×4.36rem): the honest live-capability subjects
+                  crawl below the sub row. Duplicated aria-hidden track
+                  carries the seamless loop; reduced motion folds to the
+                  static row. */}
+              <div className="fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
+                <div className="fo-hero-work-track">
+                  {HERO_WORK_ITEMS.map((cap, i) => (
+                    <span key={cap} className="fo-hero-work-item">
+                      <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                      {cap}
+                    </span>
+                  ))}
+                </div>
+                <div className="fo-hero-work-track" aria-hidden="true">
+                  {HERO_WORK_ITEMS.map((cap, i) => (
+                    <span key={cap} className="fo-hero-work-item">
+                      <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                      {cap}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-          </RevealCssClass>
-
-          {/* the bottom strip — 133px of cells (the measured reference
-              band): H1 cell ≈47% at the inline-start edge · paragraph cell
-              (lead + honest [LIVE] disclosure + the register CTA) · the
-              DISCOVER MORE link cell at the far end (R315 A.2: 3 cells,
-              RTL-mirrored). */}
-          <div className="fo-hero-strip">
-            <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
-              {/* R315 (B1 · A.2): the display canon — UNVOCALISED Arabic
-                (zero tashkeel: the reference's display type is clean;
-                diacritics collided with the line above), 2 lines max,
-                lh 1.0, w700 on the --fs-h1 ladder rung (46.67px @1440).
-                The 2-line split «رحلة تعلم واحدة / من المحاضرة إلى
-                الإتقان» is the largest ladder size that holds exactly 2
-                lines at 1440 AND 390 (measured in _local/b1-preview);
-                the tablet band re-clamps for the narrower measure. */}
-              رحلة تعلم واحدة
-              <br />
-              من المحاضرة إلى الإتقان
-            </RevealCssClass>
-
-            <div className="fo-hero-side">
-              <RevealCssClass as="p" className="fo-hero-lead" delay={3}>
-                محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
-                تجربة عربية واحدة لخمسة أدوار وثلاث شرائح.
-              </RevealCssClass>
-              <RevealCssClass as="div" className="fo-hero-side-foot fo-hero-actions" delay={4}>
-                {/* the honesty-ledger disclosure — the reference's own
-                    mono micro-label grammar (r191 contract kept). */}
-                <Link to="/capabilities" className="fo-hero-disclosure">
-                  <span className="fo-mono" dir="ltr">[LIVE]</span>
-                  <span>ما يعمل اليوم</span>
-                </Link>
-                {/* the funnel contract (r164b → r188, kept by the R314
-                    owner order): the hero carries the register + login
-                    pair — compact canonical seats beside the discover
-                    link, never a second primary per viewport. */}
-                <Link to="/auth/register" className="btn accent lg fo-hero-cta">
-                  أنشئ حسابك الجامعي
-                  <Icon icon={ArrowLeft} size={16} />
-                </Link>
-              </RevealCssClass>
-            </div>
-
-            {/* the third cell — the reference's far-end discover link
-                (143×97 seat): «اكتشف المزيد» + the orange arrow, its own
-                strip cell (R315 A.2 — it was buried inside the actions
-                row; the 3-cell band is the measured composition). */}
-            <RevealCssClass as="div" className="fo-hero-link-cell" delay={4}>
-              <a href="#statement" className="fo-hero-discover">
-                <span className="fo-hero-discover-label">اكتشف المزيد</span>
-                <Icon icon={ArrowLeft} size={14} className="fo-hero-discover-arrow" aria-hidden />
-              </a>
-            </RevealCssClass>
           </div>
         </section>
 
@@ -1026,13 +1046,14 @@ export default function LandingPage() {
                 column's bottom edge). */}
             <div className="st-body-col">
               <RevealCssClass as="div" className="st-body" delay={2}>
+                <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> البيان</span>
                 <h2 id="statement-title" className="st-title" ref={statementTitleRef}>
                   <ScrubReveal text={STATEMENT_TEXT} className="st-scrub" />
                 </h2>
-                <Link to="/auth/register" className="btn st-cta">
-                  ابدأ الرحلة
+                <a href="#live" className="btn ghost st-cta">
+                  شاهد التحديات
                   <Icon icon={ArrowLeft} size={14} aria-hidden="true" />
-                </Link>
+                </a>
               </RevealCssClass>
 
               {/* the partner strip — the reference's label row + logo
