@@ -97,14 +97,39 @@ test.describe('R308 — رحلة التعلّم (the walkthrough ladder)', () =>
   test('a narrow viewport gets the readable stacked sequence (no pin, no hidden content)', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
-    /* all four stations present as stacked readable cards */
-    await expect(page.locator('.jt-station')).toHaveCount(4);
-    const first = page.locator('.jt-station').first();
-    await first.scrollIntoViewIfNeeded();
-    await expect(first).toBeVisible();
-    await expect(first).toContainText('المحاضرة التفاعلية');
-    /* the capability checklist stands open on the flow sheet */
-    await expect(page.locator('.jt-checklist li')).toHaveCount(4);
+    /* R322 override (3-b · the map transplant): the station cards +
+     * the side checklist are RETIRED with the R310/R315 flow
+     * architecture — Heron's own mobile map replaces them: the sticky
+     * moves INSIDE the plan column (.jt-map-in holds the plan + the
+     * INTRODUCTION card in flow below it — the card never overlaps
+     * the drawing), and the closing column stacks full-width below
+     * the track. The readable-sequence contract re-seats on that
+     * furniture: the five findings ride the intro card, the closing
+     * reads immediately in flow. */
+    await expect(page.locator('.jt-cam, .jt-flow, .jt-station, .jt-side')).toHaveCount(0);
+    const map = page.locator('.jt-map-in');
+    await map.scrollIntoViewIfNeeded();
+    await expect(page.locator('.jt-window .bp-svg')).toBeVisible();
+    /* the INTRODUCTION card sits in flow BELOW the plan (the V10
+     * «شاهد»-clip class of defect is dead by construction) */
+    await expect(page.locator('.jt-intro')).toBeVisible();
+    const overlap = await page.evaluate(() => {
+      const plan = document.querySelector('.jt-window') as HTMLElement;
+      const card = document.querySelector('.jt-intro') as HTMLElement;
+      const a = plan.getBoundingClientRect();
+      const b = card.getBoundingClientRect();
+      return Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    });
+    expect(overlap).toBe(0);
+    /* the five findings are real readable content (the r168b ledger
+     * rides the fifth verbatim) */
+    await expect(page.locator('.jt-intro-finding')).toHaveCount(5);
+    await expect(page.locator('.jt-intro-finding').first()).toContainText('المحاضرة التفاعلية');
+    /* the closing column stacks below the track, always open */
+    const close = page.locator('.jt-close');
+    await close.scrollIntoViewIfNeeded();
+    await expect(close).toBeVisible();
+    await expect(close).toContainText('الخلاصة');
   });
 });
 

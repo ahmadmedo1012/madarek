@@ -30,7 +30,16 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('index.html preloads the two critical arabic subsets', () => {
     const html = read('index.html');
     expect(html).toContain('rel="preload" href="/fonts/plex-sans-arabic-400-normal-arabic.woff2"');
-    expect(html).toContain('rel="preload" href="/fonts/plex-sans-arabic-700-normal-arabic.woff2"');
+    // R322 override (3-b · perf-baseline §7-4): the preload re-pin
+    // 700 → 600 — the R322 C1 type system renders 400/500/600 ONLY;
+    // the 700 face was dead weight competing for the preload slot the
+    // LCP h1's 600 face needs (Fast-3G measured: the display font
+    // queued behind the dead 700 while the LCP waited — 5.73s LCP
+    // first, ~3.5s expected after the re-pin). The map's display type
+    // is w600-max by the brief's own cap, so 600 is doubly the LCP
+    // face; the 700 preload must stay DEAD.
+    expect(html).toContain('rel="preload" href="/fonts/plex-sans-arabic-600-normal-arabic.woff2"');
+    expect(html).not.toContain('rel="preload" href="/fonts/plex-sans-arabic-700-normal-arabic.woff2"');
     // both preloads must be CORS-mode font fetches
     expect(html.match(/as="font" type="font\/woff2" crossorigin/g)?.length).toBeGreaterThanOrEqual(2);
   });

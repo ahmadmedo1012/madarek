@@ -546,9 +546,11 @@ test.describe('R309 non-regression — the scroll experience and routes', () => 
   test('scenes advance forward and reverse; the role selector drives all five panels', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    /* forward through the journey */
-    await page.locator('.jt-station').first().scrollIntoViewIfNeeded();
-    await expect(page.locator('.jt-station').first()).toBeVisible();
+    /* forward through the journey — R322 override (3-b): the station
+     * cards retired with the map transplant; the map's own track
+     * (.jt) is the scroll target now */
+    await page.locator('.jt').scrollIntoViewIfNeeded();
+    await expect(page.locator('.jt-window .bp-svg')).toBeVisible();
     await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight * 0.55, behavior: 'instant' }));
     await page.waitForTimeout(500);
     await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));

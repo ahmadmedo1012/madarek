@@ -5358,7 +5358,7 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
    never a void); the statement + copy reveal at the flip. */
 .jt-close {
   flex: 0 0 auto;
-  inline-size: clamp(280px, 32vw, 464px); /* Heron's 464px @1440 */
+  inline-size: clamp(280px, 32.3vw, 464px); /* Heron's exact 464px @1440 (55.7rem) — 32.3vw clears the cap at 1436+ */
   align-self: stretch;
   display: flex;
   flex-direction: column;
