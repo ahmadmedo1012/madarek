@@ -603,7 +603,11 @@ export function JourneyScene() {
         <div className="jt-close" ref={closeRef} data-open="off">
           <div className="jt-close-inner">
             <p className="jt-close-chip">{CLOSE_CHIP_AR}</p>
-            <p className="jt-close-title">{CLOSE_TITLE_AR}</p>
+            {/* the closing h2 — Heron's display-2 seat (3 lines @4.8rem
+                w600; the box is fully class-pinned in landing.css, so
+                the heading tag carries ZERO layout of its own). It is
+                the journey's ONE closing headline inside #chapters. */}
+            <h2 className="jt-close-title">{CLOSE_TITLE_AR}</h2>
             <p className="jt-close-copy">{CLOSE_COPY_AR}</p>
           </div>
         </div>
