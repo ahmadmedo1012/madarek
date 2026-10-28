@@ -454,3 +454,39 @@ Work Log:
 Stage Summary:
 - COMMITTED r321/wp-b2 @ fd6b7658, 6 files (+437/−80). GATES ALL GREEN: tsc 0 · r305-shell-states 19/19 · TeacherLivePage + WebinarsPage-join 11/11 (the only map/live-matching unit files) · raw-css --strict PASS · hover-guard 182 (≤182) · dup-selector 65 (≤65) · rename-ledger 0 OFF-LIST · @390 ar dsf2: map h1 31.76px / scrollW 390 / 0 console errors / 3 bars / shot 65KB; live h1 31.76px / scrollW 390 / 0 errors / 1 hatched empty (the honest zero-session state) / shot 54KB (b2-map-390.jpg + b2-live-390.jpg in audits/evidence/r321/student/).
 - Remainder: (a) the live page's populated boards ([02]/[03]/[04] with rows) were only exercised in the empty payload state — needs a seeded LIVE/SCHEDULED/ENDED session fixture or a teacher-side schedule before B-verify for row-level shots; (b) 768/1440 × dark pairs not captured (the gate ran the 390 ar light leg per the task's exact commands — B-verify owns the full matrix); (c) STUDENT-SWEEP.md route-table rows for /student/map + /student/live still say ❌ — flip to ✅ r321m in the foreman's doc pass; (d) LivePage has no dedicated unit test (the B1a-style pinned-copy test would be a cheap follow-up).
+
+---
+
+## Task ID: r321-c1-B4 · Agent: WP-B4 (sub-agent) · the COMMUNITY family dedupe + sheet conversion
+
+### Task
+T-5 (STUDENT-SWEEP §3): pages/community/CommunityPages.tsx — the §C-5 «×5» dedupe + the §B sheet-system conversion in one pass (recipe: r321-exams.css/r321-map-live.css family contract + LivePage template + CONTRACT.md gates).
+
+### Work Log — CENSUS FIRST (the honest finding)
+- **The ×5 is five ROUTE ROWS, not five bodies.** App.tsx mounts `CommunityPage` (lazy default export of pages/community/CommunityPages.tsx) at `/community` (L427), `/teacher/community` (L454), `/admin/community` (L466), `/quality/community` (L503) + `/student/community` → Navigate redirect (L419). ONE component, parametrised by capabilities (ANNOUNCE_FACULTY/PLATFORM, EVENTS_RUN, role checks) — the per-role bodies were already merged in the r299 «الجولة النهائية G» wave (git --follow confirms the single-family history). No per-mount props/copy/query differences exist to parametrise; the router imports stay byte-identical (no App.tsx change needed — the route table is the coordinator).
+- **The file's real page components:** CommunityPage (the one page) + AnnouncementCard/CompetitionCard/EventCard/EventRsvpControls (row helpers) + CreateAnnouncementModal/OfferingScopeSelect/CreateEventModal (composers) + the r180 external tab bodies StudyRoomsPanel/PostsFeedPanel/CreateStudyRoomModal (components/community/CommunitySocialPanels.tsx — distinct screens, kept).
+- **The byte-near duplicates (jscpd baseline):** (a) INTRA-FILE: the ×2 composer-chrome twins — the comp-modal head/X, the comp-modal-form wrapper, the icon-picker palette group (17/16-ln clones) and the cancel/submit action row in BOTH create modals; (b) CROSS-FILE: PostsFeedPanel (CommunitySocialPanels.tsx 248-383) ↔ SocialPage's feed body (MorePages.tsx 1260-1411) — a 136+28+16 ≈ 180-ln clone pair (the docblock itself calls PostsFeedPanel «the SocialPage feed port»), plus topHashtags ×2 identical copies; (c) snippet-level comp-modal echoes with CompetitionsPages.tsx (7-9-ln ×6).
+- **Deduped THIS pass:** the ×2 composer-chrome family → ONE parametrised set (ComposerModal + EmojiPickerField + ComposerModalActions — the jscpd-cited self-clones folded; both modals keep their own schemas/fields/palettes/copy; all a11y contracts ride verbatim).
+- **Line delta:** 849 → 1002 ln (+153). The fold removed ~76 duplicated chrome lines; the +153 is the sheet conversion (3 SectionBar boards + honest BarCount wiring) + the shared family's authoritative docblock. The «material shrink» the ticket imagined does not exist in this file — the ×5 was already one; the REAL remaining duplicate mass is cross-file (b) and is recorded as the remainder.
+
+### Work Log — the CONVERSION (the r321m twin recipe)
+- ONE `.r321c-page` opt-in root wraps PageFrame; PageHeader gains index="01" + eyebrow «الحياة الأكاديمية»; the masthead re-seats at the inner rung via the new family sheet styles/r321-community.css (unlayered tail, the 3.78rem/3rem/3.2rem ladder = 31.5px@1440/~27.6px@768/31.8px@390, type-gate-allowed, var()/color-mix only, zero own :hover, static texture).
+- Each of the announcements/competitions/events boards: `section.cp-sec` (tabpanel wiring kept verbatim) + SectionBar [02]/[03]/[04] (the tab's station) + honest BarCount (rows the board shows — pending/error stay quiet; StatLine keeps its own labels) + RowList hairline rows (r262 anatomy untouched) + the RowList empties swapped EmptyState→hatched EmptyCell (copy preserved verbatim) + ErrorState/skeletons kept.
+- r319-student.css (§B2 kit) + r321-community.css imported page-chunked; posts/rooms tab bodies keep their own anatomy this pass (the posts/channels/replies family — remainder).
+
+### Gates (all green, from /home/z/wt/b4)
+- `npm run typecheck -w frontend` → 0 errors ✓
+- `npm test -w frontend -- tests/unit/CommunityPages.test.tsx` → 10/10 ✓ · G-final-shared-surfaces + r306-landing-sheet → 40/40 ✓ (no pin changes needed — zero re-pins)
+- `bash scripts/check-raw-css.sh --strict` → PASS ✓ · hover-guard 182 ≤182 ✓ · duplicate-selector 65 ≤65 ✓ · rename-ledger 0 OFF-LIST ✓ (one gate bug found+fixed en route: my sheet's header comment contained `comp-modal-*/comp-form-*` — the `*/` terminated the CSS comment early and the walker counted a phantom :hover rule at 183; reworded to slashes)
+- Visual @390×844 (build ✓, preview :4295, same-context login student@test.ly): h1 «المجتمع الجامعي» 31.76px ≤32 ✓ · scrollWidth 390 ✓ · 0 console errors ✓ · SectionBars visible 1/board (per-tab stations [02]-[04]) · shot audits/evidence/r321/student/b4-community-390.jpg 11.3KB q42 fullPage ✓
+- Commit on r321/wp-b4 only; zero node_modules writes; no push.
+
+### REMAINDER (exact, for the foreman — the true §C-5 dedupe mass)
+1. **PostsFeedPanel ↔ SocialPage (the big one):** fold the ~180-ln clone pair into ONE parametrised feed component consumed by both /community#posts and /student/social (the panels' docblock already declares the port intent + the shared draftKey). Cross-file: touches MorePages.tsx (2,157 ln, §C-6 owner) + CommunitySocialPanels.tsx (573 ln) + the MorePages-social.test.tsx belt — too large for B4's budget, recorded per the fallback rule.
+2. **The posts/rooms family hairline adoption:** CommunitySocialPanels.tsx still mounts the pre-sheet Card composer + .social-composer (student.css family) — needs the radius-0/no-shadows/square-avatar grammar per its own family sheet (channels/replies anatomy preserved).
+3. **topHashtags ×2** (CommunitySocialPanels.tsx:232 ≡ MorePages.tsx:1242) — rides with remainder 1.
+4. **CompetitionsPages.tsx comp-modal echoes** — after remainder 1/2, the shared ComposerModal can move to a shared module and CompetitionsPages can consume it.
+5. STUDENT-SWEEP.md row flip for /community (✅ r321c) — the foreman's doc sweep (B-verify batch).
+
+### Stage Summary
+B4 delivered the CENSUS (the ×5 = five route rows of ONE already-merged component — the honest correction of the §C-5 label), the in-file byte-near dedupe (×2 composer chrome → ONE parametrised set, a11y verbatim), and the full sheet-system conversion of CommunityPages.tsx (.r321c-page root + family sheet ladder + [02]-[04] SectionBar boards + BarCount + hatched EmptyCell + kept ErrorState/skeletons, all queries/posting flows/roles/copy untouched). All gates green, 10/10 belt pins untouched, 390 probe green, evidence shot committed. The true cross-file dedupe mass (PostsFeedPanel↔SocialPage ~180 ln) + the posts/rooms hairline adoption are recorded as the exact remainder for the foreman.

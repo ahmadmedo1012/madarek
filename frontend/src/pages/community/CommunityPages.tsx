@@ -4,8 +4,23 @@
  *   /community            tabbed: Announcements · Competitions · Events
  *                          · Study rooms (r180) · Posts (the feed)
  *   The existing /student/social (posts) stays as it is.
+ *
+ * R321 (c1 · WP-B4) — the page joins the sheet system (the r321m
+ * family twin): ONE .r321c-page opt-in root, each tab's board opens
+ * with the §B2 SectionBar + honest mono BarCount (rows the board
+ * actually shows — the StatLine keeps its own labels), the RowList
+ * empties are the hatched EmptyCell (the honest copy rides along),
+ * and the masthead re-seats at the inner-page display rung (≤32px,
+ * r321-community.css). The §C-5 «×5» census: the router mounts this
+ * ONE component on all five community route rows (/community +
+ * /teacher|admin|quality/community + the /student/community redirect)
+ * — no per-role body survived the r299 G-wave merge; the dedupe here
+ * folds the byte-near composer-chrome twins (§C-5: ComposerModal +
+ * EmojiPickerField + ComposerModalActions), and the posts/rooms tab
+ * bodies (CommunitySocialPanels.tsx — the posts/channels/replies
+ * family) keep their own anatomy this pass as the recorded remainder.
  */
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { useForm, type UseFormRegisterReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -21,7 +36,10 @@ import { Badge, FormField } from '../../components/primitives';
    بطاقات KPI، وقوائم RowList/RowItem هادئة بتفصيل ملتصق بالصف.
    MetricCard يُتقاعد من هذه الصفحة (.kpis-compact يُذكر في ملف التسليم). */
 import { PageFrame, PageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
-import { ErrorState, EmptyState } from '../../components/primitives/States';
+/* R321 (c1 · WP-B4) — the §B2 kit: the mono-indexed section title
+ * bar, the honest mono count + the hatched empty cell. */
+import { SectionBar, BarCount, EmptyCell } from '../../components/student';
+import { ErrorState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
@@ -34,7 +52,7 @@ import {
 import { useAuthStore } from '../../stores/auth.store';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { formatDate, formatTime } from '../../utils/numbers';
-import { arUnit } from '../../lib/format';
+import { arUnit, countAr } from '../../lib/format';
 // r180-F3: the two new tab bodies + the create-room modal live in their
 // own file (components/community) — they mount ONLY when their tab is
 // active, so their hooks (useStudyRooms/usePosts…) never fire for a
@@ -48,6 +66,14 @@ import { roleLabel as sharedRoleLabel } from '../../lib/roleLabels';
 import type { AppRole } from '../../stores/auth.store';
 import '../../styles/colleges.css'; // borrowed .comp-modal-*/.comp-form-*/.event-meta (D14 css split, 13-17)
 import { formatNum } from '../../utils/numbers';
+/* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
+ * page mounts (SectionBar/BarCount/EmptyCell + the family's unlayered
+ * masthead tail precedent). */
+import '../../styles/r319-student.css';
+/* R321 (c1 · WP-B4): the community family's own harmonics — the
+ * .r321c-page opt-in root + the inner-scale masthead re-seat (the
+ * r321-exams.css contract); family-unique rules only. */
+import '../../styles/r321-community.css';
 
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'كل المنصة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',
@@ -139,11 +165,18 @@ export default function CommunityPage() {
   };
 
   return (
+    /* R321 B4: the ONE opt-in root — the sheet system's page-chunked
+        keying (the .r319s-page/.r321x/.r321m twins); everything the
+        family sheet harmonises hangs off .r321c-page only. */
+    <div className="r321c-page">
     <PageFrame>
       {/* r262: ترويسة patterns — الألسنة تسكن الترويسة نفسها (نمط
           ورقة Superlist ذات السطر الكبير)، والإجراءات الشرطية باقية
-          بلا تغيير في الأسماء/الأدوار. */}
+          بلا تغيير في الأسماء/الأدوار. R321 B4: [01] + the inner-page
+          display rung via r321-community.css (≤32px at every band). */}
       <PageHeader
+        index="01"
+        eyebrow="الحياة الأكاديمية"
         title="المجتمع الجامعي"
         description="إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية."
         actions={
@@ -217,49 +250,98 @@ export default function CommunityPage() {
           layout (announcement rows / track cards / event cards), never
           a bare spinner. */}
       {tab === 'announcements' && (
-        <div role="tabpanel" id="community-panel-announcements" aria-labelledby="community-tab-announcements">
+        <section className="cp-sec" role="tabpanel" id="community-panel-announcements" aria-labelledby="community-tab-announcements">
+          {/* R321 B4: the board opens with the §B2 title bar — the mono
+              index is the tab's station in the tablist order, the
+              BarCount prints the honest rows-this-board-shows number
+              (pending/error stay quiet, never a fabricated 0), and the
+              empty body is the hatched EmptyCell below. */}
+          <SectionBar
+            index="02"
+            title="الإعلانات"
+            meta={!ann.isPending && !ann.isError && (ann.data?.length ?? 0) > 0 ? (
+              <BarCount
+                n={ann.data?.length ?? 0}
+                srLabel={countAr(ann.data?.length ?? 0, ['إعلان واحد', 'إعلانان', 'إعلانات', 'إعلان'])}
+              />
+            ) : undefined}
+          />
           {ann.isError ? (
             <ErrorState message="تعذَّر تحميل الإعلانات" error={ann.error} onRetry={() => ann.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة الإعلانات"
               loading={ann.isPending}
-              empty={<EmptyState title="لا توجد إعلانات بعد" description="ستظهر هنا إعلانات الجامعة والكليات والأقسام." illustration="empty-community" />}
+              empty={<EmptyCell label="لا توجد إعلانات بعد" note="ستظهر هنا إعلانات الجامعة والكليات والأقسام." />}
             >
               {ann.data?.map((a) => <AnnouncementCard key={a.id} announcement={a} />)}
             </RowList>
           )}
-        </div>
+        </section>
       )}
       {tab === 'competitions' && (
-        <div role="tabpanel" id="community-panel-competitions" aria-labelledby="community-tab-competitions">
+        <section className="cp-sec" role="tabpanel" id="community-panel-competitions" aria-labelledby="community-tab-competitions">
+          {/* R321 B4: the board opens with the §B2 title bar — the mono
+              index is the tab's station in the tablist order, the
+              BarCount prints the honest rows-this-board-shows number
+              (pending/error stay quiet, never a fabricated 0), and the
+              empty body is the hatched EmptyCell below. */}
+          <SectionBar
+            index="03"
+            title="المسابقات"
+            meta={!comps.isPending && !comps.isError && (comps.data?.length ?? 0) > 0 ? (
+                /* The board prints every competition row it shows; the
+                    StatLine's OPEN-only count keeps its own label. */
+              <BarCount
+                n={comps.data?.length ?? 0}
+                srLabel={countAr(comps.data?.length ?? 0, ['مسابقة واحدة', 'مسابقتان', 'مسابقات', 'مسابقة'])}
+              />
+            ) : undefined}
+          />
           {comps.isError ? (
             <ErrorState message="تعذَّر تحميل المسابقات" error={comps.error} onRetry={() => comps.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة المسابقات"
               loading={comps.isPending}
-              empty={<EmptyState illustration="empty-community" title="لا توجد مسابقات بعد" description="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />}
+              empty={<EmptyCell label="لا توجد مسابقات بعد" note="ستظهر هنا تحديات المعرفة والابتكار عند إعلانها." />}
             >
               {comps.data?.map((c) => <CompetitionCard key={c.id} competition={c} />)}
             </RowList>
           )}
-        </div>
+        </section>
       )}
       {tab === 'events' && (
-        <div role="tabpanel" id="community-panel-events" aria-labelledby="community-tab-events">
+        <section className="cp-sec" role="tabpanel" id="community-panel-events" aria-labelledby="community-tab-events">
+          {/* R321 B4: the board opens with the §B2 title bar — the mono
+              index is the tab's station in the tablist order, the
+              BarCount prints the honest rows-this-board-shows number
+              (pending/error stay quiet, never a fabricated 0), and the
+              empty body is the hatched EmptyCell below. */}
+          <SectionBar
+            index="04"
+            title="الفعاليات"
+            meta={!events.isPending && !events.isError && (events.data?.length ?? 0) > 0 ? (
+                /* The board prints every scheduled event row it shows; the
+                    StatLine's future-only count keeps its own label. */
+              <BarCount
+                n={events.data?.length ?? 0}
+                srLabel={countAr(events.data?.length ?? 0, ['فعاليّة واحدة', 'فعاليّتان', 'فعاليات', 'فعاليّة'])}
+              />
+            ) : undefined}
+          />
           {events.isError ? (
             <ErrorState message="تعذَّر تحميل الفعاليات" error={events.error} onRetry={() => events.refetch()} />
           ) : (
             <RowList
               aria-label="قائمة الفعاليات"
               loading={events.isPending}
-              empty={<EmptyState illustration="empty-community" title="لا توجد فعاليات قادمة بعد" description="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />}
+              empty={<EmptyCell label="لا توجد فعاليات قادمة بعد" note="ستظهر هنا الفعاليات الطلابية والجامعية عند جدولتها." />}
             >
               {events.data?.map((e) => <EventCard key={e.id} event={e} />)}
             </RowList>
           )}
-        </div>
+        </section>
       )}
 
       {tab === 'rooms' && (
@@ -287,6 +369,7 @@ export default function CommunityPage() {
         <CreateStudyRoomModal onClose={() => setCreatingRoom(false)} />
       )}
     </PageFrame>
+    </div>
   );
 }
 
@@ -503,6 +586,96 @@ function EventRsvpControls({ mine, failed, rsvpPending, rsvpTo }: {
   );
 }
 
+/* ───── The shared composer-chrome family (R321 B4 · §C-5 fold) ──
+   The two composer modals (announcement + event) were byte-near twins
+   on every chrome rung — the Modal paper, the comp-modal-head (h2 +
+   the inert-while-pending X), the scrolling comp-modal-form wrapper,
+   the icon-picker palette group and the cancel/submit action row
+   (jscpd cited the 17/16-ln self-clones). ONE parametrised set serves
+   both; each form keeps only what is truly its own — fields, palettes
+   and honest copy. The a11y contracts ride along verbatim: the 5-C4
+   aria-invalid/aria-describedby FormField wiring stays in the forms,
+   the r152a controlled Arabic emoji names travel with the picker, and
+   every close path stays inert while the mutation is in flight
+   (15-e P2-3). */
+
+function ComposerModal({ title, requestClose, escapeLocked, pending, onSubmit, footer, children }: {
+  title: string;
+  requestClose: () => void;
+  escapeLocked: boolean;
+  pending: boolean;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  footer?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <Modal
+      open
+      onClose={requestClose}
+      ariaLabel={title}
+      closeOnOverlayClick={!pending}
+      closeOnEscape={!escapeLocked}
+    >
+      <header className="comp-modal-head">
+        <h2>{title}</h2>
+        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={pending}>
+          <Icon icon={X} size={16} />
+        </button>
+      </header>
+      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
+        {children}
+      </form>
+      {footer}
+    </Modal>
+  );
+}
+
+function EmojiPickerField({ label, icons, names, value, onPick }: {
+  label: string;
+  icons: string[];
+  names: Record<string, string>;
+  value: string | undefined;
+  onPick: (emoji: string) => void;
+}) {
+  /* r152a (A6 P3-5): the controlled Arabic names keep SR announcements
+     in the app's language instead of the SR's emoji localization — ONE
+     group, ONE label id, aria-pressed palette buttons. */
+  const labelId = useId();
+  return (
+    <div className="form-field">
+      <label className="form-field-label" id={labelId}>{label}</label>
+      <div className="comp-icon-picker" role="group" aria-labelledby={labelId}>
+        {icons.map((ic) => (
+          <button
+            key={ic} type="button"
+            aria-pressed={value === ic}
+            aria-label={names[ic] ?? 'أيقونة'}
+            className={`comp-icon-btn${value === ic ? ' on' : ''}`}
+            onClick={() => onPick(ic)}
+          >{ic}</button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ComposerModalActions({ requestClose, pending, pendingLabel, submitLabel }: {
+  requestClose: () => void;
+  pending: boolean;
+  pendingLabel: string;
+  submitLabel: string;
+}) {
+  return (
+    <div className="comp-modal-actions">
+      <button type="button" className="btn ghost" onClick={requestClose} disabled={pending}>إلغاء</button>
+      <button type="submit" className="btn primary" disabled={pending}>
+        <Icon icon={Send} size={14} />
+        {pending ? pendingLabel : submitLabel}
+      </button>
+    </div>
+  );
+}
+
 /* ───────────────────────── Create-announcement modal ─────────────── */
 
 const announcementSchema = z.object({
@@ -538,7 +711,6 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
      * choices the r179 guards would always reject. */
   const facs = useFaculties(useCurrentInstitutionSlug());
   const offeringScopeId = useId();
-  const iconLabelId = useId();
   const pinnedId = useId();
 
   const form = useForm<AnnouncementInputs>({
@@ -578,23 +750,21 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
   });
 
   return (
-    <Modal
-      open
-      onClose={requestClose}
-      ariaLabel="إعلان جديد"
-      closeOnOverlayClick={!create.isPending}
-      closeOnEscape={!escapeLocked}
+    /* R321 B4 (§C-5 composer-chrome fold): both composer modals ride
+       the ONE shared shell — the Modal paper + head + form wrapper
+       were byte-near twins (the jscpd-cited self-clones); each form
+       keeps only what is truly its own (fields + palettes + copy). */
+    <ComposerModal
+      title="إعلان جديد"
+      requestClose={requestClose}
+      escapeLocked={escapeLocked}
+      pending={create.isPending}
+      onSubmit={onSubmit}
+      footer={guard}
     >
-      <header className="comp-modal-head">
-        <h2>إعلان جديد</h2>
-        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
-          <Icon icon={X} size={16} />
-        </button>
-      </header>
       {/* 5-C4 (A10 P2-3): platform FormField — aria-invalid +
           aria-describedby on every error-carrying control (the census
           measured all four announcement controls unwired). */}
-      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
         <div className="comp-form-row">
           <FormField label="النطاق">
             <select
@@ -648,20 +818,16 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
         </FormField>
 
         <div className="comp-form-row">
-          <div className="form-field">
-            <label className="form-field-label" id={iconLabelId}>أيقونة</label>
-            <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
-              {ANN_ICONS.map((ic) => (
-                <button
-                  key={ic} type="button"
-                  aria-pressed={form.watch('iconEmoji') === ic}
-                  aria-label={ANN_ICON_NAMES_AR[ic] ?? 'أيقونة'}
-                  className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
-                  onClick={() => form.setValue('iconEmoji', ic)}
-                >{ic}</button>
-              ))}
-            </div>
-          </div>
+          {/* R321 B4: the ×2 palette group rides the ONE shared
+              EmojiPickerField (the r152a controlled Arabic names
+              travel with it). */}
+          <EmojiPickerField
+            label="أيقونة"
+            icons={ANN_ICONS}
+            names={ANN_ICON_NAMES_AR}
+            value={form.watch('iconEmoji')}
+            onPick={(ic) => form.setValue('iconEmoji', ic)}
+          />
           {/* 5-C4 (A10 P3-7 while in the row): ONE label names the
               checkbox — the old pair (field label + wrapping label)
               concatenated into a garbled accessible name. */}
@@ -676,16 +842,13 @@ function CreateAnnouncementModal({ canPlatform, canOffering, onClose }: {
 
         {create.isError && <div className="auth-error">تعذَّر النشر. تحقَّق من البيانات.</div>}
 
-        <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
-          <button type="submit" className="btn primary" disabled={create.isPending}>
-            <Icon icon={Send} size={14} />
-            {create.isPending ? 'جارٍ النشر…' : 'نشر الإعلان'}
-          </button>
-        </div>
-      </form>
-      {guard}
-    </Modal>
+        <ComposerModalActions
+          requestClose={requestClose}
+          pending={create.isPending}
+          pendingLabel="جارٍ النشر…"
+          submitLabel="نشر الإعلان"
+        />
+    </ComposerModal>
   );
 }
 
@@ -748,7 +911,6 @@ const EVENT_ICON_NAMES_AR: Record<string, string> = {
 
 function CreateEventModal({ onClose }: { onClose: () => void }) {
   const create = useCreateCampusEvent();
-  const iconLabelId = useId();
 
   const form = useForm<EventInputs>({
     resolver: zodResolver(eventSchema),
@@ -782,22 +944,20 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    <Modal
-      open
-      onClose={requestClose}
-      ariaLabel="فعاليّة جديدة"
-      closeOnOverlayClick={!create.isPending}
-      closeOnEscape={!escapeLocked}
+    /* R321 B4 (§C-5 composer-chrome fold): both composer modals ride
+       the ONE shared shell — the Modal paper + head + form wrapper
+       were byte-near twins (the jscpd-cited self-clones); each form
+       keeps only what is truly its own (fields + palettes + copy). */
+    <ComposerModal
+      title="فعاليّة جديدة"
+      requestClose={requestClose}
+      escapeLocked={escapeLocked}
+      pending={create.isPending}
+      onSubmit={onSubmit}
+      footer={guard}
     >
-      <header className="comp-modal-head">
-        <h2>فعاليّة جديدة</h2>
-        <button type="button" className="comp-modal-close" onClick={requestClose} aria-label="إغلاق" disabled={create.isPending}>
-          <Icon icon={X} size={16} />
-        </button>
-      </header>
       {/* 5-C4 (A10 P2-3): platform FormField on the event form too —
           same association contract as the announcement composer. */}
-      <form onSubmit={onSubmit} className="comp-modal-form" style={{ overflowY: 'auto' }}>
         <FormField label="العنوان" error={form.formState.errors.title?.message}>
           <input type="text" {...form.register('title')} className="auth-input" />
         </FormField>
@@ -819,31 +979,24 @@ function CreateEventModal({ onClose }: { onClose: () => void }) {
           <FormField label="السعة القصوى">
             <input type="number" min={1} max={10000} {...form.register('capacity')} className="auth-input" />
           </FormField>
-          <div className="form-field">
-            <label className="form-field-label" id={iconLabelId}>أيقونة</label>
-            <div className="comp-icon-picker" role="group" aria-labelledby={iconLabelId}>
-              {EVENT_ICONS.map((ic) => (
-                <button
-                  key={ic} type="button"
-                  aria-pressed={form.watch('iconEmoji') === ic}
-                  aria-label={EVENT_ICON_NAMES_AR[ic] ?? 'أيقونة'}
-                  className={`comp-icon-btn${form.watch('iconEmoji') === ic ? ' on' : ''}`}
-                  onClick={() => form.setValue('iconEmoji', ic)}
-                >{ic}</button>
-              ))}
-            </div>
-          </div>
+          {/* R321 B4: the ×2 palette group rides the ONE shared
+              EmojiPickerField (the r152a controlled Arabic names
+              travel with it). */}
+          <EmojiPickerField
+            label="أيقونة"
+            icons={EVENT_ICONS}
+            names={EVENT_ICON_NAMES_AR}
+            value={form.watch('iconEmoji')}
+            onPick={(ic) => form.setValue('iconEmoji', ic)}
+          />
         </div>
         {create.isError && <div className="auth-error">تعذَّر إنشاء الفعاليّة. تحقَّق من البيانات.</div>}
-        <div className="comp-modal-actions">
-          <button type="button" className="btn ghost" onClick={requestClose} disabled={create.isPending}>إلغاء</button>
-          <button type="submit" className="btn primary" disabled={create.isPending}>
-            <Icon icon={Send} size={14} />
-            {create.isPending ? 'جارٍ الحفظ…' : 'إنشاء الفعاليّة'}
-          </button>
-        </div>
-      </form>
-      {guard}
-    </Modal>
+        <ComposerModalActions
+          requestClose={requestClose}
+          pending={create.isPending}
+          pendingLabel="جارٍ الحفظ…"
+          submitLabel="إنشاء الفعاليّة"
+        />
+    </ComposerModal>
   );
 }
