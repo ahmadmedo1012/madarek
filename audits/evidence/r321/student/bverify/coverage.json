@@ -1,0 +1,4030 @@
+{
+ "base": "http://127.0.0.1:4296",
+ "generatedAt": "2026-10-28T03:43:51.818Z",
+ "rubric": {
+  "h1": "count === 1, computed px recorded (≤32 inner; dashboard judged later)",
+  "overflow": "documentElement.scrollWidth ≤ innerWidth",
+  "consoleErrors": "page.on(console) type=error per route load",
+  "failedRequests": "page.on(requestfailed) per route load",
+  "root": "opt-in class .r319s-page|.r321x-page|.r321m-page|.r321p-page|.r321c-page",
+  "roundedScan": "N/A — skipped per instruction"
+ },
+ "params": {
+  "offeringId": "cmvr8gnp3003y8sc9qg8sm205",
+  "slug": "platform-onboarding",
+  "lessonId": "cmvr8go3h008b8sc9ijzkgosm",
+  "examId": "cmvr8go9y00cx8sc9lakgmty0",
+  "lectureId": "cmvr8go0v006u8sc96p9kugt7",
+  "visionSlug": "ai-predictor",
+  "compId": "cmvr8gobf00ds8sc9tti5cfqe",
+  "filename": null
+ },
+ "themeNotes": [],
+ "headline": {
+  "routes": 41,
+  "routesNA": [],
+  "greenCells": 182,
+  "totalCells": 205,
+  "redirects": [
+   {
+    "from": "/student/settings",
+    "cells": {
+     "390x844-light": {
+      "url": "/student/settings",
+      "redirectOK": false
+     },
+     "768x1024-light": {
+      "url": "/student/settings",
+      "redirectOK": false
+     },
+     "1024x768-light": {
+      "url": "/student/settings",
+      "redirectOK": false
+     },
+     "1440x900-light": {
+      "url": "/student/settings",
+      "redirectOK": false
+     },
+     "390x844-dark": {
+      "url": "/student/settings",
+      "redirectOK": false
+     }
+    }
+   },
+   {
+    "from": "/student/exams",
+    "cells": {
+     "390x844-light": {
+      "url": "/student/online-exams",
+      "redirectOK": true
+     },
+     "768x1024-light": {
+      "url": "/student/online-exams",
+      "redirectOK": true
+     },
+     "1024x768-light": {
+      "url": "/student/online-exams",
+      "redirectOK": true
+     },
+     "1440x900-light": {
+      "url": "/student/online-exams",
+      "redirectOK": true
+     },
+     "390x844-dark": {
+      "url": "/student/online-exams",
+      "redirectOK": true
+     }
+    }
+   },
+   {
+    "from": "/student/colleges",
+    "cells": {
+     "390x844-light": {
+      "url": "/colleges",
+      "redirectOK": true
+     },
+     "768x1024-light": {
+      "url": "/colleges",
+      "redirectOK": true
+     },
+     "1024x768-light": {
+      "url": "/colleges",
+      "redirectOK": true
+     },
+     "1440x900-light": {
+      "url": "/colleges",
+      "redirectOK": true
+     },
+     "390x844-dark": {
+      "url": "/colleges",
+      "redirectOK": true
+     }
+    }
+   },
+   {
+    "from": "/student/achievements",
+    "cells": {
+     "390x844-light": {
+      "url": "/achievements",
+      "redirectOK": true
+     },
+     "768x1024-light": {
+      "url": "/achievements",
+      "redirectOK": true
+     },
+     "1024x768-light": {
+      "url": "/achievements",
+      "redirectOK": true
+     },
+     "1440x900-light": {
+      "url": "/achievements",
+      "redirectOK": true
+     },
+     "390x844-dark": {
+      "url": "/achievements",
+      "redirectOK": true
+     }
+    }
+   }
+  ],
+  "shots": {
+   "files": 82,
+   "totalKB": 1743
+  },
+  "droppedDark": []
+ },
+ "routes": [
+  {
+   "slug": "dashboard",
+   "path": "/student/dashboard",
+   "family": "r319s",
+   "cellsGreen": "0/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [
+    "390x844-light: failed-requests=21",
+    "768x1024-light: failed-requests=22",
+    "1024x768-light: failed-requests=22",
+    "1440x900-light: failed-requests=19",
+    "390x844-dark: failed-requests=6"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 21,
+     "root": "r319s",
+     "url": "/student/dashboard",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/PageFrame-JmO8KyKV.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/EmptyCell-D_O8gFhY.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/DashboardPage-dmayIX-B.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/courseMeta-Dni2_tp6.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/RowList-B0QNXcb7.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/StatLine-8zI8tgF3.js [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": {
+      "file": "dashboard-light.jpg",
+      "kb": 28.7
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 22,
+     "root": "r319s",
+     "url": "/student/dashboard",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/DashboardPage-dmayIX-B.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/shield-19UbJMwA.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/display-text-rMGyhco7.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/SectionBar-BsxXg9FR.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/cpu-Jmg8-1QU.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/PageFrame-JmO8KyKV.js [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 22,
+     "root": "r319s",
+     "url": "/student/dashboard",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/StatusChip-DUY7d9UA.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/WeekStrip-DGc3kLKs.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/DashboardPage-dmayIX-B.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/PageHeader-C_OFzncm.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/database-7G3d6cTJ.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/EmptyCell-D_O8gFhY.js [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 19,
+     "root": "r319s",
+     "url": "/student/dashboard",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/SectionBar-BsxXg9FR.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/EmptyCell-D_O8gFhY.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/shield-19UbJMwA.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/PageHeader-C_OFzncm.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/cpu-Jmg8-1QU.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/database-7G3d6cTJ.js [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 6,
+     "root": "r319s",
+     "url": "/student/dashboard",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/play-C5d0B14l.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/chartTheme-CFK_prHZ.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/charts-BcFORcBi.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/me/profile [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/notifications?limit=1 [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/auth/me [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": {
+      "file": "dashboard-dark.jpg",
+      "kb": 27.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "calendar",
+   "path": "/student/calendar",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/calendar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "calendar-light.jpg",
+      "kb": 23.5
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/calendar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/calendar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/calendar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/calendar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "calendar-dark.jpg",
+      "kb": 21.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "schedule",
+   "path": "/student/schedule",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/schedule",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "schedule-light.jpg",
+      "kb": 23.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/schedule",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/schedule",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/schedule",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/schedule",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "schedule-dark.jpg",
+      "kb": 22.3
+     }
+    }
+   }
+  },
+  {
+   "slug": "courses",
+   "path": "/student/courses",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "courses-light.jpg",
+      "kb": 23.4
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "courses-dark.jpg",
+      "kb": 22
+     }
+    }
+   }
+  },
+  {
+   "slug": "course-detail",
+   "path": "/student/courses/{offeringId}",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses/cmvr8gnp3003y8sc9qg8sm205",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "course-detail-light.jpg",
+      "kb": 21.9
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses/cmvr8gnp3003y8sc9qg8sm205",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses/cmvr8gnp3003y8sc9qg8sm205",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses/cmvr8gnp3003y8sc9qg8sm205",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/courses/cmvr8gnp3003y8sc9qg8sm205",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "course-detail-dark.jpg",
+      "kb": 20.6
+     }
+    }
+   }
+  },
+  {
+   "slug": "catalog",
+   "path": "/student/catalog",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/catalog",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "catalog-light.jpg",
+      "kb": 21.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/catalog",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/catalog",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/catalog",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/catalog",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "catalog-dark.jpg",
+      "kb": 19.7
+     }
+    }
+   }
+  },
+  {
+   "slug": "labs",
+   "path": "/student/labs",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/labs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "labs-light.jpg",
+      "kb": 23.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/labs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/labs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/labs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/labs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "labs-dark.jpg",
+      "kb": 22
+     }
+    }
+   }
+  },
+  {
+   "slug": "matrix",
+   "path": "/student/matrix",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/matrix",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "matrix-light.jpg",
+      "kb": 26.8
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/matrix",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/matrix",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/matrix",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/matrix",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "matrix-dark.jpg",
+      "kb": 25.9
+     }
+    }
+   }
+  },
+  {
+   "slug": "mooc",
+   "path": "/student/mooc",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/mooc",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "mooc-light.jpg",
+      "kb": 22.4
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/mooc",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/mooc",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/mooc",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/mooc",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "mooc-dark.jpg",
+      "kb": 21
+     }
+    }
+   }
+  },
+  {
+   "slug": "library",
+   "path": "/student/library",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/library",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "library-light.jpg",
+      "kb": 20.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/library",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/library",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/library",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/library",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "library-dark.jpg",
+      "kb": 19.7
+     }
+    }
+   }
+  },
+  {
+   "slug": "research",
+   "path": "/student/research",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/research",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "research-light.jpg",
+      "kb": 24.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/research",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/research",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/research",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/research",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "research-dark.jpg",
+      "kb": 23.9
+     }
+    }
+   }
+  },
+  {
+   "slug": "jobs",
+   "path": "/student/jobs",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/jobs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "jobs-light.jpg",
+      "kb": 20.5
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/jobs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/jobs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/jobs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/jobs",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "jobs-dark.jpg",
+      "kb": 18.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "ai",
+   "path": "/student/ai",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/ai",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "ai-light.jpg",
+      "kb": 25.7
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/ai",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/ai",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/ai",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/ai",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "ai-dark.jpg",
+      "kb": 24.6
+     }
+    }
+   }
+  },
+  {
+   "slug": "gamification",
+   "path": "/student/gamification",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/gamification",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "gamification-light.jpg",
+      "kb": 22.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/gamification",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/gamification",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/gamification",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/gamification",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "gamification-dark.jpg",
+      "kb": 21.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "skills",
+   "path": "/student/skills",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/skills",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "skills-light.jpg",
+      "kb": 20.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/skills",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/skills",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/skills",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/skills",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "skills-dark.jpg",
+      "kb": 18.4
+     }
+    }
+   }
+  },
+  {
+   "slug": "alerts",
+   "path": "/student/alerts",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/alerts",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "alerts-light.jpg",
+      "kb": 22.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/alerts",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/alerts",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/alerts",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/alerts",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "alerts-dark.jpg",
+      "kb": 21.5
+     }
+    }
+   }
+  },
+  {
+   "slug": "messages",
+   "path": "/student/messages",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "390x844-light: h1px=55.5725",
+    "768x1024-light: h1px=51.5683",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667",
+    "390x844-dark: h1px=55.5725"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 55.5725,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/messages",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "messages-light.jpg",
+      "kb": 18.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 51.5683,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/messages",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/messages",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/messages",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 55.5725,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/messages",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "messages-dark.jpg",
+      "kb": 17.2
+     }
+    }
+   }
+  },
+  {
+   "slug": "ar",
+   "path": "/student/ar",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/ar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "ar-light.jpg",
+      "kb": 17.3
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/ar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/ar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/ar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/ar",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "ar-dark.jpg",
+      "kb": 16.7
+     }
+    }
+   }
+  },
+  {
+   "slug": "social",
+   "path": "/student/social",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/social",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "social-light.jpg",
+      "kb": 21.8
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/social",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/social",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/social",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/social",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "social-dark.jpg",
+      "kb": 19.6
+     }
+    }
+   }
+  },
+  {
+   "slug": "downloads",
+   "path": "/student/downloads",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/downloads",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "downloads-light.jpg",
+      "kb": 21.4
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/downloads",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/downloads",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/downloads",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/downloads",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "downloads-dark.jpg",
+      "kb": 19.6
+     }
+    }
+   }
+  },
+  {
+   "slug": "university",
+   "path": "/student/university",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/university",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "university-light.jpg",
+      "kb": 23.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/university",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/university",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/university",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/university",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "university-dark.jpg",
+      "kb": 22.4
+     }
+    }
+   }
+  },
+  {
+   "slug": "results",
+   "path": "/student/results",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/results",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "results-light.jpg",
+      "kb": 21
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/results",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/results",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/results",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/student/results",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "results-dark.jpg",
+      "kb": 20.9
+     }
+    }
+   }
+  },
+  {
+   "slug": "payment",
+   "path": "/student/payment",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/payment",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "payment-light.jpg",
+      "kb": 21.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/payment",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/payment",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/payment",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/payment",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "payment-dark.jpg",
+      "kb": 19.5
+     }
+    }
+   }
+  },
+  {
+   "slug": "profile",
+   "path": "/student/profile",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/profile",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "profile-light.jpg",
+      "kb": 21.5
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/profile",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/profile",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/profile",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/profile",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "profile-dark.jpg",
+      "kb": 20.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "settings",
+   "path": "/settings",
+   "family": "r320-settings",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/settings",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "settings-light.jpg",
+      "kb": 21.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/settings",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/settings",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/settings",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/settings",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "settings-dark.jpg",
+      "kb": 20
+     }
+    }
+   }
+  },
+  {
+   "slug": "webinars",
+   "path": "/student/webinars",
+   "family": "r319s",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/webinars",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "webinars-light.jpg",
+      "kb": 27.3
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/webinars",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/webinars",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/webinars",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/student/webinars",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "webinars-dark.jpg",
+      "kb": 26
+     }
+    }
+   }
+  },
+  {
+   "slug": "training",
+   "path": "/training",
+   "family": "r319s",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [
+    "390x844-dark: console-errors=6"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "training-light.jpg",
+      "kb": 24.4
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 6,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "training-dark.jpg",
+      "kb": 21.4
+     }
+    }
+   }
+  },
+  {
+   "slug": "training-track",
+   "path": "/training/{slug}",
+   "family": "r319s",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40"
+   ],
+   "defects": [
+    "390x844-dark: h1-count=0; console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "training-track-light.jpg",
+      "kb": 22.7
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 0,
+     "h1px": null,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "training-track-dark.jpg",
+      "kb": 12.4
+     }
+    }
+   }
+  },
+  {
+   "slug": "training-lesson",
+   "path": "/training/{slug}/lesson/{lessonId}",
+   "family": "r319s",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40"
+   ],
+   "defects": [
+    "390x844-dark: h1-count=0; console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding/lesson/cmvr8go3h008b8sc9ijzkgosm",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "training-lesson-light.jpg",
+      "kb": 23.6
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding/lesson/cmvr8go3h008b8sc9ijzkgosm",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding/lesson/cmvr8go3h008b8sc9ijzkgosm",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding/lesson/cmvr8go3h008b8sc9ijzkgosm",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 0,
+     "h1px": null,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/training/platform-onboarding/lesson/cmvr8go3h008b8sc9ijzkgosm",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "training-lesson-dark.jpg",
+      "kb": 12.3
+     }
+    }
+   }
+  },
+  {
+   "slug": "achievements",
+   "path": "/achievements",
+   "family": "r319s",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "768x1024-light: h1px=40.518",
+    "1024x768-light: h1px=33.1852",
+    "1440x900-light: h1px=46.6667"
+   ],
+   "defects": [
+    "390x844-dark: console-errors=7"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/achievements",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "achievements-light.jpg",
+      "kb": 20.2
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 40.518,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/achievements",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 33.1852,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/achievements",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 46.6667,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/achievements",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 7,
+     "failedRequests": 0,
+     "root": "r319s",
+     "url": "/achievements",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "achievements-dark.jpg",
+      "kb": 17.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "document-viewer",
+   "path": "/document/{filename}",
+   "family": "shared",
+   "cellsGreen": "5/5",
+   "verdict": "GREEN",
+   "info": [
+    "390x844-light: h1px=63.5115",
+    "768x1024-light: h1px=58.9353",
+    "1024x768-light: h1px=37.9259",
+    "1440x900-light: h1px=53.3333",
+    "390x844-dark: h1px=63.5115"
+   ],
+   "defects": [],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 63.5115,
+     "scrollWidth": 380,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/document/",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "document-viewer-light.jpg",
+      "kb": 20.8
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 58.9353,
+     "scrollWidth": 758,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/document/",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 37.9259,
+     "scrollWidth": 1014,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/document/",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 53.3333,
+     "scrollWidth": 1430,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/document/",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 63.5115,
+     "scrollWidth": 380,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/document/",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "document-viewer-dark.jpg",
+      "kb": 19.7
+     }
+    }
+   }
+  },
+  {
+   "slug": "vision",
+   "path": "/vision",
+   "family": "r320-shell",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [
+    "390x844-dark: console-errors=3"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "vision-light.jpg",
+      "kb": 26.5
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 3,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "vision-dark.jpg",
+      "kb": 25.7
+     }
+    }
+   }
+  },
+  {
+   "slug": "vision-detail",
+   "path": "/vision/{vslug}",
+   "family": "r320-shell",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [
+    "390x844-dark: console-errors=3"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision/ai-predictor",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "vision-detail-light.jpg",
+      "kb": 23.5
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision/ai-predictor",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision/ai-predictor",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision/ai-predictor",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 3,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/vision/ai-predictor",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "vision-detail-dark.jpg",
+      "kb": 22.6
+     }
+    }
+   }
+  },
+  {
+   "slug": "competitions",
+   "path": "/competitions",
+   "family": "r320-shell",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40",
+    "390x844-dark: h1px=47.6336"
+   ],
+   "defects": [
+    "390x844-dark: console-errors=5"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "competitions-light.jpg",
+      "kb": 24.7
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 5,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "competitions-dark.jpg",
+      "kb": 19.4
+     }
+    }
+   }
+  },
+  {
+   "slug": "competition-detail",
+   "path": "/competitions/{id}",
+   "family": "r320-shell",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [
+    "390x844-light: h1px=47.6336",
+    "768x1024-light: h1px=44.2014",
+    "1440x900-light: h1px=40"
+   ],
+   "defects": [
+    "390x844-dark: h1-count=0; console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 47.6336,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions/cmvr8gobf00ds8sc9tti5cfqe",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "competition-detail-light.jpg",
+      "kb": 22.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 44.2014,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions/cmvr8gobf00ds8sc9tti5cfqe",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 28.4444,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions/cmvr8gobf00ds8sc9tti5cfqe",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 40,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions/cmvr8gobf00ds8sc9tti5cfqe",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 0,
+     "h1px": null,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": null,
+     "url": "/competitions/cmvr8gobf00ds8sc9tti5cfqe",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "competition-detail-dark.jpg",
+      "kb": 12.6
+     }
+    }
+   }
+  },
+  {
+   "slug": "online-exams",
+   "path": "/student/online-exams",
+   "family": "r321x",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [],
+   "defects": [
+    "390x844-dark: console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "online-exams-light.jpg",
+      "kb": 18.9
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 27.6259,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 22.4,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 31.5,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "online-exams-dark.jpg",
+      "kb": 20.3
+     }
+    }
+   }
+  },
+  {
+   "slug": "exam-taker",
+   "path": "/student/online-exams/{examId}",
+   "family": "r321x",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [],
+   "defects": [
+    "390x844-dark: console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams/cmvr8go9y00cx8sc9lakgmty0",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "exam-taker-light.jpg",
+      "kb": 15.3
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 27.6259,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams/cmvr8go9y00cx8sc9lakgmty0",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 22.4,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams/cmvr8go9y00cx8sc9lakgmty0",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 31.5,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams/cmvr8go9y00cx8sc9lakgmty0",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": "r321x",
+     "url": "/student/online-exams/cmvr8go9y00cx8sc9lakgmty0",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "exam-taker-dark.jpg",
+      "kb": 14.5
+     }
+    }
+   }
+  },
+  {
+   "slug": "map",
+   "path": "/student/map",
+   "family": "r321m",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [],
+   "defects": [
+    "390x844-dark: console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/map",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "map-light.jpg",
+      "kb": 22.9
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 27.6259,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/map",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 22.4,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/map",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 31.5,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/map",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/map",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "map-dark.jpg",
+      "kb": 21.3
+     }
+    }
+   }
+  },
+  {
+   "slug": "live",
+   "path": "/student/live",
+   "family": "r321m",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [],
+   "defects": [
+    "390x844-dark: console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/live",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": {
+      "file": "live-light.jpg",
+      "kb": 18.1
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 27.6259,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/live",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 22.4,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/live",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 31.5,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/live",
+     "failedSamples": [],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": "r321m",
+     "url": "/student/live",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "live-dark.jpg",
+      "kb": 16.8
+     }
+    }
+   }
+  },
+  {
+   "slug": "lecture-player",
+   "path": "/student/lectures/{lectureId}",
+   "family": "r321p",
+   "cellsGreen": "0/5",
+   "verdict": "DEFECT-listed",
+   "info": [],
+   "defects": [
+    "390x844-light: failed-requests=1",
+    "768x1024-light: failed-requests=2",
+    "1024x768-light: failed-requests=1",
+    "1440x900-light: failed-requests=1",
+    "390x844-dark: h1-count=0; console-errors=4"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 1,
+     "root": "r321p",
+     "url": "/student/lectures/cmvr8go0v006u8sc96p9kugt7",
+     "failedSamples": [
+      "http://127.0.0.1:4296/lectures/se301-02-requirements.mp4 [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": {
+      "file": "lecture-player-light.jpg",
+      "kb": 24.8
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 27.6259,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 2,
+     "root": "r321p",
+     "url": "/student/lectures/cmvr8go0v006u8sc96p9kugt7",
+     "failedSamples": [
+      "http://127.0.0.1:4296/lectures/se301-02-requirements.mp4 [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/lectures/se301-02-requirements.mp4 [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 22.4,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 1,
+     "root": "r321p",
+     "url": "/student/lectures/cmvr8go0v006u8sc96p9kugt7",
+     "failedSamples": [
+      "http://127.0.0.1:4296/lectures/se301-02-requirements.mp4 [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 31.5,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 1,
+     "root": "r321p",
+     "url": "/student/lectures/cmvr8go0v006u8sc96p9kugt7",
+     "failedSamples": [
+      "http://127.0.0.1:4296/lectures/se301-02-requirements.mp4 [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 0,
+     "h1px": null,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 4,
+     "failedRequests": 0,
+     "root": "r321p",
+     "url": "/student/lectures/cmvr8go0v006u8sc96p9kugt7",
+     "failedSamples": [],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "lecture-player-dark.jpg",
+      "kb": 13.4
+     }
+    }
+   }
+  },
+  {
+   "slug": "community",
+   "path": "/community",
+   "family": "r321c",
+   "cellsGreen": "4/5",
+   "verdict": "DEFECT-listed",
+   "info": [],
+   "defects": [
+    "390x844-dark: console-errors=7"
+   ],
+   "cells": {
+    "390x844-light": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321c",
+     "url": "/community",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/exams-C8gN3zFo.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/chevron-right-BnkpQKgx.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/shield-19UbJMwA.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/ban--5ezEYNJ.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/auth/me [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/hourglass-ChhU-b1F.js [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": {
+      "file": "community-light.jpg",
+      "kb": 24.5
+     }
+    },
+    "768x1024-light": {
+     "h1": 1,
+     "h1px": 27.6259,
+     "scrollWidth": 768,
+     "innerWidth": 768,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321c",
+     "url": "/community",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/not-found-oE6b8nmu.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/cpu-Jmg8-1QU.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/database-7G3d6cTJ.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/SectionBar-BsxXg9FR.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/ConfirmDialog-Bim7ON9B.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/PageHeader-C_OFzncm.js [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1024x768-light": {
+     "h1": 1,
+     "h1px": 22.4,
+     "scrollWidth": 1024,
+     "innerWidth": 1024,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321c",
+     "url": "/community",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/not-found-oE6b8nmu.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/OnlineExamsPages-C_J4z6YA.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/courseMeta-Dni2_tp6.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/exams-C8gN3zFo.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/auth/me [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/notifications?limit=1 [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "1440x900-light": {
+     "h1": 1,
+     "h1px": 31.5,
+     "scrollWidth": 1440,
+     "innerWidth": 1440,
+     "overflow": false,
+     "consoleErrors": 0,
+     "failedRequests": 0,
+     "root": "r321c",
+     "url": "/community",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/not-found-oE6b8nmu.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/me/profile [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/hourglass-ChhU-b1F.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/auth/me [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/PageHeader-BfViyiKI.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/notifications?limit=1 [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [],
+     "shot": null
+    },
+    "390x844-dark": {
+     "h1": 1,
+     "h1px": 31.7557,
+     "scrollWidth": 390,
+     "innerWidth": 390,
+     "overflow": false,
+     "consoleErrors": 7,
+     "failedRequests": 0,
+     "root": "r321c",
+     "url": "/community",
+     "failedSamples": [
+      "http://127.0.0.1:4296/assets/chevron-right-BnkpQKgx.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/PageHeader-BfViyiKI.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/database-7G3d6cTJ.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/assets/ban--5ezEYNJ.js [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/notifications?limit=1 [net::ERR_ABORTED]",
+      "http://127.0.0.1:4296/api/v1/me/profile [net::ERR_ABORTED]"
+     ],
+     "consoleSamples": [
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)",
+      "Failed to load resource: the server responded with a status of 429 (Too Many Requests)"
+     ],
+     "shot": {
+      "file": "community-dark.jpg",
+      "kb": 18.9
+     }
+    }
+   }
+  }
+ ]
+}
