@@ -152,10 +152,11 @@ const FINDINGS_AR = [
 /* the closing column — Heron's label chip + 3-line h2 + body. Our h2
  * is the CTA-adjacent statement (the funnel itself stays frozen: no
  * link is added — the register row further down the sheet owns the
- * conversion); the copy is the honest ledger summary. */
+ * conversion); the copy is the honest ledger summary. ~60 chars —
+ * Heron's own 3-line measure at the D2 rung in the 464px column. */
 const CLOSE_CHIP_AR = 'الخلاصة';
 const CLOSE_TITLE_AR =
-  'المسطح اكتمل — والخطوة التالية لك: أنشئ حسابك الجامعي وابدأ من أول محاضرة.';
+  'المسطح اكتمل — والخطوة التالية لك: أنشئ حسابك وابدأ من أول محاضرة.';
 const CLOSE_COPY_AR =
   'كل غرفة في هذا المسطح ميزة تعمل اليوم داخل المنصّة، لا وعدًا قادمًا. أكمل التمرير لتصل إلى إنشاء الحساب في نهاية الصفحة.';
 
@@ -214,7 +215,11 @@ function clamp01(x: number): number {
 /* ── The ≤991 camera (the R312 camera, evolved onto the 6-state clock)
  * The sheet's viewBox pans between the narrated rooms while the sticky
  * window holds: the full overview through the statement era → each
- * room in turn (the R319 crop nodes) → the completed overview at the
+ * room in turn (the R319 crop nodes, re-derived at the SHEET'S OWN
+ * 1.5789 aspect — a landscape crop family, so the SVG's box (pinned
+ * to the full-sheet aspect by CSS) is filled EXACTLY at every key:
+ * no letterbox, and a viewBox pan can never resize the element —
+ * zero layout work per crop frame) → the completed overview at the
  * close. Quantized whole viewBox units + change-gated writes (the
  * R318 C2-S1 discipline — an interpolated rect never re-invalidates
  * the plan raster twice for the same value). */
@@ -222,11 +227,11 @@ type CamRect = readonly [number, number, number, number];
 const CAM_FULL: CamRect = [0, 0, PLAN_VB.w, PLAN_VB.h];
 const CAM_KEYS: ReadonlyArray<readonly [number, CamRect]> = [
   [2.2, CAM_FULL],
-  [2.8, [690, 0, 460, 500]], // the lecture hall (R319 D6 node)
-  [3.4, [690, 260, 460, 500]], // the checkpoint kiosk
-  [4.0, [358, 0, 460, 500]], // the exam hall
-  [4.6, [296, 440, 470, 240]], // the library + reception band
-  [5.0, [12, 0, 460, 500]], // the mastery room
+  [2.8, [640, 54, 560, 355]], // the lecture hall (the stage + raked seating)
+  [3.4, [640, 390, 560, 355]], // the checkpoint kiosk (the counter + queue)
+  [4.0, [308, 54, 560, 355]], // the exam hall (the desk grid)
+  [4.6, [85, 342, 660, 418]], // the library + reception band
+  [5.0, [0, 54, 560, 355]], // the mastery room (the stepped seminar)
   [5.52, CAM_FULL], // the completed overview at the close
 ];
 
