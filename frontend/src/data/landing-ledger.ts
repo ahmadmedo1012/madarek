@@ -29,6 +29,22 @@ export const LIVE_CAPABILITIES = [
 ] as const;
 export const LIVE_COUNT = LIVE_CAPABILITIES.length;
 
+/* ── R322 (2-b) — the hero marquee's short labels: the reference's
+ * hero carries a mono-label work marquee inside the content band
+ * (home-hero-work, 3 items × 5 copies). Ours rides the same grammar
+ * over the capability ledger's OWN subjects — each label is the
+ * subject of its LIVE_CAPABILITIES sentence (same truth, shorter
+ * breath), never a new claim; the full sentences stay on
+ * /capabilities. */
+export const HERO_WORK_ITEMS = [
+  'المحاضرات التفاعلية',
+  'الاختبارات',
+  'مصفوفة الإتقان',
+  'مكتبة البحوث',
+  'الرسائل المباشرة',
+  'الجدول الأسبوعي',
+];
+
 /* ── Honest status pairs (إلى أين) — natural wording for the ledger's
  * local/sim/soon rows; no operational jargon, no invented claims.
  * R313: rendered on /capabilities (the landing's «إلى أين» section

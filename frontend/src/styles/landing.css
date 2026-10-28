@@ -727,75 +727,118 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   color: var(--text-muted);
 }
 
-/* ═══ HERO — «لوحة مدارك»: the copy band over the drafted elevation ═══
- * R313 (D7 §1): the band tightens to ~100vh-frame (the reference's
- * 887px hero @1440×900): the copy row (display + statement side by
- * side, then the actions), the drawing window (capped — the elevation
- * is the composition's centerpiece, not its full bleed), the details
- * panel and the ticker. The documentary media band moved to /campus;
- * the title block moved to the closing section. Mobile (flow mode):
- * the copy leads (LCP = the headline), then the drawing, then the
- * ticker. */
-/* R314 (V1) — the reference hero: ONE ink window + a 133px bottom strip.
- * The measured band = 887px @1440×900 (100vh − 13px): the fixed 56px
- * header + 7px frame own the top, the window takes the remainder, the
- * strip of cells closes the band (hairline-topped). */
+/* ═══ HERO — R322 (2-b): the measured Heron transplant ══════════════
+ * docs/redesign/r322/heron/hero-{1440,768,390}.json — the reference
+ * hero is ONE full-viewport screen built as TWO stacked bands inside
+ * the page frame: the ART band (the whole illustration, ink filling
+ * the band width, on transparent paper inside a hairline drafting
+ * frame with corner plus marks and a dashed ruler overlay) over the
+ * CONTENT band (16.01rem @1440: H1 cell cols 1–7 ‖ 1px vertical
+ * divider ‖ sub cell cols 8–12 = paragraph + register CTA in one row,
+ * then the work marquee strip). Our anatomy maps 1:1 (RTL-mirrored,
+ * the same fluid root): .fo-hero = grid rows [art 1fr | content auto],
+ * the band keeps the measured 100svh − 13px @1440 · 100svh − 1.62rem
+ * @≤479 quartet seats.
+ *
+ * Retired with this transplant (the R314/R315 interim grammar): the
+ * .fo-hero-window letterbox window (the 67%-width ink seat — V10's
+ * tiny phone art), the 3-cell .fo-hero-strip (H1 ‖ lead+[LIVE]+CTA ‖
+ * discover link — the reviewer's isolated-CTA composition), the
+ * [LIVE] disclosure chip (V1 family: the honest demo-data disclosure
+ * lives in the platform frames) and the far-end discover link (the
+ * extraction's content band carries neither cell). The capabilities
+ * marquee returns HOME from the statement band (the reference seats
+ * home-hero-work inside the hero's sub cell). */
 .fo-hero {
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto;
-  /* R315 (B1 · A.2): svh — the band holds the DYNAMIC viewport (mobile
-   * URL bars) at the same 100vh−13 measure the reference pins @1440. */
+  /* the measured reference band (887 = 100svh − 13 @1440×900; the
+   * ≥992 twin below re-pins the quartet's 1.6rem form). */
   min-block-size: calc(100svh - 13px); /* spacing-gate: allow — the measured reference band (887 = 900 − 13), an external constant */
   align-content: stretch;
   padding-block: 0;
 }
 
-/* the framed ink window — R315 (B1 · A.1): the elevation rides the
- * shared .bp-svg viewBox frame so the inspection instrument keeps ONE
- * coordinate system. The window itself is TRANSPARENT — the page's
- * paper shows through (no white inset box; the owner's §0-A.1 kill),
- * carrying only the hairline + the drafting chrome: ruler ticks on
- * the four inner edges, the dashed inner frame at 16px with ± corner
- * marks, and the corner plus marks. */
-.fo-hero-window {
+/* ── the art band — the whole elevation on transparent paper ────────
+ * The reference's .home-hero-img-wrap (171.27×84.03rem @1440): the
+ * paper texture with its drafting frame, then the illustration box
+ * (img-inner 164.87×77.63rem) whose contained ink FILLS the frame
+ * width. Ours: the .bp-stage IS the drafting frame (hairline + corner
+ * plus marks + ruler chrome, transparent paper — the owner's §0-A.1
+ * kill holds), and the .bp-svg's TIGHT viewBox (HeroInkWindow
+ * HERO_FRAME) makes the ink own the full stage width at every
+ * breakpoint — the V10 fix: the art element rides inline-size:100%,
+ * height by its own aspect, never an inner fixed width. The band's
+ * leftover height (our elevation is wider than the reference's
+ * illustration, so its ink is proportionally shorter) reads as the
+ * transparent paper mat the reference's own contained image leaves —
+ * the ruler overlay carries it. */
+.fo-hero-art {
   display: grid;
-  padding-block-start: 63px; /* 56px header + 7px frame */ /* spacing-gate: allow — the header bar + frame chrome constant, not a ladder rung */
+  padding-block-start: 63px; /* spacing-gate: allow — 56px header + 7px frame chrome (the measured seat the window carried), not a rung */
+  padding-block-end: var(--sp-2);
   padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured), not a ladder rung */
   align-items: stretch;
 }
 
-.fo-hero-window .bp-stage {
+/* the reveal wrapper must not eat the 1fr stretch */
+.fo-hero-art-frame {
+  display: grid;
+}
+
+/* the drafting frame — the shared .bp-stage box the inspection
+ * instrument anchors to (R309's ONE physical frame contract). */
+.fo-hero-art .bp-stage {
   inline-size: 100%;
-  /* the window ≈1406×~683 @1440: the artwork seats on transparent
-     paper with the drafting chrome (ticks, dashed frame, marks) */
-  padding: 12px; /* spacing-gate: allow — the window's own 12px mat seat (drafting chrome), deliberately not --sp-3 — the tier blocks re-seat the ladder, this seat stays px */
-  border: 1px solid var(--rule);
+  display: grid;
+  place-items: center;
   position: relative;
-  background: transparent; /* R315 A.1 — the paper shows through, never a white box */
+  border: 1px solid var(--rule);
+  background: transparent; /* the paper shows through, never a white box (R315 A.1) */
+  padding: 12px; /* spacing-gate: allow — the window's own 12px mat seat (drafting chrome), deliberately not --sp-3 — the tier blocks re-seat the ladder, this seat stays px */
 }
 
-/* R315 (A.1 — the white-box kill): the elevation is LINE ART on the
-   paper — the reference's own art region samples pure paper
-   (246,246,238 · r313 telemetry/frame-hero-corner-1440); facade
-   masses read through ink strokes + hatch/stipple textures, NEVER
-   through solid fills. Scoped to the hero window ONLY — the map plan
-   (LearningPlanDrawing) keeps its intentional poché fills. */
-.fo-hero-window .bp-fill {
+/* the ink — fills the frame's content width (the measured img-inner
+ * grammar). Height from the viewBox's own aspect; the max cap keeps
+ * short viewports honest (contain, never crop — the whole elevation
+ * always shows). */
+.fo-hero-art .bp-svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 100%;
+}
+
+/* the line-art weight rides the vector gear — the strokes stay
+ * drafting hairlines at every art scale (the tight viewBox renders
+ * the ink at ~0.3× the sheet scale on phones; un-scaled strokes keep
+ * the reference's crisp line weight there). */
+.fo-hero-art .bp-svg .bp-hair,
+.fo-hero-art .bp-svg .bp-dash,
+.fo-hero-art .bp-svg .bp-gridline,
+.fo-hero-art .bp-svg .bp-hatch-line {
+  vector-effect: non-scaling-stroke;
+}
+.fo-hero-art .bp-svg .bp-ink,
+.fo-hero-art .bp-svg .bp-ink-fill,
+.fo-hero-art .bp-svg .bp-signal,
+.fo-hero-art .bp-svg .bp-dash-2,
+.fo-hero-art .bp-svg .bp-fill {
+  vector-effect: non-scaling-stroke;
+}
+
+/* R315 (A.1 — the white-box kill) holds: the elevation is LINE ART on
+ * the paper; facade masses read through ink strokes + textures. */
+.fo-hero-art .bp-fill {
   fill: none;
 }
 
-[data-theme='dark'] .fo-hero-window .bp-fill {
+[data-theme='dark'] .fo-hero-art .bp-fill {
   fill: none;
 }
 
-.fo-hero-window .bp-stage::before {
+/* the proximity-revealed dashed inner frame (R315 B1 · A.3) */
+.fo-hero-art .bp-stage::before {
   content: '';
-  /* R315 (B1 · A.3 → cycle-2 J2 judge): the dashed inner frame 15–20px
-     inside the window edge. The reference's own graticule is INVISIBLE
-     at rest (opacity 0 — pointer-proximity reveal) and display:none
-     <992; ours painted a static 0.75 rect at every width. Mirrored:
-     the frame reveals with the window's pointer proximity on fine
-     pointers only. */
   position: absolute;
   inset: 16px;
   border: 1px dashed var(--rule);
@@ -806,87 +849,54 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .fo-hero-window:is(:hover, :focus-within) .bp-stage::before {
+  .fo-hero-art .bp-stage:is(:hover, :focus-within)::before {
     opacity: 0.75;
   }
 }
 
-@media (max-width: 991px) {
-  .fo-hero-window .bp-stage::before {
+@media (max-width: 767px) {
+  .fo-hero-art .bp-stage::before {
     display: none;
   }
 }
 
-/* the artwork mass (R315 A.1): the WHOLE elevation seats in the frame
- * at ~67% of the window width with generous empty paper around it
- * (the HERO_SEAT transform inside HeroInkWindow) — never cropped,
- * never stretched to the window edges. */
-.fo-hero-window .bp-svg {
-  display: block;
-  inline-size: auto;
-  max-inline-size: 100%;
-  block-size: min(68vh, 100%);
-  margin-inline: auto;
-}
-
-/* R314 (cycle-2 §7 heights): the hero band returns to the measured
- * reference height (887 = 100vh − 13 @1440×900). The old
- * min(68vh, 100%) height was CYCLIC against the auto-sized stage — in
- * the hero grid's content-based row sizing the svg's contribution fell
- * back to the artwork's aspect height (700px), inflating the band to
- * 974px while the layout itself painted 612px. A DEFINITE vh height
- * (no percentage twin) makes the contribution honest, so the section's
- * own min-block-size (100vh − 13) becomes the binding constraint. The
- * stage centers its artwork when the stretched row is taller than the
- * drawing (tall viewports) — the rulers/lens/instrument all anchor to
- * the stage/svg boxes and follow.
- * R315 (B1): the desktop gate moves 992 → 1025 (the ≤1024 tablet band
- * re-composes per ticket K-H below) and the definite height gains a
- * short-viewport guard — calc(100svh − 280px) keeps the window inside
- * the band when the strip + header + frame eat more than 32% of a
- * short screen (1280×700 measured in the reference matrix). */
-@media (min-width: 992px) {
-  .fo-hero-window .bp-stage {
-    display: grid;
-    place-items: center;
-  }
-
-  .fo-hero-window .bp-svg {
-    block-size: min(68vh, calc(100svh - 280px));
-  }
-}
-
-/* ── the bottom strip — 133px of cells (R315 A.2: the measured 3-cell
- * band, RTL-mirrored): the H1 cell ≈47% at the inline-start edge · the
- * paragraph cell (lead + [LIVE] disclosure + the register CTA) · the
- * DISCOVER MORE link cell at the far end. ── */
-.fo-hero-strip {
+/* ── the content band — the measured 16.01rem strip @1440 ───────────
+ * H1 cell (cols 1–7, 99.07rem) ‖ 1px divider ‖ sub cell (cols 8–12,
+ * 72.2rem): hairlines close the band top and bottom; the title cell
+ * pads 2.4rem block / 3.2rem inline (the H1 box 92.67×11.21rem); the
+ * sub cell = paragraph + CTA in one row (the CTA flush inline-end,
+ * BESIDE the headline's band — the reviewer's isolated-CTA defect
+ * dies) with the 4.36rem work marquee strip below, hairline-topped.
+ * The flush 99.07 : 72.2 split is the measured seam (no gutter at the
+ * divider); the fr pair holds the ratio at every width on the fluid
+ * root. */
+.fo-hero-content {
   display: grid;
-  grid-template-columns: minmax(0, 47%) minmax(0, 1fr) max-content;
-  gap: var(--sp-8);
-  align-items: end;
-  padding-block-start: var(--sp-2);
-  padding-block-end: 20px; /* the 7px frame + the reference's lower mat */ /* spacing-gate: allow — frame + lower-mat seat, the measured strip band constant, not a rung */
+  grid-template-columns: minmax(0, 99.07fr) minmax(0, 72.2fr);
   padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured), not a ladder rung */
-  min-block-size: 133px;
+  padding-inline-end: 2.88rem; /* R322 V7 — the edge-rail inset: the sub cell's inline-end content clears the .et-tab slim rail (the killed discover seat's own measured clearance) */
   border-block-start: 1px solid var(--rule);
-  margin-block-start: var(--sp-2);
+  border-block-end: 1px solid var(--rule);
+}
+
+/* the H1 cell — cols 1–7 (inline-start in RTL: the reading start) */
+.fo-hero-title-cell {
+  padding-block: 2.4rem;
+  padding-inline: 3.2rem;
+  min-inline-size: 0;
 }
 
 .fo-hero-title {
   font-family: var(--font-display);
-  /* R322 (1-d): the H1 joins the D1 rung — --fs-d1 (the Heron-measured
+  /* R322 (1-d): the H1 rides the D1 rung — --fs-d1 (the Heron-measured
      5.6rem h1 @1440, band-independent clamp; see tokens.css R322),
      weight 600 (the display voice's top rung — the 700 era ends),
      lh 1.05 (the D1 leading; also the minimum IBM Plex Sans Arabic's
      ascender/descender metrics need to keep the two unvocalised lines
-     clear of each other — the R315 Alexandria note transfers),
-     text-wrap: balance. The 2-line split «رحلة تعلم واحدة / من
-     المحاضرة إلى الإتقان» holds 2 lines at every belt on the rung
-     (measured post-migration). Arabic stays UNVOCALISED (zero
-     tashkeel — the display canon), no tracking (cursive joins). The
-     per-belt re-clamps below RETIRE with this seat (the rung is
-     band-independent — that is its whole point). */
+     clear of each other), text-wrap: balance. The 2-line split «رحلة
+     تعلم واحدة / من المحاضرة إلى الإتقان» holds 2 lines at every belt
+     on the rung (measured post-migration). Arabic stays UNVOCALISED
+     (zero tashkeel — the display canon), no tracking (cursive joins). */
   font-size: var(--fs-d1);
   font-weight: 600;
   line-height: 1.05;
@@ -899,161 +909,100 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   overflow-block: visible;
 }
 
-/* the far-end link cell — the reference's 143×97 discover seat:
- * «اكتشف المزيد» + the orange arrow, bottom-aligned at the measure's
- * end (R315 A.2 — its own grid cell, no longer inside the actions
- * row). */
-.fo-hero-link-cell {
+/* the sub cell — cols 8–12: the 1px divider at the seam, then the
+ * paragraph + CTA row over the work marquee. */
+.fo-hero-sub-cell {
+  border-inline-start: 1px solid var(--rule);
+  padding-block: 2.4rem 0;
+  padding-inline: 1.6rem 0;
+  min-inline-size: 0;
   display: grid;
-  align-content: end;
-  justify-items: start;
+  grid-template-rows: auto auto;
+  align-content: start;
 }
 
-.fo-hero-side {
-  display: grid;
-  gap: var(--sp-4);
-  align-content: end;
-  justify-items: start;
-  padding-inline-start: var(--sp-6);
-  border-inline-start: 1px solid var(--rule);
+/* the sub row — paragraph + the register CTA, one row (the measured
+ * flex row: paragraph 55.09rem + CTA 17.11rem flush inline-end) */
+.fo-hero-sub-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sp-6);
 }
 
 .fo-hero-lead {
   font-size: var(--fs-body-lg);
   line-height: 1.7;
   color: var(--text-secondary);
+  /* the measured paragraph box (51.89rem @1440) rides the cell's own
+   * width; the max keeps the 40–75 Arabic character line */
   max-inline-size: 44ch;
   margin: 0;
+  flex: 1 1 24rem;
+  min-inline-size: 0;
 }
 
-.fo-hero-side-foot {
+/* the register CTA — flush inline-end of the sub row (the funnel
+ * contract's .fo-hero-actions seat) */
+.fo-hero-actions {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: var(--sp-5);
+  flex: 0 0 auto;
 }
 
-/* the DISCOVER MORE cell — the reference's accent link: orange at
- * rest, an orange fill wipe on hover (text flips to the fill's ink),
- * the arrow rides inline-end. */
-.fo-hero-discover {
-  position: relative;
+/* ── the work marquee — the reference's home-hero-work strip ────────
+ * 72.2×4.36rem @1440: hairline-topped, the honest live-capability
+ * subjects crawling toward the reading direction (the same RTL loop
+ * grammar the .fo-ticker family rides). */
+.fo-hero-work {
+  display: flex;
+  overflow: hidden;
+  border-block-start: 1px solid var(--rule);
+  margin-block-start: 1.6rem;
+}
+
+.fo-hero-work-track {
+  display: flex;
+  flex: 0 0 auto;
+  min-inline-size: 100%;
+  align-items: center;
+  gap: var(--sp-6);
+  padding-block: 0.9rem;
+  animation: fo-ticker-rtl 36s linear infinite;
+}
+
+.fo-hero-work-item {
   display: inline-flex;
   align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1-5) var(--sp-3);
-  color: var(--accent-ink);
+  gap: var(--sp-2-5);
+  white-space: nowrap;
+  font-size: var(--fs-sm);
   font-weight: 600;
-  font-size: var(--fs-body-lg);
-  text-decoration: none;
-  isolation: isolate;
-  min-block-size: 44px; /* touch floor */
+  color: var(--text-secondary);
 }
 
-.fo-hero-discover::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: inline-start;
-  transition: transform var(--t-base) var(--ease);
-  z-index: -1;
+.fo-hero-work-item .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xxs);
 }
 
-/* r172a contract: ZERO :focus-visible rules in landing.css — the
- * universal base.css ring owns focus; the wipe is hover-only.
- * R319 §D7 — the hovered wipe's fill darkens one step in LIGHT theme:
- * the #FA3600 slab under the white label measured 3.76:1; #DB3A00 is
- * the r318 site-wide AA signal ground (white 4.55:1, the same fix
- * family as .btn.accent). Dark keeps its own passing pair. */
-.fo-hero-discover:hover {
-  color: var(--accent-fg);
-}
-
-.fo-hero-discover:hover::before {
-  transform: scaleX(1);
-  background: #DB3A00; /* color-gate: allow — the r318 AA signal ground (white label 4.55:1), light theme only; dark twin below */
-}
-
-html[data-theme='dark'] .fo-hero-discover:hover::before {
-  background: var(--accent);
-}
-
-/* R322 V7 — the discover link's edge-rail inset (≥992px only): the
- * far-end cell seats the link flush with the sheet frame's left line
- * (the R315 A.2 measured seat), which put its text tail under the
- * .et-tab slab (measured: «اكتشف المزيد» lost ~32px @1440). The
- * slim rail owns [7px, 7px+2.08rem] + the 4px nudge; the 2.88rem
- * inline-end margin (physical left in the page's RTL) clears the
- * nudged rail with a ~14px gap @1440. */
-@media (min-width: 992px) {
-  .fo-hero-discover {
-    margin-inline-end: 2.88rem;
+@media (prefers-reduced-motion: reduce) {
+  .fo-hero-work-track {
+    animation: none;
   }
-}
-
-.fo-hero-discover-arrow {
-  transition: translate var(--t-base) var(--ease);
-}
-
-.fo-hero-discover:hover .fo-hero-discover-arrow {
-  translate: -4px 0; /* RTL inline-forward */
-}
-
-.st-title em,
-.chapters-title em,
-.pm-title em,
-.rl-title em,
-.fo-cta-title em {
-  font-style: normal;
-  color: var(--accent-ink);
-}
-
-/* R313-int (5-int · failure 1): the honesty-ledger disclosure chip —
- * a mono micro-label in the hero's value row (the reference's own
- * hero grammar): quiet hairline square, [LIVE] code in the mono
- * voice, the label names the live-capability ledger it links to. */
-.fo-hero-disclosure {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-2);
-  padding: var(--sp-1) var(--sp-2);
-  border: 1px solid var(--rule);
-  color: var(--text-muted);
-  font-size: var(--fs-xxs);
-  font-weight: 600;
-  text-decoration: none;
-  transition: color var(--t-base) var(--ease), border-color var(--t-base) var(--ease);
-}
-
-.fo-hero-disclosure .fo-mono {
-  color: var(--accent-ink);
-  font-size: var(--fs-xxs);
-}
-
-.fo-hero-disclosure:hover {
-  /* R313: :focus-visible dropped from this pair — landing.css carries zero
-     private focus sub-language by contract (r172a §3); the universal
-     base.css ring signals focus, hover recolours. */
-  color: var(--text);
-  border-color: var(--accent-ink);
 }
 
 /* ══ The blueprint — the interactive technical drawing ═══════════════
  * The stage is a relative box: the SVG draws the structures, the
- * hotspot buttons overlay at percentage positions (desktop/tablet),
- * and the panel reads the active stage. On phones the hotspots flow
- * as a chip row under the drawing (44px targets, no overlay
- * crowding) and the panel follows. R313 (D9): the ruler tick strips
- * ride all four edges of the drawing window + the corner plus marks
- * (the reference's drawing-frame chrome, proximity-revealed). */
-.fo-hero-fig {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr); /* the stage track fills — never content-sized */
-  gap: var(--sp-3);
-}
-
+ * inspection instrument (HeroInspect) anchors to the stage + the
+ * SVG's own box (R309's ONE physical frame), and on phones the
+ * station cards flow under the drawing (44px targets, no overlay
+ * crowding). R313 (D9) → R322 (2-b): the ruler tick strips ride all
+ * four inner edges of the art band's frame + the corner plus marks —
+ * the reference's drawing-frame chrome, now VISIBLE at rest like the
+ * extraction's settled evidence (the reference's own ruler overlay
+ * spans the whole art box at op .64). The .fo-hero-fig grid seat is
+ * retired with the R310 fig composition (dead since R315). */
 .bp-stage {
   position: relative;
   border: 1px solid var(--rule);
@@ -1068,46 +1017,89 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
      SVG's 300px intrinsic width (a 300×133 drawing inside a 1160px
      track), so the annotation cards could not seat without overlap
      and the drag box fell under its own visibility floor. An explicit
-     inline-size makes the window actually reach min(track, 108rem). */
+     inline-size makes the window actually reach min(track, 108rem).
+     (The hero art band's scoped seat above re-pins padding/insets.) */
   inline-size: min(100%, 108rem);
   margin-inline: auto;
 }
 
-/* ── R313 (D9) → R315 (B1 · A.3) — the ruler ticks + corner plus marks
-   on the drawing window. The strips are pure repeating hairlines on
-   the four INNER edges — var(--rule) at drafting-chrome emphasis
-   (raised from the old 0.64 × --grid-line wash the owner read as
-   invisible), 1px marks on an 8px pitch, 7px long. The whole chrome
-   reveals with the hero's reveal belt and stays put under reduced
-   motion (opacity only — no motion to collapse). ── */
+/* ── R313 (D9) → R322 (2-b) — the ruler ticks + corner plus marks +
+   the dashed measure grid on the art band's frame. The strips are
+   pure repeating hairlines on the four INNER edges — var(--rule) at
+   drafting-chrome emphasis, 1px marks on an 8px pitch, 7px long.
+   R322 (2-b): the chrome is VISIBLE at rest — the extraction's own
+   recommendation (the reference's ruler is an IX2 reveal whose
+   settled state the evidence shots show: dashed lines across the
+   art box + brand-red marker lines, op .64); our entrance belt
+   (the art band's reveal-up) fades the whole chrome in with the
+   band. ≤767 the ruler retires with the reference (@390 the hero
+   carries no ruler overlay — measured). ── */
 .bp-rulers {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 1;
-  opacity: 0;
+  opacity: 0.64;
   transition: opacity var(--t-slow) var(--ease);
 }
 
-/* R315 cycle-2 (J2 judge): the reference's ruler graticule is
- * quadrant-gated and INVISIBLE at rest (opacity 0, pointer-proximity
- * reveal; display:none <992). The old always-on .in-view belt is
- * retired — the strips reveal with the window's pointer proximity on
- * fine pointers only; ≤991 they retire with the reference. */
-.fo-hero-window.in-view .bp-rulers {
-  opacity: 0;
-}
-
 @media (hover: hover) and (pointer: fine) {
-  .fo-hero-window:is(:hover, :focus-within) .bp-rulers {
+  .fo-hero-art .bp-stage:is(:hover, :focus-within) .bp-rulers {
     opacity: 1;
   }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 767px) {
   .bp-rulers {
     display: none;
   }
+}
+
+/* the dashed measure lines — the reference's ruler overlay core: two
+ * horizontal + two vertical dashed rules across the paper (the 2×2
+ * quadrant graticule) and two solid brand-red marker lines (the
+ * measured line-brand seats). Physical hairlines, drafting wash. */
+.bp-measure {
+  position: absolute;
+}
+
+.bp-measure-h {
+  inset-inline: 0;
+  block-size: 0;
+  border-block-start: 1px dashed var(--rule);
+}
+
+.bp-measure-v {
+  inset-block: 0;
+  inline-size: 0;
+  border-inline-start: 1px dashed var(--rule);
+}
+
+/* the horizontal pair seats at the paper's thirds (clear of the
+ * ink's own band) */
+.bp-measure-h1 { inset-block-start: 22%; }
+.bp-measure-h2 { inset-block-end: 18%; }
+
+/* the vertical pair seats inboard of the trees' canopies */
+.bp-measure-v1 { inset-inline-start: 12%; }
+.bp-measure-v2 { inset-inline-end: 12%; }
+
+/* the two solid brand-red marker lines — the measured line-brand
+ * seats (short rules riding the horizontal pair's ends) */
+.bp-measure-marker {
+  inset-block-start: 22%;
+  inset-inline: 0;
+  block-size: 0;
+  border-block-start: 1px solid var(--accent);
+  /* short rules, never full-width: the marker reads as a datum, not
+     a divider */
+  margin-inline: 18%;
+}
+
+.bp-measure-m2 {
+  inset-block-start: auto;
+  inset-block-end: 18%;
+  margin-inline: 26% 36%;
 }
 
 .bp-ruler {
@@ -2986,54 +2978,44 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
  * live stylesheet). Tablet rules now seat ≤991 where the 1.199vw root
  * actually runs; ≥992 keeps desktop (the min-992 twins above). */
 @media (max-width: 991px) {
-  /* R315 (B1 · K-H): the TABLET hero holds the reference composition —
-   * the band fills the first viewport (100svh − the 14px frame pair,
-   * measured 1009px @768×1024 on the reference) so the copy strip
-   * seats at the BOTTOM, far under the fixed edge tab's centred band
-   * (the tab ate the H1's first glyphs when the strip floated up at
-   * the old content-sized auto band). The window row stretches; the
-   * elevation floats centred on the paper; the strip keeps its
-   * side-by-side cells (H1 · paragraph · link under the paragraph,
-   * two tracks) inside the measure at every band. */
+  /* R322 (2-b) — the TABLET transplant (hero-768.json): the band
+   * still fills the first viewport (100svh − 14px — measured 1009px
+   * @768×1024 on the reference) with the art band's 1fr row over the
+   * measured 26.26rem content band, re-cut to the reference's own
+   * 6+6 split (title 40.89rem ‖ divider ‖ sub 40.89rem — the 99.07 :
+   * 72.2 desktop pair folds to equal cells). The ink keeps owning
+   * the full band width; the paper + ruler chrome carry the rest of
+   * the 1fr row exactly like the reference's contained illustration
+   * in its 76.99×72.13rem img-inner box. */
   .fo-hero {
     grid-template-rows: minmax(0, 1fr) auto;
     min-block-size: calc(100svh - 14px);
   }
 
-  .fo-hero-window {
+  .fo-hero-art {
     padding-block-start: 63px; /* spacing-gate: allow — 56px header + 7px frame chrome (the base-rule seat re-pinned per tier), not a rung */
   }
 
-  /* DEFINITE height (the R314 cycle-2 lesson): a % twin against the
-   * 1fr row re-inflates the band through the svg's aspect contribution
-   * (the 974px trap). The 60svh + svh−380 guard keeps the window inside
-   * the band when the tablet strip runs tall (the paragraph wraps 4–5
-   * lines in the ~300px cell @768 → strip ≈300px; window ≤ 100svh −
-   * strip − overhead — measured arithmetic in the worklog). */
-  .fo-hero-window .bp-svg {
-    block-size: min(60svh, calc(100svh - 380px));
+  .fo-hero-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-inline-end: 7px; /* the edge rail retires with the tab ≤991 (the gutter marker owns the margin) */
   }
 
-  .fo-hero-strip {
-    grid-template-columns: minmax(0, 56%) minmax(0, 1fr);
-    gap: var(--sp-4) var(--sp-6);
-    min-block-size: 0;
+  .fo-hero-sub-row {
+    align-items: start;
+    flex-direction: column; /* the measured 768 sub cell: paragraph
+       over the CTA (their 23.8rem paragraph block + 17.1rem button
+       stack in the 40.89rem cell) */
   }
 
-  /* the discover link seats under the paragraph cell (track 2) — the
-   * 56% H1 cell keeps its 2-line measure, the link stays inside the
-   * frame, never under the edge tab. */
-  .fo-hero-link-cell {
-    grid-column: 2;
-    margin-block-start: var(--sp-3);
+  .fo-hero-actions {
+    margin-block-start: 1.6rem;
   }
 
   /* R322 (1-d) — the tablet hero-title re-clamp RETIRES: the D1 rung
-   * (--fs-d1) is band-independent, so the ≤991 counter-amplification
-   * clamp is obsolete. Measured on the rung: 47.6px @991 · 36.9px
-   * @768 — Heron's own tablet h1 (4rem @768 on its 9.21px root), and
-   * the 2-line canon holds in the 56% tablet cell (the old clamp's
-   * whole job was capping the rem spike the rung no longer has). */
+   * (--fs-d1) is band-independent. Measured on the rung: 47.6px @991
+   * · 36.9px @768 — Heron's own tablet h1 (4rem @768 on its 9.21px
+   * root). */
 
   .st-spread {
     grid-template-columns: minmax(0, 1fr);
@@ -3091,58 +3073,70 @@ html[data-theme='dark'] .fo-hero-discover:hover::before {
 }
 
 @media (max-width: 767px) {
-  /* R315 (B1): the MOBILE hero keeps the R314 flow contract — window
-   * (the LCP mass) then the stacked strip cells — at the pinned 826px
-   * band @390×844. The 2-line H1 frees the old third line (~38px) and
-   * the discover link becomes its own row; the svg is WIDTH-driven
-   * (auto height — the whole elevation always fits, the fixed 38vh
-   * window floor letterboxes it on paper), so the window floor KEEPS
-   * the R314 38vh measure and .fo-hero holds the pin (measured 822px
-   * @390×844, −0.5% of the 826 pin). */
+  /* R322 (2-b) — the PHONE transplant (hero-390.json): the 4-column
+   * stacked composition. The ART band owns the FULL viewport width
+   * (the V10 fix): the ink fills the frame edge to edge, seated on a
+   * paper mat inside the drafting frame (min-block-size ≈ the
+   * reference's 39.08rem img-inner proportion — the ink's own wide
+   * aspect leaves the reference's paper share as breathing); the
+   * ruler overlay retires with the reference (@390: no ruler). The
+   * CONTENT band stacks: H1 cell (hairline-closed like the
+   * reference's 12.8rem title cell) → sub cell (lead over the
+   * FULL-WIDTH CTA — the measured 37.71×6.4rem button) → the work
+   * marquee. The consent banner's measured seat stays reserved
+   * (the ≤479 block below carries the band's own reserve). */
   .fo-hero {
     grid-template-rows: auto auto;
   }
 
-  .fo-hero-window {
-    padding-block-start: 63px; /* spacing-gate: allow — 56px header + 7px frame chrome (the base-rule seat re-pinned per tier), not a rung */
+  .fo-hero-art {
+    padding-block-start: 6.35rem; /* the 63px header+frame seat, rem-pure */
+    padding-block-end: 0;
   }
 
-  .fo-hero-window .bp-stage {
-    /* the R314 measure holds: 38vh window floor + the width-driven
-     * elevation + the 2-line H1 strip = the pinned band (worklog). */
-    min-block-size: 38vh;
+  .fo-hero-art .bp-stage {
+    /* the paper mat around the full-width ink: the reference's phone
+     * art box is 34.51×39.08rem with the contained illustration
+     * centered on its paper — ours holds the same box proportion, the
+     * wide elevation riding centered on the mat. */
+    min-block-size: 33rem;
   }
 
-  .fo-hero-window .bp-svg {
-    inline-size: 100%;
-    block-size: auto;
-  }
-
-  .fo-hero-strip {
+  .fo-hero-content {
     grid-template-columns: minmax(0, 1fr);
-    align-items: start;
-    padding-block-end: var(--sp-5);
+    padding-inline-end: 7px;
   }
 
-  .fo-hero-side {
+  .fo-hero-title-cell {
+    padding-block: 1.6rem;
+    padding-inline: 1.8rem;
+    border-block-end: 1px solid var(--rule); /* the measured stacked title cell closes with its own hairline */
+  }
+
+  .fo-hero-sub-cell {
     border-inline-start: 0;
-    padding-inline-start: 0;
+    padding-block: 1.6rem 0;
+    padding-inline: 1.8rem;
   }
 
-  .fo-hero-link-cell {
-    grid-column: auto;
-    margin-block-start: 0;
+  .fo-hero-sub-row {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .fo-hero-actions {
+    inline-size: 100%;
+  }
+
+  /* the measured full-width CTA (37.71×6.4rem @390) */
+  .fo-hero-actions .fo-hero-cta {
+    inline-size: 100%;
+    justify-content: center;
   }
 
   /* R322 (1-d) — the mobile hero-title re-clamp RETIRES with the D1
    * rung (31.74px floor across the phone band, rising on the 4.8vw
-   * mid-term to 36.9px @767 — the 8.4vw clamp was another band
-   * counter-measure; lh rides the base 1.05). */
-
-  .fo-hero-side-foot {
-    justify-content: space-between;
-    inline-size: 100%;
-  }
+   * mid-term to 36.9px @767; lh rides the base 1.05). */
 
   /* R313 (D7): the new families' flow rules — the pains stack, the
      why-section collapses to the readable rail + stacked captures, the

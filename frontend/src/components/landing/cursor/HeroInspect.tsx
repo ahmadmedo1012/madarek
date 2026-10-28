@@ -52,7 +52,7 @@
  *    zero React renders per pointermove (the r172 pattern).
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { HERO_SEAT } from '../HeroInkWindow';
+import { HERO_FRAME, HERO_SEAT } from '../HeroInkWindow';
 import {
   subscribeSheetFrame,
   wakeSheet,
@@ -71,14 +71,15 @@ import {
 
 
 /* The hero window's viewBox — the SINGLE shared frame (R310 §6 → R314
- * → R315): the 1440×720 bp-svg frame the ink window renders. The
- * elevation artwork is SEATED inside it through HeroInkWindow's
- * HERO_SEAT transform (scale 0.882, offset 58/114), so every station
- * authored in the ARTWORK's 1440×640 space remaps through that seat
- * before the letterbox transform — the dots stay glued to the drawn
- * features at every size (R315 A.1 re-seat). */
-const VB_W = 1440;
-const VB_H = 720;
+ * → R315 → R322 2-b): the TIGHT window around the elevation's ink
+ * (HERO_FRAME in HeroInkWindow). The elevation artwork renders in the
+ * sheet's own 1440×640 space through HeroInkWindow's HERO_SEAT
+ * transform (scale 0.882, offset 58/114), so every station authored
+ * in the ARTWORK's sheet space remaps through that seat and then into
+ * the viewBox window's own coordinates — the dots stay glued to the
+ * drawn features at every size (R315 A.1 re-seat, re-windowed). */
+const VB_W = HERO_FRAME.w;
+const VB_H = HERO_FRAME.h;
 
 /* Drag semantics (measured reference constants). */
 const DRAG_THRESHOLD_PX = 2;
@@ -105,8 +106,9 @@ interface MarkerDef {
   h: number;
   labelAr: string;
   bodyAr: string;
-  /** the same anchor remapped into the 1440×720 window frame through
-   *  HERO_SEAT (computed once — applyMapping consumes vx/vy) */
+  /** the same anchor remapped into the hero viewBox window through
+   *  HERO_SEAT − HERO_FRAME origin (computed once — applyMapping
+   *  consumes vx/vy in viewBox coordinates) */
   vx: number;
   vy: number;
 }
@@ -144,8 +146,8 @@ const MARKERS: MarkerDef[] = [
   },
 ].map((m) => ({
   ...m,
-  vx: HERO_SEAT.x + m.ex * HERO_SEAT.s,
-  vy: HERO_SEAT.y + m.ey * HERO_SEAT.s,
+  vx: HERO_SEAT.x + m.ex * HERO_SEAT.s - HERO_FRAME.x,
+  vy: HERO_SEAT.y + m.ey * HERO_SEAT.s - HERO_FRAME.y,
 }));
 
 /* The return-to-top reset contract (R309 §6): once the visitor has
