@@ -1,0 +1,219 @@
+<!doctype html>
+<!--
+  R322 (task 1-b) — the BLIND Arabic typeface test (scratch page, DEV ONLY).
+  ─────────────────────────────────────────────────────────────────────
+  Served by Vite at /r322-font-test.html. Renders ONE real Madarek
+  landing headline («أربعة أوجاع من التعليم العالي الليبي» — the pm-title
+  copy, orange em included) + ONE real lede paragraph (pm-lede copy) in
+  the five R322 §4 candidates, each at 3 sizes × 3 weights, labelled [A]–[E]
+  with NO face name in the frame. Google Fonts CDN loads the faces FOR
+  THIS TEST ONLY — the shipped stack stays self-hosted (fonts.css).
+  The [x]→face mapping lives in audits/evidence/r322/dsys/font-vote.md.
+  Tajawal caveat (recorded post-vote): the family has no true 600 cut —
+  its «600» row renders the 700 file via CSS font matching.
+-->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>R322 — blind Arabic type test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Tajawal ships no 600: requested at its real cuts so the css2 call
+     stays valid; the 600 ROW still renders (matches its 700). -->
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Kufi+Arabic:wght@400;500;600&family=Readex+Pro:wght@400;500;600&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F6EE;
+    --ink: #282828;
+    --hairline: #B3B3AF;
+    --guides: #E0E0DA;
+    --signal: #C72E00; /* the accent-ink text seat on paper */
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 40px 64px 72px;
+    font-synthesis: none;
+  }
+  .sheet-head {
+    display: flex; align-items: baseline; gap: 16px;
+    border-block-end: 1px solid var(--hairline);
+    padding-block-end: 14px; margin-block-end: 36px;
+  }
+  .sheet-head h1 { margin: 0; font-size: 14px; font-weight: 400; }
+  .sheet-head .mono {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    direction: ltr; font-size: 11px; letter-spacing: .04em;
+    color: var(--ink);
+  }
+  .panel {
+    border: 1px solid var(--hairline);
+    margin-block-end: 40px;
+    padding: 24px 32px 28px;
+    background: var(--paper);
+  }
+  .p-head {
+    display: flex; gap: 12px; align-items: baseline;
+    border-block-end: 1px solid var(--guides);
+    padding-block-end: 10px; margin-block-end: 22px;
+  }
+  .p-head .tag {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    direction: ltr; font-size: 12px; letter-spacing: .06em;
+  }
+  .p-head .tag b { color: var(--signal); font-weight: 500; }
+  .sz-group { margin-block-end: 26px; }
+  .sz-label {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    direction: ltr; font-size: 10px; letter-spacing: .06em;
+    color: var(--ink); opacity: .62;
+    margin-block-end: 8px;
+  }
+  .row { margin-block-end: 10px; }
+  .w-label {
+    font-family: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+    direction: ltr; font-size: 10px; opacity: .55;
+    margin-inline-end: 10px;
+  }
+  em { font-style: normal; color: var(--signal); }
+  .sz-32 { font-size: 32px; line-height: 1.15; }
+  .sz-48 { font-size: 48px; line-height: 1.10; }
+  .sz-72 { font-size: 72px; line-height: 1.05; }
+  .w-400 { font-weight: 400; }
+  .w-500 { font-weight: 500; }
+  .w-600 { font-weight: 600; }
+  .para {
+    margin-block-start: 6px;
+    font-size: 16px; line-height: 1.7; font-weight: 400;
+    max-inline-size: 62ch;
+  }
+  .para.small { font-size: 13px; line-height: 1.7; }
+  /* the five candidates — mapping recorded in font-vote.md, NOT here */
+  .f-a { font-family: 'Readex Pro', sans-serif; }
+  .f-b { font-family: 'Alexandria', sans-serif; }
+  .f-c { font-family: 'IBM Plex Sans Arabic', sans-serif; }
+  .f-d { font-family: 'Noto Kufi Arabic', sans-serif; }
+  .f-e { font-family: 'Tajawal', sans-serif; }
+</style>
+</head>
+<body>
+  <div class="sheet-head">
+    <span class="mono">[R322 · TYPE TEST]</span>
+    <h1>اختبار أعمى لخمسة وجوه عربية — ثلاثة أحجام × ثلاثة أوزان لكل وجه</h1>
+  </div>
+
+  <!-- [A] -->
+  <section class="panel f-a">
+    <header class="p-head"><span class="tag"><b>[A]</b></span></header>
+    <div class="sz-group"><div class="sz-label">32px</div>
+      <div class="row sz-32 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">48px</div>
+      <div class="row sz-48 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">72px</div>
+      <div class="row sz-72 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <p class="para">ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها. تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.</p>
+    <p class="para small">تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</p>
+  </section>
+
+  <!-- [B] -->
+  <section class="panel f-b">
+    <header class="p-head"><span class="tag"><b>[B]</b></span></header>
+    <div class="sz-group"><div class="sz-label">32px</div>
+      <div class="row sz-32 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">48px</div>
+      <div class="row sz-48 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">72px</div>
+      <div class="row sz-72 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <p class="para">ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها. تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.</p>
+    <p class="para small">تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</p>
+  </section>
+
+  <!-- [C] -->
+  <section class="panel f-c">
+    <header class="p-head"><span class="tag"><b>[C]</b></span></header>
+    <div class="sz-group"><div class="sz-label">32px</div>
+      <div class="row sz-32 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">48px</div>
+      <div class="row sz-48 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">72px</div>
+      <div class="row sz-72 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <p class="para">ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها. تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.</p>
+    <p class="para small">تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</p>
+  </section>
+
+  <!-- [D] -->
+  <section class="panel f-d">
+    <header class="p-head"><span class="tag"><b>[D]</b></span></header>
+    <div class="sz-group"><div class="sz-label">32px</div>
+      <div class="row sz-32 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">48px</div>
+      <div class="row sz-48 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">72px</div>
+      <div class="row sz-72 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <p class="para">ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها. تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.</p>
+    <p class="para small">تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</p>
+  </section>
+
+  <!-- [E] -->
+  <section class="panel f-e">
+    <header class="p-head"><span class="tag"><b>[E]</b></span></header>
+    <div class="sz-group"><div class="sz-label">32px</div>
+      <div class="row sz-32 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-32 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">48px</div>
+      <div class="row sz-48 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-48 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <div class="sz-group"><div class="sz-label">72px</div>
+      <div class="row sz-72 w-400">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-500">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+      <div class="row sz-72 w-600">أربعة أوجاع من <em>التعليم العالي الليبي</em></div>
+    </div>
+    <p class="para">ليست أحكامًا على أحد — بل هي المشكلات التي بُنيت مدارك لحلّها. تحت كل وجع بند يعمل اليوم داخل المنصّة، والسجل الكامل في صفحة القدرات.</p>
+    <p class="para small">تشاهد محاضرة تفاعلية، فتُقاس فهمك لحظة بلحظة، فتعرف خطوتك التالية.</p>
+  </section>
+</body>
+</html>
