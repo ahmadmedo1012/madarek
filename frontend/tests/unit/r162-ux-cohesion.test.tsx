@@ -310,7 +310,10 @@ describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair
        label 4.55:1) in both themes. The family intent survives: the seat
        is the accent system's own documented darker rung. */
     expect(body).toContain('background: #DB3A00');
-    expect(body).toContain('color: #FFFFFF');
+    // R323 CI-debt re-pin: the label colour moved to the --white token
+    // (tokens.css — the literal's identical value) to satisfy the
+    // strict colour-token gate; same computed colour, token-routed.
+    expect(body).toContain('color: var(--white)');
   });
 
   it('the landing CTA markup consumes the canonical classes (no private CTA class)', () => {

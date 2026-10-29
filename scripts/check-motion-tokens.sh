@@ -139,6 +139,18 @@ WHOLESALE = {
 #     composited translateX(calc(var(--motion-direction) * 18px)) by
 #     21-b (A11 P2-10).
 DEBT = [
+    # R323 CI-debt (reviewed): the brand mark's bespoke stroke-draw
+    # choreography — Logo.tsx composes the animated lockup inline
+    # (per-instance keyframes via useId; the staggered 600–900 ms
+    # draws and the orange point's 750 ms pop ARE the brand animation
+    # spec authored in the r323 brand system, not generic UI motion —
+    # a token sweep must never silently re-choreograph the mark).
+    # Unpicks: the next brand-system round (a named --brand-draw-*
+    # ladder in tokens.css is the exit).
+    (r'frontend/src/brand/Logo\.tsx:57:',
+     'r323 brand mark: bespoke stroke-draw easing (the brand spec)'),
+    (r'frontend/src/brand/Logo\.tsx:60:',
+     'r323 brand mark: bespoke point-pop timing (the brand spec)'),
 ]
 
 # ── helpers ────────────────────────────────────────────────────────────

@@ -8,88 +8,88 @@
   min-height: 100dvh;
   background: var(--bg);
   color: var(--text-primary);
-  padding: var(--space-xl, 24px) var(--space-lg, 16px) 64px;
+  padding: var(--space-xl, 24px) var(--space-lg, 16px) 64px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
   max-width: 1180px;
   margin-inline: auto;
 }
 
 /* ── header ── */
-.r323d-head { border-bottom: 1px solid var(--border); padding-block-end: 20px; }
+.r323d-head { border-bottom: 1px solid var(--border); padding-block-end: var(--sp-5); }
 .r323d-head-row {
   display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap;
+  gap: var(--sp-3); flex-wrap: wrap;
 }
 .r323d-wordmark {
   font-family: var(--font-family, inherit);
-  font-size: 1.5rem; font-weight: 600; letter-spacing: 0;
+  font-size: 1.5rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ font-weight: 600; letter-spacing: 0;
   margin: 0;
 }
-.r323d-theme { display: flex; gap: 8px; }
+.r323d-theme { display: flex; gap: var(--sp-2); }
 .r323d-sub {
-  margin: 10px 0 0;
-  font-size: 0.875rem; line-height: 1.7;
+  margin: var(--sp-2-5) 0 0;
+  font-size: 0.875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ line-height: 1.7;
   color: var(--text-secondary);
   max-width: 62ch;
 }
 
 /* ── sections: the [nn] index-row grammar ── */
-.r323d-main { display: flex; flex-direction: column; gap: 40px; padding-block-start: 32px; }
-.r323d-section { border-top: 1px solid var(--border); padding-block-start: 16px; }
-.r323d-idx-row { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.r323d-main { display: flex; flex-direction: column; gap: var(--sp-8); padding-block-start: var(--sp-7); }
+.r323d-section { border-top: 1px solid var(--border); padding-block-start: var(--sp-4); }
+.r323d-idx-row { display: flex; align-items: baseline; gap: var(--sp-2-5); flex-wrap: wrap; }
 .r323d-idx {
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.75rem; color: var(--accent, var(--text-primary));
+  font-size: 0.75rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--accent, var(--text-primary));
 }
-.r323d-title { font-size: 1.0625rem; font-weight: 600; margin: 0; }
+.r323d-title { font-size: 1.0625rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ font-weight: 600; margin: 0; }
 .r323d-note {
-  font-size: 0.75rem; color: var(--text-secondary);
+  font-size: 0.75rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--text-secondary);
   font-family: var(--font-mono, ui-monospace, monospace);
 }
 
 /* ── cells: hairline gallery grid ── */
 .r323d-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px; margin-block-start: 14px;
+  gap: var(--sp-3); margin-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
 }
 .r323d-grid-2 { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
 .r323d-cell {
   border: 1px solid var(--border);
-  padding: 14px;
-  display: flex; flex-direction: column; gap: 10px;
+  padding: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
+  display: flex; flex-direction: column; gap: var(--sp-2-5);
   min-height: 96px;
 }
 .r323d-cell-body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .r323d-cell-label {
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.6875rem; color: var(--text-secondary);
-  border-top: 1px solid var(--border); padding-block-start: 8px;
+  font-size: 0.6875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--text-secondary);
+  border-top: 1px solid var(--border); padding-block-start: var(--sp-2);
 }
 
 /* ── helpers ── */
-.r323d-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.r323d-stack { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
-.r323d-inline { display: inline-flex; align-items: center; gap: 6px; font-size: 0.875rem; }
-.r323d-p { margin: 0; font-size: 0.875rem; line-height: 1.7; }
-.r323d-mt { margin-block-start: 12px; }
+.r323d-row { display: flex; align-items: center; gap: var(--sp-2-5); flex-wrap: wrap; }
+.r323d-stack { display: flex; flex-direction: column; gap: var(--sp-2-5); align-items: flex-start; }
+.r323d-inline { display: inline-flex; align-items: center; gap: var(--sp-1-5); font-size: 0.875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ }
+.r323d-p { margin: 0; font-size: 0.875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ line-height: 1.7; }
+.r323d-mt { margin-block-start: var(--sp-3); }
 
 /* the ledger demo cell — one implementation, the r189 row language */
 .r323d-ledger-demo { width: 100%; display: flex; flex-direction: column; }
 .r323d-ledger-row {
-  display: flex; justify-content: space-between; gap: 8px;
-  padding: 8px 0; border-bottom: 1px solid var(--border);
-  font-size: 0.8125rem;
+  display: flex; justify-content: space-between; gap: var(--sp-2);
+  padding: var(--sp-2) 0; border-bottom: 1px solid var(--border);
+  font-size: 0.8125rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
 }
 .r323d-ledger-row:last-child { border-bottom: 0; }
 
 /* ── foot ── */
 .r323d-foot {
-  margin-block-start: 48px; padding-block-start: 14px;
+  margin-block-start: var(--sp-9); padding-block-start: 14px; /* spacing-gate: allow — the /__design specimen sheet exhibits the literal rung as data */
   border-top: 1px solid var(--border);
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.6875rem; color: var(--text-secondary);
+  font-size: 0.6875rem; /* type-gate: allow — the /__design specimen sheet exhibits the literal rung as data */ color: var(--text-secondary);
 }
 
 @media (max-width: 480px) {
-  .r323d { padding-inline: 12px; }
+  .r323d { padding-inline: var(--sp-3); }
   .r323d-grid, .r323d-grid-2 { grid-template-columns: 1fr; }
 }

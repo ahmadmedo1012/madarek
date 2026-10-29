@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-26T01:32:24.999Z",
+  "generatedAt": "2026-10-29T20:11:37.499Z",
   "captures": [
     {
       "route": "/",
@@ -193,24 +193,24 @@
           "easing": "cubic-bezier(0.625, 0.05, 0, 1)"
         },
         {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
           "selector": "div.reveal-up",
           "durationMs": 650,
           "easing": "cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "circle",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         }
       ],
       "computedColors": [
@@ -247,7 +247,7 @@
       },
       "cls": 0,
       "fcpMs": 96,
-      "bytesTransferred": 1111238
+      "bytesTransferred": 1072439
     },
     {
       "route": "/",
@@ -441,24 +441,24 @@
           "easing": "cubic-bezier(0.625, 0.05, 0, 1)"
         },
         {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
           "selector": "div.reveal-up",
           "durationMs": 650,
           "easing": "cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "circle",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         }
       ],
       "computedColors": [
@@ -495,7 +495,7 @@
       },
       "cls": 0,
       "fcpMs": 124,
-      "bytesTransferred": 1114576
+      "bytesTransferred": 1075777
     },
     {
       "route": "/",
@@ -689,24 +689,24 @@
           "easing": "cubic-bezier(0.625, 0.05, 0, 1)"
         },
         {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
           "selector": "div.reveal-up",
           "durationMs": 650,
           "easing": "cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "circle",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         }
       ],
       "computedColors": [
@@ -743,7 +743,7 @@
       },
       "cls": 0,
       "fcpMs": 164,
-      "bytesTransferred": 1131042
+      "bytesTransferred": 812029
     },
     {
       "route": "/",
@@ -937,24 +937,24 @@
           "easing": "cubic-bezier(0.625, 0.05, 0, 1)"
         },
         {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
           "selector": "div.reveal-up",
           "durationMs": 650,
           "easing": "cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "circle",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         }
       ],
       "computedColors": [
@@ -991,7 +991,7 @@
       },
       "cls": 0,
       "fcpMs": 272,
-      "bytesTransferred": 1171254
+      "bytesTransferred": 815367
     },
     {
       "route": "/",
@@ -1185,24 +1185,24 @@
           "easing": "cubic-bezier(0.625, 0.05, 0, 1)"
         },
         {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
           "selector": "div.reveal-up",
           "durationMs": 650,
           "easing": "cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "circle",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         }
       ],
       "computedColors": [
@@ -1239,7 +1239,7 @@
       },
       "cls": 0,
       "fcpMs": 208,
-      "bytesTransferred": 1175044
+      "bytesTransferred": 812029
     },
     {
       "route": "/",
@@ -1433,24 +1433,24 @@
           "easing": "cubic-bezier(0.625, 0.05, 0, 1)"
         },
         {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
-          "selector": "span",
-          "durationMs": 400,
-          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
-        },
-        {
           "selector": "div.reveal-up",
           "durationMs": 650,
           "easing": "cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.16, 1, 0.3, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "line",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "circle",
+          "durationMs": 650,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         }
       ],
       "computedColors": [
@@ -1487,7 +1487,7 @@
       },
       "cls": 0,
       "fcpMs": 396,
-      "bytesTransferred": 1161328
+      "bytesTransferred": 815367
     },
     {
       "route": "/auth",
@@ -1541,7 +1541,7 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
-          "selector": "button.auth-forgot",
+          "selector": "a.auth-forgot",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -1551,7 +1551,22 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         }
@@ -1590,7 +1605,7 @@
       },
       "cls": 0,
       "fcpMs": 212,
-      "bytesTransferred": 584171
+      "bytesTransferred": 364383
     },
     {
       "route": "/auth",
@@ -1644,7 +1659,7 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
-          "selector": "button.auth-forgot",
+          "selector": "a.auth-forgot",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -1654,7 +1669,22 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         }
@@ -1693,7 +1723,7 @@
       },
       "cls": 0,
       "fcpMs": 136,
-      "bytesTransferred": 587509
+      "bytesTransferred": 367721
     },
     {
       "route": "/auth",
@@ -1747,7 +1777,7 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
-          "selector": "button.auth-forgot",
+          "selector": "a.auth-forgot",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -1757,7 +1787,22 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         }
@@ -1796,7 +1841,7 @@
       },
       "cls": 0,
       "fcpMs": 100,
-      "bytesTransferred": 584171
+      "bytesTransferred": 364383
     },
     {
       "route": "/auth",
@@ -1850,7 +1895,7 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
-          "selector": "button.auth-forgot",
+          "selector": "a.auth-forgot",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -1860,7 +1905,22 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         }
@@ -1899,7 +1959,7 @@
       },
       "cls": 0,
       "fcpMs": 124,
-      "bytesTransferred": 587509
+      "bytesTransferred": 367721
     },
     {
       "route": "/auth",
@@ -1953,7 +2013,7 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
-          "selector": "button.auth-forgot",
+          "selector": "a.auth-forgot",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -1963,7 +2023,22 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -2027,7 +2102,7 @@
       },
       "cls": 0,
       "fcpMs": 156,
-      "bytesTransferred": 584171
+      "bytesTransferred": 364383
     },
     {
       "route": "/auth",
@@ -2081,7 +2156,7 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
-          "selector": "button.auth-forgot",
+          "selector": "a.auth-forgot",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -2091,7 +2166,22 @@
           "easing": "cubic-bezier(0.23, 1, 0.32, 1), cubic-bezier(0.23, 1, 0.32, 1)"
         },
         {
+          "selector": "button.auth-demo-hint-reopen",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
           "selector": "a.auth-register-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
+          "durationMs": 200,
+          "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
+        },
+        {
+          "selector": "a.auth-consent-link",
           "durationMs": 200,
           "easing": "cubic-bezier(0.23, 1, 0.32, 1)"
         },
@@ -2155,7 +2245,7 @@
       },
       "cls": 0,
       "fcpMs": 132,
-      "bytesTransferred": 587509
+      "bytesTransferred": 367721
     },
     {
       "route": "/auth/register",
@@ -2263,7 +2353,7 @@
       },
       "cls": 0,
       "fcpMs": 84,
-      "bytesTransferred": 549475
+      "bytesTransferred": 280023
     },
     {
       "route": "/auth/register",
@@ -2371,7 +2461,7 @@
       },
       "cls": 0,
       "fcpMs": 64,
-      "bytesTransferred": 552401
+      "bytesTransferred": 283361
     },
     {
       "route": "/auth/register",
@@ -2479,7 +2569,7 @@
       },
       "cls": 0,
       "fcpMs": 112,
-      "bytesTransferred": 549063
+      "bytesTransferred": 280023
     },
     {
       "route": "/auth/register",
@@ -2587,7 +2677,7 @@
       },
       "cls": 0,
       "fcpMs": 100,
-      "bytesTransferred": 552813
+      "bytesTransferred": 283773
     },
     {
       "route": "/auth/register",
@@ -2720,7 +2810,7 @@
       },
       "cls": 0,
       "fcpMs": 108,
-      "bytesTransferred": 549475
+      "bytesTransferred": 280435
     },
     {
       "route": "/auth/register",
@@ -2853,7 +2943,7 @@
       },
       "cls": 0,
       "fcpMs": 148,
-      "bytesTransferred": 552401
+      "bytesTransferred": 283773
     },
     {
       "route": "/404",
@@ -2948,7 +3038,7 @@
       },
       "cls": 0,
       "fcpMs": 88,
-      "bytesTransferred": 470071
+      "bytesTransferred": 234015
     },
     {
       "route": "/404",
@@ -3043,7 +3133,7 @@
       },
       "cls": 0,
       "fcpMs": 108,
-      "bytesTransferred": 473409
+      "bytesTransferred": 237353
     },
     {
       "route": "/404",
@@ -3138,7 +3228,7 @@
       },
       "cls": 0,
       "fcpMs": 128,
-      "bytesTransferred": 470071
+      "bytesTransferred": 234015
     },
     {
       "route": "/404",
@@ -3233,7 +3323,7 @@
       },
       "cls": 0,
       "fcpMs": 116,
-      "bytesTransferred": 473409
+      "bytesTransferred": 237353
     },
     {
       "route": "/404",
@@ -3353,7 +3443,7 @@
       },
       "cls": 0,
       "fcpMs": 128,
-      "bytesTransferred": 470071
+      "bytesTransferred": 234015
     },
     {
       "route": "/404",
@@ -3473,7 +3563,7 @@
       },
       "cls": 0,
       "fcpMs": 148,
-      "bytesTransferred": 473409
+      "bytesTransferred": 237353
     },
     {
       "route": "/student/dashboard",
@@ -3739,7 +3829,7 @@
       },
       "cls": 0,
       "fcpMs": 108,
-      "bytesTransferred": 686358
+      "bytesTransferred": 627565
     },
     {
       "route": "/student/dashboard",
@@ -4005,7 +4095,7 @@
       },
       "cls": 0,
       "fcpMs": 180,
-      "bytesTransferred": 689696
+      "bytesTransferred": 630903
     },
     {
       "route": "/student/dashboard",
@@ -4271,7 +4361,7 @@
       },
       "cls": 0,
       "fcpMs": 188,
-      "bytesTransferred": 686358
+      "bytesTransferred": 398612
     },
     {
       "route": "/student/dashboard",
@@ -4537,7 +4627,7 @@
       },
       "cls": 0,
       "fcpMs": 228,
-      "bytesTransferred": 689696
+      "bytesTransferred": 401950
     },
     {
       "route": "/student/dashboard",
@@ -4803,7 +4893,7 @@
       },
       "cls": 0,
       "fcpMs": 384,
-      "bytesTransferred": 686358
+      "bytesTransferred": 398612
     },
     {
       "route": "/student/dashboard",
@@ -5069,7 +5159,7 @@
       },
       "cls": 0,
       "fcpMs": 564,
-      "bytesTransferred": 689696
+      "bytesTransferred": 401950
     },
     {
       "route": "/student/courses",
@@ -5323,7 +5413,7 @@
       },
       "cls": 0,
       "fcpMs": 236,
-      "bytesTransferred": 685606
+      "bytesTransferred": 398685
     },
     {
       "route": "/student/courses",
@@ -5577,7 +5667,7 @@
       },
       "cls": 0,
       "fcpMs": 192,
-      "bytesTransferred": 688944
+      "bytesTransferred": 402023
     },
     {
       "route": "/student/courses",
@@ -5831,7 +5921,7 @@
       },
       "cls": 0,
       "fcpMs": 220,
-      "bytesTransferred": 685606
+      "bytesTransferred": 398685
     },
     {
       "route": "/student/courses",
@@ -6085,7 +6175,7 @@
       },
       "cls": 0,
       "fcpMs": 232,
-      "bytesTransferred": 688944
+      "bytesTransferred": 402023
     },
     {
       "route": "/student/courses",
@@ -6339,7 +6429,7 @@
       },
       "cls": 0,
       "fcpMs": 316,
-      "bytesTransferred": 685606
+      "bytesTransferred": 354105
     },
     {
       "route": "/student/courses",
@@ -6593,7 +6683,7 @@
       },
       "cls": 0,
       "fcpMs": 404,
-      "bytesTransferred": 688944
+      "bytesTransferred": 357443
     },
     {
       "route": "/student/courses/:offeringId",
@@ -6865,7 +6955,7 @@
       },
       "cls": 0,
       "fcpMs": 176,
-      "bytesTransferred": 683686
+      "bytesTransferred": 396312
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7137,7 +7227,7 @@
       },
       "cls": 0,
       "fcpMs": 216,
-      "bytesTransferred": 687024
+      "bytesTransferred": 399650
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7409,7 +7499,7 @@
       },
       "cls": 0,
       "fcpMs": 148,
-      "bytesTransferred": 683686
+      "bytesTransferred": 396312
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7681,7 +7771,7 @@
       },
       "cls": 0,
       "fcpMs": 216,
-      "bytesTransferred": 687024
+      "bytesTransferred": 399650
     },
     {
       "route": "/student/courses/:offeringId",
@@ -7953,7 +8043,7 @@
       },
       "cls": 0,
       "fcpMs": 304,
-      "bytesTransferred": 683686
+      "bytesTransferred": 351732
     },
     {
       "route": "/student/courses/:offeringId",
@@ -8225,7 +8315,7 @@
       },
       "cls": 0,
       "fcpMs": 564,
-      "bytesTransferred": 687024
+      "bytesTransferred": 355070
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8447,22 +8537,15 @@
           "contrastRatio": 13.57
         },
         {
-          "selector": "card",
-          "background": "rgb(255, 255, 255)",
-          "color": "rgb(40, 40, 40)",
-          "contrastRatio": 14.74
-        },
-        {
-          "selector": "text-subtle",
-          "background": "rgb(246, 246, 238)",
-          "color": "rgb(98, 98, 95)",
-          "contrastRatio": 5.63
+          "selector": "blend: text-subtle fg=color(srgb 0.873529 0.873529 0.873529) bg=rgb(40, 40, 40)",
+          "background": "rgb(40, 40, 40)",
+          "color": "color(srgb 0.873529 0.873529 0.873529)",
+          "contrastRatio": 11.06
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
-          "card",
           "text-subtle"
         ],
         "notFound": [
@@ -8470,6 +8553,7 @@
           "page-subtitle",
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item"
         ]
       },
@@ -8479,7 +8563,7 @@
       },
       "cls": 0,
       "fcpMs": 408,
-      "bytesTransferred": 685589
+      "bytesTransferred": 356705
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8701,22 +8785,15 @@
           "contrastRatio": 13.85
         },
         {
-          "selector": "card",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(246, 248, 250)",
-          "contrastRatio": 13.85
-        },
-        {
-          "selector": "text-subtle",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(180, 180, 176)",
-          "contrastRatio": 7.09
+          "selector": "blend: text-subtle fg=color(srgb 0.298039 0.299216 0.300392) bg=rgb(246, 248, 250)",
+          "background": "rgb(246, 248, 250)",
+          "color": "color(srgb 0.298039 0.299216 0.300392)",
+          "contrastRatio": 8.06
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
-          "card",
           "text-subtle"
         ],
         "notFound": [
@@ -8724,6 +8801,7 @@
           "page-subtitle",
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item"
         ]
       },
@@ -8733,7 +8811,7 @@
       },
       "cls": 0,
       "fcpMs": 204,
-      "bytesTransferred": 688927
+      "bytesTransferred": 360043
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -8955,22 +9033,15 @@
           "contrastRatio": 13.57
         },
         {
-          "selector": "card",
-          "background": "rgb(255, 255, 255)",
-          "color": "rgb(40, 40, 40)",
-          "contrastRatio": 14.74
-        },
-        {
-          "selector": "text-subtle",
-          "background": "rgb(246, 246, 238)",
-          "color": "rgb(98, 98, 95)",
-          "contrastRatio": 5.63
+          "selector": "blend: text-subtle fg=color(srgb 0.873529 0.873529 0.873529) bg=rgb(40, 40, 40)",
+          "background": "rgb(40, 40, 40)",
+          "color": "color(srgb 0.873529 0.873529 0.873529)",
+          "contrastRatio": 11.06
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
-          "card",
           "text-subtle"
         ],
         "notFound": [
@@ -8978,6 +9049,7 @@
           "page-subtitle",
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item"
         ]
       },
@@ -8987,7 +9059,7 @@
       },
       "cls": 0,
       "fcpMs": 144,
-      "bytesTransferred": 685589
+      "bytesTransferred": 356705
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -9209,22 +9281,15 @@
           "contrastRatio": 13.85
         },
         {
-          "selector": "card",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(246, 248, 250)",
-          "contrastRatio": 13.85
-        },
-        {
-          "selector": "text-subtle",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(180, 180, 176)",
-          "contrastRatio": 7.09
+          "selector": "blend: text-subtle fg=color(srgb 0.298039 0.299216 0.300392) bg=rgb(246, 248, 250)",
+          "background": "rgb(246, 248, 250)",
+          "color": "color(srgb 0.298039 0.299216 0.300392)",
+          "contrastRatio": 8.06
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
-          "card",
           "text-subtle"
         ],
         "notFound": [
@@ -9232,6 +9297,7 @@
           "page-subtitle",
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item"
         ]
       },
@@ -9241,7 +9307,7 @@
       },
       "cls": 0,
       "fcpMs": 200,
-      "bytesTransferred": 688927
+      "bytesTransferred": 360043
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -9463,22 +9529,15 @@
           "contrastRatio": 13.57
         },
         {
-          "selector": "card",
-          "background": "rgb(255, 255, 255)",
-          "color": "rgb(40, 40, 40)",
-          "contrastRatio": 14.74
-        },
-        {
-          "selector": "text-subtle",
-          "background": "rgb(246, 246, 238)",
-          "color": "rgb(98, 98, 95)",
-          "contrastRatio": 5.63
+          "selector": "blend: text-subtle fg=color(srgb 0.873529 0.873529 0.873529) bg=rgb(40, 40, 40)",
+          "background": "rgb(40, 40, 40)",
+          "color": "color(srgb 0.873529 0.873529 0.873529)",
+          "contrastRatio": 11.06
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
-          "card",
           "text-subtle"
         ],
         "notFound": [
@@ -9486,6 +9545,7 @@
           "page-subtitle",
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item"
         ]
       },
@@ -9495,7 +9555,7 @@
       },
       "cls": 0,
       "fcpMs": 396,
-      "bytesTransferred": 685589
+      "bytesTransferred": 356705
     },
     {
       "route": "/student/lectures/:lectureId",
@@ -9717,22 +9777,15 @@
           "contrastRatio": 13.85
         },
         {
-          "selector": "card",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(246, 248, 250)",
-          "contrastRatio": 13.85
-        },
-        {
-          "selector": "text-subtle",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(180, 180, 176)",
-          "contrastRatio": 7.09
+          "selector": "blend: text-subtle fg=color(srgb 0.298039 0.299216 0.300392) bg=rgb(246, 248, 250)",
+          "background": "rgb(246, 248, 250)",
+          "color": "color(srgb 0.298039 0.299216 0.300392)",
+          "contrastRatio": 8.06
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
-          "card",
           "text-subtle"
         ],
         "notFound": [
@@ -9740,6 +9793,7 @@
           "page-subtitle",
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item"
         ]
       },
@@ -9749,7 +9803,7 @@
       },
       "cls": 0,
       "fcpMs": 352,
-      "bytesTransferred": 688927
+      "bytesTransferred": 360043
     },
     {
       "route": "/student/alerts",
@@ -10003,7 +10057,7 @@
       },
       "cls": 0,
       "fcpMs": 480,
-      "bytesTransferred": 680175
+      "bytesTransferred": 381602
     },
     {
       "route": "/student/alerts",
@@ -10257,7 +10311,7 @@
       },
       "cls": 0,
       "fcpMs": 168,
-      "bytesTransferred": 683513
+      "bytesTransferred": 384940
     },
     {
       "route": "/student/alerts",
@@ -10511,7 +10565,7 @@
       },
       "cls": 0,
       "fcpMs": 136,
-      "bytesTransferred": 680175
+      "bytesTransferred": 381602
     },
     {
       "route": "/student/alerts",
@@ -10765,7 +10819,7 @@
       },
       "cls": 0,
       "fcpMs": 148,
-      "bytesTransferred": 683513
+      "bytesTransferred": 384940
     },
     {
       "route": "/student/alerts",
@@ -11019,7 +11073,7 @@
       },
       "cls": 0,
       "fcpMs": 184,
-      "bytesTransferred": 680175
+      "bytesTransferred": 337022
     },
     {
       "route": "/student/alerts",
@@ -11273,7 +11327,7 @@
       },
       "cls": 0,
       "fcpMs": 388,
-      "bytesTransferred": 683513
+      "bytesTransferred": 340360
     },
     {
       "route": "/student/calendar",
@@ -11533,7 +11587,7 @@
       },
       "cls": 0,
       "fcpMs": 416,
-      "bytesTransferred": 672165
+      "bytesTransferred": 353404
     },
     {
       "route": "/student/calendar",
@@ -11793,7 +11847,7 @@
       },
       "cls": 0,
       "fcpMs": 212,
-      "bytesTransferred": 675503
+      "bytesTransferred": 356742
     },
     {
       "route": "/student/calendar",
@@ -12053,7 +12107,7 @@
       },
       "cls": 0,
       "fcpMs": 204,
-      "bytesTransferred": 672165
+      "bytesTransferred": 353404
     },
     {
       "route": "/student/calendar",
@@ -12313,7 +12367,7 @@
       },
       "cls": 0,
       "fcpMs": 300,
-      "bytesTransferred": 675503
+      "bytesTransferred": 356742
     },
     {
       "route": "/student/calendar",
@@ -12573,7 +12627,7 @@
       },
       "cls": 0,
       "fcpMs": 148,
-      "bytesTransferred": 672165
+      "bytesTransferred": 353404
     },
     {
       "route": "/student/calendar",
@@ -12833,21 +12887,14 @@
       },
       "cls": 0,
       "fcpMs": 480,
-      "bytesTransferred": 675503
+      "bytesTransferred": 356742
     },
     {
       "route": "/student/online-exams",
       "viewport": 360,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [
-        {
-          "name": "empty-list",
-          "decorative": true,
-          "altResolved": null,
-          "sizeBytesGz": 311
-        }
-      ],
+      "illustrations": [],
       "overlays": [],
       "roleAccent": "#C72E00",
       "collegeAccent": "#FA3600",
@@ -13072,49 +13119,36 @@
           "background": "rgb(246, 246, 238)",
           "color": "rgb(65, 65, 64)",
           "contrastRatio": 9.41
-        },
-        {
-          "selector": "card",
-          "background": "rgb(255, 255, 255)",
-          "color": "rgb(40, 40, 40)",
-          "contrastRatio": 14.74
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
           "page-title",
-          "page-subtitle",
-          "card"
+          "page-subtitle"
         ],
         "notFound": [
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item",
           "text-subtle"
         ]
       },
       "illustrationMounts": {
-        "illustrations": 1,
-        "stateSurfaces": 1
+        "illustrations": 0,
+        "stateSurfaces": 0
       },
       "cls": 0,
       "fcpMs": 492,
-      "bytesTransferred": 697968
+      "bytesTransferred": 350627
     },
     {
       "route": "/student/online-exams",
       "viewport": 360,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [
-        {
-          "name": "empty-list",
-          "decorative": true,
-          "altResolved": null,
-          "sizeBytesGz": 311
-        }
-      ],
+      "illustrations": [],
       "overlays": [],
       "roleAccent": "#FF5A1F",
       "collegeAccent": "#FF5A1F",
@@ -13339,49 +13373,36 @@
           "background": "rgb(40, 40, 40)",
           "color": "rgb(201, 201, 197)",
           "contrastRatio": 8.88
-        },
-        {
-          "selector": "card",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(246, 248, 250)",
-          "contrastRatio": 13.85
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
           "page-title",
-          "page-subtitle",
-          "card"
+          "page-subtitle"
         ],
         "notFound": [
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item",
           "text-subtle"
         ]
       },
       "illustrationMounts": {
-        "illustrations": 1,
-        "stateSurfaces": 1
+        "illustrations": 0,
+        "stateSurfaces": 0
       },
       "cls": 0,
       "fcpMs": 180,
-      "bytesTransferred": 701306
+      "bytesTransferred": 353965
     },
     {
       "route": "/student/online-exams",
       "viewport": 768,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [
-        {
-          "name": "empty-list",
-          "decorative": true,
-          "altResolved": null,
-          "sizeBytesGz": 311
-        }
-      ],
+      "illustrations": [],
       "overlays": [],
       "roleAccent": "#C72E00",
       "collegeAccent": "#FA3600",
@@ -13606,49 +13627,36 @@
           "background": "rgb(246, 246, 238)",
           "color": "rgb(65, 65, 64)",
           "contrastRatio": 9.41
-        },
-        {
-          "selector": "card",
-          "background": "rgb(255, 255, 255)",
-          "color": "rgb(40, 40, 40)",
-          "contrastRatio": 14.74
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
           "page-title",
-          "page-subtitle",
-          "card"
+          "page-subtitle"
         ],
         "notFound": [
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item",
           "text-subtle"
         ]
       },
       "illustrationMounts": {
-        "illustrations": 1,
-        "stateSurfaces": 1
+        "illustrations": 0,
+        "stateSurfaces": 0
       },
       "cls": 0,
       "fcpMs": 140,
-      "bytesTransferred": 697968
+      "bytesTransferred": 350627
     },
     {
       "route": "/student/online-exams",
       "viewport": 768,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [
-        {
-          "name": "empty-list",
-          "decorative": true,
-          "altResolved": null,
-          "sizeBytesGz": 311
-        }
-      ],
+      "illustrations": [],
       "overlays": [],
       "roleAccent": "#FF5A1F",
       "collegeAccent": "#FF5A1F",
@@ -13873,49 +13881,36 @@
           "background": "rgb(40, 40, 40)",
           "color": "rgb(201, 201, 197)",
           "contrastRatio": 8.88
-        },
-        {
-          "selector": "card",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(246, 248, 250)",
-          "contrastRatio": 13.85
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
           "page-title",
-          "page-subtitle",
-          "card"
+          "page-subtitle"
         ],
         "notFound": [
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item",
           "text-subtle"
         ]
       },
       "illustrationMounts": {
-        "illustrations": 1,
-        "stateSurfaces": 1
+        "illustrations": 0,
+        "stateSurfaces": 0
       },
       "cls": 0,
       "fcpMs": 208,
-      "bytesTransferred": 701306
+      "bytesTransferred": 353965
     },
     {
       "route": "/student/online-exams",
       "viewport": 1280,
       "theme": "light",
       "dir": "rtl",
-      "illustrations": [
-        {
-          "name": "empty-list",
-          "decorative": true,
-          "altResolved": null,
-          "sizeBytesGz": 311
-        }
-      ],
+      "illustrations": [],
       "overlays": [],
       "roleAccent": "#C72E00",
       "collegeAccent": "#FA3600",
@@ -14140,49 +14135,36 @@
           "background": "rgb(246, 246, 238)",
           "color": "rgb(65, 65, 64)",
           "contrastRatio": 9.41
-        },
-        {
-          "selector": "card",
-          "background": "rgb(255, 255, 255)",
-          "color": "rgb(40, 40, 40)",
-          "contrastRatio": 14.74
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
           "page-title",
-          "page-subtitle",
-          "card"
+          "page-subtitle"
         ],
         "notFound": [
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item",
           "text-subtle"
         ]
       },
       "illustrationMounts": {
-        "illustrations": 1,
-        "stateSurfaces": 1
+        "illustrations": 0,
+        "stateSurfaces": 0
       },
       "cls": 0,
       "fcpMs": 196,
-      "bytesTransferred": 697968
+      "bytesTransferred": 350627
     },
     {
       "route": "/student/online-exams",
       "viewport": 1280,
       "theme": "dark",
       "dir": "rtl",
-      "illustrations": [
-        {
-          "name": "empty-list",
-          "decorative": true,
-          "altResolved": null,
-          "sizeBytesGz": 311
-        }
-      ],
+      "illustrations": [],
       "overlays": [],
       "roleAccent": "#FF5A1F",
       "collegeAccent": "#FF5A1F",
@@ -14407,35 +14389,29 @@
           "background": "rgb(40, 40, 40)",
           "color": "rgb(201, 201, 197)",
           "contrastRatio": 8.88
-        },
-        {
-          "selector": "card",
-          "background": "rgb(40, 40, 40)",
-          "color": "rgb(246, 248, 250)",
-          "contrastRatio": 13.85
         }
       ],
       "colorProbe": {
         "matched": [
           "body",
           "page-title",
-          "page-subtitle",
-          "card"
+          "page-subtitle"
         ],
         "notFound": [
           "metric-value",
           "metric-label",
+          "card",
           "sidebar-item",
           "text-subtle"
         ]
       },
       "illustrationMounts": {
-        "illustrations": 1,
-        "stateSurfaces": 1
+        "illustrations": 0,
+        "stateSurfaces": 0
       },
       "cls": 0,
       "fcpMs": 396,
-      "bytesTransferred": 701306
+      "bytesTransferred": 353965
     },
     {
       "route": "/colleges",
@@ -14689,7 +14665,7 @@
       },
       "cls": 0,
       "fcpMs": 304,
-      "bytesTransferred": 676746
+      "bytesTransferred": 350370
     },
     {
       "route": "/colleges",
@@ -14943,7 +14919,7 @@
       },
       "cls": 0,
       "fcpMs": 172,
-      "bytesTransferred": 680084
+      "bytesTransferred": 353708
     },
     {
       "route": "/colleges",
@@ -15197,7 +15173,7 @@
       },
       "cls": 0,
       "fcpMs": 136,
-      "bytesTransferred": 676746
+      "bytesTransferred": 350370
     },
     {
       "route": "/colleges",
@@ -15451,7 +15427,7 @@
       },
       "cls": 0,
       "fcpMs": 200,
-      "bytesTransferred": 680084
+      "bytesTransferred": 353708
     },
     {
       "route": "/colleges",
@@ -15705,7 +15681,7 @@
       },
       "cls": 0,
       "fcpMs": 516,
-      "bytesTransferred": 676746
+      "bytesTransferred": 350370
     },
     {
       "route": "/colleges",
@@ -15959,7 +15935,8 @@
       },
       "cls": 0,
       "fcpMs": 320,
-      "bytesTransferred": 680084
+      "bytesTransferred": 353708
     }
-  ]
+  ],
+  "fcpSource": "preserved from previous baseline (CI-runner measurements); deterministic axes re-captured for the r321/r323 redesigns"
 }

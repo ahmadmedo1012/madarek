@@ -33,7 +33,6 @@ import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 // r323 B3.6 — the pilot's ears (the floating «أبلغ عن مشكلة / اقتراح»).
 import { FeedbackWidget } from '../feedback/FeedbackWidget';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
-import { HydrationSplash } from '../HydrationSplash';
 import { overlayStack } from '../../lib/overlayStack';
 import { toast } from '../../lib/toast';
 import { NAV_BY_ROLE, ROLE_HOME } from '../../lib/nav';
@@ -502,7 +501,13 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   const user = useAuthStore((s) => s.user);
   const location = useLocation();
 
-  if (!isHydrated) return <HydrationSplash />;
+  /* R323 §A2 foreman integration: the app-root boot Splash owns the
+   * pre-hydration window (a fullscreen orchestrator layer from first
+   * paint) — rendering the legacy HydrationSplash here as well put a
+   * SECOND logo on screen at boot, the exact overlap the
+   * r323-loader-overlap e2e pin exists to catch. null is invisible
+   * under the splash; the store decides the instant it rehydrates. */
+  if (!isHydrated) return null;
   if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
   if (allow && !allow.includes(user.role)) {
     return (

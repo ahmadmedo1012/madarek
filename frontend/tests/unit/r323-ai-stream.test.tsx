@@ -1,8 +1,9 @@
 /**
  * Frontend unit — r323 B1.1: the AI chat SSE streaming client.
  *
- * Layers under pin (frontend/src/lib/api.ts AI section + the page's
- * consumption in AiAssistantPage.tsx):
+ * Layers under pin (frontend/src/lib/ai-stream.ts — the SSE client
+ * extracted from lib/api.ts so it rides the lazy AI page chunk — plus
+ * the page's consumption in AiAssistantPage.tsx):
  *  · the PURE frame parser (createAiSseParser): token accumulation
  *    across ARBITRARY chunk boundaries, done/error frame decoding,
  *    keep-alive noise tolerance, the trailing-frame flush;
@@ -35,7 +36,7 @@ import {
   isDailyQuotaMessage,
   streamAiChat,
   type AiSseEvent,
-} from '../../src/lib/api';
+} from '../../src/lib/ai-stream';
 
 // ─── fixtures ──────────────────────────────────────────────────────
 

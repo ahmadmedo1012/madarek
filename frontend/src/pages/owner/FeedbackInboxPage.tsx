@@ -114,7 +114,7 @@ export default function FeedbackInboxPage() {
       />
 
       <Card title="التقارير" subtitle="الحالة تتحرّك باتجاه واحد: مفتوح → قيد المراجعة → أُصلح أو مُستبعد.">
-        <div className="fb-status-actions" style={{ marginInlineStart: 0, marginBottom: 10 }}>
+        <div className="fb-status-actions" style={{ marginInlineStart: 0, marginBottom: 'var(--sp-2-5)' }}>
           {FILTERS.map((f) => (
             <button
               key={f.label}
@@ -150,7 +150,7 @@ export default function FeedbackInboxPage() {
         )}
 
         {meta && meta.totalPages > 1 && (
-          <div className="fb-status-actions" style={{ marginInlineStart: 0, marginTop: 10 }}>
+          <div className="fb-status-actions" style={{ marginInlineStart: 0, marginTop: 'var(--sp-2-5)' }}>
             <button type="button" className="btn ghost sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
               السابق
             </button>

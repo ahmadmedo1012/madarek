@@ -13,7 +13,7 @@
  * it inline — the URL mode stays available (that is the documented pilot
  * fallback, not an error state to hide).
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { CircleStop, FileVideo, Link2, UploadCloud } from 'lucide-react';
 import { uploadLectureVideo, validateVideoFile } from '../../lib/videoUpload';
 
@@ -138,7 +138,15 @@ export function VideoUploadField({
           {busy && (
             <div className="vid-up-progress" role="status">
               <div className="vid-up-meter" aria-hidden="true">
-                <div className="vid-up-meter-fill" style={{ inlineSize: `${pct}%` }} />
+                <div
+                  className="vid-up-meter-fill"
+                  /* 5-C1-style (23-b .progress-fill pattern): the VALUE rides
+                     --fill-scale (0..1) — the CSS paints the full track and
+                     scales it with transform: scaleX() (composited, no
+                     reflow-per-tick; transform-origin follows the writing
+                     direction). */
+                  style={{ '--fill-scale': pct / 100 } as CSSProperties}
+                />
               </div>
               <span className="vid-up-pct">
                 {pct}%{partLabel ? ` · ${partLabel}` : ''}

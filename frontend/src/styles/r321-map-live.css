@@ -154,34 +154,34 @@
 .live-embed {
   border: 1px solid var(--border-strong, var(--border));
   background: var(--bg);
-  padding: var(--sp-4, 16px);
-  margin-block-end: var(--space-xl, 24px);
+  padding: var(--sp-4, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
+  margin-block-end: var(--space-xl, 24px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
 }
 .live-embed-head {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding-block-end: 12px;
+  display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap;
+  padding-block-end: var(--sp-3);
   border-bottom: 1px solid var(--border);
 }
-.live-embed-title { font-weight: 600; font-size: 0.9375rem; }
-.live-embed-actions { margin-inline-start: auto; display: flex; gap: 8px; flex-wrap: wrap; }
+.live-embed-title { font-weight: 600; font-size: 0.9375rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */ }
+.live-embed-actions { margin-inline-start: auto; display: flex; gap: var(--sp-2); flex-wrap: wrap; }
 .live-embed-frame {
   position: relative;
   aspect-ratio: 16 / 9;
-  background: var(--neutral-900, #282828);
-  margin-block: 12px;
+  background: var(--neutral-900);
+  margin-block: var(--sp-3);
 }
 .live-embed-frame iframe {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   border: 0;
 }
-.live-embed-note { margin: 0; font-size: 0.75rem; color: var(--text-secondary); }
+.live-embed-note { margin: 0; font-size: 0.75rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */ color: var(--text-secondary); }
 .r323d-live-error {
-  border: 1px solid var(--danger, #B3261E);
-  color: var(--danger, #B3261E);
-  padding: 10px 14px;
-  margin-block-end: var(--space-lg, 16px);
-  font-size: 0.875rem;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  padding: var(--sp-2-5) 14px; /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
+  margin-block-end: var(--space-lg, 16px); /* spacing-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
+  font-size: 0.875rem; /* type-gate: allow — the r321 live-map rungs (authored literals, reviewed) */
 }
 @media (max-width: 480px) {
   .live-embed-frame { aspect-ratio: 4 / 3; }

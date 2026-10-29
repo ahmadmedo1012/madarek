@@ -384,7 +384,7 @@ const CHECKS = [
   ['light', '--text-muted', '#62625f', 'R313 override: #626260 → #62625f (owner decision — rgba(40,40,40,.72) on #F6F6EE as a solid: 5.63:1 ground · 6.12:1 surface)'],
   ['light', '--text-faint', '#70706a', 'R313 override: #72726f → #70706a (owner decision — warm faint re-derived for the new paper: 4.59:1 ground, AA where it carries text)'],
   ['light', '--accent', '#fa3600', "VIVID ORANGE signal (r305 — the reference's --content--brand; 3.53:1 paper = UI/large tier; eras: copper r303/r304, ultramarine r197, teal r195)"],
-  ['light', '--accent-hover', '#d92f00', 'signal hover — the binary-searched AA floor doubles as hover (r305)'],
+  ['light', '--accent-hover', '#d03000', 'signal hover — the binary-searched AA floor doubles as hover (r305); R323 A5 override: the state-contrast round retuned it #d92f00 → #d03000 (tokens.css + the export moved together; this pin follows)'],
   ['light', '--accent-soft', '#fce3d9', 'signal soft ground (r305 ember tint)'],
   ['light', '--accent-strong', '#a32400', 'deep signal — 7.02:1 (r305)'],
   ['light', '--accent-fg', '#ffffff', 'R313 override: #191918 → #ffffff (owner decision — the reference ships white-on-#FA3600 labels, 3.76:1 AA-large; superseded r305 "never white" rule; small Arabic accent labels get weight ≥600 + size ≥14px)'],
