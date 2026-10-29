@@ -33,7 +33,6 @@ export function AboutPage() {
 
   return (
     <LegalSheet
-      code="about"
       title="عن مدارك"
       lede="كل ما يمكن قوله بصدق اليوم موجود في فقرة واحدة — نضعها هنا كما هي في صفحة البداية، حرفيًا."
       updated={LEGAL_UPDATED}
@@ -211,7 +210,6 @@ export function HelpPage() {
 
   return (
     <LegalSheet
-      code="help"
       title="المساعدة والأسئلة الشائعة"
       lede="تسعة أسئلة هي ما يسأله الزوار فعلًا — وكل جواب يستند إلى ما يعمل اليوم في المنصّة، بلا تجميل."
       updated={LEGAL_UPDATED}
@@ -244,7 +242,6 @@ export function ContactPage() {
 
   return (
     <LegalSheet
-      code="contact"
       title="التواصل والتسجيل المبكر"
       lede="لا نخترع قنوات تواصل — هذه هي القناة المتاحة فعلًا اليوم، مكتوبة كما هي."
       updated={LEGAL_UPDATED}

@@ -196,28 +196,27 @@ describe('R320 cycle-3 — the routed error sheets (P2-3/4/5)', () => {
     expect(
       screen.getByRole('heading', { level: 1, name: 'خللٌ من جانبنا\u00A0— لا من جانبك' }),
     ).toBeInTheDocument();
-    expect(screen.getByText('ERR [500]')).toBeInTheDocument();
+    // r324 X10: no ERR-code eyebrow — the Arabic title carries it alone
+    expect(screen.queryByText('ERR [500]')).toBeNull();
     const home = screen.getByRole('link', { name: 'العودة إلى الرئيسية' });
     expect(home).toHaveAttribute('href', '/');
     // Exactly ONE primary action (the way home) — no fake retry.
     expect(document.querySelectorAll('.nf-actions .btn.primary')).toHaveLength(1);
   });
 
-  it('R321 §A5 — the code reads ONCE: no duplicate normalised text, no code in the coordinates line', () => {
+  it('r324 X10 — no code/coordinates chrome: the scene innerText carries no ERR [], no [0,0], no SHEET', () => {
     const { container } = render(
       <MemoryRouter>
         <Error500Page />
       </MemoryRouter>,
     );
-    // the coordinates line carries the page's own word, never the code
-    expect(container.querySelector('.nf-coords')?.textContent).toContain('SERVER FAULT');
-    expect(container.querySelector('.nf-coords')?.textContent).not.toContain('500');
-    // the visible eyebrow is the ONE carrier (aria-hidden removed — the
-    // R320 sr-only twin put the same string in innerText twice)
-    const eyebrow = container.querySelector('.nf-eyebrow');
-    expect(eyebrow).not.toBeNull();
-    expect(eyebrow?.hasAttribute('aria-hidden')).toBe(false);
-    expect(container.querySelectorAll('.nf-scene .sr-only')).toHaveLength(0);
+    // the coordinates line + eyebrow are retired outright
+    expect(container.querySelector('.nf-coords')).toBeNull();
+    expect(container.querySelector('.nf-eyebrow')).toBeNull();
+    const text = container.textContent ?? '';
+    expect(text).not.toContain('ERR [');
+    expect(text).not.toContain('[0,0]');
+    expect(text).not.toContain('SERVER FAULT');
     // normalised-text sweep: no two visible text nodes with the same
     // normalised text inside the scene (the §A5 gate rule, unit-seated)
     const normalise = (s: string) => s.replace(/[\s\p{P}\p{S}]+/gu, '').trim();
@@ -258,7 +257,8 @@ describe('R320 cycle-3 — the routed error sheets (P2-3/4/5)', () => {
   it('/maintenance ships with its honest disabled-by-default story', () => {
     mount(<MaintenancePage />);
     expect(screen.getByRole('heading', { level: 1, name: 'مدارك في صيانة قصيرة' })).toBeInTheDocument();
-    expect(screen.getByText('MM [01]')).toBeInTheDocument();
+    // r324 X10: the `MM [01]` code eyebrow is retired with the sweep
+    expect(screen.queryByText('MM [01]')).toBeNull();
     expect(screen.getByText(/لا تُفتح تلقائيًا في الوضع الحالي/)).toBeInTheDocument();
   });
 });

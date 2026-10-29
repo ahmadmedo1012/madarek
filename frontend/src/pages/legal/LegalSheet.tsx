@@ -7,7 +7,6 @@ import { Logo } from '../../brand';
 import { useThemeSync } from '../../components/layout/ThemeToggle';
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 import { usePageTitle } from '../../hooks/usePageTitle';
-import { PUBLIC_SHEET_CODES, type PublicSheetKey } from '../../lib/sheet-code';
 // legal.css — the legal/public sheets' own grammar (R320 §D): the 72ch
 // document measure, the [nn] section bars, hairline cells, the storage
 // ledger table, the FAQ cells and the colophon — all in the sheet's OWN
@@ -20,21 +19,6 @@ import '../../styles/legal.css';
 /** The canonical public URL every page's canonical/OG:url derives from
  * (index.html:33 — the one absolute base the site declares). */
 const CANONICAL_BASE = 'https://madarek.onrender.com';
-
-/** The family word of each sheet's corner mono line — the half of the
- * identity the CODE map doesn't carry (lib/sheet-code.ts owns the codes
- * alone so wiring surfaces can derive them without importing a page). */
-const SHEET_LABELS: Record<PublicSheetKey, string> = {
-  privacy: 'LEGAL SHEET',
-  terms: 'LEGAL SHEET',
-  cookies: 'LEGAL SHEET',
-  accessibility: 'LEGAL SHEET',
-  security: 'LEGAL SHEET',
-  data: 'LEGAL SHEET',
-  contact: 'CONTACT SHEET',
-  about: 'ABOUT SHEET',
-  help: 'HELP SHEET',
-};
 
 /* ═══ useLegalMeta — per-page head metadata ══════════════════════════
  *
@@ -103,14 +87,11 @@ export function useLegalMeta(opts: {
  * page components own only their words.
  */
 export function LegalSheet({
-  code,
   title,
   lede,
   updated,
   children,
 }: {
-  /** Which public sheet this is — derives the corner code + family word. */
-  code: PublicSheetKey;
   /** The page's ONE h1 (Arabic, no tashkeel). */
   title: ReactNode;
   /** The one-paragraph lede under the h1. */
@@ -120,8 +101,6 @@ export function LegalSheet({
   children: ReactNode;
 }) {
   useThemeSync();
-  const sheetCode = PUBLIC_SHEET_CODES[code];
-  const label = SHEET_LABELS[code];
 
   return (
     <div className="lg">
@@ -138,9 +117,6 @@ export function LegalSheet({
             <Logo variant="mark" size={22} />
             مدارك
           </Link>
-          <span className="lg-header-code lg-mono" dir="ltr">
-            MADAREK · {label} · [{sheetCode}]
-          </span>
         </div>
       </header>
 

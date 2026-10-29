@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { Icon } from '../Icon';
-import { useSheetCode } from '../../lib/sheet-code';
 
 /**
  * PageHeader (patterns) — ترويسة الصفحة الكاملة (عقد Agent S — r210).
@@ -16,13 +15,10 @@ import { useSheetCode } from '../../lib/sheet-code';
  * Arabic-first RTL — the forward direction IS left; Icon renders
  * aria-hidden. Breadcrumb links keep a 44px block target via padding.
  *
- * R319 (C2-G2 · the Heron title bar, additive — same contract as the
- * primitives family): `index` renders the mono `[01]` gutter label
- * inside the h1 (aria-hidden); `sheetCode` renders the sheet's mono
- * identity line above the eyebrow, defaulting to the AMBIENT
- * SheetCodeContext value AppShell provides for the signed-in role —
- * every page gets `SHEET S-01 · STUDENT` (its role's code) with zero
- * page-file changes; an explicit prop overrides, '' opts out.
+ * R319 (C2-G2): `index` renders the mono `[01]` gutter label inside
+ * the h1 (aria-hidden). r324 X10 — the `SHEET S-01 · STUDENT` identity
+ * line is RETIRED everywhere (coordinates/revision tags are not
+ * content; the role's name already lives in the shell chrome).
  */
 export type PageBreadcrumb = {
   label: string;
@@ -38,7 +34,6 @@ export function PageHeader({
   breadcrumbs,
   tabs,
   index,
-  sheetCode,
 }: {
   /** Page title — rendered as the route's single semantic h1. */
   title: string;
@@ -56,13 +51,7 @@ export function PageHeader({
   /** R319: optional mono gutter index (`01` renders as `[01]` inside the
    *  h1, aria-hidden). */
   index?: string;
-  /** R319: optional sheet identity code — overrides the ambient
-   *  SheetCodeContext value (`S-01 · STUDENT`); '' opts the line out. */
-  sheetCode?: string;
 }) {
-  const ambientCode = useSheetCode();
-  const code = sheetCode ?? ambientCode;
-  const showCode = code !== undefined && code !== '';
   return (
     <header className="pf-page-header">
       {breadcrumbs !== undefined && breadcrumbs.length > 0 && (
@@ -90,11 +79,6 @@ export function PageHeader({
       )}
       <div className="pf-page-header-main">
         <div className="pf-page-header-text">
-          {showCode && (
-            <p className="page-sheet-code" aria-hidden="true">
-              <span dir="ltr">{`SHEET ${code}`}</span>
-            </p>
-          )}
           {eyebrow !== undefined && <p className="pf-eyebrow">{eyebrow}</p>}
           <h1 className="pf-page-title">
             {index !== undefined && index !== '' && (

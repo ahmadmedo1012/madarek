@@ -10,35 +10,26 @@ import type { MkIllustrationName } from '../illustrations/names';
  * PAGES-GAP P2-3/4/5).
  *
  * NotFoundPage (/404) established the grammar: the full-bleed sheet
- * frame with mono corner marks, the grain film, the mk-ill scene, the
- * `ERR [nnn]` mono eyebrow over the Arabic title, the faint
- * coordinates line, and ONE primary way home plus secondary exits.
- * /500, /403 and /maintenance join the register through THIS shared
- * component — one definition per grammar rule, three thin pages on
- * top (each its own lazy chunk, like /404).
+ * frame with mono corner marks, the grain film, the mk-ill scene, and
+ * ONE primary way home plus secondary exits. /500, /403 and
+ * /maintenance join the register through THIS shared component — one
+ * definition per grammar rule, three thin pages on top (each its own
+ * lazy chunk, like /404).
  *
- * R321 §A5 — the code reads ONCE: the visible mono eyebrow is the
- * single carrier (not aria-hidden, no sr-only twin — the R320 pair
- * put the same string in innerText twice); the coordinates line
- * carries the page's own mono WORD (SERVER FAULT, ACCESS DENIED…),
- * never the code again. R321 §A6 — the corner plus-marks are empty
- * spans; the glyph renders from CSS ::before so it never leaks into
- * innerText (aria-hidden alone does NOT remove text from innerText).
+ * r324 X10 — the `ERR [nnn]` mono eyebrow and the coordinates line
+ * are RETIRED: coordinates/revision codes are not content — the
+ * Arabic title carries the meaning alone. R321 §A6 — the corner
+ * plus-marks are empty spans; the glyph renders from CSS ::before so
+ * it never leaks into innerText (aria-hidden alone does NOT remove
+ * text from innerText).
  */
 export function ErrorSheetPage({
-  code,
-  coords,
   title,
   lead,
   illustration,
   note,
   children,
 }: {
-  /** e.g. 'ERR [500]' — mono, LTR, uppercase. THE one visible code. */
-  code: string;
-  /** The coordinates line's own mono word (e.g. 'SERVER FAULT') —
-   * never the code again (§A5: show the code once). */
-  coords: string;
   title: string;
   lead: string;
   illustration: MkIllustrationName;
@@ -65,18 +56,11 @@ export function ErrorSheetPage({
           <Illustration name={illustration} />
         </div>
 
-        {/* §A5: ONE carrier — the visible eyebrow announces the code
-            exactly once (aria-hidden removed; the sr-only twin deleted
-            so innerText never repeats it). */}
-        <span className="nf-eyebrow" dir="ltr">{code}</span>
-
+        {/* r324 X10: no eyebrow run — codes are chrome, the Arabic
+            title is the content. */}
         <h1 className="nf-title">{title}</h1>
         <p className="nf-sub">{lead}</p>
         {note && <p className="nf-sub">{note}</p>}
-
-        <span className="nf-coords" aria-hidden="true" dir="ltr">
-          [0,0] &middot; {coords} &middot; MADAREK
-        </span>
 
         <div className="nf-actions">
           <Link to="/" className="btn primary lg">

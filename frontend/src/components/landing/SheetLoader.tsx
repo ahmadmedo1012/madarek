@@ -521,10 +521,10 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
             <span className="sl-meta-title">مدارك — منصّة التعليم الذكي</span>
           </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
-            MADAREK · LEARNING SHEET
+            MADAREK · LEARNING PLATFORM
           </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
-            TYPE : LEARNING PLATFORM
+            TYPE : ARABIC-FIRST LEARNING PLATFORM
           </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
             FOCUS : THE FULL LEARNING JOURNEY

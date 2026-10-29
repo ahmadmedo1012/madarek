@@ -43,13 +43,11 @@ export function PlatformCanvas() {
       <span className="pr-panel-mark pr-panel-mark--bl" aria-hidden="true" />
       <span className="pr-panel-mark pr-panel-mark--br" aria-hidden="true" />
 
-      {/* the toolbar strip — the drawing cell's top ruler */}
+      {/* the toolbar strip — the drawing cell's top ruler (r324 X10:
+          the `SHEET 05 · SCALE 1:100` tag is retired — revision/scale
+          tags are not content; the ruler ticks carry the drawing voice) */}
       <div className="pr-bar">
         <span className="pr-bar-plus" dir="ltr" />
-        <span className="pr-bar-ticks" />
-        <span className="pr-bar-label" dir="ltr">
-          SHEET 05 · SCALE 1:100
-        </span>
         <span className="pr-bar-ticks" />
         <span className="pr-bar-plus" dir="ltr" />
       </div>

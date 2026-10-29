@@ -283,9 +283,6 @@ export default function AuthPage() {
 
           {/* the mono micro-label row — the drawing sheet's identity
               line (Latin/technical chrome, dir=ltr run, decorative). */}
-          <p className="auth-sheet-label" aria-hidden="true">
-            <span dir="ltr">[MDRK-AUTH] · SHEET 01/01</span>
-          </p>
 
           {pendingSelection ? (
             <>

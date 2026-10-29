@@ -101,11 +101,12 @@ describe('R320 §D — the 9-page grammar (the Heron public sheet)', () => {
     expect(h1s[0]).toHaveTextContent(title);
   });
 
-  it.each(PAGES)('$path carries its corner SHEET code derived from PUBLIC_SHEET_CODES', ({ key, label, Component }) => {
+  it.each(PAGES)('$path carries NO corner SHEET code — the identity line is retired (r324 X10)', ({ Component }) => {
     renderPage(Component);
-    const code = PUBLIC_SHEET_CODES[key];
-    const line = screen.getByText(`MADAREK · ${label} · [${code}]`);
-    expect(line).toHaveAttribute('dir', 'ltr');
+    // coordinates/revision tags are not content: no mono SHEET line in
+    // the header (or anywhere in the sheet's innerText)
+    expect(document.body.textContent).not.toContain('SHEET');
+    expect(document.querySelector('.lg-header-code')).toBeNull();
   });
 
   it.each(PAGES)('$path: skip link first, main landmark, header, footer colophon + stamp', ({ Component }) => {
@@ -454,10 +455,10 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
   });
 });
 
-/* ═══ E · PUBLIC_SHEET_CODES — the single source ════════════════════ */
+/* ═══ E · the sheet-code retirement (r324 X10) ════════════════════ */
 
-describe('R320 §D — PUBLIC_SHEET_CODES (the single sheet-code source)', () => {
-  it('exports the nine codes: L-01..L-06 + C-03..C-05', () => {
+describe('sheet-code residue — the PublicSheetKey map (r324 X10)', () => {
+  it('keeps the nine-key map as the route-key type source (codes no longer render)', () => {
     expect(PUBLIC_SHEET_CODES).toEqual({
       privacy: 'L-01',
       terms: 'L-02',
@@ -471,11 +472,12 @@ describe('R320 §D — PUBLIC_SHEET_CODES (the single sheet-code source)', () =>
     });
   });
 
-  it('the pages never re-type their code — the header derives from the map', () => {
+  it('no page renders a corner code line — the map is data-only now', () => {
     const pagesSrc = read('src/pages/legal/LegalSheet.tsx');
-    expect(pagesSrc).toContain('PUBLIC_SHEET_CODES[code]');
-    expect(read('src/pages/legal/LegalPages.tsx')).not.toContain("'L-01'");
-    expect(read('src/pages/PublicPages.tsx')).not.toContain("'C-03'");
+    expect(pagesSrc).not.toContain('PUBLIC_SHEET_CODES[code]');
+    expect(pagesSrc).not.toContain('lg-header-code');
+    expect(read('src/pages/legal/LegalPages.tsx')).not.toContain('LEGAL SHEET');
+    expect(read('src/pages/PublicPages.tsx')).not.toContain('HELP SHEET');
   });
 });
 

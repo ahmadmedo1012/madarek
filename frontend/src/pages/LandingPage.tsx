@@ -1613,7 +1613,7 @@ export default function LandingPage() {
                   <title> «مدارك». */}
               <Logo variant="wordmark" size={100} className="fo-wordmark-logo" />
 
-              <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
+              <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING PLATFORM</span>
             </div>
           </div>
 
