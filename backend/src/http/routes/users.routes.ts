@@ -27,9 +27,39 @@ import {
   requiresLastOwnerGuard,
 } from '../../lib/governance.js';
 import { resolveCallerInstitutionScope, institutionContextRequiredError } from '../../lib/profile-scoping.js';
+// r323 B4 — the demo cohort sweep («حذف بيانات العرض»): the registrar's
+// one-action removal of the @demo.madarek.ly pilot sample.
+import { demoCohortStats, removeDemoCohort } from '../../modules/users/demo-cohort.js';
 
 const router = Router();
 router.use(authMiddleware);
+
+// ── r323 B4 — the demo cohort (نطاق demo.madarek.ly فقط) ──────────
+// GET  /users/demo-cohort  — the confirm-dialog preview (count + the
+//                            activity that would go with them)
+// DELETE /users/demo-cohort — the ordered sweep (one transaction;
+//                             never touches a non-demo account)
+router.get(
+  '/demo-cohort',
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (_req, res, next) => {
+    try {
+      res.json({ data: await demoCohortStats(prisma) });
+    } catch (e) { next(e); }
+  },
+);
+
+router.delete(
+  '/demo-cohort',
+  requireRole(Role.ADMIN, Role.OWNER),
+  createRouteLimiter({ windowMs: 60_000, max: 3 }),
+  async (_req, res, next) => {
+    try {
+      const deleted = await removeDemoCohort(prisma);
+      res.json({ data: { deleted } });
+    } catch (e) { next(e); }
+  },
+);
 
 // ── List users (admin only) ──────────────────────────────────────
 router.get(

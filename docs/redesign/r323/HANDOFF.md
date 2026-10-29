@@ -25,7 +25,7 @@
 | B2.3 | Transcripts | SRT/VTT upload, STT API, queue | pending | — |
 | B2.4 | Live sessions | Jitsi embed default, attendance, recordings | pending | — |
 | B3.2 | Mail + reset | Resend/Brevo, RTL templates, registrar fallback link | **done (code + tests)** | `lib/mail.ts` + forgot-password wiring + `POST /users/:id/reset-link` · 11 tests |
-| B3.3-6 | Notifications, messages, onboarding, feedback | | pending | — |
+| B3.3-6 | Notifications, messages, onboarding, feedback | **done (core)** | B3.3: the five academic fires (material ×2, assignment, live-scheduled, announcement-scope) — payloads pure-tested, fire tx/degraded · B3.4: the r155a DM stack pre-existing (inbox/compose/read-all/deep-links) · B3.5: tour + /help pre-existing · B3.6: the full loop — PilotFeedback model, POST/GET/PATCH /feedback, the floating widget + consoleTape + the /owner/feedback inbox |
 | B4 | 13 academic flows E2E | | pending | — |
 | B5 | Ops | /status, errors, backups, analytics, settings | **done (core)** | `GET /api/v1/status` (public, limiter-exempt) · backups = documented Neon procedure (PILOT.md) |
 | B6 | Scale & speed | keep-warm, load test, PWA | **done (core)** | `scripts/load/k6.js` (100 VU, p95<800ms bar) · `docs/load-test.md` · keep-warm documented · PWA pending |
