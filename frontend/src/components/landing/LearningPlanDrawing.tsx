@@ -95,39 +95,43 @@ export const PLAN_VB = { w: 1200, h: 760 } as const;
  * highlight, keyed to the layer builds) — and the LIBRARY finally
  * owns a beat: `[04]` warms while its wing builds (the R310
  * "the library door stays quiet" story closes with the transplant). */
+/* r324 P4 (X12) — the plan rides the SEMANTIC PAIRS, not literals:
+   light = paper ground + ink strokes; dark (Ink) = ink ground + paper
+   strokes — var(--bg)/var(--text)/var(--rule) flip with the theme, so
+   the map is never a bright paper slab floating in the dark page. */
 const PLAN_INK_CSS = `
-  .jt .jt-plan .pl-sheet  { fill: #F6F6EE; }
-  .jt .jt-plan .pl-wall   { fill: #282828; }
-  .jt .jt-plan .pl-paper  { fill: #F6F6EE; }
-  .jt .jt-plan .pl-strip  { stroke: #282828; stroke-width: 1.8; }
-  .jt .jt-plan .pl-hatch  { stroke: #282828; stroke-width: 1.6; stroke-opacity: 0.55; }
-  .jt .jt-plan .pl-door-g path { stroke: #282828; stroke-width: 1.9; fill: none; }
-  .jt .jt-plan .pl-win-g line  { stroke: #282828; stroke-width: 1.27; }
-  .jt .jt-plan .bp-ink    { stroke: #282828; stroke-width: 2.2; fill: none; }
+  .jt .jt-plan .pl-sheet  { fill: var(--bg); }
+  .jt .jt-plan .pl-wall   { fill: var(--text); }
+  .jt .jt-plan .pl-paper  { fill: var(--bg); }
+  .jt .jt-plan .pl-strip  { stroke: var(--text); stroke-width: 1.8; }
+  .jt .jt-plan .pl-hatch  { stroke: var(--text); stroke-width: 1.6; stroke-opacity: 0.55; }
+  .jt .jt-plan .pl-door-g path { stroke: var(--text); stroke-width: 1.9; fill: none; }
+  .jt .jt-plan .pl-win-g line  { stroke: var(--text); stroke-width: 1.27; }
+  .jt .jt-plan .bp-ink    { stroke: var(--text); stroke-width: 2.2; fill: none; }
   .jt .jt-plan .bp-ink-2  { stroke-width: 3.4; }
-  .jt .jt-plan .bp-hair   { stroke: #B3B3AF; stroke-width: 2.3; fill: none; }
-  .jt .jt-plan .bp-fill   { fill: none; stroke: #B3B3AF; stroke-width: 2.3; }
-  .jt .jt-plan .bp-gridline { stroke: #B3B3AF; stroke-width: 1; opacity: 0.5; }
-  .jt .jt-plan .bp-dash   { stroke: #282828; stroke-width: 2.6; fill: none; }
+  .jt .jt-plan .bp-hair   { stroke: var(--rule); stroke-width: 2.3; fill: none; }
+  .jt .jt-plan .bp-fill   { fill: none; stroke: var(--rule); stroke-width: 2.3; }
+  .jt .jt-plan .bp-gridline { stroke: var(--rule); stroke-width: 1; opacity: 0.5; }
+  .jt .jt-plan .bp-dash   { stroke: var(--text); stroke-width: 2.6; fill: none; }
   /* C4-A — the violation-callout system: the active door station's
      chip = the reference's solid-block-with-white-mono grammar; the
      dashed leader warms with it. Quiet by default (landing.css owns
      the stage flips; the pigment stays pinned here). */
-  .jt .jt-plan .pl-chip   { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
-  .jt .jt-plan .pl-leader { stroke: #B3B3AF; stroke-width: 2.3; fill: none; }
+  .jt .jt-plan .pl-chip   { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
+  .jt .jt-plan .pl-leader { stroke: var(--rule); stroke-width: 2.3; fill: none; }
   .jt[data-wash='lecture'] .jt-plan .pl-leader[data-station='0'],
   .jt[data-wash='checkpoint'] .jt-plan .pl-leader[data-station='1'],
   .jt[data-wash='exam'] .jt-plan .pl-leader[data-station='2'],
   .jt[data-wash='library'] .jt-plan .pl-leader[data-station='3'],
   .jt[data-wash='mastery'] .jt-plan .pl-leader[data-station='4'] {
-    stroke: #FA3600; stroke-dasharray: 4 3;
+    stroke: var(--accent); stroke-dasharray: 4 3;
   }
-  .jt .jt-plan .bp-micro  { fill: #62625F; }
-  .jt .jt-plan .pl-name   { fill: #414140; }
-  .jt .jt-plan .pl-station { fill: #C72E00; }
-  .jt .jt-plan .pl-zone   { fill: #FA3600; }
-  .jt .jt-plan .pl-dot    { fill: #282828; }
-  .jt .jt-plan .bp-signal-fill { fill: #FA3600; stroke: #FFFFFF; stroke-width: 1; }
+  .jt .jt-plan .bp-micro  { fill: var(--text-faint); }
+  .jt .jt-plan .pl-name   { fill: var(--text-secondary); }
+  .jt .jt-plan .pl-station { fill: var(--accent-ink); }
+  .jt .jt-plan .pl-zone   { fill: var(--accent); }
+  .jt .jt-plan .pl-dot    { fill: var(--text); }
+  .jt .jt-plan .bp-signal-fill { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
   /* R319 §D4 — the ACTIVE zone's label + area are STATE-SAFE INK
      (#282828), not white: the zone wash crossfades over t-fast, so a
      white label rode the salmon mid-state (#FA3600 at ~50% over the
@@ -141,12 +145,12 @@ const PLAN_INK_CSS = `
   .jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .pl-name,
   .jt[data-wash='exam'] .jt-plan .pl-l-exam .pl-name,
   .jt[data-wash='library'] .jt-plan .pl-l-library .pl-name,
-  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .pl-name { fill: #282828; }
+  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .pl-name { fill: var(--bg); }
   .jt[data-wash='lecture'] .jt-plan .pl-l-lecture .bp-micro,
   .jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .bp-micro,
   .jt[data-wash='exam'] .jt-plan .pl-l-exam .bp-micro,
   .jt[data-wash='library'] .jt-plan .pl-l-library .bp-micro,
-  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .bp-micro { fill: #282828; }
+  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .bp-micro { fill: var(--bg); }
   /* R322 3-b-fix4 (review-c3 R3#4/ND1): the ACTIVE station glyph rides
    * the #FA3600 chip block — white read 3.76:1 (R3's measured FAIL).
    * The AA ink on that ground is #1A1A1A (4.63:1) — the paper
@@ -164,16 +168,16 @@ const PLAN_INK_CSS = `
  * ruling as the plan (pinned drafting primaries in both themes);
  * scoped to the side column's `.jt-section` twin (SectionDrawing.tsx). */
 export const SECTION_INK_CSS = `
-  .jt .jt-section .bp-ink   { stroke: #282828; stroke-width: 2.4; fill: none; }
+  .jt .jt-section .bp-ink   { stroke: var(--text); stroke-width: 2.4; fill: none; }
   .jt .jt-section .bp-ink-2 { stroke-width: 3.8; }
-  .jt .jt-section .bp-hair  { stroke: #B3B3AF; stroke-width: 2; fill: none; }
-  .jt .jt-section .bp-fill  { fill: none; stroke: #B3B3AF; stroke-width: 2; }
-  .jt .jt-section .bp-dash  { stroke: #282828; stroke-width: 2; fill: none; }
+  .jt .jt-section .bp-hair  { stroke: var(--rule); stroke-width: 2; fill: none; }
+  .jt .jt-section .bp-fill  { fill: none; stroke: var(--rule); stroke-width: 2; }
+  .jt .jt-section .bp-dash  { stroke: var(--text); stroke-width: 2; fill: none; }
   .jt .jt-section .bp-micro { fill: #62625F; }
   .jt .jt-section .pl-name   { fill: #414140; }
-  .jt .jt-section .pl-dot    { fill: #282828; }
-  .jt .jt-section .pl-wall   { fill: #282828; }
-  .jt .jt-section .sc-zone   { fill: #FA3600; fill-opacity: 0; }
+  .jt .jt-section .pl-dot    { fill: var(--text); }
+  .jt .jt-section .pl-wall   { fill: var(--text); }
+  .jt .jt-section .sc-zone   { fill: var(--accent); fill-opacity: 0; }
   .jt[data-stage='0'] .jt-section .sc-zone[data-room='lecture'],
   .jt[data-stage='2'] .jt-section .sc-zone[data-room='exam'],
   .jt[data-stage='3'] .jt-section .sc-zone[data-room='mastery'] { fill-opacity: 1; }
