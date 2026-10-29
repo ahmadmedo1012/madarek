@@ -3536,19 +3536,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
     max-inline-size: 100%;
   }
 
-  /* the platform band's caption folds to the tag line (the reference's
-     mobile platform cell = composition + one label). R314 cycle 2 (3-e):
-     the original :not(.prf-tag)/:not(.prf-type) matched NOTHING (the
-     children are .prf-caption-tag/-body/-demo) and silently folded the
-     WHOLE caption to an empty box — corrected to keep the real-ui tag,
-     the V13 intent. */
-  .pr-section .prf-caption > :not(.prf-caption-tag) {
-    display: none;
-  }
-
-  .pr-section .prf-caption {
-    padding-block: var(--sp-2);
-  }
+  /* the platform band's caption fold — r324 X4: the whole block is
+     DEAD (the R323 platform rewrite rendered no .prf-caption, and
+     the «real-ui» tag it folded to retired with X4) — retired. */
 
   /* the why stack (the 2×2 capture grid) folds on mobile — the rail
      carries the section; the reference's mobile why = state list */
@@ -4208,19 +4198,15 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 .prf-caption {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  /* r324 X4 — the tag column retired with the «real-ui» chip:
+     body first, the demo disclosure at the far edge. */
+  grid-template-columns: 1fr auto;
   align-items: baseline;
   gap: var(--sp-3);
   padding-inline: var(--sp-0-5);
 }
 
-.prf-caption-tag {
-  font-size: var(--fs-xxs);
-  color: var(--accent-ink);
-  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
-  border-radius: var(--r-xs);
-  padding: var(--sp-0-5) var(--sp-1-5);
-}
+/* r324 X4 — .prf-caption-tag retires with the chip. */
 
 .prf-caption-body {
   display: grid;
