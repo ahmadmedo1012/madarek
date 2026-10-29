@@ -121,8 +121,9 @@
    word. */
 .r321m-page .pf-page-title {
   font-family: var(--font-display);
-  font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the inner-page display rung (the cover pages' 46.67px is not these pages' brief), the r321-exams ladder */
-  font-weight: var(--fw-bold);
+  /* r324 P3 (X9) — unified on the app-density masthead (28/24 @600). */
+  font-size: var(--fs-app-h1);
+  font-weight: var(--fw-semibold);
   line-height: 1.05;      /* the Alexandria display canon */
   letter-spacing: 0;      /* Arabic joins — never tracked */
   color: var(--text);

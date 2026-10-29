@@ -87,9 +87,13 @@
      the canvas (Superlist: page titles are compact, metadata does
      the talking). The topbar's 18px chrome voice still reads as the
      step below it. */
-  font-size: var(--fs-h2);
+  /* r324 P3 (X9) — the APP-DENSITY rung (28/24), not the display
+     ladder: a framed dashboard page shares its column with rows and
+     filters. The old --fs-h2/700 pair read 40px @1440 (the r304
+     comment's «24px register» had drifted four-fold from its token). */
+  font-size: var(--fs-app-h1);
   line-height: var(--lh-snug);
-  font-weight: 700;
+  font-weight: var(--fw-semibold);
   color: var(--text);
 }
 .pf-page-desc {
