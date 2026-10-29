@@ -5223,19 +5223,10 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 
 /* the door markers warm with the wash: [01] lecture · [02]
    checkpoint · [03] exam · [04] library · [05] mastery — the R322
-   re-key finally gives the LIBRARY door its beat (its wing builds
-   with layer 4; the old design left [04] permanently quiet).
-   R322 3-b-fix (review-c3 R3#4): the active marker takes the SIGNAL
-   INK (not the bright accent — the ~8px rendered glyphs measured
-   3.76:1; accent-ink holds AA at the same size). */
-.jt[data-wash='lecture'] .pl-station[data-station='0'],
-.jt[data-wash='checkpoint'] .pl-station[data-station='1'],
-.jt[data-wash='exam'] .pl-station[data-station='2'],
-.jt[data-wash='library'] .pl-station[data-station='3'],
-.jt[data-wash='mastery'] .pl-station[data-station='4'] {
-  fill: var(--accent-ink);
-  font-weight: 700;
-}
+   re-key gives the LIBRARY door its beat. The ACTIVE glyph ink lives
+   in PLAN_INK_CSS (the SVG's own sheet, #1A1A1A on the #FA3600 chip =
+   4.63:1 — R322 3-b-fix4, review-c3 R3#4/ND1: this landing.css twin
+   was dead code at (0,4,0) vs the (0,5,0) chain; deleted). */
 
 /* R322 (3-b) — the R310 stage-keyed dash draw-in RETIRES wholesale:
    the staged geometry build (stroke-dasharray prelude + per-stage

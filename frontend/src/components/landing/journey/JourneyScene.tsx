@@ -665,7 +665,7 @@ export function JourneyScene() {
                 The [05/05] terminus is the counter family's own last
                 row (deliberate label furniture, complete, Latin-only);
                 NO title-block labels — the V1 kill stays dead. */}
-            <div className="jt-close-foot">
+            <div className="jt-close-foot" aria-hidden="true">
               <div className="jt-close-foot-row">
                 <span className="jt-close-foot-mono" dir="ltr">[05/05]</span>
               </div>

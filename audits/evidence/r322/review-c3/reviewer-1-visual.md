@@ -378,3 +378,84 @@ w600 owner question the remaining half-point of judgment.
 — Reviewer 1 (visual), final pass on 086b166, 2026-10-29. Artifacts at
 `/home/z/r322-r1c-vlm/` (probe-out.json, vb.mjs output, pix.py outputs, 5 VLM JSONs).
 No commits; preview servers killed (ports 4331/4332 verified free).
+
+---
+
+## Acceptance verdict (301dfdf) — Task r322-c3-WP3r-R1d, 2026-10-29
+
+Repo @ `301dfdf` (round-3 fixes), `frontend/dist` freshly built. Method: every claim
+re-measured — DOM probes on `vite preview` @1440/768/390 (server killed, port 4331
+verified free), PIL/numpy on the re-shot state shots, source diff
+(`landing.css`, `JourneyScene.tsx`) — plus 4 fresh `z-ai vision` side-by-sides on the
+fixed seats. Trust nothing, measure everything.
+
+### A · Round-3 claim verification
+
+| claim | verdict | measurement |
+|---|---|---|
+| D1: terminal lecture tint @≥992, fully clear of the overlay | **DEAD (visible, in-register as a TINT)** | DOM s6: zones `{lecture: 0.12, mastery: 0.15}`; lecture zone px **x899–1282** (overlay ends x545 — 353px clear). Pixel: zone reads **87–93% warm tint** (mean RGB 241,219,206 vs paper 228,227,219 — a clear blush, not a solid); zone = 9.1% of frame ⇒ 0.12-weighted accent ≈ **1.1%** — the claim's arithmetic holds. Saturated-orange outline+markers = 2137px on the plan side (≈ the 1.6px zone outline + station + label — matches geometry). Terminal state now visibly accented at 1440 (warm-family share 8.5%; Heron's solid-room terminal = 1.67% saturated). Not Heron's *solid* room — a bounded tint + outline in the site's own calibrated register (mid-story 0.5% → terminal 1.1%): defensible, documented, visible. |
+| D2: phone holds the mastery terminus crop | **DEAD** | DOM s6 @390: viewBox **`15 0 460 600`** (the held terminus key — not CAM_FULL); mastery zone px **x77–314, y265–482** (217px tall, tinted 0.15, 88.8% warm). Plan-band ink **7.2%** (round-2 letterboxed overview ≈ 2–3%); longest empty run 165px (was 164 — the centered window's own top margin); the stacked closing's chip enters the viewport (content y760–840 = 28% ink). The release beat composes plan + closing top in one view. |
+| D3: card era at Heron's state-03 beat | **HALF-DEAD** | DOM s3: `stage='2'`, `wash='none'`, `finding='1'`, card open (clip none, body y786–872) ✓ — the boundary moved 3.5→3.0. **But layer 1 (envelope + lecture walls, window t2.5–3.0) still builds during the card era**: at the s3 pick (t≈2.84) the plan-window ink sans card = **5.87% vs Heron's full-viewport 2.12%** (its own card included). Heron's state-03 beat is pure paper + card; ours is paper + card + a ~90%-built first layer. The wash half is dead; the density half persists (carried forward from round 2, unchanged by design intent). |
+| the ≤399 rung 415dvh recovers the 320 pin | code-verified | `@media (max-width: 399px) { .jt-map-col { block-size: 415dvh } }` (`landing.css:5806+`); STAGES.md §11 records @320 9306 (at pin), @390 11280 (−1.41%), @360 10701 (+0.16%). Not re-measured by me (the docH ladder is the foreman's gate; the probe viewport was 390 — ladder in band there). |
+| (context) CLS 0.01 | unchanged by construction | round-3 adds one CSS opacity rule + one camera key — no layout animation introduced. |
+
+### B · The 4 comparisons (score → verification)
+
+| state/bp | VLM | lead complaints → verification |
+|---|---|---|
+| 03 1440 | **8** | "Strong, faithful adaptation; card correctly positioned bottom-right for RTL; captures the quiet-paper material" — matches the probe (card at the mirrored corner, wash none). "Central finding text faint" = the card2 mid-fade transient (op 0.10 ≈ Heron's own state-3 card2 0.12). Banner chrome both sites. |
+| 06 1440 | 6.5 | "Required warm-tinted room present ✓; no major clipping ✓" — then "headline too bold/heavy, line height tight" → the w600 owner question, not a defect (and contradicts its own round-2 verdict of the same type: "excellent weight and scale"); "pale wash vs solid block" → the D1 register judgment above (in-register tint); "مقبول button oversized" = the consent banner (both sites). |
+| 06 390 | 4 | "Floor plan dominates the upper 75%… closing block like an afterthought" → the centered full-height window by design (Heron's own phone states center identically — its state-1 margins 210/210 measured round 1); the 165px top margin is the window's own centering. "Headline wraps poorly «سيساعدك…»" → **hallucination** — not our copy (the title is below the fold; the VLM read the consent banner). "Orange highlight flat/misaligned" → the tinted terminus, measured present (88.8% warm). |
+| 06 768 | 4 | "Massive empty space at the top" → measured: 232px air above the centered plan in the 967px window + 195px above the banner — the same centered-window grammar, honest at tablet (the documented landscape-artwork compromise, N3); "text inside floor plan tiny/illegible" → disproven at s5 crop scale (portrait crops 2.27×); "WHY US section" = Heron's different page region, not the map's own close. |
+
+VLM mean 5.6 — the two harshest verdicts (both s6 mobile) reduce to the documented
+N3 tablet/phone centered-window grammar plus hallucinated strings; the s6@1440 verdict
+confirmed the tinted room is present and the state is unclipped.
+
+### C · Final rubric (current tree; N3 tablet landscape plan + w600 cap = documented, noted)
+
+| # | category | score | justification |
+|---|---|---|---|
+| 1 | Hierarchy | 9 | The plan owns the frame through the story; the card owns its beat (wash-clean); the terminal state owns chip→title→copy→foot with the tinted terminus room pointing at the copy's own «أول محاضرة». |
+| 2 | Grid & alignment | 9 | All seats at Heron's measured numbers; card 26.7px corner; foot y887/900; overlay 464px; phone centered window COM 197/195. The VLM's one alignment claim measured false. |
+| 3 | Spacing rhythm | 8.5 | Desktop full-frame + composed foot; mobile symmetric full-height windows. The card era still carries the building layer (5.87% vs 2.12%) — denser than Heron's pure-paper beat — and the tablet release beat centers with 232px air (documented compromise). |
+| 4 | Typography | 8.5 | On how well w600 works: it works — two unprompted VLM praises across rounds; the foot mono closes the counter grammar. Phone display slightly light vs the reference; owner question open (documented). |
+| 5 | Material & colour | 9 | The calibration arc is now complete and visible: 0.02% statement era → 0.15–0.34% mid-story → **1.1% terminal** (tint+outline+markers, clear of the overlay @1440; held tinted terminus @390/768). Paper parity, dark plaques 13.6:1, label-on-tint 2.68:1 at display size (AA-large exempt furniture, station markers accent-ink AA). Not Heron's solid room — the site's own bounded register, defensible. |
+| 6 | Density & restraint | 8.5 | Statement ground parity; box-to-box 7.50/7.29; wash furniture-scale; the one restraint note is the card-era layer build (D3 half). |
+| 7 | Consistency | 9 | One material language end-to-end; the bp-appropriate terminal accents (lecture @desktop, mastery @stacked) both key to stage 5 and the same 0.12–0.15 register; the tick/rail/chip/mono families coherent. |
+| 8 | Motion & scroll feel | 8.5 | CLS 0.01 mechanism untouched; the wash now rides the drawing era on ONE beat (t 3.0); the phone terminus holds its crop (no letterbox flip at the close); overlay reveal transform+opacity. Stills-only uncertainty at release moments remains. |
+| 9 | Polish | 8.5 | The tinted terminus, the foot row, the corner tick, the mirrored card all land measured; deducted for the card-era density note and the tablet release beat's airiness (taste-adjacent, documented). |
+| 10 | Responsiveness | 8.5 | Zero clipping at every bp (probes + gate); full-height windows; portrait crops; the held terminus; the 320 pin recovered (code + STAGES.md). Tablet landscape seat = documented compromise. |
+
+**Mean = 8.9** (9+9+8.5+8.5+9+8.5+9+8.5+8.5+8.5) · min = 8.5
+→ **0.1 below the ACCEPT bar (mean ≥ 9, no category < 8)**.
+
+### D · Remaining items (all measured; none new-severity)
+
+1. **D3-residual (low): the card era is not pure paper.** At the s3 pick the plan window
+   carries 5.87% ink vs Heron's 2.12% — layer 1 (envelope + lecture walls) builds at
+   t 2.5–3.0 under the intro card. Heron's state-03 beat keeps paper quiet. This is the
+   one measurable density gap left, carried two rounds; it is a design-intent choice
+   ("the drawing begins") that reads as *slightly* busy vs the reference, not broken.
+2. **The 0.1 mean gap is concentrated in two 8.5s that are documented compromises, not
+   defects:** the tablet landscape seat (N3) and the w600 display cap (owner question).
+   Scored as instructed — noted, not blocked — they still hold Spacing rhythm,
+   Typography, and Responsiveness at 8.5. If the owners bless either (portrait tablet
+   family in C4, or w700 at the map's two display seats), the mean crosses 9 without
+   another fix round.
+
+### E · Verdict
+
+**Mean 8.9 / 10 · REJECT** — by 0.1, on the letter of the bar. Every round-3 claim
+verified measured (D1 visible in-register, D2 dead, D3 half), every round-1/2 headline
+defect dead across four fix rounds, zero new defects introduced, zero clipping at any
+bp, CLS 0.01 mechanism intact. The remaining distance is one low-severity density note
+(the card-era layer build) plus two items this pass was instructed to treat as
+documented rather than score-blockers. This is a fundamentally sound transplant whose
+residual gap is judgment, not craft: I recommend the foreman treat 8.9/0.1-under as
+within the owner's discretion to ACCEPT on the documented items (or to close D3-residual
++ bless one compromise for a clean ≥9). Strictly on the stated bar: REJECT.
+
+— Reviewer 1 (visual), acceptance pass on 301dfdf, 2026-10-29. Artifacts at
+`/home/z/r322-r1d-vlm/` (probe-out.json, pix.py outputs, 4 VLM JSONs). No commits;
+preview server killed (port 4331 verified free).

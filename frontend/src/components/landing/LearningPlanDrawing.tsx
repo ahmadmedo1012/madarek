@@ -147,11 +147,17 @@ const PLAN_INK_CSS = `
   .jt[data-wash='exam'] .jt-plan .pl-l-exam .bp-micro,
   .jt[data-wash='library'] .jt-plan .pl-l-library .bp-micro,
   .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .bp-micro { fill: #282828; }
+  /* R322 3-b-fix4 (review-c3 R3#4/ND1): the ACTIVE station glyph rides
+   * the #FA3600 chip block — white read 3.76:1 (R3's measured FAIL).
+   * The AA ink on that ground is #1A1A1A (4.63:1) — the paper
+   * artifact's own dark ink, pinned like every pigment in this sheet
+   * (the landing.css var() twin was dead code at (0,4,0) vs this
+   * (0,5,0) chain — deleted there, fixed HERE at the source). */
   .jt[data-wash='lecture'] .jt-plan .pl-station[data-station='0'],
   .jt[data-wash='checkpoint'] .jt-plan .pl-station[data-station='1'],
   .jt[data-wash='exam'] .jt-plan .pl-station[data-station='2'],
   .jt[data-wash='library'] .jt-plan .pl-station[data-station='3'],
-  .jt[data-wash='mastery'] .jt-plan .pl-station[data-station='4'] { fill: #FFFFFF; font-weight: 700; }
+  .jt[data-wash='mastery'] .jt-plan .pl-station[data-station='4'] { fill: #1A1A1A; font-weight: 700; }
 `;
 
 /* the section drawing's own pigment sheet — the SAME paper-artifact

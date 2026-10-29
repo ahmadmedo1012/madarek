@@ -50,6 +50,7 @@ import { PLAN_VB } from '../../src/components/landing/LearningPlanDrawing';
 const HERE = dirname(new URL(import.meta.url).pathname);
 const JOURNEY_SRC = readFileSync(join(HERE, '../../src/components/landing/journey/JourneyScene.tsx'), 'utf8');
 const LANDING_CSS = readFileSync(join(HERE, '../../src/styles/landing.css'), 'utf8');
+const PLAN_SRC = readFileSync(join(HERE, '../../src/components/landing/LearningPlanDrawing.tsx'), 'utf8');
 /* comments stripped so tombstone prose quoting retired seats can
  * never satisfy a pin (the r306 convention). */
 const JOURNEY_LIVE = JOURNEY_SRC.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -295,9 +296,11 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(media).toMatch(/\.jt-map-col \{[^}]*block-size: 450dvh;/);
     expect(media).toMatch(/\.jt-map-in \{[^}]*position: sticky;/);
     /* the docH track ladder (re-derived from the measured slack —
-     * 380dvh @400–767 · 425dvh @≤399 over the 450dvh tablet base) */
+     * 380dvh @400–767 · 415dvh @≤399 over the 450dvh tablet base;
+     * R322 3-b-fix3 override: the ≤399 rung 425→415 recovers the 320
+     * never-raise pin after the round-2 closing foot row) */
     expect(LANDING_CSS).toMatch(/@media \(max-width: 767px\) \{\s*\.jt-map-col \{\s*block-size: 380dvh;/);
-    expect(LANDING_CSS).toMatch(/@media \(max-width: 399px\) \{\s*\.jt-map-col \{\s*block-size: 425dvh;/);
+    expect(LANDING_CSS).toMatch(/@media \(max-width: 399px\) \{[\s\S]*?\.jt-map-col \{[\s\S]*?block-size: 415dvh;/);
     /* the INTRODUCTION card sits IN FLOW below the plan (the V10
      * «شاهد»-clip class dies by construction: the card never overlaps
      * the drawing) */
@@ -308,12 +311,18 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
   });
 
   it('the wash keys warm the right door (the R310 off-by-one story, R322 re-key)', () => {
-    /* the door warm is keyed to [data-wash] now — rotating with the
-     * layer builds: [05] mastery warms with the mastery wash … */
-    expect(LANDING_CSS).toMatch(/\.jt\[data-wash='mastery'\] \.pl-station\[data-station='4'\]/);
+    /* the door warm is keyed to [data-wash] — rotating with the layer
+     * builds. R322 3-b-fix4 override (review-c3 R3#4/ND1): the ACTIVE
+     * glyph ink lives in PLAN_INK_CSS (the SVG's own sheet) — the
+     * landing.css var() twin was DEAD CODE at (0,4,0) vs the (0,5,0)
+     * chain and was deleted; the source contract re-seats HERE. */
+    expect(PLAN_SRC).toMatch(/\.jt\[data-wash='mastery'\] \.jt-plan \.pl-station\[data-station='4'\]/);
     /* … and the R322 re-key finally gives the LIBRARY door [04] its
      * beat (the old design left it permanently quiet) */
-    expect(LANDING_CSS).toMatch(/\.jt\[data-wash='library'\] \.pl-station\[data-station='3'\]/);
+    expect(PLAN_SRC).toMatch(/\.jt\[data-wash='library'\] \.jt-plan \.pl-station\[data-station='3'\]/);
+    /* the AA ink on the #FA3600 chip ground: #1A1A1A (4.63:1), not
+     * the 3.76:1 white */
+    expect(PLAN_SRC).toMatch(/\.pl-station\[data-station='4'\] \{ fill: #1A1A1A; font-weight: 700; \}/);
     /* the retired stage-keyed pairing must be gone */
     expect(LANDING_CSS).not.toMatch(/\.jt\[data-stage='3'\] \.pl-station\[data-station='3'\]/);
     expect(LANDING_CSS).not.toMatch(/\.jt\[data-stage='3'\] \.pl-station\[data-station='4'\]/);

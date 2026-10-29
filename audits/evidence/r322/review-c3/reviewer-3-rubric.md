@@ -279,3 +279,119 @@ which I independently judge as category-level failures. Third consecutive REJECT
 **Priority fixes for my scope:** D1 (pin the plaque ink to the paper register) →
 D2 (keep the findings in the a11y tree) → D3 (delay the first wash to the findings era,
 t ≥ 3.0) → D4 (raise `bp-micro` one viewBox step or thicken the active chip label).
+
+---
+
+## Final verdict (301dfdf)
+
+Task `r322-c3-WP3r-R3b` · three fix rounds (`f111d51` → `086b166` → `301dfdf`) since my
+first review (78ce6ee, 7.5 REJECT). Probes: Playwright-core on the live `frontend/dist`
+build (vite preview :4333, killed after) — light + dark @1440×900, light @390×844, an RM
+context, and a mid-era opacity sweep; 4 advisory VLM shots (state-03 light, state-03
+dark, state-06 @390 — all readability/hierarchy only; every claim re-verified in DOM).
+
+### 1 · The four round-1 defects — verification
+
+| defect | claim | measured on the live tree | verdict |
+|---|---|---|---|
+| **R3#1** dark plaques 1.02:1 [HIGH] | ink pinned `#282828` | `.jt-card` computed `rgb(40,40,40)` on the pinned paper `rgb(246,246,238)` → **13.57:1** — dark @1440 state 1 AND state 3 (both cards); light unchanged 13.57:1. Pinned at landing.css:5321 with the color-gate allow comment (house discipline). | **DEAD** ✓ |
+| **R3#2** findings `display:none` outside stages 2–4 [MED] | visually-hidden pattern | @stage 0 (1440 light + 390): `.jt-intro-body` = `display:grid; position:absolute; clip-path:inset(50%)` — all five `.jt-intro-finding` = `display:block; visibility:visible` → **in the a11y tree at every stage**; `شروحات مخصَّصة` + `خطط مراجعة حسب أدائك الفعلي` present in `.jt` textContent at stage 0, @390, and under RM (card open in flow: `block/static/clip:none`). clip-path (unlike display:none) keeps content in the tree — the pattern is correct. | **DEAD** ✓ |
+| **R3#3** state-3 focal = the lecture wash [MED] | wash starts t≈3.0 | @p=0.45 (scroll 4790): `data-wash='none'`, lecture zone `fill-opacity:0; stroke-width:0`. VLM (light state-03): *"no orange competing; hierarchy remains firmly on the plan and the intro card"* — round 1's VLM verdict on the same beat was "the dominant focal point is the bright orange-highlighted room." Stage boundary now t<3.0 (JourneyScene.tsx:520,540). | **DEAD** ✓ |
+| **R3#4** active station chips ~8px @3.76:1 [LOW] | fill → `--accent-ink` (AA) | **The fix does not apply.** Active `.pl-station` still computes `fill:rgb(255,255,255)` on the `#FA3600` chip = **3.76:1**, measured in BOTH themes. The new rule (landing.css:5231–5238, specificity (0,4,0)) is permanently out-specified by `PLAN_INK_CSS`'s identical override **with `.jt-plan` in the chain** (LearningPlanDrawing.tsx:150–154, (0,5,0)) which still pins `#FFFFFF`. Half-mitigated by the monument plan: the glyph now renders at **12.8px** (scale 0.663→1.07 @1440) instead of ~8px. | **ALIVE (LOW)** — see ND1 |
+
+The VLM's one dark-theme complaint (state-03: "the central display text is effectively
+invisible") was chased to its cause: at the p=0.45 pick the OUTGOING card2 sits at
+**opacity 0.102** (its out-window t 2.5–3.0 overlaps the card era) — a mid-crossfade
+ghost, not an ink failure (the ink verifies 13.57:1; Heron's own state-02 pick measured
+card2 at 0.12 in the same transient). Recorded as a pick-moment note, not a defect.
+
+### 2 · The new furniture — a11y regression check
+
+- **Closing foot row** (`.jt-close-foot`, JourneyScene.tsx:668–673): `[05/05]` is
+  `dir="ltr"` Latin mono, `#62625F` on the overlay's `--bg` ground = **5.63:1 @13px —
+  AA** ✓; the scope note «المسطح رسم أصلي لمدارك؛ الغرف تتّسع مع كل فصل جديد» = 5.63:1
+  @13px ✓ (honest: the drawing IS original artwork; the "rooms expand" line is an
+  artwork-scoped metaphor — the softest future-flavored string on an otherwise
+  no-promises sheet, noted in ND3). Reading order: the mono token sits AFTER the closing
+  copy and before the note — a sighted-SR read hears "bracket 05/05" mid-flow; mild
+  (it is the column's terminus mark). It is **not** `aria-hidden` while its own family
+  (`.jt-idx`, JourneyScene.tsx:561) is — a chrome-hiding inconsistency, and it duplicates
+  `[05/05]` in innerText (the duplicate-text probe's one hit inside `.jt`). NIT → ND2.
+- **Phone corner tick** (`.jt-map-in::after`) and **desktop rail spot**
+  (`.jt-pin::after`): pseudo-elements — verified NOT in the DOM (`.jt-map-in` children =
+  `[jt-window, jt-intro]` only); never in innerText, no a11y surface. ✓
+- **The `.jt-close` overlay pre-flip `visibility:hidden`** (title/copy/foot unreachable
+  by AT until stage 5 — verified: `visibility:hidden; opacity:0; open='off'` pre-flip,
+  `visible/1/on` at stage 5): **ACCEPTED as documented**, on a principled line — the
+  findings (PRIMARY content, the capability ledger, the r168b pins) are in the tree at
+  every stage after the R3#2 fix, while the closing column is a terminal SUMMARY whose
+  content is duplicative of reachable text (the register CTA owns the conversion ask;
+  the ledger lives in the findings + WhyScene); Heron's own reference keeps the column
+  at 0-width until the flip; RM opens it (`data-rm='on'` → visible, verified). The
+  asymmetry between the two treatments is now content-principled, not accidental. Not a
+  defect.
+- **Re-verified clean on the new tree:** 0 focusables in `.jt` (no new tab traps) ·
+  #chapters outline still exactly 2 h2 (section head + closing) · counters 5 Latin rows,
+  `dir=ltr`, complete, untruncated · no `letter-spacing` on Arabic seats · «مسطح» still
+  term-exclusive in-map (zero «خريطة»/«مخطط») · r168b pins verbatim at every stage ·
+  RM complete static sheet incl. the new overlay/foot/clip resolution, frozen through a
+  mid-track scroll hop · no per-element transitions during scroll (window/cards/body
+  `0s`; the overlay reveal is discrete `opacity+transform 0.5s` + delayed `visibility` —
+  the a11y-safe hide pattern, ≤700ms) · dark-theme pass on every NEW seat measured
+  (overlay title 13.85 · copy 8.88 · foot 7.09 · intro head 13.85 · findings 8.88).
+
+### 3 · Re-scored rubric (my four categories)
+
+| # | category | was | now | justification |
+|---|---|---|---|---|
+| 1 | Hierarchy | 7 | **9** | The voice machine holds (one statement per state, one h2) and the two round-1 focal failures are dead: the card beat now owns its frame (wash `none`, VLM-verified no competition), and the closing is a true promoted flip — the full-width plan runs states 1–5, the overlay rises in at state 6 with the foot row composing the column to its end; the phone terminus holds the mastery crop (terminal viewBox `[15,0,460,600]` measured @390). Remaining: the card era carries the envelope build (~90% at the pick — documented design, slightly denser than Heron's pure-paper beat) and the state-03 pick lands in card2's out-crossfade (10% ghost). |
+| 2 | Density & restraint | 6 | **8.5** | The orange is back inside the register: active zone = 0.035 tint + 1.5-unit outline (measured `fill-opacity 0.035` mid-story), terminal tints bounded (lecture 0.12 @≥992 measured — exposed, not occluded; mastery 0.15 @≤991); the statement ground is quiet (envelope rides layer 1 — `0` verified at the statement beat); no debug/jargon text; the whole furniture tier became legible with the monument plan (micro 12.8px, was 8px); no duplicate text but the deliberate `[05/05]` terminus echo. Remaining: the lettered grid bubbles in the quiet era, the card-era envelope ink. |
+| 3 | Consistency | 8 | **8.5** | The plaque pin follows the color-gate house discipline; the overlay speaks the paper-panel language; the foot mono completes the counter-family grammar (mono/ltr/0.04em); dark theme is now fully coherent on every seat I can measure. Deducted for: the dead station/label rules (landing.css:5216–5238 permanently over-spec'd by the in-sheet pigment block — a maintenance trap AND the round's failed claim, ND1), the foot mono's family-inconsistent `aria-hidden` (ND2), and the two pre-existing term drifts (unchanged, out of scope). |
+| 4 | Motion & scroll feel | 9 | **9** | Everything round-1 verified holds on the new tree (exact Heron windows/eases, idempotent cached writes, zero per-element scroll transitions — re-measured); the overlay reveal is transform+opacity discrete 0.5s with delayed visibility (CLS-free + a11y-safe); the zone transition gained a discrete `stroke-width 0.2s`; the camera's two quantized crop families with the held phone terminus key; RM complete and frozen. Same documented deviations as round 1 (monotonic flip; camera instead of Heron's @768 curtain-drop). |
+
+**Mean = (9 + 8.5 + 8.5 + 9) / 4 = 8.75** (was 7.5).
+
+### 4 · New defects (current tree)
+
+1. **[LOW · failed verification] R3#4's fix is dead code — the active station marker is
+   still white-on-orange 3.76:1.** What/where: landing.css:5231–5238
+   (`.jt[data-wash=…] .pl-station[…] { fill: var(--accent-ink) }`, specificity (0,4,0))
+   never wins the cascade — `PLAN_INK_CSS` (LearningPlanDrawing.tsx:150–154) carries the
+   same override WITH `.jt-plan` in the chain ((0,5,0)) and still pins `#FFFFFF`;
+   measured `rgb(255,255,255)` on `rgb(250,54,0)` = 3.76:1 in both themes. The
+   STAGES.md §9 claim "active marker fill → --accent-ink (AA at glyph size)" is
+   falsified by the DOM. Note the authored fix would ALSO have been broken in dark:
+   `--accent-ink` resolves `#FF6B33` there → ~1.3:1 on the pinned `#FA3600` chip (a
+   theme token on a pinned-ground — the same bug class as the original R3#1). Correct
+   fix: change the `PLAN_INK_CSS` value itself (or add `.jt-plan` to the landing.css
+   selector) and pin a literal — e.g. `#C72E00` (5.06:1 on paper, and ≈2:1 on the chip)
+   or keep white and accept 3.76 as the decorative register. Severity stays LOW
+   (aria-hidden chrome, ≥3:1 decorative bar, now 12.8px) — but a round that ships a fix
+   which cannot apply needs the flag.
+2. **[NIT] The closing foot's `[05/05]` is not `aria-hidden`** while its own family
+   (`.jt-idx`, five identical rows) is; it also duplicates the counter row in innerText
+   (the map's only duplicate-text hit). One attribute for family consistency.
+3. **[NIT · copy note] The scope note's «الغرف تتّسع مع كل فصل جديد»** is the sheet's
+   one future-flavored metaphor (artwork-scoped, not a product promise). Acceptable;
+   reword to present tense if the no-promises bar is read strictly.
+
+### 5 · Verdict
+
+**ACCEPT (my scope)** — 4-category mean **8.75 / 10** (round 1: 7.5; my bar: mean ≥ 8.5
+AND no HIGH a11y defect — both now met: the HIGH dark-plaque defect is dead-measured
+13.57:1 in both themes; the MED findings-gating is dead-measured in-tree at every stage
+with the r168b pins; the MED focal defect is dead-measured wash-none + VLM-confirmed).
+
+The three rounds did the hard things correctly and verifiably: the plaque pin, the
+clip-path a11y pattern, the wash/focal re-timing, the monument plan that incidentally
+fixed the type-scale floor, the overlay's a11y-safe reveal, and the RM belt extended to
+every new seat. What survives in my scope is one LOW dead-code fix (ND1 — one line, but
+it should land before merge so the claims match the DOM), a one-attribute nit (ND2), and
+a copy note (ND3). None of these gate; ND1 is the only one I would ask the foreman to
+fold into the merge as a hygiene fix.
+
+— Reviewer 3 (rubric/a11y/copy), final pass on 301dfdf. Probe artifacts at
+`/home/z/r3-review/` (final-probe.js, verify-ghost.js, station-check.js, rm-final.js +
+outputs; screenshots final-state3-{light,dark}-1440.png, final-state6-390.png /
+final-state6-light-1440.png). No commits; the preview server on :4333 was killed after
+this pass (verified unreachable).
