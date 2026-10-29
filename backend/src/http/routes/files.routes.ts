@@ -7,14 +7,19 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { AppError } from '../../lib/errors.js';
+import { z } from 'zod';
 import { logger } from '../../logger.js';
 import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 import {
   buildStorageKey,
   generateStorageId,
   getStorage,
+  isSafeVideoFilename,
+  lectureFilenameToServingPath,
   paperFilenameToFileUrl,
+  S3Driver,
 } from '../../lib/storage.js';
+import { MAX_PRESIGN_EXPIRES_SEC } from '../../lib/storage-presign.js';
 
 const router = Router();
 
@@ -628,6 +633,220 @@ router.get('/materials/:filename', async (req, res, next) => {
     }
 
     await servePdfFromStorage(req, res, buildStorageKey('materials', filename));
+  } catch (e) { next(e); }
+});
+
+// ─── r323 B2.1: lecture VIDEO direct upload (presigned) ───────────
+// The browser PUTs bytes straight to the S3-compatible store through
+// short-lived presigned URLs; the backend never buffers a video-sized
+// payload (Render's ephemeral disk + memory stay out of the path).
+// Drivers without presigning (local/postgres) refuse HONESTLY with 501
+// — the small-file fallback is the existing materials-style flow, and
+// the UI surfaces the exact Arabic message below.
+
+/** Single presigned PUT cap (browser streams it in one request). */
+export const MAX_SINGLE_UPLOAD_BYTES = 100 * 1024 * 1024;
+/** Multipart object cap — 4 GB is a pilot-honest bound, far below S3's 5 TB. */
+export const MAX_MULTIPART_UPLOAD_BYTES = 4 * 1024 * 1024 * 1024;
+/** Part size for multipart: 8 MiB (≥ 5 MiB S3 floor, keeps part counts sane). */
+export const MULTIPART_PART_SIZE = 8 * 1024 * 1024;
+/** S3 allows 10 000 parts per upload — never reachable under our caps. */
+export const MAX_MULTIPART_PARTS = 10_000;
+
+const VIDEO_CONTENT_TYPES: Record<string, string> = {
+  '.mp4': 'video/mp4',
+  '.m4v': 'video/mp4',
+  '.webm': 'video/webm',
+  '.ogv': 'video/ogg',
+  '.ogg': 'video/ogg',
+};
+
+export function videoContentTypeFor(filename: string): string {
+  const dot = filename.lastIndexOf('.');
+  const ext = dot === -1 ? '' : filename.slice(dot).toLowerCase();
+  return VIDEO_CONTENT_TYPES[ext] ?? 'application/octet-stream';
+}
+
+/**
+ * The key shape the presign route mints and complete re-validates:
+ * `lectures/c<uuid-no-dashes>.<ext>` — server-minted id, bare filename.
+ * A complete request for ANY other shape is refused (a hostile client
+ * cannot complete-or-verify an arbitrary key it did not get presigned).
+ */
+export function mintedLectureKeyIsValid(key: string): boolean {
+  if (!key.startsWith('lectures/')) return false;
+  const filename = key.slice('lectures/'.length);
+  if (!isSafeVideoFilename(filename)) return false;
+  const dot = filename.lastIndexOf('.');
+  const stem = dot === -1 ? filename : filename.slice(0, dot);
+  return /^c[0-9a-f]{32}$/.test(stem);
+}
+
+/**
+ * Honest driver refusal: presigned direct upload needs an S3-compatible
+ * store. The Arabic message is what the teacher's uploader renders.
+ * 503 (SERVICE_UNAVAILABLE is not in ErrorCode — BAD_REQUEST would lie;
+ * the honest shape is a 503 with a client-safe message, carried as an
+ * INTERNAL-class AppError with an explicit 503 status).
+ */
+export const PRESIGN_UNSUPPORTED_MESSAGE =
+  'الرفع المباشر للفيديو يتطلب تخزينًا متوافقًا مع S3 — الوضع الحالي لا يدعمه. استخدم رابط فيديو خارجيًا أو تواصل مع مالك المنصة.';
+
+function presignUnsupported(): AppError {
+  return new AppError('INTERNAL', PRESIGN_UNSUPPORTED_MESSAGE, 503);
+}
+
+/** 30 presigns / min / user — each mints bounded-lifetime store URLs. */
+const uploadPresignLimiter = createRouteLimiter({ max: 30 });
+
+const presignBodySchema = z.object({
+  filename: z.string().min(1).max(255),
+  sizeBytes: z.number().int().positive(),
+  multipart: z.boolean().optional(),
+});
+
+router.post('/uploads/presign', uploadPresignLimiter, requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
+  try {
+    const parsed = presignBodySchema.safeParse(req.body);
+    if (!parsed.success) throw AppError.badRequest('بيانات الطلب غير صالحة');
+    const { filename, sizeBytes, multipart = false } = parsed.data;
+
+    // Bare-name gate: the client sends an ORIGINAL filename for the
+    // extension check only — the stored key always uses a server-minted
+    // id, so hostile path shapes die here before anything is signed.
+    const baseName = filename.split(/[\\/]/).pop() ?? '';
+    if (!isSafeVideoFilename(baseName)) {
+      throw AppError.badRequest('صيغة الفيديو غير مدعومة — المسموح: mp4، webm، m4v، ogv، ogg');
+    }
+    if (multipart) {
+      if (sizeBytes > MAX_MULTIPART_UPLOAD_BYTES) {
+        throw AppError.badRequest('حجم الملف يتجاوز الحد الأقصى (4 جيجابايت)');
+      }
+    } else if (sizeBytes > MAX_SINGLE_UPLOAD_BYTES) {
+      throw AppError.badRequest('الملف أكبر من 100 ميجابايت — استخدم الرفع متعدد الأجزاء');
+    }
+
+    const storage = getStorage();
+    if (!(storage instanceof S3Driver)) {
+      throw presignUnsupported();
+    }
+
+    const ext = baseName.slice(baseName.lastIndexOf('.')).toLowerCase();
+    const id = generateStorageId();
+    const key = buildStorageKey('lectures', `${id}${ext}`);
+
+    if (multipart) {
+      const partCount = Math.min(Math.ceil(sizeBytes / MULTIPART_PART_SIZE), MAX_MULTIPART_PARTS);
+      const uploadId = await storage.createMultipartUpload(key);
+      const parts = Array.from({ length: partCount }, (_, i) => ({
+        partNumber: i + 1,
+        url: storage.presignPartUrl(key, uploadId, i + 1, MAX_PRESIGN_EXPIRES_SEC),
+      }));
+      res.json({
+        mode: 'multipart' as const,
+        key,
+        uploadId,
+        partSize: MULTIPART_PART_SIZE,
+        parts,
+      });
+      return;
+    }
+
+    res.json({
+      mode: 'single' as const,
+      key,
+      url: storage.presignPutUrl(key, MAX_PRESIGN_EXPIRES_SEC),
+      headers: { 'Content-Type': videoContentTypeFor(baseName) },
+    });
+  } catch (e) { next(e); }
+});
+
+const completeBodySchema = z.object({
+  key: z.string().min(1).max(512),
+  uploadId: z.string().min(1).max(1024).optional(),
+  parts: z
+    .array(z.object({ partNumber: z.number().int().min(1).max(MAX_MULTIPART_PARTS), etag: z.string().min(1).max(256) }))
+    .max(MAX_MULTIPART_PARTS)
+    .optional(),
+});
+
+router.post('/uploads/complete', uploadPresignLimiter, requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER), async (req, res, next) => {
+  try {
+    const parsed = completeBodySchema.safeParse(req.body);
+    if (!parsed.success) throw AppError.badRequest('بيانات الطلب غير صالحة');
+    const { key, uploadId, parts } = parsed.data;
+    if (!mintedLectureKeyIsValid(key)) throw AppError.badRequest('مفتاح التخزين غير صالح');
+
+    const storage = getStorage();
+    if (!(storage instanceof S3Driver)) {
+      throw presignUnsupported();
+    }
+    if (uploadId !== undefined) {
+      if (parts === undefined || parts.length === 0) {
+        throw AppError.badRequest('أجزاء الرفع غير مكتملة');
+      }
+      await storage.completeMultipartUpload(key, uploadId, parts);
+    }
+    // Single mode (no uploadId): HEAD proves the bytes really landed —
+    // the client never gets a lecture URL for an absent object.
+    const info = await storage.stat(key);
+    if (info === null) throw AppError.notFound('لم يُعثر على الملف المرفوع');
+
+    res.json({
+      url: lectureFilenameToServingPath(key.slice('lectures/'.length)),
+      sizeBytes: info.size,
+    });
+  } catch (e) { next(e); }
+});
+
+/**
+ * GET /lectures/:filename — the lecture video serving route.
+ * Any authenticated user (course-level visibility stays enforced where it
+ * exists today — the same stance the platform's public video URLs took;
+ * the route exists so pilot uploads survive the ephemeral disk).
+ *  - s3 driver → 302 to a 10-minute presigned GET (the browser then
+ *    streams WITH range support straight from the store).
+ *  - local/postgres → streamed through the backend, single-range aware
+ *    (the same contract servePdfFromStorage gives PDFs, with video
+ *    Content-Type + inline disposition).
+ */
+router.get('/lectures/:filename', async (req, res, next) => {
+  try {
+    const filename = req.params.filename!;
+    if (!isSafeVideoFilename(filename)) throw AppError.badRequest('اسم الملف غير صالح');
+    const key = buildStorageKey('lectures', filename);
+    const storage = getStorage();
+
+    if (storage instanceof S3Driver) {
+      // The redirect URL is itself the access control window (short
+      // lifetime, single method, single key). no-store: a cached 302
+      // would outlive its presigned target.
+      res.setHeader('Cache-Control', 'private, no-store');
+      res.redirect(302, storage.presignGetUrl(key, 600));
+      return;
+    }
+
+    const info = await storage.stat(key);
+    if (info === null) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
+    res.setHeader('Content-Type', videoContentTypeFor(filename));
+    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('Cache-Control', 'private, max-age=3600');
+    res.setHeader('Content-Disposition', 'inline');
+
+    const range = parseRangeHeader(req.headers.range, info.size);
+    if (range === 'unsatisfiable') {
+      res.setHeader('Content-Range', `bytes */${info.size}`);
+      res.status(416).end();
+      return;
+    }
+    const slice = range === null ? await storage.get(key) : await storage.getRange(key, range.start, range.end);
+    if (slice === null) throw AppError.notFound(FILE_NOT_FOUND_MESSAGE);
+    if (range !== null) {
+      res.status(206);
+      res.setHeader('Content-Range', `bytes ${range.start}-${range.end}/${info.size}`);
+    }
+    res.setHeader('Content-Length', String(slice.length));
+    res.end(slice);
   } catch (e) { next(e); }
 });
 

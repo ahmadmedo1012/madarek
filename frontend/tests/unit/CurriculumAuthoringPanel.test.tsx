@@ -416,7 +416,9 @@ describe('CurriculumAuthoringPanel — create lecture modal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'محاضرة جديدة' }));
     const dialog = await screen.findByRole('dialog', { name: 'محاضرة جديدة' });
     fireEvent.change(within(dialog).getByLabelText('عنوان المحاضرة'), { target: { value: 'محاضرة قيد الحفظ' } });
-    fireEvent.change(within(dialog).getByLabelText('رابط الفيديو'), { target: { value: 'https://cdn.example.com/new.mp4' } });
+    // R323 override: the video source row is now the B2.1 «مصدر الفيديو»
+    // picker (رفع ملف | رابط tabs); the URL tab keeps the same form field.
+    fireEvent.change(within(dialog).getByLabelText('مصدر الفيديو'), { target: { value: 'https://cdn.example.com/new.mp4' } });
     fireEvent.click(within(dialog).getByRole('button', { name: 'إضافة المحاضرة' }));
 
     // The exam modals' submit idiom, now shared: the Arabic pending label

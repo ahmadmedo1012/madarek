@@ -930,3 +930,134 @@
 /* [§E-END] */
 
 }
+
+/* ── r323 B2.1 · the lecture video uploader ──────────────────────────
+ * One implementation of the «مصدر الفيديو» picker (VideoUploadField):
+ * a two-cell hairline tab row (رفع ملف | رابط), a dashed paper drop
+ * seat, and a meter on the platform ruler grammar. Tokens only — the
+ * component is dark-correct for free; no shadows, no radius, no copper.
+ */
+.vid-up { display: grid; gap: var(--sp-2); }
+
+.vid-up-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--rule);
+  inline-size: max-content;
+  min-inline-size: min(100%, 240px);
+}
+
+.vid-up-tabs [role='tab'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1);
+  padding: var(--sp-2) var(--sp-4);
+  min-block-size: 44px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 0;
+  border-inline-start: 1px solid var(--rule);
+  cursor: pointer;
+}
+.vid-up-tabs [role='tab']:first-child { border-inline-start: 0; }
+.vid-up-tabs [role='tab']:hover { color: var(--text-strong); }
+.vid-up-tabs [role='tab']:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.vid-up-tabs [role='tab'].is-active {
+  color: var(--text-strong);
+  background: var(--accent-soft, color-mix(in srgb, var(--accent) 8%, transparent));
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.vid-up-body { display: grid; gap: var(--sp-2); }
+
+.vid-up-pick {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  min-block-size: 44px;
+  font: inherit;
+  font-size: 13px;
+  color: var(--text-strong);
+  background: var(--surface);
+  border: 1px dashed var(--rule);
+  border-inline-start: 3px solid var(--accent);
+  cursor: pointer;
+  text-align: start;
+}
+.vid-up-pick:hover { border-style: solid; }
+.vid-up-pick:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.vid-up-pick svg { flex: none; color: var(--accent); }
+
+.vid-up-progress {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--rule);
+  background: var(--surface);
+}
+
+.vid-up-meter {
+  flex: 1;
+  block-size: 6px;
+  background: var(--paper-3, color-mix(in srgb, currentColor 8%, transparent));
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.vid-up-meter-fill {
+  block-size: 100%;
+  background: var(--accent);
+  transition: inline-size 200ms linear;
+}
+.vid-up-pct { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); white-space: nowrap; }
+
+.vid-up-stop {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-block-size: 44px;
+  padding: 0 var(--sp-2);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-strong);
+  background: transparent;
+  border: 1px solid var(--rule);
+  cursor: pointer;
+}
+.vid-up-stop:hover { border-color: var(--accent); color: var(--accent); }
+.vid-up-stop:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.vid-up-done {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-strong);
+}
+.vid-up-done svg { color: var(--accent); }
+.vid-up-again {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  cursor: pointer;
+  padding: 0;
+  min-block-size: 24px;
+}
+.vid-up-again:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.vid-up-hint { margin: 0; font-size: 12px; color: var(--text-muted); }
+.vid-up-error { margin: 0; font-size: 12px; font-weight: 600; color: var(--danger); }

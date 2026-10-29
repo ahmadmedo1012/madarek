@@ -17,6 +17,7 @@ import { Icon } from '../Icon';
 import { Badge } from '../primitives';
 import { toast } from '../../lib/toast';
 import { countAr } from '../../lib/format';
+import { VideoUploadField, type VideoSourceMode } from './VideoUploadField';
 import {
   apiErrorMessage,
   useCreateLecture,
@@ -76,6 +77,14 @@ export function LectureFormModal({
   const durId = useFieldId('lec-dur');
   const ordId = useFieldId('lec-ord');
 
+  // r323 B2.1: the video source picker — «رفع ملف» (presigned direct
+  // upload) or «رابط» (the original paste field). The uploaded serving
+  // path lands in the SAME videoUrl field, so the create/patch payloads
+  // and their schema stay untouched.
+  const [videoMode, setVideoMode] = useState<VideoSourceMode>(
+    existing?.videoUrl && existing.videoUrl.startsWith('/api/v1/files/lectures/') ? 'upload' : 'url',
+  );
+
   // Unsaved-edits guard: Esc / X / cancel / overlay-click route through a
   // blocking discard-confirm instead of silently dropping the draft.
   const { requestClose, escapeLocked, guard } = useDiscardGuard({
@@ -113,9 +122,15 @@ export function LectureFormModal({
             <input id={titleId} type="text" className="auth-input" {...form.register('title')} />
           </FormField>
 
-          <FormField label="رابط الفيديو" htmlFor={urlId} error={err.videoUrl?.message}
-            hint="رابط خارجي يبدأ بـ https:// أو مسار ملف داخل المنصة (/api/v1/files/papers/)">
-            <input id={urlId} type="text" dir="ltr" className="auth-input" placeholder="https://…" {...form.register('videoUrl')} />
+          <FormField label="مصدر الفيديو" htmlFor={urlId} error={err.videoUrl?.message}>
+            <VideoUploadField
+              mode={videoMode}
+              onModeChange={setVideoMode}
+              value={form.watch('videoUrl')}
+              onChange={(v) => form.setValue('videoUrl', v, { shouldValidate: form.formState.isSubmitted })}
+              inputId={urlId}
+              urlHint="رابط خارجي يبدأ بـ https:// أو مسار ملف داخل المنصة (/api/v1/files/papers/)"
+            />
           </FormField>
 
           <FormField label="الوصف (اختياري)" htmlFor={descId} error={err.description?.message}>

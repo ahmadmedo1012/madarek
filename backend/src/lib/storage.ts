@@ -31,6 +31,11 @@ import { fileURLToPath } from 'node:url';
 import { mkdir, readFile, stat as fsStat, writeFile } from 'node:fs/promises';
 import { createHash, createHmac, randomUUID } from 'node:crypto';
 import { env } from '../env.js';
+import {
+  buildCompleteMultipartXml,
+  parseUploadId,
+  presignS3Url,
+} from './storage-presign.js';
 import { logger } from '../logger.js';
 import { prisma } from '../db.js';
 
@@ -51,8 +56,41 @@ export interface StorageDriver {
 // ─── Pure key helpers (tests/modules/storage-sigv4.test.ts) ───────
 
 /** The only namespaces the platform stores under. */
-export const STORAGE_NAMESPACES = ['papers', 'materials'] as const;
+export const STORAGE_NAMESPACES = ['papers', 'materials', 'lectures'] as const;
 export type StorageNamespace = (typeof STORAGE_NAMESPACES)[number];
+
+/**
+ * Video filename gates (r323 B2.1) — the lectures namespace.
+ * Only container formats every target browser decodes natively (no
+ * transcode tier exists yet — honest scope): MP4/H.264 + WebM + the
+ * MPEG-4 audio twin and Ogg. The upload route's zod layer repeats the
+ * extension check; this is the driver-side belt.
+ */
+export const VIDEO_EXTENSIONS = ['.mp4', '.webm', '.m4v', '.ogv', '.ogg'] as const;
+
+export function isVideoFilename(filename: string): boolean {
+  const lower = filename.toLowerCase();
+  return VIDEO_EXTENSIONS.some((ext) => lower.endsWith(ext));
+}
+
+/**
+ * Aggregate video filename gate: a BARE filename (no path segments, no
+ * traversal shape, no control characters) with a known video extension.
+ * Mirrors isSafePaperFilename's belt order — shape first, extension last.
+ */
+export function isSafeVideoFilename(filename: string): boolean {
+  if (filename.includes('/') || filename.includes('\\') || filename.includes('..')) return false;
+  for (let i = 0; i < filename.length; i += 1) {
+    const code = filename.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return false;
+  }
+  return isVideoFilename(filename);
+}
+
+/** Serving path for a lecture video (the value stored in Lecture.videoUrl). */
+export function lectureFilenameToServingPath(filename: string): string {
+  return `/api/v1/files/lectures/${filename}`;
+}
 
 /**
  * Build a storage key from a namespace and a filename that ALREADY carries
@@ -414,6 +452,121 @@ export class S3Driver implements StorageDriver {
       throw new Error(`S3 HEAD for key ${key} returned an unusable content-length`);
     }
     return { size };
+  }
+
+  // ── r323 B2.1: direct-upload plumbing (presign + multipart) ──────
+  // The browser PUTs lecture bytes STRAIGHT to the store through
+  // presigned URLs (storage-presign.ts), so ephemeral disks and backend
+  // memory never see a video-sized payload. These methods run ONLY on
+  // the backend; the URLs they mint are the whole browser contract.
+
+  private presignTarget() {
+    return { ...this.cfg };
+  }
+
+  /** Presigned GET for the serving route's 302 redirect (short-lived). */
+  presignGetUrl(key: string, expiresInSec: number): string {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    return presignS3Url(this.presignTarget(), { method: 'GET', key, expiresInSec });
+  }
+
+  /** Presigned single PUT (the ≤ single-cap direct upload). */
+  presignPutUrl(key: string, expiresInSec: number): string {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    return presignS3Url(this.presignTarget(), { method: 'PUT', key, expiresInSec });
+  }
+
+  /** CreateMultipartUpload — returns the store-minted uploadId token. */
+  async createMultipartUpload(key: string): Promise<string> {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    const url = this.objectUrl(key);
+    url.search = 'uploads';
+    const amzDate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
+    const dateStamp = amzDate.slice(0, 8);
+    const headers = { host: url.host, 'x-amz-content-sha256': sha256Hex(''), 'x-amz-date': amzDate };
+    const credentialScope = `${dateStamp}/${this.cfg.region}/s3/aws4_request`;
+    const canonical = canonicalRequest('POST', url.pathname, 'uploads', headers, sha256Hex(''));
+    const signature = hmacSha256(
+      signingKey(this.cfg.secretAccessKey, dateStamp, this.cfg.region, 's3'),
+      stringToSign(amzDate, credentialScope, sha256Hex(canonical)),
+    ).toString('hex');
+    const signedNames = Object.keys(headers).map((n) => n.toLowerCase()).sort();
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          ...headers,
+          Authorization: authorizationHeader(this.cfg.accessKeyId, credentialScope, signedNames, signature),
+        },
+        signal: AbortSignal.timeout(S3_PUT_TIMEOUT_MS),
+      });
+    } catch (err) {
+      throw new Error(`S3 CreateMultipartUpload failed for key ${key}`, { cause: err });
+    }
+    if (!res.ok) {
+      const detail = (await res.text().catch(() => '')).slice(0, 500);
+      throw new Error(`S3 CreateMultipartUpload failed with status ${res.status}`, { cause: new Error(detail) });
+    }
+    const uploadId = parseUploadId(await res.text());
+    if (uploadId === null) throw new Error(`S3 CreateMultipartUpload returned no UploadId for key ${key}`);
+    return uploadId;
+  }
+
+  /** Presign one part PUT (partNumber is 1-based, per the S3 contract). */
+  presignPartUrl(key: string, uploadId: string, partNumber: number, expiresInSec: number): string {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    if (!Number.isInteger(partNumber) || partNumber < 1 || partNumber > 10_000) {
+      throw new Error(`partNumber out of range: ${partNumber}`);
+    }
+    return presignS3Url(this.presignTarget(), {
+      method: 'PUT',
+      key,
+      expiresInSec,
+      extraQuery: { partNumber: String(partNumber), uploadId },
+    });
+  }
+
+  /** CompleteMultipartUpload — verifies 2xx, throws the store's error otherwise. */
+  async completeMultipartUpload(
+    key: string,
+    uploadId: string,
+    parts: readonly { partNumber: number; etag: string }[],
+  ): Promise<void> {
+    if (!storageKeyIsValid(key)) throw new Error(`invalid storage key: ${JSON.stringify(key)}`);
+    if (parts.length === 0) throw new Error('CompleteMultipartUpload requires at least one part');
+    const url = this.objectUrl(key);
+    url.search = `uploadId=${encodeURIComponent(uploadId)}`;
+    const body = Buffer.from(buildCompleteMultipartXml(parts), 'utf8');
+    const amzDate = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
+    const dateStamp = amzDate.slice(0, 8);
+    const payloadHash = sha256Hex(body);
+    const headers = { host: url.host, 'x-amz-content-sha256': payloadHash, 'x-amz-date': amzDate };
+    const credentialScope = `${dateStamp}/${this.cfg.region}/s3/aws4_request`;
+    const canonical = canonicalRequest('POST', url.pathname, `uploadId=${encodeURIComponent(uploadId)}`, headers, payloadHash);
+    const signature = hmacSha256(
+      signingKey(this.cfg.secretAccessKey, dateStamp, this.cfg.region, 's3'),
+      stringToSign(amzDate, credentialScope, sha256Hex(canonical)),
+    ).toString('hex');
+    const signedNames = Object.keys(headers).map((n) => n.toLowerCase()).sort();
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          ...headers,
+          Authorization: authorizationHeader(this.cfg.accessKeyId, credentialScope, signedNames, signature),
+        },
+        body: new Uint8Array(body),
+        signal: AbortSignal.timeout(S3_PUT_TIMEOUT_MS),
+      });
+    } catch (err) {
+      throw new Error(`S3 CompleteMultipartUpload failed for key ${key}`, { cause: err });
+    }
+    if (!res.ok) {
+      const detail = (await res.text().catch(() => '')).slice(0, 500);
+      throw new Error(`S3 CompleteMultipartUpload failed with status ${res.status}`, { cause: new Error(detail) });
+    }
   }
 }
 
