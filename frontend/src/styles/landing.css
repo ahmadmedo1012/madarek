@@ -979,15 +979,26 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 }
 
 /* R323 (A3 · defect 5) — the SOFT EDGE MASKS: no word is ever cut
- * mid-glyph at the marquee/ticker row edges — a 16-px linear alpha
- * fade on both ends of the clipping box (symmetric, so the RTL loop
- * direction never matters). Hover pauses the crawl; reduced motion
+ * mid-glyph at the marquee/ticker row edges — a linear alpha fade on
+ * both ends of the clipping box (symmetric, so the RTL loop direction
+ * never matters). r324 X13: 16px could not dissolve a ~150px Arabic
+ * word — it entered the viewport visibly chopped. The fade widens to
+ * 64px @≥992 / 40px below (≈17% of a 390 edge), so a word fully
+ * dissolves before the edge. Hover pauses the crawl; reduced motion
  * already kills the animation (the static row keeps the mask — the
  * first/last items still fade honestly at the box edges). */
 .fo-hero-work,
 .fo-ticker {
-  mask-image: linear-gradient(to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
-  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  mask-image: linear-gradient(to left, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+}
+
+@media (max-width: 991px) {
+  .fo-hero-work,
+  .fo-ticker {
+    mask-image: linear-gradient(to left, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%);
+  }
 }
 
 .fo-hero-work:hover .fo-hero-work-track {
