@@ -1913,7 +1913,9 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 .rl-section {
   padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
-  min-block-size: 98vh;
+  /* r324 P2 (X5): the 98vh floor was the giant-list era's runway — the
+     ledger section reads ≤ 1.1 viewport at 1440 by CONTENT now. */
+  min-block-size: 0;
 }
 
 .rl-head {
@@ -1941,53 +1943,64 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   max-inline-size: 64ch;
 }
 
-/* the ruled grid — 4 cards per row, 2 rows: every card the same
-   hairline grammar (index / title / honest line / state tag). */
-.rl-cards {
+/* r324 P2 (X5) — the ROLES LEDGER (the R323 CSS owned .rl-card grid
+   names while the shipped JSX renders .rl-row ledger names — the
+   section rendered as an UNSTYLED list of 34px bold h3s stacked down
+   a 98vh runway with 60% of the viewport empty). The brief's grammar:
+   a 2-column hairline ledger ≥992 (4 rows × 2, 8 rows), 1 column on
+   phone; row title at the st/D3 register (23–28px) weight 600; the
+   honest one-line description; the status chip on the row's end. */
+.rl-ledger {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--sp-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 var(--sp-7);
   margin: 0;
   padding: 0;
   list-style: none;
+  border-block-start: 1px solid var(--rule);
 }
 
-.rl-card {
+.rl-row {
   display: grid;
-  gap: var(--sp-1-5);
-  align-content: start;
-  padding: var(--sp-4);
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
-  min-block-size: 15rem;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--sp-3);
+  align-items: baseline;
+  padding-block: var(--sp-3);
+  border-block-end: 1px solid var(--rule);
 }
 
-.rl-card-num {
+.rl-row-num {
   color: var(--text-faint);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-mono-md);
+  translate: 0 -0.1em;
 }
 
-.rl-card-title {
+.rl-row-name {
   margin: 0;
   font-family: var(--font-display);
-  /* R322 (1-d): joins the D3 rung (weight 500 · lh 1.15 · balance). */
   font-size: var(--fs-d3);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.15;
-  text-wrap: balance;
   color: var(--text);
 }
 
-.rl-card-line {
+/* the honest one-line description rides UNDER the name (the ledger
+   row is a two-line cell: name, then the line) — clamped so a long
+   Arabic sentence can never blow the row open. */
+.rl-row-line {
+  grid-column: 2 / 3;
   margin: 0;
   font-size: var(--fs-sm);
-  line-height: 1.7;
+  line-height: 1.6;
   color: var(--text-secondary);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
 }
 
-.rl-card-tag {
-  justify-self: start;
-  margin-block-start: auto;
+.rl-row-tag {
+  align-self: start;
   padding: var(--sp-0-5) var(--sp-2);
   border: 1px solid var(--border-strong);
   font-size: var(--fs-xxs);
@@ -1996,9 +2009,19 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   white-space: nowrap;
 }
 
-.rl-card-tag.is-live {
+.rl-row-tag.is-live {
   border-color: color-mix(in srgb, var(--accent) 40%, transparent);
   color: var(--accent-ink);
+}
+
+@media (max-width: 991px) {
+  .rl-ledger {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .rl-row-line {
+    -webkit-line-clamp: 3;
+  }
 }
 
 .rl-more {
