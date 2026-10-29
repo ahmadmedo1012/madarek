@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const strip = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '');
+const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '');
 
 /** The display-ladder tokens (the ONLY allowed H1/H2/H3 font sizes). */
 const LADDER_TOKENS = [
@@ -47,14 +47,14 @@ describe('r324 P3 — the ONE display ladder on public H1s (X9)', () => {
       const body = rule![0];
       const fsLine = body.match(/font-size:\s*([^;]+);/);
       expect(fsLine, `${sel} declares font-size`).toBeTruthy();
-      const value = fsLine![1].trim();
+      const value = fsLine![1] ?? '';
       expect(
-        LADDER_TOKENS.some((t) => value.includes(t)),
+        LADDER_TOKENS.some((t: string) => value.includes(t)),
         `${sel} font-size must be a ladder token — found "${value}"`,
       ).toBe(true);
       const fwLine = body.match(/font-weight:\s*([^;]+);/);
       expect(fwLine, `${sel} declares font-weight`).toBeTruthy();
-      const fw = fwLine![1].trim();
+      const fw = fwLine![1] ?? '';
       expect(
         /var\(--fw-semibold\)|var\(--fw-medium\)|\b500\b|\b600\b/.test(fw),
         `${sel} font-weight must be 500/600 (or the token) — found "${fw}"`,

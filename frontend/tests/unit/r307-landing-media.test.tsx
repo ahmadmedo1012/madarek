@@ -163,10 +163,13 @@ describe('r307 — the media layer added ZERO new funnel links', () => {
       expect(liveTsx).toContain(`id="${id}"`);
     }
     // the product CTA scrolls to the conversion row — never an auth link
-    // (R313: the section ends at the why-section now, not #videos)
+    // (R313: the section ends at the why-section now, not #videos.
+    //  r324 X3: the CTA rides the section's row-2 .pr-note line —
+    //  a direct href="#cta" anchor, still never an auth route.)
     const productAt = tsx.indexOf('id="product"');
     const productBlock = stripComments(tsx.slice(productAt, tsx.indexOf('className="wy-section"')));
-    expect(productBlock).toContain('ctaTo="#cta"');
+    expect(productBlock).toContain('href="#cta"');
     expect(productBlock).not.toMatch(/to="\/auth/);
+    expect(productBlock).not.toMatch(/href="\/auth/);
   });
 });

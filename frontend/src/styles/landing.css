@@ -549,8 +549,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
   transition: color var(--t-base) var(--ease);
 }
 
-.fo-actions-login:hover {
-  color: var(--text);
+/* r324 gate hygiene — every hover rides @media (hover: hover) (the
+   tap-stick law): no sticky hover state on touch. */
+@media (hover: hover) {
+  .fo-actions-login:hover {
+    color: var(--text);
+  }
 }
 
 /* the CTA CELL — the reference's 166.66px (20rem) seat closing the
@@ -596,21 +600,23 @@ html[data-theme='dark'] body.mdrk-grain::before {
    #FA3600 slab under the white label measured 3.76:1; #DB3A00 is the
    r318 AA signal ground, white 4.55:1 — the .btn.accent fix family).
    Dark keeps its own passing pair. */
-.fo-actions-cta:hover {
-  color: var(--accent-fg);
-}
+@media (hover: hover) {
+  .fo-actions-cta:hover {
+    color: var(--accent-fg);
+  }
 
-.fo-actions-cta:hover::before {
-  transform: translateY(0);
-  background: #DB3A00; /* color-gate: allow — the r318 AA signal ground (white label 4.55:1), light theme only; dark twin below */
-}
+  .fo-actions-cta:hover::before {
+    transform: translateY(0);
+    background: #DB3A00; /* color-gate: allow — the r318 AA signal ground (white label 4.55:1), light theme only; dark twin below */
+  }
 
-html[data-theme='dark'] .fo-actions-cta:hover::before {
-  background: var(--accent);
-}
+  html[data-theme='dark'] .fo-actions-cta:hover::before {
+    background: var(--accent);
+  }
 
-.fo-actions-cta:hover .fo-roll-track {
-  transform: translateY(-100%);
+  .fo-actions-cta:hover .fo-roll-track {
+    transform: translateY(-100%);
+  }
 }
 
 /* The .btn recipes ship 32/40/48px — the sheet lifts every landing
@@ -1001,8 +1007,10 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   }
 }
 
-.fo-hero-work:hover .fo-hero-work-track {
-  animation-play-state: paused;
+@media (hover: hover) {
+  .fo-hero-work:hover .fo-hero-work-track {
+    animation-play-state: paused;
+  }
 }
 
 .fo-hero-work-track {
@@ -3883,6 +3891,261 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   margin-block-end: var(--sp-8);
 }
 
+/* ═══ r324 X3 — the showcase frame family (drawn at last) ══════════
+ * PlatformShowcase (the R323 single-frame rewrite) shipped with ZERO
+ * CSS — the figure rendered unstyled AND unseated (auto-placement
+ * dropped it into one 115px column of the ≥992 grid). The family
+ * rides the section's own grammar: hairline frames, mono chrome
+ * bars, square corners, the ONE accent orange, tokens only (dark
+ * rides the same tokens). Mobile-first: the base stack serves ≤767;
+ * ≥768 splits [player 5fr | matrix+ai 4fr] with the hairline
+ * boundary (the retired .pr-grid lead|std pair, one frame now);
+ * ≥992 the stage seats cols 4/-1 row 1 of the section grid. ═══ */
+.pr-stage {
+  min-inline-size: 0;
+}
+
+.pr-frame {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  border: 1px solid var(--rule);
+}
+
+.pr-frame-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0.48rem 0.96rem;
+  border-block-end: 1px solid var(--rule);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-xs);
+  line-height: 1;
+}
+
+.pr-frame-sq {
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--accent);
+}
+
+.pr-frame-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-block-size: 0;
+}
+
+.pr-cell {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.pr-cell-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.44rem 0.8rem;
+  border-block-end: 1px solid var(--rule);
+}
+
+.pr-cell-idx {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+.pr-cell-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+  /* the bidi-safe end-edge push: the auto margin lives on the RTL
+     title (inline-end = physical left), never on the dir=ltr note
+     (whose inline-start is its physical LEFT — the auto margin there
+     opened the space on the wrong side and the time stamp hugged the
+     title). The note lands at the bar's far end at every dir. */
+  margin-inline-end: auto;
+}
+
+.pr-cell-note {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+/* the chapter list — the mini lecture-player's ledger (mono index ·
+   the concept name · the orange «now» square) */
+.pr-chapters {
+  margin: 0;
+  padding: 0.4rem 0.8rem 0.5rem;
+  list-style: none;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.pr-ch {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.pr-ch .fo-mono {
+  font-size: var(--fs-mono-xs);
+  color: var(--text-muted);
+}
+
+.pr-ch.is-done { color: var(--text-muted); }
+
+.pr-ch.is-now {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.pr-ch-play {
+  margin-inline-start: auto;
+  inline-size: 8px;
+  block-size: 8px;
+  background: var(--accent);
+  align-self: center;
+}
+
+/* the checkpoint card — the one orange-adjacent honest surface */
+.pr-check {
+  margin: auto 0.8rem 0.8rem;
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+}
+
+.pr-check-k {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+.pr-check-q {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.pr-check-btn {
+  justify-self: start;
+  padding: 0.22rem 0.72rem;
+  border: 1px solid var(--rule-strong);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* the mastery matrix — 4×2 hairline cells, the solid accent fills as
+   the single signal, the warm cells keep the outline voice */
+.pr-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0.8rem 0.8rem 0.6rem;
+}
+
+.pr-mc {
+  aspect-ratio: 1;
+  border: 1px solid var(--rule);
+}
+
+.pr-mc.is-hot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.pr-mc.is-warm { border-color: var(--accent); }
+
+/* the mastery rows — ink progress lines on hairline tracks */
+.pr-mrows {
+  display: grid;
+  gap: 7px;
+  padding: 0 0.8rem 0.8rem;
+}
+
+.pr-mrow {
+  block-size: 4px;
+  background: var(--rule);
+}
+
+.pr-mfill {
+  display: block;
+  block-size: 100%;
+  background: var(--text);
+}
+
+/* the assistant bubble cell */
+.pr-ai-q {
+  margin: 0;
+  padding: 0.6rem 0.8rem 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.pr-ai-a {
+  margin: 0;
+  padding: 0.2rem 0.8rem 0.8rem;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.pr-frame-cta {
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.pr-frame-demo {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+/* the row-2 inspector line — the ONE demo disclosure + the CTA. The
+   ≥992 seat (cols 9–12, row 2) is the reference's own note position;
+   the base line rides under the frame at ≤767. Hidden with the head
+   at the strips-only 768–1024 bands. */
+.pr-note {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-2);
+}
+
+/* ≥768 — the two-region split (the retired .pr-grid lead|std pair,
+   one frame now): the player rides the reading-start 5fr, the
+   matrix + assistant stack in the 4fr inspector; the hairline IS
+   the boundary (the std cells' inline-start border) */
+@media (min-width: 768px) {
+  .pr-frame-body {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
+    /* the assistant cell absorbs the stretched frame's slack (air
+       inside the cell, never a dead strip below it) */
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .pr-cell-player { grid-row: 1 / span 2; }
+
+  .pr-cell-matrix,
+  .pr-cell-ai {
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .pr-cell-ai { border-block-start: 1px solid var(--rule); }
+}
+
 .pr-title {
   font-family: var(--font-display);
   /* R322 (1-d FINAL): the product H2 joins the D2 rung like every
@@ -3917,11 +4180,8 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   max-inline-size: 90rem;
 }
 
-.pr-note {
-  margin-block-start: var(--sp-6);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
+/* r324 X3: the R313-era .pr-note text seat retires — the note is the
+   showcase's CTA line now (drawn with the frame family, above). */
 
 /* ── prf — ProductFrame: the real-capture figure ────────────────────
    Flat frame + the three-part caption: the mono «real-ui» tag, the
@@ -4457,9 +4717,11 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
     border-color var(--t-fast) var(--ease);
 }
 
-.hi-reset:hover {
-  color: var(--accent-ink);
-  border-color: var(--accent);
+@media (hover: hover) {
+  .hi-reset:hover {
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
 }
 
 /* ── The hero's staged ink-in (intro-draw → intro-done) ─────────────
@@ -4874,9 +5136,11 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
     border-color var(--t-fast) var(--ease);
 }
 
-.sl-skip:hover {
-  color: var(--accent-ink);
-  border-color: var(--accent);
+@media (hover: hover) {
+  .sl-skip:hover {
+    color: var(--accent-ink);
+    border-color: var(--accent);
+  }
 }
 
 .sl-sr {
@@ -7054,7 +7318,9 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 
   .pr-lede { line-height: 1.5; }
 
-  .pr-note { display: none; }
+  /* r324 X3: the .pr-note display:none RETIRES — the note is the
+   * section's CTA line now (the demo disclosure + the r307 offer);
+   * it rides under the frame at every phone width. */
 
   .pr-section .prf { gap: 0.4rem; }
   .pr-section .prf-caption { padding-block: 0.4rem; }
@@ -7727,6 +7993,10 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
     z-index: 0;
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
+    /* r324 X3 — row 1 (the stretched frame) absorbs the floor's
+       slack; row 2 is the note line. The sheet spans both, so its
+       drawing cell keeps filling the full band either way. */
+    grid-template-rows: minmax(0, 1fr) auto;
   }
 
   /* the full-height hairline at the canvas|inspector boundary — the
@@ -7783,14 +8053,18 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
    * the 9-col region): the columns touch and the 1px hairline IS the
    * boundary — the std's inline-start border, with its content
    * padded clear of the line. */
-  .pr-grid {
+  /* the stage (the single showcase figure) rides the canvas +
+   * inspector region (cols 4–12, row 1): the retired .pr-grid seat
+   * re-pointed at the R323 rewrite's own wrapper — r324 X3. The
+   * figure stretches to the sheet's row height (the reference's
+   * aligned frames); the frame's body flex distributes the slack. */
+  .pr-stage {
     grid-column: 4 / -1;
     grid-row: 1;
-    max-inline-size: none;
-    display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-    gap: 0;
+    min-inline-size: 0;
   }
+
+  .pr-stage .pr-frame { block-size: 100%; }
 
   .pr-section .prf--std {
     border-inline-start: 1px solid var(--rule);
@@ -8181,23 +8455,23 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
  * content-box sizes (1024/1280/1440/1920 → scripts/r324/
  * section-intrinsic.json), each rung anchored EXACT at its gate
  * breakpoint (1024 / 1440) with the local measured slope. */
-.st-section { contain-intrinsic-size: auto calc(58px + 43.36vw); }   /* 502 @1024 · 690 @1440 */
-.pm-section { contain-intrinsic-size: auto calc(155px + 21.48vw); }  /* 375 @1024 · 467 @1440 */
-.chapters   { contain-intrinsic-size: auto calc(5970px + 1.95vw); }  /* 5990 @1024 · 5999 @1440 */
-.pr-section { contain-intrinsic-size: auto calc(997px - 25vw); }     /* 741 @1024 · 645 @1440 */
-.wy-section { contain-intrinsic-size: auto calc(57px + 38.28vw); }   /* 449 @1024 · 615 @1440 */
-.rl-section { contain-intrinsic-size: auto calc(638px + 29.69vw); }  /* 942 @1024 · 1090 @1440 */
-.fo-cta     { contain-intrinsic-size: auto calc(35px + 40.62vw); }   /* 451 @1024 · 625 @1440 */
+.st-section { contain-intrinsic-size: auto calc(39px + 45.2vw); }   /* 502 @1024 · 690 @1440 */
+.pm-section { contain-intrinsic-size: auto calc(148px + 22.12vw); }  /* 375 @1024 · 467 @1440 */
+.chapters   { contain-intrinsic-size: auto calc(5968px + 2.16vw); }  /* 5990 @1024 · 5999 @1440 */
+.pr-section { contain-intrinsic-size: auto calc(-3px + 45vw); }      /* 458 @1024 · 645 @1440 — r324 X3 re-measure (the drawn showcase keeps the band at its 79vh floor) */
+.wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }    /* 449 @1024 · 615 @1440 */
+.rl-section { contain-intrinsic-size: auto calc(898px - 5.3vw); }    /* 844 @1024 · 822 @1440 — r324 re-measure (the X5 ledger's real height; the pre-X5 guess ran 1090) */
+.fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }   /* 451 @1024 · 625 @1440 */
 
 /* 992–1179 — the rung below the 1180 red-team line (anchored @1024) */
 @media (min-width: 992px) and (max-width: 1179px) {
-  .st-section { contain-intrinsic-size: auto calc(58px + 43.36vw); }
-  .pm-section { contain-intrinsic-size: auto calc(155px + 21.48vw); }
-  .chapters   { contain-intrinsic-size: auto calc(5970px + 1.95vw); }
-  .pr-section { contain-intrinsic-size: auto calc(997px - 25vw); }
-  .wy-section { contain-intrinsic-size: auto calc(57px + 38.28vw); }
-  .rl-section { contain-intrinsic-size: auto calc(638px + 29.69vw); }
-  .fo-cta     { contain-intrinsic-size: auto calc(35px + 40.62vw); }
+  .st-section { contain-intrinsic-size: auto calc(39px + 45.2vw); }
+  .pm-section { contain-intrinsic-size: auto calc(148px + 22.12vw); }
+  .chapters   { contain-intrinsic-size: auto calc(5968px + 2.16vw); }
+  .pr-section { contain-intrinsic-size: auto calc(-3px + 45vw); }
+  .wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }
+  .rl-section { contain-intrinsic-size: auto calc(898px - 5.3vw); }
+  .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }
 }
 /* 768–991 — the tablet composition (measured @768) */
 @media (min-width: 768px) and (max-width: 991px) {
@@ -8214,9 +8488,9 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   .st-section { contain-intrinsic-size: auto 1223px; }
   .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
-  .pr-section { contain-intrinsic-size: auto 836px; }
+  .pr-section { contain-intrinsic-size: auto 1117px; }
   .wy-section { contain-intrinsic-size: auto 1171px; }
-  .rl-section { contain-intrinsic-size: auto 2060px; }
+  .rl-section { contain-intrinsic-size: auto 1497px; }
   .fo-cta     { contain-intrinsic-size: auto 713px; }
 }
 /* ≤479 — the phone composition (measured @390) */
@@ -8224,9 +8498,9 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   .st-section { contain-intrinsic-size: auto 873px; }
   .pm-section { contain-intrinsic-size: auto 797px; }
   .chapters   { contain-intrinsic-size: auto 4452px; }
-  .pr-section { contain-intrinsic-size: auto 591px; }
+  .pr-section { contain-intrinsic-size: auto 787px; }
   .wy-section { contain-intrinsic-size: auto 761px; }
-  .rl-section { contain-intrinsic-size: auto 1369px; }
+  .rl-section { contain-intrinsic-size: auto 1040px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
 }
 /* ≤374 — the narrow-phone rung (measured @360) */
@@ -8234,8 +8508,8 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   .st-section { contain-intrinsic-size: auto 846px; }
   .pm-section { contain-intrinsic-size: auto 748px; }
   .chapters   { contain-intrinsic-size: auto 4454px; }
-  .pr-section { contain-intrinsic-size: auto 553px; }
+  .pr-section { contain-intrinsic-size: auto 774px; }
   .wy-section { contain-intrinsic-size: auto 702px; }
-  .rl-section { contain-intrinsic-size: auto 1273px; }
+  .rl-section { contain-intrinsic-size: auto 1031px; }
   .fo-cta     { contain-intrinsic-size: auto 428px; }
 }

@@ -3,19 +3,10 @@
     ".st-section": 502,
     ".pm-section": 375,
     ".chapters": 5990,
-    ".pr-section": 741,
+    ".pr-section": 458,
     ".wy-section": 449,
-    ".rl-section": 942,
+    ".rl-section": 844,
     ".fo-cta": 451
-  },
-  "1280": {
-    ".st-section": 613,
-    ".pm-section": 430,
-    ".chapters": 5995,
-    ".pr-section": 677,
-    ".wy-section": 547,
-    ".rl-section": 1018,
-    ".fo-cta": 555
   },
   "1440": {
     ".st-section": 690,
@@ -23,16 +14,7 @@
     ".chapters": 5999,
     ".pr-section": 645,
     ".wy-section": 615,
-    ".rl-section": 1090,
+    ".rl-section": 822,
     ".fo-cta": 625
-  },
-  "1920": {
-    ".st-section": 920,
-    ".pm-section": 563,
-    ".chapters": 6014,
-    ".pr-section": 861,
-    ".wy-section": 821,
-    ".rl-section": 1422,
-    ".fo-cta": 834
   }
 }

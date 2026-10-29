@@ -3,16 +3,16 @@
   "results": [
     {
       "width": 1440,
-      "atLoad": 12895,
-      "afterWalk": 12922,
-      "driftPct": 0.209,
+      "atLoad": 12653,
+      "afterWalk": 12653,
+      "driftPct": 0,
       "ok": true
     },
     {
       "width": 1024,
-      "atLoad": 11759,
-      "afterWalk": 11761,
-      "driftPct": 0.017,
+      "atLoad": 11378,
+      "afterWalk": 11378,
+      "driftPct": 0,
       "ok": true
     },
     {
@@ -24,16 +24,16 @@
     },
     {
       "width": 390,
-      "atLoad": 11950,
-      "afterWalk": 11950,
+      "atLoad": 11817,
+      "afterWalk": 11817,
       "driftPct": 0,
       "ok": true
     },
     {
       "width": 360,
-      "atLoad": 11464,
-      "afterWalk": 11462,
-      "driftPct": 0.017,
+      "atLoad": 11443,
+      "afterWalk": 11442,
+      "driftPct": 0.009,
       "ok": true
     }
   ]

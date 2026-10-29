@@ -59,6 +59,7 @@ fs.writeFileSync(path.join(dir, 'section-intrinsic.json'), JSON.stringify(intrin
 const rung = (vals) => vals.map(([sel, v]) => `${sel.padEnd(12)}{ contain-intrinsic-size: auto ${v}px; }`).join('\n');
 const byBp = (bp) => SECTIONS.map((s) => [s, intrinsic[bp][s]]);
 console.log(`/* ≥992 (measured @1440) */\n${rung(byBp(1440))}`);
+if (intrinsic[1024]) console.log(`\n/* @1024 (the desktop fit's second anchor) */\n${rung(byBp(1024))}`);
 console.log(`\n/* 768–991 (measured @768) */\n${rung(byBp(768))}`);
 console.log(`\n/* 480–767 (measured @600) */\n${rung(byBp(600))}`);
 console.log(`\n/* ≤479 (measured @390) */\n${rung(byBp(390))}`);
