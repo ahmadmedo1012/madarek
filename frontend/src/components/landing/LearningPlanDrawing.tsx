@@ -132,25 +132,16 @@ const PLAN_INK_CSS = `
   .jt .jt-plan .pl-zone   { fill: var(--accent); }
   .jt .jt-plan .pl-dot    { fill: var(--text); }
   .jt .jt-plan .bp-signal-fill { fill: var(--accent); stroke: var(--bg); stroke-width: 1; }
-  /* R319 §D4 — the ACTIVE zone's label + area are STATE-SAFE INK
-     (#282828), not white: the zone wash crossfades over t-fast, so a
-     white label rode the salmon mid-state (#FA3600 at ~50% over the
-     #F6F6EE sheet ≈ #F89677) at ~2.2:1 — unreadable mid-flip. Ink is
-     legible at EVERY instant of the transition: 13.4:1 on the paper
-     sheet, ≈6.6:1 on the salmon mid-wash, 3.85:1 on the settled
-     #FA3600 (≥3:1, the register's own bar for the decorative plan).
-     Heron's register has no scrub-lit rooms at all — the wash itself
-     is the active signal; the label stays the quiet ink annotation. */
-  .jt[data-wash='lecture'] .jt-plan .pl-l-lecture .pl-name,
-  .jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .pl-name,
-  .jt[data-wash='exam'] .jt-plan .pl-l-exam .pl-name,
-  .jt[data-wash='library'] .jt-plan .pl-l-library .pl-name,
-  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .pl-name { fill: var(--bg); }
-  .jt[data-wash='lecture'] .jt-plan .pl-l-lecture .bp-micro,
-  .jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .bp-micro,
-  .jt[data-wash='exam'] .jt-plan .pl-l-exam .bp-micro,
-  .jt[data-wash='library'] .jt-plan .pl-l-library .bp-micro,
-  .jt[data-wash='mastery'] .jt-plan .pl-l-mastery .bp-micro { fill: var(--bg); }
+  /* r324 X6 — the wash-label flip RETIRES: the R322 3-b-fix turned the
+     room wash into a WHISPER TINT (fill-opacity 0.035 + a 1.5-unit
+     outline — never a slab), so the active room's ground is still the
+     paper. The old fill:var(--bg) flip (a solid-slab-era leftover)
+     painted the name + area PAPER ON PAPER — measured rgb(246,246,238)
+     over the tinted sheet ≈ 1.05:1, the room's own label invisible
+     during its whole finding. The labels ride the base ink now
+     (text-secondary ≈ 7:1 on the sheet, both themes) — the R319 §D4
+     comment's own math, honored at last. The station glyph keeps its
+     pinned #1A1A1A (the one element that DOES sit on the accent chip). */
   /* R322 3-b-fix4 (review-c3 R3#4/ND1): the ACTIVE station glyph rides
    * the #FA3600 chip block — white read 3.76:1 (R3's measured FAIL).
    * The AA ink on that ground is #1A1A1A (4.63:1) — the paper
@@ -481,14 +472,16 @@ export function LearningPlanDrawing() {
         {/* zone doors from the corridor */}
         <Door x={830} y={394} w={40} h={48} hinge="tl" />
         <Door x={960} y={394} w={40} h={48} hinge="tr" />
-        {/* the AV niche + the attendance sensor mark */}
-        <rect className="bp-hair bp-drawable" x="790" y="100" width="26" height="16" pathLength={1} />
-        <rect className="bp-signal-fill bp-drawable" x={824} y={104} width="8" height="8" pathLength={1} />
         {/* zone label + area — R320 §A4: separate baselines (97/120 —
             the name and area boxes clear each other with the baseline
             gap ≥14px rendered at every gate viewport) seated in the
-            arc-free top band, clear of the seating fan (y≥160) and
-            the AV niche (x≤832) */}
+            arc-free top band, clear of the seating fan (y≥160).
+            r324 X6: the AV-niche box + the attendance-sensor dot that
+            shared this band are RETIRED — an unlabeled 26×16 rect and
+            a floating 8×8 accent dot glued to the wall line read as
+            rendering debris (the owner's «boxes on walls»), not as
+            furniture. The room's furniture is the stage + the raked
+            seating + the doors + this label. */}
         <text className="pl-name" x="930" y="97" textAnchor="middle">قاعة المحاضرات</text>
         <text className="bp-micro" x="930" y="120" textAnchor="middle">240 M2</text>
       </g>
