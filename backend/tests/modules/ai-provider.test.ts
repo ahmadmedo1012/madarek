@@ -854,7 +854,14 @@ describe('ai.routes.ts — the P4 mode switch', () => {
     expect(aiRouteSource).toContain("e.name === 'AiProviderError'");
     // r176a: the classified message matrix, not one fixed string.
     expect(aiRouteSource).toContain('providerFailureMessage(failureKind)');
-    const catchStart = aiRouteSource.indexOf('} catch (e) {');
+    // r323 B1.1: the file now carries several `catch (e) {` blocks
+    // (the SSE stream path among them), so the slice anchors on the
+    // /chat route's own catch — the nearest `catch (e) {` BEFORE the
+    // `next(e);` fall-through — not the first catch in the file (the
+    // old forward slice would sweep the stream handler's LOCAL-composer
+    // branch, which legitimately calls composeReply).
+    const nextFallthrough = aiRouteSource.indexOf('next(e);');
+    const catchStart = aiRouteSource.lastIndexOf('} catch (e) {', nextFallthrough);
     const catchEnd = aiRouteSource.indexOf('next(e);', catchStart);
     const catchBlock = aiRouteSource.slice(catchStart, catchEnd);
     expect(catchBlock).not.toContain('composeReply(');

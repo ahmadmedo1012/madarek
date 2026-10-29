@@ -791,12 +791,13 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode with the AI_MODELS list (r176
   let historyFindMany: Mock;
   let transaction: Mock;
 
-  /* The r176i production configuration: the free ROUTER id stays
-   * configured (the envelope fallback + the unset-list mode), but the
-   * AI_MODELS list takes over the WIRE — OpenRouter receives the
-   * ordered `models` array and NOT `model` (measured live: the array
-   * is ignored when `model` rides along). The rules under test:
-   *  · the wire body carries ONLY the `models` array;
+  /* The r176i production configuration, under the r323 chain driver:
+   * the AI_MODELS list IS the fallback chain — the driver pins ONE
+   * chain member per wire attempt (`model`, the list head first) and
+   * falls through to the NEXT id on 429/5xx/transport/timeout with
+   * jittered exponential backoff (pinned in r323-ai-model-chain.test.ts).
+   * The rules under test here:
+   *  · the wire body carries the pinned chain head, no `models` array;
    *  · the per-turn attribution stays the provider-REPORTED id;
    *  · a response WITHOUT model metadata degrades to the JOINED list,
    *    flagged (unattributed) — never the stale `openrouter/free`;
@@ -865,7 +866,7 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode with the AI_MODELS list (r176
     });
   }
 
-  it('sends ONLY the models array on the wire and attributes the provider-reported model per response', async () => {
+  it('r323 chain walk: ONE pinned model per wire attempt (the list head first) — no router-side models array', async () => {
     const calls: Array<{ url: string; init: RequestInit }> = [];
     stubProviderTransport(
       () =>
@@ -893,15 +894,15 @@ describe('POST /api/v1/ai/chat — OPENROUTER mode with the AI_MODELS list (r176
     // list is the route, not the reply.
     expect(body.data.model).toBe('nvidia/nemotron-3-super-120b-a12b:free');
 
-    // THE r176i wire contract: the ordered array, and NO model field.
+    // THE r323 wire contract: the chain driver pins ONE chain member
+    // per attempt (per-model failures stay attributable AND the
+    // 429/5xx/timeout fall-through lands on the NEXT id client-side),
+    // so the first wire call carries the list HEAD as `model` — the
+    // OpenRouter router-side `models` array is superseded.
     expect(calls).toHaveLength(1);
     const wireBody = JSON.parse((calls[0]!.init as { body: string }).body) as Record<string, unknown>;
-    expect(wireBody.models).toEqual([
-      'google/gemma-4-31b-it:free',
-      'nvidia/nemotron-3-super-120b-a12b:free',
-      'dots-studio/dots-3-note-preview:free',
-    ]);
-    expect(wireBody.model).toBeUndefined();
+    expect(wireBody.model).toBe('google/gemma-4-31b-it:free');
+    expect(wireBody.models).toBeUndefined();
 
     // Success telemetry carries the per-RESPONSE model.
     expect(telemetryCreate).toHaveBeenCalledWith({

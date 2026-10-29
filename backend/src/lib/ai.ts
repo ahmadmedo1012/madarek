@@ -487,73 +487,185 @@ const RETRYABLE_KINDS: ReadonlySet<AiFailureKind> = new Set<AiFailureKind>([
   'provider_error',
 ]);
 
-/** Jittered backoff between the two attempts (ms) — jitter avoids the
+/** Jittered backoff between attempts (ms) — jitter avoids the
  * synchronized-burst pattern when several pilot students trip the same
- * per-key 429 in the same second. */
-const RETRY_DELAY_MS_MIN = 400;
-const RETRY_DELAY_MS_MAX = 800;
+ * per-key 429 in the same second. r323 B1.1: exponential per attempt
+ * (base doubles each retry), capped; attempt 0 keeps the historical
+ * 400-800ms window exactly. */
+export const AI_BACKOFF_BASE_MS = 400;
+export const AI_BACKOFF_CAP_MS = 4_000;
 
-/** The route-facing call: one attempt + at most one bounded retry (see
- * the policy block above). Logs the retried failure (the log keeps the
- * provider's body excerpt; the student and telemetry get the classified
- * kind). Exported for the ai-provider test pins. */
+/**
+ * Exponential backoff + jitter for one attempt index: base * 2^attempt
+ * (capped at AI_BACKOFF_CAP_MS) plus a fresh random [0, base) — the
+ * [400, 800) range the r176a retry always used, then wider windows for
+ * later chain attempts. Pure (rand injectable) — pinned in tests.
+ */
+export function backoffDelayMs(attempt: number, rand: () => number = Math.random): number {
+  const base = Math.min(AI_BACKOFF_CAP_MS, AI_BACKOFF_BASE_MS * 2 ** Math.max(0, attempt));
+  return base + Math.floor(rand() * base);
+}
+
+/** The chain driver's wait injection point (tests pass an immediate
+ * resolver; production sleeps for real). */
+export type AiRetrySleeper = (ms: number) => Promise<void>;
+const defaultRetrySleeper: AiRetrySleeper = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** r323 B1.1 — bounded retries PER MODEL before fall-through. The
+ * r176a policy (ONE same-model retry) is preserved per chain member:
+ * with a 3-model chain the worst case is 6 wire attempts, each model
+ * still capped at its own single retry. Pinned in tests. */
+export const AI_CHAIN_MODEL_RETRIES = 1;
+
+/**
+ * The ordered chain the driver walks: the configured AI_MODELS list
+ * when present, else the single configured model. A copy — callers
+ * cannot mutate the config through it.
+ */
+export function resolveModelChain(cfg: AiProviderConfig): string[] {
+  return cfg.models.length > 0 ? [...cfg.models] : [cfg.model];
+}
+
+/**
+ * r323 B1.1 — the shared model-chain driver. Runs `attempt(model)` over
+ * the resolved chain IN ORDER; per model the r176a policy applies
+ * unchanged (ONE bounded jittered retry for the fast-fail transient
+ * kinds — rate_limited/transport/provider_error — never a timeout: the
+ * first attempt already burned the whole per-model ceiling, and a
+ * fresh model is a better use of the student's wait than re-rolling a
+ * slow one). When a model exhausts its attempts (or fails
+ * non-transiently), the driver falls through to the NEXT chain member
+ * after a jittered backoff; the LAST error surfaces (always the
+ * AiProviderError with its classified kind). A client abort (the SSE
+ * stream's controller) short-circuits everything — no retries, no
+ * fall-through, the error propagates immediately.
+ *
+ * Generic over the attempt's result so BOTH the JSON client
+ * (callProviderWithRetry) and the SSE client (streamProviderWithChain)
+ * share one retry/fallthrough grammar — the two transports cannot
+ * drift apart in policy.
+ */
+async function runModelChain<T>(
+  cfg: AiProviderConfig,
+  attempt: (model: string) => Promise<T>,
+  log: (obj: Record<string, unknown>, msg: string) => void,
+  sleep: AiRetrySleeper = defaultRetrySleeper,
+  isAborted?: () => boolean,
+): Promise<T> {
+  const chain = resolveModelChain(cfg);
+  let lastError: unknown;
+  for (let mi = 0; mi < chain.length; mi += 1) {
+    const model = chain[mi]!;
+    for (let attemptNo = 0; attemptNo <= AI_CHAIN_MODEL_RETRIES; attemptNo += 1) {
+      try {
+        return await attempt(model);
+      } catch (err) {
+        lastError = err;
+        // A client-side abort is NEVER a provider fault: no retry, no
+        // fall-through — the student (or their browser) already left.
+        if (isAborted?.()) throw err;
+        const kind = classifyProviderFailure(err);
+        // Same-model retries stay bounded to the r176a fast-fail set;
+        // a timeout buys a fresh model, not a second slow wait.
+        const sameModelRetryable = kind !== 'timeout' && RETRYABLE_KINDS.has(kind);
+        if (attemptNo < AI_CHAIN_MODEL_RETRIES && sameModelRetryable) {
+          const delay = backoffDelayMs(attemptNo);
+          log({ err, kind, model, retryInMs: delay }, 'AI provider transient failure — retrying once on the same model');
+          await sleep(delay);
+          continue;
+        }
+        break; // exhausted (or non-transient) → next model
+      }
+    }
+    if (mi < chain.length - 1) {
+      const delay = backoffDelayMs(0);
+      log(
+        { failedModel: model, nextModel: chain[mi + 1], fallbackInMs: delay },
+        'AI model failed — falling through to the next model in the chain',
+      );
+      await sleep(delay);
+    }
+  }
+  throw lastError;
+}
+
+/** The route-facing JSON call: the model chain (per-model one bounded
+ * retry, then fall-through — see runModelChain). Logs each retried or
+ * fallen-back failure (the log keeps the provider's body excerpt; the
+ * student and telemetry get the classified kind). Exported for the
+ * ai-provider test pins; `sleep` is injectable so tests pin the
+ * backoff without wall-clock waits. */
 export async function callProviderWithRetry(
   cfg: AiProviderConfig,
   messages: readonly AiChatMessage[],
   log: (obj: Record<string, unknown>, msg: string) => void,
+  sleep: AiRetrySleeper = defaultRetrySleeper,
 ): Promise<AiCompletion> {
-  try {
-    return await callOpenAiCompatible(cfg, messages);
-  } catch (err) {
-    const kind = classifyProviderFailure(err);
-    if (!RETRYABLE_KINDS.has(kind)) throw err;
-    const delay =
-      RETRY_DELAY_MS_MIN + Math.floor(Math.random() * (RETRY_DELAY_MS_MAX - RETRY_DELAY_MS_MIN));
-    log({ err, kind, retryInMs: delay }, 'AI provider transient failure — retrying once');
-    await new Promise((resolve) => setTimeout(resolve, delay));
-    return callOpenAiCompatible(cfg, messages);
+  return runModelChain(
+    cfg,
+    (model) => callOpenAiCompatible(cfg, messages, model),
+    log,
+    sleep,
+  );
+}
+
+/**
+ * The provider request headers — shared verbatim by the JSON client and
+ * the SSE client so the two transports cannot drift (auth, content
+ * type, and r175's OpenRouter attribution headers which ride ONLY when
+ * the base URL is OpenRouter's).
+ */
+export function buildProviderHeaders(cfg: AiProviderConfig): Record<string, string> {
+  const headers: Record<string, string> = {
+    Authorization: `Bearer ${cfg.apiKey}`,
+    'Content-Type': 'application/json',
+  };
+  if (isOpenRouterBaseUrl(cfg.baseUrl)) {
+    headers['HTTP-Referer'] = OPENROUTER_REFERER;
+    headers['X-Title'] = OPENROUTER_TITLE;
   }
+  return headers;
 }
 
 /**
  * POST {baseUrl}/chat/completions with the OpenAI-compatible contract.
  * Errors are ALWAYS AiProviderError with a classified kind (r176a:
  * timeout, non-2xx, transport, or unparseable payload). The route calls
- * this through callProviderWithRetry (ONE bounded retry for the
- * fast-fail transient kinds); a genuinely failing provider must still
- * surface, never silently loop against a paid quota.
+ * this through callProviderWithRetry (the r323 model-chain driver: per
+ * model ONE bounded retry for the fast-fail transient kinds, then a
+ * fall-through to the next model in the chain); a genuinely failing
+ * provider must still surface, never silently loop against a paid quota.
+ *
+ * r323 B1.1: the optional `modelOverride` pins ONE model id on the wire
+ * (the chain driver passes each chain member in turn — per-model
+ * failures stay attributable). Without the override the historical wire
+ * shape is preserved exactly: the OpenRouter `models` array when one is
+ * configured (router-side routing), else the plain `model` field.
  */
 export async function callOpenAiCompatible(
   cfg: AiProviderConfig,
   messages: readonly AiChatMessage[],
+  modelOverride?: string,
 ): Promise<AiCompletion> {
-  const headers: Record<string, string> = {
-    Authorization: `Bearer ${cfg.apiKey}`,
-    'Content-Type': 'application/json',
-  };
-  // r175: OpenRouter's optional app-attribution headers — sent only
-  // when the base URL is OpenRouter's, so every other provider sees the
-  // exact same request shape as before (no unrelated behavior change).
-  if (isOpenRouterBaseUrl(cfg.baseUrl)) {
-    headers['HTTP-Referer'] = OPENROUTER_REFERER;
-    headers['X-Title'] = OPENROUTER_TITLE;
-  }
+  const headers = buildProviderHeaders(cfg);
   let res: Response;
   try {
     res = await fetch(`${cfg.baseUrl.replace(/\/+$/, '')}/chat/completions`, {
       method: 'POST',
       headers,
-      /* r176i: OpenRouter's fallback routing — when an ordered models
-       * list is configured, send ONLY the `models` array (measured
-       * live: the array is ignored when `model` rides along, and the
-       * API 400s above 3 ids — both probed directly 2026-10-16). Any
-       * other provider keeps the plain `model` field. Free-only by
-       * contract: the env var documents that every id must be a
-       * `:free` model. */
+      /* r176i + r323: the chain driver pins ONE model per attempt
+       * (`modelOverride` — per-model failures stay attributable);
+       * without an override the historical wire shape holds — the
+       * OpenRouter `models` array when configured (measured live:
+       * the array is ignored when `model` rides along, and the API
+       * 400s above 3 ids — probed 2026-10-16), else the plain
+       * `model` field. */
       body: JSON.stringify({
-        ...(cfg.models.length > 0 && isOpenRouterBaseUrl(cfg.baseUrl)
-          ? { models: cfg.models }
-          : { model: cfg.model }),
+        ...(modelOverride !== undefined
+          ? { model: modelOverride }
+          : cfg.models.length > 0 && isOpenRouterBaseUrl(cfg.baseUrl)
+            ? { models: cfg.models }
+            : { model: cfg.model }),
         messages,
         temperature: AI_TEMPERATURE,
         max_tokens: AI_MAX_OUTPUT_TOKENS,
@@ -624,4 +736,242 @@ export function getAiProvider(): AiProviderConfig | null {
         }
       : null;
   return cachedProvider;
+}
+
+/* ────────────────────────────────────────────────────────────────
+ *  r323 B1.1 — SSE token streaming (server → student)
+ * ──────────────────────────────────────────────────────────────── */
+
+/** The three SSE events the streaming chat endpoint emits. The wire
+ * frame is exactly `event: <name>\ndata: <json>\n\n` — the format every
+ * EventSource-compatible parser (and the FE's fetch+reader consumer)
+ * splits on. Pure — pinned in tests. */
+export type AiSseEvent = 'token' | 'done' | 'error';
+
+export function sseFrame(event: AiSseEvent, data: unknown): string {
+  return `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`;
+}
+
+/** Max characters of the local composer's reply per `token` event —
+ * small enough that the bubble visibly "types", large enough that a
+ * 600-char reply is ~25 frames, not hundreds. */
+export const AI_LOCAL_STREAM_CHUNK_MAX = 24;
+
+/**
+ * Chunk the LOCAL composer's reply into stream-sized pieces (r323 B1.1:
+ * the rule-based engine has no tokens to stream, so it streams its
+ * COMPOSED reply — the honest transport parity note in the UI stays
+ * «الوضع المحلي» regardless). Splits on whitespace runs; a newline
+ * always closes the current chunk (lines arrive as units, so the RTL
+ * bubble renders line-by-line); single pieces longer than `maxLen`
+ * (one long word) pass through whole — no word is ever split.
+ * GUARANTEE: `''.concat(...chunks) === text` (lossless round trip).
+ * Pure — pinned in tests.
+ */
+export function chunkLocalReply(text: string, maxLen: number = AI_LOCAL_STREAM_CHUNK_MAX): string[] {
+  if (text.length === 0) return [];
+  const pieces = text.match(/\s+|\S+/g) ?? [];
+  const chunks: string[] = [];
+  let buf = '';
+  for (const piece of pieces) {
+    if (piece.includes('\n')) {
+      // The newline (and any spaces around it) rides the closing chunk.
+      chunks.push(buf + piece);
+      buf = '';
+      continue;
+    }
+    if (buf.length > 0 && buf.length + piece.length > maxLen) {
+      chunks.push(buf);
+      buf = piece;
+    } else {
+      buf += piece;
+    }
+  }
+  if (buf.length > 0) chunks.push(buf);
+  return chunks;
+}
+
+/** Stream outcome — the same honesty contract as AiCompletion: tokens
+ * come from the provider's usage block ONLY (0 when absent), and
+ * `model` is the provider-REPORTED id (null when omitted — the route's
+ * attributedModel() handles the fallback). */
+export interface AiStreamResult {
+  content: string;
+  inputTokens: number;
+  outputTokens: number;
+  model: string | null;
+}
+
+/**
+ * POST {baseUrl}/chat/completions with `stream: true` and consume the
+ * provider's SSE reply. Emits every non-empty `choices[0].delta.content`
+ * through `onDelta` the moment it arrives; accumulates the full text;
+ * reads the honest usage block from the final chunk when the provider
+ * sends one (`stream_options.include_usage` — OpenAI/OpenRouter/Groq/
+ * DeepSeek all honor it; absence just keeps tokens 0, never estimated).
+ *
+ * Errors are ALWAYS AiProviderError with the SAME classified kinds as
+ * the JSON client (non-2xx before streaming, timeout/transport while
+ * reading, invalid_response for an empty reply). Malformed keep-alive
+ * lines are tolerated (some compatible providers emit comments /
+ * blank data lines); a stream that ends with no content is a failure,
+ * not a reply.
+ */
+export async function streamOpenAiCompatible(
+  cfg: AiProviderConfig,
+  model: string,
+  messages: readonly AiChatMessage[],
+  onDelta: (delta: string) => void,
+  signal?: AbortSignal,
+): Promise<AiStreamResult> {
+  const headers = buildProviderHeaders(cfg);
+  // The per-model round-trip ceiling (AI_TIMEOUT_MS) races the client's
+  // own abort controller — whichever fires first wins. AbortSignal.any
+  // is Node ≥20.3 (the engines floor is >=20; CI pins 22).
+  const timeoutSignal = AbortSignal.timeout(cfg.timeoutMs);
+  const composed = signal ? AbortSignal.any([signal, timeoutSignal]) : timeoutSignal;
+  let res: Response;
+  try {
+    res = await fetch(`${cfg.baseUrl.replace(/\/+$/, '')}/chat/completions`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        // ONE pinned model per attempt — the chain driver (below) owns
+        // the ordered fall-through, so per-model failures stay
+        // attributable on the wire.
+        model,
+        messages,
+        temperature: AI_TEMPERATURE,
+        max_tokens: AI_MAX_OUTPUT_TOKENS,
+        stream: true,
+        stream_options: { include_usage: true },
+      }),
+      signal: composed,
+    });
+  } catch (err) {
+    const name = (err as { name?: string })?.name;
+    throw new AiProviderError(
+      name === 'TimeoutError'
+        ? `provider stream timeout after ${cfg.timeoutMs}ms`
+        : `provider stream transport failure: ${(err as Error).message}`,
+      name === 'TimeoutError' ? 'timeout' : 'transport',
+    );
+  }
+
+  if (!res.ok) {
+    const bodyText = await res.text().catch(() => '');
+    const kind: AiFailureKind =
+      res.status === 429 ? 'rate_limited' : res.status >= 500 ? 'provider_error' : 'provider_rejected';
+    throw new AiProviderError(
+      `provider stream HTTP ${res.status}: ${bodyText.slice(0, 300)}`,
+      kind,
+      res.status,
+    );
+  }
+  if (!res.body) {
+    throw new AiProviderError('provider stream returned no body', 'invalid_response');
+  }
+
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let content = '';
+  let inputTokens = 0;
+  let outputTokens = 0;
+  let reportedModel: string | null = null;
+  const toInt = (v: unknown): number =>
+    typeof v === 'number' && Number.isFinite(v) && v >= 0 ? Math.floor(v) : 0;
+
+  const handleDataLine = (line: string): void => {
+    const payload = line.slice('data:'.length).trim();
+    if (payload.length === 0 || payload === '[DONE]') return;
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(payload);
+    } catch {
+      // Keep-alive noise from a compatible provider — skipped, never
+      // treated as content.
+      return;
+    }
+    const chunk = parsed as {
+      choices?: Array<{ delta?: { content?: unknown } }>;
+      usage?: { prompt_tokens?: unknown; completion_tokens?: unknown };
+      model?: unknown;
+    };
+    const delta = chunk?.choices?.[0]?.delta?.content;
+    if (typeof delta === 'string' && delta.length > 0) {
+      content += delta;
+      onDelta(delta);
+    }
+    // Last-wins: the usage block (when the provider sends one) rides
+    // the FINAL chunk — a mid-stream empty block must not erase it.
+    if (chunk?.usage && (chunk.usage.prompt_tokens !== undefined || chunk.usage.completion_tokens !== undefined)) {
+      inputTokens = toInt(chunk.usage.prompt_tokens);
+      outputTokens = toInt(chunk.usage.completion_tokens);
+    }
+    const m = parseModelId(chunk?.model);
+    if (m) reportedModel = m;
+  };
+
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let nl: number;
+      while ((nl = buffer.indexOf('\n')) !== -1) {
+        const line = buffer.slice(0, nl).replace(/\r$/, '');
+        buffer = buffer.slice(nl + 1);
+        if (line.startsWith('data:')) handleDataLine(line);
+        // `: comment` / `event:` / other lines are ignored — an
+        // OpenAI-compatible chat stream carries everything on data lines.
+      }
+    }
+    // A stream may end without a trailing newline on its last line.
+    if (buffer.startsWith('data:')) handleDataLine(buffer);
+  } catch (err) {
+    const name = (err as { name?: string })?.name;
+    throw new AiProviderError(
+      name === 'TimeoutError'
+        ? `provider stream timeout after ${cfg.timeoutMs}ms`
+        : `provider stream transport failure: ${(err as Error).message}`,
+      name === 'TimeoutError' ? 'timeout' : 'transport',
+    );
+  }
+
+  if (content.trim().length === 0) {
+    throw new AiProviderError(
+      'parseChatCompletion: no message content in provider response',
+      'invalid_response',
+    );
+  }
+  return { content, inputTokens, outputTokens, model: reportedModel };
+}
+
+/**
+ * The SSE path's model-chain call — the SAME driver, the SAME policy
+ * (per-model one bounded retry for fast-fail transients, jittered
+ * exponential backoff, fall-through on timeout/exhaustion) as the JSON
+ * path, so the two transports cannot drift. Deltas flow to `onDelta`
+ * only for the model that ultimately answers: a model that fails
+ * BEFORE any token was emitted falls through silently; the driver has
+ * no mid-stream recovery (once tokens reached the student, a failure
+ * surfaces as the SSE `error` event — re-routing mid-sentence would
+ * stitch two models' prose into one lie of a reply).
+ */
+export async function streamProviderWithChain(
+  cfg: AiProviderConfig,
+  messages: readonly AiChatMessage[],
+  onDelta: (delta: string) => void,
+  log: (obj: Record<string, unknown>, msg: string) => void,
+  externalSignal?: AbortSignal,
+  sleep: AiRetrySleeper = defaultRetrySleeper,
+): Promise<AiStreamResult> {
+  return runModelChain(
+    cfg,
+    (model) => streamOpenAiCompatible(cfg, model, messages, onDelta, externalSignal),
+    log,
+    sleep,
+    () => externalSignal?.aborted ?? false,
+  );
 }

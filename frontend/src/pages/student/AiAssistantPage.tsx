@@ -1,5 +1,24 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bot, Send, Sparkles, AlertCircle, ArrowLeft, Brain, RefreshCw, Plus, Trash2, UserRound } from 'lucide-react';
+import {
+  Bot,
+  Send,
+  Sparkles,
+  AlertCircle,
+  ArrowLeft,
+  Brain,
+  RefreshCw,
+  Plus,
+  Trash2,
+  UserRound,
+  /* r323 B1.1 — streaming + per-answer affordances */
+  Square,
+  Copy,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
+  RotateCcw,
+  Clock3,
+} from 'lucide-react';
 import { Card, Badge, AlertRow } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
 /* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
@@ -21,6 +40,19 @@ import {
   type AiMessageRow,
 } from '../../hooks/useResources';
 import { apiErrorMessage, formatRelativeAr, countAr } from '../../lib/format';
+/* r323 B1.1 — the SSE streaming client (the AI section of lib/api):
+ * fetch + ReadableStream consumption, the pure frame parser, the typed
+ * pre-stream HTTP error, the per-answer feedback call, and the daily
+ * quota phrase matcher. The JSON mutation (useAiChat) STAYS as the
+ * fallback transport — same endpoint, same engine, honestly labeled. */
+import {
+  AiStreamHttpError,
+  canStreamAi,
+  isDailyQuotaMessage,
+  sendAiFeedback,
+  streamAiChat,
+} from '../../lib/api';
+import { queryClient } from '../../lib/queryClient';
 import { formatReplyBlocks } from './aiReplyFormat';
 import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
 import '../../styles/r305-research-pdf-ai.css'; /* R305-A7 «Heron»: لغة العائلة التقنيّة — يُستورد مباشرة بعد ai.css (عقد §0) */
@@ -53,6 +85,19 @@ interface ChatMsg {
    * the provider's own `model` field. */
   engine?: string;
   model?: string;
+  /* r323 B1.1 — streaming + per-answer state:
+   *  · `streaming` marks the bubble tokens are arriving into (the
+   *    cursor rides it; it finalizes into a plain bubble on done, a
+   *    partial bubble on stop, and never persists — the server only
+   *    writes a turn after a COMPLETE reply exists);
+   *  · `messageId` is the persisted assistant row's id (the SSE `done`
+   *    frame / the JSON envelope's additive field) — the key the
+   *    thumbs up/down feedback targets; absent = no feedback buttons;
+   *  · `rating` is the optimistic thumbs state (±1, the server's
+   *    SMALLINT contract; reverted honestly if the write fails). */
+  streaming?: boolean;
+  messageId?: string;
+  rating?: 1 | -1;
 }
 
 /* Role-aware first questions. The student set rides the mastery-aware
@@ -97,6 +142,21 @@ const REAL_GREETING_OTHER =
  * no claims about the provider's downstream handling. */
 const PRIVACY_DISCLOSURE =
   'إشعار الخصوصيّة: تُرسَل رسائلك وبيانات إتقانك إلى مزوّد ذكاء اصطناعيّ خارجيّ (المسمّى في الشارة أعلاه) لتوليد الردّ.';
+
+/* r323 B1.1 — the daily-quota card («وصلتَ حدَّ اليوم»). The card's
+ * body prefers the SERVER's own Arabic rejection verbatim (the honest
+ * cause, including the exact limit number); this fallback covers the
+ * preemptive render (the `done` frame said remaining = 0 — no
+ * rejection has happened yet, so there is no server sentence to show).
+ * The card is a STATE, not a dead end: the composer stays enabled (the
+ * server, not the client, owns the limit — it lifts at the UTC
+ * boundary, and the standing rate limiter is still the real gate). */
+const DAILY_QUOTA_FALLBACK_NOTE =
+  'انتهت حصّتك اليوميّة من أسئلة المساعد الذكيّ — عُد غدًا أو تابع من محادثاتك السابقة.';
+/* The streamed-turn quota sentinel: the `done` frame's `remaining` is
+ * omitted entirely when the quota store was unavailable (0 could then
+ * mean «unknown», never «exhausted» — no invented card). */
+const QUOTA_UNKNOWN = -1;
 
 /**
  * r164g — map stored conversation rows to the transcript shape.
@@ -224,11 +284,40 @@ export default function AiAssistantPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const scroller = useRef<HTMLDivElement>(null);
 
+  /* r323 B1.1 — the SSE streaming state machine. 'connecting' = the
+   * request is in flight (no token yet — the typing dots own the
+   * moment); 'writing' = deltas are landing in the streaming bubble.
+   * The AbortController rides a ref (the stop button cancels without a
+   * re-render of its own). */
+  const [streamPhase, setStreamPhase] = useState<'idle' | 'connecting' | 'writing'>('idle');
+  const abortRef = useRef<AbortController | null>(null);
+  /* The daily-quota card state: the server's own rejection message
+   * when one arrived, else the honest fallback copy. null = no card. */
+  const [quotaLimited, setQuotaLimited] = useState<string | null>(null);
+  /* The last known per-user remaining-ask count (the `done` frame's
+   * quota telemetry). QUOTA_UNKNOWN = the server said nothing — no
+   * number is ever invented. Surfaced nowhere yet; the card renders
+   * when the count REACHES 0. */
+  const [quotaRemaining, setQuotaRemaining] = useState<number>(QUOTA_UNKNOWN);
+  /* Transient «تم النسخ» state for the per-answer copy affordance. */
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const copiedTimer = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      // Unmount (or a new conversation): cancel an in-flight stream and
+      // the copy-flash timer — no setState on a dead component.
+      abortRef.current?.abort();
+      if (copiedTimer.current !== null) window.clearTimeout(copiedTimer.current);
+    },
+    [],
+  );
+
   /* Pending honesty (r164g): everything that could strand or duplicate
    * an in-flight exchange is disabled while a reply or a conversation
    * switch is pending — the input, the chips, the suggestions, and
-   * every conversation row. */
-  const busy = chat.isPending || convLoad.phase === 'loading';
+   * every conversation row. r323 B1.1: an in-flight STREAM counts —
+   * the composer locks and the send slot turns into the stop button. */
+  const busy = chat.isPending || convLoad.phase === 'loading' || streamPhase !== 'idle';
 
   /* r305-A7 a11y — the busy-window focus restore: the pending turn
    * disables the composer, the quick chips and the conversation rows,
@@ -280,14 +369,169 @@ export default function AiAssistantPage() {
     });
   }, [messages, chat.isPending, reducedMotion]);
 
-  const deliver = async (t: string) => {
+  /* ── r323 B1.1 — the reply delivery dispatcher ─────────────────────
+   *
+   * The SAME user turn rides whichever transport the environment
+   * supports, against the SAME endpoint (POST /ai/chat):
+   *  · STREAM (default in every real browser): `?stream=1` SSE —
+   *    tokens render the moment they arrive, the stop button cancels,
+   *    and the `done` frame (the server's own final turn) replaces the
+   *    client buffer so a transport drop can never truncate the answer.
+   *  · JSON (no streaming primitives / 401): the historical mutation —
+   *    it re-enters the axios instance and KEEPS the 401-refresh
+   *    interceptor the raw fetch path lacks.
+   * The fallback rules are honesty-bounded, not error-swallowing:
+   * a PRE-STREAM failure (fetch never reached the server, or the auth
+   * gate rejected before anything was consumed) falls back; a REAL
+   * rejection (spent daily quota, rate limiter, provider outage) is
+   * rendered — re-asking would double-consume the daily quota and
+   * could stitch two answers into one lie. */
+
+  /** Push the empty bubble the tokens stream into. Called only once
+   * the SSE response HEADERS arrived — a pre-flight failure leaves
+   * nothing on screen to clean up before the JSON fallback. */
+  const openStreamingBubble = (streamed: { value: boolean }): void => {
+    if (streamed.value) return;
+    streamed.value = true;
+    setStreamPhase('writing');
+    setMessages((m) => [...m, { role: 'bot', text: '', streaming: true }]);
+  };
+
+  const appendToken = (delta: string): void => {
+    setMessages((m) => {
+      const next = [...m];
+      const last = next.length - 1;
+      if (last >= 0 && next[last]?.streaming) {
+        next[last] = { ...next[last]!, text: next[last]!.text + delta };
+      }
+      return next;
+    });
+  };
+
+  const deliverStreamed = async (t: string): Promise<void> => {
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setStreamPhase('connecting');
+    const streamed = { value: false };
+    try {
+      const done = await streamAiChat({
+        conversationId,
+        message: t,
+        signal: controller.signal,
+        onToken: (delta) => {
+          openStreamingBubble(streamed);
+          appendToken(delta);
+        },
+      });
+      // done: the SERVER's final turn replaces whatever the client
+      // buffer accumulated (honest by construction — the persisted
+      // answer is exactly what renders). An empty-token stream that
+      // somehow completed still gets its bubble here.
+      openStreamingBubble(streamed);
+      setMessages((m) => {
+        const next = [...m];
+        const last = next.length - 1;
+        if (last >= 0 && next[last]?.streaming) {
+          next[last] = {
+            role: 'bot',
+            text: done.reply,
+            engine: done.engine,
+            model: done.model,
+            messageId: done.messageId,
+          };
+        } else {
+          next.push({
+            role: 'bot',
+            text: done.reply,
+            engine: done.engine,
+            model: done.model,
+            messageId: done.messageId,
+          });
+        }
+        return next;
+      });
+      setConversationId(done.conversationId);
+      // Quota telemetry from the done frame (omitted = unknown — no
+      // invented number, no invented card). remaining === 0 renders
+      // the «وصلتَ حدَّ اليوم» card preemptively: the NEXT ask will
+      // be rejected, and the card says so before the failure does.
+      if (typeof done.remaining === 'number') {
+        setQuotaRemaining(done.remaining);
+        setQuotaLimited(done.remaining <= 0 ? DAILY_QUOTA_FALLBACK_NOTE : null);
+      }
+      // A streamed turn may have CREATED a conversation — the sidebar
+      // refreshes exactly like the JSON mutation's onSuccess does
+      // (the module-singleton client; the page renders without a
+      // QueryClientProvider in the unit-test harness).
+      void queryClient.invalidateQueries({ queryKey: ['ai', 'conversations'] });
+    } catch (err) {
+      if (controller.signal.aborted) {
+        // STOP pressed — a cancellation, not an outage. The server
+        // persisted nothing for an aborted turn: the partial text (if
+        // any arrived) stays as an honest untagged bubble with no
+        // feedback affordances; an empty one disappears entirely.
+        setMessages((m) =>
+          m.flatMap((msg, i) => {
+            if (i === m.length - 1 && msg.streaming) {
+              return msg.text.trim().length > 0 ? [{ role: 'bot' as const, text: msg.text }] : [];
+            }
+            return [msg];
+          }),
+        );
+        return;
+      }
+      if (err instanceof AiStreamHttpError) {
+        // The server spoke: its envelope code + Arabic message win
+        // verbatim. The daily-quota 429 renders the «وصلتَ حدَّ اليوم»
+        // card (the one 429 that is a state, not a retryable row).
+        if (isDailyQuotaMessage(err.serverMessage)) {
+          setQuotaLimited(err.serverMessage);
+          return;
+        }
+        setMessages((m) => [
+          ...m,
+          {
+            role: 'bot',
+            text: err.serverMessage,
+            error: true,
+            retryText: t,
+            code: err.code,
+          },
+        ]);
+        return;
+      }
+      // Pre-stream transport failure (fetch never reached the server —
+      // e.g. offline): rethrow to the dispatcher's JSON fallback.
+      throw err;
+    } finally {
+      abortRef.current = null;
+      setStreamPhase('idle');
+    }
+  };
+
+  /** The JSON grammar — the historical path, byte-for-byte (the
+   * optimistic-bubble contract, the retry affordance shape, and the
+   * exact mutation-argument shape the unit tests pin ride on it). */
+  const deliverJson = async (t: string): Promise<void> => {
     try {
       const res = await chat.mutateAsync({ conversationId, message: t });
       setConversationId(res.conversationId);
       // r166d: the turn's engine attribution rides the message row so
       // the bubble can name WHICH engine produced it — the boot-level
       // badge can flip across a redeploy; the per-turn tag cannot lie.
-      setMessages((m) => [...m, { role: 'bot', text: res.reply, engine: res.engine, model: res.model }]);
+      // r323 B1.1: the envelope's additive `messageId` (the persisted
+      // assistant row) arms the per-answer feedback on JSON turns too;
+      // an older backend payload simply omits it (no buttons, no lie).
+      setMessages((m) => [
+        ...m,
+        {
+          role: 'bot',
+          text: res.reply,
+          engine: res.engine,
+          model: res.model,
+          messageId: (res as { messageId?: string }).messageId,
+        },
+      ]);
     } catch (err) {
       // Recoverable failure: the exchange stays in the log with a retry
       // affordance instead of pretending nothing happened. The server's
@@ -296,17 +540,58 @@ export default function AiAssistantPage() {
       // cause (r164g; apiErrorMessage's Arabic guard keeps Latin
       // transport prose out of the RTL log). r305-A7: the envelope's
       // own support code rides the row verbatim when present.
+      // r323 B1.1: the DAILY-quota 429 (the server's own «وصلتَ حدَّ
+      // الأسئلة اليوميّ» sentence) is a state, not a dead error row —
+      // it renders the quota card. The standing rate limiter's 429s
+      // keep the recoverable row (a retry after the window is honest).
+      const serverMsg = apiErrorMessage(err, '');
+      if (serverMsg && isDailyQuotaMessage(serverMsg)) {
+        setQuotaLimited(serverMsg);
+        return;
+      }
       setMessages((m) => [
         ...m,
         {
           role: 'bot',
-          text: apiErrorMessage(err, 'تعذَّر الاتصال بالمساعد الآن.'),
+          text: serverMsg || 'تعذَّر الاتصال بالمساعد الآن.',
           error: true,
           retryText: t,
           code: apiErrorCode(err) ?? undefined,
         },
       ]);
     }
+  };
+
+  const deliver = async (t: string): Promise<void> => {
+    if (canStreamAi()) {
+      try {
+        await deliverStreamed(t);
+        return;
+      } catch (err) {
+        // ONLY a never-reached-server failure lands here (see the
+        // dispatcher header): fall back to the JSON grammar — the
+        // mutation re-enters axios and keeps the refresh interceptor.
+        if (err instanceof AiStreamHttpError && err.status === 401) {
+          await deliverJson(t);
+          return;
+        }
+        if (err instanceof AiStreamHttpError) {
+          // Belt-and-braces: a typed rejection that escaped the stream
+          // handler still renders honestly (never a silent retry).
+          if (isDailyQuotaMessage(err.serverMessage)) {
+            setQuotaLimited(err.serverMessage);
+          } else {
+            setMessages((m) => [
+              ...m,
+              { role: 'bot', text: err.serverMessage, error: true, retryText: t, code: err.code },
+            ]);
+          }
+          return;
+        }
+        // Anything else = pre-flight (network) — JSON fallback below.
+      }
+    }
+    await deliverJson(t);
   };
 
   const send = async (text?: string) => {
@@ -328,6 +613,66 @@ export default function AiAssistantPage() {
     if (!failed?.error || !failed.retryText || chat.isPending) return;
     setMessages((m) => m.filter((_, i) => i !== index));
     void deliver(failed.retryText);
+  };
+
+  /* ── r323 B1.1 — the per-answer affordances ───────────────────────── */
+
+  /** STOP: cancel the in-flight SSE stream. The reader throws
+   * AbortError; deliverStreamed keeps the partial text (or drops the
+   * empty bubble) and the server persists nothing — a cancellation,
+   * never an outage row. */
+  const stopStreaming = () => {
+    abortRef.current?.abort();
+  };
+
+  /** Copy one assistant answer to the clipboard, with the transient
+   * «تم النسخ» flash. An unavailable/failed clipboard no-ops honestly
+   * (no fake success state). */
+  const copyAnswer = (index: number, text: string) => {
+    const clip = navigator.clipboard;
+    if (!clip) return;
+    clip
+      .writeText(text)
+      .then(() => {
+        setCopiedIdx(index);
+        if (copiedTimer.current !== null) window.clearTimeout(copiedTimer.current);
+        copiedTimer.current = window.setTimeout(() => {
+          setCopiedIdx((cur) => (cur === index ? null : cur));
+          copiedTimer.current = null;
+        }, 2000);
+      })
+      .catch(() => undefined);
+  };
+
+  /** Thumbs up/down on a PERSISTED answer (messageId). The optimistic
+   * rating flips immediately; a failed write reverts — no fake ✓. The
+   * backend upserts the (messageId, userId) pair, so re-clicking (or
+   * switching sides) honestly rewrites the one row. */
+  const rateAnswer = (index: number, messageId: string, rating: 1 | -1) => {
+    setMessages((m) => m.map((msg, j) => (j === index ? { ...msg, rating } : msg)));
+    sendAiFeedback(messageId, rating).catch(() => {
+      setMessages((m) => m.map((msg, j) => (j === index ? { ...msg, rating: undefined } : msg)));
+    });
+  };
+
+  /** Regenerate the LAST answer: the question is re-delivered as a new
+   * turn in the SAME conversation (the previous attempt stays in the
+   * stored history as context — the model legitimately sees it) while
+   * the local log swaps the old answer out for the fresh one. The
+   * re-ask consumes quota like any ask — the honest cost of a second
+   * attempt. */
+  const regenerateAnswer = (botIndex: number) => {
+    if (busy) return;
+    let question: string | undefined;
+    for (let i = botIndex - 1; i >= 0; i -= 1) {
+      if (messages[i]?.role === 'user') {
+        question = messages[i]!.text;
+        break;
+      }
+    }
+    if (!question) return;
+    setMessages((m) => m.slice(0, botIndex));
+    void deliver(question);
   };
 
   const openConversation = async (id: string) => {
@@ -377,6 +722,17 @@ export default function AiAssistantPage() {
   };
 
   const convList = conversations.data ?? [];
+
+  /* r323 B1.1 — the transcript's action-row context. The greeting-only
+   * placeholder (the derived initial bubble) carries no affordances —
+   * there is no turn behind it yet. The LAST completed answer owns the
+   * regenerate affordance (only one answer can be re-asked at a time;
+   * older answers keep copy/feedback). */
+  const greetingOnly = messages.length === 1 && messages[0]!.role === 'bot' && !messages[0]!.error;
+  let lastAnswerIndex = -1;
+  transcript.forEach((m, i) => {
+    if (m.role === 'bot' && !m.error && !m.streaming && m.text.trim().length > 0) lastAnswerIndex = i;
+  });
 
   return (
     <div className="r305rp r319s-page">
@@ -578,6 +934,10 @@ export default function AiAssistantPage() {
                       ) : (
                         <div className="chat-bubble">
                           {m.role === 'bot' ? <ReplyText text={m.text} /> : <Multiline>{m.text}</Multiline>}
+                          {/* r323 B1.1: the streaming caret — tokens are
+                              still landing in THIS bubble (aria-hidden;
+                              the transcript's aria-live carries the text). */}
+                          {m.streaming && <span className="ai-stream-cursor" aria-hidden />}
                           {/* r166d per-turn engine tag — muted mono under the
                               reply text, existing utility classes only (no new
                               CSS). Honest in both directions: a real provider
@@ -586,6 +946,63 @@ export default function AiAssistantPage() {
                           {m.engine && (
                             <div className="font-mono text-xxs text-subtle ai-engine-tag">
                               {m.model ?? m.engine}
+                            </div>
+                          )}
+                          {/* r323 B1.1 — the per-answer affordances row
+                              (copy / thumbs / regenerate). Only COMPLETED
+                              answers get it (a streaming bubble and the
+                              greeting placeholder own none), feedback needs
+                              the persisted row's id, and regenerate belongs
+                              to the last answer alone. */}
+                          {m.role === 'bot' && !greetingOnly && !m.streaming && m.text.trim().length > 0 && (
+                            <div className="ai-msg-actions">
+                              <button
+                                type="button"
+                                className="ai-msg-action"
+                                onClick={() => copyAnswer(i, m.text)}
+                                aria-label="نسخ الردّ"
+                                title="نسخ الردّ"
+                              >
+                                <Icon icon={copiedIdx === i ? Check : Copy} size={13} />
+                                {copiedIdx === i && <span className="ai-msg-action-note">تم النسخ</span>}
+                              </button>
+                              {m.messageId && (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="ai-msg-action"
+                                    onClick={() => rateAnswer(i, m.messageId!, 1)}
+                                    aria-label="ردّ مفيد"
+                                    aria-pressed={m.rating === 1 || undefined}
+                                    title="ردّ مفيد"
+                                  >
+                                    <Icon icon={ThumbsUp} size={13} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="ai-msg-action"
+                                    onClick={() => rateAnswer(i, m.messageId!, -1)}
+                                    aria-label="ليس ردًّا مفيدًا"
+                                    aria-pressed={m.rating === -1 || undefined}
+                                    title="ليس ردًّا مفيدًا"
+                                  >
+                                    <Icon icon={ThumbsDown} size={13} />
+                                  </button>
+                                </>
+                              )}
+                              {i === lastAnswerIndex && (
+                                <button
+                                  type="button"
+                                  className="ai-msg-action"
+                                  onClick={() => regenerateAnswer(i)}
+                                  aria-label="إعادة توليد الردّ"
+                                  title="إعادة توليد الردّ"
+                                  disabled={busy}
+                                >
+                                  <Icon icon={RotateCcw} size={13} />
+                                  إعادة توليد
+                                </button>
+                              )}
                             </div>
                           )}
                         </div>
@@ -608,13 +1025,15 @@ export default function AiAssistantPage() {
                       </div>
                     </div>
                   )}
-                  {chat.isPending && (
+                  {(chat.isPending || streamPhase === 'connecting') && (
                     <div className="chat-msg bot">
                       <RoleLabel who="bot" />
-                      {/* Non-streaming API: the request is a single JSON
-                          round-trip — the status says what is true (the
+                      {/* Pre-stream honesty: the JSON request is a single
+                          round-trip and the SSE request has produced no
+                          token yet — the status says what is true (the
                           reply is being prepared), never a streaming
-                          pretense. Dots + label are tied to chat.isPending. */}
+                          pretense. Once tokens flow, the growing bubble
+                          itself is the indicator. */}
                       <div className="chat-typing r305ai-status">
                         <span className="chat-typing-dot" />
                         <span className="chat-typing-dot" />
@@ -631,6 +1050,21 @@ export default function AiAssistantPage() {
                 اللوحة (r261). r305-A7: صفّ الإدخال داخل سكة الإجراء
                 الوحيدة (.r305rp-next) والإرسال هو الزر المُشديد الوحيد. */}
             <div className="ai-composer">
+              {/* r323 B1.1 — the daily-quota card («وصلتَ حدَّ اليوم»): the
+                  honest state when the DB-backed per-user daily ask quota
+                  is spent. The server's own rejection copy wins when one
+                  arrived; the composer stays enabled (the server owns the
+                  limit — it lifts at the UTC boundary, and the standing
+                  per-minute rate limiter remains the real gate). */}
+              {quotaLimited && (
+                <div className="ai-quota-card" role="status">
+                  <Icon icon={Clock3} size={16} className="ai-quota-icon" />
+                  <div className="ai-quota-body">
+                    <p className="ai-quota-title">وصلتَ حدَّ اليوم</p>
+                    <p className="ai-quota-note">{quotaLimited}</p>
+                  </div>
+                </div>
+              )}
               {/* Quick-action chips above the input — Stitch signature.
                   r168b honesty gate: the local composer's REAL paths are
                   concept-explain and worst-gap surfacing (backend
@@ -690,20 +1124,51 @@ export default function AiAssistantPage() {
                   maxLength={4000}
                   rows={1}
                 />
-                <button
-                  type="button"
-                  className="btn accent chat-send"
-                  onClick={() => void send()}
-                  disabled={!input.trim() || busy}
-                  aria-disabled={busy || undefined}
-                  aria-label="إرسال"
-                >
-                  <Icon icon={Send} size={15} />
-                </button>
+                {streamPhase !== 'idle' ? (
+                  /* r323 B1.1 — while the SSE stream is in flight the
+                     send slot IS the stop button (one control, one
+                     moment): cancelling keeps the partial text and
+                     persists nothing server-side. */
+                  <button
+                    type="button"
+                    className="btn accent chat-send ai-stop"
+                    onClick={stopStreaming}
+                    aria-label="إيقاف التوليد"
+                    title="إيقاف التوليد"
+                  >
+                    <Icon icon={Square} size={14} />
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn accent chat-send"
+                    onClick={() => void send()}
+                    disabled={!input.trim() || busy}
+                    aria-disabled={busy || undefined}
+                    aria-label="إرسال"
+                  >
+                    <Icon icon={Send} size={15} />
+                  </button>
+                )}
               </div>
               {input.length > 3600 && (
                 <p className="text-xxs text-subtle ai-counter">
                   {input.length}/4000
+                </p>
+              )}
+              {/* r323 B1.1 — the honest remaining-ask counter from the
+                  `done` frame's quota telemetry (omitted = unknown — the
+                  line only renders when the server actually said a
+                  number). Hides while the quota card is up (the card is
+                  the state then). */}
+              {!quotaLimited && quotaRemaining !== QUOTA_UNKNOWN && (
+                <p className="text-xxs text-subtle ai-counter ai-quota-remaining">
+                  {countAr(quotaRemaining, [
+                    'سؤال واحد متبقٍّ اليوم',
+                    'سؤالان متبقّيان اليوم',
+                    'أسئلة متبقّية اليوم',
+                    'سؤالًا متبقّيًا اليوم',
+                  ])}
                 </p>
               )}
             </div>

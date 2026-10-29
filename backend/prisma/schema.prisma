@@ -1987,3 +1987,55 @@ model BinaryObject {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ────────────────────────────────────────────────────────────────
+//  AI cost control + answer feedback (r323 B1.1)
+// ────────────────────────────────────────────────────────────────
+// Additive to the AiTelemetry family: quota and budget counters keep
+// the SAME honesty ruling (tokens come from the provider's usage block
+// only — local mode writes 0, never an estimate). Rows are keyed by
+// the bare userId string (the AiTelemetry precedent — no FK), so these
+// tables never touch the User model and the migration stays purely
+// additive.
+
+// One row per USER: the CURRENT UTC day's ask counter. `dayKey`
+// ('YYYY-MM-DD') tells which day `used` belongs to; the route resets
+// stale rows via an updateMany CAS where dayKey ≠ today (the day
+// roll-over never read-modify-writes across statements).
+model AiQuota {
+  id     String @id @default(cuid())
+  userId String @unique
+  dayKey String
+  used   Int    @default(0)
+
+  @@index([dayKey])
+}
+
+// One row per MONTH: the platform-wide token budget counter.
+// `monthKey` ('YYYY-MM') is unique — the month roll-over starts a fresh
+// row. usedTokens accumulates REAL provider usage (input + output from
+// the usage block); estimatedCostMicros stays 0 until a real price
+// table exists (an honest zero, never a fabricated estimate).
+model AiBudget {
+  id                  String @id @default(cuid())
+  monthKey            String @unique
+  usedTokens          Int    @default(0)
+  estimatedCostMicros Int    @default(0)
+}
+
+// One rating per user per assistant answer (upsert — the last rating
+// wins). rating: 1 (helpful) / -1 (not helpful), SMALLINT on the wire.
+// The (messageId, userId) unique pair is both the idempotency key and
+// the ownership guarantee's complement: the route verifies the message
+// belongs to the caller's conversation before the upsert.
+model AiFeedback {
+  id        String   @id @default(cuid())
+  userId    String
+  messageId String
+  rating    Int      @db.SmallInt
+  createdAt DateTime @default(now())
+
+  @@unique([messageId, userId])
+  @@index([messageId])
+  @@index([userId])
+}

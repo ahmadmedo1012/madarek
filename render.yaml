@@ -98,6 +98,16 @@ services:
         sync: false
       - key: AI_MODELS
         sync: false
+      # r323 B1.1 — resilience + cost-control knobs, both optional:
+      # AI_TIMEOUT_MS is the per-model round-trip ceiling in ms
+      # (default 45000, bounds 5000..90000); AI_DAILY_LIMIT_DEFAULT is
+      # the per-user DAILY ask quota for the AI assistant (default 25,
+      # DB-backed via AiQuota, UTC day roll-over). sync:false so Render
+      # never requires them.
+      - key: AI_TIMEOUT_MS
+        sync: false
+      - key: AI_DAILY_LIMIT_DEFAULT
+        sync: false
       # R320 §C — boot-time test-account ensure. ON while the project is
       # in development (the owner's convenience bar: one easy account per
       # job, @test.ly / 12345678 — shared/testAccounts.ts). Idempotent

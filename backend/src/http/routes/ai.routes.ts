@@ -17,16 +17,25 @@ import {
   windowHistory,
   clipHistoryContent,
   callProviderWithRetry,
+  streamProviderWithChain,
   attributedModel,
   providerLabelFromBaseUrl,
   classifyProviderFailure,
   providerFailureMessage,
+  sseFrame,
+  chunkLocalReply,
   AiProviderError,
   AI_HISTORY_TURNS,
   AI_HISTORY_CHAR_CAP,
   type AiChatMessage,
   type MasteryFact,
 } from '../../lib/ai.js';
+import {
+  consumeDailyAskQuota,
+  recordMonthlyUsage,
+  AI_DAILY_LIMIT_ENV,
+  type AiQuotaState,
+} from '../../lib/ai/quota.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -488,6 +497,261 @@ async function composeReplyWithProvider(
   };
 }
 
+/* ── r323 B1.1 — the DB-backed cost-control layer ─────────────────── */
+
+/**
+ * The daily quota guard, BEST-EFFORT FAIL-OPEN: the daily quota is a
+ * cost-control ADD-ON, and the platform's chat availability is the
+ * pre-existing contract — if the quota store itself fails (migration
+ * not yet applied, transient DB outage), the ask proceeds and the
+ * standing per-user rate limiter (aiLimiter) stays the hard bound.
+ * A fail-closed quota would turn a bookkeeping outage into a chat
+ * outage. The store's failure is logged, never surfaced to the student.
+ */
+async function consumeQuotaBestEffort(userId: string): Promise<AiQuotaState> {
+  try {
+    return await consumeDailyAskQuota(prisma, userId);
+  } catch (err) {
+    logger.warn(
+      { err },
+      `AI daily quota store unavailable — failing OPEN (${AI_DAILY_LIMIT_ENV} cost control degraded; rate limiter still bounds)`,
+    );
+    return { allowed: true, used: 0, remaining: 0, limit: 0 };
+  }
+}
+
+/** The monthly budget counter — best-effort by the same ruling: a
+ * bookkeeping failure must never fail a chat that already succeeded. */
+async function recordBudgetBestEffort(tokens: number): Promise<void> {
+  try {
+    await recordMonthlyUsage(prisma, tokens);
+  } catch (err) {
+    logger.warn({ err }, 'AI monthly budget write failed (non-blocking)');
+  }
+}
+
+/** The honest Arabic 429 body for a spent daily quota (the FE renders
+ * it verbatim in the «وصلتَ حدّ اليوم» state card). */
+const dailyQuotaMessage = (limit: number): string =>
+  `وصلتَ حدَّ الأسئلة اليوميّ للمساعد الذكيّ (${limit} سؤالًا) — عُد غدًا أو تابع من محادثاتك السابقة.`;
+
+/* ── r323 B1.1 — the SSE streaming chat path ────────────────────────
+ *
+ * Same gates as the JSON path (authMiddleware, aiLimiter, the verified
+ * institution context, the same history window + grounding loaders,
+ * the same ONE-transaction turn writes after a reply exists, the same
+ * telemetry honesty). Transport differences, deliberately minimal:
+ *  · tokens stream to the student as `event: token` frames (the local
+ *    composer streams its COMPOSED reply in chunks — never an LLM
+ *    pretense; the UI badge stays «الوضع المحلي»);
+ *  · the final `event: done` carries the persisted ids, the per-turn
+ *    engine attribution, the REAL token counts, and the quota
+ *    `remaining` (omitted when the quota store was unavailable — no
+ *    invented number);
+ *  · failures emit a typed `event: error` (UPPER_SNAKE code + the
+ *    Arabic human message + a retryable flag) instead of an HTTP error
+ *    status — SSE headers are already sent;
+ *  · a client abort (stop button) ends the stream with NOTHING
+ *    persisted (the turn's writes only ever run after a complete reply)
+ *    and one honest failure-telemetry row.
+ */
+interface ChatStreamArgs {
+  req: import('express').Request;
+  res: import('express').Response;
+  userId: string;
+  message: string;
+  conv: { id: string } | null;
+  institutionId: string;
+  history: AiChatMessage[];
+  context: ChatContextLines;
+  quota: AiQuotaState;
+  startedAt: number;
+}
+
+async function handleChatStream(args: ChatStreamArgs): Promise<void> {
+  const { req, res, userId, message, conv, institutionId, history, context, quota, startedAt } = args;
+
+  // SSE headers — before anything else. `Content-Encoding: identity`
+  // opts the stream OUT of the platform's gzip middleware (its
+  // shouldCompress skips pre-encoded bodies): token frames must reach
+  // the socket immediately, not inside a buffering gzip window.
+  res.status(200).set({
+    'Content-Type': 'text/event-stream; charset=utf-8',
+    'Cache-Control': 'no-cache, no-transform',
+    Connection: 'keep-alive',
+    // Render's proxy must not buffer the stream.
+    'X-Accel-Buffering': 'no',
+    'Content-Encoding': 'identity',
+  });
+  if (typeof res.flushHeaders === 'function') res.flushHeaders();
+
+  // The client's stop button — surface as an abort signal for the
+  // provider stream, and mark the response dead for the write path.
+  const abort = new AbortController();
+  res.on('close', () => {
+    if (!res.writableEnded) abort.abort();
+  });
+
+  const writeEvent = (event: 'token' | 'done' | 'error', data: unknown): void => {
+    if (res.writableEnded || res.destroyed) return;
+    res.write(sseFrame(event, data));
+  };
+
+  const finishTurnWrites = async (
+    engineModel: string,
+    reply: string,
+    inputTokens: number,
+    outputTokens: number,
+  ): Promise<{ conversationId: string; messageId: string }> => {
+    // Same ONE-transaction shape as the JSON path: conversation create
+    // (first turn only) + both messages + telemetry, atomically, only
+    // after a complete reply exists.
+    const { conversationId: finalId, messageId } = await prisma.$transaction(async (tx) => {
+      const conversation =
+        conv ??
+        (await tx.aiConversation.create({
+          data: { userId, institutionId, title: conversationTitle(message) },
+        }));
+      await tx.aiMessage.create({
+        data: { conversationId: conversation.id, role: AiMessageRole.USER, content: message },
+      });
+      const assistantMsg = await tx.aiMessage.create({
+        data: {
+          conversationId: conversation.id,
+          role: AiMessageRole.ASSISTANT,
+          content: reply,
+          tokens: outputTokens,
+        },
+      });
+      await writeAiTelemetry(tx, {
+        userId,
+        latencyMs: Date.now() - startedAt,
+        success: true,
+        model: engineModel,
+        inputTokens,
+        outputTokens,
+      });
+      return { conversationId: conversation.id, messageId: assistantMsg.id };
+    });
+    // Budget bookkeeping AFTER the turn is persisted (best-effort).
+    await recordBudgetBestEffort(inputTokens + outputTokens);
+    return { conversationId: finalId, messageId };
+  };
+
+  const emitFailure = async (e: unknown, model?: string): Promise<void> => {
+    // Failure telemetry (best-effort, same honesty as the JSON catch:
+    // the classified kind is persisted; body excerpts stay log-only).
+    const failureKind = classifyProviderFailure(e);
+    const failureDetail = e instanceof AiProviderError && e.status ? ` (HTTP ${e.status})` : '';
+    try {
+      await writeAiTelemetry(prisma, {
+        userId,
+        latencyMs: Date.now() - startedAt,
+        success: false,
+        errorMessage: `${failureKind}${failureDetail}`.slice(0, 200),
+        model: model ?? aiRouteId ?? undefined,
+      });
+    } catch (telemetryErr) {
+      logger.warn({ err: telemetryErr }, 'aiTelemetry write failed (non-blocking)');
+    }
+    logger.warn({ err: e, kind: failureKind }, 'AI stream failed');
+    writeEvent('error', {
+      code: failureKind === 'rate_limited' ? 'PROVIDER_RATE_LIMITED' : 'PROVIDER_FAILURE',
+      message: providerFailureMessage(failureKind),
+      retryable: failureKind !== 'invalid_response',
+    });
+  };
+
+  try {
+    if (aiProvider) {
+      const system = isMasteryAwareRole(req.user!.role)
+        ? buildStudentSystemPrompt(context.masteryLines, context.courseLines)
+        : buildGenericSystemPrompt(context.teachingLines);
+      try {
+        const completion = await streamProviderWithChain(
+          aiProvider,
+          buildChatMessages(system, history, message),
+          (delta) => {
+            writeEvent('token', { t: delta });
+          },
+          (obj, msg) => logger.warn(obj, msg),
+          abort.signal,
+        );
+        // An abort that raced the final chunk: nothing persists, no done.
+        if (abort.signal.aborted || res.writableEnded) return;
+        const model = attributedModel(completion.model, aiRouteId!);
+        const { conversationId: finalId, messageId } = await finishTurnWrites(
+          model,
+          completion.content,
+          completion.inputTokens,
+          completion.outputTokens,
+        );
+        writeEvent('done', {
+          conversationId: finalId,
+          messageId,
+          // The server's own accumulated text — the client's buffer is
+          // replaced, not trusted (transport drops can never truncate
+          // the persisted answer on screen).
+          reply: completion.content,
+          engine: aiProviderLabel,
+          model,
+          inputTokens: completion.inputTokens,
+          outputTokens: completion.outputTokens,
+          // Citations placeholder — the grounding pipeline rides a later
+          // round; an empty array is the honest «none yet».
+          citations: [] as unknown[],
+          // Quota state — omitted entirely when the store was down (no
+          // invented number).
+          ...(quota.limit > 0 ? { remaining: quota.remaining } : {}),
+        });
+      } catch (e) {
+        if (abort.signal.aborted || res.writableEnded) {
+          // The student stopped generation — a cancellation, not an
+          // outage: honest failure telemetry, no error frame (nobody is
+          // listening), nothing persisted.
+          await emitFailure(new AiProviderError('client aborted the stream', 'transport'), undefined);
+          return;
+        }
+        // Mid-stream failure after tokens reached the student: the
+        // partial text stays unpersisted (the turn never completed) and
+        // the typed error frame explains the stop.
+        await emitFailure(e);
+      }
+      return;
+    }
+
+    // LOCAL mode: the rule-based composer streams its composed reply in
+    // chunks (transport parity with zero cost — and the engine tag
+    // stays «local / gap-aware-composer», never an LLM pretense).
+    const reply = await composeReply(userId, message, req.user!.role, institutionId);
+    if (abort.signal.aborted || res.writableEnded) return;
+    for (const chunk of chunkLocalReply(reply)) {
+      if (abort.signal.aborted || res.writableEnded) return;
+      writeEvent('token', { t: chunk });
+    }
+    const { conversationId: finalId, messageId } = await finishTurnWrites(AI_CHAT_MODEL, reply, 0, 0);
+    writeEvent('done', {
+      conversationId: finalId,
+      messageId,
+      reply,
+      engine: aiProviderLabel,
+      model: AI_CHAT_MODEL,
+      inputTokens: 0,
+      outputTokens: 0,
+      citations: [] as unknown[],
+      ...(quota.limit > 0 ? { remaining: quota.remaining } : {}),
+    });
+  } catch (e) {
+    // Non-provider plumbing failure (DB write failed, loader threw):
+    // headers are already gone, so the typed error frame carries it.
+    if (!abort.signal.aborted && !res.writableEnded) {
+      await emitFailure(e);
+    }
+  } finally {
+    if (!res.writableEnded) res.end();
+  }
+}
+
 router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => {
   const startedAt = Date.now();
   try {
@@ -514,6 +778,18 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
         })
       : null;
     if (conversationId && !conv) throw AppError.notFound('المحادثة غير موجودة');
+
+    /* r323 B1.1 — the DB-backed daily ask quota (AI_DAILY_LIMIT_DEFAULT,
+     * default 25): ONE increment per accepted ask, BEFORE any provider
+     * call (a doomed request must not pay for generation). Over the
+     * limit → the honest Arabic 429 the FE renders as the
+     * «وصلتَ حدّ اليوم» state card. Best-effort fail-open: a quota-store
+     * outage degrades to the standing rate limiter, never to a chat
+     * outage (see consumeQuotaBestEffort). */
+    const quota = await consumeQuotaBestEffort(userId);
+    if (!quota.allowed) {
+      throw AppError.tooMany(dailyQuotaMessage(quota.limit));
+    }
 
     /* P4 mode switch: openai mode loads the conversation's recent
      * turns (newest-first bounded read, re-oriented chronologically —
@@ -554,6 +830,29 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       );
     }
 
+    /* r323 B1.1 — the transport switch. The SAME endpoint serves both
+     * grammars: `?stream=1` (or `Accept: text/event-stream`) streams
+     * Server-Sent Events; every other client gets the historical JSON
+     * envelope UNCHANGED (older clients keep working — same auth, same
+     * rate limiter, same body shape, plus the additive quota header). */
+    const wantsStream =
+      req.query.stream === '1' || String(req.headers.accept ?? '').includes('text/event-stream');
+    if (wantsStream) {
+      await handleChatStream({
+        req,
+        res,
+        userId,
+        message,
+        conv,
+        institutionId: chatInstitutionId,
+        history,
+        context,
+        quota,
+        startedAt,
+      });
+      return;
+    }
+
     /* The reply engine: real provider when configured, local composer
      * otherwise. On provider failure the catch below writes failure
      * telemetry (with the attempted model) and surfaces one honest
@@ -565,7 +864,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
     // All chat writes (conversation create + both messages + telemetry)
     // in ONE transaction — previously three separate non-transactional
     // writes that could strand an orphan user message when a later write failed.
-    const { conversationId: finalId, assistantContent } = await prisma.$transaction(
+    const { conversationId: finalId, assistantContent, assistantMessageId } = await prisma.$transaction(
       async (tx) => {
         const conversation =
           conv ??
@@ -593,14 +892,34 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
           inputTokens: engine.inputTokens,
           outputTokens: engine.outputTokens,
         });
-        return { conversationId: conversation.id, assistantContent: assistantMsg.content };
+        return {
+          conversationId: conversation.id,
+          assistantContent: assistantMsg.content,
+          // r323 B1.1 (additive): the persisted assistant row's id — the
+          // per-answer feedback (POST /ai/feedback) targets it. The SSE
+          // path already carried it in the `done` frame; the JSON
+          // grammar stays at parity for the same reason.
+          assistantMessageId: assistantMsg.id,
+        };
       },
     );
+
+    // Budget bookkeeping after the turn is persisted (best-effort; the
+    // r323 B1.1 monthly AiBudget counter — REAL tokens only).
+    await recordBudgetBestEffort(engine.inputTokens + engine.outputTokens);
+
+    // r323 B1.1 (additive): the daily quota state rides the response
+    // header — omitted when the quota store was unavailable (limit 0 =
+    // unknown, never an invented number).
+    if (quota.limit > 0) res.setHeader('X-Ai-Quota-Remaining', String(quota.remaining));
 
     res.json({
       data: {
         conversationId: finalId,
         reply: assistantContent,
+        /* r323 B1.1 (additive): the persisted assistant row's id — the
+         * per-answer thumbs up/down (POST /ai/feedback) targets it. */
+        messageId: assistantMessageId,
         /* r166d (WS-F5) — per-turn engine attribution, additive: the
          * client can tag THIS reply with the engine that produced it
          * (the boot-level /ai/config badge can flip across a redeploy
@@ -649,6 +968,42 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       next(AppError.internal(providerFailureMessage(failureKind)));
       return;
     }
+    next(e);
+  }
+});
+
+/* r323 B1.1 — per-answer feedback (thumbs up/down). One rating per
+ * user per answer (the (messageId, userId) unique pair upserts — the
+ * last rating wins, so re-clicking updates honestly). Ownership: the
+ * message must resolve inside a conversation of the CALLER (a guessed
+ * cuid from another student's chat is a 404, the same envelope as a
+ * nonexistent id — no existence leak). rating is strictly ±1 (the
+ * schema column is SMALLINT); no rate limiter — a bounded, caller-owned
+ * row upsert, not an expensive AI call (same ruling as the conversation
+ * delete family). */
+export const aiFeedbackSchema = z
+  .object({
+    messageId: z.string().min(1).max(64),
+    rating: z.union([z.literal(1), z.literal(-1)]),
+  })
+  .strict();
+
+router.post('/feedback', validate(aiFeedbackSchema), async (req, res, next) => {
+  try {
+    const userId = req.user!.id;
+    const { messageId, rating } = req.body as z.infer<typeof aiFeedbackSchema>;
+    const msg = await prisma.aiMessage.findFirst({
+      where: { id: messageId, conversation: { userId } },
+      select: { id: true },
+    });
+    if (!msg) throw AppError.notFound('الرسالة غير موجودة');
+    await prisma.aiFeedback.upsert({
+      where: { messageId_userId: { messageId: msg.id, userId } },
+      create: { messageId: msg.id, userId, rating },
+      update: { rating },
+    });
+    res.json({ data: { ok: true } });
+  } catch (e) {
     next(e);
   }
 });

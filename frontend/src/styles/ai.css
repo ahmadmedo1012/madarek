@@ -165,3 +165,106 @@
 .ai-composer .chat-input-row {
   padding: var(--sp-1) var(--sp-1) 0;
 }
+
+/* ── r323 B1.1 — SSE streaming + per-answer affordances (additive) ──
+   لغة العائلة نفسها: حدّ شعري، ورق/حبر/نحاس، بلا خام لونيّ وحركة
+   عبر الرموز الحركية فقط (بوب التايبنج في student.css هو النموذج). */
+
+/* مؤشّر التدفّق — وميض هادئ في فقاعة الردّ أثناء وصول الدفعات.
+   الشفافية فقط (لا خصائص تخطيط داخل الإطارات)، ويُطفأ تمامًا تحت
+   prefers-reduced-motion (حزام base.css يقصّر المُدة أصلًا). */
+.ai-stream-cursor {
+  display: inline-block;
+  inline-size: 0.5em;
+  block-size: 1em;
+  margin-inline-start: var(--sp-0-5);
+  vertical-align: text-bottom;
+  border-radius: var(--r-full);
+  background: var(--accent);
+  animation: ai-caret-blink var(--motion-duration-stat) var(--motion-ease-standard) infinite;
+}
+@keyframes ai-caret-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-stream-cursor { animation: none; }
+}
+
+/* صفّ إجراءات الردّ (نسخ / إبهامان / إعادة توليد) — أزرار حدّيّة
+   صغيرة تحت نصّ الردّ داخل الفقاعة نفسها. الحالة المضغوطة (الإبهام
+   المُختار) بلغة --accent-soft النحاسيّة — اللون لا يحمل المعنى
+   وحده (aria-pressed يحمله). */
+.ai-msg-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex-wrap: wrap;
+  margin-block-start: var(--sp-1);
+}
+.ai-msg-action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  min-block-size: var(--sp-6);
+  padding-inline: var(--sp-2);
+  border: 1px solid var(--border-faint);
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--type-label-size-sm);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  transition:
+    color var(--motion-duration-short) var(--motion-ease-standard),
+    border-color var(--motion-duration-short) var(--motion-ease-standard),
+    background var(--motion-duration-short) var(--motion-ease-standard);
+}
+.ai-msg-action:hover {
+  color: var(--text);
+  border-color: var(--rule);
+  background: var(--surface-2);
+}
+.ai-msg-action:disabled {
+  opacity: var(--state-btn-disabled-opacity);
+  cursor: not-allowed;
+}
+.ai-msg-action[aria-pressed='true'] {
+  color: var(--accent-ink);
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.ai-msg-action-note {
+  font-weight: var(--fw-semibold);
+}
+/* أرضية اللمس 44px — نفس قاعدة أدوات المحادثة أعلاه (min-* فقط). */
+@media (pointer: coarse) {
+  .ai-surface .ai-msg-action { min-block-size: 44px; }
+}
+
+/* بطاقة الحصّة اليوميّة («وصلتَ حدَّ اليوم») — بطاقة حالة ذهبيّة
+   هادئة فوق المرسِل: عنوان + عبارة الخادم نفسها (السبب الصادق).
+   ليس خطأً قابلًا لإعادة المحاولة — لذلك بلا لغة .chat-error. */
+.ai-quota-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  border-radius: var(--r-xl);
+  background: color-mix(in srgb, var(--gold) 8%, var(--surface));
+  color: var(--gold-ink);
+}
+.ai-quota-icon { flex-shrink: 0; margin-block-start: var(--sp-0-5); }
+.ai-quota-title {
+  margin: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text);
+}
+.ai-quota-note {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: var(--lh-base);
+  color: var(--text-muted);
+}
