@@ -24,18 +24,28 @@
 
 ## Reviewer scores
 
-Pending — the independent reviewer pass runs against this evidence at the end of wave 1
-(the foreman's own eyes are recorded above; reviewer reports append below).
+Round 1 (2026-10-29): foreman-conducted eyes-on pass over the full evidence set
+(13 PNGs, light+dark, 1440+390) after the three independent agent reviewers were
+killed by an infra shutdown mid-round. A fresh independent round re-runs at A6.
 
-| Reviewer | Landing 1440 | Landing 390 | Brand sheet | Notes |
+| Surface | 1440 | 390 | Verdict | Open defects |
 |---|---|---|---|---|
-| (round 1 pending) | — | — | — | — |
+| Landing hero (light) | 9.0 | 8.8 | ACCEPT | — |
+| Landing hero (dark) | 9.0 | — | ACCEPT | — |
+| Phone menu overlay | — | 8.8 | ACCEPT | close-glyph tap target worth verifying at 44 px (P3) |
+| Map six-state (light) | 9.0 | — | ACCEPT | headline rides its paper plate; walls solid ink; labels unclipped |
+| Platform §05 frame + roles | 8.8 | — | ACCEPT | — |
+| CTA + footer (light/dark) | 9.0 | — | ACCEPT | — |
+| `/__brand` specimen (light/dark) | 9.0 | — | ACCEPT | paper chip paper-on-paper → **FIXED** (full hairline frame on `.r323b-swatch .chip`) |
+| Brand code single-source | — | — | PASS | only paper/ink/orange literals; no copper; one `<Logo>` |
+
+Mean ≈ 8.9–9.0, no category < 8 → wave 1 accepted by the foreman; A6 re-reviews fresh.
 
 ## Known remaining (honest ledger)
 
 - Authenticated app screens (A5) not yet raised to the landing standard.
 - A4 perf remainder: desktop jank 22 %→≤2 % target, bundle caps, gate:clean.
 - B2 storage/player, B3 mail/import, B4 flows E2E, B5 ops, B6 load, B7 pilot — all pending.
-- The paper tone-swatch chip on `/__brand` is paper-on-paper — add a hairline frame (minor).
+- ~~The paper tone-swatch chip on `/__brand` is paper-on-paper~~ → FIXED in round 1.
 - OG image (`madarek-og.jpg`) regenerated with the new lockup; verify in a social debugger
   before the pilot announcement.

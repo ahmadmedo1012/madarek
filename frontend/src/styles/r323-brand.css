@@ -129,7 +129,7 @@
     border: 1px solid var(--rule);
     background: var(--surface);
   }
-  .r323b-swatch .chip { height: 72px; border-bottom: 1px solid var(--rule); }
+  .r323b-swatch .chip { height: 72px; border: 1px solid var(--rule); }
   .r323b-swatch dl { margin: 0; padding: 12px 14px 14px; display: grid; gap: 4px; }
   .r323b-swatch dt { font-weight: 600; color: var(--text-strong); font-size: 13px; }
   .r323b-swatch dd {
