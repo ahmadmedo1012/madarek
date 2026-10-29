@@ -109,8 +109,9 @@
 .cu-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-display-lg);
-  font-weight: 700;
+  /* r324 P3 (X9) — the ONE display ladder (d1 @ weight 600). */
+  font-size: var(--fs-d1);
+  font-weight: var(--fw-semibold);
   line-height: var(--type-display-line-height);
   color: var(--text);
 }

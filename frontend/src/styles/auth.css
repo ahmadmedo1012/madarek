@@ -314,8 +314,8 @@
        scale every converted sheet page rides): 46.67px @1440 ·
        4.4rem @≤991 · 3.2rem = 31.8px @≤767. The R315 display-lg seat
        read 71px/2 lines at 390 — the owner's «≈80px» finding. */
-    font-size: var(--fs-h1);
-    font-weight: var(--fw-bold);
+    font-size: var(--fs-h1); /* = the d1 cap (46.67px @1440) */
+    font-weight: var(--fw-semibold); /* r324 P3 — 500/600 only */
     color: var(--text);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
     /* R315 (K-I): the tight display register keeps (line-height ~1,
@@ -1412,8 +1412,11 @@
 
   .nf-title {
     font-family: var(--font-display);
-    font-size: var(--fs-display-md);
-    font-weight: var(--fw-bold);
+    /* r324 P3 (X9) — the ONE display ladder: d1 (46.7 @1440 · 31.74
+       @390) at weight 600 — the old display-md/700 pair (53.3px →
+       63.5px @390) was the inner-page blowup the owner flagged. */
+    font-size: var(--fs-d1);
+    font-weight: var(--fw-semibold);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
     line-height: var(--lh-snug);
     /* R321 §A5 — balanced wrapping: the /500 title's em-dash can never

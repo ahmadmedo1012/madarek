@@ -145,8 +145,11 @@
        register). The R320 phone title (71px @390) had a max-content
        glyph run wider than the column and, with auto grid tracks,
        pushed the whole document left into the clip. */
-    font-size: clamp(3.4rem, 11vw, var(--fs-display-lg));
-    font-weight: 700;
+    /* r324 P3 (X9) — the ONE display ladder: d1 (46.7 @1440 · 31.74
+       @390) at weight 600 — the 11vw/display-lg/700 recipe read 60px
+       @1440 and 42.9px @390, off the ladder on both ends. */
+    font-size: var(--fs-d1);
+    font-weight: var(--fw-semibold);
     line-height: var(--type-display-line-height);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
     color: var(--text);

@@ -404,3 +404,30 @@ authority (`#F6F6EE`); (2) the TYPE had drifted (census: 5–6 display sizes,
 100% weight 700) — §4.c is the repair. Orange stays an accent ≤5% of area per
 screen except designed full-bleed moments; `--accent-ink` `#C72E00` carries
 accent TEXT (5.16:1 AA).
+
+## R324 — FINISH THE BEAUTY (the ONE type system, every page)
+
+### §R324.a The ladder is whole-product (X9 closed)
+
+The §4.c display ladder (D1/D2/D3/ST — 46.7/40/23.3/33.3 px @1440 ·
+31.74 @390 · weights 500/600 ONLY) is now the law for **every H1/H2/H3
+on every page** — public sheets, auth doors, error pages, the
+document viewer, settings — not just the landing. The inner-page
+bolt-ons (`--fs-display-md/lg` seats, `--fw-bold` headings) are
+retired: /404's five-line 70px run at 390 was the «ugliness» the
+owner flagged, not a style.
+
+- **H1 = `--fs-d1` at 600** everywhere (error sheets, legal sheets,
+  campus sheets, auth doors — 46.7px @1440 · 31.74px @390, max
+  3 lines at 390).
+- **App-density ladder (dashboards, unchanged):** H1 28/24, H2 20,
+  H3 16, body 15–16, mono label 11–12 (the r319-student masthead —
+  data surfaces keep their density; the display ladder is for
+  narrative pages).
+- **Line length 35–65 Arabic chars** (the `.lg-p`/`.nf-sub` measure);
+  **no weight > 600 anywhere** except numerals inside gauges.
+- **Gate:** `tests/unit/r324-type-gate.test.ts` pins every public H1
+  rule to a ladder token at weight ≤ 600 (fails `npm test` on
+  regression); `scripts/r324/type-probe.mjs` is the headless census
+  (every route × 1440/390) whose evidence lands in
+  `audits/evidence/r324/type-probe.json`.
