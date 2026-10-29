@@ -1076,3 +1076,37 @@
 .tr-field-status { font-size: 12px; color: var(--text-muted); }
 .tr-field-ok { color: var(--accent); font-weight: 600; }
 .tr-field-error { margin: 0; font-size: 12px; font-weight: 600; color: var(--danger); }
+
+/* ── r323 B3.1 — the invite-codes card (the roster page seat) ─────── */
+.inv-form { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
+.inv-field { display: grid; gap: 4px; font-size: 0.75rem; color: var(--text-secondary); }
+.inv-field select,
+.inv-field input {
+  min-block-size: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--border-strong, var(--border));
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  border-radius: 0;
+}
+.inv-error { color: var(--danger, #B3261E); font-size: 0.8125rem; margin: 8px 0 0; }
+.inv-note { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-secondary); margin: 10px 0 0; }
+.inv-list { display: flex; flex-direction: column; margin-block-start: 10px; }
+.inv-row {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.inv-row:last-child { border-bottom: 0; }
+.inv-code {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  background: var(--surface, rgba(0, 0, 0, 0.03));
+  padding: 4px 10px;
+}
+.inv-meta { font-size: 0.75rem; color: var(--text-secondary); }
+.inv-dead { color: var(--danger, #B3261E); font-weight: 600; }
+.inv-actions { margin-inline-start: auto; display: flex; gap: 6px; }

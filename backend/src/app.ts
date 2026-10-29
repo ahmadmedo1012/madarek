@@ -52,6 +52,9 @@ import curriculumRoutes from './http/routes/curriculum.routes.js';
 // r323 B2.4 — live sessions (Jitsi default): schedule → in-page join →
 // auto-attendance → recording link. Mounted under /api/v1 (see below).
 import liveRoutes from './http/routes/live.routes.js';
+// r323 B3.1 — invite codes: teacher/registrar codes + the public
+// pre-submit validation + the post-registration redeem.
+import inviteRoutes from './http/routes/invite.routes.js';
 import { themeRouter } from './modules/theme/router.js';
 import { onboardingRouter } from './modules/onboarding/router.js';
 import { milestonesRouter } from './modules/milestones/router.js';
@@ -255,6 +258,8 @@ export function createApp() {
   // r323 B2.4 — live sessions: /live/sessions (list/create), lifecycle,
   // and the student join hook (auto-attendance).
   app.use('/api/v1', liveRoutes);
+  // r323 B3.1 — invite codes.
+  app.use('/api/v1', inviteRoutes);
   // ── PUBLIC routers — must be registered BEFORE any router that
   //    uses `router.use(authMiddleware)` and mounts at the broad
   //    `/api/v1` prefix. Otherwise their global middleware fires

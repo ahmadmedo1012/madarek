@@ -58,6 +58,11 @@ export const registerSchema = z
     year: z.number().int().min(1).max(8).optional(),
     specialty: z.string().trim().min(2).max(120).optional(),
     rank: z.enum(['LECTURER', 'ASSISTANT_PROFESSOR', 'ASSOCIATE_PROFESSOR', 'PROFESSOR']).optional(),
+    // r323 B3.1 — an invite code (optional): validated pre-registration
+    // (honest Arabic errors) and consumed post-creation (enroll + count).
+    // Note: .strict() means the field must be declared HERE, not just
+    // tolerated in the handler.
+    inviteCode: z.string().trim().min(4).max(16).optional(),
   })
   .strict();
 

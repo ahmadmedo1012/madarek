@@ -647,6 +647,21 @@
     line-height: var(--lh-base);
   }
 
+  /* r323 B3.1 — the invite-code advisory hint under [10]: the same
+     hairline voice as .auth-error, at note scale, three honest kinds —
+     ok (ink/muted, the scope label), busy (muted), bad (the danger
+     hairline). Never blocks the submit on its own. */
+  .auth-invite-hint {
+    display: flex; align-items: center; gap: var(--sp-2);
+    margin-block-start: var(--sp-1);
+    color: var(--text-muted);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    line-height: var(--lh-base);
+  }
+  .auth-invite-hint[data-kind='ok'] { color: var(--text-secondary, var(--text-muted)); font-weight: var(--fw-semibold); }
+  .auth-invite-hint[data-kind='bad'] { color: var(--danger-ink); font-weight: var(--fw-semibold); }
+
   /* Inline retry action inside an .auth-error box (faculties lookup). */
   .auth-retry-link {
     margin-inline-start: auto;

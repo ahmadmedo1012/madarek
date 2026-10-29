@@ -10,6 +10,7 @@ import {
   ChevronsUpDown, ChevronUp, ChevronDown,
 } from 'lucide-react';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
+import { InviteCodesCard } from '../../components/teacher/InvitesCard';
 import { Card, Badge, ProgressBar, UserAvatar, FormField, Pill } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState, EmptyState, Skeleton, ListSkeleton, TableSkeleton, CardSkeleton } from '../../components/primitives/States';
@@ -1648,7 +1649,12 @@ export function StudentsListPage() {
         )}
       </Card>
     </div>
-    </div>
+    
+
+      {/* r323 B3.1 — the invite codes seat: mint scoped codes for the
+          selected offering (the register page consumes them). */}
+      <InviteCodesCard offeringId={effectiveOfferingId} />
+</div>
   );
 }
 

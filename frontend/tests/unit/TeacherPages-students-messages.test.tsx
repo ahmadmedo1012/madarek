@@ -34,6 +34,17 @@ const mocks = vi.hoisted(() => ({
   send: { mutateAsync: vi.fn(), isPending: false, isError: false, error: null as unknown },
 }));
 
+
+// r323 B3.1 — StudentsListPage now seats the InviteCodesCard, whose
+// hooks live OUTSIDE the useResources boundary (hooks/resources/invites).
+// Stub the trio so the real useQuery never mounts (no QueryClientProvider
+// in these tests) — an empty list is all the page needs here.
+vi.mock('../../src/hooks/resources/invites', () => ({
+  useInvites: () => ({ data: [], isPending: false, isError: false, error: null, refetch: vi.fn() }),
+  useCreateInvite: () => ({ mutate: vi.fn(), isPending: false, isError: false, error: null }),
+  useRevokeInvite: () => ({ mutate: vi.fn(), isPending: false, isError: false, error: null }),
+}));
+
 vi.mock('../../src/hooks/useResources', () => ({
   useTeacherOfferings: () => ({
     data: mocks.offerings,

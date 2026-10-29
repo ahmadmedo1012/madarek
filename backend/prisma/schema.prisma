@@ -415,6 +415,10 @@ model User {
   @@index([role])
   @@index([email])
   @@index([scopeFacultyId])
+
+  // r323 B3.1 — the invite codes this user issued / consumed.
+  issuedInvites  InviteCode[] @relation("InviteCodeCreator")
+  inviteUses     InviteUse[]  @relation("InviteUseUser")
 }
 
 model StudentProfile {
@@ -528,6 +532,9 @@ model Faculty {
   @@unique([institutionId, name, city])
   @@index([city])
   @@index([institutionId])
+
+  // r323 B3.1
+  inviteCodes InviteCode[]
 }
 
 model Department {
@@ -546,6 +553,9 @@ model Department {
 
   @@unique([facultyId, name])
   @@index([facultyId])
+
+  // r323 B3.1
+  inviteCodes InviteCode[]
 }
 
 model Course {
@@ -599,6 +609,9 @@ model CourseOffering {
   @@unique([courseId, term, teacherId])
   @@index([teacherId])
   @@index([term])
+
+  // r323 B3.1
+  inviteCodes InviteCode[]
 }
 
 model Enrollment {
@@ -2081,4 +2094,42 @@ model AiFeedback {
   @@unique([messageId, userId])
   @@index([messageId])
   @@index([userId])
+}
+
+// ────────────────────────────────────────────────────────────────
+// r323 B3.1 — invite codes (single-use/expiring, scoped self-registration)
+// ────────────────────────────────────────────────────────────────
+model InviteCode {
+  id           String   @id @default(cuid())
+  code         String   @unique
+  role         Role
+  // The scope the code enrolls into: exactly one of offering/department/
+  // faculty (a code may target a course section, a department, or a whole
+  // faculty — the register flow shows the target honestly before submit).
+  offeringId   String?
+  offering     CourseOffering? @relation(fields: [offeringId], references: [id])
+  departmentId String?
+  department   Department?     @relation(fields: [departmentId], references: [id])
+  facultyId    String?
+  faculty      Faculty?        @relation(fields: [facultyId], references: [id])
+  createdById  String
+  createdBy    User     @relation("InviteCodeCreator", fields: [createdById], references: [id])
+  expiresAt    DateTime
+  maxUses      Int      @default(1)
+  usedCount    Int      @default(0)
+  uses         InviteUse[]
+  createdAt    DateTime @default(now())
+
+  @@index([createdById])
+}
+
+model InviteUse {
+  id     String     @id @default(cuid())
+  codeId String
+  code   InviteCode @relation(fields: [codeId], references: [id], onDelete: Cascade)
+  userId String
+  user   User       @relation("InviteUseUser", fields: [userId], references: [id])
+  usedAt DateTime   @default(now())
+
+  @@unique([codeId, userId])
 }

@@ -58,6 +58,10 @@ interface RegisterPayload {
   year?: number;
   specialty?: string;
   rank?: 'LECTURER' | 'ASSISTANT_PROFESSOR' | 'ASSOCIATE_PROFESSOR' | 'PROFESSOR';
+  // r323 B3.1 — an optional invite code (students): the backend
+  // validates + consumes it inside the register transaction and
+  // enrolls the caller into the scoped offering atomically.
+  inviteCode?: string;
 }
 
 export function useLogin() {

@@ -7,6 +7,10 @@ import { logger } from '../../logger.js';
 import { decideRefresh, interpretRevocationBump } from './rotation.js';
 import { lockDurationFor, MAX_FAILED_LOGINS, shouldLock } from './lockout.js';
 import { passwordSchema } from './auth.dto.js';
+// r323 B3.1 — the invite-code grammar rides the SAME pure layer the
+// public validate endpoint uses, so the register-time verdict is the
+// one truth (no divergent copy of the rules here).
+import { evaluateInvite } from '../invites/core.js';
 import { resolveMemberships, type ActiveMembership } from '../../http/middleware/institution.js';
 
 /**
@@ -165,6 +169,10 @@ export interface RegisterInput {
   // Prisma enum union — the DTO's z.enum validates the same members, so
   // no cast is needed when writing TeacherProfile.rank.
   rank?: AcademicRank;
+  // r323 B3.1 — an optional invite code: validated + claimed INSIDE the
+  // register transaction (an exhausted/expired/role-mismatched code
+  // refuses the whole registration honestly — no orphan account).
+  inviteCode?: string;
 }
 
 export const registerUser = async (input: RegisterInput) => {
@@ -245,6 +253,27 @@ export const registerUser = async (input: RegisterInput) => {
     // chain lives on in the profile rows below.)
     void facultyIdVerified;
 
+    // r323 B3.1 — the invite code resolves BEFORE the user row: an
+    // invalid code throws the honest Arabic reason and nothing is
+    // written (the register page surfaced the same verdict pre-submit
+    // via the public validate endpoint — this is the authoritative one).
+    const code = input.inviteCode?.trim().toUpperCase();
+    let invite: { id: string; offeringId: string | null; maxUses: number } | null = null;
+    if (code) {
+      const row = await tx.inviteCode.findUnique({
+        where: { code },
+        select: { id: true, code: true, role: true, offeringId: true, expiresAt: true, maxUses: true, usedCount: true },
+      });
+      const verdict = evaluateInvite(
+        row
+          ? { ...row, role: row.role as 'STUDENT' | 'TEACHER', departmentId: null, facultyId: null }
+          : null,
+        input.role,
+      );
+      if (!verdict.ok) throw AppError.badRequest(verdict.reason);
+      invite = row;
+    }
+
     const createdUser = await tx.user.create({
       data: {
         email: input.email.toLowerCase(),
@@ -295,6 +324,28 @@ export const registerUser = async (input: RegisterInput) => {
           departmentId: input.departmentId!,
         },
       });
+    }
+
+    // r323 B3.1 — the counted claim + the use ledger + the scoped
+    // enrollment, INSIDE the same transaction: a concurrent over-consume
+    // loses the guarded updateMany and 409s honestly (the account rolls
+    // back with it — «الكود استُنفد للتو» هو الجواب الصادق كله).
+    if (invite) {
+      const claimed = await tx.inviteCode.updateMany({
+        where: { id: invite.id, usedCount: { lt: invite.maxUses } },
+        data: { usedCount: { increment: 1 } },
+      });
+      if (claimed.count === 0) {
+        throw AppError.conflict('استُنفد هذا الكود للتو — جرّب كودًا آخر.');
+      }
+      await tx.inviteUse.create({ data: { codeId: invite.id, userId: createdUser.id } });
+      if (invite.offeringId) {
+        await tx.enrollment.upsert({
+          where: { studentId_offeringId: { studentId: createdUser.id, offeringId: invite.offeringId } },
+          create: { offeringId: invite.offeringId, studentId: createdUser.id, status: 'active' },
+          update: { status: 'active' },
+        });
+      }
     }
     return { user: createdUser, membership: membershipRow, institution: institutionRow };
   });

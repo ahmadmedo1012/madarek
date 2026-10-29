@@ -345,6 +345,21 @@ export default function LecturePlayerPage() {
     }
   }, [currentSec, data, activeCheckpoint, answeredCheckpointIds, skippedCheckpointIds]);
 
+  /* r323 B2.2 — pull + parse the transcript once the lecture is known.
+     (Hooks-live rule: this effect sits ABOVE every early return — a
+     conditional useEffect after the pending/error branches is exactly
+     the rules-of-hooks violation lint caught.) */
+  useEffect(() => {
+    const url = data?.transcriptUrl;
+    if (!url) { setCues(null); return; }
+    let alive = true;
+    fetch(url)
+      .then((r) => (r.ok ? r.text() : Promise.reject(new Error('transcript fetch failed'))))
+      .then((text) => { if (alive) setCues(parseVttCues(text)); })
+      .catch(() => { if (alive) setCues(null); });
+    return () => { alive = false; };
+  }, [data?.transcriptUrl]);
+
   // No lecture id in the URL — the route normally guarantees one; this
   // branch keeps a malformed deep link honest instead of pending forever
   // (useLecture stays `enabled: false` → isPending never resolves).
@@ -377,18 +392,6 @@ export default function LecturePlayerPage() {
       </div>
     );
   }
-
-  /* r323 B2.2 — pull + parse the transcript once the lecture is known. */
-  useEffect(() => {
-    const url = data?.transcriptUrl;
-    if (!url) { setCues(null); return; }
-    let alive = true;
-    fetch(url)
-      .then((r) => (r.ok ? r.text() : Promise.reject(new Error('transcript fetch failed'))))
-      .then((text) => { if (alive) setCues(parseVttCues(text)); })
-      .catch(() => { if (alive) setCues(null); });
-    return () => { alive = false; };
-  }, [data?.transcriptUrl]);
 
   const seekTo = (sec: number) => {
     const v = videoRef.current;

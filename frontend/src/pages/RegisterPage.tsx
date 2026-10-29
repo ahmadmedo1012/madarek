@@ -11,6 +11,7 @@ import { Icon } from '../components/Icon';
 import { useRegister } from '../hooks/useAuth';
 import { useFaculties } from '../hooks/useResources';
 import { useInstitutions } from '../hooks/useInstitutions';
+import { validateInvitePublic } from '../hooks/resources/invites';
 import { Skeleton } from '../components/motion';
 import { useThemeSync } from '../components/layout/ThemeToggle';
 import { usePageTitle } from '../hooks/usePageTitle';
@@ -73,6 +74,15 @@ const studentSchema = z.object({
   // / transferred cohort) used to be rejected FE-side while the backend
   // would have accepted the payload.
   year: z.coerce.number().int().min(1).max(8),
+  // r323 B3.1 — the optional invite code: empty string = no code (the
+  // submit omits the field); a typed code must be 4–16 chars (the
+  // backend's own floor/ceiling) — the server keeps the authoritative
+  // verdict (exists / role / expiry / capacity).
+  inviteCode: z
+    .string()
+    .trim()
+    .max(16, 'الكود أطول من اللازم — 16 حرفًا كحدّ أقصى')
+    .refine((v) => v === '' || v.length >= 4, 'الكود قصير جدًا — 4 أحرف على الأقل'),
 });
 
 const teacherSchema = z.object({
@@ -227,7 +237,7 @@ export default function RegisterPage() {
   // remount only resets transient view state (the password toggle).
   const studentForm = useForm<StudentInputs>({
     resolver: zodResolver(studentSchema),
-    defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', institutionId: '', facultyId: '', departmentId: '', year: 1 },
+    defaultValues: { firstName: '', lastName: '', email: '', password: '', universityId: '', institutionId: '', facultyId: '', departmentId: '', year: 1, inviteCode: '' },
   });
   const teacherForm = useForm<TeacherInputs>({
     resolver: zodResolver(teacherSchema),
@@ -387,7 +397,16 @@ export default function RegisterPage() {
                     onInstitutionChange={setInstitutionId}
                     onSubmit={async (values) => {
                       try {
-                        const res = await register.mutateAsync({ role: 'STUDENT', ...values });
+                        // r323 B3.1 — the code rides the register payload
+                        // ONLY when typed (an empty string would fail the
+                        // backend's min(4)); the backend consumes it
+                        // inside the register transaction and enrolls.
+                        const { inviteCode, ...rest } = values;
+                        const res = await register.mutateAsync({
+                          role: 'STUDENT',
+                          ...rest,
+                          ...(inviteCode ? { inviteCode } : {}),
+                        });
                         navigate(ROLE_HOME[res.user.role], { replace: true });
                       } catch { /* surfaced below */ }
                     }}
@@ -510,8 +529,69 @@ interface StudentFormProps extends RegisterFormProps {
   onSubmit: (values: StudentInputs) => Promise<void>;
 }
 
+/** r323 B3.1 — the pre-submit invite hint: validates the typed code
+ *  against the PUBLIC endpoint (no auth) and reports the honest scope
+ *  («ستُضاف تلقائيًا إلى مقرر…») or the server's Arabic reason.
+ *  Advisory only — the authoritative verdict rides the submit (the
+ *  register transaction re-evaluates and consumes atomically). */
+interface InviteHint {
+  kind: 'idle' | 'ok' | 'bad' | 'busy';
+  text: string;
+  check: (raw: string | undefined) => Promise<void>;
+}
+function useInviteHint(): InviteHint {
+  const [state, setState] = useState<{ kind: InviteHint['kind']; text: string }>({ kind: 'idle', text: '' });
+  const check = async (raw: string | undefined) => {
+    const code = (raw ?? '').trim();
+    // empty = the field was left alone; < 4 = the schema owns the length
+    // error — the network round-trip would only echo it.
+    if (code.length < 4) { setState({ kind: 'idle', text: '' }); return; }
+    setState({ kind: 'busy', text: 'جارٍ التحقق من الكود…' });
+    try {
+      const res = await validateInvitePublic(code, 'STUDENT');
+      setState({
+        kind: 'ok',
+        text: res.scopeLabel ? `الكود صحيح — ستُضاف تلقائيًا إلى ${res.scopeLabel}.` : 'الكود صحيح.',
+      });
+    } catch (e) {
+      setState({ kind: 'bad', text: authErrorView(e).serverMessage ?? 'تعذّر التحقق من الكود — الحسم عند إنشاء الحساب.' });
+    }
+  };
+  return { ...state, check };
+}
+
+/** The invite-code seat ([10] on the student form): optional, LTR
+ *  (codes are Latin runs), advisory hint under the input — never
+ *  blocks the submit on its own. */
+function InviteCodeField({ index, error, hint, register }: {
+  index: string;
+  error?: string;
+  hint: InviteHint;
+  register: ReturnType<UseFormReturn<StudentInputs>['register']>;
+}) {
+  return (
+    <Field index={index} label="كود الدعوة (اختياري)" error={error}>
+      <input
+        className="input auth-input"
+        type="text"
+        dir="ltr"
+        placeholder="مثال: M7K2PQ9X"
+        autoComplete="off"
+        {...register}
+      />
+      {hint.kind !== 'idle' && hint.text !== '' && (
+        <p className="auth-invite-hint" data-kind={hint.kind} role="status">
+          {hint.kind === 'bad' && <Icon icon={AlertCircle} size={12} />}
+          {hint.text}
+        </p>
+      )}
+    </Field>
+  );
+}
+
 function StudentForm({ form, error, isPending, faculties, institutions, institutionId, onInstitutionChange, onSubmit }: StudentFormProps) {
   const [showPassword, setShowPassword] = useState(false);
+  const inviteHint = useInviteHint();
   const facultyId = form.watch('facultyId');
   // r170-e: live strength hint rides the same watch subscription —
   // re-renders per keystroke, advisory only.
@@ -645,6 +725,18 @@ function StudentForm({ form, error, isPending, faculties, institutions, institut
           {[1, 2, 3, 4, 5, 6, 7, 8].map((y) => <option key={y} value={y}>السنة {y}</option>)}
         </select>
       </Field>
+
+      {/* r323 B3.1 — the optional invite code: the teacher/registrar's
+          self-serve seat. The hint validates the code on blur (the
+          PUBLIC endpoint) and shows the target honestly — «ستُضاف
+          تلقائيًا إلى مقرر…» — before the visitor commits. Advisory
+          only: the authoritative verdict rides the register submit. */}
+      <InviteCodeField
+        index="[10]"
+        error={form.formState.errors.inviteCode?.message}
+        hint={inviteHint}
+        register={form.register('inviteCode', { onBlur: () => void inviteHint.check(form.getValues('inviteCode')) })}
+      />
       </div>
 
       {error != null && <RegisterErrorBanner error={error} />}
