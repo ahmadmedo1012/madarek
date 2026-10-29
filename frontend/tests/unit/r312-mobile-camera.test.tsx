@@ -390,8 +390,11 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
 
     /* mid-story (p=0.5 ⇒ t≈3.11): the camera sits between the lecture
      * and checkpoint nodes — the interpolated landscape crop, quantized
-     * whole units; stage 2 (the card era), finding 2, the checkpoint
-     * wash; layer 1 fully in, layer 2 arriving, layers 3–6 still out */
+     * whole units; stage 2 (the card era), finding 2, the LECTURE wash
+     * (R322 3-b-fix2 override, review-c3 R1#10: the wash rides one
+     * finding step later — it starts at t≈3.0 when layer 1 lands, so
+     * t=3.11 is the lecture beat; the card era's focal is the card);
+     * layer 1 fully in, layer 2 arriving, layers 3–6 still out */
     setScrollY(GEO.top + 0.5 * (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
     await waitFor(
@@ -401,7 +404,7 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     const track = document.querySelector<HTMLElement>('.jt');
     expect(track?.dataset.stage).toBe('2');
     expect(track?.dataset.finding).toBe('2');
-    expect(track?.dataset.wash).toBe('checkpoint');
+    expect(track?.dataset.wash).toBe('lecture');
     expect(parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='1']")?.style.opacity ?? 'x')).toBeCloseTo(1, 2);
     const layer2 = parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='2']")?.style.opacity ?? 'x');
     expect(layer2).toBeGreaterThan(0.2);

@@ -4960,6 +4960,17 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   z-index: 5;
 }
 
+/* R322 3-b-fix2 (review-c3 R1-N1): the rail spot is DESKTOP-ONLY —
+   at ≤991 the pin is a stacked static block, so the spot would ride
+   the scroll and drift through the viewport mid-story. The phone's
+   statement-era furniture accent moves to the sticky window's own
+   corner (`.jt-map-in::after` in the ≤991 block below). */
+@media (max-width: 991px) {
+  .jt-pin::after {
+    display: none;
+  }
+}
+
 /* the PLAN COLUMN — flex:1 of the frame @≥992, held at its FINAL box
    from stage 0 (the closing column's 464px is reserved beside it —
    geometry NEVER animates, the perf-baseline §7-3 pin-end 0.187 CLS
@@ -5171,6 +5182,18 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 .jt[data-wash='library'] .pl-zone[data-zone='library'],
 .jt[data-wash='mastery'] .pl-zone[data-zone='mastery'] {
   fill-opacity: 0.035;
+  stroke-width: 1.5;
+}
+
+/* R322 3-b-fix2 (review-c3 R1-N2): the CLOSING carries its orange
+   back — Heron's finished plan shows one clearly-visible bounded
+   orange room at the close (measured 1.7% of frame). Ours went
+   ink-only at the close (0.03%). The mastery room — the story's
+   terminus — takes a strong furniture-scale tint at stage 5
+   (0.15 × its zone area ≈ 1.4% of frame, inside Heron's register)
+   and KEEPS the outline; every other room stays ink. */
+.jt[data-stage='5'] .pl-zone[data-zone='mastery'] {
+  fill-opacity: 0.15;
   stroke-width: 1.5;
 }
 
@@ -5478,8 +5501,44 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   transition: opacity var(--t-slow) var(--ease);
 }
 
+/* R322 3-b-fix2 (review-c3 R1#7): the column composes to its FOOT —
+   Heron's closing column runs label → title → copy → a cms block at
+   the foot (464×612 + 464×213 of an 887-tall column); ours ended at
+   y583/900 leaving a quiet bottom third. The foot row anchors to the
+   column's end: a hairline + the mono completion counter (the
+   [nn/05] family's own terminus) + the honest scope note. */
+.jt-close-foot {
+  margin-block-start: auto;
+  border-block-start: 1px solid var(--rule);
+  padding-block-start: var(--sp-3);
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease);
+}
+
+.jt-close-foot-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.jt-close-foot-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.jt-close-foot-note {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
 .jt-close[data-open='on'] .jt-close-title,
-.jt-close[data-open='on'] .jt-close-copy {
+.jt-close[data-open='on'] .jt-close-copy,
+.jt-close[data-open='on'] .jt-close-foot {
   opacity: 1;
 }
 
@@ -5496,8 +5555,10 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 
 .jt[data-finding='all'] .jt-close-title,
 .jt[data-finding='all'] .jt-close-copy,
+.jt[data-finding='all'] .jt-close-foot,
 .jt[data-rm='on'] .jt-close-title,
-.jt[data-rm='on'] .jt-close-copy {
+.jt[data-rm='on'] .jt-close-copy,
+.jt[data-rm='on'] .jt-close-foot {
   opacity: 1;
   transition: none;
 }
@@ -5659,6 +5720,21 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
    * Heron's own 3.2rem→4rem phone card measure, 2 lines balanced). */
   .jt-card {
     padding-inline: var(--sp-3);
+  }
+
+  /* R322 3-b-fix2 (review-c3 R1-N1): the phone's statement-era orange
+   * furniture — an 8px square at the sticky window's top inline-start
+   * corner (Heron's own phone furniture spots, ≈0.02% of viewport;
+   * pseudo-element: never in innerText). Desktop's rail spot retired
+   * above — the stacked pin has no fixed rail to sit on. */
+  .jt-map-in::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    block-size: 8px;
+    inline-size: 8px;
+    background: var(--accent);
   }
 
   /* the closing column — stacked BELOW the track, full width, always

@@ -159,6 +159,12 @@ const CLOSE_TITLE_AR =
   'المسطح اكتمل — والخطوة التالية لك: أنشئ حسابك وابدأ من أول محاضرة.';
 const CLOSE_COPY_AR =
   'كل غرفة في هذا المسطح ميزة تعمل اليوم داخل المنصّة، لا وعدًا قادمًا. أكمل التمرير لتصل إلى إنشاء الحساب في نهاية الصفحة.';
+/* R322 3-b-fix2 (review-c3 R1#7): the column's FOOT row — Heron's
+ * closing column composes to its foot (its cms block); ours ended at
+ * y583/900 leaving a quiet bottom third. The mono terminus + the
+ * honest artwork-scope note anchor the column's end. */
+const CLOSE_FOOT_NOTE_AR =
+  'المسطح رسم أصلي لمدارك؛ الغرف تتّسع مع كل فصل جديد.';
 
 /* the [nn/05] counter rows — static text, opacity-only progression
  * (they never change copy during the story; the flip is CSS). */
@@ -516,16 +522,21 @@ export function JourneyScene() {
                 Math.max(1, Math.floor((t - FINDING_START_S) / FINDING_SPAN_S) + 1),
               ),
             );
+      /* R322 3-b-fix2 (review-c3 R1#10/R3-#3): the wash rides ONE
+       * finding step LATER — the layer-1 build lands at t≈3.0, so the
+       * room highlight starts when the drawing actually begins, never
+       * under the INTRODUCTION card's own beat (the card era's focal
+       * is the card, the paper stays quiet around it). */
       const wash =
-        t < 2.5
+        t < 3.0
           ? 'none'
-          : t < 3.02
+          : t < 3.52
             ? 'lecture'
-            : t < 3.52
+            : t < 4.02
               ? 'checkpoint'
-              : t < 4.02
+              : t < 4.52
                 ? 'exam'
-                : t < 4.52
+                : t < 5.02
                   ? 'library'
                   : 'mastery';
       writeAttrs(track, String(stage), finding, wash, 'off', stage === 5 ? 'on' : 'off');
@@ -639,6 +650,18 @@ export function JourneyScene() {
                 the journey's ONE closing headline inside #chapters. */}
             <h2 className="jt-close-title">{CLOSE_TITLE_AR}</h2>
             <p className="jt-close-copy">{CLOSE_COPY_AR}</p>
+            {/* the FOOT row — the mono terminus + the scope note,
+                anchored to the column's foot (margin-block-start: auto
+                in landing.css; reveals with the column's own flip).
+                The [05/05] terminus is the counter family's own last
+                row (deliberate label furniture, complete, Latin-only);
+                NO title-block labels — the V1 kill stays dead. */}
+            <div className="jt-close-foot">
+              <div className="jt-close-foot-row">
+                <span className="jt-close-foot-mono" dir="ltr">[05/05]</span>
+              </div>
+              <p className="jt-close-foot-note">{CLOSE_FOOT_NOTE_AR}</p>
+            </div>
           </div>
         </div>
       </div>

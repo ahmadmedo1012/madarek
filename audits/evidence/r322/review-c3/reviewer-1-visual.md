@@ -166,3 +166,120 @@ plan, the measured seat numbers, and the honest own-words Arabic copy.
 `/home/z/r322-r1-vlm/` (probe-out.json, probe768-out.json, pix.py / pix2.py outputs,
 18 VLM JSONs). One report file written (this one); no commits made; both preview servers
 killed (port 4331 verified free).
+
+---
+
+## Re-review (f111d51) — Task r322-c3-WP3r-R1b, 2026-10-29
+
+Repo @ `f111d51` (the fix round), `frontend/dist` freshly built from it. Same method:
+12 side-by-side VLM comparisons (6 states @1440 + states 1/3/5 @768 + @390) — **advisory
+only** — plus playwright-core DOM probes against `vite preview` (127.0.0.1:4331; killed,
+port verified free), PIL/numpy pixel measurement of the re-shot state shots, source diff
+reading (`landing.css`, `JourneyScene.tsx`, `LearningPlanDrawing.tsx`), and the updated
+`perf.json`/`STAGES.md §9`. Every fix claim was measured, not trusted.
+
+### A · Defect-by-defect verification (round-1 numbered defects + R2/R3 items)
+
+| prev defect | status | measurement (this tree) |
+|---|---|---|
+| R1#1 orange wash 7–20× Heron's cap | **DEAD** | `.pl-zone` active = `fill-opacity: 0.035` + `stroke-width: 1.5` (probe). Orange share of viewport — @1440: s03 **0.16%** (h 0.27) · s05 **0.24%** (h 0.48); @768: s03 **0.34%** (h 0.58) · s05 **0.20%** (h 0.84); @390: s03 **0.01%** · s05 **0.03%** (h 1.60/1.74). In register — now slightly *under* Heron. The 20.2% tablet slab is dead. Tint verified present in the zone (warm-tint 1.28% of the mastery zone @s05). |
+| R1#2 plan at 49% of Heron's area | **DEAD** | `.jt-window` **1284×813.2** @1440 (was 796×504) = 127% of Heron's 963×853 plan stack; plan column runs full frame width (x81.3–1365.3). The closing column is an absolute overlay: `opacity 0 / visibility hidden` through states 1–5 (probe), revealed at s6 by opacity + 10px rise — **CLS still 0.01** (`perf.json` s2clean: 0.01 total). |
+| R1#3 statement-era ground 8.12% ink | **DEAD** | Plan-window ink @s01: **1.21% vs Heron 0.92%** (same-size regions); s02 pure-paper beat **0.59%**. Envelope moved to layer 1 (`data-xl="1"` — source-verified), the unconditional station/frame-text overrides deleted. (The faint lettered grid bubbles remain in the frame layer — ink parity measured; the VLM amplifies them, see §B.) |
+| R1#4 intro card floating 157px above the corner | **DEAD** | Card bottom **y873.3** = 26.7px from the frame bottom (= 3.2rem on the 8.34px fluid root) and 26.6px from the plan column's inline-start edge (physical right in RTL) — the mirrored corner, opposite the overlay; no overlap with the overlay (x1105–1338 vs x81–545). Heron's own card content ends y871 — parity. Grows upward at s3 (y742.6, bottom fixed 873.3). |
+| R1#5 no statement-era orange (0.00–0.02% vs h 0.27–1.60%) | **HALF-DEAD** | The rail spot `.jt-pin::after` (10×10 #FA3600) verified in the 1440 shot (97 orange px @s03) — but total share is still **0.02% vs 0.27%** @1440, and on ≤991 the spot anchors at the stacked pin's 50% (≈4.6k px down) → off-screen @390, drifting through the viewport @768 (new defect N1). Mobile statement era remains ~0.00%. |
+| R1#6 mobile top-anchored void / dead band | **DEAD** | `.jt-map-in` = full viewport height sticky (768: y57 h967; 390: y57 h787) with the plan+card stack centered: margins **symmetric** — @768 209/209, @390 152.5/152.5. The 33–37% dead band is dead by construction. |
+| R1#7 closing column bottom third empty | **ALIVE (minor)** | Unchanged by the fix round: chip y13–58, title y390–522, copy y538–583 — content ends **y583 of 900** (the 39.84rem chip→title gap + 132px title + 45px copy). Heron's column (label 62 + title-wrap 612 + cms 213 ≈ 887) composes to its foot. |
+| R1#8 linework 2–3× heavier | **DEAD** | Box-to-box @s05: our plan box **7.50% ink vs Heron's plan box 7.29%** (the earlier 23.3%-vs-7.8% was a region artifact — my old measurement compared our dense sub-region against Heron's wider zone). |
+| R1#9 display w600 vs Heron w700 | **ALIVE (accepted deviation)** | Owner-brief cap, unchanged; costs the closing headline's presence (132px vs Heron's 612px title-wrap). |
+| R1#10 state-3 beat early | **ALIVE (minor)** | Probe: s3 `wash=lecture`, layer 1 ≈90% (t=2.84s in the [2.5,3.0] window); Heron's state 3 (46% scrub) has layer 1 OFF. Our s03 ink 5.39% vs h 2.04%. |
+| R3#1 dark-theme plaques 1.02:1 | **DEAD** | `.jt-card` color pinned **#282828** (probe in dark: rgb(40,40,40)) on the pinned sheet **#F6F6EE** (both themes) → **13.6:1**. Dark screenshot: dark text on paper, window ink 1.04%, dark-text pixels present in the statement band. |
+| R2#2 mobile plan 26% of area | **DEAD (measured)** | Plan element **326×425 @390** (portrait 460/600 aspect, crop zoom 2.27× Heron's whole-sheet view) = 47% of Heron's 374×788 element area (was 23%); content span y209–691 vs Heron's y316–527 — ours now covers *more* viewport than the reference's own phone state. |
+| R2#4 mid-map dead band 40–50% | **DEAD** | Same measurement as R1#6. |
+
+### B · The 12 VLM comparisons (score → verification)
+
+| state/bp | score | VLM's lead complaints → verification |
+|---|---|---|
+| 01 1440 | 5 | "Intrusive A–H/1–4 grid", "heavy frame" → grid measured at **ink parity** (1.21% vs 0.92% window; #B3B3AF dashed hairlines at 55% opacity); VLM amplifies thin grids. Banner/EdgeTab chrome on both sites — discounted. |
+| 02 1440 | 6 | Same grid + "colder starker white" → **disproven**: paper median 249,249,241 vs Heron 245,246,238 — parity within JPEG variance. |
+| 03 1440 | 7.5 | "Faint central text over wall lines" → the transient card2 mid-fade (op 0.102 ≈ Heron's own state-3 card2 at 0.12) — shared beat, discounted. "Card bottom-right vs reference bottom-left" → deliberate RTL mirror (inline-start) — correct for RTL, discounted. |
+| 04 1440 | 5 | "Plan scaled too large, minimal breathing room" → real observation (N4: 84% of frame vs Heron's 65%); "excessive red accents" → **disproven** by pixel (s03/s05 orange 0.16/0.24% vs 0.27/0.48%). |
+| 05 1440 | 6 | "Harsh solid red outline, no tint" → outline is 1.6px #FA3600 (brand copper — hue reads redder than Heron's #F15534; established token, discounted); tint measured present. "Markers overlapping lines" → svg-collisions gate 0 FAIL. |
+| 06 1440 | 4 | "Text floats in a void / panel effect missing" → the panel IS paper+hairline (bg #F6F6EE-family, 1px border) — but the quiet bottom third is real (R1#7). "Vertical red bar left edge" = the EdgeTab (standing page chrome, both sites). |
+| 01 768 | 5 | Grid + banner + "orphaned orange square" → the standing EdgeTab square (y505–518, both sites' class of chrome); the *drifting* rail spot appears only mid-story (N1). |
+| 03 768 | 4 | "Map small and floating, excessive whitespace" → plan element 446px tall in the 967px window (N3, the tablet aspect note); measured content span y266–815 vs Heron's own y384–640 — ours covers more. |
+| 05 768 | 4 | "Massive void on right" → **disproven**: content cols x1–735, center-of-mass 401 (center 384). "Pale wash fails to pop" → the calibrated in-register treatment (0.20% vs 0.84%). |
+| 01 390 | 4 | "Headline too small/thin" → D1 phone floor 31.74px (Heron's own phone measure) + w600 cap. Grid/banner chrome discounted. |
+| 03 390 | 4 | "Plan too heavy, pinkish fill distracting" → the portrait crop's 2.27× zoom densifies the viewport (ink 9.57% vs h 6.18%) — the honest trade of readable zoom; noted, not scored. |
+| 05 390 | 4 | "Plan pushed right, void left" → **disproven**: content x56–357, COM 206 vs Heron's COM 224 (both slightly right-weighted — RTL-natural). |
+
+VLM mean **4.9** — but the VLM's checkable claims measured false more often than true this
+round (4 disproven outright: paper warmth, 768 void, 390 push, "excessive red"), while
+its true calls were the ones already in my probe list. Advisory weight accordingly.
+
+### C · Rubric re-scored
+
+| # | category | score | justification |
+|---|---|---|---|
+| 1 | Hierarchy | 9 | The plan is the monument again (1284×813, full frame); statement→card→closing narration clean; the overlay no longer co-competes pre-flip (hidden states 1–5). |
+| 2 | Grid & alignment | 8.5 | Every seat re-measured at Heron's own numbers (26.7px card corner = 3.2rem fluid; 28.01rem card; 464px overlay; 39.84rem title offset); intro corner at parity (873 vs 871); the closing copy's early end and the tablet margins keep it off 9. |
+| 3 | Spacing rhythm | 8 | Mobile dead band dead (symmetric margins 209/209 @768, 152/152 @390); desktop plan full-frame; the closing panel's quiet foot (content ends y583/900) remains. |
+| 4 | Typography | 8 | Coherent rungs, Arabic-safe shaping, dark-theme ink pinned; the w600 owner cap plus the closing title at 132px vs Heron's 612px title-wrap keep the final column's type below the reference's presence. |
+| 5 | Material & colour | 8 | Paper parity measured (RGB within ~2 units); mid-story wash in register (0.16–0.34% vs 0.27–0.84%); dark plaque 13.6:1; but the statement era still reads ~0.02% orange vs 0.27% and the closing state 0.03% vs 1.67% (N2). |
+| 6 | Density & restraint | 8.5 | Statement ground at parity (1.21% vs 0.92%); plan box-to-box 7.50% vs 7.29% — the old 2–3× weight gap was a measurement artifact; the faint lettered grid in the quiet era is the one restraint note. |
+| 7 | Consistency | 8.5 | Tokens and architecture consistent; the overlay speaks the site's paper-panel language; the rail spot's different mobile behavior (N1) is the one wrinkle. |
+| 8 | Motion & scroll feel | 8.5 | CLS 0.01 held with the overlay (perf.json s2clean); transform+opacity reveal; discrete flips; two camera families; state-3 beat early (R1#10) + the standing stills-only uncertainty. |
+| 9 | Polish | 8 | Slab, floating card, voids, dark plaques — all dead; remaining: the closing panel's foot, the closing state's accents, the drifting square, mobile statement-era flatness. |
+| 10 | Responsiveness | 8 | Zero clipping at every bp (probes + gate); full-height windows; portrait crops readable at 2.27× zoom; the tablet plan's 446px height in a 967px window (N3) and the rail drift keep it off 9. |
+
+**Mean = 8.5** · min = 8 → **REJECT** (bar: mean ≥ 9, no category < 8) — a near-miss: the
+min-category bar is now met; the mean is 0.5 short on a short, specific list.
+
+### D · NEW defects introduced/remaining (all measured)
+
+1. **N1 (low) — the rail spot's mobile anchor.** `.jt-pin::after` uses
+   `inset-block-start: calc(50% - 5px)` (`landing.css:4957` area) — on ≤991 the pin is the
+   ~4.6k px stacked block, so the 10px orange square sits mid-track: it drifts *through*
+   the viewport mid-story (verified in the 768 s03 shot at y832–841; absent at s01/s05)
+   and is off-x/off-screen at 390. A detached mark that appears and disappears.
+2. **N2 (low-medium) — the closing state lost its orange.** Our s06 orange = **0.03%
+   @1440 / 0.08% @768 / 0.02% @390** vs Heron's **1.67 / 1.89 / 3.82%**. Heron's finished
+   plan carries a solid orange room at the close (~2.45% of its plan side above the
+   banner, x477–700); ours hides the washed mastery room *under* the overlay and the
+   finished plan's rooms are ink-only — the final state reads accent-less.
+3. **N3 (low) — tablet keeps the landscape sheet family.** @768–991 the plan element is
+   445.9px tall in the 967px full-height window (46%) vs Heron's 753×972 portrait window;
+   phones got the portrait crop family, tablets did not.
+4. **N4 (observation, not scored) — the monument overshot.** The plan now fills 84% of
+   the frame vs Heron's 65% (its 232px side margins); the VLM flagged "minimal breathing
+   room" (s04). The honest consequence of a landscape sheet at full height — the R1/R2
+   mandate's direction — noted as a taste wash, not a defect.
+
+### E · Final (re-review)
+
+**Mean 8.5 / 10 · REJECT** — every round-1 headline defect is measurably dead (wash in
+register, monument restored at 127% of Heron's plan area, statement ground at parity,
+card at the mirrored corner, mobile dead band dead, dark plaques 13.6:1, box-to-box
+linework parity, CLS 0.01 held). What still separates it from the reference:
+
+1. **Give the closing state its orange** — finished-plan room accents at Heron's scale
+   and/or re-seat the overlay so the active washed room survives beside it (target
+   ≥ ~1% of frame at s06; currently 0.03% vs 1.67%).
+2. **Compose the closing panel to its foot** — content should end ≥ ~y820 like Heron's
+   column (bigger title presence within the w600 cap, or pull chip/title/copy down the
+   measured 39.84rem offset); currently it ends at y583 of 900.
+3. **Statement-era orange furniture on all bps** (~0.3% of frame) — and fix the rail
+   spot's ≤991 anchor (seat it on the sticky window, not the stacked pin) so it stops
+   drifting (N1).
+4. **Tablet**: a taller plan seat or crop family for 768–991 (N3).
+5. Optional: start layer 1 / the wash one beat later so state 3 matches Heron's
+   pure-paper card beat (R1#10).
+
+Note for the owners: the w600 display cap (STAGES.md deviation #2) pins Typography at 8
+by construction — with every fix above done, the ceiling is ≈8.9 unless the cap is
+either blessed as Madarek's own display voice (re-anchoring that category) or lifted to
+w700 at the map's two display seats.
+
+— Reviewer 1 (visual), re-review of f111d51, 2026-10-29. Probe artifacts at
+`/home/z/r322-r1b-vlm/` (probe-out.json, probe2-out.json, pix.py outputs, 12 VLM JSONs,
+dark-state1/state6 PNGs). No commits; preview server killed (port 4331 verified free).

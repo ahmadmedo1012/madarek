@@ -69,3 +69,16 @@ the product prf-* farm only (V6, C4) · CLS **0.01** (the overlay reveal is layo
 s2clean 26.3% frames >33ms (22% first pass — within run variance; the remaining menu
 is §7-5..7 = C4's). Mobile probes: mapIn=787 @390 (full height) · win=425 (was 206) ·
 @1440 win=813 (was 504).
+
+## §10 — the round-2 fixes (review-c3 re-review: 8.5, the remaining low/low-med defects)
+
+| defect | fix |
+|---|---|
+| N2 closing orange 0.03% vs 1.7% | stage-5 mastery zone → fill-opacity 0.15 (≈1.4% of frame, bounded) |
+| R1#7 closing panel ends y583/900 | the FOOT row (hairline + `[05/05]` terminus + the scope note) anchored `margin-block-start: auto` |
+| N1 rail spot drifts @mobile | desktop-only (hidden ≤991); the phone gets the 8px corner tick on the sticky window |
+| R1#10 state-3 beat early | the wash rides one finding step later (starts t≈3.0 with layer 1) — the card era's focal is the card |
+| N3 tablet plan 446px | DOCUMENTED compromise: our plan artwork is landscape (1200×760) — the tablet window runs it at full width; a portrait tablet family is a C4 candidate |
+| Typography ceiling @w600 | OWNER QUESTION recorded on the BOARD (the brief caps display at 400–600; Heron maps at w700) |
+
+Gates: vitest 2738/2738 · tsc 0 · lint 0 · docH ladder all-in-band (@390 11364 −0.67%, closer to Heron) · shots re-taken.
