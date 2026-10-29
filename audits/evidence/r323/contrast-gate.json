@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "gate": "r323 contrast-gate (A5 §2)",
+    "urls": [
+      "/__design",
+      "/",
+      "/auth",
+      "/404"
+    ],
+    "viewports": [
+      "1440",
+      "390"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "states": [
+      "default",
+      "hover",
+      "active",
+      "focus-visible"
+    ],
+    "maxPerPage": 260,
+    "generatedAt": "2026-10-29T16:55:52.177Z"
+  },
+  "head": "f4e0e12b",
+  "swept": 0,
+  "findings": [],
+  "failures": [],
+  "verdict": "PASS"
+}

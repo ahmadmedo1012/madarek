@@ -304,8 +304,13 @@ describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair
     const at = css.indexOf('.fo-skip-link {');
     expect(at).toBeGreaterThanOrEqual(0);
     const body = css.slice(at, css.indexOf('}', at));
-    expect(body).toContain('background: var(--accent)');
-    expect(body).toContain('color: var(--accent-fg)');
+    /* R323 override (A5 §2, contrast-gate): the raw --accent ground fails
+       AA under the white label (3.76:1); the skip link now rides the
+       same documented R318 AA seat as the button system (#DB3A00, white
+       label 4.55:1) in both themes. The family intent survives: the seat
+       is the accent system's own documented darker rung. */
+    expect(body).toContain('background: #DB3A00');
+    expect(body).toContain('color: #FFFFFF');
   });
 
   it('the landing CTA markup consumes the canonical classes (no private CTA class)', () => {

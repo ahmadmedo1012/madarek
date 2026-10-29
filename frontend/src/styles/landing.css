@@ -197,8 +197,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
   inset-inline-start: var(--sp-2);
   z-index: 100;
   padding: var(--sp-2-5) var(--sp-4);
-  background: var(--accent);
-  color: var(--accent-fg);
+  /* R323 A5 §2 (contrast-gate): the raw --accent ground fails AA for the
+     white label (3.76:1) — the skip link rides the same documented R318
+     AA seat as the button system (#DB3A00, white label 4.55:1), in both
+     themes (the link is chrome, not a themed surface). */
+  background: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
+  color: #FFFFFF;
   border-radius: var(--r-xs);
   font-size: var(--fs-sm);
   font-weight: 600;

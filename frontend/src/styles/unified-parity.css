@@ -441,7 +441,7 @@
        #FA3600 fill (3.76:1, AA-large; superseded "never white" rule;
        small Arabic accent labels get weight ≥600 + size ≥14px). */
     --accent:        #FA3600;              /* 3.46:1 paper / 3.76:1 surface — UI/large (AA-large) */
-    --accent-hover:  #D92F00;
+    --accent-hover:  #D03000;
     --accent-soft:   #FCE3D9;
     --accent-strong: #A32400;               /* 7.02:1 on paper — deep tier */
     --accent-fg:     #FFFFFF;               /* R313: white labels on the vivid fill — the reference's recipe */

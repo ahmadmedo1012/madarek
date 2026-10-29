@@ -85,6 +85,8 @@ const NON_SHELL_TITLED: Record<string, string> = {
   /* R323 §A1: the brand specimen sheet — standalone (outside AppShell,
    * its own usePageTitle), pinned in the it.each below. */
   '/__brand': 'دليل الهوية · مدارك',
+  /* R323 A5: the component-system specimen sheet (dev + evidence). */
+  '/__design': 'نظام المكونات · مدارك',
   '/404': 'الصفحة غير موجودة · مدارك',
 };
 
@@ -306,6 +308,7 @@ import AuthPage from '../../src/pages/AuthPage';
 import RegisterPage from '../../src/pages/RegisterPage';
 import NotFoundPage from '../../src/pages/NotFoundPage';
 import BrandPage from '../../src/pages/BrandPage';
+import DesignPage from '../../src/pages/DesignPage';
 import ForgotPasswordPage from '../../src/pages/auth/ForgotPasswordPage';
 import ResetPasswordPage from '../../src/pages/auth/ResetPasswordPage';
 
@@ -319,6 +322,8 @@ describe('non-shell pages — usePageTitle sets the live document.title (2.4.2)'
     ['/auth/forgot-password', ForgotPasswordPage, 'استعادة كلمة المرور · مدارك'],
     ['/auth/reset-password', ResetPasswordPage, 'تعيين كلمة مرور جديدة · مدارك'],
     ['/__brand', BrandPage, 'دليل الهوية · مدارك'],
+    /* R323 A5: the /__design specimen sheet titles + restores the same way. */
+    ['/__design', DesignPage, 'نظام المكونات · مدارك'],
     ['/404', NotFoundPage, 'الصفحة غير موجودة · مدارك'],
   ] as const)('%s titles the tab and restores the previous title on unmount', (_path, Page, expected) => {
     document.title = 'العنوان السابق';

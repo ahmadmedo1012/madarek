@@ -768,6 +768,16 @@
     color: var(--accent-fg);
     border-color: var(--accent);
   }
+  /* R323 A5 §2 (contrast-gate): the wipe's raw --accent ground fails AA
+     under the white label in light (3.76:1) — the same documented R318
+     AA seat the button system rides (white on #DB3A00 = 4.55:1). */
+  [data-theme='light'] .auth-submit::before {
+    background: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
+  }
+  [data-theme='light'] .auth-submit:not(:disabled):hover,
+  [data-theme='light'] .auth-submit:not(:disabled):focus-visible {
+    border-color: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
+  }
   .auth-submit:not(:disabled):hover::before,
   .auth-submit:not(:disabled):focus-visible::before {
     transform: translateX(0); /* the wipe — in from the inline-start edge */

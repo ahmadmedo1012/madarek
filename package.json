@@ -44,7 +44,8 @@
     "db:verify": "node scripts/db-verify.mjs",
     "gate:r321": "node scripts/r321/gate.mjs",
     "gate:perf": "node scripts/r323/perf-gate.mjs",
-    "gate:clean": "node scripts/r323/clean-gate.mjs"
+    "gate:clean": "node scripts/r323/clean-gate.mjs",
+    "gate:contrast": "node scripts/r323/contrast-gate.mjs"
   },
   "prepare": "git config core.hooksPath .githooks",
   "devDependencies": {

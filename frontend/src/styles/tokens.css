@@ -629,7 +629,7 @@
        only — and re-claims the retired copper hexes (circular economy:
        the old signal IS the new gold). */
     --accent:        var(--c-copper-ink);
-    --accent-hover:  #D92F00;
+    --accent-hover:  #D03000;
     --accent-soft:   var(--c-copper-bg);
     --accent-strong: var(--c-copper-deep);
     /* r305 — label ink on the accent fill → R313: WHITE (the reference
