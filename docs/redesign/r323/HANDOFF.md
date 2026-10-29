@@ -13,7 +13,7 @@
 | A1 | Brand system | audit → new mark+wordmark → `<Logo>` single source → every surface → favicon/OG/manifest → `/__brand` → lint rule | **done (core + integration)** | `brand/AUDIT.md` · `brand/BRAND.md` · `brand/VARIANTS.md` · `evidence/brand-1440-*.png` |
 | A2 | Loader orchestrator | one full-screen layer, splash = new mark stroke-draw, sheet-loader contract, z-index tokens, overlap test | **done (core + App wiring)** | `frontend/src/lib/loaderOrchestrator.ts` · qa-sweep probes |
 | A3 | Landing fixes | phone header, consent bar, ticker masks, map details, platform §06, roles ledger §07, CTA, footer strip | **done** | `BOARD.md` evidence table |
-| A4 | Scroll & motion engine | gsap.ticker→Lenis, perf §7-5..7, gates | pending | — |
+| A4 | Scroll & motion engine | perf §7-5..7, gate:perf, gate:clean | **done (§7-5 skirt + both gates)** | `scripts/r323/perf-gate.mjs` · `audits/evidence/r323/perf-gate.json` — jank 22→0.6–1.1 % (≤2 target), CLS 0.007, LCP 0.7 s, bundle main 88 KB gz, 0 route breaches · clean ratchet 65/183 recorded non-increasing |
 | A5 | App after login | component system, `/__design`, per-role sweep | pending | — |
 | A6 | Whole-site red team | fresh reviewers, all viewports | pending | — |
 | B1.1 | AI model + streaming | provider chain, SSE streaming, quotas, honest local mode | **done (code + tests)** | `B1-AI.md` · 56 backend + 30 frontend tests |
@@ -56,8 +56,9 @@
 
 1. Independent reviewer round on `BOARD.md` evidence (3 reviewers, rubric ≥9/no <8),
    then fix whatever they list.
-2. A4: perf §7-5..7 remainder (desktop jank 22→≤2 %, bundle caps) + A5 component system.
-3. B2.1 storage + upload wizard; B3.1 bulk import (W1 remainder) — then B1.2 RAG.
+1. A5: the component system + `/__design` gallery + the state-contrast sweep gate.
+2. B2.2 player remainder (speed/resume/checkpoints UI), B2.3 STT queue + B2.4 live sessions.
+3. B3.1 invite codes → B3.3–3.6 notifications/messages/onboarding/feedback; then B4 flows E2E + FLOWS.md.
 
 ## Commands to reproduce
 
