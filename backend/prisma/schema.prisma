@@ -290,6 +290,7 @@ model Institution {
   aiConversations  AiConversation[]
   universityFacts  UniversityFact[]
   syncRuns         SyncRun[]
+  aiKnowledgeChunks AiKnowledgeChunk[]
 
   @@index([status])
 }
@@ -1904,6 +1905,35 @@ model AiTelemetry {
   @@index([feature])
   @@index([createdAt])
   @@index([success])
+}
+
+// r323 B1.2 — the RAG store. One row = one retrievable chunk of course
+// truth (a lecture-transcript window, a checkpoint's question+answer,
+// a course description, a material abstract). Lexical retrieval rides
+// pg_trgm (the migration adds the GIN index); embeddings stay OFF
+// until a pgvector-capable database actually exists (honest scope).
+// The citation fields are denormalized ON PURPOSE: the chat route
+// renders «المصدر: …» straight from the hit row, one read, no joins.
+model AiKnowledgeChunk {
+  id            String      @id @default(cuid())
+  institutionId String
+  institution   Institution @relation(fields: [institutionId], references: [id], onDelete: Cascade)
+  // Where the chunk came from — 'lecture' (transcript window),
+  // 'checkpoint', 'course', 'material'.
+  sourceType    String
+  sourceId      String
+  // Citation display: title + human locator («الدقيقة 14:20», «ص 5»)
+  // + the deep link that opens the player at the timestamp / PDF page.
+  title         String
+  locator       String?
+  url           String?
+  // The chunk body, as written (Arabic normalization happens at QUERY
+  // time so the stored text stays human-readable/printable).
+  content       String
+  createdAt     DateTime    @default(now())
+
+  @@index([institutionId])
+  @@index([sourceType, sourceId])
 }
 
 model OperationalAlert {

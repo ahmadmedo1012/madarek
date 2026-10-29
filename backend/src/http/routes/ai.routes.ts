@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { AiMessageRole, Prisma, Role } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
+import { requireRole } from '../middleware/requireRole.js';
 import { resolveCallerInstitutionScope } from '../../lib/profile-scoping.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
@@ -36,6 +37,15 @@ import {
   AI_DAILY_LIMIT_ENV,
   type AiQuotaState,
 } from '../../lib/ai/quota.js';
+import {
+  buildRagContextBlock,
+  chunkText,
+  formatMinSec,
+  groupTranscriptWindows,
+  parseSrtVtt,
+  searchKnowledge,
+  type KnowledgeCitation,
+} from '../../modules/ai/knowledge.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -472,10 +482,12 @@ async function composeReplyWithProvider(
   role: Role,
   history: readonly AiChatMessage[],
   context: ChatContextLines,
+  ragBlock = '',
 ): Promise<{ reply: string; inputTokens: number; outputTokens: number; model: string }> {
-  const system = isMasteryAwareRole(role)
+  const persona = isMasteryAwareRole(role)
     ? buildStudentSystemPrompt(context.masteryLines, context.courseLines)
     : buildGenericSystemPrompt(context.teachingLines);
+  const system = ragBlock !== '' ? `${persona}\n\n${ragBlock}` : persona;
   const completion = await callProviderWithRetry(
     aiProvider!,
     buildChatMessages(system, history, message),
@@ -566,10 +578,21 @@ interface ChatStreamArgs {
   context: ChatContextLines;
   quota: AiQuotaState;
   startedAt: number;
+  /* r323 B1.2 — the retrieval hits for THIS question (empty when the
+   * index found nothing / the retrieval failed). Provider mode folds
+   * them into the system prompt and returns their citations; local
+   * mode ignores the block (the composer never pretends to cite). */
+  rag: RagResult;
+}
+
+/** r323 B1.2 — the per-turn retrieval result (bounded, honest-empty). */
+interface RagResult {
+  block: string;
+  citations: ReturnType<typeof buildRagContextBlock>['citations'];
 }
 
 async function handleChatStream(args: ChatStreamArgs): Promise<void> {
-  const { req, res, userId, message, conv, institutionId, history, context, quota, startedAt } = args;
+  const { req, res, userId, message, conv, institutionId, history, context, quota, startedAt, rag } = args;
 
   // SSE headers — before anything else. `Content-Encoding: identity`
   // opts the stream OUT of the platform's gzip middleware (its
@@ -664,9 +687,13 @@ async function handleChatStream(args: ChatStreamArgs): Promise<void> {
 
   try {
     if (aiProvider) {
-      const system = isMasteryAwareRole(req.user!.role)
+      // r323 B1.2: the RAG block rides AFTER the role prompt so the
+      // grounding context reads as appended course evidence, not as a
+      // replacement of the tutor persona.
+      const persona = isMasteryAwareRole(req.user!.role)
         ? buildStudentSystemPrompt(context.masteryLines, context.courseLines)
         : buildGenericSystemPrompt(context.teachingLines);
+      const system = rag.block !== '' ? `${persona}\n\n${rag.block}` : persona;
       try {
         const completion = await streamProviderWithChain(
           aiProvider,
@@ -697,9 +724,10 @@ async function handleChatStream(args: ChatStreamArgs): Promise<void> {
           model,
           inputTokens: completion.inputTokens,
           outputTokens: completion.outputTokens,
-          // Citations placeholder — the grounding pipeline rides a later
-          // round; an empty array is the honest «none yet».
-          citations: [] as unknown[],
+          // r323 B1.2 — the real citations (bounded, denormalized on
+          // the hit row): title + locator + deep link + snippet. Empty
+          // stays the honest «none retrieved».
+          citations: rag.citations,
           // Quota state — omitted entirely when the store was down (no
           // invented number).
           ...(quota.limit > 0 ? { remaining: quota.remaining } : {}),
@@ -830,6 +858,18 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       );
     }
 
+    /* r323 B1.2 — the per-question retrieval (course-truth grounding).
+     * Best-effort by construction: a knowledge-index outage must NEVER
+     * take the chat down — an empty result degrades to the historical
+     * ungrounded behaviour (the honest local-mode rule applies: the
+     * reply simply carries no citations). */
+    const rag = await searchKnowledge(prisma, chatInstitutionId, message)
+      .then((hits) => buildRagContextBlock(hits))
+      .catch((err) => {
+        logger.warn({ err }, 'ai knowledge retrieval failed (non-blocking)');
+        return { block: '', citations: [] as KnowledgeCitation[] };
+      });
+
     /* r323 B1.1 — the transport switch. The SAME endpoint serves both
      * grammars: `?stream=1` (or `Accept: text/event-stream`) streams
      * Server-Sent Events; every other client gets the historical JSON
@@ -849,6 +889,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
         context,
         quota,
         startedAt,
+        rag,
       });
       return;
     }
@@ -858,7 +899,7 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
      * telemetry (with the attempted model) and surfaces one honest
      * Arabic error — no silent template fallback (see composeReplyWithProvider). */
     const engine = aiProvider
-      ? await composeReplyWithProvider(message, req.user!.role, history, context)
+      ? await composeReplyWithProvider(message, req.user!.role, history, context, rag.block)
       : { reply: await composeReply(userId, message, req.user!.role, chatInstitutionId), model: AI_CHAT_MODEL, inputTokens: 0, outputTokens: 0 };
 
     // All chat writes (conversation create + both messages + telemetry)
@@ -933,6 +974,10 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
          * never a fabricated name. */
         engine: aiProviderLabel,
         model: engine.model,
+        /* r323 B1.2 — the JSON grammar carries the same citations the
+         * SSE grammar does (parity across transports; local mode stays
+         * empty — the rule-based composer never pretends to cite). */
+        citations: rag.citations,
       },
     });
   } catch (e) {
@@ -968,6 +1013,142 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
       next(AppError.internal(providerFailureMessage(failureKind)));
       return;
     }
+    next(e);
+  }
+});
+
+/* r323 B1.2 — the knowledge (re)index endpoint. ADMIN/OWNER only, one
+ * institution per call. Walks the institution's REAL course truth:
+ *   · course descriptions → prose chunks
+ *   · lecture checkpoints → question + explanation chunks (the exact
+ *     facts a student asks about)
+ *   · lecture transcripts → timestamped windows WHEN the transcript
+ *     file lives in the platform's own storage (an external URL is
+ *     skipped honestly — the platform does not fetch third parties).
+ * Idempotent per source (delete+recreate). The response reports what
+ * was indexed and what was skipped — never a fabricated total. */
+const knowledgeReindexLimiter = createRouteLimiter({ max: 2 });
+
+async function readPlatformText(url: string | null): Promise<string | null> {
+  if (typeof url !== 'string' || url === '') return null;
+  const prefix = '/api/v1/files/';
+  if (!url.startsWith(prefix)) return null; // external URL — skipped honestly
+  const key = url.slice(prefix.length); // papers/… | materials/… | lectures/…
+  try {
+    const { getStorage } = await import('../../lib/storage.js');
+    const bytes = await getStorage().get(key);
+    return bytes === null ? null : bytes.toString('utf8');
+  } catch {
+    return null;
+  }
+}
+
+router.post('/knowledge/reindex', knowledgeReindexLimiter, requireRole(Role.ADMIN, Role.OWNER), async (req, res, next) => {
+  try {
+    // Same verified-context rule as the chat: ADMIN needs a DB-verified
+    // institution context; OWNER names the institution explicitly.
+    let institutionId: string;
+    if (req.user!.role === Role.ADMIN) {
+      const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+      if (scope === null) throw AppError.badRequest('حدّد مؤسستك أولاً — لا سياق مؤسسة في الجلسة');
+      institutionId = scope;
+    } else {
+      const requested = (req.body as { institutionId?: string } | undefined)?.institutionId;
+      if (typeof requested !== 'string' || requested.length === 0) {
+        throw AppError.badRequest('حدّد المؤسسة التي تريد إعادة فهرستها');
+      }
+      institutionId = requested;
+    }
+
+    let indexed = 0;
+    let skippedTranscripts = 0;
+
+    // Course descriptions.
+    const courses = await prisma.course.findMany({
+      where: { institutionId, description: { not: null } },
+      select: { id: true, name: true, description: true },
+    });
+    const courseRows = courses.flatMap((c) =>
+      chunkText(c.description ?? '').map((content) => ({
+        institutionId,
+        sourceType: 'course',
+        sourceId: c.id,
+        title: c.name,
+        locator: null,
+        url: null,
+        content,
+      })),
+    );
+    if (courseRows.length > 0) {
+      for (const c of courses) {
+        await prisma.aiKnowledgeChunk.deleteMany({ where: { sourceType: 'course', sourceId: c.id } });
+      }
+      await prisma.aiKnowledgeChunk.createMany({ data: courseRows });
+      indexed += courseRows.length;
+    }
+
+    // Lectures: transcript (when the file is OURS) + checkpoints.
+    const lectures = await prisma.lecture.findMany({
+      where: { offering: { course: { institutionId } } },
+      select: {
+        id: true,
+        title: true,
+        transcriptUrl: true,
+        checkpoints: { select: { id: true, question: true, explanation: true, triggerSec: true } },
+      },
+    });
+
+    for (const lecture of lectures) {
+      const transcriptText = await readPlatformText(lecture.transcriptUrl);
+      if (transcriptText !== null) {
+        // Only SRT/VTT bodies parse; a PDF/HTML blob yields zero cues
+        // and indexes nothing (honest zero, not a fake success).
+        const cues = parseSrtVtt(transcriptText);
+        const windows = groupTranscriptWindows(cues);
+        if (windows.length > 0) {
+          const deepLinkBase = '/student/lectures';
+          await prisma.aiKnowledgeChunk.deleteMany({ where: { sourceType: 'lecture', sourceId: lecture.id } });
+          await prisma.aiKnowledgeChunk.createMany({
+            data: windows.map((w) => ({
+              institutionId,
+              sourceType: 'lecture',
+              sourceId: lecture.id,
+              title: lecture.title,
+              locator: formatMinSec(w.startSec),
+              url: `${deepLinkBase}?lecture=${lecture.id}&t=${Math.floor(w.startSec)}`,
+              content: w.text,
+            })),
+          });
+          indexed += windows.length;
+        }
+      } else if (lecture.transcriptUrl !== null) {
+        skippedTranscripts += 1;
+      }
+
+      const checkpointRows = lecture.checkpoints.flatMap((cp) => {
+        const body = [cp.question, cp.explanation].filter((t): t is string => typeof t === 'string' && t.trim() !== '').join('\n');
+        if (body === '') return [];
+        return [{
+          institutionId,
+          sourceType: 'checkpoint',
+          sourceId: cp.id,
+          title: lecture.title,
+          locator: formatMinSec(cp.triggerSec),
+          url: `/student/lectures?lecture=${lecture.id}&t=${Math.floor(cp.triggerSec)}`,
+          content: body,
+        }];
+      });
+      if (checkpointRows.length > 0) {
+        for (const cp of lecture.checkpoints) {
+          await prisma.aiKnowledgeChunk.deleteMany({ where: { sourceType: 'checkpoint', sourceId: cp.id } });
+        }
+        await prisma.aiKnowledgeChunk.createMany({ data: checkpointRows });
+        indexed += checkpointRows.length;
+      }
+    }
+
+    res.json({ data: { indexed, skippedTranscripts, lectures: lectures.length, courses: courses.length } });
+  } catch (e) {
     next(e);
   }
 });
