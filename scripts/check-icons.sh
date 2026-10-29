@@ -12,6 +12,12 @@
 #   - frontend/src/components/Illustration.tsx     (scene wrapper)
 #   - frontend/src/components/StarMark.tsx         (r188: the brand
 #     symbol primitive — khatam star; the LibyaFlag category)
+#   - frontend/src/brand/                          (r323: the ONE brand
+#     system — mark.ts/lockups.ts/Logo.tsx render the mark itself; the
+#     same bespoke brand-symbology category as StarMark/LibyaFlag)
+#   - frontend/src/pages/BrandPage.tsx             (r323: the /__brand
+#     spec sheet — its raw <svg> is the 32-grid CONSTRUCTION DRAWING,
+#     brand symbology again, not UI iconography)
 #   - frontend/src/lib/illustrations/              (bespoke scene SVGs)
 #   - frontend/src/components/illustrations/      (r280: the mk-ill
 #     state-graphics kit — 16 two-colour SVG scenes + BrandLoader; the
@@ -66,7 +72,7 @@ violations=0
 # belong to), each carrying a role="img"/progressbar contract and real
 # data — NOT iconography. UI icons keep going through <Icon icon={...} />
 # everywhere, this file included.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/'
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/|frontend/src/brand/|frontend/src/pages/BrandPage\.tsx'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):

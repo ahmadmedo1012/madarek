@@ -493,3 +493,149 @@
 }
 
 
+
+/* ═════════════════════════════════════════════════════════════════════
+   R323 §A2 — loader orchestration surfaces (append-only · task 1-b)
+   ═════════════════════════════════════════════════════════════════════
+   Splash (.mdk-splash) · RouteProgress (.mdk-route-progress) ·
+   SlowServerCard (.mdk-slow-server) — the three components of the ONE
+   loading surface. (The R323 brand mark styles itself inside
+   frontend/src/brand/Logo.tsx — class .mdrk-logo + inline keyframes —
+   so no sheet CSS is spent on it here.)
+
+   Grammar: paper grounds, hairline rules, ink text, the ONE orange
+   signal. Radius 0 · no shadows · no gradients · transform-only
+   motion. Appended OUTSIDE @layer base so the loader family is the
+   strongest voice in the cascade (it must cover everything).
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── Splash — the boot layer (z: --z-splash, the topmost seat) ─────── */
+.mdk-splash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* --bg IS the paper: the theme-aware page ground (dark remaps it). */
+  background: var(--bg);
+  color: var(--text-strong);
+}
+/* The ≤250 ms exit: the component flips data-exiting, plays the fade,
+   unmounts itself, then calls splashExited() to free the seat. */
+.mdk-splash[data-exiting='true'] {
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdk-splash[data-exiting='true'] {
+    transition: none;
+  }
+}
+
+/* ── RouteProgress — the 2 px strip (z: --z-loader; NOT fullscreen) ── */
+.mdk-route-progress {
+  position: fixed;
+  top: 0;
+  inset-inline: 0;
+  height: 2px;
+  z-index: var(--z-loader);
+  overflow: hidden;
+  pointer-events: none;
+  background: transparent;
+}
+.mdk-route-progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+[dir='rtl'] .mdk-route-progress-bar {
+  transform-origin: right center;
+}
+.mdk-route-progress[data-mode='determinate'] .mdk-route-progress-bar {
+  transition: transform var(--t-fast) var(--ease-out);
+}
+.mdk-route-progress[data-mode='indeterminate'] .mdk-route-progress-bar {
+  width: 40%;
+  animation: mdk-route-progress-sweep var(--t-slow) var(--ease-linear) infinite;
+}
+[dir='rtl'] .mdk-route-progress[data-mode='indeterminate'] .mdk-route-progress-bar {
+  animation-name: mdk-route-progress-sweep-rtl;
+}
+/* Transform-only sweeps — layout is never touched. */
+@keyframes mdk-route-progress-sweep {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(290%); }
+}
+@keyframes mdk-route-progress-sweep-rtl {
+  from { transform: translateX(110%); }
+  to { transform: translateX(-290%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mdk-route-progress[data-mode='indeterminate'] .mdk-route-progress-bar {
+    animation: none;
+    width: 100%;
+    transform: scaleX(0.25);
+  }
+}
+
+/* ── SlowServerCard — the cold-start card (z: --z-loader seat) ─────── */
+.mdk-slow-server {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loader);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  background: var(--bg);
+  color: var(--text-strong);
+}
+.mdk-slow-server-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xl);
+  width: 100%;
+  max-width: 34rem;
+  padding: var(--space-3xl);
+  background: var(--surface);
+  border: 1px solid var(--rule);
+  text-align: center;
+}
+.mdk-slow-server-line {
+  font-size: var(--fs-body-lg);
+  line-height: 1.6;
+  color: var(--text-strong);
+  /* Arabic prose is NEVER letter-spaced. */
+  letter-spacing: 0;
+}
+.mdk-slow-server-retry {
+  padding: var(--space-sm) var(--space-xl);
+  background: var(--text-strong);
+  border: 1px solid var(--text-strong);
+  color: var(--bg);
+  font-size: var(--fs-body);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--ease-out);
+}
+.mdk-slow-server-retry:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-fg);
+}
+.mdk-slow-server-retry:focus-visible {
+  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
+  outline-offset: var(--state-focus-ring-offset);
+}
+
+/* ── The brand mark (frontend/src/brand/Logo.tsx — the real R323
+   Logo, landed by the parallel brand agent) styles itself inline
+   (class .mdrk-logo + injected keyframes); no sheet CSS is needed
+   here. The temporary .mdk-logo-* styles that task 1-b staged for the
+   placeholder implementation were retired when the real Logo landed. */
+

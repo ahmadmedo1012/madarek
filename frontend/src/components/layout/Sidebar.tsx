@@ -2,7 +2,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { LogOut, ChevronsLeft, ChevronsRight, ChevronDown, X, Compass } from 'lucide-react';
 import { Icon } from '../Icon';
-import { BrandMark } from '../BrandMark';
+import { Logo } from '../../brand';
 import { UserAvatar } from '../primitives';
 import { Tooltip } from '../overlays';
 import { useOverlayRegistration } from '../overlays/useOverlayRegistration';
@@ -251,7 +251,7 @@ export function Sidebar() {
       <nav ref={asideRef} className={cls} aria-label="القائمة الرئيسية">
         <div className="sidebar-brand">
           <div className="sidebar-brand-mark">
-            <BrandMark size={24} />
+            <Logo variant="mark" size={24} />
           </div>
           <div className="sidebar-brand-text">
             <div className="sidebar-brand-name">مدارك</div>

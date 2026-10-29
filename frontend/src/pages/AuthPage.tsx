@@ -9,7 +9,7 @@ import {
   FlaskConical, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { StarMark } from '../components/StarMark';
+import { Logo } from '../brand';
 import { useLogin, useSelectInstitution } from '../hooks/useAuth';
 import { listPublicInstitutions } from '../lib/api';
 import { apiErrorCode } from '../lib/format';
@@ -271,7 +271,7 @@ export default function AuthPage() {
         {/* r191: the brand mark owns the auth chrome — the national-flag
             provenance marker is retired with the rejected slogan family. */}
         <span className="auth-context">
-          <StarMark size={14} /> مدارك
+          <Logo variant="mark" size={14} /> مدارك
         </span>
       </header>
 

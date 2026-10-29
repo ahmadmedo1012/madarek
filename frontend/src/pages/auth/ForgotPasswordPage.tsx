@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { Link } from 'react-router-dom';
 import { AlertCircle, ArrowLeft } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { StarMark } from '../../components/StarMark';
+import { Logo } from '../../brand';
 import { useRequestPasswordReset } from '../../hooks/useAuth';
 import { useThemeSync } from '../../components/layout/ThemeToggle';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
           العودة إلى تسجيل الدخول
         </Link>
         <span className="auth-context">
-          <StarMark size={14} /> مدارك
+          <Logo variant="mark" size={14} /> مدارك
         </span>
       </header>
 

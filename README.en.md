@@ -2,6 +2,14 @@
 
 # Madarek — Smart Learning Platform
 
+> **Brand (one line, no image):** the khatam idea redrawn on a 32-unit
+> grid — two squares in uniform hairline ink with miter joins and ONE
+> solid orange point (`#FA3600`) seated on the grid intersection (24,8)
+> — «a point becomes an orbit»; paper `#F6F6EE`, ink `#282828`, dark
+> mode swaps via tokens. Guide:
+> [`docs/redesign/r323/brand/BRAND.md`](docs/redesign/r323/brand/BRAND.md)
+> · spec page: `/__brand`.
+
 **Arabic-primary README lives here: [`README.md`](README.md).** This file
 is the English mirror for international readers and tooling.
 
@@ -19,7 +27,9 @@ per-concept mastery matrix, a full research-papers workflow with inline
 PDF annotations, Arabic-normalized cross-document library search, a
 read-only quality-oversight sector, and DB-driven administration with a
 capability-based governance model and a full audit log — all Arabic-RTL,
-with a bespoke two-theme design system (night/gold · cream/copper).
+with a bespoke two-theme design system driven by one token set
+(paper/ink with the single orange signal — no gradients, no copper/gold
+in the brand).
 
 **Stack:** Express + TypeScript + Prisma 5 backend serving `/api/v1/*`
 *and* the built React 18 + Vite SPA as a single service; PostgreSQL on

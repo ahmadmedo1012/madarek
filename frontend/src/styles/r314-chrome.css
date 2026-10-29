@@ -128,6 +128,30 @@
   white-space: nowrap;            /* the measured one-line band */
 }
 
+/* R323 (A3 · defect 3) — the brief/full pair: the DESKTOP band keeps
+ * the full honest sentence (the brief chip is a phone concern). The
+ * .cb-expand toggle and the brief/full swap only act ≤767px. */
+.cb-brief { display: none; }
+.cb-full { display: inline; }
+
+/* the expand toggle — hidden on desktop (the one-line band needs no
+ * toggle); the ≤767 bar seats it as a 44-px tap at the inline end. */
+.cb-expand {
+  display: none;
+  flex: 0 0 auto;
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0;
+}
+.cb-expand:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.cb-expand-ic { display: block; transition: transform var(--t-fast) var(--ease); }
+.cb-banner[data-expanded='true'] .cb-expand-ic { transform: rotate(180deg); }
+
 /* «اعرف أكثر» — the mono-seat link: 11.67px @1440 (--fs-mono-md,
    the reference's LEARN MORE rung). Text rides --accent-ink
    (#C72E00 light) — the token contract's TEXT-safe accent. */
@@ -278,79 +302,63 @@ html[data-theme='dark'] .cb-more:focus-visible {
    most two short rows, the two actions SIDE-BY-SIDE (E-crawl:
    374.13×93.45 measured — our 44px touch floor is the owner-mandated
    a11y minimum over the measured seat, ≈100px total). ────────────── */
-@media only screen and (max-width: 479px) {
+/* ── R318 §A9 — the ≤479 floating-card phone grammar is RETIRED by
+   R323 (A3 · defect 3): the compact 44-px bottom bar below (≤767)
+   replaces it — the old 374-px card covered ~20% of an 844-px phone
+   viewport and struck the hero copy. ───────────────────────────── */
+
+/* ── R323 (A3 · defect 3) — the PHONE COMPACT BAR (≤767): the gate
+   seats as ONE full-width ≈44-px bottom bar — the old floating 374-px
+   card covered ~20% of an 844-px viewport and struck the hero copy.
+   Collapsed: the brief label truncates, both actions ride the row,
+   the expand toggle shows the full honest sentence + learn-more.
+   Expanded: the column returns with the FULL 44-px touch floors.
+   The bar sits at the viewport foot; the hero H1/CTA cell sits above
+   the fold clearance — the banner never covers it (the overlap e2e
+   pins the geometry). ────────────────────────────────────────── */
+@media only screen and (max-width: 767px) {
   .cb-banner {
-    inset-inline: 0;
-    margin-inline: auto;
-    inline-size: min(92vw, 374px);  /* measured reference cap — no token */
-    flex-direction: column;
-    align-items: stretch;
+    inline-size: 100%;
+    min-block-size: 44px;
+    flex-direction: row;
+    align-items: center;
     gap: var(--sp-2);
-    padding-block: var(--sp-2);
+    padding-block: var(--sp-0-5);
     padding-inline: var(--sp-3);
   }
-  .cb-text {
-    line-height: var(--lh-base);
-    white-space: normal;           /* the narrow panel wraps to 2 rows */
+  .cb-banner[data-expanded='true'] {
+    flex-direction: column;
+    align-items: stretch;
+    padding-block: var(--sp-2);
   }
-  .cb-more {
-    margin-inline-start: var(--sp-1-5);
+  .cb-text {
+    white-space: normal;
+    line-height: var(--lh-snug);
+  }
+  .cb-banner:not([data-expanded='true']) .cb-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cb-brief { display: inline; }
+  .cb-banner:not([data-expanded='true']) .cb-full { display: none; }
+  .cb-banner[data-expanded='true'] .cb-brief { display: none; }
+  .cb-more { margin-inline-start: var(--sp-1-5); }
+  .cb-expand {
+    display: grid;
+    place-items: center;
+    inline-size: 44px;
+    block-size: 44px;
   }
   .cb-actions {
+    flex: 0 0 auto;
     gap: var(--sp-2);
   }
   .cb-accept,
   .cb-reject {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     min-block-size: 44px;           /* the touch-target floor — an a11y
                                        minimum, not a design value */
-    inline-size: auto;
-  }
-}
-
-/* ── R318 §A9 — large phones 480–767: the banner keeps the same
-   stacked phone grammar here. At 480–767 the one-line desktop panel
-   (601px floor) cannot hold «يستخدم…اعرف أكثر» + both buttons in a
-   row — the gate measured the LEARN MORE link striking the REJECT
-   button (1150px² @480) and the discover cue under the panel
-   (2694px² @600). The measured reference collapse (374×~100,
-   column, side-by-side actions) is the honest seat for the phone
-   band; the desktop one-liner returns at ≥600 (measured fit — R318
-   §A9/C4) and at ≥768 it keeps the full 601px measure. ─────────── */
-@media only screen and (min-width: 480px) and (max-width: 767px) {
-  /* R318 §A9/C4 — the banner is PX-PINNED like the reference's own
-     measured banner (601×38 desktop · 374×~100 mobile — px, not rem):
-     this band's 12.2–18.3px streaming root rem-inflated the chrome to
-     143–167px tall (measured @600×900 / 720×900) and swallowed the
-     first viewport. Pads 8/12 · gap 8 · 13px text (the legibility
-     floor) · 44px touch floors → ~96–104px tall across the band. */
-  .cb-banner {
-    inset-inline: 0;
-    margin-inline: auto;
-    inline-size: min(92vw, 374px);
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px; /* spacing-gate: allow — the px-pinned measured banner seat */
-    padding: 8px 12px; /* spacing-gate: allow — the same px-pinned measured banner seat (the R318 phone-banner block) */
-  }
-  .cb-text,
-  .cb-more {
-    font-size: 13px; /* type-gate: allow — the 13px legibility floor, pinned like the reference's own px banner (the R318 seat) */
-  }
-  .cb-text {
-    line-height: 1.45;
-    white-space: normal;
-  }
-  .cb-more {
-    margin-inline-start: 6px; /* spacing-gate: allow — the phone-banner's measured inline seat (the R318 px-pinned block) */
-  }
-  .cb-actions {
-    gap: 8px; /* spacing-gate: allow — the phone-banner's measured action row (the R318 px-pinned block) */
-  }
-  .cb-accept,
-  .cb-reject {
-    flex: 1 1 auto;
-    min-block-size: 44px;
     inline-size: auto;
   }
 }

@@ -1,4 +1,4 @@
-import { BrandMark } from './BrandMark';
+import { Logo } from '../brand';
 
 /**
  * HydrationSplash — a calm, branded full-screen placeholder shown only while
@@ -10,7 +10,7 @@ import { BrandMark } from './BrandMark';
 export function HydrationSplash() {
   return (
     <div className="hydration-splash" role="status" aria-label="جارٍ التحميل">
-      <BrandMark size={48} />
+      <Logo variant="mark" size={48} />
     </div>
   );
 }

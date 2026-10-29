@@ -8,6 +8,16 @@ import { GuestReveal } from './components/motion';
 import { useAuthStore } from './stores/auth.store';
 import { ROLE_HOME } from './lib/nav';
 import { HydrationSplash } from './components/HydrationSplash';
+/* R323 §A2 — the ONE loading surface: boot splash (the new mark's
+ * stroke-draw), the 2-px route progress strip and the cold-start card
+ * all render through the loaderOrchestrator seat (exactly one
+ * full-screen layer may exist) and render NULL unless their layer is
+ * active — the mount is permanent and side-effect-free. */
+import { Splash } from './components/overlays/Splash';
+import { RouteProgress } from './components/overlays/RouteProgress';
+import { SlowServerCard } from './components/overlays/SlowServerCard';
+import { loaderOrchestrator } from './lib/loaderOrchestrator';
+import { subscribeServerWake } from './lib/serverWake';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays/Toast';
 import { Icon } from './components/Icon';
@@ -199,6 +209,9 @@ const DataPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ de
 const AboutPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.AboutPage })));
 const HelpPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.HelpPage })));
 const ContactPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.ContactPage })));
+/* R323 §A1 — the brand specimen sheet (construction grid, lockups,
+ * clear-space, min sizes, tones): the reviewers' evidence surface. */
+const BrandPage = lazy(() => import('./pages/BrandPage'));
 
 /** Resolves the home path for an authenticated user, or `/` for guests.
  *
@@ -342,6 +355,8 @@ export function AppRoutes() {
         </Route>
         {/* /auth is the canonical login route; /login is a legacy alias. */}
         <Route path="/login" element={<Navigate to="/auth" replace />} />
+        {/* R323 §A1 — brand specimen sheet (dev + review evidence). */}
+        <Route path="/__brand" element={<BrandPage />} />
         <Route path="/" element={<HomeRedirect />} />
 
         {/* Labs preview — role-permissive mount (A6 P1, wave 22-a;
@@ -785,6 +800,23 @@ function isGuestWindowSurface(pathname: string, hasUser: boolean): boolean {
   return true;
 }
 
+/** R323 §A2 — the orchestrator boot walk: `boot →(markHydrating)→
+ *  hydrating →(markReady)→ ready` rides the auth store's rehydration
+ *  (the same signal the guards already gate on), and the cold-start
+ *  probe (serverWake) drives the slow-server seat. Mounted once, next
+ *  to the overlays; renders nothing. */
+function BootOrchestration() {
+  const isHydrated = useAuthStore((s) => s.isHydrated);
+  useEffect(() => {
+    loaderOrchestrator.markHydrating();
+  }, []);
+  useEffect(() => {
+    if (isHydrated) loaderOrchestrator.markReady();
+  }, [isHydrated]);
+  useEffect(() => subscribeServerWake((slow) => loaderOrchestrator.setServerSlow(slow)), []);
+  return null;
+}
+
 export function GuestLenisMount() {
   const { pathname } = useLocation();
   const user = useAuthStore((s) => s.user);
@@ -814,6 +846,13 @@ export default function App() {
         <RouteErrorBoundary>
           <AppRoutes />
         </RouteErrorBoundary>
+        {/* R323 §A2 overlays — permanently mounted, each NULL unless its
+         * orchestrator seat is active (splash > sheet loader > slow-server;
+         * never two full-screen layers on screen). */}
+        <BootOrchestration />
+        <Splash />
+        <RouteProgress />
+        <SlowServerCard />
         <ToastStack />
         {/* R311 §1.3 — router-aware: yields on '/' (the landing's square
          * instrument owns the pointer there); active on every other

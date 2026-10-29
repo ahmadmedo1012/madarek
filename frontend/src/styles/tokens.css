@@ -1349,3 +1349,48 @@
     --grid-gutter: 1.5rem;  /* ≈12.5px @1440 — PROVISIONAL */
   }
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   ── R323 §A2 loader z-index contract ── (append-only · task 1-b)
+   ═════════════════════════════════════════════════════════════════════
+   The requested mini-scale (splash 90 · loader 80 · menu-drawer 70 ·
+   dialog 60 · consent 50 · toast 40 · header 30) COLLIDES with the
+   live z-scale this file already ships (§3a, inside @layer tokens:
+   --z-base 0 < --z-dropdown 100 < --z-popover 200 < --z-tooltip 250 <
+   --z-sheet 300 < --z-modal 400 < --z-toast 500 < --z-lightbox 600).
+   Per the R323 brief the EXISTING scale is adopted — not a single
+   legacy token is re-keyed (hundreds of consumers; --z-toast keeps its
+   500) — and the R323 RELATIVE order is preserved exactly:
+
+     requested      adopted   note
+     ─────────────  ────────  ─────────────────────────────────────────
+     header   30 →  90        the free rung under --z-dropdown (100)
+     toast    40 →  (500)     NOT re-declared: the §3a block above
+                              already owns it; header 90 < toast 500
+     consent  50 →  510        above legacy toasts (R323: consent>toast)
+     dialog   60 →  520
+     menu-drawer 70 → 530      above dialogs; legacy sheet/modal (300/
+                              400) stay BELOW the R323 drawer family
+     loader   80 →  700        the full-screen loading family seat:
+                              SheetLoader · SlowServerCard · the
+                              RouteProgress strip (all mutually
+                              exclusive but the strip, and the strip
+                              must still top the header)
+     splash   90 →  800        TOPMOST — provably above --z-lightbox
+                              (600) so the boot splash covers everything
+
+   A lightbox (600) can never coexist with a boot splash (interaction
+   is impossible before ready), but the loader family rides above it
+   anyway so the invariant «exactly one full-screen layer, on top»
+   holds without caveats. */
+:root {
+  --z-splash: 800;
+  --z-loader: 700;
+  --z-menu-drawer: 530;
+  --z-dialog: 520;
+  --z-consent: 510;
+  /* --z-toast is deliberately NOT re-declared here: the §3a block owns
+     it at 500 and re-keying it to 40 would demote every live toast
+     under every dropdown in the app. See the mapping table above. */
+  --z-header: 90;
+}

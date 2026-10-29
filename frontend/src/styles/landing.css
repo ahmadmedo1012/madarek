@@ -961,6 +961,22 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   margin-block-start: 1.6rem;
 }
 
+/* R323 (A3 · defect 5) — the SOFT EDGE MASKS: no word is ever cut
+ * mid-glyph at the marquee/ticker row edges — a 16-px linear alpha
+ * fade on both ends of the clipping box (symmetric, so the RTL loop
+ * direction never matters). Hover pauses the crawl; reduced motion
+ * already kills the animation (the static row keeps the mask — the
+ * first/last items still fade honestly at the box edges). */
+.fo-hero-work,
+.fo-ticker {
+  mask-image: linear-gradient(to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 16px, #000 calc(100% - 16px), transparent 100%);
+}
+
+.fo-hero-work:hover .fo-hero-work-track {
+  animation-play-state: paused;
+}
+
 .fo-hero-work-track {
   display: flex;
   flex: 0 0 auto;
@@ -2758,6 +2774,19 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   inline-size: 100%; /* the FULL cell width at every viewport — the height follows the sheet's own aspect (viewBox scaling) */
   block-size: auto;
   color: var(--text); /* the ink — the letterforms stroke currentColor */
+}
+
+/* R323 (A3 · defect 1) — the NEW brand system's wordmark keeps the
+ * full-cell-width cut: the <Logo variant="wordmark"> svg spans the
+ * cell at every viewport, height follows the sheet's own aspect
+ * (viewBox scaling — never font-size hacks). Ink = currentColor (the
+ * paper/ink swap is by construction); the letterforms carry their own
+ * non-scaling hairline geometry, so no stroke-width seat is needed. */
+.fo-wordmark .mdrk-logo.fo-wordmark-logo {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  color: var(--text);
 }
 
 /* the ink — R319 §D1 → R320 §A2 (owner order): STROKE-ONLY outline
@@ -5317,6 +5346,22 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   will-change: opacity, transform;
 }
 
+/* R323 (A3 · defect 5) — the PAPER PLATE under the headline: a
+ * pinned-light chip (literal paper + an ink-alpha hairline, both
+ * themes — the same pinned-artifact world as the card's own ink)
+ * giving the words a ≥24px clear zone above/below, so the display
+ * line never sits ON a wall line (the strike-through effect is
+ * dead). box-decoration-break keeps multi-line wraps honest. */
+.jt-card-plate {
+  display: inline-block;
+  background: #F6F6EE; /* color-gate: allow — the pinned paper of the plan artifact */
+  box-shadow: 0 0 0 var(--sp-4) #F6F6EE; /* color-gate: allow — the clear-zone halo */
+  border: 1px solid rgb(40 40 40 / 0.14); /* color-gate: allow — the ink-alpha hairline */
+  padding: var(--sp-4) var(--sp-5);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
 /* ── the INTRODUCTION card — Heron's home-map-intro, measured ───────
    Compact, content-sized, in the frame's free bottom corner —
    28.01rem wide, 3.2rem insets, 1px hairline on paper, the DARK head
@@ -5341,6 +5386,27 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   background: var(--bg);
   pointer-events: none;
   z-index: 3;
+}
+
+/* R323 (A3 · defect 5) — the card's paper MASK: the corner card sits
+ * over the drawing's bottom dim chain («11.6M · 11.3M · 12.3M») and
+ * the north arrow, and its hard edge used to CUT a label mid-glyph.
+ * A radial paper fade extends past the card's exposed edges (top +
+ * inline-start): any dimension work near the seat now dissolves into
+ * the card's ground instead of striking a hard edge — the brief's
+ * «labels hide under it with a mask» option. var(--bg) keeps the
+ * fade married to the card's own ground in both themes. */
+.jt-intro::before {
+  content: '';
+  position: absolute;
+  inset: -3rem;
+  background: radial-gradient(
+    90% 90% at 78% 88%,
+    var(--bg) 52%,
+    rgb(0 0 0 / 0) 78%
+  );
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* the dark head chip — Heron's rgb(40,40,40) INTRODUCTION head; the

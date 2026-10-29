@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, FlaskConical } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { StarMark } from '../../components/StarMark';
+import { Logo } from '../../brand';
 import { useThemeSync } from '../../components/layout/ThemeToggle';
 import { colleges } from '../../data/colleges.config';
 import { LIVE_CAPABILITIES, LIVE_COUNT, VISION_STATUS } from '../../data/landing-ledger';
@@ -47,7 +47,7 @@ export function CapabilitiesPage() {
             العودة إلى الصفحة الرئيسية
           </Link>
           <Link to="/" className="cu-header-brand" aria-label="مدارك — الصفحة الرئيسية">
-            <StarMark size={22} />
+            <Logo variant="mark" size={22} />
             مدارك
           </Link>
           <span className="cu-header-index fo-mono" dir="ltr">MADAREK · LEDGER SHEET · [C-02]</span>

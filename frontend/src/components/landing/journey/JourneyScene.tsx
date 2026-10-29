@@ -489,12 +489,22 @@ export function JourneyScene() {
       const t = SEQ_DUR_S * clamp01((pRaw - SEQ_START_PIN) / SEQ_SPAN_PIN);
 
       /* 3 · the six progressive layers — DIRECT opacity writes on the
-       * ≤10 consuming group roots (the inherited-var walk is dead). */
+       * ≤10 consuming group roots (the inherited-var walk is dead).
+       * R323 (A3 · defect 5): the STRUCTURE never renders mid-ink —
+       * the envelope (the walls' poché, .pl-l-envelope) writes
+       * DISCRETELY (0|1). A wall at partial opacity reads pale grey
+       * and then jumps to black when the layer settles — the owner's
+       * tone-jump defect; grey belongs to the ghost hairlines
+       * (.bp-hair #B3B3AF), never to the structure. The room layers
+       * keep their crossfade (they are washes, not structure). */
       const groups = resolveLayers(track);
       for (let i = 0; i < LAYER_WINDOWS.length; i += 1) {
         const [a, b] = LAYER_WINDOWS[i]!;
         const o = p2o((t - a) / (b - a));
-        for (const el of groups[i] ?? []) setSheetVar(el.style, 'opacity', o.toFixed(3));
+        for (const el of groups[i] ?? []) {
+          const oo = el.classList.contains('pl-l-envelope') ? (t >= a ? 1 : 0) : o;
+          setSheetVar(el.style, 'opacity', oo.toFixed(3));
+        }
       }
 
       /* 4 · the statement plaques (fade + rise + the 4% shrink out). */
@@ -618,12 +628,19 @@ export function JourneyScene() {
 
               {/* the two statement plaques — Heron's intel cards as
                   content-sized title blocks ON the paper (the base
-                  layer stays visible around them — the V2 kill) */}
+                  layer stays visible around them — the V2 kill).
+                  R323 (A3 · defect 5): the headline rides a PAPER
+                  PLATE — a pinned-light chip with a ≥24px clear zone
+                  — so the words never sit on a wall line (the old
+                  strike-through effect). The plate is part of the
+                  pinned light drawing world (literal paper + ink
+                  alpha hairline, both themes — matching the card's
+                  own pinned #282828 ink). */}
               <p className="jt-card jt-card1" ref={card1Ref}>
-                {STATEMENT_1_AR}
+                <span className="jt-card-plate">{STATEMENT_1_AR}</span>
               </p>
               <p className="jt-card jt-card2" ref={card2Ref}>
-                {STATEMENT_2_AR}
+                <span className="jt-card-plate">{STATEMENT_2_AR}</span>
               </p>
             </div>
 

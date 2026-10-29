@@ -273,8 +273,13 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(JOURNEY_LIVE).not.toContain("'--jt-p'");
     expect(JOURNEY_LIVE).not.toContain('"--jt-p"');
     expect(JOURNEY_LIVE).not.toContain("'--wr-p'");
+    // R323 override (A3 · defect 5): the write loop gained the DISCRETE
+    // envelope branch — the structure (walls' poché) never renders
+    // mid-ink (the owner's tone-jump defect: grey walls in state 1 vs
+    // black later). The direct style.opacity write architecture is
+    // unchanged: still per-frame direct writes, zero custom properties.
     expect(JOURNEY_SRC).toMatch(
-      /for \(const el of groups\[i\] \?\? \[\]\) setSheetVar\(el\.style, 'opacity', o\.toFixed\(3\)\);/,
+      /for \(const el of groups\[i\] \?\? \[\]\) \{\s*const oo = el\.classList\.contains\('pl-l-envelope'\) \? \(t >= a \? 1 : 0\) : o;\s*setSheetVar\(el\.style, 'opacity', oo\.toFixed\(3\)\);\s*\}/,
     );
     /* landing.css: the six crossfade groups are opacity-only roots
      * with the will-change budget; contain bounds the frame seats */
@@ -300,6 +305,10 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
      * R322 3-b-fix3 override: the ≤399 rung 425→415 recovers the 320
      * never-raise pin after the round-2 closing foot row) */
     expect(LANDING_CSS).toMatch(/@media \(max-width: 767px\) \{\s*\.jt-map-col \{\s*block-size: 380dvh;/);
+    /* the ≤399 rung — re-seated at R322 3-b round-4 (415dvh, comment-
+     * tolerant). R323 note: this same pin was independently re-pinned
+     * in the R323 wave with an R323 override note; upstream's tolerant
+     * form is the canonical survivor after the rebase. */
     expect(LANDING_CSS).toMatch(/@media \(max-width: 399px\) \{[\s\S]*?\.jt-map-col \{[\s\S]*?block-size: 415dvh;/);
     /* the INTRODUCTION card sits IN FLOW below the plan (the V10
      * «شاهد»-clip class dies by construction: the card never overlaps

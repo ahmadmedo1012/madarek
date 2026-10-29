@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { Icon } from '../../components/Icon';
-import { StarMark } from '../../components/StarMark';
+import { Logo } from '../../brand';
 import { useThemeSync } from '../../components/layout/ThemeToggle';
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 import { usePageTitle } from '../../hooks/usePageTitle';
@@ -135,7 +135,7 @@ export function LegalSheet({
             العودة إلى الصفحة الرئيسية
           </Link>
           <Link to="/" className="lg-header-brand" aria-label="مدارك — الصفحة الرئيسية">
-            <StarMark size={22} />
+            <Logo variant="mark" size={22} />
             مدارك
           </Link>
           <span className="lg-header-code lg-mono" dir="ltr">

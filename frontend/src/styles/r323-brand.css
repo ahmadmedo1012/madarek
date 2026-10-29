@@ -1,0 +1,180 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R323 §A1 — r323-brand.css — the /__brand spec sheet
+   ═════════════════════════════════════════════════════════════════════
+   Styles for frontend/src/pages/BrandPage.tsx (route /__brand — the
+   foreman's integration pass wires the route; the page imports this
+   sheet directly, the r321-community.tsx precedent).
+
+   THE BRAND PAGE IS A SPECIMEN DRAWER, not a marketing page: it shows
+   the system's own parts (construction grid, variants, clear space,
+   min sizes, colour tokens, do/don't) on system grounds. Therefore:
+   · EVERY colour is a token var() — the page must be dark-correct by
+     construction (the three literal brand hexes appear ONLY inside
+     the swatch tiles as <data> text content, never as CSS).
+   · Radius 0 · no shadows · no gradients · hairline rules
+     (1px, --rule) · generous negative space.
+   · No :hover state rules of our own (nothing here is interactive;
+     the hover-guard lint stays at zero).
+
+   The brand mark styles itself (frontend/src/brand/Logo.tsx —
+   .mdrk-logo + inline keyframes); this sheet carries ONLY the sheet
+   chrome around it.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ── 0 · the sheet ──────────────────────────────────────────────── */
+  .r323b-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 96px;
+    background: var(--bg);
+    color: var(--text-strong);
+    font-family: var(--font-sans);
+    direction: rtl;
+  }
+
+  /* mono micro-label (the instrument voice) */
+  .r323b-mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em; /* Latin/mono only — never on Arabic */
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .r323b-page h1,
+  .r323b-page h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0; /* Arabic NEVER letter-spaced */
+    color: var(--text-strong);
+  }
+  .r323b-page h1 { font-size: clamp(26px, 4vw, 34px); margin: 8px 0 4px; }
+  .r323b-page h2 {
+    font-size: clamp(19px, 2.6vw, 24px);
+    margin: 0 0 18px;
+    padding-top: 14px;
+    border-top: 1px solid var(--rule);
+  }
+  .r323b-page p { color: var(--text-muted); max-width: 70ch; letter-spacing: 0; }
+  .r323b-lead { font-size: 15px; color: var(--text-strong); max-width: 62ch; }
+
+  .r323b-sec { margin-top: 48px; }
+
+  /* ── 1 · the construction plate (32-grid drawing) ───────────────── */
+  .r323b-plate {
+    border: 1px solid var(--rule);
+    padding: clamp(16px, 3vw, 32px);
+    background: var(--surface);
+    display: grid;
+    gap: 24px;
+    justify-items: center;
+  }
+  .r323b-grid-svg { width: min(320px, 100%); height: auto; display: block; }
+  .r323b-plate figcaption {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-align: center;
+  }
+
+  /* ── 2 · variant rows (specimen + meta) ─────────────────────────── */
+  .r323b-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border: 1px solid var(--rule);
+    border-top: 0; /* one ruled stack */
+    padding: 20px clamp(14px, 3vw, 28px);
+    background: var(--surface);
+  }
+  .r323b-row:first-of-type { border-top: 1px solid var(--rule); }
+  .r323b-specimen { display: flex; align-items: center; min-height: 40px; }
+
+  /* tone grounds — tokens, not literals (dark-correct for free) */
+  .r323b-ground-paper { background: var(--bg); }
+  .r323b-ground-ink { background: var(--text-strong); color: var(--bg); }
+  .r323b-ground-accent { background: var(--accent); color: var(--accent-fg); }
+
+  /* ── 3 · clear-space box: the mark floats ½-height off the hairline ── */
+  .r323b-clearspace {
+    display: inline-block;
+    border: 1px dashed var(--rule-strong);
+    padding: calc(16px / 2); /* the ½-mark-height air at the 16px demo */
+  }
+
+  /* ── 4 · min-size ladder ────────────────────────────────────────── */
+  .r323b-ladder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 32px;
+    border: 1px solid var(--rule);
+    padding: clamp(16px, 3vw, 28px);
+    background: var(--surface);
+  }
+  .r323b-ladder figure { margin: 0; display: grid; gap: 10px; justify-items: start; }
+
+  /* ── 5 · colour token tiles ─────────────────────────────────────── */
+  .r323b-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .r323b-swatch {
+    border: 1px solid var(--rule);
+    background: var(--surface);
+  }
+  .r323b-swatch .chip { height: 72px; border-bottom: 1px solid var(--rule); }
+  .r323b-swatch dl { margin: 0; padding: 12px 14px 14px; display: grid; gap: 4px; }
+  .r323b-swatch dt { font-weight: 600; color: var(--text-strong); font-size: 13px; }
+  .r323b-swatch dd {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    direction: ltr;
+  }
+
+  /* the three literal brand colours live ONLY here, as data */
+  .r323b-chip-paper { background: #F6F6EE; }
+  .r323b-chip-ink { background: #282828; }
+  .r323b-chip-orange { background: #FA3600; }
+
+  /* ── 6 · do / don't ─────────────────────────────────────────────── */
+  .r323b-dd {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .r323b-dd ul {
+    margin: 0;
+    padding: 18px 20px;
+    border: 1px solid var(--rule);
+    background: var(--surface);
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  .r323b-dd > div > .r323b-mono { display: block; margin-bottom: 10px; }
+  .r323b-dd li { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .r323b-do { border-inline-start: 2px solid var(--success); }
+  .r323b-dont { border-inline-start: 2px solid var(--danger); }
+
+  /* ── 7 · animated splash demo ───────────────────────────────────── */
+  .r323b-anim {
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--rule);
+    padding: clamp(24px, 5vw, 48px);
+    background: var(--bg);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .r323b-anim { border-style: solid; }
+  }
+}

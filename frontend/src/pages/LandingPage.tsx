@@ -1,20 +1,22 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Check,
+  ArrowLeft, Check, Menu, X,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
-import { StarMark } from '../components/StarMark';
+// R323 (A3 · defect 1) — the ONE brand system: the retired StarMark/
+// BrandMark drawings are replaced by the new <Logo> everywhere on the
+// landing sheet (header mark, footer identity mark, the footer's giant
+// wordmark, the loader's mark). The «مدارك» wordmark beside the header
+// mark stays HTML text — the guest-landing contract renders it.
+import { Logo } from '../brand';
 import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { colleges } from '../data/colleges.config';
-import {
-  PRODUCT_CAPTURES, ROLE_CAPTURES, ROLE_SHOWCASES,
-} from '../data/university-media';
+import { ROLE_SHOWCASES } from '../data/university-media';
 import { HERO_WORK_ITEMS, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
-import { ProductFrame } from '../components/landing/ProductFrame';
 import { PlatformCanvas } from '../components/landing/PlatformCanvas';
 import { HeroInkWindow } from '../components/landing/HeroInkWindow';
 import { StatementArt } from '../components/landing/StatementArt';
@@ -26,13 +28,22 @@ import { HeroInspect } from '../components/landing/cursor/HeroInspect';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
 import { FooterLens } from '../components/landing/footer/FooterLens';
-import { FooterMarkArt, WordmarkArt } from '../components/landing/FooterArt';
+// R323 (A3 · defects 1+9): FooterArt (FooterMarkArt/WordmarkArt) is
+// retired — the giant footer wordmark is <Logo variant="wordmark"> now
+// and the circle-star mark cell is removed (ONE mark per view).
 import { ConsentBanner } from '../components/landing/chrome/ConsentBanner';
 import { EdgeTab } from '../components/landing/chrome/EdgeTab';
 import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
 import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
+// r314-chrome.css — R314 B10 — the consent banner (V11) + the right-edge
+// vertical tab (V12): the landing chrome pair, Heron geometry with
+// Madarek's own honest content. R323 (A3 · defect 3): imported BEFORE
+// landing.css so the sheet's R323 chrome block (the compact phone
+// consent bar + the --z-consent/--z-loader tokens) is the cascade's
+// last word over the chrome pair without specificity forks.
+import '../styles/r314-chrome.css';
 // landing.css — «لوحة مدارك r306 → r313» — the Heron-parity drawing
 // sheet, re-composed to the reference's 9-section structure (D7):
 // hero → statement → live (the pains) → chapters (the pinned map) →
@@ -44,10 +55,6 @@ import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
 // (landing-funnel 5+5, r168b, r170d, r177, r188, r306 — see the tests
 // pinned beside each surface).
 import '../styles/landing.css';
-// r314-chrome.css — R314 B10 — the consent banner (V11) + the right-edge
-// vertical tab (V12): the landing chrome pair, Heron geometry with
-// Madarek's own honest content.
-import '../styles/r314-chrome.css';
 
 /**
  * Landing — «لوحة مدارك» (r306 sheet → R313 Heron structure).
@@ -97,9 +104,10 @@ const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
  * Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata, Sebha
  * (official-channel videos). Computed here, not invented: each
  * institution has verified identity evidence in manifest.json. The
- * documentary media itself lives on /campus (R313); this count feeds
- * the title block + the universities ticker below. */
-const MEDIA_UNIVERSITY_COUNT = 5;
+ * documentary media itself lives on /campus (R313); the list feeds the
+ * universities ticker below. R323 (A3 · defect 8): the numeric count
+ * that rode the removed CTA metadata ledger retires with it — the
+ * named crawl carries the truth without a bare stat. */
 const DOCUMENTED_UNIVERSITIES = [
   'جامعة بنغازي',
   'جامعة طرابلس',
@@ -156,34 +164,143 @@ const PAINS = [
   },
 ] as const;
 
-/* ── The three personas (R313 · D7 §7) — honest segments the platform
- * serves or is building for. No invented features: the researcher rides
- * the LIVE research library; the lab supervisor states the ACTUAL
- * in-development status; the guardian states the ACTUAL absence of a
- * separate account today. */
-const PERSONAS = [
+/* ── R323 (A3 · defect 7) — the roles LEDGER: the card grid becomes a
+ * hairline ledger of the platform's eight rows — the five verified
+ * roles + the three honest personas — one row each: mono index, the
+ * clean role name (IBM Plex 600), a one-line honest descriptor, and a
+ * status tag in the chip grammar. The descriptors are the SAME honest
+ * lines the cards carried (ROLE_SHOWCASES.lineAr / the persona lines —
+ * the r168b pins ride them verbatim); the names unwrap the old leading
+ * «لل» prefix properly (للطالب → طالب — the old single-lam strip left
+ * «لطالب» behind). Status tags name the ACTUAL state: متاح (live),
+ * قريبًا (in development), غير متاح (honest absence). */
+const LEDGER_ROWS = [
+  ...ROLE_SHOWCASES.map((r) => ({
+    name: r.roleAr.replace(/^لل/, ''),
+    line: r.lineAr,
+    state: 'متاح' as const,
+    live: true,
+  })),
   {
-    num: '06',
-    title: 'الباحث',
+    name: 'الباحث',
     line: 'طالب أو أستاذ يكتب بحثه: رفع PDF، وفحص نزاهة معلَن، وملاحظات معلَّمة من الأستاذ.',
-    state: 'تعمل اليوم' as const,
+    state: 'متاح' as const,
     live: true,
   },
   {
-    num: '07',
-    title: 'مشرف المعمل',
+    name: 'مشرف المعمل',
     line: 'المعامل الافتراضية قيد التطوير — فهرس للاستعراض دون تشغيل بعد.',
-    state: 'قيد التطوير' as const,
+    state: 'قريبًا' as const,
     live: false,
   },
   {
-    num: '08',
-    title: 'وليّ الأمر',
+    name: 'وليّ الأمر',
     line: 'لا حساب منفصل لوليّ الأمر اليوم — المتابعة تمرّ عبر تقرير الطالب نفسه.',
-    state: 'غير متاح بعد' as const,
+    state: 'غير متاح' as const,
     live: false,
   },
 ] as const;
+
+/* ── R323 (A3 · defect 6) — the platform §05's ONE designed product
+ * frame: an original vector drawing built from the real components'
+ * grammar (the mini lecture-player with its chapter list + checkpoint
+ * card, the mastery matrix, one assistant bubble), replacing the raster
+ * captures + the «real-ui» chip + the pasted tooltip. Honest by
+ * construction: every cell states the grammar of a REAL surface (the
+ * player's checkpoint mechanism, the qualitative matrix, the
+ * assistant's LIVE concept-explain scope — the r168b truthfulness
+ * canon: no summarisation promise), and the section carries exactly
+ * ONE demo-data disclosure. Pure drafting chrome: the drawing body is
+ * aria-hidden; the reading lives in the section's own copy. */
+function PlatformShowcase({ ctaTo }: { ctaTo: string }) {
+  return (
+    <figure className="pr-frame">
+      <div className="pr-frame-head" aria-hidden="true">
+        <span className="fo-mono" dir="ltr">[05] · MADAREK · UI GRAMMAR</span>
+        <span className="pr-frame-sq" />
+      </div>
+
+      <div className="pr-frame-body" aria-hidden="true">
+        {/* the mini lecture-player: hairline cell, chapter list, the
+            checkpoint card */}
+        <div className="pr-cell pr-cell-player">
+          <div className="pr-cell-bar">
+            <span className="pr-cell-idx fo-mono" dir="ltr">[01]</span>
+            <span className="pr-cell-title">المحاضرة التفاعلية</span>
+            <span className="pr-cell-note fo-mono" dir="ltr">24:36</span>
+          </div>
+          <ul className="pr-chapters">
+            <li className="pr-ch is-done">
+              <span className="fo-mono" dir="ltr">[01]</span>
+              مفهوم: بناء المحاضرة
+            </li>
+            <li className="pr-ch is-now">
+              <span className="fo-mono" dir="ltr">[02]</span>
+              مفهوم: نقطة الفحص
+              <span className="pr-ch-play" />
+            </li>
+            <li className="pr-ch">
+              <span className="fo-mono" dir="ltr">[03]</span>
+              مفهوم: التصحيح التلقائي
+            </li>
+            <li className="pr-ch">
+              <span className="fo-mono" dir="ltr">[04]</span>
+              مفهوم: خطط المراجعة
+            </li>
+          </ul>
+          <div className="pr-check">
+            <span className="pr-check-k fo-mono" dir="ltr">[02] · نقطة فحص</span>
+            <p className="pr-check-q">سؤال قصير يُصحَّح فورًا داخل المحاضرة</p>
+            <span className="pr-check-btn">تحقّق</span>
+          </div>
+        </div>
+
+        {/* the mastery matrix: a small grid of cells with the orange
+            fills as the single accent */}
+        <div className="pr-cell pr-cell-matrix">
+          <div className="pr-cell-bar">
+            <span className="pr-cell-idx fo-mono" dir="ltr">[02]</span>
+            <span className="pr-cell-title">مصفوفة الإتقان</span>
+          </div>
+          <div className="pr-matrix">
+            <span className="pr-mc is-hot" />
+            <span className="pr-mc is-hot" />
+            <span className="pr-mc" />
+            <span className="pr-mc is-warm" />
+            <span className="pr-mc" />
+            <span className="pr-mc is-hot" />
+            <span className="pr-mc is-warm" />
+            <span className="pr-mc" />
+          </div>
+          <div className="pr-mrows">
+            <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '78%' }} /></span>
+            <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '52%' }} /></span>
+            <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '31%' }} /></span>
+          </div>
+        </div>
+
+        {/* one assistant bubble — the LIVE concept-explain scope */}
+        <div className="pr-cell pr-cell-ai">
+          <div className="pr-cell-bar">
+            <span className="pr-cell-idx fo-mono" dir="ltr">[03]</span>
+            <span className="pr-cell-title">المساعد الأكاديمي</span>
+          </div>
+          <p className="pr-ai-q">اشرح لي مفهوم «نقطة الفحص»</p>
+          <p className="pr-ai-a">سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</p>
+        </div>
+      </div>
+
+      <figcaption className="pr-frame-foot">
+        {/* the ONE demo-data disclosure of the section */}
+        <span className="pr-frame-demo fo-mono">بيانات تجريبية</span>
+        <a href={ctaTo} className="fo-text-link pr-frame-cta">
+          أنشئ حسابك لتجربتها حيّة
+          <Icon icon={ArrowLeft} size={13} />
+        </a>
+      </figcaption>
+    </figure>
+  );
+}
 
 /* ── R313 (D8 · the header nav) — the reference's four-seat register:
  * two plain links + two dropdown parents (Heron: PRODUCT ▾ / PRICING /
@@ -698,8 +815,10 @@ export default function LandingPage() {
   const year = new Date().getFullYear();
 
   /* the platform's two product blocks: the student surface + the
-   * teacher cockpit (the honest pair a visitor must see first). */
-  const teacherCapture = ROLE_CAPTURES.find((c) => c.id === 'teacher-dashboard');
+   * teacher cockpit (the honest pair a visitor must see first).
+   * R323 (A3 · defect 6): the raster captures retired — the section
+   * draws ONE designed product frame (PlatformShowcase); the honest
+   * disclosure is the frame's own «بيانات تجريبية» line. */
 
   return (
     <div
@@ -777,8 +896,12 @@ export default function LandingPage() {
             honest function the reference doesn't need, in the same
             cell language. */}
         <div className="fo-header-inner">
+          {/* R323 (A3 · defect 1): the brand cell draws the NEW <Logo>
+              mark (the 32-grid khatam) — the retired StarMark is gone.
+              «مدارك» stays HTML text (the display-voice wordmark the
+              guest-landing e2e reads). */}
           <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
-            <StarMark size={30} className="fo-brand-mark" />
+            <Logo variant="mark" size={26} className="fo-brand-mark" />
             <span className="fo-brand-name">مدارك</span>
           </Link>
 
@@ -793,9 +916,12 @@ export default function LandingPage() {
             </Link>
           </div>
 
-          {/* <992px (the reference's own breakpoint): the bar collapses
-              to the wide MENU button — 187×50 @390 — label + a 2-line
-              mark that folds to one line while the overlay is open. */}
+          {/* <992px — R323 (A3 · defect 2): the phone row collapses to
+              [Logo lockup | menu button]: ONE real 44×44 menu button —
+              a Lucide glyph + the visually-hidden «القائمة» label (the
+              old 187×50 wide seat with its clipped label and stray
+              1-px rule is retired; the aria-label flip and the
+              Escape/focus/scroll-lock contracts are untouched). */}
           <button
             type="button"
             className="fo-burger"
@@ -805,11 +931,7 @@ export default function LandingPage() {
             onClick={() => setMenuOpen((v) => !v)}
           >
             <span className="fo-burger-label">القائمة</span>
-            <span className="fo-burger-ic" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
+            <Icon icon={menuOpen ? X : Menu} size={20} className="fo-burger-ic" />
           </button>
         </div>
 
@@ -1189,26 +1311,24 @@ export default function LandingPage() {
           <JourneyScene />
         </section>
 
-        {/* ═══ [5] المنصّة فعليًا — two product blocks (the reference's
-            platform section): the student surface + the teacher
-            cockpit. The frames are authentic UI from the seeded demo
-            environment (fully synthetic «جامعة مدارك التجريبية» data) —
-            labelled with the mono «real-ui» tag + the demo-data
-            disclosure on every frame; the CTA scrolls to the conversion
-            row (the funnel counts stay exact — no extra auth links
-            on the sheet).
-            R318 §A5 (c3-plat): the band re-composed onto the reference's
-            measured 12-col hairline grammar (361/601/464, RTL-mirrored
-            flow): the SHEET (.pr-head — [05] mono label + h4-scale
-            sheet-title + the muted sub, the drawing ON the same paper
-            inside the sheet's hairline frame) at the reading-start
-            edge; the lead frame ≈ the 601 tool canvas; the std frame ≈
-            the 464 inspector column with the note under it; the
-            full-height hairline rides the canvas|inspector boundary
-            (the reference's x=968, mirrored). No h1-class text runs
-            under any frame — the title seats INSIDE the sheet's frame.
-            The flow (head · frames · note) keeps the tier floors: the
-            ≥992 min-block-size rungs are untouched. ═══ */}
+        {/* ═══ [5] المنصّة فعليًا — R323 (A3 · defect 6): ONE crisp
+            designed product frame. The blurry dashboard screenshots +
+            the pasted tooltip + the «real-ui» chips are retired; the
+            frame is an ORIGINAL vector drawing built from the real
+            components' grammar (mini lecture-player · mastery matrix ·
+            one assistant bubble) — hairline cells, mono index bars,
+            orange as the single accent, radius 0. Exactly ONE
+            disclosure line «بيانات تجريبية» (the second «اللقطات من
+            بيئة العرض…» line is gone with the captures). The CTA still
+            scrolls to the conversion row (the funnel counts stay exact
+            — no extra auth links on the sheet).
+            R318 §A5 (c3-plat): the band keeps the reference's measured
+            12-col hairline grammar — the SHEET (.pr-head — [05] mono
+            label + the D2 title + the muted sub, the PlatformCanvas
+            drawing ON the same paper inside the sheet's hairline frame)
+            at the reading-start edge; the frame ≈ the 601 tool canvas.
+            No h1-class text runs under any frame — the title seats
+            INSIDE the sheet's frame. The flow keeps the tier floors. ═══ */}
         <section id="product" className="pr-section" aria-labelledby="pr-title">
           <div className="pr-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
@@ -1216,8 +1336,8 @@ export default function LandingPage() {
               لا وعود — هذه <em>الواجهة نفسها</em>
             </RevealCssClass>
             <RevealCssClass as="p" className="pr-lede" delay={2}>
-              لقطات حقيقية من بيئة العرض: بيانات تجريبية اصطناعية بالكامل داخل «جامعة مدارك التجريبية» —
-              ما تراه هنا هو ما يعمل اليوم داخل المنصّة.
+              بنية الواجهات نفسها برسم داخلي: مشغّل المحاضرة بنقاط الفحص،
+              ومصفوفة الإتقان، والمساعد الأكاديمي — كما تعمل اليوم داخل المنصّة.
             </RevealCssClass>
             {/* the sheet's drawing cell — the plan ON the sheet's paper
                 (aria-hidden decorative; hidden with the head at ≤991/992–1024,
@@ -1225,23 +1345,10 @@ export default function LandingPage() {
             <PlatformCanvas />
           </div>
 
-          <RevealCssClass as="div" className="pr-grid" delay={2}>
-            <ProductFrame
-              capture={PRODUCT_CAPTURES[0]}
-              variant="lead"
-              ctaAr="أنشئ حسابك لتجربتها حيّة"
-              ctaTo="#cta"
-              ctaAnchor
-              viewTag="VIEW-A · 1280×800"
-            />
-            {teacherCapture && (
-              <ProductFrame capture={teacherCapture} viewTag="VIEW-B · 1280×800" />
-            )}
-          </RevealCssClass>
-
-          <RevealCssClass as="p" className="pr-note" delay={3}>
-            كل إطار مأخوذ من التطبيق نفسه داخل بيئة العرض — بلا معالجة ولا تجميل.
-            المزيد من الأسطح الحقيقية في <Link to="/capabilities" className="fo-text-link">صفحة القدرات</Link>.
+          <RevealCssClass as="div" className="pr-stage" delay={2}>
+            {/* r307 contract kept: the section's CTA scrolls to the
+                conversion row (#cta) — never an auth link. */}
+            <PlatformShowcase ctaTo="#cta" />
           </RevealCssClass>
         </section>
 
@@ -1269,10 +1376,12 @@ export default function LandingPage() {
           </RevealCssClass>
         </section>
 
-        {/* ═══ [7] الأدوار — the ruled hairline grid (the reference's
-            usecase): the five verified platform roles + three honest
-            personas. No role implies a feature it does not have — the
-            line under each card is the honest current state. ═══ */}
+        {/* ═══ [7] الأدوار — R323 (A3 · defect 7): the card grid became a
+            hairline LEDGER — eight rows (the five verified platform
+            roles + the three honest personas), each: mono index, the
+            clean role name (IBM Plex 600), a one-line honest
+            descriptor, and a status tag in the chip grammar. Hairline
+            row rules, no cards; every line still says the truth. ═══ */}
         <section id="roles" className="rl-section" aria-labelledby="rl-title">
           <div className="rl-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[07]</span> الأدوار</span>
@@ -1281,25 +1390,17 @@ export default function LandingPage() {
             </RevealCssClass>
             <RevealCssClass as="p" className="rl-lede" delay={2}>
               خمسة أدوار مثبَّتة داخل المنصّة، وثلاث شرائح يخدمها المنتج اليوم أو يبني لها —
-              كل بطاقة تقول الحقيقة كما هي.
+              كل صف يقول الحقيقة كما هي.
             </RevealCssClass>
           </div>
 
-          <ul className="rl-cards">
-            {ROLE_SHOWCASES.map((r, i) => (
-              <RevealCssClass as="li" key={r.key} className="rl-card" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className="rl-card-num fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-                <h3 className="rl-card-title">{r.roleAr.replace(/^ل/, '')}</h3>
-                <p className="rl-card-line">{r.lineAr}</p>
-                <span className="rl-card-tag">دور منصّة</span>
-              </RevealCssClass>
-            ))}
-            {PERSONAS.map((p, i) => (
-              <RevealCssClass as="li" key={p.title} className="rl-card" delay={((i % 3) + 1) as 1 | 2 | 3}>
-                <span className="rl-card-num fo-mono" dir="ltr">[{p.num}]</span>
-                <h3 className="rl-card-title">{p.title}</h3>
-                <p className="rl-card-line">{p.line}</p>
-                <span className={`rl-card-tag${p.live ? ' is-live' : ''}`}>{p.state}</span>
+          <ul className="rl-ledger">
+            {LEDGER_ROWS.map((r, i) => (
+              <RevealCssClass as="li" key={r.name} className="rl-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
+                <span className="rl-row-num fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                <h3 className="rl-row-name">{r.name}</h3>
+                <p className="rl-row-line">{r.line}</p>
+                <span className={`rl-row-tag${r.live ? ' is-live' : ''}`}>{r.state}</span>
               </RevealCssClass>
             ))}
           </ul>
@@ -1309,96 +1410,50 @@ export default function LandingPage() {
           </RevealCssClass>
         </section>
 
-        {/* ═══ [8] الخاتمة (the reference's cta) — the title block
-            (the sheet's metadata grid, moved from the hero), the
-            sketch panel, and the resolve. The colleges registry strip
-            carries the #colleges anchor. R322 V1: the [R313] revision
-            row + the r308 corner-coordinate readout are deleted —
+        {/* ═══ [8] الخاتمة (the reference's cta) — the resolve. R323
+            (A3 · defect 8): the empty plus-marked sketch placeholder box
+            and the «المشروع / اللغة / القدرات» metadata ledger (with its
+            Latin «RTL» cell) are REMOVED — one statement + two real
+            buttons close the sheet; the true numbers (colleges,
+            campuses, live capabilities) ride the registry strip below,
+            computed from the real config. R322 V1: the [R313] revision
+            row + the r308 corner-coordinate readout stay deleted —
             debug text is not content. ═══ */}
         <section className="fo-cta" id="vision" aria-label="ابدأ رحلتك — أنشئ حسابك">
-          <div className="fo-cta-grid">
-            <div className="fo-cta-inner">
-              <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
-                جاهز لبدء <em>رحلتك</em>؟
-              </RevealCssClass>
-              <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
-                أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
-                وتابع تقدّمك من أول محاضرة.
-              </RevealCssClass>
-              <RevealCssClass as="div" className="fo-cta-actions" delay={3} id="cta">
-                <Link to="/auth/register" className="btn accent lg">
-                  أنشئ حسابك الجامعي
-                  <Icon icon={ArrowLeft} size={16} />
-                </Link>
-                <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
-              </RevealCssClass>
-              <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
-                <Icon icon={Check} size={13} />
-                مدارك · {year} · منصّة تعليمية مستقلّة
-              </RevealCssClass>
-            </div>
-
-            {/* the sketch panel — the drafting-sheet sketch (the
-                reference's cta sketch image): the grid + registration
-                marks, pure line work, decorative. R322 V1 tail: the
-                [CTA · RESOLVE] mono coord is deleted with its
-                .fo-cta-sketch-coord seat — a coordinate tag is not
-                content. */}
-            <div className="fo-cta-sketch" aria-hidden="true">
-              <span className="fo-cta-sketch-grid" />
-              <span className="fo-cta-sketch-mark fo-cta-sketch-tl" />
-              <span className="fo-cta-sketch-mark fo-cta-sketch-tr" />
-              <span className="fo-cta-sketch-mark fo-cta-sketch-bl" />
-              <span className="fo-cta-sketch-mark fo-cta-sketch-br" />
-            </div>
+          <div className="fo-cta-inner">
+            <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
+              جاهز لبدء <em>رحلتك</em>؟
+            </RevealCssClass>
+            <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
+              أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
+              وتابع تقدّمك من أول محاضرة.
+            </RevealCssClass>
+            <RevealCssClass as="div" className="fo-cta-actions" delay={3} id="cta">
+              <Link to="/auth/register" className="btn accent lg">
+                أنشئ حسابك الجامعي
+                <Icon icon={ArrowLeft} size={16} />
+              </Link>
+              <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
+            </RevealCssClass>
+            <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
+              <Icon icon={Check} size={13} />
+              مدارك · {year} · منصّة تعليمية مستقلّة
+            </RevealCssClass>
           </div>
-
-          {/* the title block — the sheet's metadata grid (moved from
-              the hero in R313; the drawing-sheet identity closes the
-              page the way it opened it). */}
-          <RevealCssClass as="dl" className="fo-hero-meta" delay={2}>
-            <div className="fo-meta-row">
-              <dt className="fo-meta-k">المشروع</dt>
-              <dd className="fo-meta-v">منصّة تعليمية تقنية مستقلّة</dd>
-            </div>
-            <div className="fo-meta-row">
-              <dt className="fo-meta-k">اللغة</dt>
-              <dd className="fo-meta-v">عربية أولًا · RTL</dd>
-            </div>
-            <div className="fo-meta-row">
-              <dt className="fo-meta-k">البنية</dt>
-              <dd className="fo-meta-v">
-                <span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية ·
-                <span className="fo-mono" dir="ltr"> {formatInt(CAMPUS_COUNT)}</span> أحرام
-              </dd>
-            </div>
-            <div className="fo-meta-row">
-              <dt className="fo-meta-k">القدرات</dt>
-              <dd className="fo-meta-v">
-                <span className="fo-mono" dir="ltr">[{String(LIVE_COUNT).padStart(2, '0')}]</span> تعمل اليوم
-              </dd>
-            </div>
-            <div className="fo-meta-row">
-              <dt className="fo-meta-k">الجامعات الموثقة</dt>
-              <dd className="fo-meta-v">
-                <span className="fo-mono" dir="ltr">{formatInt(MEDIA_UNIVERSITY_COUNT)}</span> في الصور والفيديو
-              </dd>
-            </div>
-            <div className="fo-meta-row">
-              <dt className="fo-meta-k">بيانات العرض</dt>
-              <dd className="fo-meta-v">جامعة مدارك التجريبية — توضيحية</dd>
-            </div>
-          </RevealCssClass>
 
           {/* [9] the colleges registry strip — the ruled hairline row
               linking the public registry (the funnel's 5th login
               affordance lives here; the demo-data disclosure rides the
-              row, never a tooltip). */}
+              row, never a tooltip). R323 (A3 · defect 8): the TRUE
+              numbers the old metadata ledger carried (colleges,
+              campuses, the live-capability count) ride HERE, computed
+              from the real config/data — never invented. */}
           <div className="cg-strip" id="colleges">
             <span className="cg-strip-label fo-mono" dir="ltr">[09] · REGISTRY</span>
             <p className="cg-strip-text">
               <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
-              <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —
+              <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —{' '}
+              <span className="fo-mono" dir="ltr">[{String(LIVE_COUNT).padStart(2, '0')}]</span> قدرات تعمل اليوم.
               بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
             </p>
             <div className="cg-strip-links">
@@ -1446,13 +1501,15 @@ export default function LandingPage() {
               <span className="fo-fcell-tag fo-mono" dir="ltr">[01] CAMPUS · INK RENDER</span>
             </div>
 
-            {/* [02] the tagline cell — the honest identity paragraph +
-                the subscribe seat (R314 cycle-2: moved from the account
-                column — the reference's footer-head = title-wrap +
-                form-wrap in ONE column) */}
+            {/* [02] the tagline cell — the honest identity paragraph.
+                R323 (A3 · defects 1+9): the identity mark draws the NEW
+                <Logo> (the retired StarMark is gone) and the filler
+                newsletter block («قريبًا — لا توجد قائمة بريدية») is
+                removed entirely — the honest-copy rule: dropping the
+                seat is the approved option, no fake opt-in remains. */}
             <div className="fo-fcell fo-fcell-tagline">
               <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
-                <StarMark size={30} className="fo-brand-mark" />
+                <Logo variant="mark" size={26} className="fo-brand-mark" />
                 <span className="fo-brand-stack">
                   <span className="fo-brand-name">مدارك</span>
                   <span className="fo-brand-sub">منصّة التعليم الذكي</span>
@@ -1463,39 +1520,6 @@ export default function LandingPage() {
                     on one source line (the r188-brand-integrity gate). */}
                 منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
               </p>
-              {/* the honest subscribe seat — HONEST disabled state: no
-                  subscribe endpoint exists anywhere in the backend
-                  (verified — modules: auth/institution/milestones/
-                  onboarding/search/theme only), so there is no
-                  submission to make and no success to theatrically
-                  announce. The seat ships in the reference's own
-                  geometry (hairline input + 40×40 arrow) with a plain
-                  «قريبًا» explanation. No fake opt-ins. */}
-              <div className="fo-subscribe">
-                <label className="fo-footer-heading" htmlFor="fo-subscribe-email">النشرة البريدية</label>
-                <div className="fo-subscribe-row">
-                  <input
-                    id="fo-subscribe-email"
-                    type="email"
-                    className="fo-subscribe-input"
-                    placeholder="بريدك الإلكتروني"
-                    autoComplete="email"
-                    disabled
-                    aria-describedby="fo-subscribe-note"
-                  />
-                  <button
-                    type="button"
-                    className="fo-subscribe-btn"
-                    disabled
-                    aria-label="الاشتراك في النشرة — غير متاح بعد"
-                  >
-                    <Icon icon={ArrowLeft} size={15} />
-                  </button>
-                </div>
-                <p className="fo-subscribe-note" id="fo-subscribe-note">
-                  قريبًا — لا توجد قائمة بريدية فعلية بعد؛ لا يُجمَع أيّ بريد ولا يُرسَل شيء.
-                </p>
-              </div>
             </div>
 
             {/* [03–05] the three link columns (the reference's
@@ -1544,20 +1568,10 @@ export default function LandingPage() {
               <p className="fo-footer-addr-line">لا بريد عام في مرحلة الإطلاق التجريبي.</p>
             </div>
 
-            {/* [08] the drawn-mark cell — the reference's line-logo seat:
-                Madarek's own khatam star drafted as a construction
-                drawing (R315 K-F: the floating filled diamond is
-                retired) — hairline construction circles + crosshairs
-                behind (1px screen hairlines, var(--rule)), the two
-                rotated squares stroked in INK var(--text), one small
-                accent square seated on the outer construction circle
-                (the registration beacon, the نقطة seat). Ink-on-paper,
-                token-driven for both themes. */}
-            <div className="fo-fcell fo-fcell-mark">
-              <RevealCssClass as="div" className="fo-footer-mark" delay={1} aria-hidden="true">
-                <FooterMarkArt />
-              </RevealCssClass>
-            </div>
+            {/* R323 (A3 · defect 1): the [08] drawn-mark cell (the big
+                circle-star construction drawing) is REMOVED — one mark
+                per view; the sheet's mark lives in the header, the
+                identity cell above and the wordmark below. */}
           </div>
 
           {/* the image-strip band (the reference's footer-img-wrap): the
@@ -1584,19 +1598,16 @@ export default function LandingPage() {
               <span className="fo-wordmark-reg fo-wordmark-reg-bl" aria-hidden="true" />
               <span className="fo-wordmark-reg fo-wordmark-reg-br" aria-hidden="true" />
 
-              {/* ── the ONE full-cell-width cut — REAL Alexandria 700
-                  letterforms of «مدارك» shaped by harfbuzz (م initial
-                  CONNECTED into د final; ا/ر/ك isolated) and composed by
-                  scripts/r318/wordmark-build.mjs into ONE path — the
-                  committed wordmark-art.generated.ts. The sheet hugs
-                  the ink + construction margins (viewBox 3108×1189 →
-                  svg 1398×535 @1440 · 982×376 @1024 · 726×278 @768 ·
-                  348×133 @390 · 318×122 @360 — ink 94.2% of the cell,
-                  the reference's own ink spans 86% of its strip); the
-                  drawn word is STROKE-ONLY currentColor (the reference's
-                  drafting verdict) and the reading rides the svg's
-                  role="img" + aria-label + <title> «مدارك». */}
-              <WordmarkArt />
+              {/* ── R323 (A3 · defect 1): the ONE full-cell-width cut is
+                  the NEW brand system's outlined wordmark — <Logo
+                  variant="wordmark"> (the generated Plex 600 letterforms
+                  of «مدارك», stroke-only currentColor, the orange point
+                  rides the mark seats only). The full-cell-width
+                  behaviour is kept: the sheet spans the cell at every
+                  viewport (landing.css .fo-wordmark .mdrk-logo). The
+                  reading rides the svg's role="img" + aria-label +
+                  <title> «مدارك». */}
+              <Logo variant="wordmark" size={100} className="fo-wordmark-logo" />
 
               <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
             </div>

@@ -24,6 +24,13 @@
  * chrome ladder).
  */
 import { useCallback } from 'react';
+// R323 (A3 · defect 1): the tab's tiny star is the ONE brand system's
+// mark now — <Logo variant="mark" tone="paper"> (paper strokes on the
+// orange square, both themes) replaces the bespoke inline 4-pointed
+// star. The <title> of the Logo would double the button's accessible
+// description — the aria-label carries the name; the svg is aria-hidden
+// via its decorative wrapper (the seat stays aria-hidden as before).
+import { Logo } from '../../../brand';
 
 /** The colophon footer selector — the tab's scroll target. */
 const FOOTER_SELECTOR = '.fo-footer';
@@ -64,27 +71,13 @@ export function EdgeTab() {
           display:contents so the R318 §A10 gutter-marker grammar in
           r314-chrome.css anchors .et-mark straight to the button). */}
       <span className="et-rail" aria-hidden="true">
-        {/* the small orange square (~14×14) with a tiny white 4-pointed
-            star — Madarek's own mark, drawn bespoke (the StarMark
-            primitive strokes itself in --accent, invisible on an accent
-            ground, so the tab uses the white-stroke variant) */}
+        {/* the small orange square (~14×14) with the brand mark —
+            R323 (A3 · defect 1): <Logo variant="mark" tone="paper">
+            (paper ink on the accent ground, both themes) replaces the
+            bespoke inline 4-pointed star. The seat stays aria-hidden:
+            the button's aria-label carries the name. */}
         <span className="et-mark" aria-hidden="true">
-          <svg
-            viewBox="0 0 24 24"
-            width="12"
-            height="12"
-            fill="none"
-            focusable="false"
-            style={{ display: 'block' }}
-          >
-            {/* the 4-pointed star — two long rays + two short, stroked */}
-            <path
-              d="M12 3 L14.2 9.8 L21 12 L14.2 14.2 L12 21 L9.8 14.2 L3 12 L9.8 9.8 Z"
-              stroke="var(--accent-fg)"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <Logo variant="mark" size={12} tone="paper" className="et-mark-logo" />
         </span>
         {/* the rotated vertical mono label — Madarek's own honest line
             (no award claims): «منصّة مستقلّة · مدارك <computed year>» */}

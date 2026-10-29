@@ -234,17 +234,28 @@ describe('r183 — brand-identity closure (the surfaces r177 missed)', () => {
   });
 
   it('the product chrome renders the Madarek mark; the favicon is the neutral mark', () => {
-    const brand = read('src/components/BrandMark.tsx');
-    expect(brand).toContain('src="/brand/madarek-mark.svg"');
-    // the src attribute alone — the doc comment may cite zu-mark.svg as
-    // showcase-data provenance (the file stays on disk, assets.test.ts keeps it)
-    expect(brand).not.toContain('src="/brand/zu-mark.svg"');
+    // R323 override (A1 integration): the BrandMark primitive is RETIRED
+    // (deleted with StarMark.tsx) — the chrome now draws the ONE brand
+    // system <Logo variant="mark"> from frontend/src/brand/. The chrome
+    // contract rides the Sidebar + HydrationSplash seats.
+    const sidebar = read('src/components/layout/Sidebar.tsx');
+    expect(sidebar).toContain("import { Logo } from '../../brand'");
+    expect(sidebar).toContain('<Logo variant="mark"');
+    const splash = read('src/components/HydrationSplash.tsx');
+    expect(splash).toContain("import { Logo } from '../brand'");
+    expect(splash).toContain('<Logo variant="mark"');
     const favicon = read('public/favicon.svg');
     // r188: the mark is the khatam star (copper→gold) — the retired
     // blue/violet shield gradient and the ZU crest colors are gone.
     // derived from the madarek shield mark palette — NOT the ZU crest palette
-    expect(favicon).toContain('#B57438');
-    expect(favicon).toContain('#E9B44C');
+    // R323 override: A1 replaced the copper→gold ramp with the paper/ink/orange
+    // system — the favicon is now hairline ink + one solid orange point
+    // (#FA3600); copper/gold hexes are BANNED from the favicon (r323-brand-system
+    // gate (c) pins this too). The r188 copper assertions are inverted, not deleted.
+    expect(favicon).toContain('#282828');
+    expect(favicon).toContain('#FA3600');
+    expect(favicon).not.toContain('#B57438');
+    expect(favicon).not.toContain('#E9B44C');
     expect(favicon).not.toContain('#0E3F6C');
     expect(favicon).not.toContain('#3FB6C9');
   });

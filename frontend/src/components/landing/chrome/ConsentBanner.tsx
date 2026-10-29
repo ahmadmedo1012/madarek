@@ -31,6 +31,8 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ChevronUp } from 'lucide-react';
+import { Icon } from '../../Icon';
 
 /* ── The storage contract ────────────────────────────────────────────
  * `madarek.consent` holds the plain decision ("accepted"/"rejected") —
@@ -170,6 +172,12 @@ export function ConsentBanner() {
   const [decision, setDecision] = useState<ConsentDecision | null>(() =>
     typeof window === 'undefined' ? null : readDecision(),
   );
+  /* R323 (A3 · defect 3) — the phone COMPACT BAR: ≤767px the gate seats
+   * as a 44-px bottom bar; tapping the toggle expands the full text
+   * (the same honest sentence + the learn-more link). Desktop keeps
+   * the one compact line — the expanded state is a phone concern and
+   * the button is hidden there. */
+  const [expanded, setExpanded] = useState(false);
 
   /* The shared answer path — button clicks and the window API both
    * land here, so the two writers can never diverge. */
@@ -216,7 +224,12 @@ export function ConsentBanner() {
   return (
     /* role="region" + label: announced as a landmark, not a modal —
      * the visitor's flow is never hijacked, keyboard or pointer. */
-    <div className="cb-banner" role="region" aria-label="الموافقة على التخزين المحلي">
+    <div
+      className="cb-banner"
+      role="region"
+      aria-label="الموافقة على التخزين المحلي"
+      data-expanded={expanded ? 'true' : undefined}
+    >
       {/* the four separate 1px ink rules — the drafting frame (the
           reference paints them as four lines, not a border box) */}
       <span className="cb-rule cb-rule-t" aria-hidden="true" />
@@ -224,7 +237,13 @@ export function ConsentBanner() {
       <span className="cb-rule cb-rule-b" aria-hidden="true" />
       <span className="cb-rule cb-rule-l" aria-hidden="true" />
 
+      {/* R323 (A3 · defect 3): the compact phone bar shows the BRIEF
+          label; the FULL honest sentence + the learn-more link expand
+          on tap (aria-expanded on the toggle, the region label stays).
+          Desktop keeps the full line — the brief/full pair collapses
+          to one seat there. */}
       <p className="cb-text">
+        <span className="cb-brief">نستخدم التخزين المحلي.</span>
         {/* R315 (K-C): ONE honest line — the reference's banner is a
             single sentence + a LEARN MORE link (601×38, no paragraph
             stack). R320 §D (c2-LEGAL): the learn-more target retargets
@@ -232,8 +251,10 @@ export function ConsentBanner() {
             is not a storage policy (PAGES-GAP T-5); the honest
             substance of what this banner stores now lives in the
             policy sheet's own ledger table. */}
-        يستخدم هذا الموقع التخزين المحلي.
-        <Link to="/legal/cookies" className="cb-more">اعرف أكثر</Link>
+        <span className="cb-full">
+          يستخدم هذا الموقع التخزين المحلي.
+          <Link to="/legal/cookies" className="cb-more">اعرف أكثر</Link>
+        </span>
       </p>
 
       <div className="cb-actions">
@@ -248,6 +269,18 @@ export function ConsentBanner() {
           أرفض
         </button>
       </div>
+
+      {/* the expand toggle — a 44-px tap seat at the bar's inline end;
+          hidden ≥768px (the one-line band needs no toggle). */}
+      <button
+        type="button"
+        className="cb-expand"
+        aria-expanded={expanded}
+        aria-label={expanded ? 'إخفاء تفاصيل التخزين المحلي' : 'إظهار تفاصيل التخزين المحلي'}
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <Icon icon={ChevronUp} size={16} className="cb-expand-ic" />
+      </button>
     </div>
   );
 }

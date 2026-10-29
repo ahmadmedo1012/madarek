@@ -48,6 +48,19 @@ import {
   LOADER_GATE_TIMEOUT_MS,
   LOADER_HOLD_MS,
 } from '../../lib/motion/introGate';
+// R323 (A3 · defect 1) — the ONE brand system: the loader's mark seat
+// draws the new <Logo> (animated: the stroke-draw with the orange
+// point LAST — the loader's own line-draw treatment of the mark).
+import { Logo } from '../../brand';
+// R323 §A2 — the ONE loading-surface orchestrator: the loader asks for
+// the fullscreen seat (granted | queued), renders only while it holds
+// it, consumes the shared skip gesture, and releases on its own exit.
+import {
+  activateSheetLoader,
+  releaseSheetLoader,
+  getSnapshot,
+  subscribe,
+} from '../../lib/loaderOrchestrator';
 import { sheetEase } from '../../lib/motion/sheetConductor';
 import { ElevationDrawing } from './ElevationDrawing';
 
@@ -177,7 +190,16 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
   const onExitStartRef = useRef(onExitStart);
   onExitStartRef.current = onExitStart;
 
-  /* ── Gate: motion allowed, real browser, fresh document. ───────── */
+  /* ── Gate: motion allowed, real browser, fresh document. Then the
+   * R323 SEAT: the loader is the app's ONE fullscreen loading surface,
+   * so the play is granted through the orchestrator (activateSheet
+   * Loader) — granted → play; queued → wait for the grant snapshot.
+   * The pre-integration bridge: if the orchestrator still sits in its
+   * pristine boot phase (no Splash wiring is live — the foreman pass
+   * owns App.tsx), the phantom 'splash' seat must never deadlock the
+   * entrance, so the loader plays and the queued grant resolves into
+   * an already-running run (releaseSheetLoader is idempotent either
+   * way). ───────────── */
   const decidedRef = useRef(false);
   useEffect(() => {
     if (decidedRef.current) return; /* StrictMode re-run: the decision stands */
@@ -204,7 +226,27 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     /* the document-lifetime mark: client-side navigations back to the
      * landing never replay (the reference's Barba behaviour) */
     markIntroPlayed();
-    setPlay(true);
+
+    const granted = activateSheetLoader();
+    if (granted) {
+      setPlay(true);
+      return;
+    }
+    const snap = getSnapshot();
+    if (snap.phase === 'boot' && snap.fullscreen === 'splash') {
+      /* the phantom-splash bridge (see the block comment) */
+      setPlay(true);
+      return;
+    }
+    /* queued behind a REAL layer — hold the render until the grant */
+    const onSnap = (s: ReturnType<typeof getSnapshot>) => {
+      if (s.fullscreen === 'sheet-loader') {
+        unsub();
+        setPlay(true);
+      }
+    };
+    const unsub = subscribe(onSnap);
+    return unsub;
   }, []);
 
   /* ── The sequence: asset-gated counter → hold → staged exit. ───── */
@@ -249,6 +291,9 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       finished = true;
       cancelAnimationFrame(raf);
       markIntroSeen();
+      /* R323 §A2: the seat frees when the loader's own exit begins —
+         no other fullscreen layer can mount behind the slit. */
+      releaseSheetLoader();
       startExit();
       root.classList.add('is-exiting');
       setExiting(true);
@@ -318,7 +363,9 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     };
     raf = requestAnimationFrame(tick);
 
-    /* the skip — always available, always honest */
+    /* the skip — always available, always honest. The orchestrator's
+     * shared skip gesture (skip() → skipRequested) is consumed here
+     * too: the ACTIVE layer's component completes its own exit. */
     const skip = (e?: Event) => {
       if (e instanceof KeyboardEvent && !['Escape', 'Enter', ' '].includes(e.key)) return;
       finish();
@@ -326,6 +373,10 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     const skipBtn = root.querySelector<HTMLButtonElement>('.sl-skip');
     skipBtn?.addEventListener('click', skip);
     window.addEventListener('keydown', skip);
+    const onOrchestratorSkip = (s: ReturnType<typeof getSnapshot>) => {
+      if (s.skipRequested && s.fullscreen === 'sheet-loader') finish();
+    };
+    const unsubSkip = subscribe(onOrchestratorSkip);
 
     /* lock the sheet while the loader owns the viewport */
     const doc = document.documentElement;
@@ -338,6 +389,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       cancelAnimationFrame(mountRaf);
       window.removeEventListener('keydown', skip);
       skipBtn?.removeEventListener('click', skip);
+      unsubSkip();
       doc.style.overflow = prevOverflow;
     };
   }, [play]);
@@ -418,6 +470,9 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       ref={rootRef}
       className="sl"
       data-cursor="none"
+      /* R323 §A2 — the fullscreen-layer tag the overlap sampler and
+       * the orchestrator family count (exactly ONE such layer). */
+      data-fullscreen-layer="sheet-loader"
       role="status"
       aria-busy={!exiting}
       aria-label="تحضير صفحة مدارك"
@@ -457,9 +512,14 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
         </ul>
 
         {/* the title block — the sheet's identity (stable metadata,
-            no release-number label per R309 §8) */}
+            no release-number label per R309 §8). R323 (A3 · defect 1):
+            the mark seat draws the NEW <Logo> animated — the mark's
+            stroke-draw runs with the entrance, the orange point LAST. */}
         <div className="sl-meta" aria-hidden="true">
-          <span className="sl-meta-title">مدارك — منصّة التعليم الذكي</span>
+          <span className="sl-brand">
+            <Logo variant="mark" size={22} animated className="sl-brand-logo" />
+            <span className="sl-meta-title">مدارك — منصّة التعليم الذكي</span>
+          </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
             MADAREK · LEARNING SHEET
           </span>
