@@ -14,6 +14,16 @@ import {
   transcriptKeyFor,
   transcriptServingPathFor,
 } from '../../modules/ai/transcript.js';
+import {
+  STT_MAX_UPLOAD_BYTES,
+  buildTranscriptionRequest,
+  buildVttFromSegments,
+  isSttConfigured,
+  mimeForFilename,
+  parseSttResponse,
+  sttConfigFrom,
+} from '../../modules/ai/stt.js';
+import { env } from '../../env.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
 import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 
@@ -729,6 +739,125 @@ router.delete(
     }
   },
 );
+
+/* r323 B2.3 — the STT GENERATION path. The teacher asks the platform
+ * to transcribe the lecture's audio/video through an OpenAI-compatible
+ * /audio/transcriptions endpoint (env: STT_API_URL / STT_API_KEY /
+ * STT_MODEL — Groq Whisper, OpenAI, local Whisper servers). The job
+ * walks Lecture.transcriptStatus QUEUED → RUNNING → DONE|FAILED and
+ * lands the VTT in the same storage seat the upload path uses.
+ * Fire-and-forget async: the route returns 202 immediately and the
+ * status endpoint (below) is the truth. */
+
+const sttDebounceMs = 1500; // the status poll's friendliness floor (UI hint only)
+
+router.post(
+  '/lectures/:id/transcript/generate',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const lectureId = req.params.id!;
+      const lecture = await prisma.lecture.findUnique({
+        where: { id: lectureId },
+        select: { id: true, offeringId: true, videoUrl: true, transcriptStatus: true },
+      });
+      if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
+      await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
+
+      if (!isSttConfigured(env)) {
+        throw AppError.conflict(
+          'تحويل الكلام إلى نص غير مهيأ على المنصة — أضف STT_API_URL و STT_API_KEY في متغيرات البيئة، أو ارفع ملف نصوص SRT/VTT يدويًا.',
+        );
+      }
+      if (lecture.transcriptStatus === 'QUEUED' || lecture.transcriptStatus === 'RUNNING') {
+        throw AppError.conflict('هناك عملية تحويل جارية لهذه المحاضرة بالفعل.');
+      }
+
+      await prisma.lecture.update({
+        where: { id: lectureId },
+        data: { transcriptStatus: 'QUEUED', transcriptError: null },
+      });
+
+      // fire-and-forget — every failure lands in transcriptError, never
+      // in the request path (the 202 answers before the download even
+      // starts; the status route is the single source of truth).
+      void (async () => {
+        try {
+          await prisma.lecture.update({ where: { id: lectureId }, data: { transcriptStatus: 'RUNNING' } });
+          await runSttJob(lectureId, lecture.videoUrl);
+        } catch (err) {
+          logger.error({ lectureId, err }, 'curriculum: stt job failed');
+          await prisma.lecture.update({
+            where: { id: lectureId },
+            data: {
+              transcriptStatus: 'FAILED',
+              transcriptError: err instanceof Error ? err.message : 'فشل غير معروف',
+            },
+          }).catch(() => null);
+        }
+      })();
+
+      res.status(202).json({ data: { status: 'QUEUED', pollAfterMs: sttDebounceMs } });
+    } catch (e) { next(e); }
+  },
+);
+
+router.get(
+  '/lectures/:id/transcript/status',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const lecture = await prisma.lecture.findUnique({
+        where: { id: req.params.id! },
+        select: { transcriptStatus: true, transcriptError: true, transcriptUrl: true },
+      });
+      if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
+      res.json({ data: lecture });
+    } catch (e) { next(e); }
+  },
+);
+
+/** The worker: storage get → size gate → multipart POST → normalise →
+ * VTT → storage put + DONE. Exported for the pure tests. */
+export async function runSttJob(lectureId: string, videoUrl: string): Promise<void> {
+  const cfg = sttConfigFrom(env);
+  if (!cfg) throw new Error('stt: not configured');
+  const { getStorage } = await import('../../lib/storage.js');
+  const storage = getStorage();
+
+  // the lecture serves under /files/lectures/… — resolve the storage key
+  // from the serving path (the same reversal the range-stream route uses).
+  const key = videoUrl.replace(/^.*\/files\/lectures\//, '').split('?')[0]!;
+  const bytes = await storage.get(key);
+  if (!bytes) throw new Error('تعذّر قراءة ملف المحاضرة من التخزين.');
+  if (bytes.length > STT_MAX_UPLOAD_BYTES) {
+    throw new Error(
+      `حجم ملف المحاضرة (${Math.round(bytes.length / (1024 * 1024))} ميغابايت) يتجاوز حد مزوّد التحويل (25 ميغابايت) — ارفع نسخة صوتية مقتضبة ثم أعد المحاولة.`,
+    );
+  }
+  const filename = key.split('/').pop() || 'lecture.mp4';
+  const { url, body, headers } = buildTranscriptionRequest(cfg, {
+    bytes, filename, mime: mimeForFilename(filename),
+  });
+  const resp = await fetch(url, { method: 'POST', headers, body });
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '');
+    throw new Error(`رفض مزوّد التحويل الطلب (${resp.status}): ${text.slice(0, 200)}`);
+  }
+  const json: unknown = await resp.json();
+  // the provider's verbose_json carries durationSec; pass it for the
+  // bare-text fallback's cue end.
+  const durationSec = (json as { duration?: number }).duration;
+  const segments = parseSttResponse(json, durationSec);
+  if (segments.length === 0) throw new Error('لم يُعثر على أي كلام في الملف.');
+  const vtt = buildVttFromSegments(segments);
+  await storage.put(transcriptKeyFor(lectureId), Buffer.from(vtt, 'utf8'));
+  await prisma.lecture.update({
+    where: { id: lectureId },
+    data: { transcriptStatus: 'DONE', transcriptError: null, transcriptUrl: transcriptServingPathFor(lectureId) },
+  });
+  logger.info({ lectureId, cues: segments.length }, 'curriculum: stt done');
+}
 
 export default router;
 

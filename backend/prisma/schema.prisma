@@ -1137,6 +1137,10 @@ model Lecture {
   videoUrl      String
   posterUrl     String?
   transcriptUrl String?
+  // r323 B2.3 — the STT job ledger (the upload path writes DONE directly;
+  // the generation path walks QUEUED → RUNNING → DONE|FAILED).
+  transcriptStatus TranscriptStatus @default(NONE)
+  transcriptError  String?
   createdAt     DateTime       @default(now())
 
   chapters    LectureChapter[]
@@ -1832,6 +1836,15 @@ enum LiveSessionStatus {
   LIVE
   ENDED
   CANCELLED
+}
+
+// r323 B2.3 — the STT generation job state for a lecture's transcript.
+enum TranscriptStatus {
+  NONE
+  QUEUED
+  RUNNING
+  DONE
+  FAILED
 }
 
 model LiveSession {

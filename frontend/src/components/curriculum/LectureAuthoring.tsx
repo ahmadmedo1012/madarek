@@ -8,10 +8,10 @@
  *   ordinal swap via two PATCHes), edit (Modal) and delete
  *   (ConfirmDialog — the 409 "سجل مشاهدات" case surfaces inline).
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Captions, ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp } from 'lucide-react';
+import { Captions, ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp, Wand2 } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
@@ -370,6 +370,45 @@ function TranscriptField({ lectureId, existingUrl }: { lectureId: string; existi
   const [error, setError] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  /* r323 B2.3 — the STT generation seat: «توليد تلقائي» walks the job
+     QUEUED → RUNNING → DONE|FAILED on the server; the chip polls the
+     status endpoint while the job runs and the honest FAILED message
+     (the provider's refusal or the 25 MiB cap) surfaces verbatim. */
+  const [stt, setStt] = useState<'idle' | 'QUEUED' | 'RUNNING' | 'DONE' | 'FAILED'>('idle');
+  const [sttError, setSttError] = useState<string | null>(null);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const stopPolling = () => {
+    if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
+  };
+  const startPolling = () => {
+    stopPolling();
+    pollRef.current = setInterval(async () => {
+      try {
+        const { data } = await api.get(`/lectures/${lectureId}/transcript/status`);
+        const row = data as { transcriptStatus: string; transcriptError: string | null };
+        if (row.transcriptStatus === 'DONE') {
+          stopPolling(); setStt('DONE'); setSttError(null);
+          toast.success('اكتمل توليد النص المكتوب — متاح الآن للمشغل والمساعد الذكي');
+        } else if (row.transcriptStatus === 'FAILED') {
+          stopPolling(); setStt('FAILED'); setSttError(row.transcriptError ?? 'فشل التحويل.');
+        }
+      } catch { /* the poll survives a blip; the next tick retries */ }
+    }, 4000);
+  };
+  useEffect(() => stopPolling, []);
+
+  const generate = async () => {
+    setError(null); setSttError(null);
+    try {
+      await api.post(`/lectures/${lectureId}/transcript/generate`);
+      setStt('QUEUED');
+      startPolling();
+    } catch (err) {
+      setSttError(apiErrorMessage(err, 'تعذر بدء التوليد — أعد المحاولة'));
+    }
+  };
+
   const pick = async (file: File) => {
     setError(null);
     setDone(false);
@@ -410,6 +449,22 @@ function TranscriptField({ lectureId, existingUrl }: { lectureId: string; existi
         {busy && <span className="tr-field-status">جارٍ الحفظ…</span>}
         {done && !busy && <span className="tr-field-status tr-field-ok">محفوظ ✓</span>}
         {existingUrl && !done && !busy && <span className="tr-field-status">ملف موجود</span>}
+        {/* r323 B2.3 — the auto-generation seat (STT provider; honest
+            refusal when unconfigured, live status chip while running). */}
+        <span className="tr-field-sep" aria-hidden />
+        <button
+          type="button"
+          className="btn ghost sm"
+          disabled={stt === 'QUEUED' || stt === 'RUNNING'}
+          onClick={() => void generate()}
+        >
+          <Icon icon={Wand2} size={14} />
+          توليد تلقائي
+        </button>
+        {(stt === 'QUEUED' || stt === 'RUNNING') && (
+          <span className="tr-field-status">{stt === 'QUEUED' ? 'في الطابور…' : 'جارٍ التحويل…'}</span>
+        )}
+        {stt === 'DONE' && <span className="tr-field-status tr-field-ok">مولّد ✓</span>}
         <input
           ref={inputRef}
           type="file"
@@ -423,6 +478,7 @@ function TranscriptField({ lectureId, existingUrl }: { lectureId: string; existi
         />
       </div>
       {error !== null && <p className="tr-field-error" role="alert">{error}</p>}
+      {sttError !== null && <p className="tr-field-error" role="alert">{sttError}</p>}
     </div>
   );
 }

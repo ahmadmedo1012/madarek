@@ -98,6 +98,15 @@ services:
         sync: false
       - key: AI_MODELS
         sync: false
+      # r323 B2.3 — STT (optional): OpenAI-compatible /audio/transcriptions
+      # (Groq whisper-large-v3 free tier recommended). Absent = manual
+      # SRT/VTT upload only.
+      - key: STT_API_URL
+        sync: false
+      - key: STT_API_KEY
+        sync: false
+      - key: STT_MODEL
+        sync: false
       # r323 B1.1 — resilience + cost-control knobs, both optional:
       # AI_TIMEOUT_MS is the per-model round-trip ceiling in ms
       # (default 45000, bounds 5000..90000); AI_DAILY_LIMIT_DEFAULT is

@@ -102,6 +102,13 @@ const schema = z
     // ≤3 ids — the bounds pin exactly that. Unset = the current
     // openrouter/free behavior (zero change). Each id ≤120 chars (a
     // fat-fingered paste must not become a request-body bomb).
+    // r323 B2.3 — the speech-to-text provider (OpenAI-compatible
+    // /audio/transcriptions: Groq Whisper, OpenAI, local Whisper servers).
+    // Absent → the generation UI refuses with the honest Arabic message
+    // and the manual SRT/VTT upload path remains.
+    STT_API_URL: z.string().trim().url().optional(),
+    STT_API_KEY: z.string().trim().min(1).optional(),
+    STT_MODEL: z.string().trim().min(1).max(120).optional(),
     AI_MODELS: z
       .string()
       .trim()

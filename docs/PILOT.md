@@ -48,6 +48,7 @@
 | `AI_PROVIDER` | `openai` + `AI_BASE_URL` + `AI_API_KEY` + `AI_MODEL` (+ `AI_MODELS` اختياري ≤3) | مساعد حقيقي |
 | `AI_DAILY_LIMIT_DEFAULT` | 25 (الافتراضي) | حماية التكلفة |
 | `MAIL_PROVIDER` / `MAIL_API_KEY` / `MAIL_FROM` | `resend` أو `brevo` | البريد الحقيقي |
+| `STT_API_URL` / `STT_API_KEY` / `STT_MODEL` | Groq: `https://api.groq.com/openai/v1` + `whisper-large-v3` (مجاني) | توليد النصوص تلقائيًا |
 | `APP_ORIGIN` | `https://madarek.onrender.com` | روابط البريد |
 | `MADAREK_TEST_ACCOUNTS` | أزِلها عند الإطلاق | إطلاق فقط |
 

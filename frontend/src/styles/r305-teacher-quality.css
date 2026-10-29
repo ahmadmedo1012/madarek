@@ -1064,6 +1064,13 @@
 
 /* ── r323 B2.3 · the transcript sidecar field ─────────────────────── */
 .tr-field { display: grid; gap: var(--sp-1); }
+/* r323 B2.3 — the generate/upload split marker (one hairline, the
+   sheet's own separator register) */
+.tr-field-sep {
+  inline-size: 1px;
+  block-size: 22px;
+  background: var(--border);
+}
 .tr-field-label { font-size: 13px; font-weight: 600; color: var(--text-strong); }
 .tr-field-row { display: flex; align-items: center; gap: var(--sp-2); min-block-size: 44px; flex-wrap: wrap; }
 .tr-field-status { font-size: 12px; color: var(--text-muted); }
