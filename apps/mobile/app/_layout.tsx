@@ -16,6 +16,7 @@ import { queryClient } from "../src/lib/queryClient";
 import { ThemeProvider, useTheme } from "../src/design/theme";
 import { fontMap } from "../src/design/fonts";
 import { ToastHost } from "../src/components/ui/toast";
+import { FeedbackSheetHost } from "../src/features/feedback/FeedbackFab";
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -62,6 +63,7 @@ export default function RootLayout() {
           <StatusBar style="auto" />
           <RootNavigator />
           <ToastHost />
+          <FeedbackSheetHost />
         </SafeAreaProvider>
       </ThemeProvider>
     </QueryClientProvider>
