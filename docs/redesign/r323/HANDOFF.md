@@ -27,9 +27,9 @@
 | B3.2 | Mail + reset | Resend/Brevo, RTL templates, registrar fallback link | **done (code + tests)** | `lib/mail.ts` + forgot-password wiring + `POST /users/:id/reset-link` · 11 tests |
 | B3.3-6 | Notifications, messages, onboarding, feedback | | pending | — |
 | B4 | 13 academic flows E2E | | pending | — |
-| B5 | Ops | /status, errors, backups, analytics, settings | pending | — |
-| B6 | Scale & speed | keep-warm, load test, PWA | pending | — |
-| B7 | Pilot kit | PILOT.md, guides, dress rehearsal | pending | — |
+| B5 | Ops | /status, errors, backups, analytics, settings | **done (core)** | `GET /api/v1/status` (public, limiter-exempt) · backups = documented Neon procedure (PILOT.md) |
+| B6 | Scale & speed | keep-warm, load test, PWA | **done (core)** | `scripts/load/k6.js` (100 VU, p95<800ms bar) · `docs/load-test.md` · keep-warm documented · PWA pending |
+| B7 | Pilot kit | PILOT.md, guides, dress rehearsal | **done (core)** | `docs/PILOT.md` (AR+EN, 10 steps, env table, rollback) · user guides + dress rehearsal pending |
 
 ## Wave 1 landed (verified on the local full stack)
 
