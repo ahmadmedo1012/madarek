@@ -49,8 +49,8 @@ import {
   type ReactNode, type RefObject,
 } from 'react';
 import {
-  Check, Maximize, Minimize, Pause, Play, RotateCcw, RotateCw,
-  TriangleAlert, Volume2, VolumeX,
+  Check, Maximize, Minimize, Pause, PictureInPicture, PictureInPicture2,
+  Play, RotateCcw, RotateCw, TriangleAlert, Volume2, VolumeX,
 } from 'lucide-react';
 import { Icon } from '../Icon';
 import { formatMmSs } from '../../lib/format';
@@ -112,6 +112,9 @@ export function VideoPlayerChrome({
   const [muted, setMuted] = useState(false);
   const [rate, setRate] = useState(1);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  // r323 B2.2 — Picture-in-Picture state (mirrored from the element).
+  const [isPip, setIsPip] = useState(false);
+  const [pipSupported, setPipSupported] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrubPct, setScrubPct] = useState<number | null>(null);
 
@@ -154,6 +157,18 @@ export function VideoPlayerChrome({
     v.addEventListener('error', onError);
     v.addEventListener('volumechange', onVolumeChange);
     v.addEventListener('ratechange', onRateChange);
+    const onEnterPip = () => setIsPip(true);
+    const onLeavePip = () => setIsPip(false);
+    // r323 B2.2 — PiP support probe: the standard API only (Safari's
+    // webkit variant is intentionally not probed). The button renders
+    // (hidden via the aria-disabled contract) when unsupported.
+    const pipCapable =
+      typeof document !== 'undefined' &&
+      document.pictureInPictureEnabled === true &&
+      typeof v.requestPictureInPicture === 'function';
+    setPipSupported(pipCapable);
+    v.addEventListener('enterpictureinpicture', onEnterPip);
+    v.addEventListener('leavepictureinpicture', onLeavePip);
 
     // Initial sync (the element can already be mid-state on remount).
     syncDuration();
@@ -176,6 +191,8 @@ export function VideoPlayerChrome({
       v.removeEventListener('error', onError);
       v.removeEventListener('volumechange', onVolumeChange);
       v.removeEventListener('ratechange', onRateChange);
+      v.removeEventListener('enterpictureinpicture', onEnterPip);
+      v.removeEventListener('leavepictureinpicture', onLeavePip);
     };
   }, [videoRef]);
 
@@ -282,6 +299,19 @@ export function VideoPlayerChrome({
       // platform video player (native iOS chrome takes over there).
       (videoRef.current as (HTMLVideoElement & { webkitEnterFullscreen?: () => void }) | null)
         ?.webkitEnterFullscreen?.();
+    }
+  }, [videoRef]);
+
+  /* r323 B2.2 — Picture-in-Picture: the standard API only. Denied or
+   * unsupported = a silent no-op (the button is aria-disabled anyway) —
+   * a PiP refusal must never toast or break inline playback. */
+  const togglePip = useCallback(() => {
+    const v = videoRef.current;
+    if (!v || typeof document === 'undefined' || !document.pictureInPictureEnabled) return;
+    if (document.pictureInPictureElement) {
+      void document.exitPictureInPicture().catch(() => {});
+    } else if (typeof v.requestPictureInPicture === 'function') {
+      v.requestPictureInPicture().catch(() => {});
     }
   }, [videoRef]);
 
@@ -637,6 +667,19 @@ export function VideoPlayerChrome({
           >
             <Icon icon={muted ? VolumeX : Volume2} size={20} />
           </button>
+          {pipSupported && (
+            <button
+              type="button"
+              className="vpc-btn"
+              onClick={togglePip}
+              aria-label={isPip ? 'الخروج من نافذة معزولة' : 'نافذة معزولة'}
+              aria-keyshortcuts="I"
+              aria-pressed={isPip}
+              title={isPip ? 'الخروج من النافذة المعزولة' : 'نافذة معزولة (PiP)'}
+            >
+              <Icon icon={isPip ? PictureInPicture2 : PictureInPicture} size={20} />
+            </button>
+          )}
           <button
             type="button"
             className="vpc-btn"
