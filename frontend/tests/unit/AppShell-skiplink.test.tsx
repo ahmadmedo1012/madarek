@@ -21,6 +21,14 @@ import { MemoryRouter, Link, useLocation } from 'react-router-dom';
 // (The hooks/useAuth mock also died in 16-E3: HydrateMe was this file's
 // only useMe consumer and it was deleted — 15-f FE-3.)
 
+
+// r323 B3.6 — the FeedbackWidget rides the shell; its mutation hook
+// needs a QueryClient these suites don't mount. Stub the widget out —
+// its own behaviour is covered by the feedback suites.
+vi.mock('../../src/components/feedback/FeedbackWidget', () => ({
+  FeedbackWidget: () => null,
+}));
+
 vi.mock('../../src/components/layout/Sidebar', () => ({
   Sidebar: () => <aside data-testid="sidebar" />,
 }));

@@ -31,6 +31,8 @@ import { useThemeProfileSync } from '../../hooks/useThemeProfileSync';
 import { ScrollProgress } from './ScrollProgress';
 import { useOnboardingState } from '../../hooks/useOnboardingState';
 import { OnboardingFlow } from '../onboarding/OnboardingFlow';
+// r323 B3.6 — the pilot's ears (the floating «أبلغ عن مشكلة / اقتراح»).
+import { FeedbackWidget } from '../feedback/FeedbackWidget';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
 import { HydrationSplash } from '../HydrationSplash';
 import { overlayStack } from '../../lib/overlayStack';
@@ -465,6 +467,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
         <ServerWakePill />
         <OnboardingFlow />
         <MilestoneScene />
+        {/* r323 B3.6 — the floating feedback seat (the modal rides the
+            shared Modal overlay). */}
+        <FeedbackWidget />
         <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">
           <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
         </CommandPalette>

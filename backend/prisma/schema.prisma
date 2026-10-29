@@ -419,6 +419,9 @@ model User {
   // r323 B3.1 — the invite codes this user issued / consumed.
   issuedInvites  InviteCode[] @relation("InviteCodeCreator")
   inviteUses     InviteUse[]  @relation("InviteUseUser")
+
+  // r323 B3.6 — the pilot feedback loop the user filed.
+  feedbackSent   PilotFeedback[]
 }
 
 model StudentProfile {
@@ -2132,4 +2135,31 @@ model InviteUse {
   usedAt DateTime   @default(now())
 
   @@unique([codeId, userId])
+}
+
+// ────────────────────────────────────────────────────────────────
+// r323 B3.6 — the pilot feedback loop: the floating «أبلغ عن مشكلة /
+// اقتراح» lands here — route, role, browser, the last ~20 console
+// errors, an optional (downscaled) screenshot — and the registrar/
+// owner inbox works the status. Weekly digest reads the same rows.
+// ────────────────────────────────────────────────────────────────
+model PilotFeedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  kind      String // BUG | IDEA
+  role      String? // the sender's role at send time
+  route     String? // the SPA path it was filed from
+  userAgent String?
+  console   Json? // [{ t, text }] — the consoleTape ring (≤ 20 rows)
+  note      String   @db.Text
+  // The optional screenshot: a client-downscaled JPEG data URL
+  // (≤ 1280px wide, ≤ 600 KB) — a pilot-scale convenience, not a
+  // storage product; the inbox renders it inline.
+  screenshot String?
+  status    String   @default("open") // open → triage → fixed | dismissed
+  createdAt DateTime @default(now())
+
+  @@index([status, createdAt])
+  @@index([userId])
 }

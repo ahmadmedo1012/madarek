@@ -5685,3 +5685,91 @@
     text-decoration: none;
   }
 }
+
+/* ── r323 B3.6 — the pilot feedback loop («أبلغ عن مشكلة / اقتراح»)
+   ─────────────────────────────────────────────────────────────── */
+.fb-fab {
+  position: fixed;
+  inset-inline-end: 18px;
+  inset-block-end: 18px;
+  z-index: 60; /* under the overlay stack (70+), over page content */
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-block-size: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface, #fff);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  /* --r-full: the pill token — raw 999px would break the WS-D2
+     token-discipline snapshot (circular primitives only). */
+  border-radius: var(--r-full);
+  cursor: pointer;
+  box-shadow: none;
+}
+.fb-fab:hover { border-color: var(--border-strong, var(--border)); }
+@media (max-width: 640px) {
+  .fb-fab { inset-block-end: calc(72px + env(safe-area-inset-bottom, 0px)); padding: 8px 12px; }
+  .fb-fab span { display: none; } /* the icon carries the seat on phones */
+}
+
+.fb-sheet { display: grid; gap: 14px; min-inline-size: min(560px, 86vw); }
+.fb-head { display: flex; align-items: center; justify-content: space-between; }
+.fb-title { margin: 0; font-size: 1.0625rem; font-weight: 700; }
+.fb-close { background: none; border: 0; cursor: pointer; color: var(--text-secondary); padding: 4px; }
+.fb-done { display: grid; justify-items: center; gap: 10px; padding: 26px 8px; color: var(--text); }
+.fb-done svg { color: var(--accent, #2F7D32); }
+.fb-done p { margin: 0; text-align: center; }
+
+.fb-body { display: grid; gap: 12px; }
+.fb-kinds { display: flex; gap: 8px; }
+.fb-kind {
+  display: inline-flex; align-items: center; gap: 6px;
+  min-block-size: 38px; padding: 6px 14px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text-secondary); font: inherit; font-size: 0.8125rem; font-weight: 600;
+  cursor: pointer; border-radius: 0;
+}
+.fb-kind[data-active='true'] { border-color: var(--ink, #282828); color: var(--text); background: rgba(0, 0, 0, 0.04); }
+
+.fb-field { display: grid; gap: 5px; font-size: 0.8125rem; color: var(--text-secondary); }
+.fb-textarea {
+  min-block-size: 110px; padding: 10px 12px; resize: vertical;
+  border: 1px solid var(--border-strong, var(--border));
+  background: transparent; color: var(--text); font: inherit;
+  border-radius: 0;
+}
+
+.fb-shot-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fb-shot-name { display: inline-flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-secondary); }
+.fb-shot-x { background: none; border: 0; cursor: pointer; color: var(--text-secondary); padding: 2px; }
+
+.fb-meta { margin: 0; font-size: 0.75rem; line-height: 1.6; color: var(--text-muted); }
+.fb-error { margin: 0; font-size: 0.8125rem; font-weight: 600; color: var(--danger, #B3261E); }
+.fb-actions { display: flex; justify-content: flex-end; gap: 8px; }
+
+/* ── the registrar/owner inbox (the feedback page seat) ────────── */
+.fb-inbox { display: grid; gap: 0; }
+.fb-row { display: grid; gap: 8px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+.fb-row:last-child { border-bottom: 0; }
+.fb-row-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.fb-chip {
+  display: inline-flex; align-items: center; min-block-size: 22px; padding: 2px 9px;
+  font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.02em;
+  border: 1px solid var(--border);
+}
+.fb-chip[data-kind='BUG'] { color: var(--danger, #B3261E); border-color: currentColor; }
+.fb-chip[data-kind='IDEA'] { color: var(--accent, #2F7D32); border-color: currentColor; }
+.fb-chip[data-status='open'] { color: var(--text); }
+.fb-chip[data-status='triage'] { color: #8A6D00; border-color: currentColor; }
+.fb-chip[data-status='fixed'] { color: var(--accent, #2F7D32); }
+.fb-chip[data-status='dismissed'] { color: var(--text-muted); }
+.fb-row-route { font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono, monospace); }
+.fb-row-note { margin: 0; font-size: 0.875rem; line-height: 1.7; white-space: pre-wrap; }
+.fb-row-user { font-size: 0.75rem; color: var(--text-muted); }
+.fb-console { margin: 0; padding: 8px 10px; background: rgba(0, 0, 0, 0.03); font-size: 0.6875rem; line-height: 1.6; overflow: auto; max-block-size: 140px; font-family: var(--font-mono, monospace); color: var(--text-secondary); }
+.fb-shot { max-inline-size: 320px; border: 1px solid var(--border); display: block; }
+.fb-status-actions { display: flex; gap: 6px; flex-wrap: wrap; margin-inline-start: auto; }

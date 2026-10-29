@@ -1,4 +1,4 @@
-import {
+import { MessageSquarePlus,
   LayoutDashboard, Calendar, CalendarDays, BookOpen, BarChart3,
   Bot, Library, Trophy, FlaskConical,
   GraduationCap, Briefcase, Building2, Network,
@@ -376,6 +376,8 @@ export const OWNER_NAV: NavGroup[] = [
          نفسها باقية كما هي. */
       { to: '/owner/notifications', icon: Bell, label: 'الإشعارات' },
       { to: '/owner/alerts', icon: AlertTriangle, label: 'التنبيهات التشغيلية' },
+      // r323 B3.6 — the pilot feedback loop's inbox door.
+      { to: '/owner/feedback', icon: MessageSquarePlus, label: 'صندوق التغذية الراجعة' },
       /* R320 cycle-3 (P2-1): the account settings door (UserCog — the
          owner's /owner/system row keeps the platform Settings icon). */
       { to: '/settings', icon: UserCog, label: 'إعدادات الحساب' },

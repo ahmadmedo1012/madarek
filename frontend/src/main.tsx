@@ -1,5 +1,9 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+// r323 B3.6 — the console tape installs ONCE (idempotent) before the
+// first render: every console.error / window error / unhandled
+// rejection from here on lands in the ring the feedback widget ships.
+import { installConsoleTape } from './lib/consoleTape';
 
 // Self-hosted @font-face rules must come first so the families are
 // registered before tokens.css/base.css reference them.
@@ -58,6 +62,8 @@ if (import.meta.env.DEV) {
 
 const root = document.getElementById('root');
 if (!root) throw new Error('#root element missing');
+
+installConsoleTape();
 
 createRoot(root).render(
   <StrictMode>

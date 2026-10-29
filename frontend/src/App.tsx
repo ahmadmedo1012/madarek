@@ -175,6 +175,8 @@ const OwnerRealtimePage = lazy(() => import('./pages/owner/OwnerPages').then((m)
 const OwnerAiPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerAiPage })));
 const OwnerAlertsPage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerAlertsPage })));
 const OwnerGovernancePage = lazy(() => import('./pages/owner/OwnerPages').then((m) => ({ default: m.OwnerGovernancePage })));
+// r323 B3.6 — the pilot feedback inbox (registrar/owner).
+const FeedbackInboxPage = lazy(() => import('./pages/owner/FeedbackInboxPage'));
 
 const VisionGalleryPage = lazy(() => import('./pages/vision/VisionPages').then((m) => ({ default: m.VisionGalleryPage })));
 const VisionDetailPage = lazy(() => import('./pages/vision/VisionPages').then((m) => ({ default: m.VisionDetailPage })));
@@ -549,6 +551,8 @@ export function AppRoutes() {
             <Route path="/owner/notifications" element={<AlertsPage />} />
             <Route path="/owner/alerts" element={<OwnerAlertsPage />} />
             <Route path="/owner/governance" element={<OwnerGovernancePage />} />
+            {/* r323 B3.6 — the pilot feedback loop's inbox. */}
+            <Route path="/owner/feedback" element={<FeedbackInboxPage />} />
           </Route>
         </Route>
 
