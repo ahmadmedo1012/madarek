@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import { Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
+import { env } from '../../env.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { createRouteLimiter } from '../middleware/rateLimit.js';
@@ -599,6 +600,36 @@ router.post(
           created: created.length,
           sheet: created,
           skipped: plan.summary.error,
+        },
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+// ── r323 B3.2: the registrar's manual one-time reset link ─────────
+// When no mail provider is configured (or the address bounces), the
+// registrar mints a one-time reset link HERE and hands it to the
+// student in person (copy + print). Same token service, same TTL,
+// same single-use CAS as the email flow; the mint is audit-logged.
+router.post(
+  '/:id/reset-link',
+  requireRole(Role.ADMIN, Role.OWNER),
+  async (req, res, next) => {
+    try {
+      const { mintResetTokenForUser } = await import('../../modules/auth/password-reset.service.js');
+      const token = await mintResetTokenForUser(req.params.id!, req.user!.id);
+      const rawOrigin =
+        (typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
+          ? req.headers.origin
+          : (env.APP_ORIGIN ?? 'http://localhost:5173'));
+      const url = `${rawOrigin.replace(/\/+$/, '')}/auth/reset-password?token=${encodeURIComponent(token)}`;
+      res.status(201).json({
+        data: {
+          url,
+          expiresInMinutes: 30,
+          note: 'رابط صالح لمرة واحدة ولثلاثين دقيقة — سلّمه للطالب مباشرة ولا تخزّنه',
         },
       });
     } catch (e) {

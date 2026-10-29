@@ -62,6 +62,17 @@ const schema = z
     S3_BUCKET: z.string().min(1).optional(),
     S3_ACCESS_KEY_ID: z.string().min(1).optional(),
     S3_SECRET_ACCESS_KEY: z.string().min(1).optional(),
+    // ── Transactional mail (backend/src/lib/mail.ts) ── 'none' is the
+    // honest default: sendMail logs and drops, every caller decides what
+    // that means for ITS surface. Selecting resend/brevo without the
+    // key (or from-address) fails boot in the superRefine below — the
+    // same fail-closed ruling as STORAGE_DRIVER=s3.
+    MAIL_PROVIDER: z.enum(['none', 'resend', 'brevo']).default('none'),
+    MAIL_API_KEY: z.string().min(1).optional(),
+    MAIL_FROM: z.string().min(3).optional(),
+    // The app origin for email footer links (optional — templates omit
+    // the footer link when unset).
+    APP_ORIGIN: z.string().url().optional(),
     // ── AI provider (chat assistant: backend/src/lib/ai.ts) ── The
     // default 'local' mode composes replies in-process (zero cost,
     // zero external calls). Selecting 'openai' opts into a real
@@ -132,6 +143,20 @@ const schema = z
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: `AI_PROVIDER=openai requires: ${aiMissing.join(', ')}`,
+        });
+      }
+    }
+    // Same ruling for mail: a selected provider without its credentials
+    // would silently degrade to drop-everything at send time — boot
+    // must name the missing vars instead (r323 B3.2).
+    if (cfg.MAIL_PROVIDER !== 'none' && !isTest) {
+      const mailMissing: string[] = [];
+      if (!cfg.MAIL_API_KEY) mailMissing.push('MAIL_API_KEY');
+      if (!cfg.MAIL_FROM) mailMissing.push('MAIL_FROM');
+      if (mailMissing.length > 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `MAIL_PROVIDER=${cfg.MAIL_PROVIDER} requires: ${mailMissing.join(', ')}`,
         });
       }
     }

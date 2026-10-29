@@ -84,6 +84,39 @@ export const requestPasswordReset = async (email: string): Promise<string | null
 };
 
 /**
+ * r323 B3.2 — the registrar's manual fallback: mint a one-time reset
+ * token for a KNOWN user id (the ADMIN already resolved the target row;
+ * no enumeration concern — this path requires ADMIN/OWNER auth and the
+ * user's existence is visible to them in the roster they clicked).
+ * Same ONE-LIVE-TOKEN rule and the same TTL as the email flow.
+ */
+export const mintResetTokenForUser = async (userId: string, actorId: string): Promise<string> => {
+  const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, isActive: true } });
+  if (!user || !user.isActive) {
+    throw AppError.notFound('المستخدم غير موجود أو غير نشط');
+  }
+  await prisma.passwordResetToken.updateMany({
+    where: { userId: user.id, usedAt: null },
+    data: { usedAt: new Date() },
+  });
+  const token = mintResetTokenValue();
+  await prisma.passwordResetToken.create({
+    data: { userId: user.id, tokenHash: hashResetToken(token), expiresAt: new Date(Date.now() + TOKEN_TTL_MS) },
+  });
+  await prisma.auditLog.create({
+    data: {
+      action: 'RESET_LINK_ISSUED',
+      resourceType: 'User',
+      resourceId: user.id,
+      userId: actorId,
+      metadata: { ttlMinutes: TOKEN_TTL_MS / 60_000 },
+    },
+  });
+  logger.info({ userId: user.id, actorId }, 'password reset token minted by registrar');
+  return token;
+};
+
+/**
  * Consume a reset token and set the account's new password.
  *
  * Order of operations (each step is a documented guarantee):

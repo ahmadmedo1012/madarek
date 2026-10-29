@@ -26,10 +26,15 @@ import {
   registerUser,
   selectInstitution,
 } from '../../modules/auth/auth.service.js';
-import { requestPasswordReset, resetPassword } from '../../modules/auth/password-reset.service.js';
+import { requestPasswordReset, resetPassword, TOKEN_TTL_MS } from '../../modules/auth/password-reset.service.js';
 import { isTestAccountEmail } from '../../modules/auth/test-accounts.data.js';
+import { mailConfig, renderResetEmail, sendMail } from '../../lib/mail.js';
 import { parseDurationMs, verifyRefreshToken } from '../../lib/jwt.js';
 import { AppError } from '../../lib/errors.js';
+import { logger } from '../../logger.js';
+
+/** The reset email's stated lifetime in minutes (mirrors TOKEN_TTL_MS). */
+const MAIL_TTL_MINUTES = Math.round(TOKEN_TTL_MS / 60_000);
 
 const router = Router();
 const REFRESH_COOKIE = 'mdrk_refresh';
@@ -256,6 +261,22 @@ router.post(
           mode: 'test',
           url: `${origin}/auth/reset-password?token=${encodeURIComponent(token)}`,
         };
+      }
+      /* r323 B3.2 — the REAL delivery path: when a mail provider is
+       * configured (MAIL_PROVIDER=resend|brevo + MAIL_API_KEY), the
+       * token emails to ANY registered address through the brand RTL
+       * template. none-mode (the default) stays exactly as documented
+       * above — a provider refusal lands in the server log and the
+       * response stays the SAME generic 200 (never a leaky error). */
+      if (token !== null && mailConfig.provider !== 'none') {
+        const rawOrigin =
+          typeof req.headers.origin === 'string' && /^https?:\/\/[^/]+/.test(req.headers.origin)
+            ? req.headers.origin
+            : (env.APP_ORIGIN ?? 'http://localhost:5173');
+        const resetUrl = `${rawOrigin.replace(/\/+$/, '')}/auth/reset-password?token=${encodeURIComponent(token)}`;
+        const mail = renderResetEmail(resetUrl, MAIL_TTL_MINUTES);
+        const sent = await sendMail(mailConfig, { to: email, ...mail });
+        if (!sent) logger.warn({ email }, 'forgot-password: mail send failed — generic response kept');
       }
       res.json({ data });
     } catch (e) {

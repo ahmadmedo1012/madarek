@@ -108,6 +108,19 @@ services:
         sync: false
       - key: AI_DAILY_LIMIT_DEFAULT
         sync: false
+      # r323 B3.2 — transactional mail (reset / invites / digests).
+      # 'none' (the default) sends nothing and logs the drop — the
+      # registrar's manual one-time link is the documented fallback.
+      # resend | brevo need MAIL_API_KEY + MAIL_FROM (boot fails closed
+      # without them). APP_ORIGIN is the link origin inside emails.
+      - key: MAIL_PROVIDER
+        sync: false
+      - key: MAIL_API_KEY
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+      - key: APP_ORIGIN
+        sync: false
       # R320 §C — boot-time test-account ensure. ON while the project is
       # in development (the owner's convenience bar: one easy account per
       # job, @test.ly / 12345678 — shared/testAccounts.ts). Idempotent
