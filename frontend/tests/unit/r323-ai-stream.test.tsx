@@ -116,7 +116,7 @@ function stubFetchWithStallingBody(first: string): void {
 function stubFetchWithBody(body: ReadableStream<Uint8Array> | null, init?: { status?: number; contentType?: string; envelope?: unknown }): void {
   vi.stubGlobal(
     'fetch',
-    vi.fn(async (url: string | URL | Request, reqInit?: RequestInit) => {
+    vi.fn(async (_url: string | URL | Request, reqInit?: RequestInit) => {
       // Faithful abort semantics: a signal already aborted (or aborted
       // while the response is in flight) rejects the way undici does —
       // the page's stop button must not depend on stub leniency.
