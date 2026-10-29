@@ -1,0 +1,1 @@
+__d(function(g,r,i,a,m,e,d){"use strict";Object.defineProperty(e,'__esModule',{value:!0}),Object.defineProperty(e,"default",{enumerable:!0,get:function(){return o}});var t=r(d[0]),n=r(d[1]),c=r(d[2]);function o(){const o=(0,t.c)(1);let u;return o[0]===Symbol.for("react.memo_cache_sentinel")?(u=(0,c.jsx)(n.MessagesUI,{}),o[0]=u):u=o[0],u}},864,[875,940,6]);

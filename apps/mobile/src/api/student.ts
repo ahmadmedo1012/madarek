@@ -33,9 +33,9 @@ export const studentApi = {
   submitResearch: (payload: { title: string; abstract?: string; offeringId?: string; fileUrl?: string }) =>
     post<ResearchPaper>("/me/research", payload),
   notifications: (page: number, limit = 30, q?: string) => get<Paginated<AppNotification>>("/me/notifications", { page, limit, q }),
-  messages: (page: number, limit = 30) => get<Paginated<Message>>("/me/messages", { page, limit }),
-  sendMessage: (payload: { toUserId: string; body: string }) => post<Message>("/me/messages", payload),
-  readAllMessages: () => post("/me/messages/read-all"),
+  messages: (page: number, limit = 30) => get<Paginated<Message>>("/messages", { page, limit }),
+  sendMessage: (payload: { toUserId: string; body: string }) => post<Message>("/messages", payload),
+  readAllMessages: () => post("/messages/read-all"),
   readAllNotifications: () => post<{ updated: number }>("/me/notifications/read-all"),
   markNotification: (id: string) => patch<AppNotification>(`/me/notifications/${id}/read`),
   onboardingComplete: () => post("/me/onboarding/complete"),

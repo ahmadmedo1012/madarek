@@ -14,7 +14,7 @@ export function useUnreadCount(enabled = true) {
     queryKey: ["notifications", "unread"],
     enabled,
     queryFn: async () => {
-      const res = await get<Paginated<AppNotification>>("/me/notifications", { limit: 1 });
+      const res = await get<Paginated<AppNotification>>("/notifications", { limit: 1 });
       return res.meta?.unread ?? 0;
     },
     staleTime: 60_000,
@@ -25,7 +25,7 @@ export function useUnreadCount(enabled = true) {
 export function useNotifications(page = 1, limit = NOTIFICATIONS_FEED_LIMIT, q?: string) {
   return useQuery({
     queryKey: ["notifications", "feed", page, limit, q ?? null],
-    queryFn: () => get<Paginated<AppNotification>>("/me/notifications", { page, limit, q }),
+    queryFn: () => get<Paginated<AppNotification>>("/notifications", { page, limit, q }),
     placeholderData: (prev) => prev,
   });
 }
@@ -33,7 +33,7 @@ export function useNotifications(page = 1, limit = NOTIFICATIONS_FEED_LIMIT, q?:
 export function useMarkRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => patch<AppNotification>(`/me/notifications/${id}/read`),
+    mutationFn: (id: string) => patch<AppNotification>(`/notifications/${id}/read`),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["notifications"] });
     },
@@ -43,7 +43,7 @@ export function useMarkRead() {
 export function useMarkAllRead() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () => post<{ updated: number }>("/me/notifications/read-all"),
+    mutationFn: () => post<{ updated: number }>("/notifications/read-all"),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["notifications"] });
     },

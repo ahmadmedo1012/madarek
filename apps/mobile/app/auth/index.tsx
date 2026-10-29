@@ -34,11 +34,16 @@ export default function SignIn() {
 
   const go = (user: { role: string; currentInstitution?: { id: string } | null }) => {
     const cont = params.continue ? decodeURIComponent(params.continue) : null;
-    const dest = cont && user.currentInstitution
-      ? cont
-      : !user.currentInstitution
-        ? "/select-institution"
-        : ROLE_HOME[user.role] ?? "/student/dashboard";
+    // OWNER is platform-level by design: it carries NO institution membership,
+    // so the institution gate never applies to it.
+    const needsInstitution =
+      user.role !== "OWNER" && !user.currentInstitution && user.role !== "ADMIN";
+    const dest =
+      cont && (user.currentInstitution || user.role === "OWNER")
+        ? cont
+        : needsInstitution
+          ? "/select-institution"
+          : ROLE_HOME[user.role] ?? "/student/dashboard";
     router.replace(dest as never);
   };
 

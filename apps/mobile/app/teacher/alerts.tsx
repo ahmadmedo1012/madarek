@@ -1,6 +1,17 @@
+import { RoleTabFrame } from "@/components/shell/TabFrame";
+
 import { NotificationsScreen } from "@/features/notifications/NotificationsScreen";
 
 /** /teacher/alerts — the teacher's personal notification inbox. */
-export default function Alerts() {
+function Alerts() {
   return <NotificationsScreen title="الإشعارات" kicker="[Inbox]" />;
+}
+
+
+export default function AlertsTabbed() {
+  return (
+    <RoleTabFrame role="TEACHER">
+      <Alerts />
+    </RoleTabFrame>
+  );
 }

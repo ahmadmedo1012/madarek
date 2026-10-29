@@ -7,7 +7,7 @@
  */
 import { create } from "zustand";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SecureStore from "expo-secure-store";
+import { setToken, getToken } from "@/lib/tokenStorage";
 import { apiWithCookieCapture, post, registerAuthBridge, get as apiGet } from "@/api/client";
 import type { AuthUser, SessionResponse } from "@/api/types";
 
@@ -52,13 +52,20 @@ export interface RegisterPayload {
   inviteCode?: string;
 }
 
-async function persistTokens(accessToken: string | null, refreshCookie: string | null) {
-  const ops: Promise<unknown>[] = [];
-  if (accessToken) ops.push(SecureStore.setItemAsync(KEY_ACCESS, accessToken));
-  else ops.push(SecureStore.deleteItemAsync(KEY_ACCESS).catch(() => undefined));
-  if (refreshCookie) ops.push(SecureStore.setItemAsync(KEY_REFRESH, refreshCookie));
-  else ops.push(SecureStore.deleteItemAsync(KEY_REFRESH).catch(() => undefined));
-  await Promise.all(ops);
+function persistTokens(accessToken: string | null, refreshCookie: string | null) {
+  void setToken(KEY_ACCESS, accessToken);
+  void setToken(KEY_REFRESH, refreshCookie);
+}
+
+/** SecureStore may be a non-resolving shim on web — always settle hydration. */
+function settled<T>(p: Promise<T>, ms = 1500): Promise<T | null> {
+  return Promise.race([
+    p.then(
+      (v) => v,
+      () => null,
+    ),
+    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
+  ]);
 }
 
 export const useSession = create<SessionState>((set, get) => ({
@@ -72,8 +79,8 @@ export const useSession = create<SessionState>((set, get) => ({
   hydrate: async () => {
     try {
       const [accessToken, refreshCookie, userJson, instId] = await Promise.all([
-        SecureStore.getItemAsync(KEY_ACCESS).catch(() => null),
-        SecureStore.getItemAsync(KEY_REFRESH).catch(() => null),
+        getToken(KEY_ACCESS),
+        getToken(KEY_REFRESH),
         AsyncStorage.getItem(KEY_USER).catch(() => null),
         AsyncStorage.getItem(KEY_INST).catch(() => null),
       ]);

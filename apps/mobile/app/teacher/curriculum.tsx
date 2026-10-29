@@ -5,6 +5,7 @@
  * and the transcript generate button. Video upload stays a web-panel
  * action (presign requires an S3 backend) — this screen manages links.
  */
+
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -622,3 +623,5 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
     </View>
   );
 }
+
+

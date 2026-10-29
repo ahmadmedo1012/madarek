@@ -4,6 +4,7 @@
  * grouped by day; a day filter (Segmented, today first) narrows the
  * ledger. Rows carry the course code+name, the time range and the room.
  */
+
 import { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { router } from "expo-router";
@@ -171,3 +172,5 @@ function SlotList({ slots }: { slots: DaySlot[] }) {
     </RowList>
   );
 }
+
+

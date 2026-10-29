@@ -3,17 +3,17 @@ import { StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { GraduationCap, Landmark, Library, PlayCircle } from "lucide-react-native";
-import { useSession, ROLE_HOME } from "../src/auth/session";
-import { get } from "../src/api/client";
-import type { AuthUser } from "../src/api/types";
-import { usePalette } from "../src/design/theme";
-import { sp } from "../src/design/tokens";
-import { Screen } from "../src/components/ui/screen";
-import { T, MonoLabel } from "../src/components/ui/text";
-import { Button } from "../src/components/ui/pressables";
-import { BrandMark } from "../src/components/ui/brand";
-import { Hairline } from "../src/components/ui/surfaces";
-import { LoadingScreen } from "../src/components/ui/states";
+import { useSession, ROLE_HOME } from "@/auth/session";
+import { get } from "@/api/client";
+import type { AuthUser } from "@/api/types";
+import { usePalette } from "@/design/theme";
+import { sp } from "@/design/tokens";
+import { Screen } from "@/components/ui/screen";
+import { T, MonoLabel } from "@/components/ui/text";
+import { Button } from "@/components/ui/pressables";
+import { BrandMark } from "@/components/ui/brand";
+import { Hairline } from "@/components/ui/surfaces";
+import { LoadingScreen } from "@/components/ui/states";
 
 /**
  * Welcome — the public native entry. Guests see a compact branded sheet
@@ -37,11 +37,13 @@ export default function Welcome() {
   useEffect(() => {
     if (!isHydrated || !user) return;
     const fresh = meQuery.data ? (meQuery.data as AuthUser) : user;
-    const dest = params.continue
-      ? decodeURIComponent(params.continue)
-      : fresh.currentInstitution
-        ? ROLE_HOME[fresh.role] ?? "/student/dashboard"
-        : "/select-institution";
+    const cont = params.continue ? decodeURIComponent(params.continue) : null;
+    const dest =
+      cont && (fresh.currentInstitution || fresh.role === "OWNER")
+        ? cont
+        : !fresh.currentInstitution && fresh.role !== "OWNER"
+          ? "/select-institution"
+          : ROLE_HOME[fresh.role] ?? "/student/dashboard";
     router.replace(dest as never);
   }, [isHydrated, user, meQuery.data, params.continue]);
 

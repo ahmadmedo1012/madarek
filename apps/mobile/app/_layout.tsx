@@ -1,4 +1,4 @@
-import "../src/global.css";
+import "@/global.css";
 import { I18nManager } from "react-native";
 // Arabic-first: the app is authored RTL. Applied at module scope; Android
 // bakes the direction at startup (first-ever launch applies on next start).
@@ -12,11 +12,12 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
-import { queryClient } from "../src/lib/queryClient";
-import { ThemeProvider, useTheme } from "../src/design/theme";
-import { fontMap } from "../src/design/fonts";
-import { ToastHost } from "../src/components/ui/toast";
-import { FeedbackSheetHost } from "../src/features/feedback/FeedbackFab";
+import { queryClient } from "@/lib/queryClient";
+import { ThemeProvider, useTheme } from "@/design/theme";
+import { fontMap } from "@/design/fonts";
+import { ToastHost } from "@/components/ui/toast";
+import { FeedbackSheetHost } from "@/features/feedback/FeedbackFab";
+import { useSession } from "@/auth/session";
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -45,6 +46,11 @@ function RootNavigator() {
 
 export default function RootLayout() {
   const [loaded] = useFonts(fontMap as unknown as Record<string, number>);
+  const hydrate = useSession((s) => s.hydrate);
+
+  useEffect(() => {
+    void hydrate();
+  }, [hydrate]);
 
   useEffect(() => {
     if (loaded) {

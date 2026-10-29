@@ -1,11 +1,11 @@
 import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
-import { usePalette } from "../src/design/theme";
-import { sp } from "../src/design/tokens";
-import { Screen } from "../src/components/ui/screen";
-import { T } from "../src/components/ui/text";
-import { Button } from "../src/components/ui/pressables";
-import { BrandMark } from "../src/components/ui/brand";
+import { usePalette } from "@/design/theme";
+import { sp } from "@/design/tokens";
+import { Screen } from "@/components/ui/screen";
+import { T } from "@/components/ui/text";
+import { Button } from "@/components/ui/pressables";
+import { BrandMark } from "@/components/ui/brand";
 
 export default function NotFound() {
   const p = usePalette();

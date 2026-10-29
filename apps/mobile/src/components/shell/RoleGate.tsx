@@ -24,7 +24,7 @@ export function RoleGate({ allow, children }: { allow: AppRole[]; children: Reac
       router.replace((ROLE_HOME[user.role] ?? "/student/dashboard") as never);
       return;
     }
-    if (!user.currentInstitution) {
+    if (!user.currentInstitution && user.role !== "OWNER") {
       const active = (user.memberships ?? []).filter((m) => m.isActive);
       if (active.length > 0) {
         router.replace("/select-institution");

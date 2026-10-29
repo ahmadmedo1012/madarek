@@ -228,7 +228,7 @@ export async function getPage<T>(path: string, query?: RequestOptions["query"]):
 export function absoluteUrl(path: string | null | undefined): string | null {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  if (path.startsWith("/api/v1/")) return `https://madarek.onrender.com${path}`;
+  if (path.startsWith("/api/v1/")) return `${API_BASE}${path.slice("/api/v1".length)}`;
   if (path.startsWith("/")) return `${API_BASE}${path}`;
   return path;
 }

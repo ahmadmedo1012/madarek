@@ -1,3 +1,4 @@
+
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { Bot, Sparkles } from "lucide-react-native";
@@ -167,3 +168,5 @@ export default function OwnerAi() {
     </Screen>
   );
 }
+
+

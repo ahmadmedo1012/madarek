@@ -69,7 +69,7 @@ const config: ExpoConfig = {
     apiBaseUrl:
       process.env.EXPO_PUBLIC_API_BASE_URL ?? "https://madarek.onrender.com/api/v1",
     eas: {
-      projectId: "",
+      projectId: "afc4265f-664e-4325-a0ff-b621b81fe1b0",
     },
   },
 };

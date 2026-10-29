@@ -50,7 +50,11 @@ export function Screen({ children, scroll = true, padded = true, style, contentC
       </View>
     );
   }
-  return <View style={base}>{padded && <View style={styles.pad}>{children}</View>}</View>;
+  return (
+    <View style={base}>
+      {padded ? <View style={styles.pad}>{children}</View> : children}
+    </View>
+  );
 }
 
 /** Non-scrolling page for forms/centered layouts. */
