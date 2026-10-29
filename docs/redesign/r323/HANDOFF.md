@@ -19,7 +19,7 @@
 | B1.1 | AI model + streaming | provider chain, SSE streaming, quotas, honest local mode | **done (code + tests)** | `B1-AI.md` · 56 backend + 30 frontend tests |
 | B1.2 | RAG + citations | pg_trgm/tsvector index, source links | pending | — |
 | B1.4-5 | AI everywhere + eval | player/teacher tools, `scripts/ai-eval/` | pending | — |
-| B2.1 | Storage + upload wizard | S3 presigned, range streaming, teacher wizard | pending | — |
+| B2.1 | Storage + upload wizard | S3 presigned, range streaming, teacher wizard | **done (code + tests)** | presign lib + uploads routes + VideoUploadField · 26 new tests |
 | B2.2 | Player excellence | speed, PiP, resume, checkpoints, transcript | pending | — |
 | B2.3 | Transcripts | SRT/VTT upload, STT API, queue | pending | — |
 | B2.4 | Live sessions | Jitsi embed default, attendance, recordings | pending | — |
