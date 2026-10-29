@@ -1103,3 +1103,72 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
 
 }
 /* ═══ end r305-admin-owner.css — all rules scoped to .r305ao ═══ */
+
+/* ── r323 B3.1 · the bulk-import modal ───────────────────────────────
+ * One implementation of «استيراد طلاب من ملف»: template actions, the
+ * CSV paste seat, the per-line verdict table (hairline, mono verdicts),
+ * and the one-time temp-password sheet. Tokens only, dark-correct. */
+.bimp { display: grid; gap: var(--sp-3); }
+
+.bimp-lede { margin: 0; font-size: 13px; color: var(--text-muted); }
+
+.bimp-actions { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+.bimp-file { font-size: 12px; color: var(--text-muted); }
+
+.bimp-area {
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  line-height: 1.7;
+  resize: vertical;
+  min-block-size: 140px;
+}
+
+.bimp-summary {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-strong);
+}
+.bimp-summary span { display: inline-flex; align-items: center; gap: var(--sp-1); }
+.bimp-summary svg { color: var(--accent); }
+.bimp-summary .bimp-bad { color: var(--danger); }
+.bimp-summary .bimp-bad svg { color: var(--danger); }
+
+.bimp-table-wrap {
+  border: 1px solid var(--rule);
+  max-block-size: 320px;
+  overflow: auto;
+}
+
+.bimp-table { inline-size: 100%; border-collapse: collapse; font-size: 12.5px; }
+.bimp-table th {
+  position: sticky;
+  inset-block-start: 0;
+  background: var(--surface);
+  text-align: start;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+  white-space: nowrap;
+}
+.bimp-table td {
+  padding: var(--sp-2) var(--sp-3);
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.bimp-table tr[data-status='error'] td { color: var(--danger); }
+.bimp-verdict { font-size: 12px; }
+.bimp-pass { font-family: var(--font-mono, monospace); font-weight: 600; letter-spacing: 0.04em; }
+
+.bimp-error { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--danger); }
+
+.bimp-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  padding-block-start: var(--sp-2);
+  border-block-start: 1px solid var(--rule);
+}

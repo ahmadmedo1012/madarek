@@ -1,12 +1,21 @@
 import { Router } from 'express';
+import type { Request } from 'express';
 import { Role } from '@prisma/client';
 import { z } from 'zod';
 import { prisma } from '../../db.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
+import { createRouteLimiter } from '../middleware/rateLimit.js';
 import { validate } from '../validate.js';
 import { paginationSchema, buildMeta } from '../../lib/pagination.js';
 import { AppError } from '../../lib/errors.js';
+import { hashPassword } from '../../lib/password.js';
+import {
+  parseCsv,
+  parseBulkStudentCsv,
+  generateTempPassword,
+  type BulkImportResultRow,
+} from '../../lib/bulk-import.js';
 import {
   assertNotLastActiveOwner,
   assertWithinScope,
@@ -369,5 +378,233 @@ router.patch('/:id', validate(patchSchema), async (req, res, next) => {
     next(e);
   }
 });
+
+// ── r323 B3.1: bulk student import (CSV) ───────────────────────────
+// The registrar pastes or uploads a class list CSV; the platform
+// validates it against the REAL institution (faculty/department name
+// resolution, existing emails/reg-numbers), then commits the whole
+// cohort in one transaction and returns the printable temp-password
+// sheet. Pure parsing/validation lives in lib/bulk-import.ts; this
+// section owns the DB truth. OWNER callers without an institution
+// context MUST pass an explicit institutionId (fail-closed — no
+// platform-wide import guess).
+
+const bulkImportLimiter = createRouteLimiter({ max: 5 });
+
+const bulkImportBodySchema = z.object({
+  csv: z.string().min(1).max(512 * 1024),
+  institutionId: z.string().min(1).max(64).optional(),
+});
+
+/** Resolve the import's institution: ADMIN → verified context (403
+ *  without one); OWNER → the explicit body institutionId, verified
+ *  ACTIVE. A scoped-ADMIN's faculty scope never narrows the import —
+ *  registration is institution-wide by construction (reg-numbers are
+ *  institution-scoped), matching the register route's own behavior. */
+async function resolveBulkImportInstitution(
+  req: Request,
+  bodyInstitutionId?: string,
+): Promise<string> {
+  if (req.user!.role === Role.ADMIN) {
+    const scope = await resolveCallerInstitutionScope(req.user!.id, req.user!.institutionId);
+    if (scope === null) throw institutionContextRequiredError();
+    return scope;
+  }
+  if (typeof bodyInstitutionId !== 'string' || bodyInstitutionId.length === 0) {
+    throw AppError.badRequest('حدّد المؤسسة التي سيُستورد إليها الطلاب');
+  }
+  const institution = await prisma.institution.findFirst({
+    where: { id: bodyInstitutionId, status: 'ACTIVE' },
+    select: { id: true },
+  });
+  if (!institution) throw AppError.badRequest('المؤسسة المحددة غير موجودة أو غير نشطة');
+  return institution.id;
+}
+
+/** Name→id resolution for one faculty/department pair (trimmed,
+ *  case-insensitive; Arabic names dominate so a plain match first,
+ *  then a case-insensitive fallback). Null = unknown → the row errors. */
+async function resolveFacultyDepartment(
+  institutionId: string,
+  facultyName: string,
+  departmentName: string,
+): Promise<{ facultyId: string; departmentId: string } | { error: string }> {
+  const faculty = await prisma.faculty.findFirst({
+    where: { institutionId, OR: [{ name: facultyName }, { name: { equals: facultyName, mode: 'insensitive' } }] },
+    select: { id: true, name: true },
+  });
+  if (!faculty) return { error: `الكلية «${facultyName}» غير موجودة في المؤسسة` };
+  const department = await prisma.department.findFirst({
+    where: {
+      facultyId: faculty.id,
+      OR: [{ name: departmentName }, { name: { equals: departmentName, mode: 'insensitive' } }],
+    },
+    select: { id: true },
+  });
+  if (!department) return { error: `القسم «${departmentName}» غير موجود في كلية «${faculty.name}»` };
+  return { facultyId: faculty.id, departmentId: department.id };
+}
+
+/** One CSV → planned rows against the DB (shared by preview + commit).
+ *  OK rows carry the RESOLVED facultyId/departmentId so the commit
+ *  never re-resolves names inside the transaction (one truth, one hop). */
+async function planBulkImport(csv: string, institutionId: string) {
+  const parsed = parseBulkStudentCsv(parseCsv(csv));
+  if ('fileError' in parsed) return { fileError: parsed.fileError as string };
+
+  const resultRows: (BulkImportResultRow & { facultyId?: string; departmentId?: string })[] = [];
+  // Batch existence checks: emails are globally unique; reg-numbers are
+  // institution-scoped. Two `findMany`s beat 2N round trips.
+  const emails = parsed.rows.map((r) => r.email);
+  const universityIds = parsed.rows.map((r) => r.universityId);
+  const [existingUsers, existingProfiles] = await Promise.all([
+    prisma.user.findMany({ where: { email: { in: emails } }, select: { email: true } }),
+    prisma.studentProfile.findMany({
+      where: { institutionId, universityId: { in: universityIds } },
+      select: { universityId: true },
+    }),
+  ]);
+  const existingEmailSet = new Set(existingUsers.map((u) => u.email.toLowerCase()));
+  const existingRegSet = new Set(existingProfiles.map((p) => p.universityId));
+
+  for (const row of parsed.rows) {
+    const dbError =
+      existingEmailSet.has(row.email)
+        ? 'البريد الإلكتروني مسجل مسبقاً في المنصة'
+        : existingRegSet.has(row.universityId)
+          ? 'الرقم الجامعي مسجل مسبقاً في هذه المؤسسة'
+          : null;
+    if (dbError !== null) {
+      resultRows.push({ line: row.line, status: 'error', message: dbError, email: row.email, universityId: row.universityId });
+      continue;
+    }
+    const chain = await resolveFacultyDepartment(institutionId, row.faculty, row.department);
+    if ('error' in chain) {
+      resultRows.push({ line: row.line, status: 'error', message: chain.error, email: row.email, universityId: row.universityId });
+      continue;
+    }
+    resultRows.push({
+      line: row.line,
+      status: 'ok',
+      firstName: row.firstName,
+      lastName: row.lastName,
+      email: row.email,
+      universityId: row.universityId,
+      faculty: row.faculty,
+      department: row.department,
+      year: row.year,
+      facultyId: chain.facultyId,
+      departmentId: chain.departmentId,
+    });
+  }
+
+  return {
+    rows: resultRows,
+    summary: {
+      total: resultRows.length,
+      ok: resultRows.filter((r) => r.status === 'ok').length,
+      error: resultRows.filter((r) => r.status === 'error').length,
+      rowErrors: parsed.errors,
+    },
+  };
+}
+
+router.post(
+  '/bulk-import/preview',
+  bulkImportLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(bulkImportBodySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { csv, institutionId } = req.body as { csv: string; institutionId?: string };
+      const inst = await resolveBulkImportInstitution(req, institutionId);
+      const plan = await planBulkImport(csv, inst);
+      res.json({ data: plan });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
+
+router.post(
+  '/bulk-import/commit',
+  bulkImportLimiter,
+  requireRole(Role.ADMIN, Role.OWNER),
+  validate(bulkImportBodySchema, 'body'),
+  async (req, res, next) => {
+    try {
+      const { csv, institutionId } = req.body as { csv: string; institutionId?: string };
+      const inst = await resolveBulkImportInstitution(req, institutionId);
+      const plan = await planBulkImport(csv, inst);
+      if ('fileError' in plan) throw AppError.badRequest(plan.fileError);
+      const okRows = plan.rows.filter((r) => r.status === 'ok');
+      if (okRows.length === 0) {
+        throw AppError.badRequest('لا توجد صفوف صالحة للاستيراد — صحّح الأخطاء في العرض المسبق');
+      }
+
+      // One transaction: the cohort lands whole or not at all — a
+      // half-created class is the worst possible registrar outcome.
+      const created = await prisma.$transaction(async (tx) => {
+        const sheet: { name: string; email: string; universityId: string; tempPassword: string }[] = [];
+        for (const row of okRows) {
+          const tempPassword = generateTempPassword();
+          const passwordHash = await hashPassword(tempPassword);
+          const user = await tx.user.create({
+            data: {
+              email: row.email!,
+              passwordHash,
+              role: Role.STUDENT,
+              firstName: row.firstName!,
+              lastName: row.lastName!,
+            },
+            select: { id: true },
+          });
+          const membership = await tx.membership.create({
+            data: { userId: user.id, institutionId: inst, role: Role.STUDENT, isActive: true },
+            select: { id: true },
+          });
+          await tx.studentProfile.create({
+            data: {
+              userId: user.id,
+              membershipId: membership.id,
+              institutionId: inst,
+              universityId: row.universityId!,
+              facultyId: row.facultyId!,
+              departmentId: row.departmentId!,
+              year: row.year ?? 1,
+            },
+          });
+          await tx.auditLog.create({
+            data: {
+              action: 'BULK_IMPORT',
+              resourceType: 'User',
+              resourceId: user.id,
+              userId: req.user!.id,
+              institutionId: inst,
+              metadata: { email: row.email, universityId: row.universityId },
+            },
+          });
+          sheet.push({
+            name: `${row.firstName} ${row.lastName}`,
+            email: row.email!,
+            universityId: row.universityId!,
+            tempPassword,
+          });
+        }
+        return sheet;
+      });
+
+      res.status(201).json({
+        data: {
+          created: created.length,
+          sheet: created,
+          skipped: plan.summary.error,
+        },
+      });
+    } catch (e) {
+      next(e);
+    }
+  },
+);
 
 export default router;

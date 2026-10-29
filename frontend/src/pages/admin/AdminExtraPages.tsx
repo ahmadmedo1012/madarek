@@ -21,6 +21,7 @@ import { withInstitutionScope } from '../../lib/queryClient';
 import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
+import { BulkImportModal } from '../../components/admin/BulkImportModal';
 import { TablePaginationFooter, StatStripSkeleton } from './AdminPages';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
@@ -93,6 +94,8 @@ export function AdminStudentsPage() {
   // A8 P3-4: the empty-search state gets the same reset affordance its
   // teachers twin has — a dead end otherwise.
   const hasActiveFilters = debouncedQ !== '' || facultyId !== '';
+  // r323 B3.1: the registrar's bulk-import entry point.
+  const [bulkImportOpen, setBulkImportOpen] = useState(false);
   const clearSearch = () => {
     setQ('');
     setDebouncedQ('');
@@ -149,7 +152,21 @@ export function AdminStudentsPage() {
         meta={studentsQ.data
           ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
           : 'قراءة سجلّ الطلاب…'}
+        actions={(
+          <button type="button" className="btn secondary sm" onClick={() => setBulkImportOpen(true)}>
+            <Icon icon={Download} size={14} />
+            استيراد طلاب من ملف
+          </button>
+        )}
       />
+
+      {bulkImportOpen && (
+        <BulkImportModal onClose={() => {
+          setBulkImportOpen(false);
+          // The roster may have grown — refresh whatever the server has now.
+          void studentsQ.refetch();
+        }} />
+      )}
 
       <FilterBar
         search={{
