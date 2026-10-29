@@ -1,0 +1,278 @@
+{
+  "meta": {
+    "gate": "r323 gate:perf (A4 #5)",
+    "base": "http://127.0.0.1:4323",
+    "cpu": 4,
+    "headless": true,
+    "thresholds": {
+      "cls": 0.05,
+      "lcpMs": 2500,
+      "inpMs": 150,
+      "minPctFramesLe20": 98
+    },
+    "cadence": "19×660px @250ms",
+    "generatedAt": "2026-10-29T16:17:55.174Z"
+  },
+  "head": "5cc1447c",
+  "results": [
+    {
+      "route": "/",
+      "viewport": "1440",
+      "cls": 0.007,
+      "lcp": 696,
+      "inp": 0,
+      "loadMs": 7326,
+      "scroll": {
+        "count": 356,
+        "pctGt20": 1.1,
+        "pctLe20": 98.9,
+        "p95": 16.8,
+        "max": 33.4
+      }
+    },
+    {
+      "route": "/colleges",
+      "viewport": "1440",
+      "cls": 0.007,
+      "lcp": 284,
+      "inp": 0,
+      "loadMs": 1302,
+      "scroll": null
+    },
+    {
+      "route": "/auth",
+      "viewport": "1440",
+      "cls": 0.007,
+      "lcp": 460,
+      "inp": 0,
+      "loadMs": 1297,
+      "scroll": null
+    },
+    {
+      "route": "/about",
+      "viewport": "1440",
+      "cls": 0.033,
+      "lcp": 344,
+      "inp": 0,
+      "loadMs": 1318,
+      "scroll": null
+    },
+    {
+      "route": "/help",
+      "viewport": "1440",
+      "cls": 0.007,
+      "lcp": 348,
+      "inp": 0,
+      "loadMs": 1279,
+      "scroll": null
+    },
+    {
+      "route": "/404",
+      "viewport": "1440",
+      "cls": 0.007,
+      "lcp": 280,
+      "inp": 0,
+      "loadMs": 1291,
+      "scroll": null
+    },
+    {
+      "route": "/",
+      "viewport": "390",
+      "cls": 0.012,
+      "lcp": null,
+      "inp": 0,
+      "loadMs": 7089,
+      "scroll": {
+        "count": 346,
+        "pctGt20": 0,
+        "pctLe20": 100,
+        "p95": 16.8,
+        "max": 16.8
+      }
+    },
+    {
+      "route": "/colleges",
+      "viewport": "390",
+      "cls": 0.012,
+      "lcp": 248,
+      "inp": 0,
+      "loadMs": 1301,
+      "scroll": null
+    },
+    {
+      "route": "/auth",
+      "viewport": "390",
+      "cls": 0.012,
+      "lcp": 324,
+      "inp": 0,
+      "loadMs": 1304,
+      "scroll": null
+    },
+    {
+      "route": "/about",
+      "viewport": "390",
+      "cls": 0.012,
+      "lcp": 296,
+      "inp": 0,
+      "loadMs": 1301,
+      "scroll": null
+    },
+    {
+      "route": "/help",
+      "viewport": "390",
+      "cls": 0.012,
+      "lcp": 292,
+      "inp": 0,
+      "loadMs": 1306,
+      "scroll": null
+    },
+    {
+      "route": "/404",
+      "viewport": "390",
+      "cls": 0.012,
+      "lcp": 228,
+      "inp": 0,
+      "loadMs": 1292,
+      "scroll": null
+    }
+  ],
+  "caps": {
+    "mainMaxGzKB": 88,
+    "mainCapKB": 200,
+    "mainOk": true,
+    "routes": [
+      {
+        "file": "OwnerPages-m37GabIg.js",
+        "kind": "route",
+        "gzKB": 28
+      },
+      {
+        "file": "TeacherPages-B2NjIrec.js",
+        "kind": "route",
+        "gzKB": 20
+      },
+      {
+        "file": "AdminGovernancePages-BHVb9ORu.js",
+        "kind": "route",
+        "gzKB": 18
+      },
+      {
+        "file": "ExamAuthorPages-wY8_48-W.js",
+        "kind": "route",
+        "gzKB": 16
+      },
+      {
+        "file": "MorePages-DyNtKXdq.js",
+        "kind": "route",
+        "gzKB": 13
+      },
+      {
+        "file": "OnlineExamsPages-DybQXcqp.js",
+        "kind": "route",
+        "gzKB": 11
+      },
+      {
+        "file": "QualityPages-DmolH2mn.js",
+        "kind": "route",
+        "gzKB": 10
+      },
+      {
+        "file": "CommunityPages-DOki-xia.js",
+        "kind": "route",
+        "gzKB": 9
+      },
+      {
+        "file": "AdminExtraPages-Cph2wH8x.js",
+        "kind": "route",
+        "gzKB": 8
+      },
+      {
+        "file": "CollegePages-DuGwg4Xj.js",
+        "kind": "route",
+        "gzKB": 8
+      },
+      {
+        "file": "LegalPages-BQ5JT0Zk.js",
+        "kind": "route",
+        "gzKB": 8
+      },
+      {
+        "file": "VisionPages-BgJBd4tE.js",
+        "kind": "route",
+        "gzKB": 8
+      },
+      {
+        "file": "CompetitionsPages-Bgxo7Ptd.js",
+        "kind": "route",
+        "gzKB": 7
+      },
+      {
+        "file": "TrainingPages-ByniIWAP.js",
+        "kind": "route",
+        "gzKB": 7
+      },
+      {
+        "file": "CampusPages-QWD_RzjR.js",
+        "kind": "route",
+        "gzKB": 3
+      },
+      {
+        "file": "PublicPages-DM-p1jBi.js",
+        "kind": "route",
+        "gzKB": 3
+      },
+      {
+        "file": "CapabilityPages-DBMEWEgc.js",
+        "kind": "route",
+        "gzKB": 2
+      }
+    ],
+    "routeCapKB": 150,
+    "routeBreaches": [],
+    "routeOk": true,
+    "vendors": [
+      {
+        "file": "pdf-ksa_hnld.js",
+        "kind": "vendor",
+        "gzKB": 96
+      },
+      {
+        "file": "charts-BcFORcBi.js",
+        "kind": "vendor",
+        "gzKB": 65
+      },
+      {
+        "file": "react-gInupMWC.js",
+        "kind": "vendor",
+        "gzKB": 52
+      },
+      {
+        "file": "LandingPage-_yc1jFsO.js",
+        "kind": "vendor",
+        "gzKB": 33
+      },
+      {
+        "file": "TeacherIntelligencePage-DOoVKzKp.js",
+        "kind": "vendor",
+        "gzKB": 14
+      },
+      {
+        "file": "LecturePlayerPage-BrOB0aXk.js",
+        "kind": "vendor",
+        "gzKB": 10
+      },
+      {
+        "file": "query-D_UCWYRd.js",
+        "kind": "vendor",
+        "gzKB": 10
+      },
+      {
+        "file": "zod-pFumEHaO.js",
+        "kind": "vendor",
+        "gzKB": 10
+      }
+    ]
+  },
+  "failures": [],
+  "verdict": "PASS"
+}

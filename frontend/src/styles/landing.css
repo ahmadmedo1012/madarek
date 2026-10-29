@@ -8091,3 +8091,29 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
     margin-block-start: var(--space-4xl);
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   R323 A4 §7-5 — the content-visibility skirt (perf-gate evidence:
+   UpdateLayoutTree 282 ms / Layerize 249 ms over the r322 descent).
+
+   Every below-fold section declares `content-visibility: auto` so the
+   engine skips its style-recalc / layout / paint while it is off-screen
+   (the descent then only pays for what the viewport actually touches),
+   plus `contain: layout paint style` so invalidations never escape a
+   section's subtree. `contain-intrinsic-size: auto <guess>` keeps the
+   scrollbar honest on first paint and rembers the real height after the
+   section renders once (no scroll-anchoring CLS on revisit). The hero
+   is deliberately NOT skirted — first paint, the intro hand-off and the
+   hero-art geometry reads must always see a rendered subtree.
+   ══════════════════════════════════════════════════════════════════ */
+.st-section,
+.pm-section,
+.chapters,
+.pr-section,
+.wy-section,
+.rl-section,
+.fo-cta {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+  contain: layout paint style;
+}
