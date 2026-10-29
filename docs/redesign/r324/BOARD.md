@@ -15,6 +15,9 @@ polish · responsiveness. **Mean ≥ 9, no category < 8.** VLM advisory only.
 |-------|---------|-------------|--------|---------|
 | P2/X3 | platform §05 (before → after) | 1440 light+dark · 768 dark · 390 light+dark | `platform-1440-before.png` (the unstyled 115px rail) → `platform-1440-{light,dark}` / `platform-768-dark` / `platform-390-{light,dark}` | section 710px @1440 = Heron exact · probe-x3 geometry clean · gates green |
 | P2/X5 | roles §07 ledger | 1440 | `roles-1440-after.png` | 0.0 % vs Heron |
+| P2/X7 | statement §02 scrub | 1440+390 light+dark | `statement-1440-{light,dark}` / `statement-390-{light,dark}` (before cut) | per-char color scrub rides the reference grammar |
+| P2/X4 | why §06 stage | 1440 light+dark | `why-1440-{light,dark}.png` | sharp q92 captures; no fake chips |
+| P2/X6 | map plan rooms | 1440 light+dark ×s1–s6 + intro anchors | `map-s1..s6-1440-{light,dark}.png` | room label reads accent-ink; walls clean |
 | P4/X12 | map plan theme pairs | 1440 light+dark | `map-1440-{light,dark}.png` | Ink ground + paper strokes |
 
 ## Reviewer rounds
@@ -28,10 +31,10 @@ polish · responsiveness. **Mean ≥ 9, no category < 8.** VLM advisory only.
 | X1 | update toast on every page | **fixed** |
 | X2 | scrollHeight unstable 8,446→12,922 | **fixed** (drift ≤0.009 %, placeholders re-measured post-X3) |
 | X3 | platform §05 broken layout + bidi labels | **fixed** `25e5d150` (710px @1440 = Heron exact) |
-| X4 | why §06 blurry screenshot + chips | open |
+| X4 | why §06 blurry screenshot + chips | **fixed** `29517897` (720w q92 re-encode; chip retired) |
 | X5 | roles §07 giant list | **fixed** `15a4d016` |
-| X6 | map intro empty grid + boxes on walls | open |
-| X7 | statement §02 clipped paragraph | open (before sheet cut) |
+| X6 | map intro empty grid + boxes on walls | **fixed** `65baefac` (cascade war + debris) |
+| X7 | statement §02 clipped paragraph | **fixed** `65acc394` (per-char color scrub, sheets 1440/390 light+dark) |
 | X8 | phone header label+1px burger | **fixed** |
 | X9 | inner pages ignore the type ladder | **fixed** (census 0) |
 | X10 | debug/jargon sweep | **fixed** |

@@ -50,9 +50,9 @@ is accepted before a Heron|Madarek overlay sheet exists at the same scroll ancho
 | X12 | dark theme not Heron-grade | the map plan's hardcoded paper tones ignored the theme pairs | Ink ground + paper strokes token pairs (the map) | **fixed (map)** `56c58b1d` — the app-wide pair sweep stays the P4 tail |
 | X9 | inner pages ignore the type ladder | one-off display sizes + weights off the rungs | DESIGN.md §R324 ladder + census gate 0 violations | **fixed** `50963260`/`5bf8f663` |
 | X2 | scrollHeight unstable | single-guess intrinsic placeholders | measured per-band rungs; **re-measured post-X3** (1024+1440 anchors; rl's pre-X5 guess corrected 1090→822) | **fixed** (drift ≤0.009 %) |
-| X7 | statement §02 clipped paragraph | (next up) | — | **open** |
-| X4 | why §06 blurry screenshot + chips | (queued) | — | **open** |
-| X6 | map intro empty grid + boxes on walls | (queued) | — | **open** |
+| X7 | statement §02 clipped paragraph | the R308 translation picked a per-word MASK SLIDE (translateY 115 % behind overflow:hidden) where the reference runs a per-char COLOR scrub — nothing translates, nothing hides; scrub re-inked per-char ghost→ink | **fixed** `65acc394` |
+| X4 | why §06 blurry screenshot + chips | 720w derivatives q78 (mushy Arabic UI at 672px seat) + a fake real-UI chip | 720w tier re-encoded q92 lanczos from capture archive; chip retired | **fixed** `29517897` |
+| X6 | map intro empty grid + boxes on walls | cascade war: PLAN_INK_CSS fill:var(--bg) (0,5,0) beat the designed accent-ink warm (0,4,0) → paper-on-paper label; wall debris boxes | cascade fixed + debris retired | **fixed** `65baefac` |
 | X11 | logo optical size ≤32px | (queued) | — | **open** |
 | X14 | landing docH ±2 % of Heron | roles ledger landed −268px vs its stale placeholder; platform holds 710 | re-measure all bands after the X4/X7 wave, then the ledger re-verdict | **open** |
 | X16 | authenticated app unreviewed | (P5) | — | **open** |
@@ -66,13 +66,12 @@ updated with the same no-auth guard).
 
 ## Exact next 3 actions
 
-1. X7: the statement §02 clipped paragraph — the before sheet is cut
-   (`statement-1440-before.png`); find the clip, fix, sheet after.
-2. X4: the why §06 blurry screenshot + chips — the extraction
-   (`heron/why-*.json`) is the composition law; the four-verb stage
-   rides real surfaces only.
-3. X6: the map intro empty grid + boxes-on-walls, then X11 (logo
-   optical size) and the X14 docH re-verdict (the ledger ±2 %).
+1. X11: the logo optical size at ≤32px — measure the wordmark's
+   optical size across the header seats (1440/768/390), retune.
+2. X14: the landing docH re-verdict — re-measure all bands at the 5
+   breakpoints post-X3/X4/X6/X7, then the ±2 % ledger verdict.
+3. The P4 tail: the app-wide theme-pair sweep (indicator/state
+   colours) beyond the map pair.
 
 ## P7.0 evidence (commands + results, 2026-10-29)
 
