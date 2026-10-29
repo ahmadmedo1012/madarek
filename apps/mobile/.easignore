@@ -1,0 +1,12 @@
+# EAS build context hygiene — keep native build inputs lean
+node_modules
+.expo
+dist
+web-build
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.*
+ios
+android
