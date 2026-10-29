@@ -407,6 +407,23 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
     expect(ledgerLink.getAttribute('href')).toBe('/legal/cookies');
   });
 
+  it('help (r324 X15): a PROD build without VITE_PILOT_HELP_ACCOUNTS ships the credential-free FAQ variants', () => {
+    const dev = import.meta.env.DEV;
+    try {
+      (import.meta.env as { DEV: boolean }).DEV = false;
+      renderPage(HelpPage);
+      const text = document.body.textContent ?? '';
+      // the working password is NOT published on the public prod page
+      expect(text).not.toContain('12345678');
+      expect(text).not.toContain('@test.ly');
+      // the honest reset truth survives the gate — the promise, not the secret
+      expect(text).toContain('لا يوجد بريد يُرسَل من المنصّة بعد');
+      expect(text).toContain('الحساب الذي وصلك');
+    } finally {
+      (import.meta.env as { DEV: boolean }).DEV = dev;
+    }
+  });
+
   it('contact: the early-access register form IS the channel — zero invented email/phone/social', () => {
     renderPage(ContactPage);
     const register = screen.getAllByRole('link', { name: /نموذج إنشاء الحساب الجامعي/ });

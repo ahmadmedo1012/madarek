@@ -9,6 +9,12 @@ interface ImportMetaEnv {
   // production build (demo presentations); production builds otherwise
   // show the collapsed chip — open-by-default is a DEV behaviour.
   readonly VITE_SHOW_TEST_ACCOUNTS?: string;
+  // r324 X15 — the HELP page's pilot-credentials gate: the FAQ copy
+  // that names @test.ly / the shared password renders ONLY when this is
+  // on — dev and preview builds, or a production build explicitly built
+  // with VITE_PILOT_HELP_ACCOUNTS=1 for the pilot cohort. Default
+  // production builds ship the honest credential-free answers.
+  readonly VITE_PILOT_HELP_ACCOUNTS?: string;
   // Vite built-ins
   readonly DEV: boolean;
   readonly PROD: boolean;
