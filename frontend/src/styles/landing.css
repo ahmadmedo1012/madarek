@@ -620,44 +620,45 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   block-size: 44px;
 }
 
-/* ── <992px: the wide MENU button (187×50 @390 measured) ─────────── */
+/* ── <992px: r324 X8 — the phone header is [logo | 44×44 button] ────
+ * The R323 wide 18.8rem cell (label + hairline + 1-px bars at the far
+ * edge) is retired: ONE compact square button, icon-only, the visible
+ * «القائمة» label living INSIDE the overlay (`.fo-mb-head`) — never a
+ * tiny word stranded above a hairline at the bar's edge. */
 .fo-burger {
   display: none;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  min-inline-size: 18.8rem; /* the measured 187px @390 (root 9.92px) */
-  block-size: 100%;
+  place-items: center;
+  inline-size: 44px;   /* the a11y touch floor — the button IS the seat */
+  block-size: 44px;
+  flex: 0 0 auto;
   background: none;
   border: 0;
-  border-inline-start: 1px solid var(--grid-line);
-  padding-inline-start: var(--sp-4);
   color: var(--text);
-  font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: 600;
   cursor: pointer;
 }
 
-.fo-burger-ic {
-  display: grid;
-  gap: 0.2rem;
-  inline-size: 0.75rem;
-}
-
-.fo-burger-ic span {
+/* the label stays for screen readers; the overlay carries the visible
+   one (a 44-px square has no room for a word and never should). */
+.fo-burger-label {
+  position: absolute;
+  inline-size: 1px;
   block-size: 1px;
-  background: currentColor;
-  transition: transform var(--t-base) var(--ease), opacity var(--t-base) var(--ease);
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* open: the three bars fold — the middle retracts (the reference's
-   active mark): an open/close state without inventing a new glyph. */
-.fo-burger[aria-expanded='true'] .fo-burger-ic span:nth-child(2) {
-  transform: scaleX(0.35);
-  transform-origin: inline-start;
-  opacity: 0;
+/* the icon rides the Lucide glyph itself (the .fo-burger-ic class is
+   ON the svg): a 20px Menu/X that stays optically centered in the seat. */
+.fo-burger-ic {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
 }
+
+/* the open state rides the Lucide X glyph swap in JSX (menuOpen ?
+   X : Menu) — the old CSS bar-fold spans are retired with them. */
 
 /* ── The mobile overlay — the reference's full-bleed paper panel
  * under the bar: hairline-ruled rows (40px measured; our 44px
@@ -688,6 +689,18 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   font-weight: 600;
   color: var(--text);
   text-decoration: none;
+  border-block-end: 1px solid var(--rule);
+}
+
+/* r324 X8 — the overlay's own head row: the visible «القائمة» word
+   (retired from the bar seat) as a quiet mono label over the rows. */
+.fo-mb-head {
+  padding: var(--sp-3) 26px var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  font-weight: 400;
+  letter-spacing: 0; /* Arabic never takes letter-spacing */
+  color: var(--text-secondary);
   border-block-end: 1px solid var(--rule);
 }
 
@@ -3186,7 +3199,7 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   .fo-nav { display: none; }
   .fo-header-actions { display: none; }
   .fo-burger {
-    display: flex;
+    display: grid;     /* the 44×44 seat — place-items centers the glyph */
     margin-inline-start: auto;
   }
 

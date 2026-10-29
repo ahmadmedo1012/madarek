@@ -982,6 +982,10 @@ export default function LandingPage() {
               }
             }}
           >
+            {/* r324 X8 — the visible «القائمة» label lives HERE, inside
+                the overlay (the bar's seat is icon-only now): a quiet
+                mono head row above the link rows. */}
+            <p className="fo-mb-head" aria-hidden="true">القائمة</p>
             {/* the four seats as flat 40px rows (the reference's own
                 mobile register), then the dropdown children as the
                 mono sub-index — every section reachable without an
