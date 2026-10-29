@@ -8134,6 +8134,14 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
    is deliberately NOT skirted — first paint, the intro hand-off and the
    hero-art geometry reads must always see a rendered subtree.
    ══════════════════════════════════════════════════════════════════ */
+/** r324 X2 — the per-band MEASURED intrinsic sizes.
+ * Chromium sizes a skipped box as intrinsic (CONTENT-BOX) + its own
+ * padding/border, so each value below is the section's rendered
+ * border-box minus its padding/border — measured per composition band
+ * by scripts/r324/measure-intrinsic.mjs (section-intrinsic.json).
+ * The placeholders now sum to the real document height: the scrollbar
+ * is honest on first paint and the walk never moves it (gate:height
+ * pins load == post-walk within ±0.5 %). */
 .st-section,
 .pm-section,
 .chapters,
@@ -8142,6 +8150,69 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 .rl-section,
 .fo-cta {
   content-visibility: auto;
-  contain-intrinsic-size: auto 900px;
   contain: layout paint style;
+}
+
+/* ≥992 — the desktop composition is FLUID (the root scales with vw),
+ * so the placeholders are too: a two-rung linear fit over the measured
+ * content-box sizes (1024/1280/1440/1920 → scripts/r324/
+ * section-intrinsic.json), each rung anchored EXACT at its gate
+ * breakpoint (1024 / 1440) with the local measured slope. */
+.st-section { contain-intrinsic-size: auto calc(58px + 43.36vw); }   /* 502 @1024 · 690 @1440 */
+.pm-section { contain-intrinsic-size: auto calc(155px + 21.48vw); }  /* 375 @1024 · 467 @1440 */
+.chapters   { contain-intrinsic-size: auto calc(5970px + 1.95vw); }  /* 5990 @1024 · 5999 @1440 */
+.pr-section { contain-intrinsic-size: auto calc(997px - 25vw); }     /* 741 @1024 · 645 @1440 */
+.wy-section { contain-intrinsic-size: auto calc(57px + 38.28vw); }   /* 449 @1024 · 615 @1440 */
+.rl-section { contain-intrinsic-size: auto calc(638px + 29.69vw); }  /* 942 @1024 · 1090 @1440 */
+.fo-cta     { contain-intrinsic-size: auto calc(35px + 40.62vw); }   /* 451 @1024 · 625 @1440 */
+
+/* 992–1179 — the rung below the 1180 red-team line (anchored @1024) */
+@media (min-width: 992px) and (max-width: 1179px) {
+  .st-section { contain-intrinsic-size: auto calc(58px + 43.36vw); }
+  .pm-section { contain-intrinsic-size: auto calc(155px + 21.48vw); }
+  .chapters   { contain-intrinsic-size: auto calc(5970px + 1.95vw); }
+  .pr-section { contain-intrinsic-size: auto calc(997px - 25vw); }
+  .wy-section { contain-intrinsic-size: auto calc(57px + 38.28vw); }
+  .rl-section { contain-intrinsic-size: auto calc(638px + 29.69vw); }
+  .fo-cta     { contain-intrinsic-size: auto calc(35px + 40.62vw); }
+}
+/* 768–991 — the tablet composition (measured @768) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .st-section { contain-intrinsic-size: auto 544px; }
+  .pm-section { contain-intrinsic-size: auto 1260px; }
+  .chapters   { contain-intrinsic-size: auto 4541px; }
+  .pr-section { contain-intrinsic-size: auto 471px; }
+  .wy-section { contain-intrinsic-size: auto 840px; }
+  .rl-section { contain-intrinsic-size: auto 1300px; }
+  .fo-cta     { contain-intrinsic-size: auto 468px; }
+}
+/* 480–767 — the large-phone band (measured @600) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .st-section { contain-intrinsic-size: auto 1223px; }
+  .pm-section { contain-intrinsic-size: auto 1257px; }
+  .chapters   { contain-intrinsic-size: auto 4168px; }
+  .pr-section { contain-intrinsic-size: auto 836px; }
+  .wy-section { contain-intrinsic-size: auto 1171px; }
+  .rl-section { contain-intrinsic-size: auto 2060px; }
+  .fo-cta     { contain-intrinsic-size: auto 713px; }
+}
+/* ≤479 — the phone composition (measured @390) */
+@media (max-width: 479px) {
+  .st-section { contain-intrinsic-size: auto 873px; }
+  .pm-section { contain-intrinsic-size: auto 797px; }
+  .chapters   { contain-intrinsic-size: auto 4452px; }
+  .pr-section { contain-intrinsic-size: auto 591px; }
+  .wy-section { contain-intrinsic-size: auto 761px; }
+  .rl-section { contain-intrinsic-size: auto 1369px; }
+  .fo-cta     { contain-intrinsic-size: auto 463px; }
+}
+/* ≤374 — the narrow-phone rung (measured @360) */
+@media (max-width: 374px) {
+  .st-section { contain-intrinsic-size: auto 846px; }
+  .pm-section { contain-intrinsic-size: auto 748px; }
+  .chapters   { contain-intrinsic-size: auto 4454px; }
+  .pr-section { contain-intrinsic-size: auto 553px; }
+  .wy-section { contain-intrinsic-size: auto 702px; }
+  .rl-section { contain-intrinsic-size: auto 1273px; }
+  .fo-cta     { contain-intrinsic-size: auto 428px; }
 }

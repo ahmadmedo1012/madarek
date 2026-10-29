@@ -1,0 +1,40 @@
+{
+  "tolerancePct": 0.5,
+  "results": [
+    {
+      "width": 1440,
+      "atLoad": 12895,
+      "afterWalk": 12922,
+      "driftPct": 0.209,
+      "ok": true
+    },
+    {
+      "width": 1024,
+      "atLoad": 11759,
+      "afterWalk": 11761,
+      "driftPct": 0.017,
+      "ok": true
+    },
+    {
+      "width": 768,
+      "atLoad": 11874,
+      "afterWalk": 11874,
+      "driftPct": 0,
+      "ok": true
+    },
+    {
+      "width": 390,
+      "atLoad": 11950,
+      "afterWalk": 11950,
+      "driftPct": 0,
+      "ok": true
+    },
+    {
+      "width": 360,
+      "atLoad": 11464,
+      "afterWalk": 11462,
+      "driftPct": 0.017,
+      "ok": true
+    }
+  ]
+}
