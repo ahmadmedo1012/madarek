@@ -65,6 +65,28 @@ if (!root) throw new Error('#root element missing');
 
 installConsoleTape();
 
+// r323 B6 — the PWA service worker, PRODUCTION ONLY (dev/audit suites
+// keep the plain server; no SW fetches in their console-health probes).
+// On first control the toast names the update honestly once.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker
+      .register('/sw.js')
+      .then((reg) => {
+        let announced = false;
+        navigator.serviceWorker.addEventListener('message', (e: MessageEvent) => {
+          if (!announced && (e.data as { type?: string } | null)?.type === 'CONTENTS_UPDATED') {
+            announced = true;
+            void import('./lib/toast').then(({ toast }) => toast.info('تحديثت المنصّة — حدّث الصفحة لأحدث نسخة.'));
+          }
+        });
+        // a waiting SW from a previous version: the next reload takes it
+        void reg.update().catch(() => {});
+      })
+      .catch(() => {});
+  });
+}
+
 createRoot(root).render(
   <StrictMode>
     <App />

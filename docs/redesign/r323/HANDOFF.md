@@ -28,8 +28,8 @@
 | B3.3-6 | Notifications, messages, onboarding, feedback | **done (core)** | B3.3: the five academic fires (material ×2, assignment, live-scheduled, announcement-scope) — payloads pure-tested, fire tx/degraded · B3.4: the r155a DM stack pre-existing (inbox/compose/read-all/deep-links) · B3.5: tour + /help pre-existing · B3.6: the full loop — PilotFeedback model, POST/GET/PATCH /feedback, the floating widget + consoleTape + the /owner/feedback inbox |
 | B4 | 13 academic flows E2E | | pending | — |
 | B5 | Ops | /status, errors, backups, analytics, settings | **done (core)** | `GET /api/v1/status` (public, limiter-exempt) · backups = documented Neon procedure (PILOT.md) |
-| B6 | Scale & speed | keep-warm, load test, PWA | **done (core)** | `scripts/load/k6.js` (100 VU, p95<800ms bar) · `docs/load-test.md` · keep-warm documented · PWA pending |
-| B7 | Pilot kit | PILOT.md, guides, dress rehearsal | **done (core)** | `docs/PILOT.md` (AR+EN, 10 steps, env table, rollback) · user guides + dress rehearsal pending |
+| B6 | Scale & speed | keep-warm, load test, PWA | **done (core)** | `scripts/load/k6.js` (100 VU, p95<800ms bar) · `docs/load-test.md` · keep-warm documented · **PWA**: manifest+icons (A1) + sw.js (hash-asset cache-first, network-first navigations → offline.html «لا يوجد اتصال», API never cached, skipWaiting + the «تحديثت المنصّة» toast) — PROD-only registration |
+| B7 | Pilot kit | PILOT.md, guides, dress rehearsal | **done (core)** | `docs/PILOT.md` (AR+EN, 10 steps, env table, rollback) + the B4 seed pack (8 courses, 30 @demo.madarek.ly students, DELETE /users/demo-cohort sweep) · user guides + dress rehearsal pending |
 
 ## Wave 1 landed (verified on the local full stack)
 

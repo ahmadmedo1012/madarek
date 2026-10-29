@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>مدارك — لا يوجد اتصال</title>
+  <link rel="icon" href="/brand/icon-192.png" />
+  <style>
+    :root { color-scheme: light dark; }
+    body {
+      margin: 0; min-height: 100dvh; display: grid; place-items: center;
+      background: #F6F6EE; color: #282828;
+      font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif;
+    }
+    .sheet { text-align: center; padding: 40px 24px; max-width: 420px; }
+    .mark { font-size: 40px; line-height: 1; letter-spacing: 0.06em; font-weight: 700; }
+    .mark b { color: #FA3600; font-weight: 700; }
+    h1 { font-size: 1.25rem; font-weight: 600; margin: 18px 0 8px; }
+    p { font-size: 0.9rem; line-height: 1.8; color: #55554E; margin: 0 0 22px; }
+    button {
+      font: inherit; font-weight: 600; font-size: 0.875rem;
+      padding: 10px 22px; border: 1px solid #282828; background: #282828;
+      color: #F6F6EE; cursor: pointer; border-radius: 0;
+    }
+    button:hover { background: #FA3600; border-color: #FA3600; }
+  </style>
+</head>
+<body>
+  <main class="sheet">
+    <div class="mark" aria-hidden="true">مدارك<b>.</b></div>
+    <h1>لا يوجد اتصال</h1>
+    <p>انقطعت الشبكة بينك وبين المنصّة. الصفحات التي زرتها للتوّ قد تعمل
+       من الذاكرة المؤقتة — أما الجديد فيحتاج اتصالًا. أعد المحاولة بعد
+       استعادة الشبكة.</p>
+    <button onclick="location.reload()">أعد المحاولة</button>
+  </main>
+</body>
+</html>
