@@ -52,13 +52,17 @@
   56/56 · lint 0 · `npm run build -w frontend` ✓ · full-stack dev:full + Playwright
   evidence sweep (`scripts/r323/qa-sweep.mjs`) → `evidence/`.
 
-## Exact next 3 actions
+## Exact next 3 actions (r323 state @ b413df9c)
 
-1. Independent reviewer round on `BOARD.md` evidence (3 reviewers, rubric ≥9/no <8),
-   then fix whatever they list.
-1. A5: the component system + `/__design` gallery + the state-contrast sweep gate.
-2. B2.2 player remainder (speed/resume/checkpoints UI), B2.3 STT queue + B2.4 live sessions.
-3. B3.1 invite codes → B3.3–3.6 notifications/messages/onboarding/feedback; then B4 flows E2E + FLOWS.md.
+1. A6: the fresh reviewer round on `BOARD.md` evidence (3 independent
+   reviewers, rubric ≥9 / no category <8) + a5 §3 the per-role authenticated
+   sweep raised to the landing standard (the /__design gallery + the
+   state-contrast gate landed in A5 §1+§2 already).
+2. B1.4 AI-everywhere widgets (player/teacher tools — B1.1 chain + B1.2 RAG
+   are the proven core) + B1.5 the `scripts/ai-eval/` harness.
+3. B7 the dress rehearsal: `npm run db:seed` against the live local stack
+   (the pilot cohort's FIRST live run) → flows 1–13 (FLOWS.md matrix) → the
+   5 pending flow specs + the 3 user guides → fix everything filed.
 
 ## Commands to reproduce
 
