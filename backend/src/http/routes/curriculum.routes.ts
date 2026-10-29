@@ -7,6 +7,13 @@ import { authMiddleware } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { AppError } from '../../lib/errors.js';
+import {
+  detectTranscriptFormat,
+  srtToVtt,
+  transcriptHasCues,
+  transcriptKeyFor,
+  transcriptServingPathFor,
+} from '../../modules/ai/transcript.js';
 import { assertOwnsOffering } from '../../lib/permissions.js';
 import { assertOfferingInCallerInstitution } from '../../lib/profile-scoping.js';
 
@@ -724,3 +731,56 @@ router.delete(
 );
 
 export default router;
+
+/* r323 B2.3 — the lecture transcript (SRT/VTT) ingest. The owning
+ * teacher pastes the captions text; the platform converts SRT→VTT,
+ * validates it parses to ≥1 cue, stores it in the lectures namespace,
+ * and stamps Lecture.transcriptUrl (the player's <track> and the
+ * knowledge indexer read the same bytes). Idempotent: a re-upload
+ * REPLACES the file. Bounded at 2 MiB — a 3-hour lecture's captions
+ * never approach it. */
+const transcriptBodySchema = z.object({
+  content: z.string().min(1).max(2 * 1024 * 1024),
+});
+
+router.put(
+  '/lectures/:id/transcript',
+  requireRole(Role.TEACHER, Role.ADMIN, Role.OWNER),
+  validate(transcriptBodySchema),
+  async (req, res, next) => {
+    try {
+      const lectureId = req.params.id!;
+      const { content } = req.body as z.infer<typeof transcriptBodySchema>;
+
+      const lecture = await prisma.lecture.findUnique({
+        where: { id: lectureId },
+        select: { id: true, offeringId: true },
+      });
+      if (!lecture) throw AppError.notFound('المحاضرة غير موجودة');
+      await assertOwnsOffering(lecture.offeringId, req.user!.id, req.user!.role);
+      await assertOfferingInCallerInstitution(lecture.offeringId, req.user!, 'write');
+
+      const format = detectTranscriptFormat(content);
+      if (format === null) {
+        throw AppError.badRequest('الملف ليس بصيغة SRT أو VTT صالحة');
+      }
+      const vtt = srtToVtt(content);
+      if (!transcriptHasCues(vtt)) {
+        throw AppError.badRequest('لم يُعثر على أي توقيت صالح في الملف');
+      }
+
+      const { getStorage } = await import('../../lib/storage.js');
+      await getStorage().put(transcriptKeyFor(lectureId), Buffer.from(vtt, 'utf8'));
+      const updated = await prisma.lecture.update({
+        where: { id: lectureId },
+        data: { transcriptUrl: transcriptServingPathFor(lectureId) },
+        select: { id: true, transcriptUrl: true },
+      });
+
+      logger.info({ lectureId, userId: req.user!.id, format }, 'curriculum: transcript stored');
+      res.status(201).json({ data: updated });
+    } catch (e) {
+      next(e);
+    }
+  },
+);

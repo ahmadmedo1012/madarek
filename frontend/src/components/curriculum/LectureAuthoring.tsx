@@ -8,18 +8,19 @@
  *   ordinal swap via two PATCHes), edit (Modal) and delete
  *   (ConfirmDialog — the 409 "سجل مشاهدات" case surfaces inline).
  */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp } from 'lucide-react';
+import { Captions, ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
+import { api } from '../../lib/api';
+import { apiErrorMessage } from '../../lib/format';
 import { toast } from '../../lib/toast';
 import { countAr } from '../../lib/format';
 import { VideoUploadField, type VideoSourceMode } from './VideoUploadField';
 import {
-  apiErrorMessage,
   useCreateLecture,
   useDeleteLecture,
   useReorderLectures,
@@ -132,6 +133,14 @@ export function LectureFormModal({
               urlHint="رابط خارجي يبدأ بـ https:// أو مسار ملف داخل المنصة (/api/v1/files/papers/)"
             />
           </FormField>
+
+          {/* r323 B2.3 — the transcript (SRT/VTT) sidecar. Edit-mode
+              only (the lecture row must exist before its file key does).
+              Upload replaces the file; the knowledge indexer picks it
+              up on the next /ai/knowledge/reindex. */}
+          {existing && (
+            <TranscriptField lectureId={existing.id} existingUrl={existing.transcriptUrl ?? null} />
+          )}
 
           <FormField label="الوصف (اختياري)" htmlFor={descId} error={err.description?.message}>
             <textarea id={descId} rows={3} className="auth-input" style={{ blockSize: 'auto', paddingInlineStart: 'var(--sp-4)', resize: 'vertical' }} {...form.register('description')} />
@@ -347,6 +356,73 @@ export function LectureAuthoringList({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+/* ── r323 B2.3 · TranscriptField ──────────────────────────────────
+ * One honest surface for the lecture's captions sidecar: shows the
+ * current state, accepts .srt/.vtt (≤ 2 MB), PUTs the text to the
+ * backend (SRT converts server-side), reports the result inline. */
+function TranscriptField({ lectureId, existingUrl }: { lectureId: string; existingUrl: string | null }) {
+  const [busy, setBusy] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  const pick = async (file: File) => {
+    setError(null);
+    setDone(false);
+    if (file.size > 2 * 1024 * 1024) {
+      setError('حجم الملف يتجاوز 2 ميجابايت');
+      return;
+    }
+    if (!/\.(srt|vtt)$/i.test(file.name)) {
+      setError('الصيغة المسموحة: srt أو vtt');
+      return;
+    }
+    setBusy(true);
+    try {
+      const content = await file.text();
+      await api.put(`/lectures/${lectureId}/transcript`, { content });
+      setDone(true);
+      toast.success('تم حفظ النص المكتوب — سيستفيد مساعد الذكاء منه بعد الفهرسة');
+    } catch (err) {
+      setError(apiErrorMessage(err, 'تعذر رفع النص — أعد المحاولة'));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="tr-field">
+      <span className="tr-field-label">النص المكتوب (SRT/VTT)</span>
+      <div className="tr-field-row">
+        <button
+          type="button"
+          className="btn ghost sm"
+          disabled={busy}
+          onClick={() => inputRef.current?.click()}
+        >
+          <Icon icon={Captions} size={14} />
+          {existingUrl ? 'استبدال النص' : 'رفع ملف النص'}
+        </button>
+        {busy && <span className="tr-field-status">جارٍ الحفظ…</span>}
+        {done && !busy && <span className="tr-field-status tr-field-ok">محفوظ ✓</span>}
+        {existingUrl && !done && !busy && <span className="tr-field-status">ملف موجود</span>}
+        <input
+          ref={inputRef}
+          type="file"
+          accept=".srt,.vtt,text/vtt"
+          className="visually-hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) void pick(f);
+            e.target.value = '';
+          }}
+        />
+      </div>
+      {error !== null && <p className="tr-field-error" role="alert">{error}</p>}
     </div>
   );
 }

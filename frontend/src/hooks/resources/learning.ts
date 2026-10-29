@@ -18,6 +18,10 @@ export interface Lecture {
   durationSec: number;
   videoUrl: string;
   posterUrl?: string | null;
+  /** r323 B2.3 — the captions sidecar's serving path (set by the
+   * teacher's SRT/VTT upload; the player's <track> + the knowledge
+   * indexer read it). */
+  transcriptUrl?: string | null;
   createdAt: string;
   _count?: { chapters: number; checkpoints: number };
   watchEvents?: Array<{ watchedSec: number; totalSec: number; completed: boolean }>;

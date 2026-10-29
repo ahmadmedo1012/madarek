@@ -659,7 +659,28 @@ const VIDEO_CONTENT_TYPES: Record<string, string> = {
   '.webm': 'video/webm',
   '.ogv': 'video/ogg',
   '.ogg': 'video/ogg',
+  // r323 B2.3 — the lecture's TEXT sidecar rides the same namespace
+  // (the <track> + the knowledge indexer both read it back).
+  '.vtt': 'text/vtt; charset=utf-8',
+  '.srt': 'text/plain; charset=utf-8',
 };
+
+/**
+ * The serving gate for /files/lectures/:filename — video containers OR
+ * the transcript sidecar (the UPLOAD gates stay strictly video: only
+ * the server's own transcript writer mints .vtt keys).
+ */
+export function isServableLectureFile(filename: string): boolean {
+  if (isSafeVideoFilename(filename)) return true;
+  // The sidecar branch: SAME bare-filename shape gate, .vtt extension.
+  if (!filename.toLowerCase().endsWith('.vtt')) return false;
+  if (filename.includes('/') || filename.includes('\\') || filename.includes('..')) return false;
+  for (let i = 0; i < filename.length; i += 1) {
+    const code = filename.charCodeAt(i);
+    if (code <= 0x1f || code === 0x7f) return false;
+  }
+  return true;
+}
 
 export function videoContentTypeFor(filename: string): string {
   const dot = filename.lastIndexOf('.');
@@ -813,7 +834,7 @@ router.post('/uploads/complete', uploadPresignLimiter, requireRole(Role.TEACHER,
 router.get('/lectures/:filename', async (req, res, next) => {
   try {
     const filename = req.params.filename!;
-    if (!isSafeVideoFilename(filename)) throw AppError.badRequest('اسم الملف غير صالح');
+    if (!isServableLectureFile(filename)) throw AppError.badRequest('اسم الملف غير صالح');
     const key = buildStorageKey('lectures', filename);
     const storage = getStorage();
 

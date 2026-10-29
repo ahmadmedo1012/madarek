@@ -1061,3 +1061,11 @@
 
 .vid-up-hint { margin: 0; font-size: 12px; color: var(--text-muted); }
 .vid-up-error { margin: 0; font-size: 12px; font-weight: 600; color: var(--danger); }
+
+/* ── r323 B2.3 · the transcript sidecar field ─────────────────────── */
+.tr-field { display: grid; gap: var(--sp-1); }
+.tr-field-label { font-size: 13px; font-weight: 600; color: var(--text-strong); }
+.tr-field-row { display: flex; align-items: center; gap: var(--sp-2); min-block-size: 44px; flex-wrap: wrap; }
+.tr-field-status { font-size: 12px; color: var(--text-muted); }
+.tr-field-ok { color: var(--accent); font-weight: 600; }
+.tr-field-error { margin: 0; font-size: 12px; font-weight: 600; color: var(--danger); }
