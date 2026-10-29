@@ -14,6 +14,7 @@ import { SectionBar, BarCount, EmptyCell } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { Modal } from '../../components/overlays/Modal';
 import { VideoPlayerChrome } from '../../components/player/VideoPlayerChrome';
+import { formatCueClock, parseVttCues, type VttCue } from '../../lib/vtt';
 import { OfferingMaterialsCard } from '../../components/player/OfferingMaterialsCard';
 import { useLecture, useOfferingLectures, useReportWatch, useAnswerCheckpoint, type LectureCheckpoint } from '../../hooks/useResources';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
@@ -155,6 +156,11 @@ export default function LecturePlayerPage() {
   const siblingsQ = useOfferingLectures(data?.offering.id);
 
   const videoRef = useRef<HTMLVideoElement>(null);
+  /* r323 B2.2 — the transcript panel's cues: parsed ONCE per lecture
+     from the same VTT bytes the <track> renders (lib/vtt), searched
+     locally, and clicked through to the host's seekTo. */
+  const [cues, setCues] = useState<VttCue[] | null>(null);
+  const [cueQuery, setCueQuery] = useState('');
   // One-shot resume-seek guard: the saved position is applied on the
   // first loadedmetadata only — manual seeks and chapter clicks are
   // never affected (audit 11-f P1-6).
@@ -371,6 +377,18 @@ export default function LecturePlayerPage() {
       </div>
     );
   }
+
+  /* r323 B2.2 — pull + parse the transcript once the lecture is known. */
+  useEffect(() => {
+    const url = data?.transcriptUrl;
+    if (!url) { setCues(null); return; }
+    let alive = true;
+    fetch(url)
+      .then((r) => (r.ok ? r.text() : Promise.reject(new Error('transcript fetch failed'))))
+      .then((text) => { if (alive) setCues(parseVttCues(text)); })
+      .catch(() => { if (alive) setCues(null); });
+    return () => { alive = false; };
+  }, [data?.transcriptUrl]);
 
   const seekTo = (sec: number) => {
     const v = videoRef.current;
@@ -930,6 +948,53 @@ export default function LecturePlayerPage() {
                 <EmptyCell label="لا فصول مقسَّمة" note="لم تُقسَّم هذه المحاضرة إلى فصول — شاهدها كاملة دون تنقّل." />
               )}
             </section>
+
+            {/* r323 B2.2 — the transcript panel: the SAME VTT bytes the
+                <track> renders, searched locally, click-to-seek through
+                the host's seekTo. Only mounts when a transcript exists;
+                the honest empty result keeps the search honest. */}
+            {cues !== null && cues.length > 0 && (
+              <section className="lecture-sec" aria-labelledby="lec-sec-tr">
+                <SectionBar
+                  index="04"
+                  title="النص المكتوب"
+                  id="lec-sec-tr"
+                  meta={<BarCount n={cues.length} srLabel={countAr(cues.length, ['مقطع واحد', 'مقطعان', 'مقاطع', 'مقطع'])} />}
+                />
+                <div className="tr-search">
+                  <input
+                    type="search"
+                    className="tr-search-input"
+                    placeholder="ابحث في النص المكتوب…"
+                    aria-label="ابحث في النص المكتوب"
+                    value={cueQuery}
+                    onChange={(e) => setCueQuery(e.target.value)}
+                  />
+                </div>
+                <div className="tr-cue-list" role="list">
+                  {cues
+                    .filter((c) => cueQuery.trim() === '' || c.text.includes(cueQuery.trim()))
+                    .slice(0, 200)
+                    .map((c, idx) => (
+                      <button
+                        key={`${c.start}-${idx}`}
+                        type="button"
+                        className="tr-cue"
+                        role="listitem"
+                        onClick={() => seekTo(c.start)}
+                        aria-label={`انتقل إلى ${formatCueClock(c.start)}: ${c.text.slice(0, 80)}`}
+                      >
+                        <span className="chapter-time" dir="ltr">{formatCueClock(c.start)}</span>
+                        <span className="tr-cue-text">{c.text}</span>
+                      </button>
+                    ))}
+                </div>
+                {cueQuery.trim() !== '' &&
+                  cues.filter((c) => c.text.includes(cueQuery.trim())).length === 0 && (
+                    <p className="lecture-sec-note">لا نتائج مطابقة في هذا النص.</p>
+                  )}
+              </section>
+            )}
 
             {/* R304 — the keyboard contract of the chrome, surfaced where
                 the chapters live (Space/K play, arrows ±10s, F fullscreen,
