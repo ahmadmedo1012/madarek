@@ -5985,13 +5985,33 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 .wr-scrub .wr-w {
-  overflow: hidden;
+  /* r324 X7 — the mask retires for the scrub: the reference's OWN
+     statement scrub is a per-char COLOR scrub (r322 scroll-spec.md:
+     «per-char color scrub of the 127-char statement, initial ghost
+     rgb(179,179,175)» — nothing ever translates, nothing ever
+     hides). Our mask-slide clipped the tail words half-buried at
+     every mid-scrub position (the reading position included). The
+     per-WORD split stays (the Arabic joining law — the reference
+     splits chars because its statement is uppercase Latin). */
+  overflow: visible;
 }
 
 .wr-scrub .wr-i {
   --wr-k: clamp(0, (var(--wr-p, 0) * var(--wr-n, 1)) - var(--wr-i, 0), 1);
-  transform: translateY(calc((1 - var(--wr-k)) * 115%));
+  transform: none;
   transition: none;
+  /* the color scrub — ghost → ink, word by word. The ghost seat is
+     --text-secondary (9.41:1 on the paper), NOT the reference's
+     1.9:1 ghost: a visitor may rest mid-scrub, and the brief's
+     contrast floor binds every readable state. */
+  color: color-mix(in srgb, var(--text) calc(var(--wr-k) * 100%), var(--text-secondary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* RM: the statement stands complete — no scrub state at all */
+  .wr-scrub .wr-i {
+    color: var(--text);
+  }
 }
 
 /* ═══ R322 (3-b) — the ≤991 architecture: the sticky moves INSIDE the
