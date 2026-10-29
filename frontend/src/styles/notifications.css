@@ -437,6 +437,20 @@
   max-inline-size: min(420px, calc(100vw - var(--sp-6)));
 }
 
+/* r324 X1 — consent first, the toast stacks ABOVE it: while the
+   landing's consent banner occupies its bottom seat, the stack lifts
+   clear of the strip instead of covering the gate (desktop strip
+   ≈38px, the phone compact bar 48px — each + one breathing gap). */
+body:has(.cb-banner) .toast-stack {
+  inset-block-end: calc(2.4rem + var(--sp-4));
+}
+
+@media (max-width: 767px) {
+  body:has(.cb-banner) .toast-stack {
+    inset-block-end: calc(3rem + var(--sp-4));
+  }
+}
+
 /* Stack items reuse the .toast surface (components.css + polish v18/v22
    variant hairlines) but live in flow inside the region — the (0,2,0)
    selector takes the cascade over the standalone (0,1,0) fixed rules. */
