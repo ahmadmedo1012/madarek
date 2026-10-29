@@ -17,13 +17,13 @@
 | A5 | App after login | component system, `/__design`, per-role sweep | pending | — |
 | A6 | Whole-site red team | fresh reviewers, all viewports | pending | — |
 | B1.1 | AI model + streaming | provider chain, SSE streaming, quotas, honest local mode | **done (code + tests)** | `B1-AI.md` · 56 backend + 30 frontend tests |
-| B1.2 | RAG + citations | pg_trgm/tsvector index, source links | pending | — |
+| B1.2 | RAG + citations | pg_trgm/tsvector index, source links | **done (code + tests)** | `AiKnowledgeChunk` + migration (pg_trgm GIN) · `modules/ai/knowledge.ts` · `/ai/knowledge/reindex` · 16 tests |
 | B1.4-5 | AI everywhere + eval | player/teacher tools, `scripts/ai-eval/` | pending | — |
 | B2.1 | Storage + upload wizard | S3 presigned, range streaming, teacher wizard | **done (code + tests)** | presign lib + uploads routes + VideoUploadField · 26 new tests |
+| B3.1 | Bulk import | CSV/XLSX dry-run, temp passwords PDF, invite codes | **done (CSV core)** | `lib/bulk-import.ts` + `/users/bulk-import/preview|commit` + BulkImportModal · 14 tests · XLSX-in = save-as CSV (honest scope) · invite codes pending |
 | B2.2 | Player excellence | speed, PiP, resume, checkpoints, transcript | pending | — |
 | B2.3 | Transcripts | SRT/VTT upload, STT API, queue | pending | — |
 | B2.4 | Live sessions | Jitsi embed default, attendance, recordings | pending | — |
-| B3.1 | Bulk import | CSV/XLSX dry-run, temp passwords PDF, invite codes | pending | — |
 | B3.2 | Mail + reset | Resend/Brevo, RTL templates, registrar fallback link | pending | — |
 | B3.3-6 | Notifications, messages, onboarding, feedback | | pending | — |
 | B4 | 13 academic flows E2E | | pending | — |
