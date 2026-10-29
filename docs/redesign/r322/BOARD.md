@@ -17,23 +17,24 @@ BT Grotesk.
 | Cycle | Packages | State |
 |---|---|---|
 | C1 | kill-list quick kills · design system + fonts · Heron extraction · scroll spec · desktop perf | **4/5 MERGED + reviewer DONE** (perf → C2 wave) |
-| C2 | hero + statement + problem transplants (accept ≥ 9) | **hero + statement + pains MERGED** (map→C3, platform/why/roles/CTA→C4; independent re-review pending) |
+| C2 | hero + statement + problem transplants (accept ≥ 9) | **hero + statement + pains MERGED + ACCEPTED** (8.9/9.0/8.9 — the c2 acceptance review) |
+| C3 | map transplant (6 states × 3 bps) + scroll spec + desktop perf | **MERGED + reviewed to 8.9/8.75 (R1/R3), geometry ALL-GREEN (R2)** — closed at the owner-decision boundary (see §3 + the three owner questions below); R323 carries the remainder |
 
 ## §1 KILL LIST (V1–V12) — tracked to zero
 
 | # | Defect | Source(s) | State | Evidence |
 |---|---|---|---|---|
 | V1 | Debug/revision/coordinate text shown to users | LandingPage.tsx `[R313]—MADAREK·…` row + `.fo-cta-corners` runtime coords + writer · Elevation/LearningPlan `MDRK · …` + `SCALE … · UNITS M` · JourneyScene `[01–04] · LIVE` + station `meta` jargon · WhyScene labels | **FIXED c1 (WP-1a + foreman tail)** — innerText sweep zero at 1440+390; reviewer-found tails also killed (`[SECTION A-A · 1:200]`, `[CTA · RESOLVE]`); REMAINING (deferred by design): hero `[LIVE]` tag (C2) · `SHEET 05 · SCALE 1:100` / `VIEW-A/B · 1280×800` / `real-ui` ×6 (C4 platform) · `[06]` in ledger + «RTL» Latin (C2 copy pass) | audits/evidence/r322/kill-v1/ + review-c1/ |
-| V2 | Map intro broken: duplicate giant headlines + orphan 12px paragraph + empty plan grid | JourneyScene.tsx `.jt-intro*` | OPEN (C3 — also the 809px map-end dead band) | — |
-| V3 | «مقدمة» card = black slab with void, covers plan rooms | JourneyScene.tsx intro card | OPEN (C3) | — |
+| V2 | Map intro broken: duplicate giant headlines + orphan 12px paragraph + empty plan grid | JourneyScene.tsx `.jt-intro*` | **DEAD c3** — 6-state transplant: ONE statement per state (2 distinct plaques), quiet paper frame one, card at the corner; the 809px band dies with the reserved/overlay closing | audits/evidence/r322/map/ |
+| V3 | «مقدمة» card = black slab with void, covers plan rooms | JourneyScene.tsx intro card | **DEAD c3** — the paper card at the mirrored corner (28.01rem, 3.2rem insets), grows upward, findings in the a11y tree (clip pattern) | audits/evidence/r322/map/ |
 | V4 | Voids/blank bands: ≈250px under role cards (1440); ≈160px bands on phone | landing.css sections | OPEN (C2+) | — |
 | V5 | Type too heavy/inconsistent: 100% w700, 5–6 ad-hoc display sizes 60–85.55px; tablet-band amplification; phone one-word lines | landing.css display ladder | **FIXED c1 (WP-1d)** — the d1/d2/d3/st rungs on the measured Heron ladder: 46.67/40/33.33/23.33px @1440 · 36.86 @768 (Heron 36.83) · 31.74 @390 (Heron 31.76) · 47.57 @991 (Heron tablet) — 100% w600/500 IBM Plex Sans Arabic; the 991/767 amplification dead by construction (px floors); VLM hero 7.5→**9.0** | audits/evidence/r322/dsys/type-census-after.md |
 | V6 | Platform cluttered: blurry screenshots + pasted tooltips/chips | PlatformCanvas/ProductFrame | OPEN (C4) | — |
 | V7 | Edge tab clips body copy at 1440 | EdgeTab + r314-chrome.css | **FIXED c1 (WP-1a)** — slim rail at ≥992 inside frame margin, geometry-proven no intersection; ≤991 gutter marker | audits/evidence/r322/kill-v1/ |
 | V8 | Orphan paragraphs & broken 12-col grid (problem section) | landing.css | **FIXED c2 (WP-2c/2d)** — the 4 pains columns on ONE grid (x=1087/736/385/33) with the head bottom-aligned to the same edges (213=213); the 217px orphan lede dies | audits/evidence/r322/statement/ |
-| V9 | Map label contrast/collisions in transitions | JourneyScene + landing.css | OPEN (C3) | — |
+| V9 | Map label contrast/collisions in transitions | JourneyScene + landing.css | **DEAD c3** — svg-collisions 0 FAIL @390/768/1440 × light/dark; station glyphs AA at the source (PLAN_INK_CSS #1A1A1A = 4.63:1) | audits/evidence/r320/gate.md |
 | V10 | Phone hero art tiny (~160px in 330px window); map card clips «شاهد»; red marker at x=0 | HeroInkWindow + journey mobile | **MOSTLY FIXED c2** — hero art 350px full-width @390 (the TIGHT HERO_FRAME viewBox); x=0 marker hidden <768; «شاهد» clip OPEN (C3 map card) | audits/evidence/r322/hero/ |
-| V11 | Desktop jank: 106/215 frames >33ms, p95 50ms, CLS 0.27, LCP 21s (loader-on) | A1 continuation | OPEN (WP 1-e) | audits/evidence/r321/a1-analysis.md |
+| V11 | Desktop jank: 106/215 frames >33ms, p95 50ms, CLS 0.27, LCP 21s (loader-on) | A1 continuation | **PARTIAL c3** — CLS 0.246→**0.01** (the pin-end expansion dead), jank 58%→22–26%, p95 100→33ms; the §7-5..7 menu (animation promotion, grain, loader policy) → C4/R323-A4 | audits/evidence/r322/perf-baseline.md §7–8 |
 | V12 | Older tickets: legal clip (FIXED R321-A4), dup ERR (FIXED A5), decor `+` (FIXED A6), «الإدارة» (FIXED A7), demo panel (A8-prod **FIXED c1 WP-1a** — dev-only open, prod collapsed chip), authed pages unfinished (sweep continues) | — | PARTIAL | R321 board |
 
 Carried R321 tickets folded into this board: A1→V11 · A3→V10 · A9→V9 ·
@@ -69,7 +70,7 @@ Gaps: Lenis literal options · Webflow IX2 params (rebuild from evidence shots +
 | Statement | 6.1 baseline → **transplanted c2** (VLM 9+ "a masterclass in minimalist architectural branding") | independent re-review pending | 9.0* | — | — |
 | Pains | 5.9 baseline → **transplanted c2** (VLM ~8.2 "world-class system"; V8 geometry-proven closed) | independent re-review pending | 8.2* | — | — |
 (* = VLM advisory; the three-independent-reviewer pass per §3 still pending) |
-| Map | **4.2** | pre-1-d | 4.2 | C3 (V2/V3/V9 + 809px dead band) | — |
+| Map | **transplanted c3 + 4 fix rounds** (R1: 6.6→8.5→8.6→**8.9**; R3: 7.5→**8.75 ACCEPT**; R2 geometry: ALL checks green — docH 11/11, states 18/18, collisions 0, funnel 5/5, console 0) | closed at the owner-decision boundary: mean 8.9 = 0.1 under the bar, ZERO new defects; the gap sits in 2 documented compromises | 8.9* | D3-residual (card-era ink 5.87% vs 2.12% — design intent, Heron's own layer window) | locked pending owner |
 | Product | 4.9 | pre-1-d | 4.9 | C4 (V6) | — |
 | Why | 5.2 | pre-1-d | 5.2 | C4 | — |
 | Roles | 5.2 | pre-1-d | 5.2 | C4 (V4 231px void + ledger) | — |
@@ -132,3 +133,42 @@ pre-existing warnings · typecheck clean · vitest 229 files/2735 tests ·
 raw-css PASS · killed strings zero at 1440+390 · console clean · docH
 12,523 @1440 / 11,319 @390 (both in the ±1.5% band, moving DOWN toward Heron
 as intended).
+
+
+## C3 CLOSE-OUT (the cycle record)
+
+**Merged:** WP-3a `53fc919` (the Heron map extraction: 1 sticky, 6-layer crossfade
+spec, intro card 28.01rem, ScrollTrigger table) · WP-1e `2894646` (the desktop perf
+baseline: UpdateLayoutTree 3,885ms via the 756-hatch var walk; CLS 0.246 = 89% pin-end
+`.jt-side` expansion; ranked fix menu) · WP-3b `78ce6ee`→`1716c7d` (the transplant +
+4 review-driven fix rounds: the wash at furniture scale, the plan monument via the
+CLS-free closing overlay, the quiet statement ground, the full-height mobile window +
+portrait crop family, the dark-plaque pinned ink, findings-in-a11y, the closing foot,
+the terminal lecture tint, the station AA at the source).
+
+**Review arc:** R1 6.6 → 8.5 → 8.6 → **8.9** (zero new defects at the end) · R2
+geometry ALL-GREEN (docH ladder 11/11 in band/at pins, the 6-state machine exact
+18/18, svg-collisions 0, funnel frozen 5/5, killed strings 0, RM complete, console
+clean) · R3 7.5 → **8.75 ACCEPT** (his HIGH dark-plaque defect dead at 13.57:1).
+
+**THE THREE OWNER QUESTIONS (the 0.1 gap — only the owner can decide):**
+1. **The w600 display cap** — the brief caps display at 400–600; Heron's map h1 is
+   w700. R1: "the ceiling is ≈8.9 unless the cap is blessed or lifted at the map's
+   display seats." Bless w600 (score stands) or lift to w700 at the map seats only.
+2. **The tablet landscape seat** — our plan artwork is landscape 1200×760; @768 the
+   window runs it at full width (753×446) vs Heron's portrait stack (753×972). A
+   portrait tablet crop family is possible (C4/R323-A3 candidate).
+3. **The card-era ink density** — 5.87% vs Heron's 2.12%: our poché walls are heavier
+   than Heron's light base layer; the LAYER WINDOW matches the extraction exactly
+   (2.5–3.0s). Artwork density, not timing — accept or lighten the envelope.
+
+**New tickets filed (pre-existing debt, verified on main's own builds):**
+- wy-section RM growth +1112px @1440 (breaks the r320 RM ratchet @≥1024) → C4/R323
+- product prf-* card farm duplicates (V6) → C4/R323-A3
+- 6 XOR paired-state violations in auth/training CSS (unmasked by the stale cleanup)
+  → the clean wave
+- r320 gate owner-dashboard cleanliness rows (mock-transport gaps) → gate hygiene
+- r321 sweep duplicate-text on landing = the product farm only (5 norms)
+
+**Handoff:** R323 (the parallel programme) took `301dfdf` as its verified baseline —
+its A3/A4 waves own the landing remainders + the perf §7-5..7 menu.
