@@ -1,0 +1,6529 @@
+{
+ "meta": {
+  "rootFontSize": {
+   "px": 9.92366,
+   "vwPct": 2.54
+  },
+  "bodyBg": "rgba(0, 0, 0, 0)",
+  "docH": 11363,
+  "scroller": {
+   "selector": "div.main-inner.lenis",
+   "clientH": 828,
+   "scrollH": 11363,
+   "maxScroll": 10535
+  },
+  "viewport": {
+   "w": 390,
+   "h": 844
+  },
+  "bp": "390",
+  "capturedAt": "2026-10-29T20:57:32.222Z",
+  "url": "https://heronaiapp.com/",
+  "httpStatus": 200,
+  "loader": {
+   "autoDismissed": true,
+   "timeline": [
+    {
+     "t": 500,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 1000,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 1500,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 2000,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 2500,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 3000,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 3500,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 4000,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 4500,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 5000,
+     "loaderCls": [
+      "loading"
+     ],
+     "loaderBox": [
+      374,
+      828
+     ]
+    },
+    {
+     "t": 5500,
+     "loaderCls": [
+      "loading",
+      "loaded"
+     ],
+     "loaderBox": [
+      0,
+      0
+     ]
+    },
+    {
+     "t": 6000,
+     "loaderCls": [
+      "loading",
+      "loaded"
+     ],
+     "loaderBox": [
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "cookieBanner": {
+   "measured": {
+    "cls": [
+     "cookie-banner",
+     "bg-global",
+     "is-visible"
+    ],
+    "rect": [
+     8,
+     746,
+     374,
+     93
+    ],
+    "z": "100009"
+   },
+   "accepted": false,
+   "escapeDismissed": true
+  }
+ },
+ "ledger": [
+  {
+   "sel": ".home-hero",
+   "docY": 8,
+   "h": 828,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".home-intro",
+   "docY": 836,
+   "h": 837,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".home-problem",
+   "docY": 1673,
+   "h": 869,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".home-map",
+   "docY": 2542,
+   "h": 4819,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".home-platform",
+   "docY": 7361,
+   "h": 517,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".home-why",
+   "docY": 7878,
+   "h": 806,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".home-usecase",
+   "docY": 8684,
+   "h": 948,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".cta",
+   "docY": 9632,
+   "h": 500,
+   "bg": "rgba(0, 0, 0, 0)"
+  },
+  {
+   "sel": ".footer",
+   "docY": 10132,
+   "h": 1239,
+   "bg": "rgba(0, 0, 0, 0)"
+  }
+ ],
+ "trees": {
+  "platform": {
+   "tag": "section",
+   "cls": [
+    "home-platform"
+   ],
+   "role": "div",
+   "rect": {
+    "x": 8,
+    "y": 7361,
+    "w": 374,
+    "h": 517,
+    "wRem": 37.7,
+    "hRem": 52.054,
+    "wPct": 95.9
+   },
+   "style": {
+    "fs": "15.8779px",
+    "lh": "20.6412px",
+    "fw": "500",
+    "ff": "\"BT Grotesk\"",
+    "color": "rgba(40, 40, 40, 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "ls": "-0.317557px",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "margin": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "gap": "normal",
+    "grid": null,
+    "z": "auto",
+    "pos": "relative",
+    "opacity": "1",
+    "overflow": "visible"
+   },
+   "children": [
+    {
+     "tag": "div",
+     "cls": [
+      "line",
+      "line-horizital",
+      "left",
+      "right",
+      "top"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 7361,
+      "w": 374,
+      "h": 1,
+      "wRem": 37.7,
+      "hRem": 0.101,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgb(179, 179, 175)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "2",
+      "pos": "absolute",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "text": {
+      "role": "div",
+      "charCount": 0,
+      "lineCount": 1
+     },
+     "children": []
+    },
+    {
+     "tag": "div",
+     "cls": [
+      "line",
+      "line-horizital",
+      "left",
+      "right",
+      "bot"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 7877,
+      "w": 374,
+      "h": 1,
+      "wRem": 37.7,
+      "hRem": 0.101,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgb(179, 179, 175)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "2",
+      "pos": "absolute",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "text": {
+      "role": "div",
+      "charCount": 0,
+      "lineCount": 1
+     },
+     "children": []
+    },
+    {
+     "tag": "div",
+     "cls": [
+      "w-layout-blockcontainer",
+      "container",
+      "grid",
+      "w-container"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 7361,
+      "w": 374,
+      "h": 517,
+      "wRem": 37.7,
+      "hRem": 52.054,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "0px 15.8779px",
+      "grid": "81.625px 81.625px 81.625px 81.625px",
+      "z": "auto",
+      "pos": "static",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "children": [
+      {
+       "tag": "div",
+       "cls": [
+        "home-platform-content"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 7361,
+        "w": 374,
+        "h": 517,
+        "wRem": 37.7,
+        "hRem": 52.054,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "text": {
+        "role": "div",
+        "charCount": 403,
+        "lineCount": 25
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "home-platform-content-inner",
+          "grid",
+          "active",
+          "bg-global"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 7361,
+          "w": 374,
+          "h": 248,
+          "wRem": 37.7,
+          "hRem": 24.988,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "0px 15.8779px",
+          "grid": "81.625px 81.625px 81.625px 81.625px",
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 183,
+          "lineCount": 12
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-content-left"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 7382,
+            "w": 374,
+            "h": 87,
+            "wRem": 37.7,
+            "hRem": 8.737,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             31.7557,
+             15.8779,
+             7.93893,
+             15.8779
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 21,
+            "lineCount": 4
+           },
+           "childCount": 3
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-content-right"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 7469,
+            "w": 374,
+            "h": 141,
+            "wRem": 37.7,
+            "hRem": 14.172,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 3
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-content-img"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 7361,
+            "w": 374,
+            "h": 21,
+            "wRem": 37.7,
+            "hRem": 2.078,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 3
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-platform-content-inner",
+          "grid",
+          "bg-global"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 7609,
+          "w": 374,
+          "h": 269,
+          "wRem": 37.7,
+          "hRem": 27.066,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "0px 15.8779px",
+          "grid": "81.625px 81.625px 81.625px 81.625px",
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-content-left"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 7630,
+            "w": 374,
+            "h": 87,
+            "wRem": 37.7,
+            "hRem": 8.737,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             31.7557,
+             15.8779,
+             7.93893,
+             15.8779
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 19,
+            "lineCount": 4
+           },
+           "childCount": 3
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-content-right"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 7717,
+            "w": 374,
+            "h": 161,
+            "wRem": 37.7,
+            "hRem": 16.251,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 3
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-content-img"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 7609,
+            "w": 374,
+            "h": 21,
+            "wRem": 37.7,
+            "hRem": 2.078,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 3
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "home-platform-img-wrap",
+        "bg-global"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "wRem": 0,
+        "hRem": 0,
+        "wPct": 0
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         -19.8473,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "normal",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "text": {
+        "role": "div",
+        "charCount": 0,
+        "lineCount": 1
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "home-platform-img-item"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-img-item-main"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "hidden"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-horizital",
+            "bot",
+            "left",
+            "right"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgb(179, 179, 175)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-platform-img-item"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-platform-img-item-main"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "hidden"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-horizital",
+            "bot",
+            "left",
+            "right"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgb(179, 179, 175)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-vertical",
+          "left",
+          "top"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-vertical",
+          "top",
+          "home-platform-img-line-right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "selector": ".home-platform"
+  },
+  "why": {
+   "tag": "section",
+   "cls": [
+    "home-why"
+   ],
+   "role": "div",
+   "rect": {
+    "x": 8,
+    "y": 7878,
+    "w": 374,
+    "h": 806,
+    "wRem": 37.7,
+    "hRem": 81.182,
+    "wPct": 95.9
+   },
+   "style": {
+    "fs": "15.8779px",
+    "lh": "20.6412px",
+    "fw": "500",
+    "ff": "\"BT Grotesk\"",
+    "color": "rgba(40, 40, 40, 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "ls": "-0.317557px",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "margin": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "gap": "normal",
+    "grid": null,
+    "z": "auto",
+    "pos": "static",
+    "opacity": "1",
+    "overflow": "hidden"
+   },
+   "children": [
+    {
+     "tag": "div",
+     "cls": [
+      "w-layout-blockcontainer",
+      "container",
+      "w-container"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 7878,
+      "w": 374,
+      "h": 806,
+      "wRem": 37.7,
+      "hRem": 81.182,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "auto",
+      "pos": "static",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "children": [
+      {
+       "tag": "div",
+       "cls": [
+        "home-why-head",
+        "grid"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 7878,
+        "w": 374,
+        "h": 285,
+        "wRem": 37.7,
+        "hRem": 28.727,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px",
+        "grid": "93.5312px 93.5312px 93.5312px 93.5312px",
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "text": {
+        "role": "div",
+        "charCount": 246,
+        "lineCount": 14
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "home-why-title-wrap"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 7878,
+          "w": 374,
+          "h": 158,
+          "wRem": 37.7,
+          "hRem": 15.936,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           47.6336,
+           15.8779,
+           19.8473,
+           15.8779
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 34,
+          "lineCount": 8
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-why-label"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 24,
+            "y": 7926,
+            "w": 342,
+            "h": 15,
+            "wRem": 34.501,
+            "hRem": 1.538,
+            "wPct": 87.8
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             11.9084,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-why-title"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 24,
+            "y": 7953,
+            "w": 342,
+            "h": 64,
+            "wRem": 34.501,
+            "hRem": 6.399,
+            "wPct": 87.8
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-why-sub-wrap"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 8036,
+          "w": 374,
+          "h": 127,
+          "wRem": 37.7,
+          "hRem": 12.791,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           15.8779,
+           23.8168,
+           15.8779
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgb(179, 179, 175)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-why-sub"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 24,
+            "y": 8036,
+            "w": 342,
+            "h": 103,
+            "wRem": 34.501,
+            "hRem": 10.392,
+            "wPct": 87.8
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "home-why-sub-cta"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(180, 180, 176)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 20,
+            "lineCount": 1
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-horizital",
+          "bot",
+          "left",
+          "right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 8162,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "home-why-main-wrap"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 8163,
+        "w": 374,
+        "h": 521,
+        "wRem": 37.7,
+        "hRem": 52.455,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "normal",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-vertical",
+          "top",
+          "left",
+          "home-why-main-devider"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "bg-border",
+          "home-why-main-bg-border"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "0",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "bg-border-inner"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 3
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-why-main-inner"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 8163,
+          "w": 374,
+          "h": 481,
+          "wRem": 37.7,
+          "hRem": 48.456,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-why-main-cms"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 8163,
+            "w": 374,
+            "h": 481,
+            "wRem": 37.7,
+            "hRem": 48.456,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 2
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-horizital",
+            "left",
+            "right",
+            "bot",
+            "hidden-dsk"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 8643,
+            "w": 374,
+            "h": 1,
+            "wRem": 37.7,
+            "hRem": 0.101,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgb(179, 179, 175)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-why-pagi"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 8644,
+          "w": 374,
+          "h": 40,
+          "wRem": 37.7,
+          "hRem": 3.999,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           19.8473,
+           15.8779,
+           19.8473,
+           15.8779
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal 3.96947px",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 2
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "selector": ".home-why"
+  },
+  "usecase": {
+   "tag": "section",
+   "cls": [
+    "home-usecase"
+   ],
+   "role": "div",
+   "rect": {
+    "x": 8,
+    "y": 8684,
+    "w": 374,
+    "h": 948,
+    "wRem": 37.7,
+    "hRem": 95.518,
+    "wPct": 95.9
+   },
+   "style": {
+    "fs": "15.8779px",
+    "lh": "20.6412px",
+    "fw": "500",
+    "ff": "\"BT Grotesk\"",
+    "color": "rgba(40, 40, 40, 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "ls": "-0.317557px",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "margin": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "gap": "normal",
+    "grid": null,
+    "z": "auto",
+    "pos": "relative",
+    "opacity": "1",
+    "overflow": "visible"
+   },
+   "children": [
+    {
+     "tag": "div",
+     "cls": [
+      "line",
+      "line-horizital",
+      "top",
+      "left",
+      "right"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 8684,
+      "w": 374,
+      "h": 1,
+      "wRem": 37.7,
+      "hRem": 0.101,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgb(179, 179, 175)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "2",
+      "pos": "absolute",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "text": {
+      "role": "div",
+      "charCount": 0,
+      "lineCount": 1
+     },
+     "children": []
+    },
+    {
+     "tag": "div",
+     "cls": [
+      "line",
+      "line-horizital",
+      "bot",
+      "left",
+      "right"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 9631,
+      "w": 374,
+      "h": 1,
+      "wRem": 37.7,
+      "hRem": 0.101,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgb(179, 179, 175)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "2",
+      "pos": "absolute",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "text": {
+      "role": "div",
+      "charCount": 0,
+      "lineCount": 1
+     },
+     "children": []
+    },
+    {
+     "tag": "div",
+     "cls": [
+      "w-layout-blockcontainer",
+      "container",
+      "grid",
+      "full-h",
+      "w-container"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 8684,
+      "w": 374,
+      "h": 948,
+      "wRem": 37.7,
+      "hRem": 95.518,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "0px 15.8779px",
+      "grid": "81.625px 81.625px 81.625px 81.625px",
+      "z": "auto",
+      "pos": "static",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "text": {
+      "role": "div",
+      "charCount": 729,
+      "lineCount": 46
+     },
+     "children": [
+      {
+       "tag": "div",
+       "cls": [
+        "home-usecase-img",
+        "bg-global"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 8893,
+        "w": 374,
+        "h": 254,
+        "wRem": 37.7,
+        "hRem": 25.599,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px",
+        "grid": "374.125px",
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "hidden"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-vertical",
+          "right",
+          "top",
+          "hidden-mb"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-usecase-img-cms",
+          "w-dyn-list"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 8893,
+          "w": 374,
+          "h": 254,
+          "wRem": 37.7,
+          "hRem": 25.599,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "static",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-usecase-img-list",
+            "bg-global",
+            "w-dyn-items"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 8893,
+            "w": 374,
+            "h": 254,
+            "wRem": 37.7,
+            "hRem": 25.599,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "0px",
+            "grid": "374.125px",
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 8
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "home-usecase-title-wrap"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 8684,
+        "w": 374,
+        "h": 210,
+        "wRem": 37.7,
+        "hRem": 21.135,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         63.5115,
+         15.8779,
+         23.8168,
+         15.8779
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "normal",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "text": {
+        "role": "div",
+        "charCount": 41,
+        "lineCount": 10
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "home-usecase-label"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 24,
+          "y": 8747,
+          "w": 342,
+          "h": 15,
+          "wRem": 34.501,
+          "hRem": 1.538,
+          "wPct": 87.8
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           11.9084,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "static",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "txt",
+            "txt-font-mono",
+            "txt-14"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 24,
+            "y": 8747,
+            "w": 342,
+            "h": 15,
+            "wRem": 34.501,
+            "hRem": 1.538,
+            "wPct": 87.8
+           },
+           "style": {
+            "fs": "13.8931px",
+            "lh": "15.2824px",
+            "fw": "500",
+            "ff": "Geistmono",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "normal",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 9,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "home-usecase-title"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 24,
+          "y": 8774,
+          "w": 342,
+          "h": 95,
+          "wRem": 34.501,
+          "hRem": 9.598,
+          "wPct": 87.8
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgb(40, 40, 40)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "static",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "h2",
+           "cls": [
+            "heading",
+            "h2",
+            "tb-h4",
+            "mb-h2"
+           ],
+           "role": "h2",
+           "rect": {
+            "x": 24,
+            "y": 8774,
+            "w": 342,
+            "h": 95,
+            "wRem": 34.501,
+            "hRem": 9.598,
+            "wPct": 87.8
+           },
+           "style": {
+            "fs": "31.7557px",
+            "lh": "31.7557px",
+            "fw": "600",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.635114px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "h2",
+            "charCount": 32,
+            "lineCount": 3
+           },
+           "childCount": 2
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-horizital",
+          "left",
+          "right",
+          "top",
+          "home-usecase-title-line"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-horizital",
+          "left",
+          "right",
+          "bot",
+          "home-usecase-title-line"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 8892,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "home-usecase-content"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 9147,
+        "w": 374,
+        "h": 484,
+        "wRem": 37.7,
+        "hRem": 48.785,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "normal",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "home-usecase-faq-cms",
+          "w-dyn-list"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 9147,
+          "w": 374,
+          "h": 484,
+          "wRem": 37.7,
+          "hRem": 48.785,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "static",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "home-usecase-faq-list",
+            "w-dyn-items"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 9147,
+            "w": 374,
+            "h": 484,
+            "wRem": 37.7,
+            "hRem": 48.785,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 688,
+            "lineCount": 23
+           },
+           "childCount": 8
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "selector": ".home-usecase"
+  },
+  "cta": {
+   "tag": "section",
+   "cls": [
+    "cta"
+   ],
+   "role": "div",
+   "rect": {
+    "x": 8,
+    "y": 9632,
+    "w": 374,
+    "h": 500,
+    "wRem": 37.7,
+    "hRem": 50.402,
+    "wPct": 95.9
+   },
+   "style": {
+    "fs": "15.8779px",
+    "lh": "20.6412px",
+    "fw": "500",
+    "ff": "\"BT Grotesk\"",
+    "color": "rgba(40, 40, 40, 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "ls": "-0.317557px",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "margin": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "gap": "normal",
+    "grid": null,
+    "z": "auto",
+    "pos": "relative",
+    "opacity": "1",
+    "overflow": "visible"
+   },
+   "children": [
+    {
+     "tag": "div",
+     "cls": [
+      "w-layout-blockcontainer",
+      "container",
+      "w-container"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 9632,
+      "w": 374,
+      "h": 500,
+      "wRem": 37.7,
+      "hRem": 50.402,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "auto",
+      "pos": "static",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "children": [
+      {
+       "tag": "div",
+       "cls": [
+        "cta-head",
+        "grid"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 9632,
+        "w": 374,
+        "h": 60,
+        "wRem": 37.7,
+        "hRem": 5.999,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-dash",
+          "line-horizital",
+          "bot",
+          "left",
+          "right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 9690,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "cta-head-item",
+          "item-left"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 9632,
+          "w": 60,
+          "h": 60,
+          "wRem": 5.999,
+          "hRem": 5.999,
+          "wPct": 15.3
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           7.93893,
+           0,
+           7.93893,
+           7.93893
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 7,
+          "lineCount": 3
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "cta-head-item-txt",
+            "hidden-mb"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 7,
+            "lineCount": 1
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "cta-head-item",
+          "item-center"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 67,
+          "y": 9632,
+          "w": 255,
+          "h": 60,
+          "wRem": 25.702,
+          "hRem": 5.999,
+          "wPct": 65.4
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           7.93893,
+           0,
+           7.93893,
+           7.93893
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "cta-head-item-txt",
+            "hidden-mb"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 7,
+            "lineCount": 1
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-dash",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 67,
+            "y": 9632,
+            "w": 1,
+            "h": 59,
+            "wRem": 0.101,
+            "hRem": 5.898,
+            "wPct": 0.3
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 3
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "cta-head-item",
+          "item-right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 323,
+          "y": 9632,
+          "w": 60,
+          "h": 60,
+          "wRem": 5.999,
+          "hRem": 5.999,
+          "wPct": 15.3
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           7.93893,
+           0,
+           7.93893,
+           7.93893
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "cta-head-item-txt",
+            "hidden-mb"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 8,
+            "lineCount": 1
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-dash",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 323,
+            "y": 9632,
+            "w": 1,
+            "h": 59,
+            "wRem": 0.101,
+            "hRem": 5.898,
+            "wPct": 0.3
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 3
+           },
+           "childCount": 0
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "cta-main",
+        "grid"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 9691,
+        "w": 374,
+        "h": 302,
+        "wRem": 37.7,
+        "hRem": 30.453,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "cta-main-item",
+          "item-left",
+          "hidden-mb"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           7.93893,
+           0,
+           7.93893,
+           7.93893
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 7,
+          "lineCount": 1
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "cta-head-item-txt",
+            "hidden-mb"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 7,
+            "lineCount": 1
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "cta-main-item",
+          "item-center"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 9691,
+          "w": 374,
+          "h": 302,
+          "wRem": 37.7,
+          "hRem": 30.453,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           69.4657,
+           15.8779,
+           69.4657,
+           15.8779
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 128,
+          "lineCount": 15
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "cta-main-item-title"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 46,
+            "y": 9760,
+            "w": 298,
+            "h": 52,
+            "wRem": 29.999,
+            "hRem": 5.281,
+            "wPct": 76.3
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             22.3281,
+             7.93893,
+             22.3281
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "cta-main-item-sub"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 56,
+            "y": 9821,
+            "w": 278,
+            "h": 36,
+            "wRem": 28,
+            "hRem": 3.637,
+            "wPct": 71.2
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             23.8168,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "cta-main-item-btn"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 117,
+            "y": 9881,
+            "w": 156,
+            "h": 43,
+            "wRem": 15.687,
+            "hRem": 4.338,
+            "wPct": 39.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-dash",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "cta-main-item",
+          "item-right",
+          "hidden-mb"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-dash",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-dash",
+          "line-horizital",
+          "bot",
+          "left",
+          "right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 9992,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "cta-deco",
+        "grid"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 9993,
+        "w": 374,
+        "h": 138,
+        "wRem": 37.7,
+        "hRem": 13.95,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "cta-deco-item",
+          "item-center",
+          "bg-global"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 68,
+          "y": 9993,
+          "w": 255,
+          "h": 138,
+          "wRem": 25.699,
+          "hRem": 13.95,
+          "wPct": 65.4
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           59.5625
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "hidden"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "cta-deco-item-img"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 68,
+            "y": 9993,
+            "w": 255,
+            "h": 138,
+            "wRem": 25.699,
+            "hRem": 13.95,
+            "wPct": 65.4
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": "255.031px",
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 3
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-dash",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 68,
+            "y": 9993,
+            "w": 1,
+            "h": 137,
+            "wRem": 0.101,
+            "hRem": 13.849,
+            "wPct": 0.3
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 7
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "cta-deco-item",
+          "item-right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 323,
+          "y": 9993,
+          "w": 60,
+          "h": 138,
+          "wRem": 5.999,
+          "hRem": 13.95,
+          "wPct": 15.3
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-dash",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 323,
+            "y": 9993,
+            "w": 1,
+            "h": 137,
+            "wRem": 0.101,
+            "hRem": 13.849,
+            "wPct": 0.3
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 7
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-horizital",
+          "bot",
+          "left",
+          "right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 10131,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "tag": "div",
+     "cls": [
+      "line",
+      "line-horizital",
+      "bot",
+      "left",
+      "right"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 10131,
+      "w": 374,
+      "h": 1,
+      "wRem": 37.7,
+      "hRem": 0.101,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgb(179, 179, 175)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "2",
+      "pos": "absolute",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "text": {
+      "role": "div",
+      "charCount": 0,
+      "lineCount": 1
+     },
+     "children": []
+    }
+   ],
+   "selector": ".cta"
+  },
+  "footer": {
+   "tag": "footer",
+   "cls": [
+    "footer"
+   ],
+   "role": "div",
+   "rect": {
+    "x": 8,
+    "y": 10132,
+    "w": 374,
+    "h": 1239,
+    "wRem": 37.7,
+    "hRem": 124.864,
+    "wPct": 95.9
+   },
+   "style": {
+    "fs": "15.8779px",
+    "lh": "20.6412px",
+    "fw": "500",
+    "ff": "\"BT Grotesk\"",
+    "color": "rgba(40, 40, 40, 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "ls": "-0.317557px",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "margin": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "gap": "normal",
+    "grid": null,
+    "z": "auto",
+    "pos": "relative",
+    "opacity": "1",
+    "overflow": "visible"
+   },
+   "children": [
+    {
+     "tag": "div",
+     "cls": [
+      "w-layout-blockcontainer",
+      "container",
+      "w-container"
+     ],
+     "role": "div",
+     "rect": {
+      "x": 8,
+      "y": 10132,
+      "w": 374,
+      "h": 1239,
+      "wRem": 37.7,
+      "hRem": 124.864,
+      "wPct": 95.9
+     },
+     "style": {
+      "fs": "15.8779px",
+      "lh": "20.6412px",
+      "fw": "500",
+      "ff": "\"BT Grotesk\"",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "bg": "rgba(0, 0, 0, 0)",
+      "ls": "-0.317557px",
+      "pad": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "margin": [
+       0,
+       0,
+       0,
+       0
+      ],
+      "border": null,
+      "radius": "0px",
+      "gap": "normal",
+      "grid": null,
+      "z": "auto",
+      "pos": "static",
+      "opacity": "1",
+      "overflow": "visible"
+     },
+     "children": [
+      {
+       "tag": "div",
+       "cls": [
+        "footer-main",
+        "grid"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 10132,
+        "w": 374,
+        "h": 1006,
+        "wRem": 37.7,
+        "hRem": 101.41,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px 15.8779px",
+        "grid": "81.625px 81.625px 81.625px 81.625px",
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "text": {
+        "role": "div",
+        "charCount": 584,
+        "lineCount": 49
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "footer-head"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 10132,
+          "w": 374,
+          "h": 260,
+          "wRem": 37.7,
+          "hRem": 26.235,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "3",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "footer-title-wrap"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 10132,
+            "w": 374,
+            "h": 92,
+            "wRem": 37.7,
+            "hRem": 9.28,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             19.8473,
+             14.8855,
+             19.8473,
+             14.8855
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 47,
+            "lineCount": 4
+           },
+           "childCount": 2
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "footer-form-wrap"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 10224,
+            "w": 374,
+            "h": 168,
+            "wRem": 37.7,
+            "hRem": 16.954,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             19.8473,
+             15.8779,
+             0,
+             15.8779
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 3
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "footer-body"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 0,
+          "y": 0,
+          "w": 0,
+          "h": 0,
+          "wRem": 0,
+          "hRem": 0,
+          "wPct": 0
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "static",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "footer-content-item"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 10392,
+            "w": 374,
+            "h": 274,
+            "wRem": 37.7,
+            "hRem": 27.63,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "0px 19.8473px",
+            "grid": "23.9219px 23.9375px 23.9219px 23.9375px 23.9219px 23.9375px 23.9219px 23.9375px 23.9219px",
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 2
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "footer-content-item",
+            "item-bot"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 8,
+            "y": 10666,
+            "w": 374,
+            "h": 289,
+            "wRem": 37.7,
+            "hRem": 29.148,
+            "wPct": 95.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "0px 19.8473px",
+            "grid": "23.9219px 23.9375px 23.9219px 23.9375px 23.9219px 23.9375px 23.9219px 23.9375px 23.9219px",
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "footer-logo"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 10955,
+          "w": 374,
+          "h": 183,
+          "wRem": 37.7,
+          "hRem": 18.398,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgb(40, 40, 40)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           31.7557,
+           0,
+           31.7557,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-vertical",
+            "left",
+            "top"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgb(179, 179, 175)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "footer-logo-inner",
+            "full"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 135,
+            "y": 10987,
+            "w": 119,
+            "h": 119,
+            "wRem": 11.999,
+            "hRem": 11.999,
+            "wPct": 30.5
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "footer-logo-inner",
+            "sketch"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 135,
+            "y": 11036,
+            "w": 119,
+            "h": 21,
+            "wRem": 11.999,
+            "hRem": 2.078,
+            "wPct": 30.5
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "0",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-horizital",
+          "bot",
+          "left",
+          "right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 11137,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "footer-img-wrap"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 11138,
+        "w": 374,
+        "h": 137,
+        "wRem": 37.7,
+        "hRem": 13.799,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "normal",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "footer-img-inner",
+          "bg-global"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 11138,
+          "w": 374,
+          "h": 137,
+          "wRem": 37.7,
+          "hRem": 13.799,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           44.6565,
+           19.8473,
+           44.6565,
+           19.8473
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "0px",
+          "grid": "334.438px",
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 7
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "footer-img-item",
+            "hidden-dsk"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 28,
+            "y": 11183,
+            "w": 334,
+            "h": 48,
+            "wRem": 33.701,
+            "hRem": 4.799,
+            "wPct": 85.8
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "0.8",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "hidden-tb"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 1
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "bg-border"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 16,
+          "y": 11146,
+          "w": 358,
+          "h": 121,
+          "wRem": 36.101,
+          "hRem": 12.199,
+          "wPct": 91.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "0",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "bg-border-inner"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 16,
+            "y": 11146,
+            "w": 358,
+            "h": 121,
+            "wRem": 36.101,
+            "hRem": 12.199,
+            "wPct": 91.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 8
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "tag": "div",
+       "cls": [
+        "footer-copyright-wrap",
+        "grid"
+       ],
+       "role": "div",
+       "rect": {
+        "x": 8,
+        "y": 11275,
+        "w": 374,
+        "h": 96,
+        "wRem": 37.7,
+        "hRem": 9.655,
+        "wPct": 95.9
+       },
+       "style": {
+        "fs": "15.8779px",
+        "lh": "20.6412px",
+        "fw": "500",
+        "ff": "\"BT Grotesk\"",
+        "color": "rgba(40, 40, 40, 0.72)",
+        "bg": "rgba(0, 0, 0, 0)",
+        "ls": "-0.317557px",
+        "pad": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "margin": [
+         0,
+         0,
+         0,
+         0
+        ],
+        "border": null,
+        "radius": "0px",
+        "gap": "0px 15.8779px",
+        "grid": null,
+        "z": "auto",
+        "pos": "relative",
+        "opacity": "1",
+        "overflow": "visible"
+       },
+       "text": {
+        "role": "div",
+        "charCount": 109,
+        "lineCount": 5
+       },
+       "children": [
+        {
+         "tag": "div",
+         "cls": [
+          "footer-copyright"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 11275,
+          "w": 374,
+          "h": 50,
+          "wRem": 37.7,
+          "hRem": 4.998,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           11.9084,
+           15.8779,
+           11.9084,
+           15.8779
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 64,
+          "lineCount": 2
+         },
+         "children": [
+          {
+           "tag": "div",
+           "cls": [
+            "footer-copyright-txt"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 86,
+            "y": 11287,
+            "w": 218,
+            "h": 26,
+            "wRem": 21.999,
+            "hRem": 2.598,
+            "wPct": 56
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "3.96947px",
+            "grid": null,
+            "z": "auto",
+            "pos": "static",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 1
+          },
+          {
+           "tag": "div",
+           "cls": [
+            "line",
+            "line-vertical",
+            "right",
+            "top",
+            "hidden-tb"
+           ],
+           "role": "div",
+           "rect": {
+            "x": 0,
+            "y": 0,
+            "w": 0,
+            "h": 0,
+            "wRem": 0,
+            "hRem": 0,
+            "wPct": 0
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgba(40, 40, 40, 0.72)",
+            "bg": "rgb(179, 179, 175)",
+            "ls": "-0.317557px",
+            "pad": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": null,
+            "radius": "0px",
+            "gap": "normal",
+            "grid": null,
+            "z": "2",
+            "pos": "absolute",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "text": {
+            "role": "div",
+            "charCount": 0,
+            "lineCount": 1
+           },
+           "childCount": 0
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "footer-policy"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 11325,
+          "w": 374,
+          "h": 46,
+          "wRem": 37.7,
+          "hRem": 4.657,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgba(0, 0, 0, 0)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": "115.109px 143.891px 115.125px",
+          "z": "auto",
+          "pos": "relative",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "children": [
+          {
+           "tag": "a",
+           "cls": [
+            "footer-policy-item",
+            "w-inline-block"
+           ],
+           "role": "link",
+           "rect": {
+            "x": 8,
+            "y": 11325,
+            "w": 115,
+            "h": 46,
+            "wRem": 11.599,
+            "hRem": 4.657,
+            "wPct": 29.5
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             14.8855,
+             4.96183,
+             14.8855,
+             4.96183
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": "1px solid rgb(179, 179, 175)",
+            "radius": "0px",
+            "gap": "16px",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 2
+          },
+          {
+           "tag": "a",
+           "cls": [
+            "footer-policy-item",
+            "w-inline-block"
+           ],
+           "role": "link",
+           "rect": {
+            "x": 123,
+            "y": 11325,
+            "w": 144,
+            "h": 46,
+            "wRem": 14.5,
+            "hRem": 4.657,
+            "wPct": 36.9
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             14.8855,
+             4.96183,
+             14.8855,
+             4.96183
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": "1px solid rgb(179, 179, 175)",
+            "radius": "0px",
+            "gap": "16px",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 2
+          },
+          {
+           "tag": "a",
+           "cls": [
+            "footer-policy-item",
+            "w-inline-block"
+           ],
+           "role": "link",
+           "rect": {
+            "x": 267,
+            "y": 11325,
+            "w": 115,
+            "h": 46,
+            "wRem": 11.601,
+            "hRem": 4.657,
+            "wPct": 29.5
+           },
+           "style": {
+            "fs": "15.8779px",
+            "lh": "20.6412px",
+            "fw": "500",
+            "ff": "\"BT Grotesk\"",
+            "color": "rgb(40, 40, 40)",
+            "bg": "rgba(0, 0, 0, 0)",
+            "ls": "-0.317557px",
+            "pad": [
+             14.8855,
+             4.96183,
+             14.8855,
+             4.96183
+            ],
+            "margin": [
+             0,
+             0,
+             0,
+             0
+            ],
+            "border": "1px solid rgb(179, 179, 175)",
+            "radius": "0px",
+            "gap": "16px",
+            "grid": null,
+            "z": "auto",
+            "pos": "relative",
+            "opacity": "1",
+            "overflow": "visible"
+           },
+           "childCount": 2
+          }
+         ]
+        },
+        {
+         "tag": "div",
+         "cls": [
+          "line",
+          "line-horizital",
+          "top",
+          "left",
+          "right"
+         ],
+         "role": "div",
+         "rect": {
+          "x": 8,
+          "y": 11275,
+          "w": 374,
+          "h": 1,
+          "wRem": 37.7,
+          "hRem": 0.101,
+          "wPct": 95.9
+         },
+         "style": {
+          "fs": "15.8779px",
+          "lh": "20.6412px",
+          "fw": "500",
+          "ff": "\"BT Grotesk\"",
+          "color": "rgba(40, 40, 40, 0.72)",
+          "bg": "rgb(179, 179, 175)",
+          "ls": "-0.317557px",
+          "pad": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "margin": [
+           0,
+           0,
+           0,
+           0
+          ],
+          "border": null,
+          "radius": "0px",
+          "gap": "normal",
+          "grid": null,
+          "z": "2",
+          "pos": "absolute",
+          "opacity": "1",
+          "overflow": "visible"
+         },
+         "text": {
+          "role": "div",
+          "charCount": 0,
+          "lineCount": 1
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "selector": ".footer"
+  }
+ },
+ "scrollStates": {
+  "platform": [
+   {
+    "state": "entering",
+    "targetScrollTop": 6644,
+    "actualScrollTop": 6644,
+    "screenshot": "audits/evidence/r324/heron/platform-390-entering.jpg"
+   },
+   {
+    "state": "centered",
+    "targetScrollTop": 7198,
+    "actualScrollTop": 7198,
+    "screenshot": "audits/evidence/r324/heron/platform-390-centered.jpg"
+   },
+   {
+    "state": "leaving",
+    "targetScrollTop": 7751,
+    "actualScrollTop": 7751,
+    "screenshot": "audits/evidence/r324/heron/platform-390-leaving.jpg"
+   }
+  ],
+  "why": [
+   {
+    "state": "entering",
+    "targetScrollTop": 7161,
+    "actualScrollTop": 7161,
+    "screenshot": "audits/evidence/r324/heron/why-390-entering.jpg"
+   },
+   {
+    "state": "centered",
+    "targetScrollTop": 7859,
+    "actualScrollTop": 7859,
+    "screenshot": "audits/evidence/r324/heron/why-390-centered.jpg"
+   },
+   {
+    "state": "leaving",
+    "targetScrollTop": 8557,
+    "actualScrollTop": 8557,
+    "screenshot": "audits/evidence/r324/heron/why-390-leaving.jpg"
+   }
+  ],
+  "usecase": [
+   {
+    "state": "entering",
+    "targetScrollTop": 7967,
+    "actualScrollTop": 7967,
+    "screenshot": "audits/evidence/r324/heron/usecase-390-entering.jpg"
+   },
+   {
+    "state": "centered",
+    "targetScrollTop": 8736,
+    "actualScrollTop": 8736,
+    "screenshot": "audits/evidence/r324/heron/usecase-390-centered.jpg"
+   },
+   {
+    "state": "leaving",
+    "targetScrollTop": 9505,
+    "actualScrollTop": 9505,
+    "screenshot": "audits/evidence/r324/heron/usecase-390-leaving.jpg"
+   }
+  ],
+  "cta": [
+   {
+    "state": "entering",
+    "targetScrollTop": 8915,
+    "actualScrollTop": 8915,
+    "screenshot": "audits/evidence/r324/heron/cta-390-entering.jpg"
+   },
+   {
+    "state": "centered",
+    "targetScrollTop": 9460,
+    "actualScrollTop": 9460,
+    "screenshot": "audits/evidence/r324/heron/cta-390-centered.jpg"
+   },
+   {
+    "state": "leaving",
+    "targetScrollTop": 10005,
+    "actualScrollTop": 10005,
+    "screenshot": "audits/evidence/r324/heron/cta-390-leaving.jpg"
+   }
+  ],
+  "footer": [
+   {
+    "state": "entering",
+    "targetScrollTop": 9415,
+    "actualScrollTop": 9415,
+    "screenshot": "audits/evidence/r324/heron/footer-390-entering.jpg"
+   },
+   {
+    "state": "centered",
+    "targetScrollTop": 10330,
+    "actualScrollTop": 10330,
+    "screenshot": "audits/evidence/r324/heron/footer-390-centered.jpg"
+   },
+   {
+    "state": "leaving",
+    "targetScrollTop": 10535,
+    "actualScrollTop": 10535,
+    "screenshot": "audits/evidence/r324/heron/footer-390-leaving.jpg"
+   }
+  ]
+ },
+ "triggers": {
+  "platform": [
+   {
+    "triggerCls": "home-platform-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": true,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "home-platform-content",
+    "start": "top bottom",
+    "end": "bottom top",
+    "scrub": true,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   }
+  ],
+  "why": [
+   {
+    "triggerCls": "home-why-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": true,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   }
+  ],
+  "usecase": [
+   {
+    "triggerCls": "home-usecase-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": true,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   }
+  ],
+  "cta": [
+   {
+    "triggerCls": "cta-deco.grid",
+    "start": "top+=40% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   }
+  ],
+  "footer": [
+   {
+    "triggerCls": "footer-title-wrap",
+    "start": "top+=55% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "footer-form-wrap",
+    "start": "top+=55% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "footer-menu",
+    "start": "top+=55% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "footer-info-wrap",
+    "start": "top+=55% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "footer-logo",
+    "start": "top+=55% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "footer-img-wrap",
+    "start": "top+=55% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   },
+   {
+    "triggerCls": "footer-copyright-wrap.grid",
+    "start": "top+=35% bottom",
+    "scrub": false,
+    "pin": false,
+    "markers": false,
+    "onEnter": false,
+    "toggleActions": "play",
+    "animationDur": 0,
+    "animationEase": null
+   }
+  ]
+ },
+ "menu": {
+  "trigger": {
+   "cls": "header-menu-btn-ic",
+   "rect": [
+    351,
+    29,
+    15,
+    7
+   ]
+  },
+  "overlay": {
+   "cls": "embed-ic embed-abs w-embed",
+   "rect": [
+    8,
+    2562,
+    374,
+    689
+   ],
+   "wRem": 37.7,
+   "hRem": 69.449,
+   "bg": "rgba(0, 0, 0, 0)",
+   "z": "auto",
+   "links": [],
+   "linkCount": 0
+  }
+ }
+}
