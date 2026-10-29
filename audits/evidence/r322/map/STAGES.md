@@ -82,3 +82,14 @@ is §7-5..7 = C4's). Mobile probes: mapIn=787 @390 (full height) · win=425 (was
 | Typography ceiling @w600 | OWNER QUESTION recorded on the BOARD (the brief caps display at 400–600; Heron maps at w700) |
 
 Gates: vitest 2738/2738 · tsc 0 · lint 0 · docH ladder all-in-band (@390 11364 −0.67%, closer to Heron) · shots re-taken.
+
+## §11 — the round-3 fixes (review-c3 final pass: 8.6, 0.4 short of the bar)
+
+| defect | fix |
+|---|---|
+| D1 closing orange occluded @1440 (0.03% vs 1.7%) | the LECTURE hall takes the terminal tint @≥992 (0.12 ≈ 1.2% of frame — fully clear of the overlay, and the room the closing copy points to); the mastery tint keeps serving the stacked closing @≤991 |
+| D2 phone release beat sparse (206px letterboxed overview) | the phone TERMINAL crop key holds the mastery room (zoomed, tinted) — the terminus reads while the stacked closing scrolls in |
+| D3 card era one step late | the stage-2 boundary 3.5 → 3.0: the card era = t 2.5–3.0 (Heron's state-03 beat); layer 1 + the wash + the rotation land on ONE beat at t 3.0 |
+| (ladder) @320 past the never-raise pin after the foot row | the ≤399 rung 425 → 415dvh — @320 lands 9306 (AT the pin), @390 11280 (−1.41% in band), @360 10701 (+0.16% in band) |
+
+Gates: vitest 2738/2738 · tsc 0 · lint 0 · svg-collisions 0 FAIL · sweep: text-in-viewport green (duplicate-text = the product farm, V6/C4) · docH ladder ALL in band/at pins.

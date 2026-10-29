@@ -5197,6 +5197,21 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
   stroke-width: 1.5;
 }
 
+/* R322 3-b-fix3 (review-c3 R1-D1): @≥992 the closing OVERLAY covers
+   the mastery wing entirely (the tint above renders occluded — the
+   terminal state read accent-less at 0.03% vs Heron's 1.67%). The
+   LECTURE hall — the story's origin, fully clear of the overlay, and
+   the very room the closing copy points to («ابدأ من أول محاضرة») —
+   takes the terminal tint on desktop instead (0.12 × its zone area
+   ≈ 1.2% of frame, inside the register; the mastery tint keeps
+   serving the stacked closing @≤991 where nothing is covered). */
+@media (min-width: 992px) {
+  .jt[data-stage='5'] .pl-zone[data-zone='lecture'] {
+    fill-opacity: 0.12;
+    stroke-width: 1.5;
+  }
+}
+
 /* the washed zone's label + station marker warm to the signal */
 .jt[data-wash='lecture'] .pl-l-lecture .pl-name,
 .jt[data-wash='checkpoint'] .pl-l-checkpoint .pl-name,
@@ -5791,7 +5806,12 @@ html[data-theme='dark'] .fo-actions-cta:hover::before {
 
 @media (max-width: 399px) {
   .jt-map-col {
-    block-size: 425dvh;
+    /* R322 3-b-fix3: 415dvh (was 425) — the round-2 closing FOOT row
+     * raised the stacked column by ~54px and pushed docH past the 320
+     * never-raise pin (9362 vs 9308); the rung recovers it exactly:
+     * @320 → 9308 (at pin) · @390 → 11279 (−1.42%, in band) ·
+     * @360 → 10701 (+0.16%, in band). */
+    block-size: 415dvh;
   }
 }
 

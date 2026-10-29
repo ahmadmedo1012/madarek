@@ -261,7 +261,12 @@ const CAM_KEYS_PHONE: ReadonlyArray<readonly [number, CamRect]> = [
   [4.0, [358, 0, 460, 600]], // the exam hall + the reading rooms
   [4.6, [298, 160, 460, 600]], // the library + reception band
   [5.0, [15, 0, 460, 600]], // the mastery room + the entry court
-  [5.52, CAM_FULL], // the completed overview at the close
+  // R322 3-b-fix3 (review-c3 R1-D2): the phone's TERMINAL key HOLDS the
+  // mastery crop — CAM_FULL letterboxed a 206px overview inside the
+  // 787px full-height window at the close (a sparse release beat); the
+  // held terminus room (tinted, zoomed) reads as the story's end while
+  // the stacked closing column scrolls in below.
+  [5.52, [15, 0, 460, 600]],
 ];
 
 function camRectAt(t: number, phone: boolean): CamRect {
@@ -500,7 +505,11 @@ export function JourneyScene() {
        * data-finding (the rotation + the counter chips), data-wash (the
        * bounded room highlight + the door-chip warming, keyed to the
        * layer builds), data-open (the closing column's reveal). All
-       * pure-CSS consumers with t-fast flips — never per-frame writes. */
+       * pure-CSS consumers with t-fast flips — never per-frame writes.
+       * R322 3-b-fix3 (review-c3 R1-D3): the CARD era opens at t 2.5
+       * (Heron's state-03: the intro card + item1 active at scrub 46%)
+       * and hands to the findings era at t 3.0 — where layer 1, the
+       * wash and the rotation all land on the same beat. */
       const stage =
         pRaw >= SEQ_END_PIN
           ? 5
@@ -508,7 +517,7 @@ export function JourneyScene() {
             ? 0
             : t < 2.5
               ? 1
-              : t < 3.5
+              : t < 3.0
                 ? 2
                 : t < 5
                   ? 3

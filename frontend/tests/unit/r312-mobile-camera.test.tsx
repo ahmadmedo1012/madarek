@@ -402,7 +402,10 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
       { timeout: 2000 },
     );
     const track = document.querySelector<HTMLElement>('.jt');
-    expect(track?.dataset.stage).toBe('2');
+    /* R322 3-b-fix3 override (review-c3 R1-D3): the card era now spans
+     * t 2.5–3.0 (Heron's state-03 beat) — t=3.11 is the FINDINGS era
+     * (stage 3: layer 1 + the wash + the rotation on one beat). */
+    expect(track?.dataset.stage).toBe('3');
     expect(track?.dataset.finding).toBe('2');
     expect(track?.dataset.wash).toBe('lecture');
     expect(parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='1']")?.style.opacity ?? 'x')).toBeCloseTo(1, 2);
