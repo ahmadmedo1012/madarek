@@ -60,3 +60,16 @@ export function useLifecycleLiveSession() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['live', 'sessions'] }),
   });
 }
+
+/** r323 B2.4 — the student join hook: records attendance (idempotent)
+ * and returns the session to embed. The join window (10 min early,
+ * never on ENDED/CANCELLED) is enforced server-side with an Arabic
+ * conflict message the UI surfaces verbatim. */
+export function useJoinLiveSession() {
+  return useMutation({
+    mutationFn: (id: string) =>
+      unwrap<{ session: LiveSessionRow; attendanceRecorded: boolean }>(
+        api.post(`/live/sessions/${id}/join`),
+      ),
+  });
+}

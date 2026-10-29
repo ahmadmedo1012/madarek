@@ -23,9 +23,9 @@
  * dot). The .live-chip/.live-dot honest LIVE pulse and the
  * .live-row-icon wells keep their student.css family untouched.
  */
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { ExternalLink, Clock } from 'lucide-react';
+import { ExternalLink, Clock, MonitorPlay, X } from 'lucide-react';
 /* R321 (c1 · WP-B2) — the §B2 kit: the mono-indexed section title
  * bar, the honest mono count + the hatched empty cell. */
 import { SectionBar, BarCount, EmptyCell } from '../../components/student';
@@ -35,7 +35,8 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import {
   PageFrame, PageHeader, RowList, RowItem, StatLine,
 } from '../../components/patterns';
-import { useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
+import { useJoinLiveSession, useLiveSessions, type LiveSessionRow } from '../../hooks/useResources';
+import { apiErrorMessage } from '../../hooks/useResources';
 
 import { formatDate, formatInt } from '../../utils/numbers';
 import { countAr } from '../../lib/format';
@@ -54,6 +55,21 @@ import '../../styles/r321-map-live.css';
 
 export default function LivePage() {
   const { data: sessions, isPending, isError, error, refetch } = useLiveSessions();
+  const join = useJoinLiveSession();
+  /* r323 B2.4 — the in-page seat: «انضمام» records attendance and mounts
+     the Jitsi room INSIDE the page (the brief: «join button opens within
+     the page»); the external-tab anchor stays as the fallback for
+     browsers that refuse third-party iframes. */
+  const [joined, setJoined] = useState<LiveSessionRow | null>(null);
+
+  const onJoin = (s: LiveSessionRow) => {
+    join.mutate(s.id, {
+      onSuccess: ({ session }) => {
+        setJoined({ ...s, ...session });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      },
+    });
+  };
 
   // `sessions` is undefined while pending AND on error — derive from a
   // settled list only, so an API failure can never render as "no sessions".
@@ -101,6 +117,53 @@ export default function LivePage() {
         description="الجلسات الحيّة لمقرّراتك المسجَّلة — انضمّ للبثّ المباشر، وستجد التسجيلات هنا بعد انتهاء كل جلسة."
         actions={headerStatus}
       />
+
+      {joined && (
+        <section className="live-embed" aria-label={`جلسة مباشرة — ${joined.title}`}>
+          <div className="live-embed-head">
+            <span className="live-chip">
+              <span className="live-dot" aria-hidden />
+              على الهواء
+            </span>
+            <strong className="live-embed-title">{joined.title}</strong>
+            <span className="r305s-meta-row">
+              <bdi>{joined.offering.course.code}</bdi>
+              <span className="r305s-meta-sep" aria-hidden />
+              سُجّل حضورك تلقائيًا
+            </span>
+            <div className="live-embed-actions">
+              <a href={joined.joinUrl ?? '#'} target="_blank" rel="noreferrer" className="btn sm ghost">
+                <Icon icon={ExternalLink} size={12} /> نافذة مستقلة
+              </a>
+              <button
+                type="button"
+                className="btn sm"
+                onClick={() => setJoined(null)}
+              >
+                <Icon icon={X} size={12} /> إنهاء العرض
+              </button>
+            </div>
+          </div>
+          <div className="live-embed-frame">
+            <iframe
+              src={joined.joinUrl ?? undefined}
+              title={`غرفة البث المباشر — ${joined.title}`}
+              allow="camera; microphone; fullscreen; display-capture; autoplay"
+              loading="lazy"
+            />
+          </div>
+          <p className="live-embed-note">
+            إذا ظهرت الغرفة فارغة أو رفض المتصفح التضمين، افتحها في{' '}
+            <a href={joined.joinUrl ?? '#'} target="_blank" rel="noreferrer">نافذة مستقلة</a>.
+          </p>
+        </section>
+      )}
+
+      {join.isError && (
+        <div className="r323d-live-error" role="alert">
+          {apiErrorMessage(join.error, 'تعذّر الانضمام — أعد المحاولة.')}
+        </div>
+      )}
 
       {isPending ? (
         <RowList loading aria-label="جلسات البث" />
@@ -169,7 +232,15 @@ export default function LivePage() {
                     />
                   )}
                 >
-                  {live.map((s) => <StudentSessionRow key={s.id} session={s} canJoin />)}
+                  {live.map((s) => (
+                    <StudentSessionRow
+                      key={s.id}
+                      session={s}
+                      canJoin
+                      onJoin={onJoin}
+                      joinPending={join.isPending}
+                    />
+                  ))}
                 </RowList>
               </section>
 
@@ -244,9 +315,13 @@ export default function LivePage() {
 function StudentSessionRow({
   session: s,
   canJoin,
+  onJoin,
+  joinPending,
 }: {
   session: LiveSessionRow;
   canJoin?: boolean;
+  onJoin?: (s: LiveSessionRow) => void;
+  joinPending?: boolean;
 }) {
   const ended = s.status === 'ENDED' || s.status === 'CANCELLED';
   return (
@@ -307,10 +382,18 @@ function StudentSessionRow({
               {s.status === 'CANCELLED' ? 'ملغاة' : 'منتهية'}
             </span>
           )}
+          {/* r323 B2.4: the join goes THROUGH the attendance hook and
+              mounts the in-page embed — the external anchor is the
+              explicit fallback («نافذة مستقلة» inside the embed head). */}
           {canJoin && s.joinUrl && (
-            <a href={s.joinUrl} target="_blank" rel="noreferrer" className="btn primary sm">
-              <Icon icon={ExternalLink} size={12} /> انضمام
-            </a>
+            <button
+              type="button"
+              className="btn primary sm"
+              disabled={joinPending}
+              onClick={() => onJoin?.(s)}
+            >
+              <Icon icon={MonitorPlay} size={12} /> انضمام
+            </button>
           )}
           {ended && s.recordingUrl && (
             <a href={s.recordingUrl} target="_blank" rel="noreferrer" className="btn sm">

@@ -49,6 +49,9 @@ import submissionsRoutes from './http/routes/submissions.routes.js';
 // authoring endpoints for lectures / chapters / checkpoints under the
 // /api/v1 prefix.
 import curriculumRoutes from './http/routes/curriculum.routes.js';
+// r323 B2.4 — live sessions (Jitsi default): schedule → in-page join →
+// auto-attendance → recording link. Mounted under /api/v1 (see below).
+import liveRoutes from './http/routes/live.routes.js';
 import { themeRouter } from './modules/theme/router.js';
 import { onboardingRouter } from './modules/onboarding/router.js';
 import { milestonesRouter } from './modules/milestones/router.js';
@@ -249,6 +252,9 @@ export function createApp() {
   app.use('/api/v1/courses', coursesRoutes);
   app.use('/api/v1/enrollments', enrollmentsRoutes);
   app.use('/api/v1/offerings', offeringsRoutes);
+  // r323 B2.4 — live sessions: /live/sessions (list/create), lifecycle,
+  // and the student join hook (auto-attendance).
+  app.use('/api/v1', liveRoutes);
   // ── PUBLIC routers — must be registered BEFORE any router that
   //    uses `router.use(authMiddleware)` and mounts at the broad
   //    `/api/v1` prefix. Otherwise their global middleware fires
