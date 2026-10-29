@@ -24,7 +24,7 @@
 | B2.2 | Player excellence | speed, PiP, resume, checkpoints, transcript | pending | — |
 | B2.3 | Transcripts | SRT/VTT upload, STT API, queue | pending | — |
 | B2.4 | Live sessions | Jitsi embed default, attendance, recordings | pending | — |
-| B3.2 | Mail + reset | Resend/Brevo, RTL templates, registrar fallback link | pending | — |
+| B3.2 | Mail + reset | Resend/Brevo, RTL templates, registrar fallback link | **done (code + tests)** | `lib/mail.ts` + forgot-password wiring + `POST /users/:id/reset-link` · 11 tests |
 | B3.3-6 | Notifications, messages, onboarding, feedback | | pending | — |
 | B4 | 13 academic flows E2E | | pending | — |
 | B5 | Ops | /status, errors, backups, analytics, settings | pending | — |

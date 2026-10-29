@@ -34,6 +34,7 @@ import searchRoutes from './http/routes/search.routes.js';
 import syncRoutes from './http/routes/sync.routes.js';
 import teacherProfileRoutes from './http/routes/teacher-profile.routes.js';
 import filesRoutes from './http/routes/files.routes.js';
+import statusRoutes from './http/routes/status.routes.js';
 import ownerRoutes from './http/routes/owner.routes.js';
 import collegesRoutes from './http/routes/colleges.routes.js';
 import institutionRoutes from './http/routes/institution.routes.js';
@@ -236,6 +237,12 @@ export function createApp() {
 
   // ── Global rate limit on the API surface ─────────────────
   app.use('/api/v1', globalRateLimiter);
+
+  // r323 B5/B6 — the public status surface BEFORE the auth routers:
+  // keep-warm pings and the pilot's «حالة المنصة» card must answer
+  // regardless of rate-limit pressure on the API (it is a tiny,
+  // secret-free SELECT 1 + mode names).
+  app.use('/api/v1', statusRoutes);
 
   app.use('/api/v1/auth', authRoutes);
   app.use('/api/v1/users', usersRoutes);
