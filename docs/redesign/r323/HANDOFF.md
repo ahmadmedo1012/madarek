@@ -10,13 +10,13 @@
 | WP | Package | Scope (short) | Status | Evidence |
 |----|---------|---------------|--------|----------|
 | 0 | Programme start | clone, install, baseline typecheck | **done** | typecheck exit 0 @ `301dfdf` |
-| A1 | Brand system | audit → new mark+wordmark → `<Logo>` single source → every surface → favicon/OG/manifest → `/__brand` → lint rule | **in progress** | `docs/redesign/r323/brand/AUDIT.md` |
-| A2 | Loader orchestrator | one full-screen layer, splash = new mark stroke-draw, sheet-loader contract, z-index tokens, overlap test | **in progress** | `frontend/src/lib/loaderOrchestrator.ts` |
-| A3 | Landing fixes | phone header, consent bar, ticker masks, map details, platform §06, roles ledger §07, CTA, footer strip | pending | — |
+| A1 | Brand system | audit → new mark+wordmark → `<Logo>` single source → every surface → favicon/OG/manifest → `/__brand` → lint rule | **done (core + integration)** | `brand/AUDIT.md` · `brand/BRAND.md` · `brand/VARIANTS.md` · `evidence/brand-1440-*.png` |
+| A2 | Loader orchestrator | one full-screen layer, splash = new mark stroke-draw, sheet-loader contract, z-index tokens, overlap test | **done (core + App wiring)** | `frontend/src/lib/loaderOrchestrator.ts` · qa-sweep probes |
+| A3 | Landing fixes | phone header, consent bar, ticker masks, map details, platform §06, roles ledger §07, CTA, footer strip | **done** | `BOARD.md` evidence table |
 | A4 | Scroll & motion engine | gsap.ticker→Lenis, perf §7-5..7, gates | pending | — |
 | A5 | App after login | component system, `/__design`, per-role sweep | pending | — |
 | A6 | Whole-site red team | fresh reviewers, all viewports | pending | — |
-| B1.1 | AI model + streaming | provider chain, SSE streaming, quotas, honest local mode | **in progress** | backend `lib/ai.ts` |
+| B1.1 | AI model + streaming | provider chain, SSE streaming, quotas, honest local mode | **done (code + tests)** | `B1-AI.md` · 56 backend + 30 frontend tests |
 | B1.2 | RAG + citations | pg_trgm/tsvector index, source links | pending | — |
 | B1.4-5 | AI everywhere + eval | player/teacher tools, `scripts/ai-eval/` | pending | — |
 | B2.1 | Storage + upload wizard | S3 presigned, range streaming, teacher wizard | pending | — |
@@ -31,22 +31,33 @@
 | B6 | Scale & speed | keep-warm, load test, PWA | pending | — |
 | B7 | Pilot kit | PILOT.md, guides, dress rehearsal | pending | — |
 
-## Verified baseline (start of R323, at `301dfdf`)
+## Wave 1 landed (verified on the local full stack)
 
-- Repo cloned clean; `npm install` OK (552 packages, Node 24.22).
-- `npm run typecheck` → exit 0.
-- R322 state as described in the owner brief (C1–C3 delivered, logo chaos + landing
-  defects open — see brief §"What is STILL wrong").
+- **A1**: `frontend/src/brand/` (`<Logo variant|size|tone|animated>`), regenerated
+  favicon/icons/OG (no copper/gold, no gradients anywhere), `StarMark.tsx`/`BrandMark.tsx`/
+  `FooterArt.tsx`/`wordmark-art.generated.ts` DELETED, every call-site swapped (landing,
+  auth, sidebar, splash, legal, campus, capabilities, edge-tab, sheet loader), `/__brand`
+  specimen sheet + route, r177/r188/r323 gates green.
+- **A2**: orchestrator state machine (seat invariant 0/1), Splash/RouteProgress/
+  SlowServerCard mounted in App.tsx, z-index contract tokens, first-visit intro flag,
+  serverWake→slow-server wiring, 29 unit tests + overlap e2e.
+- **A3**: phone header row fixed; consent = 48-px bottom bar (probe `coversH1:false`);
+  ticker soft edge masks + hover pause; map: solid-ink structure (discrete envelope write),
+  headline paper plate, intro-card corner mask; platform frame + roles ledger + CTA
+  cleanup + footer strip (ghost agent work, foreman-verified).
+- **B1.1**: model fallback chain + backoff, SSE streaming (`token`/`done`/`error`),
+  AiQuota/AiBudget/AiFeedback migration, Arabic quota card, honest local mode,
+  env vars documented (`.env.example`, `render.yaml`, `B1-AI.md`).
+- **Verification**: typecheck 0 · **2802/2802 frontend unit tests** · backend AI suites
+  56/56 · lint 0 · `npm run build -w frontend` ✓ · full-stack dev:full + Playwright
+  evidence sweep (`scripts/r323/qa-sweep.mjs`) → `evidence/`.
 
 ## Exact next 3 actions
 
-1. Land W1a: brand core (`frontend/src/brand/` + assets + AUDIT.md), loader orchestrator
-   core (`lib/loaderOrchestrator.ts` + overlay components + tokens), AI provider chain
-   (`backend/src/lib/ai.ts` + SSE route) — three parallel work packages.
-2. Integration pass: swap every logo call-site to `<Logo>`, wire orchestrator into
-   App/landing, A3 landing fixes (header/consent/ticker/map/platform/roles/CTA/footer).
-3. Verify: `npm run typecheck && npm test && npm run lint && npm run build -w frontend`,
-   screenshots at 1440/390 light+dark, reviewer reports into `BOARD.md`, push.
+1. Independent reviewer round on `BOARD.md` evidence (3 reviewers, rubric ≥9/no <8),
+   then fix whatever they list.
+2. A4: perf §7-5..7 remainder (desktop jank 22→≤2 %, bundle caps) + A5 component system.
+3. B2.1 storage + upload wizard; B3.1 bulk import (W1 remainder) — then B1.2 RAG.
 
 ## Commands to reproduce
 
