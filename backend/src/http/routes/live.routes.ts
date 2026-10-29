@@ -9,6 +9,10 @@ import { requireRole } from '../middleware/requireRole.js';
 import { validate } from '../validate.js';
 import { getEffectiveCapabilities, assertOfferingAccess, assertOwnsOffering } from '../../lib/permissions.js';
 import { utcDayStart } from '../../lib/dates.js';
+// r323 B3.3 — a scheduled session tells its roster (degraded fire: the
+// schedule's two honest writes are already committed by the time this runs).
+import { liveScheduledPayload } from '../../modules/notifications/core.js';
+import { notifyOfferingStudents } from '../../modules/notifications/fire.js';
 import {
   canJoin,
   canTransition,
@@ -140,6 +144,9 @@ router.post(
             include: sessionInclude,
           });
       logger.info({ sessionId: session.id, offeringId: body.offeringId, userId: req.user!.id }, 'live: scheduled');
+      // r323 B3.3 — the roster hears about it (the Jitsi backfill write
+      // already landed; the bell degrades, the schedule never 500s).
+      await notifyOfferingStudents(body.offeringId, liveScheduledPayload(session.title, body.scheduledAt));
       res.status(201).json({ data: serialize(session) });
     } catch (e) { next(e); }
   },

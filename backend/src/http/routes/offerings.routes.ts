@@ -26,6 +26,10 @@ import {
 // Route-module helper import, same precedent as offeringVisibilityFilter
 // above (no cycle: files.routes imports nothing from this file).
 import { isPdfMagicBytes, isUploadSizeOk, assertOfferingInstitutionForUpload } from './files.routes.js';
+// r323 B3.3 — the academic tell: materials/assignments fire to the
+// offering's active students (payloads pure-tested in notifications/core).
+import { assignmentCreatedPayload, materialCreatedPayload } from '../../modules/notifications/core.js';
+import { notifyOfferingStudents, notifyOfferingStudentsTx } from '../../modules/notifications/fire.js';
 // The list-side role/visibility twin of assertOfferingAccess — shared
 // with GET /courses/:id and the global search (its docblock names this
 // file's consumers). Importing a route module for a helper follows the
@@ -326,15 +330,31 @@ router.post(
       // r179 (phase-5): the oversight bypass is institution-pinned
       // (write mode — 403 for a foreign offering).
       await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'write');
-      const created = await prisma.material.create({
-        data: {
-          ...req.body,
-          // zod's `.default(0)` guarantees a number here — the old
-          // `?? 0` fallback was dead code (audit P2-15).
-          sizeBytes: BigInt(req.body.sizeBytes),
-          offeringId: req.params.id!,
-          uploaderId: req.user!.id,
-        },
+      const offeringId = req.params.id!;
+      // r323 B3.3 — the bell rides the SAME transaction as the material
+      // row: a material that exists without its tell is the r165c
+      // invisible-verdict failure class, one surface earlier.
+      const offering = await prisma.courseOffering.findUnique({
+        where: { id: offeringId },
+        select: { course: { select: { code: true } } },
+      });
+      const created = await prisma.$transaction(async (tx) => {
+        const row = await tx.material.create({
+          data: {
+            ...req.body,
+            // zod's `.default(0)` guarantees a number here — the old
+            // `?? 0` fallback was dead code (audit P2-15).
+            sizeBytes: BigInt(req.body.sizeBytes),
+            offeringId,
+            uploaderId: req.user!.id,
+          },
+        });
+        await notifyOfferingStudentsTx(
+          tx,
+          offeringId,
+          materialCreatedPayload(offering?.course.code ?? '', req.body.name),
+        );
+        return row;
       });
       res.status(201).json({ data: serializeMaterial(created) });
     } catch (e) {
@@ -434,6 +454,13 @@ router.post(
         });
         throw AppError.internal('تعذّر حفظ الملف — حاول مرة أخرى');
       }
+      // r323 B3.3 — the bytes are committed; the tell degrades honestly
+      // (a failed bell must never 500 an upload that succeeded).
+      const pdfOffering = await prisma.courseOffering.findUnique({
+        where: { id: offeringId },
+        select: { course: { select: { code: true } } },
+      });
+      await notifyOfferingStudents(offeringId, materialCreatedPayload(pdfOffering?.course.code ?? '', created.name));
       res.status(201).json({ data: serializeMaterial(created) });
     } catch (e) {
       next(e);
@@ -481,8 +508,23 @@ router.post(
       // r179 (phase-5): the oversight bypass is institution-pinned
       // (write mode).
       await assertOfferingInCallerInstitution(req.params.id!, req.user!, 'write');
-      const created = await prisma.assignment.create({
-        data: { ...req.body, offeringId: req.params.id! },
+      const offeringId = req.params.id!;
+      // r323 B3.3 — the assignment tell rides the create transaction
+      // (the due date rides the body — arabicDayMonthTime).
+      const offering = await prisma.courseOffering.findUnique({
+        where: { id: offeringId },
+        select: { course: { select: { code: true } } },
+      });
+      const created = await prisma.$transaction(async (tx) => {
+        const row = await tx.assignment.create({
+          data: { ...req.body, offeringId },
+        });
+        await notifyOfferingStudentsTx(
+          tx,
+          offeringId,
+          assignmentCreatedPayload(offering?.course.code ?? '', req.body.title, req.body.dueAt),
+        );
+        return row;
       });
       res.status(201).json({ data: created });
     } catch (e) {

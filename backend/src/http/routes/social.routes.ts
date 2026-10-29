@@ -10,6 +10,10 @@ import { AppError } from '../../lib/errors.js';
 import { isSanctionedMediaUrl } from '../../lib/sanctioned-url.js';
 import { assertCapability } from '../../lib/permissions.js';
 import { resolveStudentProfile, resolveTeacherProfile } from '../../lib/profile-scoping.js';
+// r323 B3.3 — an announcement tells its scope's audience (same
+// transaction as the row: the write and the tell land together).
+import { announcementPayload } from '../../modules/notifications/core.js';
+import { notifyAnnouncementScopeTx } from '../../modules/notifications/fire.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -418,11 +422,15 @@ router.post(
       // scope reaches only that institution's users, so authoring into
       // a foreign institution's target is a 404 (same envelope as a
       // nonexistent id — no existence leak). OWNER stays platform-wide.
+      // r323 B3.3 — hoisted for the audience fire: PLATFORM = platform-
+      // wide (null), the scoped paths pin their verified institution.
+      let notifyInstitutionId: string | null = null;
       if (body.scope !== 'PLATFORM' && body.scopeId) {
         const role = req.user!.role;
         const uid = req.user!.id;
         const authorInstitutionId =
           role === Role.OWNER ? null : await requireSocialInstitution(uid, req.user!.institutionId);
+        notifyInstitutionId = authorInstitutionId;
 
         // Permitted target ids per role. ADMIN/QUALITY (ANNOUNCE_FACULTY
         // holders) may target any EXISTING faculty/department/offering
@@ -512,17 +520,32 @@ router.post(
         assertScopeTargetPermitted(body.scope, body.scopeId, permitted);
       }
 
-      const created = await prisma.announcement.create({
-        data: {
-          authorId: req.user!.id,
-          scope: body.scope,
-          scopeId: body.scopeId ?? null,
-          title: body.title,
-          body: body.body,
-          pinned: body.pinned,
-          iconEmoji: body.iconEmoji ?? null,
-          expiresAt: body.expiresAt ?? null,
-        },
+      const created = await prisma.$transaction(async (tx) => {
+        const row = await tx.announcement.create({
+          data: {
+            authorId: req.user!.id,
+            scope: body.scope,
+            scopeId: body.scopeId ?? null,
+            title: body.title,
+            body: body.body,
+            pinned: body.pinned,
+            iconEmoji: body.iconEmoji ?? null,
+            expiresAt: body.expiresAt ?? null,
+          },
+        });
+        // r323 B3.3 — the audience resolves inside the same
+        // transaction; the author is never in it.
+        await notifyAnnouncementScopeTx(
+          tx,
+          {
+            scope: body.scope,
+            scopeId: body.scopeId ?? null,
+            authorId: req.user!.id,
+            institutionId: notifyInstitutionId,
+          },
+          announcementPayload(body.title, body.iconEmoji ?? null),
+        );
+        return row;
       });
       res.status(201).json({ data: created });
     } catch (e) { next(e); }
