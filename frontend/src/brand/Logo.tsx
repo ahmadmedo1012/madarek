@@ -26,8 +26,8 @@ import {
   MARK_AXIS,
   MARK_DIAMOND_PATH,
   MARK_POINT,
-  MARK_STROKE_COMPONENT,
   MARK_VIEWBOX,
+  markStrokePx,
 } from './mark';
 import { LOCKUP, STACKED, WORDMARK_STROKE_SHEET } from './lockups';
 import { WORDMARK_AR, WORDMARK_LATIN } from './wordmark.generated';
@@ -90,9 +90,13 @@ export function Logo(props: {
     <style>{`@keyframes ${kfAxis}{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes ${kfDiamond}{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes ${kfWord}{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@keyframes ${kfPoint}{from{opacity:0}to{opacity:1}}@media (prefers-reduced-motion:reduce){.mdrk-logo *{animation:none !important}}`}</style>
   ) : null;
 
-  /* ── the mark (shared by mark/lockup/stacked) ─────────────────────── */
+  /* ── the mark (shared by mark/lockup/stacked) ───────────────────────
+   * The hairline rides the optical-size ramp (X11): markStrokePx tapers
+   * the non-scaling stroke below the 32-grid design size so the small
+   * seats (12/14/16/22/24/26 px) keep the designed weight instead of
+   * bloating to 2.7× the ratio. */
   const markShape = (
-    <g stroke={ink} fill="none" strokeWidth={MARK_STROKE_COMPONENT} strokeLinejoin="miter">
+    <g stroke={ink} fill="none" strokeWidth={markStrokePx(size)} strokeLinejoin="miter">
       <rect
         x={MARK_AXIS.x}
         y={MARK_AXIS.y}

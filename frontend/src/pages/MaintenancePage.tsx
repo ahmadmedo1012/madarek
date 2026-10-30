@@ -17,8 +17,6 @@ export default function MaintenancePage() {
   usePageTitle('صيانة دورية');
   return (
     <ErrorSheetPage
-      code="MM [01]"
-      coords="SERVICE WINDOW"
       title="مدارك في صيانة قصيرة"
       lead="أوقفنا الخدمة مؤقتًا لتحديثٍ دوري. بياناتك محفوظة ولن يُفقد شيء — عود بعد قليل وستجد كل شيء في مكانه."
       illustration="server-waking"

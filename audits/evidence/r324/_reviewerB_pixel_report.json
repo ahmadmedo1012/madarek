@@ -1,0 +1,1536 @@
+[
+ {
+  "file": "hero-x14-1440-light.png",
+  "size": [
+   1440,
+   887
+  ],
+  "paperPct": 87.25,
+  "inkPct": 1.03,
+  "signalOrangePct": 0.072,
+  "emberPct": 0.001,
+  "otherOrangePct": 0.047,
+  "whitePct": 0.09,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1247
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    59
+   ]
+  ],
+  "edgeLumSteps": [
+   16,
+   2
+  ],
+  "midtoneRunScore": 2539
+ },
+ {
+  "file": "hero-x14-1440-dark.png",
+  "size": [
+   1440,
+   887
+  ],
+  "paperPct": 0.04,
+  "inkPct": 80.31,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.723,
+  "otherOrangePct": 0.058,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1247
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    58
+   ]
+  ],
+  "edgeLumSteps": [
+   20,
+   4
+  ],
+  "midtoneRunScore": 2935
+ },
+ {
+  "file": "hero-x14-390-light.png",
+  "size": [
+   390,
+   884
+  ],
+  "paperPct": 85.95,
+  "inkPct": 1.76,
+  "signalOrangePct": 0.013,
+  "emberPct": 0.002,
+  "otherOrangePct": 0.096,
+  "whitePct": 0.066,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1368
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    62
+   ]
+  ],
+  "edgeLumSteps": [
+   2,
+   4
+  ],
+  "midtoneRunScore": 538
+ },
+ {
+  "file": "hero-x14-390-dark.png",
+  "size": [
+   390,
+   884
+  ],
+  "paperPct": 0.07,
+  "inkPct": 86.35,
+  "signalOrangePct": 0.0,
+  "emberPct": 4.498,
+  "otherOrangePct": 0.136,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1368
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    62
+   ]
+  ],
+  "edgeLumSteps": [
+   2,
+   4
+  ],
+  "midtoneRunScore": 720
+ },
+ {
+  "file": "statement-x14-1440-light.png",
+  "size": [
+   1440,
+   732
+  ],
+  "paperPct": 89.35,
+  "inkPct": 2.49,
+  "signalOrangePct": 1.363,
+  "emberPct": 0.004,
+  "otherOrangePct": 0.021,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    960
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    120
+   ]
+  ],
+  "edgeLumSteps": [
+   15,
+   1
+  ],
+  "midtoneRunScore": 1142
+ },
+ {
+  "file": "statement-x14-1440-dark.png",
+  "size": [
+   1440,
+   732
+  ],
+  "paperPct": 0.13,
+  "inkPct": 89.58,
+  "signalOrangePct": 0.0,
+  "emberPct": 1.362,
+  "otherOrangePct": 0.052,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    960
+   ],
+   [
+    [
+     74,
+     74,
+     72
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   17,
+   1
+  ],
+  "midtoneRunScore": 1264
+ },
+ {
+  "file": "statement-x14-390-light.png",
+  "size": [
+   390,
+   895
+  ],
+  "paperPct": 87.36,
+  "inkPct": 2.57,
+  "signalOrangePct": 0.965,
+  "emberPct": 0.003,
+  "otherOrangePct": 0.049,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1365
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    65
+   ]
+  ],
+  "edgeLumSteps": [
+   2,
+   4
+  ],
+  "midtoneRunScore": 594
+ },
+ {
+  "file": "statement-x14-390-dark.png",
+  "size": [
+   390,
+   895
+  ],
+  "paperPct": 0.07,
+  "inkPct": 87.58,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.961,
+  "otherOrangePct": 0.119,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1365
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    65
+   ]
+  ],
+  "edgeLumSteps": [
+   2,
+   4
+  ],
+  "midtoneRunScore": 956
+ },
+ {
+  "file": "pains-x14-1440-light.png",
+  "size": [
+   1440,
+   744
+  ],
+  "paperPct": 96.13,
+  "inkPct": 0.37,
+  "signalOrangePct": 0.054,
+  "emberPct": 0.002,
+  "otherOrangePct": 0.115,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1020
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   15,
+   0
+  ],
+  "midtoneRunScore": 354
+ },
+ {
+  "file": "pains-x14-1440-dark.png",
+  "size": [
+   1440,
+   744
+  ],
+  "paperPct": 0.02,
+  "inkPct": 96.27,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.054,
+  "otherOrangePct": 0.481,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1020
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   15,
+   0
+  ],
+  "midtoneRunScore": 441
+ },
+ {
+  "file": "map-x14-1440-light.png",
+  "size": [
+   1440,
+   6273
+  ],
+  "paperPct": 98.13,
+  "inkPct": 0.47,
+  "signalOrangePct": 0.005,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.011,
+  "whitePct": 0.011,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    9295
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    57
+   ]
+  ],
+  "edgeLumSteps": [
+   19,
+   5
+  ],
+  "midtoneRunScore": 2961
+ },
+ {
+  "file": "map-x14-1440-dark.png",
+  "size": [
+   1440,
+   6273
+  ],
+  "paperPct": 0.0,
+  "inkPct": 94.43,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.005,
+  "otherOrangePct": 0.011,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    9295
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    57
+   ]
+  ],
+  "edgeLumSteps": [
+   19,
+   5
+  ],
+  "midtoneRunScore": 3320
+ },
+ {
+  "file": "platform-x14-1440-light.png",
+  "size": [
+   1440,
+   711
+  ],
+  "paperPct": 90.71,
+  "inkPct": 0.78,
+  "signalOrangePct": 2.057,
+  "emberPct": 0.028,
+  "otherOrangePct": 0.024,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    960
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   18,
+   0
+  ],
+  "midtoneRunScore": 2598
+ },
+ {
+  "file": "platform-x14-1440-dark.png",
+  "size": [
+   1440,
+   711
+  ],
+  "paperPct": 0.03,
+  "inkPct": 90.75,
+  "signalOrangePct": 0.0,
+  "emberPct": 2.057,
+  "otherOrangePct": 0.06,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    960
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   20,
+   0
+  ],
+  "midtoneRunScore": 2711
+ },
+ {
+  "file": "platform-390-light.png",
+  "size": [
+   390,
+   825
+  ],
+  "paperPct": 88.03,
+  "inkPct": 2.33,
+  "signalOrangePct": 2.038,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.002,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1235
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    65
+   ]
+  ],
+  "edgeLumSteps": [
+   0,
+   2
+  ],
+  "midtoneRunScore": 971
+ },
+ {
+  "file": "platform-390-dark.png",
+  "size": [
+   390,
+   825
+  ],
+  "paperPct": 0.07,
+  "inkPct": 88.04,
+  "signalOrangePct": 0.0,
+  "emberPct": 2.038,
+  "otherOrangePct": 0.004,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1235
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    65
+   ]
+  ],
+  "edgeLumSteps": [
+   0,
+   2
+  ],
+  "midtoneRunScore": 1000
+ },
+ {
+  "file": "why-x14-1440-light.png",
+  "size": [
+   1440,
+   681
+  ],
+  "paperPct": 84.49,
+  "inkPct": 0.58,
+  "signalOrangePct": 0.044,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.014,
+  "whitePct": 4.574,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    960
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   9,
+   0
+  ],
+  "midtoneRunScore": 614
+ },
+ {
+  "file": "why-x14-1440-dark.png",
+  "size": [
+   1440,
+   681
+  ],
+  "paperPct": 1.96,
+  "inkPct": 84.04,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.044,
+  "otherOrangePct": 0.162,
+  "whitePct": 3.368,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    960
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   9,
+   0
+  ],
+  "midtoneRunScore": 646
+ },
+ {
+  "file": "roles-x14-1440-light.png",
+  "size": [
+   1440,
+   888
+  ],
+  "paperPct": 96.51,
+  "inkPct": 0.86,
+  "signalOrangePct": 0.012,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.023,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1260
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   18,
+   0
+  ],
+  "midtoneRunScore": 742
+ },
+ {
+  "file": "roles-x14-1440-dark.png",
+  "size": [
+   1440,
+   888
+  ],
+  "paperPct": 0.02,
+  "inkPct": 96.5,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.012,
+  "otherOrangePct": 0.033,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1260
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   20,
+   0
+  ],
+  "midtoneRunScore": 775
+ },
+ {
+  "file": "cta-x14-1440-light.png",
+  "size": [
+   1440,
+   699
+  ],
+  "paperPct": 97.72,
+  "inkPct": 0.24,
+  "signalOrangePct": 0.011,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.042,
+  "whitePct": 0.01,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    246,
+    246,
+    238
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    960
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   14,
+   0
+  ],
+  "midtoneRunScore": 141
+ },
+ {
+  "file": "cta-x14-1440-dark.png",
+  "size": [
+   1440,
+   699
+  ],
+  "paperPct": 0.01,
+  "inkPct": 97.71,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.851,
+  "otherOrangePct": 0.077,
+  "whitePct": 0.0,
+  "pureBlackPct": 0.0,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    40,
+    40,
+    40
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    960
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    60
+   ]
+  ],
+  "edgeLumSteps": [
+   16,
+   0
+  ],
+  "midtoneRunScore": 165
+ },
+ {
+  "file": "footer-x14-1440-light.png",
+  "size": [
+   1426,
+   938
+  ],
+  "paperPct": 89.05,
+  "inkPct": 2.88,
+  "signalOrangePct": 0.021,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.007,
+  "whitePct": 1.167,
+  "pureBlackPct": 0.266,
+  "corners": [
+   [
+    246,
+    246,
+    238
+   ],
+   [
+    218,
+    57,
+    0
+   ],
+   [
+    249,
+    249,
+    244
+   ],
+   [
+    249,
+    249,
+    244
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1320
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    81
+   ]
+  ],
+  "edgeLumSteps": [
+   13,
+   7
+  ],
+  "midtoneRunScore": 3722
+ },
+ {
+  "file": "footer-x14-1440-dark.png",
+  "size": [
+   1426,
+   938
+  ],
+  "paperPct": 0.14,
+  "inkPct": 88.95,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.021,
+  "otherOrangePct": 0.009,
+  "whitePct": 1.154,
+  "pureBlackPct": 0.266,
+  "corners": [
+   [
+    40,
+    40,
+    40
+   ],
+   [
+    218,
+    57,
+    0
+   ],
+   [
+    42,
+    42,
+    42
+   ],
+   [
+    42,
+    42,
+    42
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1320
+   ],
+   [
+    [
+     92,
+     92,
+     90
+    ],
+    80
+   ]
+  ],
+  "edgeLumSteps": [
+   12,
+   7
+  ],
+  "midtoneRunScore": 3775
+ },
+ {
+  "file": "footer-x14-390-light.png",
+  "size": [
+   376,
+   1241
+  ],
+  "paperPct": 91.45,
+  "inkPct": 1.86,
+  "signalOrangePct": 0.002,
+  "emberPct": 0.0,
+  "otherOrangePct": 0.011,
+  "whitePct": 0.018,
+  "pureBlackPct": 0.403,
+  "corners": [
+   [
+    179,
+    179,
+    175
+   ],
+   [
+    179,
+    179,
+    175
+   ],
+   [
+    249,
+    249,
+    244
+   ],
+   [
+    249,
+    249,
+    244
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     246,
+     246,
+     238
+    ],
+    1733
+   ],
+   [
+    [
+     179,
+     179,
+     175
+    ],
+    154
+   ]
+  ],
+  "edgeLumSteps": [
+   10,
+   20
+  ],
+  "midtoneRunScore": 1252
+ },
+ {
+  "file": "footer-x14-390-dark.png",
+  "size": [
+   376,
+   1241
+  ],
+  "paperPct": 0.02,
+  "inkPct": 91.52,
+  "signalOrangePct": 0.0,
+  "emberPct": 0.002,
+  "otherOrangePct": 0.012,
+  "whitePct": 0.018,
+  "pureBlackPct": 0.403,
+  "corners": [
+   [
+    74,
+    74,
+    72
+   ],
+   [
+    74,
+    74,
+    72
+   ],
+   [
+    42,
+    42,
+    42
+   ],
+   [
+    42,
+    42,
+    42
+   ]
+  ],
+  "bgTopStrip": [
+   [
+    [
+     40,
+     40,
+     40
+    ],
+    1733
+   ],
+   [
+    [
+     74,
+     74,
+     72
+    ],
+    91
+   ]
+  ],
+  "edgeLumSteps": [
+   10,
+   20
+  ],
+  "midtoneRunScore": 1419
+ }
+]

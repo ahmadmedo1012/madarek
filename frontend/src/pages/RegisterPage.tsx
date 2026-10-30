@@ -351,9 +351,6 @@ export default function RegisterPage() {
           {/* the mono micro-label row — the drawing sheet's identity
               line; the sheet number tells the two-step truth (01/02 at
               the role chooser, 02/02 on the data step). Decorative. */}
-          <p className="auth-sheet-label" aria-hidden="true">
-            <span dir="ltr">[MDRK-REG] · SHEET {role ? '02' : '01'}/02</span>
-          </p>
 
           <ol className="auth-steps" aria-label="مراحل إنشاء الحساب">
             <li

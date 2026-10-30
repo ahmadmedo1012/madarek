@@ -5,8 +5,10 @@
  * A flat hairline frame around an authentic capture of the running
  * application (seeded demo environment — fully synthetic «جامعة مدارك
  * التجريبية» data). Every frame carries:
- *   · the mono «real-ui» tag + the demo-data disclosure —
- *     a real interface, honestly labelled, never a fabricated mockup;
+ *   · the demo-data disclosure — the honest «بيانات العرض
+ *     التجريبية» line (the r324 X4 sweep retired the «real-ui»
+ *     tag: debug chrome, not content). A real interface, honestly
+ *     labelled, never a fabricated mockup;
  *   · explicit intrinsic dimensions (CLS-safe by construction);
  *   · lazy loading (the landing never ships these bytes eagerly).
  *
@@ -171,9 +173,10 @@ export function ProductFrame({
         )}
       </div>
       <figcaption className="prf-caption">
-        <span className="prf-caption-tag fo-mono" dir="ltr">
-          real-ui
-        </span>
+        {/* r324 X4: the mono «real-ui» tag RETIRES — debug chrome, the
+            same verdict the platform band's chips got in R323 (the
+            honest demo disclosure below already carries the truth;
+            the tag also crowded the caption grid into broken lines). */}
         <span className="prf-caption-body">
           <span className="prf-caption-title">{capture.titleAr}</span>
           <span className="prf-caption-line">{capture.captionAr}</span>

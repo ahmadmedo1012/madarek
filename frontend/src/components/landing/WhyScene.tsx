@@ -6,8 +6,12 @@
  * verbs over its product captures. The Madarek translation: the same
  * four verbs the journey walkthrough uses (شاهد / تحقّق / اختبر / أتقن),
  * each paired with one of the REAL student-surface captures — the
- * ProductFrame contract rides every frame (mono «real-ui» tag + the
- * demo-data disclosure), so the cross-fade never blurs what is shown.
+ * ProductFrame contract rides every frame (the honest demo-data
+ * disclosure; the r324 X4 sweep retired the «real-ui» tag), so the
+ * cross-fade never blurs what is shown. The capture hint seats at
+ * 48rem so the browser picks the sharp 1280w asset (the r324 X4
+ * re-encode: the 720w tier went q78 → q92 — text-heavy UI needs the
+ * headroom).
  *
  *  · the section is ONE compact band (~77vh, the reference's 5.6%):
  *    the stage rail (always-readable verb cards) beside a capture
@@ -121,7 +125,7 @@ export function WhyScene() {
           return (
             <div key={s.num} className="wy-capture" data-i={i}>
               <ProductFrame
-                capture={{ ...capture, sizes: '(min-width: 992px) 42rem, 100vw' }}
+                capture={{ ...capture, sizes: '(min-width: 992px) 48rem, 100vw' }}
               />
             </div>
           );

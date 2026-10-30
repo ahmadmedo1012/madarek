@@ -67,17 +67,34 @@ installConsoleTape();
 
 // r323 B6 — the PWA service worker, PRODUCTION ONLY (dev/audit suites
 // keep the plain server; no SW fetches in their console-health probes).
-// On first control the toast names the update honestly once.
+// r324 X1 — the toast fires ONLY on a real update: a controller existed
+// at page load (a previous version ran) AND a new worker then announced
+// CONTENTS_UPDATED. On a first install there IS no previous version —
+// «التحديث» would be a lie (and it stacked over the consent bar/hero
+// CTA on every route's first load). One toast max per page load; the
+// action button does what the copy says (reload).
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
+    // Captured BEFORE register(): on a first install the page is
+    // uncontrolled (null) — exactly the case the toast must stay silent.
+    const hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker
       .register('/sw.js')
       .then((reg) => {
         let announced = false;
         navigator.serviceWorker.addEventListener('message', (e: MessageEvent) => {
-          if (!announced && (e.data as { type?: string } | null)?.type === 'CONTENTS_UPDATED') {
+          if (
+            !announced &&
+            hadController &&
+            (e.data as { type?: string } | null)?.type === 'CONTENTS_UPDATED'
+          ) {
             announced = true;
-            void import('./lib/toast').then(({ toast }) => toast.info('تحديثت المنصّة — حدّث الصفحة لأحدث نسخة.'));
+            void import('./lib/toast').then(({ toast }) =>
+              toast.info('تتوفّر نسخة أحدث — حدّث الصفحة.', {
+                title: 'تحديث المنصّة',
+                action: { label: 'تحديث', onClick: () => window.location.reload() },
+              }),
+            );
           }
         });
         // a waiting SW from a previous version: the next reload takes it

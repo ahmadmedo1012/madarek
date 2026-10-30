@@ -427,11 +427,18 @@ export async function seedPilotCohort(prisma: PrismaClient): Promise<{ students:
   const teacher = await prisma.user.findUnique({ where: { email: 'teacher@test.ly' }, select: { id: true } });
   if (!institution || !teacher) return { students: 0, lectures: 0 };
 
-  const itFaculty = await prisma.faculty.findFirst({ where: { institutionId: institution.id }, orderBy: { createdAt: 'asc' } });
+  // r324 P7.0 — the FIRST-LIVE-RUN bug this fixes: the old guard took
+  // the institution's FIRST faculty (createdAt asc) and required
+  // «علوم الحاسوب» inside it — but that department lives under كلية
+  // تقنية المعلومات, so findFirst returned null and the WHOLE pilot
+  // pack silently returned { students: 0, lectures: 0 } on every seed
+  // (the exact never-ran-against-a-live-DB failure the R324 brief
+  // P7.0 predicted). The department is now found by NAME across the
+  // institution's faculties — the faculty comes from the department.
   const csDept = await prisma.department.findFirst({
-    where: { facultyId: itFaculty?.id, name: 'علوم الحاسوب' },
+    where: { name: 'علوم الحاسوب', faculty: { institutionId: institution.id } },
   });
-  if (!itFaculty || !csDept) return { students: 0, lectures: 0 };
+  if (!csDept) return { students: 0, lectures: 0 };
 
   const term = TERM;
   const passwordHash = await hashPassword('Demo#Pilot2026');
@@ -541,7 +548,9 @@ export async function seedPilotCohort(prisma: PrismaClient): Promise<{ students:
   }
 
   // ── 5. the 30-student demo cohort ──
-  const hashCtx = { institutionId: institution.id, facultyId: itFaculty.id, departmentId: csDept.id, passwordHash, regBase: 'DEMO' };
+  // r324 P7.0: the demo students ride the department's OWN faculty
+  // (the old line referenced the removed itFaculty findFirst).
+  const hashCtx = { institutionId: institution.id, facultyId: csDept.facultyId, departmentId: csDept.id, passwordHash, regBase: 'DEMO' };
   const cohort = [];
   for (let i = 0; i < 30; i++) cohort.push(await ensureDemoStudent(prisma, hashCtx, i));
 

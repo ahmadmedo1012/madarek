@@ -212,7 +212,7 @@ const LEDGER_ROWS = [
  * canon: no summarisation promise), and the section carries exactly
  * ONE demo-data disclosure. Pure drafting chrome: the drawing body is
  * aria-hidden; the reading lives in the section's own copy. */
-function PlatformShowcase({ ctaTo }: { ctaTo: string }) {
+function PlatformShowcase() {
   return (
     <figure className="pr-frame">
       <div className="pr-frame-head" aria-hidden="true">
@@ -263,13 +263,16 @@ function PlatformShowcase({ ctaTo }: { ctaTo: string }) {
             <span className="pr-cell-title">مصفوفة الإتقان</span>
           </div>
           <div className="pr-matrix">
-            <span className="pr-mc is-hot" />
+            {/* r324 X3: ONE solid accent cell — three hot cells read an
+                orange flood; the reference's drawings carry one orange
+                signal per frame. The two warm cells keep the outline. */}
             <span className="pr-mc is-hot" />
             <span className="pr-mc" />
             <span className="pr-mc is-warm" />
             <span className="pr-mc" />
-            <span className="pr-mc is-hot" />
+            <span className="pr-mc" />
             <span className="pr-mc is-warm" />
+            <span className="pr-mc" />
             <span className="pr-mc" />
           </div>
           <div className="pr-mrows">
@@ -289,15 +292,6 @@ function PlatformShowcase({ ctaTo }: { ctaTo: string }) {
           <p className="pr-ai-a">سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</p>
         </div>
       </div>
-
-      <figcaption className="pr-frame-foot">
-        {/* the ONE demo-data disclosure of the section */}
-        <span className="pr-frame-demo fo-mono">بيانات تجريبية</span>
-        <a href={ctaTo} className="fo-text-link pr-frame-cta">
-          أنشئ حسابك لتجربتها حيّة
-          <Icon icon={ArrowLeft} size={13} />
-        </a>
-      </figcaption>
     </figure>
   );
 }
@@ -982,6 +976,10 @@ export default function LandingPage() {
               }
             }}
           >
+            {/* r324 X8 — the visible «القائمة» label lives HERE, inside
+                the overlay (the bar's seat is icon-only now): a quiet
+                mono head row above the link rows. */}
+            <p className="fo-mb-head" aria-hidden="true">القائمة</p>
             {/* the four seats as flat 40px rows (the reference's own
                 mobile register), then the dropdown children as the
                 mono sub-index — every section reachable without an
@@ -1330,6 +1328,18 @@ export default function LandingPage() {
             No h1-class text runs under any frame — the title seats
             INSIDE the sheet's frame. The flow keeps the tier floors. ═══ */}
         <section id="product" className="pr-section" aria-labelledby="pr-title">
+          {/* r324 P2 (X3) root cause — the R323 single-frame rewrite
+              (a79b71e6) shipped PlatformShowcase with ZERO CSS (no
+              .pr-frame/.pr-cell/.pr-chapters rules existed) and its
+              .pr-stage wrapper had NO seat in the ≥992 12-col grid
+              (the old .pr-grid rule points at a class the new DOM
+              retired) — auto-placement dropped the unstyled figure
+              into ONE 115px column (the word-by-word rail). The fix
+              lives in CSS: the stage seats 4/-1 and the frame family
+              is drawn (landing.css, the X3 block). The SHEET's 4-row
+              anatomy (label/title/lede/drawing) stays FLAT — the
+              ≥992 grid-template-rows contract seats the drawing in
+              its minmax(0,1fr) row. */}
           <div className="pr-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
             <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
@@ -1346,9 +1356,21 @@ export default function LandingPage() {
           </div>
 
           <RevealCssClass as="div" className="pr-stage" delay={2}>
-            {/* r307 contract kept: the section's CTA scrolls to the
-                conversion row (#cta) — never an auth link. */}
-            <PlatformShowcase ctaTo="#cta" />
+            <PlatformShowcase />
+          </RevealCssClass>
+
+          {/* the row-2 note — a DIRECT child of the section grid (the
+              ≥992 seat is cols 9–12 / row 2, the reference's own
+              inspector-note position; under the frame at ≤767; hidden
+              with the head at the strips-only 768–1024 bands). The
+              r307 contract kept: the CTA scrolls to the conversion
+              row (#cta) — never an auth link. */}
+          <RevealCssClass as="div" className="pr-note" delay={3}>
+            <span className="pr-frame-demo fo-mono">بيانات تجريبية</span>
+            <a href="#cta" className="fo-text-link pr-frame-cta">
+              أنشئ حسابك لتجربتها حيّة
+              <Icon icon={ArrowLeft} size={13} />
+            </a>
           </RevealCssClass>
         </section>
 
@@ -1609,7 +1631,7 @@ export default function LandingPage() {
                   <title> «مدارك». */}
               <Logo variant="wordmark" size={100} className="fo-wordmark-logo" />
 
-              <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING SHEET</span>
+              <span className="fo-wordmark-en fo-mono" dir="ltr" aria-hidden="true">MADAREK — ARABIC-FIRST LEARNING PLATFORM</span>
             </div>
           </div>
 

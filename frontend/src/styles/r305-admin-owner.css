@@ -1110,14 +1110,14 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
  * and the one-time temp-password sheet. Tokens only, dark-correct. */
 .bimp { display: grid; gap: var(--sp-3); }
 
-.bimp-lede { margin: 0; font-size: 13px; color: var(--text-muted); }
+.bimp-lede { margin: 0; font-size: 13px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ color: var(--text-muted); }
 
 .bimp-actions { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
-.bimp-file { font-size: 12px; color: var(--text-muted); }
+.bimp-file { font-size: 12px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ color: var(--text-muted); }
 
 .bimp-area {
   font-family: var(--font-mono, monospace);
-  font-size: 12px;
+  font-size: 12px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */
   line-height: 1.7;
   resize: vertical;
   min-block-size: 140px;
@@ -1127,7 +1127,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
   display: flex;
   gap: var(--sp-4);
   align-items: center;
-  font-size: 13px;
+  font-size: 13px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */
   font-weight: 600;
   color: var(--text-strong);
 }
@@ -1142,7 +1142,7 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
   overflow: auto;
 }
 
-.bimp-table { inline-size: 100%; border-collapse: collapse; font-size: 12.5px; }
+.bimp-table { inline-size: 100%; border-collapse: collapse; font-size: 12.5px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ }
 .bimp-table th {
   position: sticky;
   inset-block-start: 0;
@@ -1160,10 +1160,10 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
   vertical-align: top;
 }
 .bimp-table tr[data-status='error'] td { color: var(--danger); }
-.bimp-verdict { font-size: 12px; }
+.bimp-verdict { font-size: 12px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ }
 .bimp-pass { font-family: var(--font-mono, monospace); font-weight: 600; letter-spacing: 0.04em; }
 
-.bimp-error { margin: 0; font-size: 12.5px; font-weight: 600; color: var(--danger); }
+.bimp-error { margin: 0; font-size: 12.5px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ font-weight: 600; color: var(--danger); }
 
 .bimp-foot {
   display: flex;

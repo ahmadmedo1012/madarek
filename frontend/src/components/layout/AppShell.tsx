@@ -14,7 +14,6 @@ import '../../styles/r305-shell.css';
 // contract as r305-shell.css (unlayered, shell-imported, last word).
 import '../../styles/r319-shell.css';
 import { SheetFrame, SheetGrain } from './SheetFrame';
-import { SheetCodeContext, sheetCodeForRole } from '../../lib/sheet-code';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
@@ -34,7 +33,6 @@ import { OnboardingFlow } from '../onboarding/OnboardingFlow';
 // r323 B3.6 — the pilot's ears (the floating «أبلغ عن مشكلة / اقتراح»).
 import { FeedbackWidget } from '../feedback/FeedbackWidget';
 import { MilestoneScene } from '../onboarding/MilestoneScene';
-import { HydrationSplash } from '../HydrationSplash';
 import { overlayStack } from '../../lib/overlayStack';
 import { toast } from '../../lib/toast';
 import { NAV_BY_ROLE, ROLE_HOME } from '../../lib/nav';
@@ -262,12 +260,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
   }, [isRoleHome, onboardingShouldAutoStart, onboardingOpen, openOnboarding]);
 
   const title = resolveTitle(location.pathname);
-  /* R319 (C2-G2): the authed sheet's mono identity — every PageHeader
-     (both families) consumes this through SheetCodeContext when its
-     own sheetCode prop is absent, so the code lands on every page
-     without a single page file changing. Guest/no-role sessions
-     provide undefined (headers render no line). */
-  const sheetCode = role != null ? sheetCodeForRole(role) : undefined;
+  /* r324 X10 — the sheet-code ambient context is RETIRED with the
+     `SHEET S-01 · …` identity lines: coordinates/revision tags are
+     not content. */
   const contentRef = useRef<HTMLDivElement>(null);
   const [scrolled, setScrolled] = useState(false);
 
@@ -411,7 +406,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
   }, []);
 
   return (
-    <SheetCodeContext.Provider value={sheetCode}>
+    <>
       <div className="has-shell">
         {/* Skip-to-content link — WCAG 2.4.1. Visually hidden until focused
             (styles in base.css + polish.css, class-based). tabIndex on the
@@ -474,7 +469,7 @@ export function AppShell({ children }: { children?: ReactNode }) {
           <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
         </CommandPalette>
       </div>
-    </SheetCodeContext.Provider>
+    </>
   );
 }
 
@@ -506,7 +501,13 @@ export function ProtectedRoute({ allow }: { allow?: AppRole[] }) {
   const user = useAuthStore((s) => s.user);
   const location = useLocation();
 
-  if (!isHydrated) return <HydrationSplash />;
+  /* R323 §A2 foreman integration: the app-root boot Splash owns the
+   * pre-hydration window (a fullscreen orchestrator layer from first
+   * paint) — rendering the legacy HydrationSplash here as well put a
+   * SECOND logo on screen at boot, the exact overlap the
+   * r323-loader-overlap e2e pin exists to catch. null is invisible
+   * under the splash; the store decides the instant it rehydrates. */
+  if (!isHydrated) return null;
   if (!user) return <Navigate to="/auth" replace state={{ from: location }} />;
   if (allow && !allow.includes(user.role)) {
     return (

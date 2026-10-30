@@ -12,7 +12,7 @@
  * Updates: a new SW activates immediately (skipWaiting) + tells the
  * clients (CONTENTS_UPDATED) so the app can toast «نسخة جديدة».
  */
-const VERSION = 'r323-b6-1';
+const VERSION = 'r324-p0-1';
 const STATIC_CACHE = `madarek-static-${VERSION}`;
 const ASSET_CACHE = `madarek-assets-${VERSION}`;
 

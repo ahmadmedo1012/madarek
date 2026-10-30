@@ -13,7 +13,12 @@ test.use({ e2eRole: 'STUDENT' });
 test.describe('الاختبارات الإلكترونية — القائمة', () => {
   test('المحمّلة: اختبار متاح بنافذته + محاولة مصحّحة في السجل', async ({ page }) => {
     await page.goto('/student/online-exams');
-    await expect(page.locator('h1.page-title')).toHaveText('الاختبارات الإلكترونية');
+    // (R321 re-pin — R287 precedent: the online-exams LIST joined the
+    // patterns contract (PageFrame + patterns/PageHeader), so the h1
+    // carries the family's pf-page-title class now, not page-title —
+    // and toContainText: the decorative aria-hidden [01] page-index
+    // span rides inside the h1.)
+    await expect(page.locator('h1.pf-page-title')).toContainText('الاختبارات الإلكترونية');
 
     /* القسم المتاح — بطاقة الاختبار القصير */
     const quizCard = page.locator('.oex-row', { hasText: 'اختبار قصير — الوحدة الثالثة' });

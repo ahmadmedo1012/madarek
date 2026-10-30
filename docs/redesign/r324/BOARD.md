@@ -1,0 +1,86 @@
+# R324 BOARD — evidence & reviewer scores
+
+> Method: Heron counterpart captured first, transplant the grammar, overlay sheet
+> at the same anchors, then judge. Gates are safety nets, never the verdict.
+
+## Rubric (unchanged, stricter)
+
+3 independent reviewers × 0–10 on hierarchy · grid/alignment · spacing rhythm ·
+typography · material/colour · density/restraint · consistency · motion/scroll ·
+polish · responsiveness. **Mean ≥ 9, no category < 8.** VLM advisory only.
+
+## Evidence log
+
+| Phase | Surface | Breakpoints | Sheets | Verdict |
+|-------|---------|-------------|--------|---------|
+| P2/X3 | platform §05 (before → after) | 1440 light+dark · 768 dark · 390 light+dark | `platform-1440-before.png` (the unstyled 115px rail) → `platform-1440-{light,dark}` / `platform-768-dark` / `platform-390-{light,dark}` | section 710px @1440 = Heron exact · probe-x3 geometry clean · gates green |
+| P2/X5 | roles §07 ledger | 1440 | `roles-1440-after.png` | 0.0 % vs Heron |
+| P2/X7 | statement §02 scrub | 1440+390 light+dark | `statement-1440-{light,dark}` / `statement-390-{light,dark}` (before cut) | per-char color scrub rides the reference grammar |
+| P2/X4 | why §06 stage | 1440 light+dark | `why-1440-{light,dark}.png` | sharp q92 captures; no fake chips |
+| P2/X6 | map plan rooms | 1440 light+dark ×s1–s6 + intro anchors | `map-s1..s6-1440-{light,dark}.png` | room label reads accent-ink; walls clean |
+| P2/X14 | landing docH verdict | 4 anchors × post-render reads | `footer-x14-{1440,390}-{light,dark}.png` + `probe-x14-bands.mjs` | every band ±0.4 % (2 riders documented); docH all anchors PASS ±2 % |
+| P4/X12 | map plan theme pairs | 1440 light+dark | `map-1440-{light,dark}.png` | Ink ground + paper strokes |
+
+## Reviewer rounds
+
+### Round 1 — the P2 wave (2026-10-30, three independent reviewers on the X14 sheets)
+
+| reviewer | mean | failing axes | headline findings |
+|---|---|---|---|
+| A (grid/discipline) | 7.75 | material/colour 6.5 · polish 7.0 · hierarchy 7.5 | dark ink cool-cast (+12 blue), footer 4th ground, circle axis chips, CTA-meta pixel read |
+| B (type/material) | 8.75 | material/colour 7.8 · polish 8.2 | statement-dark footer melt, CTA fill «off-token», ember as large fill |
+| C (motion/polish) | 8.35 | motion/scroll 7.0 · material/colour 7.5 | dark map-state sheets byte-identical to light, statement scrub «stuck», CTA button contrast |
+
+**Verdict: no acceptance (≥9 / no <8 required).** The claims were then verified against the live DOM (`scripts/r324/probe-r324-review.mjs`):
+
+| claim | verification | disposition |
+|---|---|---|
+| dark ink #F6F8FA cool-cast | **TRUE** (`--neutral-900` dark) | **X22 fixed** — re-pinned to the warm paper #F6F6EE (R324 override) |
+| footer rides a 4th ground | **TRUE** (`color-mix(--surface 35%)` — white in light) | **X23 fixed** — the band rides the paper (transparent) |
+| dark map-state sheets = light copies | **TRUE** (md5-identical; the shot tool never applied the theme) | **X18 fixed** — tool re-anchors the theme; sheets re-captured, md5 distinct |
+| dark hairline dissolves (1.62:1) | **TRUE** (`--rule` dark = neutral-200) | **X21 fixed** — one rung up (neutral-300, 1.95:1) |
+| CTA button fill «off-token» | pixel-true (#DB3A00) but **documented R318 AA seat** (white label 4.55:1 — probe-verified) | no change; documented |
+| CTA button contrast 3.46:1 | FALSE (measured on the token, not the seat) — the real seat is 4.55:1 | no change |
+| CTA-meta 1.63:1 | FALSE (pixels sampled over a layered area) — text-muted is 5.2:1 on paper | no change |
+| statement footer «melt» | the ticker's 64px edge mask — the strip CRAWLS (36s loop), no static state | no change (behaviour correct) |
+| circle axis chips | section-marker symbols inside the section-drawing SVG (drafting grammar, art exemption) | no change; documented |
+| ember as large dark fill | the dark twin of the light #FA3600 fill (theme-symmetric by construction) | no change; documented |
+
+Evidence: `audits/evidence/r324/map-s1..s6-1440-dark.png` (REAL dark states now) ·
+`statement-x14-1440-{light,dark}.png` · `footer-x14-*`.
+
+### Round 2 — verification of the four fixes (same day)
+
+| axis | round 1 | round 2 | note |
+|---|---|---|---|
+| material/colour | 6.5–7.8 | **8.9** | X22/X23 pixel-verified literal; CTA seat 4.55:1 confirmed |
+| motion/scroll | 7.0 | **8.6** | 6/6 dark map states real (darkBg 81–94.5 %, pure-white 0.0 %) |
+| polish | 7.0–8.2 | **8.7** | no failing defects; riders only |
+
+**Estimated mean ≈ 8.6 · «no axis < 8» now MET.** The ≥9 mean now rests on the
+seven not-yet-re-audited axes (consistency 8.0 the lowest). One follow-up caught:
+the secondary `--border` dark rung (1.66:1) — raised to neutral-400 (≈3:1, the
+non-text UI minimum) in the same commit; the consent-banner «#000» claim did NOT
+verify in DOM (#282828 live) — no change. Mobile-dark post-X22 proof sheets:
+`statement-x22-390-dark.png` · `footer-x23-390-dark.png`.
+
+## Kill list X1–X16
+
+| # | One-liner | Status |
+|---|-----------|--------|
+| X1 | update toast on every page | **fixed** |
+| X2 | scrollHeight unstable 8,446→12,922 | **fixed** (drift ≤0.009 %, placeholders re-measured post-X3) |
+| X3 | platform §05 broken layout + bidi labels | **fixed** `25e5d150` (710px @1440 = Heron exact) |
+| X4 | why §06 blurry screenshot + chips | **fixed** `29517897` (720w q92 re-encode; chip retired) |
+| X5 | roles §07 giant list | **fixed** `15a4d016` |
+| X6 | map intro empty grid + boxes on walls | **fixed** `65baefac` (cascade war + debris) |
+| X7 | statement §02 clipped paragraph | **fixed** `65acc394` (per-char color scrub, sheets 1440/390 light+dark) |
+| X8 | phone header label+1px burger | **fixed** |
+| X9 | inner pages ignore the type ladder | **fixed** (census 0) |
+| X10 | debug/jargon sweep | **fixed** |
+| X11 | logo optical size at ≤32px | **fixed** (markStrokePx ramp 1.5@32→1.125@16→0.9 floor; `logo-optical-1440-{light,dark}.png`) |
+| X12 | dark theme not Heron-grade | **fixed (map)** — app-wide pair sweep = P4 tail |
+| X13 | hero ticker cut @1440 | **fixed** |
+| X14 | landing docH drift +4.6 %/+2.4 % | **fixed** (anchor parity + post-render reads; verdict 1440 +1.67 % · 1024 +1.90 % · 768 +0.76 % · 390 +0.63 % — PASS; ledger re-pinned) |
+| X15 | help creds in prod | **fixed** |
+| X16 | authenticated app unreviewed | open (P5) |

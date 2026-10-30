@@ -40,7 +40,8 @@ import {
   type AiMessageRow,
 } from '../../hooks/useResources';
 import { apiErrorMessage, formatRelativeAr, countAr } from '../../lib/format';
-/* r323 B1.1 — the SSE streaming client (the AI section of lib/api):
+/* r323 B1.1 — the SSE streaming client (lib/ai-stream — extracted from
+ * lib/api.ts so it rides THIS lazy route chunk, not the entry bundle):
  * fetch + ReadableStream consumption, the pure frame parser, the typed
  * pre-stream HTTP error, the per-answer feedback call, and the daily
  * quota phrase matcher. The JSON mutation (useAiChat) STAYS as the
@@ -51,7 +52,7 @@ import {
   isDailyQuotaMessage,
   sendAiFeedback,
   streamAiChat,
-} from '../../lib/api';
+} from '../../lib/ai-stream';
 import { queryClient } from '../../lib/queryClient';
 import { formatReplyBlocks } from './aiReplyFormat';
 import '../../styles/ai.css'; /* r261: سطح المحادثة المركّز — البنية الجديدة فقط (.ai-layout/.ai-surface/.ai-gaps/.ai-composer) */
@@ -645,9 +646,9 @@ export default function AiAssistantPage() {
   };
 
   /** Thumbs up/down on a PERSISTED answer (messageId). The optimistic
-   * rating flips immediately; a failed write reverts — no fake ✓. The
-   * backend upserts the (messageId, userId) pair, so re-clicking (or
-   * switching sides) honestly rewrites the one row. */
+   * rating flips immediately; a failed write reverts — no fake success
+   * mark. The backend upserts the (messageId, userId) pair, so
+   * re-clicking (or switching sides) honestly rewrites the one row. */
   const rateAnswer = (index: number, messageId: string, rating: 1 | -1) => {
     setMessages((m) => m.map((msg, j) => (j === index ? { ...msg, rating } : msg)));
     sendAiFeedback(messageId, rating).catch(() => {

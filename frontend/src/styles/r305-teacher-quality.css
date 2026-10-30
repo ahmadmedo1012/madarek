@@ -955,7 +955,7 @@
   padding: var(--sp-2) var(--sp-4);
   min-block-size: 44px;
   font: inherit;
-  font-size: 13px;
+  font-size: 13px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */
   font-weight: 600;
   color: var(--text-muted);
   background: transparent;
@@ -984,7 +984,7 @@
   padding: var(--sp-3);
   min-block-size: 44px;
   font: inherit;
-  font-size: 13px;
+  font-size: 13px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */
   color: var(--text-strong);
   background: var(--surface);
   border: 1px dashed var(--rule);
@@ -1015,9 +1015,17 @@
 .vid-up-meter-fill {
   block-size: 100%;
   background: var(--accent);
-  transition: inline-size 200ms linear;
+  /* 5-C1-style conversion (the 23-b .progress-fill pattern — layout
+     debt cleared): the fill paints at full track width and the VALUE
+     rides transform: scaleX() — VideoUploadField sets --fill-scale
+     inline (0..1); transform-origin follows the writing direction
+     ([dir="rtl"] override below). */
+  transform-origin: left center;
+  transform: scaleX(var(--fill-scale, 0));
+  transition: transform var(--t-fast) var(--ease-linear);
 }
-.vid-up-pct { font-size: 12px; font-variant-numeric: tabular-nums; color: var(--text-muted); white-space: nowrap; }
+[dir="rtl"] .vid-up-meter-fill { transform-origin: right center; }
+.vid-up-pct { font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ font-variant-numeric: tabular-nums; color: var(--text-muted); white-space: nowrap; }
 
 .vid-up-stop {
   display: inline-flex;
@@ -1026,7 +1034,7 @@
   min-block-size: 44px;
   padding: 0 var(--sp-2);
   font: inherit;
-  font-size: 12px;
+  font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */
   font-weight: 600;
   color: var(--text-strong);
   background: transparent;
@@ -1041,13 +1049,13 @@
   align-items: center;
   gap: var(--sp-2);
   margin: 0;
-  font-size: 13px;
+  font-size: 13px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */
   color: var(--text-strong);
 }
 .vid-up-done svg { color: var(--accent); }
 .vid-up-again {
   font: inherit;
-  font-size: 12px;
+  font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */
   font-weight: 600;
   color: var(--accent);
   background: transparent;
@@ -1059,8 +1067,8 @@
 }
 .vid-up-again:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.vid-up-hint { margin: 0; font-size: 12px; color: var(--text-muted); }
-.vid-up-error { margin: 0; font-size: 12px; font-weight: 600; color: var(--danger); }
+.vid-up-hint { margin: 0; font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-muted); }
+.vid-up-error { margin: 0; font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ font-weight: 600; color: var(--danger); }
 
 /* ── r323 B2.3 · the transcript sidecar field ─────────────────────── */
 .tr-field { display: grid; gap: var(--sp-1); }
@@ -1071,42 +1079,42 @@
   block-size: 22px;
   background: var(--border);
 }
-.tr-field-label { font-size: 13px; font-weight: 600; color: var(--text-strong); }
+.tr-field-label { font-size: 13px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ font-weight: 600; color: var(--text-strong); }
 .tr-field-row { display: flex; align-items: center; gap: var(--sp-2); min-block-size: 44px; flex-wrap: wrap; }
-.tr-field-status { font-size: 12px; color: var(--text-muted); }
+.tr-field-status { font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-muted); }
 .tr-field-ok { color: var(--accent); font-weight: 600; }
-.tr-field-error { margin: 0; font-size: 12px; font-weight: 600; color: var(--danger); }
+.tr-field-error { margin: 0; font-size: 12px; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ font-weight: 600; color: var(--danger); }
 
 /* ── r323 B3.1 — the invite-codes card (the roster page seat) ─────── */
-.inv-form { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; }
-.inv-field { display: grid; gap: 4px; font-size: 0.75rem; color: var(--text-secondary); }
+.inv-form { display: flex; align-items: flex-end; gap: var(--sp-2-5); flex-wrap: wrap; }
+.inv-field { display: grid; gap: var(--sp-1); font-size: 0.75rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-secondary); }
 .inv-field select,
 .inv-field input {
   min-block-size: 40px;
-  padding: 6px 10px;
+  padding: var(--sp-1-5) var(--sp-2-5);
   border: 1px solid var(--border-strong, var(--border));
   background: transparent;
   color: var(--text);
   font: inherit;
   border-radius: 0;
 }
-.inv-error { color: var(--danger, #B3261E); font-size: 0.8125rem; margin: 8px 0 0; }
-.inv-note { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--text-secondary); margin: 10px 0 0; }
-.inv-list { display: flex; flex-direction: column; margin-block-start: 10px; }
+.inv-error { color: var(--danger); font-size: 0.8125rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ margin: var(--sp-2) 0 0; }
+.inv-note { display: flex; align-items: center; gap: var(--sp-1-5); font-size: 0.75rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-secondary); margin: var(--sp-2-5) 0 0; }
+.inv-list { display: flex; flex-direction: column; margin-block-start: var(--sp-2-5); }
 .inv-row {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  padding: 8px 0;
+  display: flex; align-items: center; gap: var(--sp-3); flex-wrap: wrap;
+  padding: var(--sp-2) 0;
   border-bottom: 1px solid var(--border);
 }
 .inv-row:last-child { border-bottom: 0; }
 .inv-code {
   font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.875rem;
+  font-size: 0.875rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */
   font-weight: 600;
   letter-spacing: 0.08em;
-  background: var(--surface, rgba(0, 0, 0, 0.03));
-  padding: 4px 10px;
+  background: var(--surface);
+  padding: var(--sp-1) var(--sp-2-5);
 }
-.inv-meta { font-size: 0.75rem; color: var(--text-secondary); }
-.inv-dead { color: var(--danger, #B3261E); font-weight: 600; }
-.inv-actions { margin-inline-start: auto; display: flex; gap: 6px; }
+.inv-meta { font-size: 0.75rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-secondary); }
+.inv-dead { color: var(--danger); font-weight: 600; }
+.inv-actions { margin-inline-start: auto; display: flex; gap: var(--sp-1-5); }

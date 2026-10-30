@@ -55,7 +55,6 @@ export function CampusLifePage() {
             <Logo variant="mark" size={22} />
             مدارك
           </Link>
-          <span className="cu-header-index fo-mono" dir="ltr">MADAREK · CAMPUS SHEET · [C-01]</span>
         </div>
       </header>
 

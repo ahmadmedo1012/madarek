@@ -791,7 +791,7 @@
     --neutral-500: #B4B4B0;
     --neutral-700: #C9C9C5;
     --neutral-800: #E0E0DC;
-    --neutral-900: #F6F8FA;
+    --neutral-900: #F6F6EE; /* R324 X22 override — the warm paper twin (was #F6F8FA) */
 
     /* Night families: deep ember-tinted bgs + luminous inks. Contrast
        on --bg #282828 (engine-verified, r305): mint 8.08, yellow 9.28,
@@ -1324,6 +1324,14 @@
     --fs-d2: clamp(31.74px, 4.8vw, 4.8rem);  /* 40 @1440 · 47.6 @991 · 36.9 @768 · 31.74 @390 */
     --fs-d3: clamp(23.33px, 2.8vw, 2.8rem);  /* 23.3 @1440 · 23.3 @768/390 (flat, like Heron's card titles) */
     --fs-st:  clamp(22.1px, 2.87vw, 4rem);   /* the statement-band scrub seat: 33.3 @1440 · 22.1 @768/390 */
+
+    /* r324 P3 — the APP-DENSITY ladder (dashboards/data surfaces; the
+       narrative display ladder above is for story pages). H1 28/24 ·
+       H2 20 · H3 16 — px-exact at the desktop root, px floors on
+       phones (density, not display). */
+    --fs-app-h1: clamp(24px, 2.34vw, 3.36rem); /* 28px @1440 · 24px @390 */
+    --fs-app-h2: clamp(18px, 1.67vw, 2.4rem);  /* 20px @1440 · 18px @390 */
+    --fs-app-h3: 1.92rem;                      /* 16px flat */
 
     /* ─── R322 · the rem spacing scale (DESIGN.md §4.b) ───────────────
        Eleven rungs, rem on the fluid root — the ONLY allowed values

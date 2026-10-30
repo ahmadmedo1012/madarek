@@ -181,22 +181,29 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
       { timeout: 5000 },
     );
 
-    /* mid-story (p=0.5 ⇒ t≈3.11s): the camera sits between the
-     * lecture and checkpoint nodes — the interpolated landscape crop
-     * (quantized whole viewBox units; the ±6px window absorbs the
-     * scroll-convergence residue); stage 2 (the card era), finding 2
-     * rotating, the checkpoint wash (the bounded room highlight). */
+    /* mid-story (p=0.5 ⇒ t≈3.11s): the camera holds the lecture-hall
+     * PORTRAIT crop — the 460×600 phone family (R322 3-b round1:
+     * portrait crops + the full-height sticky window killed the
+     * mid-map dead band) — with y interpolating toward the checkpoint
+     * band; stage 3 (the findings era — R322 3-b-fix3 D3 moved the
+     * card→findings hand-off to t 3.0), finding 2 rotating, and the
+     * LECTURE wash (R322 3-b-fix2: the wash rides ONE finding step
+     * later — the layer-1 build lands at t≈3.0, never under the
+     * INTRODUCTION card's own beat). */
     await scrollToPin(page, 0.5, true);
     const mid = await sheetState(page);
-    expect(mid.stage).toBe('2');
+    expect(mid.stage).toBe('3');
     expect(mid.finding).toBe('2');
-    expect(mid.wash).toBe('checkpoint');
+    expect(mid.wash).toBe('lecture');
     const mvb = (mid.viewBox ?? '').split(' ').map(Number);
     expect(mvb.length).toBe(4);
-    expect(mvb[0]!).toBe(640);
-    expect(mvb[2]!).toBe(560);
-    expect(mvb[3]!).toBe(355);
-    expect(Math.abs(mvb[1]! - 226)).toBeLessThanOrEqual(6);
+    expect(mvb[0]!).toBe(713);
+    expect(mvb[2]!).toBe(460);
+    expect(mvb[3]!).toBe(600);
+    /* the ±16 window absorbs the scroll-convergence residue on the
+     * interpolated y beat (both bracketing keys share x/w/h — only y
+     * pans between 0 and 160 across the 2.8→3.4s span). */
+    expect(Math.abs(mvb[1]! - 82)).toBeLessThanOrEqual(16);
 
     /* the statement era (p=0.25 ⇒ t≈1.5s): the full overview holds
      * through the plaque beats — nothing cropped yet */
@@ -205,14 +212,17 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
     expect(early.stage).toBe('1');
     expect(early.viewBox).toBe('0 0 1200 760');
 
-    /* the release (p=1 ⇒ t=5.52s): the completed overview — the
-     * closing owns the end of the track (the 809px map-end dead band
-     * is dead: the stacked closing column scrolls in right behind) */
+    /* the release (p=1 ⇒ t=5.52s): the phone HOLDS the mastery
+     * terminus crop (R322 3-b-fix3 R1-D2: CAM_FULL letterboxed a
+     * 206px overview inside the 787px full-height window at the close
+     * — the held zoomed room reads as the story's end) while the
+     * stacked closing column scrolls in below (the data-open flip is
+     * desktop-only business on phones). */
     await scrollToPin(page, 1, true);
     const end = await sheetState(page);
     expect(end.stage).toBe('5');
     expect(end.finding).toBe('done');
-    expect(end.viewBox).toBe('0 0 1200 760');
+    expect(end.viewBox).toBe('15 0 460 600');
     /* the stacked closing column reads immediately in flow (the
      * data-open flip is desktop-only business on phones) */
     const closeVisible = await page.evaluate(() => {
@@ -281,14 +291,15 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
       { timeout: 5000 },
     );
 
-    /* a mobile frame at mid-story leaves the sheet CROPPED (the pan) */
+    /* a mobile frame at mid-story leaves the sheet CROPPED (the pan —
+     * the 460×600 portrait family, R322 3-b round1) */
     await scrollToPin(page, 0.5, true);
     const cropped = await sheetState(page);
     expect(cropped.viewBox).not.toBe('0 0 1200 760');
     const cvb = (cropped.viewBox ?? '').split(' ').map(Number);
     expect(cvb.length).toBe(4);
-    expect(cvb[0]!).toBe(640);
-    expect(cvb[2]!).toBe(560);
+    expect(cvb[0]!).toBe(713);
+    expect(cvb[2]!).toBe(460);
 
     /* up to desktop: restored exactly (the camDirty flag consumes) */
     await page.setViewportSize(VW.desktop);
@@ -335,7 +346,7 @@ test.describe('R312 — reduced motion at mobile: the complete static sheet', ()
     const layers = await page.evaluate(() =>
       Array.from(document.querySelectorAll<SVGGElement>('.jt-plan [data-xl]')).map((g) => g.style.opacity),
     );
-    expect(layers).toHaveLength(7);
+    expect(layers).toHaveLength(8);
     for (const o of layers) expect(parseFloat(o ?? 'x')).toBe(1);
     /* the findings all readable (the open card) */
     await expect(page.locator('.jt-intro-finding')).toHaveCount(5);
@@ -373,10 +384,11 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
     expect(drift).toMatch(/translateY\(-\d+\.\dpx\)/);
 
     /* inside the pin: the descent completes — translateY(0); the stage
-     * advances with the pin (p=0.55 ⇒ t≈3.37 ⇒ stage 2, the card era) */
+     * advances with the pin (p=0.55 ⇒ t≈3.37 ⇒ stage 3, the findings
+     * era — R322 3-b-fix3 D3: the card→findings boundary sits at t 3.0) */
     await scrollToPin(page, 0.55, false);
     const mid = await sheetState(page);
-    expect(mid.stage).toBe('2');
+    expect(mid.stage).toBe('3');
     expect(
       await page.evaluate(() => (document.querySelector('.jt-window') as HTMLElement).style.transform),
     ).toMatch(/translateY\(-?0(?:\.0)?px\)/);

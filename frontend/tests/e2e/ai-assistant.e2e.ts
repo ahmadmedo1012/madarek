@@ -50,11 +50,38 @@ test.describe('المساعد الذكيّ — رحلة محادثة كاملة'
       },
       {
         method: 'POST',
-        pattern: '**/api/v1/ai/chat',
-        fulfill: async ({ route }) => {
+        /* r323 B1.1: the page's real transport is now the SSE grammar —
+         * POST /ai/chat?stream=1 (fetch + ReadableStream). The glob
+         * must therefore also catch the query string (query strings
+         * count in page.route globs) and answer BOTH grammars: the
+         * stream call gets token frames + the done frame (the final
+         * persisted turn with ids + engine + model), the legacy JSON
+         * envelope stays for the fallback path. Same wire body either
+         * way: first turn is literally { message } only. */
+        pattern: '**/api/v1/ai/chat*',
+        fulfill: async ({ route, url }) => {
           chatBodies.push(route.request().postDataJSON() as { conversationId?: string; message: string });
           const conversation = { id: 'conv_e2e_ai_1', title: QUESTION.slice(0, 60), createdAt: FIXED_NOW_ISO };
           conversations.push(conversation);
+          if (url.searchParams.get('stream') === '1') {
+            const done = {
+              conversationId: conversation.id,
+              messageId: 'msg_e2e_ai_1',
+              reply: REPLY,
+              engine: 'local',
+              model: 'gap-aware-composer',
+            };
+            const sse = [
+              `event: token\ndata: ${JSON.stringify({ t: REPLY })}\n\n`,
+              `event: done\ndata: ${JSON.stringify(done)}\n\n`,
+            ].join('');
+            await route.fulfill({
+              status: 200,
+              headers: { 'Content-Type': 'text/event-stream; charset=utf-8' },
+              body: sse,
+            });
+            return;
+          }
           await statefulOk(route, {
             conversationId: conversation.id,
             reply: REPLY,

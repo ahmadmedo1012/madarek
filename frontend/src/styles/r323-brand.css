@@ -27,7 +27,7 @@
   .r323b-page {
     max-width: 1080px;
     margin: 0 auto;
-    padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 96px;
+    padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 96px; /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     background: var(--bg);
     color: var(--text-strong);
     font-family: var(--font-sans);
@@ -37,7 +37,7 @@
   /* mono micro-label (the instrument voice) */
   .r323b-mono {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 11px; /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     letter-spacing: 0.08em; /* Latin/mono only — never on Arabic */
     color: var(--text-muted);
     text-transform: uppercase;
@@ -50,31 +50,31 @@
     letter-spacing: 0; /* Arabic NEVER letter-spaced */
     color: var(--text-strong);
   }
-  .r323b-page h1 { font-size: clamp(26px, 4vw, 34px); margin: 8px 0 4px; }
+  .r323b-page h1 { font-size: clamp(26px, 4vw, 34px); /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */ margin: var(--sp-2) 0 var(--sp-1); }
   .r323b-page h2 {
-    font-size: clamp(19px, 2.6vw, 24px);
-    margin: 0 0 18px;
-    padding-top: 14px;
+    font-size: clamp(19px, 2.6vw, 24px); /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
+    margin: 0 0 18px; /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
+    padding-top: 14px; /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     border-top: 1px solid var(--rule);
   }
   .r323b-page p { color: var(--text-muted); max-width: 70ch; letter-spacing: 0; }
-  .r323b-lead { font-size: 15px; color: var(--text-strong); max-width: 62ch; }
+  .r323b-lead { font-size: 15px; /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */ color: var(--text-strong); max-width: 62ch; }
 
-  .r323b-sec { margin-top: 48px; }
+  .r323b-sec { margin-top: var(--sp-9); }
 
   /* ── 1 · the construction plate (32-grid drawing) ───────────────── */
   .r323b-plate {
     border: 1px solid var(--rule);
-    padding: clamp(16px, 3vw, 32px);
+    padding: clamp(16px, 3vw, 32px); /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     background: var(--surface);
     display: grid;
-    gap: 24px;
+    gap: var(--sp-6);
     justify-items: center;
   }
   .r323b-grid-svg { width: min(320px, 100%); height: auto; display: block; }
   .r323b-plate figcaption {
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 11px; /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     color: var(--text-muted);
     letter-spacing: 0.06em;
     text-align: center;
@@ -86,10 +86,10 @@
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    gap: 16px;
+    gap: var(--sp-4);
     border: 1px solid var(--rule);
     border-top: 0; /* one ruled stack */
-    padding: 20px clamp(14px, 3vw, 28px);
+    padding: 20px clamp(14px, 3vw, 28px); /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     background: var(--surface);
   }
   .r323b-row:first-of-type { border-top: 1px solid var(--rule); }
@@ -104,7 +104,7 @@
   .r323b-clearspace {
     display: inline-block;
     border: 1px dashed var(--rule-strong);
-    padding: calc(16px / 2); /* the ½-mark-height air at the 16px demo */
+    padding: calc(16px / 2); /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */ /* the ½-mark-height air at the 16px demo */
   }
 
   /* ── 4 · min-size ladder ────────────────────────────────────────── */
@@ -112,57 +112,57 @@
     display: flex;
     flex-wrap: wrap;
     align-items: flex-end;
-    gap: 32px;
+    gap: var(--sp-7);
     border: 1px solid var(--rule);
-    padding: clamp(16px, 3vw, 28px);
+    padding: clamp(16px, 3vw, 28px); /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     background: var(--surface);
   }
-  .r323b-ladder figure { margin: 0; display: grid; gap: 10px; justify-items: start; }
+  .r323b-ladder figure { margin: 0; display: grid; gap: var(--sp-2-5); justify-items: start; }
 
   /* ── 5 · colour token tiles ─────────────────────────────────────── */
   .r323b-swatches {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
+    gap: var(--sp-4);
   }
   .r323b-swatch {
     border: 1px solid var(--rule);
     background: var(--surface);
   }
   .r323b-swatch .chip { height: 72px; border: 1px solid var(--rule); }
-  .r323b-swatch dl { margin: 0; padding: 12px 14px 14px; display: grid; gap: 4px; }
-  .r323b-swatch dt { font-weight: 600; color: var(--text-strong); font-size: 13px; }
+  .r323b-swatch dl { margin: 0; padding: var(--sp-3) 14px 14px; /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */ display: grid; gap: var(--sp-1); }
+  .r323b-swatch dt { font-weight: 600; color: var(--text-strong); font-size: 13px; /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */ }
   .r323b-swatch dd {
     margin: 0;
     font-family: var(--font-mono);
-    font-size: 11px;
+    font-size: 11px; /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     color: var(--text-muted);
     letter-spacing: 0.06em;
     direction: ltr;
   }
 
   /* the three literal brand colours live ONLY here, as data */
-  .r323b-chip-paper { background: #F6F6EE; }
-  .r323b-chip-ink { background: #282828; }
-  .r323b-chip-orange { background: #FA3600; }
+  .r323b-chip-paper { background: #F6F6EE; } /* color-gate: allow — the /__brand specimen exhibits the literal constant as data */
+  .r323b-chip-ink { background: #282828; } /* color-gate: allow — the /__brand specimen exhibits the literal constant as data */
+  .r323b-chip-orange { background: #FA3600; } /* color-gate: allow — the /__brand specimen exhibits the literal constant as data */
 
   /* ── 6 · do / don't ─────────────────────────────────────────────── */
   .r323b-dd {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 16px;
+    gap: var(--sp-4);
   }
   .r323b-dd ul {
     margin: 0;
-    padding: 18px 20px;
+    padding: 18px var(--sp-5); /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     border: 1px solid var(--rule);
     background: var(--surface);
     list-style: none;
     display: grid;
-    gap: 10px;
+    gap: var(--sp-2-5);
   }
-  .r323b-dd > div > .r323b-mono { display: block; margin-bottom: 10px; }
-  .r323b-dd li { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+  .r323b-dd > div > .r323b-mono { display: block; margin-bottom: var(--sp-2-5); }
+  .r323b-dd li { font-size: 13px; /* type-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */ color: var(--text-muted); line-height: 1.7; }
   .r323b-do { border-inline-start: 2px solid var(--success); }
   .r323b-dont { border-inline-start: 2px solid var(--danger); }
 
@@ -171,7 +171,7 @@
     display: grid;
     place-items: center;
     border: 1px solid var(--rule);
-    padding: clamp(24px, 5vw, 48px);
+    padding: clamp(24px, 5vw, 48px); /* spacing-gate: allow — the /__brand specimen sheet exhibits the literal rung as data */
     background: var(--bg);
   }
   @media (prefers-reduced-motion: reduce) {

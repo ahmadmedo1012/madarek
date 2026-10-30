@@ -89,7 +89,6 @@ export function InkSketch() {
         <span className="inkm-sketch-mark inkm-sketch-mark-tr" />
         <span className="inkm-sketch-mark inkm-sketch-bl" />
         <span className="inkm-sketch-mark inkm-sketch-br" />
-        <span className="inkm-sketch-coord fo-mono" dir="ltr">[SHEET · FIELD 06]</span>
       </span>
     </span>
   );

@@ -36,7 +36,7 @@ import { useAuthStore, type AcademicPosition } from '../../stores/auth.store';
  * corner marks + grain film) and the mono sheet-label — the /auth pages'
  * grammar carried to the chrome-less guest colleges surfaces, mounted
  * ONLY in the guest branch (authed visitors get the AppShell). */
-import { GuestSheetChrome, GuestSheetLabel } from '../../components/layout/GuestSheetChrome';
+import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 // D14 CSS split (13-17): this sheet also styles the .comp-* competitions
 // grid rendered by the page below and is shared with two other lazy
 // consumers (CompetitionsPages + CommunityPages — rg-verified, r157;
@@ -306,7 +306,6 @@ export function CollegesIndexPage() {
           header note) + the registry's mono identity line over the
           header. Authed visitors keep the shell untouched. */}
       {isGuest && <GuestSheetChrome portal />}
-      {isGuest && <GuestSheetLabel>[MDRK-COLLEGES] · REGISTRY 01/03</GuestSheetLabel>}
       {/* r264: ترويسة patterns هادئة — «المسرح الملوّن» (SectionAccent
           scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
           لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
@@ -597,7 +596,6 @@ export function CollegeDetailPage() {
       style={collegeStyle}
     >
       {isGuest && <GuestSheetChrome portal />}
-      {isGuest && <GuestSheetLabel>[MDRK-COLLEGES] · REGISTRY 03/03</GuestSheetLabel>}
       {/* Back to the gallery (A14 P2-3): the one detail page in the app
           without a back affordance — copies the CourseDetail idiom
           (ghost button, ChevronRight = the RTL back direction). */}
@@ -1002,7 +1000,6 @@ export function CollegesLeaderboardPage() {
   return (
     <div className="page colleges-leaderboard">
       {isGuest && <GuestSheetChrome portal />}
-      {isGuest && <GuestSheetLabel>[MDRK-COLLEGES] · REGISTRY 02/03</GuestSheetLabel>}
       {/* Gallery back-link (A12 P1-2): leaderboard ↔ gallery used to be
           one-way — the gallery CTA brought you here and the ONLY link
           out was the landing. Same ghost idiom as the detail page. */}

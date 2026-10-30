@@ -33,7 +33,6 @@ export function AboutPage() {
 
   return (
     <LegalSheet
-      code="about"
       title="عن مدارك"
       lede="كل ما يمكن قوله بصدق اليوم موجود في فقرة واحدة — نضعها هنا كما هي في صفحة البداية، حرفيًا."
       updated={LEGAL_UPDATED}
@@ -83,18 +82,29 @@ export function AboutPage() {
 /* ═══ [C-05] المساعدة والأسئلة الشائعة ══════════════════════════════ */
 
 /** The nine FAQs — every answer cites a real surface (PAGES-GAP P1-5):
- * the test-account table, the five roles, the honest password-reset
- * truth, the noscript line, the reduced-motion paths, the theme
- * toggle, the storage ledger, the capability ledger, the print
- * stylesheet. No invented support channels. */
-const FAQS: ReadonlyArray<{ q: string; a: ReactNode }> = [
+ * the five roles, the honest password-reset truth, the noscript line,
+ * the reduced-motion paths, the theme toggle, the storage ledger, the
+ * capability ledger, the print stylesheet. No invented support channels.
+ *
+ * r324 X15 — the pilot CREDENTIALS (@test.ly / the shared password)
+ * ride `showPilotAccounts`: true on dev/preview builds and on a prod
+ * build explicitly made with VITE_PILOT_HELP_ACCOUNTS=1 for the pilot
+ * cohort. Default production builds get the honest credential-free
+ * variants — a public help page never publishes a working password. */
+const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNode }> => [
   {
     q: 'كيف أجرّب المنصّة؟',
-    a: (
+    a: showPilotAccounts ? (
       <>
-        بحسابات الاختبار المنشورة: بريد ينتهي بـ <CodeRun>@test.ly</CodeRun> وكلمة المرور <CodeRun>12345678</CodeRun> —
+        بحسابات الاختبار الموزّعة على المختبرين: بريد ينتهي بـ <CodeRun>@test.ly</CodeRun> وكلمة المرور <CodeRun>12345678</CodeRun> —
         حساب واحد لكل دور، معروضة في لوحة «حسابات تجريبية» على صفحة الدخول في بيئة التطوير (زر «تعبئة»
         يملأ الحقول ثم «دخول» يدخل بها).
+      </>
+    ) : (
+      <>
+        حسابات التجربة تُوزّع على فريق المختبرين عند فتح كل مرحلة — إن كنت من المختبرين فاستخدم
+        الحساب الذي وصلك من فريق مدارك، وإن لم يصل بعدُ فانتظر فتح التسجيل من
+        {' '}<Link to="/auth/register" className="lg-link">نموذج إنشاء الحساب</Link>.
       </>
     ),
   },
@@ -110,10 +120,18 @@ const FAQS: ReadonlyArray<{ q: string; a: ReactNode }> = [
   },
   {
     q: 'نسيت كلمة المرور — ماذا أفعل؟',
-    a: (
+    a: showPilotAccounts ? (
       <>
         الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حسابات <CodeRun>@test.ly</CodeRun> كلمة مرورها
         معروفة (<CodeRun>12345678</CodeRun>) فتُملأ من صفحة الدخول مباشرة؛ وإن كان حسابك الخاص فقدنا كلمة
+        مروره فالطريق اليوم <Link to="/contact" className="lg-link">قناة التواصل</Link> — لا نعدك بغير ما
+        يعمل.
+      </>
+    ) : (
+      <>
+        الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حساب تجريبي؟ استخدم بيانات الحساب الذي وصلك
+        من فريق التجربة وادخل بها مباشرة من
+        {' '}<Link to="/auth" className="lg-link">صفحة الدخول</Link>؛ وإن كان حسابك الخاص فقدنا كلمة
         مروره فالطريق اليوم <Link to="/contact" className="lg-link">قناة التواصل</Link> — لا نعدك بغير ما
         يعمل.
       </>
@@ -182,15 +200,22 @@ export function HelpPage() {
     description: 'إجابات قصيرة وصادقة عن مدارك — كل جواب يشير إلى سطح حقيقي في المنصّة، لا إلى وعود.',
   });
 
+  /* r324 X15 — the credential-bearing FAQ variants render on dev/preview
+   * builds, or a prod build explicitly made with VITE_PILOT_HELP_ACCOUNTS=1
+   * for the pilot cohort. Default production: the honest, credential-free
+   * answers. */
+  const showPilotAccounts =
+    import.meta.env.DEV || import.meta.env.VITE_PILOT_HELP_ACCOUNTS === '1';
+  const faqList = faqs(showPilotAccounts);
+
   return (
     <LegalSheet
-      code="help"
       title="المساعدة والأسئلة الشائعة"
       lede="تسعة أسئلة هي ما يسأله الزوار فعلًا — وكل جواب يستند إلى ما يعمل اليوم في المنصّة، بلا تجميل."
       updated={LEGAL_UPDATED}
     >
       <div className="lg-faq">
-        {FAQS.map((f, i) => (
+        {faqList.map((f, i) => (
           <div className="lg-faq-item" key={f.q}>
             <h2 className="lg-faq-q">
               <span className="lg-mono" dir="ltr" aria-hidden="true">
@@ -217,7 +242,6 @@ export function ContactPage() {
 
   return (
     <LegalSheet
-      code="contact"
       title="التواصل والتسجيل المبكر"
       lede="لا نخترع قنوات تواصل — هذه هي القناة المتاحة فعلًا اليوم، مكتوبة كما هي."
       updated={LEGAL_UPDATED}

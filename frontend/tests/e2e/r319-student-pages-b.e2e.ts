@@ -52,10 +52,15 @@ async function readBars(page: import('@playwright/test').Page) {
 }
 
 async function expectSheetContract(page: import('@playwright/test').Page) {
+  /* r324 X10 re-pin: the ambient sheet code is RETIRED from the DOM
+   * (the innerText jargon sweep) — the e2e belt pins the retirement
+   * on the REAL rendered page, structure-agnostically (some routes
+   * here carry no h1.pf-page-title): the corner-code line must be
+   * gone AND its text must never leak into the page's innerText. */
   const code = page.locator('.page-sheet-code');
-  await expect(code).toHaveCount(1);
-  await expect(code).toContainText('SHEET S-01 · STUDENT');
-  expect(await code.locator('span').getAttribute('dir')).toBe('ltr');
+  await expect(code).toHaveCount(0);
+  const pageText = await page.evaluate(() => document.body?.innerText ?? '');
+  expect(pageText).not.toContain('SHEET S-01');
 }
 
 test.describe('student pages B — §B2 sheet grammar (chromium · light)', () => {

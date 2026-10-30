@@ -16,7 +16,7 @@ import { HydrationSplash } from './components/HydrationSplash';
 import { Splash } from './components/overlays/Splash';
 import { RouteProgress } from './components/overlays/RouteProgress';
 import { SlowServerCard } from './components/overlays/SlowServerCard';
-import { loaderOrchestrator } from './lib/loaderOrchestrator';
+import { loaderOrchestrator, useLoaderState } from './lib/loaderOrchestrator';
 import { subscribeServerWake } from './lib/serverWake';
 import { RouteErrorBoundary } from './components/ErrorBoundary';
 import { ToastStack } from './components/overlays/Toast';
@@ -224,7 +224,12 @@ const DesignPage = lazy(() => import('./pages/DesignPage'));
 function HomeRedirect() {
   const user = useAuthStore((s) => s.user);
   const isHydrated = useAuthStore((s) => s.isHydrated);
-  if (!isHydrated) return <HydrationSplash />;
+  /* R323 §A2 foreman integration: the boot Splash (app-root mount)
+   * owns the pre-hydration window — rendering the legacy
+   * HydrationSplash HERE as well put TWO logos on screen at boot
+   * (the r323-loader-overlap pin's exact defect). null is invisible:
+   * the splash layer covers the viewport until the store decides. */
+  if (!isHydrated) return null;
   if (!user)
     return (
       <GuestReveal>
@@ -258,7 +263,9 @@ function ParamRedirect({ build }: { build: (params: Record<string, string | unde
 function GuestRoute() {
   const isHydrated = useAuthStore((s) => s.isHydrated);
   const user = useAuthStore((s) => s.user);
-  if (!isHydrated) return <HydrationSplash />;
+  /* R323 §A2 foreman integration: the boot Splash owns this window
+   * (see HomeRedirect) — null, never a second branded surface. */
+  if (!isHydrated) return null;
   if (user) return <Navigate to={ROLE_HOME[user.role]} replace />;
   return (
     <GuestReveal>
@@ -285,7 +292,9 @@ function GuestRoute() {
 function CollegesLayout() {
   const isHydrated = useAuthStore((s) => s.isHydrated);
   const user = useAuthStore((s) => s.user);
-  if (!isHydrated) return <HydrationSplash />;
+  /* R323 §A2 foreman integration: the boot Splash owns this window
+   * (see HomeRedirect) — null, never a second branded surface. */
+  if (!isHydrated) return null;
   if (user) return <AppShell />;
   return (
     <>
@@ -337,6 +346,22 @@ function CollegesLayout() {
  *  theme-aware placeholder family — and the two visual worlds keep
  *  their own loading languages: splash for shell-level waits,
  *  page-shaped skeletons only inside the operational shell. */
+/* R323 §A2 foreman integration: the lazy-route Suspense fallback.
+ * While ANY orchestrator fullscreen seat is held (boot splash · guest
+ * sheet loader · slow-server card — every one of them draws the brand
+ * mark) the fallback renders NOTHING: the seat's layer IS the loading
+ * surface for that window, and stacking the legacy HydrationSplash
+ * beside it put a SECOND logo on screen (the r323-loader-overlap
+ * pin's boot defect — splash + HydrationSplash, 2 × [data-logo]).
+ * After the seat frees, the legacy branded placeholder keeps its
+ * historical role for mid-session chunk loads — one branded surface
+ * at a time by construction (the seat is a single variable). */
+function BootAwareFallback() {
+  const snap = useLoaderState();
+  if (snap.fullscreen !== null) return null;
+  return <HydrationSplash />;
+}
+
 export function AppRoutes() {
   /* (r172a: useLandingBootGround — the r162 (R1) React owner of the
    *  landing boot ground — was RETIRED with the whole data-landing-boot
@@ -344,7 +369,7 @@ export function AppRoutes() {
    *  now, so body/splash/landing paint one ground from the first styled
    *  frame and there is no world-crossing window left to own.) */
   return (
-    <Suspense fallback={<HydrationSplash />}>
+    <Suspense fallback={<BootAwareFallback />}>
       <Routes>
         {/* r157 (6A4-11): guest surfaces — authed users bounce to
             their role home after hydration (GuestRoute). */}

@@ -238,7 +238,34 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       setPlay(true);
       return;
     }
-    /* queued behind a REAL layer — hold the render until the grant */
+    /* queued behind a REAL layer — the wait-for-grant belt below
+     * owns the subscription (r324: the old inline subscribe rode
+     * THIS effect's cleanup, which StrictMode tears down while the
+     * decidedRef guard blocks the re-run — see the belt's comment) */
+  }, []);
+
+  /* ── The wait-for-grant belt (r324 CI deadlock fix) ────────────────
+   * StrictMode (dev) mounts every effect, runs its cleanups, then
+   * re-runs it. The decide-once effect above used to return the
+   * queued subscription as its own cleanup — the re-run was guarded
+   * off by decidedRef, so after the teardown nothing re-armed the
+   * listener. When the decision landed while a REAL layer still held
+   * the seat (the boot splash inside its ≤250ms exit fade, on a
+   * reload whose lazy landing chunk arrives in exactly that window —
+   * the CI-only r308 replay failure), the splashExited() grant emit
+   * arrived with no subscriber and `.sl` never rendered. This belt
+   * re-checks the LIVE snapshot on every (re)run while the play is
+   * still pending and re-arms the subscription — the grant can no
+   * longer be missed, whatever the mount/unmount choreography. */
+  useEffect(() => {
+    if (play !== null) return undefined;
+    const snap = getSnapshot();
+    if (snap.fullscreen === 'sheet-loader') {
+      /* the grant already landed (e.g. between a teardown and this
+       * re-run) — play now, no subscription needed */
+      setPlay(true);
+      return undefined;
+    }
     const onSnap = (s: ReturnType<typeof getSnapshot>) => {
       if (s.fullscreen === 'sheet-loader') {
         unsub();
@@ -247,7 +274,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     };
     const unsub = subscribe(onSnap);
     return unsub;
-  }, []);
+  }, [play]);
 
   /* ── The sequence: asset-gated counter → hold → staged exit. ───── */
   useEffect(() => {
@@ -521,10 +548,10 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
             <span className="sl-meta-title">مدارك — منصّة التعليم الذكي</span>
           </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
-            MADAREK · LEARNING SHEET
+            MADAREK · LEARNING PLATFORM
           </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
-            TYPE : LEARNING PLATFORM
+            TYPE : ARABIC-FIRST LEARNING PLATFORM
           </span>
           <span className="sl-meta-row fo-mono" dir="ltr">
             FOCUS : THE FULL LEARNING JOURNEY

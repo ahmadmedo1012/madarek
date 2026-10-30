@@ -45,7 +45,6 @@ export function PrivacyPage() {
 
   return (
     <LegalSheet
-      code="privacy"
       title="سياسة الخصوصية"
       lede="هذه الصفحة تصف ما تجمعه مدارك فعلًا — مكتوبة من سلوك المنصّة كما هو في النظام اليوم، بلا مبالغة وبلا وعود. ما لا نعرفه بعد، نكتبه بوضوح: [يُستكمل قبل الإطلاق]."
       updated={LEGAL_UPDATED}
@@ -155,7 +154,6 @@ export function TermsPage() {
 
   return (
     <LegalSheet
-      code="terms"
       title="شروط الاستخدام"
       lede="شروط قصيرة وصادقة لمنصّة تجريبية: نقول ما هي مدارك بالضبط، وما ليست، وما الذي نطلبه منك مقابل حسابك."
       updated={LEGAL_UPDATED}
@@ -245,7 +243,6 @@ export function CookiesPage() {
 
   return (
     <LegalSheet
-      code="cookies"
       title="ملفات تعريف الارتباط والتخزين المحلي"
       lede="هذه هي القائمة الكاملة لما تكتبه مدارك على جهازك: كوكي واحد وتسعة مفاتيح تخزين محلي — لا شيء غيرها، ولا تحليلات ولا تتبّع."
       updated={LEGAL_UPDATED}
@@ -346,7 +343,6 @@ export function AccessibilityPage() {
 
   return (
     <LegalSheet
-      code="accessibility"
       title="بيان إمكانية الوصول"
       lede="هذا البيان يذكر ما يشحنه التطبيق فعلًا اليوم — لا ادّعاء اجتياز أي معيار رسمي قبل أن يحدث."
       updated={LEGAL_UPDATED}
@@ -400,7 +396,6 @@ export function SecurityPage() {
 
   return (
     <LegalSheet
-      code="security"
       title="الأمن والإفصاح المسؤول"
       lede="قائمة الضوابط التي يشحنها النظام فعلًا — لا شهادات ولا اعتمادات: لا ندّعي ما ليس لدينا."
       updated={LEGAL_UPDATED}
@@ -455,7 +450,6 @@ export function DataPage() {
 
   return (
     <LegalSheet
-      code="data"
       title="البيانات وبيانات العرض"
       lede="صفحة واحدة تجيب عن سؤال واحد: ما الذي داخل مدارك اصطناعي للعرض، وما الذي هو بيانات حقيقية كتبتها أنت؟"
       updated={LEGAL_UPDATED}

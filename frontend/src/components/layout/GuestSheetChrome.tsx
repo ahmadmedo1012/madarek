@@ -57,17 +57,8 @@ export function GuestSheetChrome({ portal = false }: { portal?: boolean }) {
   return portal ? createPortal(chrome, document.body) : chrome;
 }
 
-/**
- * GuestSheetLabel — the sheet's mono identity line (`[MDRK-…] · SHEET
- * NN/NN`), the drafting voice the auth sheet opens with. Latin run in
- * the mono voice, dir=ltr, aria-hidden (pure decoration — the page's
- * real heading carries the meaning). Consumes the shared
- * .auth-sheet-label contract from auth.css (same borrow note).
- */
-export function GuestSheetLabel({ children }: { children: string }) {
-  return (
-    <p className="auth-sheet-label" aria-hidden="true">
-      <span dir="ltr">{children}</span>
-    </p>
-  );
-}
+/* r324 X10 — the former GuestSheetLabel component (the `[MDRK-…] ·
+ * SHEET NN/NN` mono identity line) is RETIRED: coordinates/revision
+ * tags are not content. Its last callers (the colleges registry
+ * sheets, the auth doors, register) dropped the lines with this
+ * round's sweep. */

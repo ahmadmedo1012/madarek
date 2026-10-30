@@ -298,18 +298,22 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     /* the sticky moves INSIDE the plan column (Heron's own mobile
      * architecture): the frame yields, the column IS the track */
     expect(media).toMatch(/\.jt-pin \{[^}]*position: static;/);
-    expect(media).toMatch(/\.jt-map-col \{[^}]*block-size: 450dvh;/);
+    expect(media).toMatch(/\.jt-map-col \{[^}]*block-size: 466dvh;/);
     expect(media).toMatch(/\.jt-map-in \{[^}]*position: sticky;/);
     /* the docH track ladder (re-derived from the measured slack —
-     * 380dvh @400–767 · 415dvh @≤399 over the 450dvh tablet base;
-     * R322 3-b-fix3 override: the ≤399 rung 425→415 recovers the 320
-     * never-raise pin after the round-2 closing foot row) */
+     * 380dvh @400–767 over the 466dvh tablet base; R322 3-b-fix3
+     * override: the ≤399 rung 425→415 recovers the 320 never-raise pin
+     * after the round-2 closing foot row) */
     expect(LANDING_CSS).toMatch(/@media \(max-width: 767px\) \{\s*\.jt-map-col \{\s*block-size: 380dvh;/);
     /* the ≤399 rung — re-seated at R322 3-b round-4 (415dvh, comment-
      * tolerant). R323 note: this same pin was independently re-pinned
      * in the R323 wave with an R323 override note; upstream's tolerant
-     * form is the canonical survivor after the rebase. */
-    expect(LANDING_CSS).toMatch(/@media \(max-width: 399px\) \{[\s\S]*?\.jt-map-col \{[\s\S]*?block-size: 415dvh;/);
+     * form is the canonical survivor after the rebase.
+     * R324 X14 override: 415→473dvh — the Heron-ledger anchor is the
+     * REAL 390×844 pair (the pre-X14 probe read the stale
+     * contain-intrinsic-size guess); 473dvh lands the section at
+     * 4821 vs Heron 4819 (+0.04 %) — the ±2 % docH contract. */
+    expect(LANDING_CSS).toMatch(/@media \(max-width: 399px\) \{[\s\S]*?\.jt-map-col \{[\s\S]*?block-size: 473dvh;/);
     /* the INTRODUCTION card sits IN FLOW below the plan (the V10
      * «شاهد»-clip class dies by construction: the card never overlaps
      * the drawing) */

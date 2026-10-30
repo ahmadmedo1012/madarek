@@ -1,10 +1,15 @@
 name: CI
 
 on:
+  # r325 (widening): every push on ANY branch + every PR — supersedes the
+  # main-only filters. The repo is public (free Actions minutes) and the
+  # per-ref concurrency group already collapses rapid pushes to the same
+  # ref. All nine jobs (lint, typecheck, build, unit x2, db-integration,
+  # e2e, ios-webkit, design-gates, surface-drift) run unchanged — a
+  # regression on any branch is caught at the push itself. The
+  # ios-webkit job keeps its push-only condition (documented cost choice).
   push:
-    branches: [main]
   pull_request:
-    branches: [main]
   workflow_dispatch:
 
 # Least privilege — this pipeline never needs write scopes.

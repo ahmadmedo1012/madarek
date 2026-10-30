@@ -1,0 +1,910 @@
+{
+ "generatedAt": "2026-10-29T20:56:53.727Z",
+ "note": "Heron section ledger \u2014 ordered docY/h per bp; source full-<bp>.json",
+ "runs": [
+  {
+   "bp": "1440",
+   "meta": {
+    "rootFontSize": {
+     "px": 8.33333,
+     "vwPct": 0.58
+    },
+    "bodyBg": "rgba(0, 0, 0, 0)",
+    "docH": 12338,
+    "scroller": {
+     "selector": "div.main-inner.lenis",
+     "clientH": 887,
+     "scrollH": 12338,
+     "maxScroll": 11451
+    },
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "bp": "1440",
+    "capturedAt": "2026-10-29T20:56:53.727Z",
+    "url": "https://heronaiapp.com/",
+    "httpStatus": 200,
+    "loader": {
+     "autoDismissed": true,
+     "timeline": [
+      {
+       "t": 500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 1000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 1500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 2000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 2500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 3000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 3500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 4000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 4500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 5000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1427,
+        887
+       ]
+      },
+      {
+       "t": 5500,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      },
+      {
+       "t": 6000,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      }
+     ]
+    },
+    "cookieBanner": {
+     "measured": {
+      "cls": [
+       "cookie-banner",
+       "bg-global",
+       "is-visible"
+      ],
+      "rect": [
+       832,
+       856,
+       601,
+       38
+      ],
+      "z": "100009"
+     },
+     "accepted": false,
+     "escapeDismissed": true
+    }
+   },
+   "ledger": [
+    {
+     "sel": ".home-hero",
+     "docY": 7,
+     "h": 887,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-intro",
+     "docY": 893,
+     "h": 723,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-problem",
+     "docY": 1616,
+     "h": 743,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-map",
+     "docY": 2358,
+     "h": 6300,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-platform",
+     "docY": 8658,
+     "h": 710,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-why",
+     "docY": 9368,
+     "h": 681,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-usecase",
+     "docY": 10049,
+     "h": 887,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".cta",
+     "docY": 10936,
+     "h": 698,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".footer",
+     "docY": 11634,
+     "h": 711,
+     "bg": "rgba(0, 0, 0, 0)"
+    }
+   ]
+  },
+  {
+   "bp": "1024",
+   "meta": {
+    "rootFontSize": {
+     "px": 5.92593,
+     "vwPct": 0.58
+    },
+    "bodyBg": "rgba(0, 0, 0, 0)",
+    "docH": 9926,
+    "scroller": {
+     "selector": "div.main-inner.lenis",
+     "clientH": 759,
+     "scrollH": 9926,
+     "maxScroll": 9167
+    },
+    "viewport": {
+     "w": 1024,
+     "h": 768
+    },
+    "bp": "1024",
+    "capturedAt": "2026-10-29T20:58:03.679Z",
+    "url": "https://heronaiapp.com/",
+    "httpStatus": 200,
+    "loader": {
+     "autoDismissed": true,
+     "timeline": [
+      {
+       "t": 500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 1000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 1500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 2000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 2500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 3000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 3500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 4000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 4500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 5000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        1015,
+        759
+       ]
+      },
+      {
+       "t": 5500,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      },
+      {
+       "t": 6000,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      }
+     ]
+    },
+    "cookieBanner": {
+     "measured": {
+      "cls": [
+       "cookie-banner",
+       "bg-global",
+       "is-visible"
+      ],
+      "rect": [
+       592,
+       737,
+       428,
+       28
+      ],
+      "z": "100009"
+     },
+     "accepted": false,
+     "escapeDismissed": true
+    }
+   },
+   "ledger": [
+    {
+     "sel": ".home-hero",
+     "docY": 5,
+     "h": 759,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-intro",
+     "docY": 763,
+     "h": 514,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-problem",
+     "docY": 1277,
+     "h": 528,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-map",
+     "docY": 1805,
+     "h": 5376,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-platform",
+     "docY": 7181,
+     "h": 505,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-why",
+     "docY": 7686,
+     "h": 484,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-usecase",
+     "docY": 8170,
+     "h": 759,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".cta",
+     "docY": 8929,
+     "h": 496,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".footer",
+     "docY": 9425,
+     "h": 505,
+     "bg": "rgba(0, 0, 0, 0)"
+    }
+   ]
+  },
+  {
+   "bp": "768",
+   "meta": {
+    "rootFontSize": {
+     "px": 9.20863,
+     "vwPct": 1.2
+    },
+    "bodyBg": "rgba(0, 0, 0, 0)",
+    "docH": 12535,
+    "scroller": {
+     "selector": "div.main-inner.lenis",
+     "clientH": 1009,
+     "scrollH": 12535,
+     "maxScroll": 11526
+    },
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "bp": "768",
+    "capturedAt": "2026-10-29T20:58:34.990Z",
+    "url": "https://heronaiapp.com/",
+    "httpStatus": 200,
+    "loader": {
+     "autoDismissed": true,
+     "timeline": [
+      {
+       "t": 500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 1000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 1500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 2000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 2500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 3000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 3500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 4000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 4500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 5000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        753,
+        1009
+       ]
+      },
+      {
+       "t": 5500,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      },
+      {
+       "t": 6000,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      }
+     ]
+    },
+    "cookieBanner": {
+     "measured": {
+      "cls": [
+       "cookie-banner",
+       "bg-global",
+       "is-visible"
+      ],
+      "rect": [
+       384,
+       926,
+       377,
+       95
+      ],
+      "z": "100009"
+     },
+     "accepted": false,
+     "escapeDismissed": true
+    }
+   },
+   "ledger": [
+    {
+     "sel": ".home-hero",
+     "docY": 7,
+     "h": 1009,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-intro",
+     "docY": 1017,
+     "h": 527,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-problem",
+     "docY": 1544,
+     "h": 1333,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-map",
+     "docY": 2876,
+     "h": 5454,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-platform",
+     "docY": 8331,
+     "h": 508,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-why",
+     "docY": 8839,
+     "h": 877,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-usecase",
+     "docY": 9716,
+     "h": 1336,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".cta",
+     "docY": 11053,
+     "h": 541,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".footer",
+     "docY": 11594,
+     "h": 949,
+     "bg": "rgba(0, 0, 0, 0)"
+    }
+   ]
+  },
+  {
+   "bp": "390",
+   "meta": {
+    "rootFontSize": {
+     "px": 9.92366,
+     "vwPct": 2.54
+    },
+    "bodyBg": "rgba(0, 0, 0, 0)",
+    "docH": 11363,
+    "scroller": {
+     "selector": "div.main-inner.lenis",
+     "clientH": 828,
+     "scrollH": 11363,
+     "maxScroll": 10535
+    },
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "bp": "390",
+    "capturedAt": "2026-10-29T20:57:32.222Z",
+    "url": "https://heronaiapp.com/",
+    "httpStatus": 200,
+    "loader": {
+     "autoDismissed": true,
+     "timeline": [
+      {
+       "t": 500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 1000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 1500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 2000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 2500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 3000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 3500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 4000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 4500,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 5000,
+       "loaderCls": [
+        "loading"
+       ],
+       "loaderBox": [
+        374,
+        828
+       ]
+      },
+      {
+       "t": 5500,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      },
+      {
+       "t": 6000,
+       "loaderCls": [
+        "loading",
+        "loaded"
+       ],
+       "loaderBox": [
+        0,
+        0
+       ]
+      }
+     ]
+    },
+    "cookieBanner": {
+     "measured": {
+      "cls": [
+       "cookie-banner",
+       "bg-global",
+       "is-visible"
+      ],
+      "rect": [
+       8,
+       746,
+       374,
+       93
+      ],
+      "z": "100009"
+     },
+     "accepted": false,
+     "escapeDismissed": true
+    }
+   },
+   "ledger": [
+    {
+     "sel": ".home-hero",
+     "docY": 8,
+     "h": 828,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-intro",
+     "docY": 836,
+     "h": 837,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-problem",
+     "docY": 1673,
+     "h": 869,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-map",
+     "docY": 2542,
+     "h": 4819,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-platform",
+     "docY": 7361,
+     "h": 517,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-why",
+     "docY": 7878,
+     "h": 806,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".home-usecase",
+     "docY": 8684,
+     "h": 948,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".cta",
+     "docY": 9632,
+     "h": 500,
+     "bg": "rgba(0, 0, 0, 0)"
+    },
+    {
+     "sel": ".footer",
+     "docY": 10132,
+     "h": 1239,
+     "bg": "rgba(0, 0, 0, 0)"
+    }
+   ]
+  }
+ ]
+}

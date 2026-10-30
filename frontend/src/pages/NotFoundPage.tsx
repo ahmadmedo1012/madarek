@@ -4,9 +4,10 @@
  * r313: the Heron guest-sheet grammar — full-bleed warm paper carrying
  * the LANDING FRAME SYSTEM (a fixed 1px #B3B3AF hairline at the 7px
  * viewport inset with 10×10 mono plus marks centered on its corners —
- * the .sheet-frame/.sheet-mark recipe, D9), the mono `ERR [404]`
- * micro-label (Latin, LTR, Geist Mono uppercase) over the Arabic
- * explanation, and the line-drawn mk-ill `not-found` scene (r280; the
+ * the .sheet-frame/.sheet-mark recipe, D9) over the Arabic explanation
+ * (r324 X10: the mono `ERR [404]` micro-label and the coordinates line
+ * are retired — coordinates/revision tags are not content), and the
+ * line-drawn mk-ill `not-found` scene (r280; the
  * r313 two-tone recolour — square corners, paper-step tints). One
  * witty-but-dignified line, a prominent way home, and two secondary
  * ways back for the two kinds of lost visitor: the public browser (the
@@ -53,28 +54,18 @@ export default function NotFoundPage() {
           <Illustration name="not-found" />
         </div>
 
-        {/* The error code for assistive tech — the scene carries it
-            visually (mono ERR [404]), the title carries the meaning. */}
+        {/* r324 X10 — the mono `ERR [404]` eyebrow and the
+            `[0,0] · ROUTE NOT MAPPED · MADAREK` coordinates line are
+            RETIRED: coordinates/revision tags are not content. The
+            sr-only «خطأ 404.» carrier stays; the title carries the
+            meaning. */}
         <span className="sr-only">خطأ 404.</span>
-
-        {/* r313: the visible code marker — the reference's mono
-            micro-label voice (Geist Mono, uppercase, LTR). The AT
-            carrier is the sr-only span above, so the visible run is
-            aria-hidden (the bento code-badge precedent) and never
-            announced twice. */}
-        <span className="nf-eyebrow" aria-hidden="true" dir="ltr">ERR [404]</span>
 
         <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>
         <p className="nf-sub">
           الرابط الذي فتحته لا يطابق أيّ صفحة في مدارك — ربّما تغيّر عنوانها أو وُرِد
           بشكل غير دقيق.
         </p>
-
-        {/* r313: the coordinate line — the reference's edge coordinate
-            labels (mono, faint, LTR). Decorative. */}
-        <span className="nf-coords" aria-hidden="true" dir="ltr">
-          [0,0] &middot; ROUTE NOT MAPPED &middot; MADAREK
-        </span>
 
         <div className="nf-actions">
           <Link to="/" className="btn primary lg">

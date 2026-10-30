@@ -62,7 +62,7 @@
     font-family: var(--font-display);
     font-size: 3.2rem;   /* type-gate: allow — 26.7px @1440, the reference's own h4 step-title rung (rem rides the streaming root) */
     line-height: var(--lh-snug);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r324 P3 — 500/600 only */
     color: var(--text);
   }
   .r319s-bar-rule {
@@ -377,8 +377,11 @@
    one display voice per page, and it is the masthead's. */
 .r319s-page .pf-page-title {
   font-family: var(--font-display);
-  font-size: var(--fs-h1);      /* 46.67px @1440 — the display rung */
-  font-weight: var(--fw-bold);
+  /* r324 P3 (X9) — the app-density masthead: 28px @1440 · 24px @390
+     (the dashboards' own ladder — the display d1 rung is for narrative
+     pages, not framed app headers). */
+  font-size: var(--fs-app-h1);
+  font-weight: var(--fw-semibold);
   line-height: 1.05;            /* the Alexandria display canon */
   letter-spacing: 0;            /* Arabic joins — never tracked */
   color: var(--text);

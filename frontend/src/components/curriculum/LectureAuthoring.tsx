@@ -11,7 +11,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Captions, ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp, Wand2 } from 'lucide-react';
+import { Captions, Check, ChevronDown, ChevronUp, Clock, ExternalLink, ListVideo, Pencil, Trash2, CircleHelp, Wand2 } from 'lucide-react';
 import { ConfirmDialog } from '../owner/ConfirmDialog';
 import { Icon } from '../Icon';
 import { Badge } from '../primitives';
@@ -447,7 +447,11 @@ function TranscriptField({ lectureId, existingUrl }: { lectureId: string; existi
           {existingUrl ? 'استبدال النص' : 'رفع ملف النص'}
         </button>
         {busy && <span className="tr-field-status">جارٍ الحفظ…</span>}
-        {done && !busy && <span className="tr-field-status tr-field-ok">محفوظ ✓</span>}
+        {done && !busy && (
+          <span className="tr-field-status tr-field-ok">
+            محفوظ <Icon icon={Check} size={14} />
+          </span>
+        )}
         {existingUrl && !done && !busy && <span className="tr-field-status">ملف موجود</span>}
         {/* r323 B2.3 — the auto-generation seat (STT provider; honest
             refusal when unconfigured, live status chip while running). */}
@@ -464,7 +468,11 @@ function TranscriptField({ lectureId, existingUrl }: { lectureId: string; existi
         {(stt === 'QUEUED' || stt === 'RUNNING') && (
           <span className="tr-field-status">{stt === 'QUEUED' ? 'في الطابور…' : 'جارٍ التحويل…'}</span>
         )}
-        {stt === 'DONE' && <span className="tr-field-status tr-field-ok">مولّد ✓</span>}
+        {stt === 'DONE' && (
+          <span className="tr-field-status tr-field-ok">
+            مولّد <Icon icon={Check} size={14} />
+          </span>
+        )}
         <input
           ref={inputRef}
           type="file"

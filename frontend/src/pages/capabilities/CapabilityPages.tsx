@@ -50,7 +50,6 @@ export function CapabilitiesPage() {
             <Logo variant="mark" size={22} />
             مدارك
           </Link>
-          <span className="cu-header-index fo-mono" dir="ltr">MADAREK · LEDGER SHEET · [C-02]</span>
         </div>
       </header>
 

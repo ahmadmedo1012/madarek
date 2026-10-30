@@ -93,9 +93,6 @@ export default function ForgotPasswordPage() {
 
       <main className="auth-center">
         <div className="auth-card">
-          <p className="auth-sheet-label" aria-hidden="true">
-            <span dir="ltr">[MDRK-AUTH] · SHEET 01/01</span>
-          </p>
 
           <div className="auth-form-header">
             <span className="auth-meta">(استعادة الحساب)</span>

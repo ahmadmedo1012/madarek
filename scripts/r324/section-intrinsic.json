@@ -1,0 +1,20 @@
+{
+  "1024": {
+    ".st-section": 502,
+    ".pm-section": 432,
+    ".chapters": 5203,
+    ".pr-section": 458,
+    ".wy-section": 449,
+    ".rl-section": 712,
+    ".fo-cta": 451
+  },
+  "1440": {
+    ".st-section": 597,
+    ".pm-section": 609,
+    ".chapters": 6080,
+    ".pr-section": 645,
+    ".wy-section": 615,
+    ".rl-section": 822,
+    ".fo-cta": 625
+  }
+}

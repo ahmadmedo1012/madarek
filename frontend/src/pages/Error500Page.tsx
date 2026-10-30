@@ -22,8 +22,6 @@ export default function Error500Page() {
   const title = 'خللٌ من جانبنا\u00A0— لا من جانبك';
   return (
     <ErrorSheetPage
-      code="ERR [500]"
-      coords="SERVER FAULT"
       title={title}
       lead="حدث خطأ داخلي أثناء تجهيز هذه الصفحة. فريق مدارك يرصد الأخطاء تلقائيًا؛ جرّب تحديث الصفحة بعد لحظات."
       illustration="error-generic"
