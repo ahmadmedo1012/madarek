@@ -111,7 +111,16 @@
     color: var(--neutral-0);
     border-color: transparent;
   }
-  .r305s-band--deep .r305s-eyebrow { color: var(--neutral-500); }
+  /* P2.6 — the eyebrow rode the raw --neutral-500 rung, which is tuned
+     for the PAGE ground. On the inverted pole it washes out: 1.87:1 on
+     the dark theme's paper band (2.85:1 on the light theme's ink band —
+     also under the 4.5 floor for a 13px micro-label). The band-safe
+     recipe mixes the band's own fg toward the band ground: 72/28 holds
+     5.32:1 on the paper pole and 8.36:1 on the ink pole (engine math in
+     audits/evidence/r325/ink-app/README.md). */
+  .r305s-band--deep .r305s-eyebrow {
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
   .r305s-band--deep .r305s-eyebrow::before { background: var(--neutral-300); }
   /* Secondary ink on the deep band: mix the band fg back toward the
      band ground — theme-proof by construction (no per-theme rules). */

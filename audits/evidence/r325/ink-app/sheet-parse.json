@@ -1,0 +1,14 @@
+{
+  "what": "P2.6 root-cause proof — the browser CSSOM parse of each sheet's EXACT served bytes (fetch /src/styles/<file>?direct → new CSSStyleSheet().replaceSync() → recursive rule count), main :5173 vs the r325/ink-app worktree :5211",
+  "date": "2025-10-30",
+  "counts": {
+    "r305-student.css":               { "main": 34,  "ink-app": 34 },
+    "r305-student-schedule.css":      { "main": 0,   "ink-app": 30 },
+    "r305-student-supplemental.css":  { "main": 0,   "ink-app": 43 },
+    "r305-research-pdf-ai.css":       { "main": 225, "ink-app": 225 },
+    "r321-player-page.css":           { "main": 21,  "ink-app": 21 },
+    "ai.css":                         { "main": 50,  "ink-app": 50 }
+  },
+  "rootCause": "Both dead sheets' banner comments spelled the motion token families as «--t-*/--motion-*» — the */ inside the token names CLOSED the banner early; the parser then consumed the whole @layer pages { … } block as one bogus qualified rule. Chromium parsed 0 rules for r305-student-schedule.css and r305-student-supplemental.css on main — every dark-theme re-derivation in those sheets (results-summary band inks, r305a-strip stat labels, r305u-fact labels, calendar/matrix anatomy) has been dead since r305. The r321 c1 WP-C0 sweep fixed the same disease in r305-student + training but missed these two siblings. Fixed in this branch by spelling the families out («the --t-* and --motion-* tokens»).",
+  "script": "scripts/r325/sheet-parse-probe.mjs"
+}

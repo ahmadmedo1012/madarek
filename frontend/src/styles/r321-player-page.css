@@ -92,13 +92,12 @@
     padding-inline: 0;
   }
 
-  /* The [01] mono index rides the band's OWN ink: PageHeader renders
-     the page index in the page-ground faint color; inside the deep
-     band that would vanish in light theme — inherit the h1's band
-     ink instead (the band flips with the theme, the index follows). */
-  .r321p-page .lecture-meta-title .page-index {
-    color: inherit;
-  }
+  /* The [01] mono index rides the band's OWN ink: r319-shell ships
+     `.page-index` in the page-ground faint color. The inherit fix used
+     to live here in @layer pages — dead letter: r319-shell's rule is
+     UNLAYERED and outranks any layered rule regardless of specificity
+     (P2.6 measured --text-faint #A2A29D ON the paper band, 2.06:1, in
+     Ink). The living rule sits in the UNLAYERED TAIL below. */
 }
 
 /* ═══ UNLAYERED TAIL — the masthead re-seat (cascade reasoning) ═══════
@@ -130,6 +129,16 @@
 }
 @media (max-width: 767px) {
   .r321p-page .lecture-meta-title { font-size: 3.2rem; } /* type-gate: allow — 31.8px @390, the landing's own phone display rung (the ≤32px brief, kept) */
+}
+
+/* The [01] mono index rides the band's OWN ink (P2.6 — moved out of
+   @layer pages: r319-shell's `.page-index` is UNLAYERED, so the layered
+   inherit never won and the index washed to --text-faint #A2A29D on the
+   dark theme's paper band at 2.06:1). Unlayered + later + higher
+   specificity: this wins, the index follows the h1's band ink in both
+   themes (the band flips, the index follows). */
+.r321p-page .lecture-meta-title .page-index {
+  color: inherit;
 }
 
 /* Reduced-motion belt: this sheet's material is static texture (one

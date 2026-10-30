@@ -153,7 +153,13 @@
     color: var(--neutral-0);
     border-color: transparent;
   }
-  .r305rp-band--deep .r305rp-eyebrow { color: var(--neutral-500); }
+  /* P2.6 — the raw --neutral-500 rung is tuned for the PAGE ground and
+     washes out on the inverted pole (1.87:1 on the dark paper band).
+     Band-safe mix: 5.32:1 paper pole / 8.36:1 ink pole (see the
+     foundation .r305s-eyebrow note — same recipe). */
+  .r305rp-band--deep .r305rp-eyebrow {
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
   .r305rp-band--deep .r305rp-eyebrow::before { background: var(--neutral-300); }
   .r305rp-band--deep .r305rp-band-secondary {
     color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
@@ -396,7 +402,11 @@
     align-items: flex-start;
     gap: var(--sp-4);
   }
-  .r305rp-band--deep .r305rp-metric-label { color: var(--neutral-500); }
+  /* P2.6 — same band-safe recipe as the §3 eyebrow: the raw
+     --neutral-500 rung washed to 1.87:1 on the dark paper band. */
+  .r305rp-band--deep .r305rp-metric-label {
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
   .r305rp-band--deep .r305rp-metric { color: var(--neutral-0); }
   .r305rp-lib-metrics,
   .r305rp-res-metrics {
