@@ -1,0 +1,689 @@
+{
+ "probe": "scripts/r325/y3-probe.mjs (VITE_URL :5203)",
+ "note": "before = HEAD (tree stashed), after = the Y3 fix. Matcher: «التجريبية» / «عرض توضيحي» — the pre-fix .wy-note wording («بيانات تجريبية…») does not contain the definite article, so the before@390 row counts 0 (its only disclosure is the note; frames fold ≤767). Frame-seated gaps read «folded» when the ≤767 belt hides the captures (display:none — the phone why is the state list); their void gate is the note→section-end gap alone.",
+ "tolerance": "void gaps <= 1.5x section padding-block",
+ "before": [
+  {
+   "viewport": {
+    "w": 1440,
+    "h": 900
+   },
+   "theme": "light",
+   "sectionH": 680.4,
+   "sectionPad": {
+    "top": 32,
+    "bottom": 32
+   },
+   "overlayCards": "block",
+   "disclosures": [
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 436
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 436
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 436
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 436
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 33.3,
+     "w": 1380
+    },
+    "rail": {
+     "x": 540.7,
+     "w": 872.7
+    },
+    "stack": {
+     "x": 33.3,
+     "w": 483.3
+    },
+    "lede": {
+     "x": 33.3,
+     "w": 216.7
+    },
+    "ledeCellMatchesStack": false
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 20.4,
+    "noteToSectionEnd": 148.5,
+    "underFrameTotal": 190.3
+   },
+   "bp": 1440
+  },
+  {
+   "viewport": {
+    "w": 1440,
+    "h": 900
+   },
+   "theme": "dark",
+   "sectionH": 680.4,
+   "sectionPad": {
+    "top": 32,
+    "bottom": 32
+   },
+   "overlayCards": "block",
+   "disclosures": [
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 435
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 435
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 435
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 435
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 555
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 33.3,
+     "w": 1380
+    },
+    "rail": {
+     "x": 540.7,
+     "w": 872.7
+    },
+    "stack": {
+     "x": 33.3,
+     "w": 483.3
+    },
+    "lede": {
+     "x": 33.3,
+     "w": 216.7
+    },
+    "ledeCellMatchesStack": false
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 20.2,
+    "noteToSectionEnd": 148.7,
+    "underFrameTotal": 190.3
+   },
+   "bp": 1440
+  },
+  {
+   "viewport": {
+    "w": 768,
+    "h": 1024
+   },
+   "theme": "light",
+   "sectionH": 876.7,
+   "sectionPad": {
+    "top": 20,
+    "bottom": 16
+   },
+   "overlayCards": "block",
+   "disclosures": [
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 288
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 288
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 288
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 288
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 178.8,
+     "w": 565.2
+    },
+    "rail": {
+     "x": 582.1,
+     "w": 161.9
+    },
+    "stack": {
+     "x": 24,
+     "w": 534.1
+    },
+    "lede": {
+     "x": 178.8,
+     "w": 565.2
+    },
+    "ledeCellMatchesStack": false
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 410.8,
+    "noteToSectionEnd": 66.1,
+    "underFrameTotal": 498.3
+   },
+   "bp": 768
+  },
+  {
+   "viewport": {
+    "w": 768,
+    "h": 1024
+   },
+   "theme": "dark",
+   "sectionH": 876.7,
+   "sectionPad": {
+    "top": 20,
+    "bottom": 16
+   },
+   "overlayCards": "block",
+   "disclosures": [
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 287
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 287
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 287
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    },
+    {
+     "cls": "prf-card-note",
+     "text": "عرض توضيحي",
+     "y": 287
+    },
+    {
+     "cls": "prf-caption-demo",
+     "text": "بيانات العرض التجريبية",
+     "y": 407
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 178.8,
+     "w": 565.2
+    },
+    "rail": {
+     "x": 582.1,
+     "w": 161.9
+    },
+    "stack": {
+     "x": 24,
+     "w": 534.1
+    },
+    "lede": {
+     "x": 178.8,
+     "w": 565.2
+    },
+    "ledeCellMatchesStack": false
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 410.7,
+    "noteToSectionEnd": 66.2,
+    "underFrameTotal": 498.3
+   },
+   "bp": 768
+  },
+  {
+   "viewport": {
+    "w": 390,
+    "h": 844
+   },
+   "theme": "light",
+   "sectionH": 805.8,
+   "sectionPad": {
+    "top": 24.0153,
+    "bottom": 20.0458
+   },
+   "overlayCards": "block",
+   "disclosures": [],
+   "grid": {
+    "head": {
+     "x": 24,
+     "w": 342
+    },
+    "rail": {
+     "x": 24,
+     "w": 342
+    },
+    "stack": {
+     "x": 0,
+     "w": 0
+    },
+    "lede": {
+     "x": 24,
+     "w": 342
+    },
+    "ledeCellMatchesStack": "n/a (stack folded)"
+   },
+   "voids": {
+    "stageToCaptionBottom": 0,
+    "frameToNote": 597.4,
+    "noteToSectionEnd": 167.8,
+    "underFrameTotal": 808.2
+   },
+   "bp": 390
+  },
+  {
+   "viewport": {
+    "w": 390,
+    "h": 844
+   },
+   "theme": "dark",
+   "sectionH": 805.8,
+   "sectionPad": {
+    "top": 24.0153,
+    "bottom": 20.0458
+   },
+   "overlayCards": "block",
+   "disclosures": [],
+   "grid": {
+    "head": {
+     "x": 24,
+     "w": 342
+    },
+    "rail": {
+     "x": 24,
+     "w": 342
+    },
+    "stack": {
+     "x": 0,
+     "w": 0
+    },
+    "lede": {
+     "x": 24,
+     "w": 342
+    },
+    "ledeCellMatchesStack": "n/a (stack folded)"
+   },
+   "voids": {
+    "stageToCaptionBottom": 0,
+    "frameToNote": 597.5,
+    "noteToSectionEnd": 167.8,
+    "underFrameTotal": 808.2
+   },
+   "bp": 390
+  }
+ ],
+ "after": [
+  {
+   "viewport": {
+    "w": 1440,
+    "h": 900
+   },
+   "theme": "light",
+   "sectionH": 563.5,
+   "sectionPad": {
+    "top": 32,
+    "bottom": 32
+   },
+   "overlayCards": "none",
+   "disclosures": [
+    {
+     "cls": "reveal-up reveal-d-3 wy-note in-view",
+     "text": "اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.",
+     "y": 678
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 33.3,
+     "w": 1380
+    },
+    "rail": {
+     "x": 540.7,
+     "w": 872.7
+    },
+    "stack": {
+     "x": 33.3,
+     "w": 483.3
+    },
+    "lede": {
+     "x": 164.8,
+     "w": 351.9
+    },
+    "ledeCellMatchesStack": true
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 20,
+    "noteToSectionEnd": 32,
+    "underFrameTotal": 73.4
+   },
+   "bp": 1440
+  },
+  {
+   "viewport": {
+    "w": 1440,
+    "h": 900
+   },
+   "theme": "dark",
+   "sectionH": 563.5,
+   "sectionPad": {
+    "top": 32,
+    "bottom": 32
+   },
+   "overlayCards": "none",
+   "disclosures": [
+    {
+     "cls": "reveal-up reveal-d-3 wy-note in-view",
+     "text": "اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.",
+     "y": 678
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 33.3,
+     "w": 1380
+    },
+    "rail": {
+     "x": 540.7,
+     "w": 872.7
+    },
+    "stack": {
+     "x": 33.3,
+     "w": 483.3
+    },
+    "lede": {
+     "x": 164.8,
+     "w": 351.9
+    },
+    "ledeCellMatchesStack": true
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 20,
+    "noteToSectionEnd": 32,
+    "underFrameTotal": 73.4
+   },
+   "bp": 1440
+  },
+  {
+   "viewport": {
+    "w": 768,
+    "h": 1024
+   },
+   "theme": "light",
+   "sectionH": 653.5,
+   "sectionPad": {
+    "top": 20,
+    "bottom": 16
+   },
+   "overlayCards": "none",
+   "disclosures": [
+    {
+     "cls": "reveal-up reveal-d-3 wy-note in-view",
+     "text": "اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.",
+     "y": 801
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 24,
+     "w": 720
+    },
+    "rail": {
+     "x": 24,
+     "w": 720
+    },
+    "stack": {
+     "x": 24,
+     "w": 720
+    },
+    "lede": {
+     "x": 24,
+     "w": 720
+    },
+    "ledeCellMatchesStack": true
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 20,
+    "noteToSectionEnd": 16,
+    "underFrameTotal": 57.4
+   },
+   "bp": 768
+  },
+  {
+   "viewport": {
+    "w": 768,
+    "h": 1024
+   },
+   "theme": "dark",
+   "sectionH": 653.5,
+   "sectionPad": {
+    "top": 20,
+    "bottom": 16
+   },
+   "overlayCards": "none",
+   "disclosures": [
+    {
+     "cls": "reveal-up reveal-d-3 wy-note in-view",
+     "text": "اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.",
+     "y": 801
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 24,
+     "w": 720
+    },
+    "rail": {
+     "x": 24,
+     "w": 720
+    },
+    "stack": {
+     "x": 24,
+     "w": 720
+    },
+    "lede": {
+     "x": 24,
+     "w": 720
+    },
+    "ledeCellMatchesStack": true
+   },
+   "voids": {
+    "stageToCaptionBottom": 52.9,
+    "frameToNote": 20,
+    "noteToSectionEnd": 16,
+    "underFrameTotal": 57.4
+   },
+   "bp": 768
+  },
+  {
+   "viewport": {
+    "w": 390,
+    "h": 844
+   },
+   "theme": "light",
+   "sectionH": 658,
+   "sectionPad": {
+    "top": 24.0153,
+    "bottom": 20.0458
+   },
+   "overlayCards": "none",
+   "disclosures": [
+    {
+     "cls": "reveal-up reveal-d-3 wy-note in-view",
+     "text": "اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.",
+     "y": 671
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 24,
+     "w": 342
+    },
+    "rail": {
+     "x": 24,
+     "w": 342
+    },
+    "stack": {
+     "x": 0,
+     "w": 0
+    },
+    "lede": {
+     "x": 24,
+     "w": 342
+    },
+    "ledeCellMatchesStack": "n/a (stack folded)"
+   },
+   "voids": {
+    "stageToCaptionBottom": "folded",
+    "frameToNote": "folded",
+    "noteToSectionEnd": 20,
+    "underFrameTotal": "folded"
+   },
+   "bp": 390
+  },
+  {
+   "viewport": {
+    "w": 390,
+    "h": 844
+   },
+   "theme": "dark",
+   "sectionH": 658,
+   "sectionPad": {
+    "top": 24.0153,
+    "bottom": 20.0458
+   },
+   "overlayCards": "none",
+   "disclosures": [
+    {
+     "cls": "reveal-up reveal-d-3 wy-note in-view",
+     "text": "اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.",
+     "y": 671
+    }
+   ],
+   "grid": {
+    "head": {
+     "x": 24,
+     "w": 342
+    },
+    "rail": {
+     "x": 24,
+     "w": 342
+    },
+    "stack": {
+     "x": 0,
+     "w": 0
+    },
+    "lede": {
+     "x": 24,
+     "w": 342
+    },
+    "ledeCellMatchesStack": "n/a (stack folded)"
+   },
+   "voids": {
+    "stageToCaptionBottom": "folded",
+    "frameToNote": "folded",
+    "noteToSectionEnd": 20,
+    "underFrameTotal": "folded"
+   },
+   "bp": 390
+  }
+ ]
+}

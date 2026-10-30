@@ -2237,17 +2237,22 @@ html[data-theme='dark'] body.mdrk-grain::before {
 /* ═══ لماذا مدارك (R313 · D7 §6) — the Watch/Check/Test/Master stage
    strip: the stage rail (always-readable verb cards) beside the
    capture stack (the four real student surfaces, cross-fading on the
-   scroll). The band holds ~77vh (the reference's 698px / 5.6%). ═══ */
+   scroll). R325 Y3: the band is CONTENT-SIZED — the old 77vh /
+   81.65rem floors outlived the head they were measured against (the
+   R322 compact head cut ~175px) and stranded a ~120–150px void under
+   the capture; V4's own law: no forced voids. ═══ */
 .wy-section {
   padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
-  min-block-size: 77vh;
 }
 
 .wy-head {
   display: grid;
   gap: var(--sp-3);
-  max-inline-size: 64ch;
+  /* R325 Y3: the head spans the section grid at every belt — the old
+     64ch cap constricted the 768–991 band off the .wy grid's edges
+     (the head floated while the rail/stack below ran full width). */
+  max-inline-size: none;
   margin-block-end: var(--sp-6);
 }
 
@@ -2334,13 +2339,20 @@ html[data-theme='dark'] body.mdrk-grain::before {
      The .pm-section min-block-size and the pm-head area pins die with
      this comment — the base block owns the whole seat now. */
 
+  /* R325 Y3 — ONE grid for the whole strip: the head's lede column is
+   * THE CAPTURE COLUMN (the same minmax(0,58rem) track + the same
+   * sp-6 gutter the .wy grid below runs), so the description paragraph
+   * sits exactly over the frame it describes instead of floating on
+   * its own 26rem island (the reference's sub-wrap rides the main
+   * grid's own edge: 464px over the 1427px head @1440 · 377 over the
+   * 753px cell @768 — mirrored RTL). */
   .wy-head {
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 26rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 58rem);
     grid-template-areas:
       'label lede'
       'title lede';
     align-items: end;
-    column-gap: var(--sp-8);
+    column-gap: var(--sp-6);
     max-inline-size: none;
   }
 
@@ -2348,12 +2360,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .wy-head > .wy-title { grid-area: title; }
   .wy-head > .wy-lede { grid-area: lede; }
 
-  /* R315 cycle-3 (W3 — the desktop law): 81.65rem = 484 @1024 · 605
-   * @1280 · 680 @1440 · 907 @1920 — the constant-rem quartet (the old
-   * 75.5vh share was a 900px-height tuning). */
-  .wy-section {
-    min-block-size: 81.65rem;
-  }
+  /* R315 cycle-3 (W3) min-block-size: 81.65rem RETIRES (R325 Y3) —
+   * the floor was measured against the pre-R322 head band; with the
+   * compact head the content tops out ~560px and the floor stranded
+   * a ~120–150px void under the capture (V4: no forced voids). The
+   * section is content-sized; the void ≤ 1.5× section padding. */
 
   .wy-rail {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2454,6 +2465,22 @@ html[data-theme='dark'] body.mdrk-grain::before {
     opacity: 1;
     scale: 1;
   }
+}
+
+/* R325 Y3 — the why frames carry NO overlay chrome: the mock-UI
+   collage (the «مساعد الفهم / عرض توضيحي» fragment) rode the capture's
+   bottom corner like a tooltip pasted over the art; the caption BELOW
+   the frame is this strip's only labeling. Scoped to .wy — the
+   platform band's collage (§05) is untouched. */
+.wy .prf-cards {
+  display: none;
+}
+
+/* R325 Y3 — ONE disclosure line per strip: the per-frame «بيانات العرض
+   التجريبية» caption demo duplicates the section's own .wy-note four
+   times over; the note below the strip carries the confession once. */
+.wy .prf-caption-demo {
+  display: none;
 }
 
 .wy-note {
@@ -3342,6 +3369,20 @@ html[data-theme='dark'] body.mdrk-grain::before {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /* R325 Y3 — the why strip folds to ONE column ≤991: the two-track
+     base template squeezed the rail to its 152px min-content sliver
+     at 768–991 (four step cards strangled beside a 534px frame); the
+     reference's own tablet band runs the CMS list full-width with a
+     center divider. The rail keeps the 2×2 card grid (≥768), the
+     capture follows below. */
+  .wy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wy-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .fo-cta-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -3455,9 +3496,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
     min-block-size: 0;
   }
 
-  .wy {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  /* R325 Y3: the ≤767 .wy 1-col override retired — the ≤991 block
+     above owns the fold now (one map, no drift). */
 
   .fo-cta .fo-hero-meta {
     grid-template-columns: minmax(0, 1fr);
@@ -3567,6 +3607,15 @@ html[data-theme='dark'] body.mdrk-grain::before {
   /* the why rail + stacked captures tighten */
   .wy {
     gap: var(--sp-4);
+  }
+
+  /* R325 Y3 — the phone rail folds BACK to the ONE-column state list:
+     the 2×2 above is the ≥768 tablet form (the reference's tablet band
+     runs the list two-up over its center divider); the reference's own
+     mobile why is the full-width state list (cms 374px single column
+     @390), so the ≤991 2×2 must not cascade past the tablet belt. */
+  .wy-rail {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* the roles grid: compact cells (the reference's 8 use-case tiles
@@ -7062,7 +7111,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { min-block-size: 57.2rem; }
   .pm-section { min-block-size: 144.8rem; }
   .pr-section { min-block-size: 55.2rem; }
-  .wy-section { min-block-size: 95.2rem; }
+  /* R325 Y3: the wy 95.2rem floor RETIRES — it was measured against the
+     old squeezed-rail composition; with the readable 2×2 rail + the
+     capture below, the content-sized band runs ~65rem and the floor
+     stranded a ~220px void (V4: no forced voids). */
   .rl-section { min-block-size: 145.2rem; }
   .fo-cta { min-block-size: 58.8rem; }
   .fo-footer { min-block-size: 103.1rem; }
@@ -7429,7 +7481,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { min-block-size: 84.25rem; }
   .pm-section { min-block-size: 87.65rem; }
   .pr-section { min-block-size: 52.1rem; }
-  .wy-section { min-block-size: 81.2rem; }
+  /* R325 Y3: the wy 81.2rem floor RETIRES — the phone band folds the
+     captures away (the rail carries the strip), so the floor pinned
+     Heron's capture-list height onto a band with no captures: ~270px
+     of dead air under the note (V4: no forced voids). */
   .rl-section { min-block-size: 95.55rem; }
   .fo-cta { min-block-size: 50.4rem; }
   .fo-footer { min-block-size: 124.9rem; }
@@ -7726,7 +7781,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { min-block-size: 84.25rem; }
   .pm-section { min-block-size: 87.65rem; }
   .pr-section { min-block-size: 52.1rem; }
-  .wy-section { min-block-size: 81.2rem; }
+  /* R325 Y3: the wy 81.2rem floor RETIRES (the ≤479 note above — the
+     large-phone band folds the captures too; the floor was pure void). */
   .rl-section { min-block-size: 95.55rem; }
   .fo-cta { min-block-size: 50.4rem; }
   .fo-footer { min-block-size: 124.9rem; }
@@ -8418,7 +8474,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }   /* 432 @1024 · 609 @1440 — r324 X14 (89.1rem floor seat) */
 .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); } /* 5203 @1024 · 6080 @1440 — r324 X14 (658dvh track) */
 .pr-section { contain-intrinsic-size: auto 49.3vw; }      /* = the 85.2rem floor on the fluid root: 505 @1024 · 710 @1440 · 947 @1920 — r325 Y2 re-measure */
-.wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }    /* 449 @1024 · 615 @1440 */
+/* R325 Y3 re-measure: the wy floors retired, so the placeholder re-fits
+   to the CONTENT-SIZED band (measure-intrinsic.mjs @1024/1440).
+   375 @1024 · 499 @1440 */
+.wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); }
 .rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }    /* 712 @1024 · 822 @1440 — r324 re-measure (the X5 ledger's real height; the pre-X5 guess ran 1090) */
 .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }   /* 451 @1024 · 625 @1440 */
 
@@ -8428,7 +8487,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }
   .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); }
   .pr-section { contain-intrinsic-size: auto 49.3vw; } /* r325 Y2 re-measure — the floor is vw-proportional on the fluid root */
-  .wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }
+  .wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); } /* r325 Y3 re-measure */
   .rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }
   .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }
 }
@@ -8438,7 +8497,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .pm-section { contain-intrinsic-size: auto 1260px; }
   .chapters   { contain-intrinsic-size: auto 4685px; }
   .pr-section { contain-intrinsic-size: auto 508px; }   /* r325 Y2 re-measure (508.3 @768) */
-  .wy-section { contain-intrinsic-size: auto 840px; }
+  .wy-section { contain-intrinsic-size: auto 616px; } /* r325 Y3 re-measure */
   .rl-section { contain-intrinsic-size: auto 1300px; }
   .fo-cta     { contain-intrinsic-size: auto 468px; }
 }
@@ -8448,7 +8507,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
   .pr-section { contain-intrinsic-size: auto 912px; }   /* r325 Y2 re-measure (912 @600) */
-  .wy-section { contain-intrinsic-size: auto 1171px; }
+  .wy-section { contain-intrinsic-size: auto 990px; } /* R325 Y3 re-measure — the phone rail folds back to the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 1409px; }
   .fo-cta     { contain-intrinsic-size: auto 713px; }
 }
@@ -8458,7 +8517,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .pm-section { contain-intrinsic-size: auto 797px; }
   .chapters   { contain-intrinsic-size: auto 4974px; }
   .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 Y2 re-measure (604.7 @390) */
-  .wy-section { contain-intrinsic-size: auto 761px; }
+  .wy-section { contain-intrinsic-size: auto 613px; } /* R325 Y3 re-measure — the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 915px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
 }
@@ -8468,7 +8527,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .pm-section { contain-intrinsic-size: auto 748px; }
   .chapters   { contain-intrinsic-size: auto 4976px; }
   .pr-section { contain-intrinsic-size: auto 639px; }   /* r325 Y2 re-measure (639 @360) */
-  .wy-section { contain-intrinsic-size: auto 702px; }
+  .wy-section { contain-intrinsic-size: auto 646px; } /* R325 Y3 re-measure — the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 903px; }
   .fo-cta     { contain-intrinsic-size: auto 428px; }
 }
