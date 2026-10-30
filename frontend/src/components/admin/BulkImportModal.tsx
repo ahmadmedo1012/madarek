@@ -18,7 +18,7 @@
 import { useRef, useState } from 'react';
 import { AlertTriangle, CheckCircle2, Download, FileSpreadsheet, Printer, UploadCloud } from 'lucide-react';
 import { Modal } from '../overlays/Modal';
-import { api } from '../../lib/api';
+import { api, unwrap } from '../../lib/api';
 import { apiErrorMessage } from '../../lib/format';
 import { toast } from '../../lib/toast';
 
@@ -92,12 +92,19 @@ export function BulkImportModal({ onClose }: { onClose: () => void }) {
     setBusy(true);
     setError(null);
     try {
-      const res = await api.post<PreviewOk | { fileError: string }>('/users/bulk-import/preview', { csv });
-      if ('fileError' in res.data) {
-        setError(res.data.fileError);
+      /* r325 F1: the raw axios instance answers the `{ data }` envelope —
+       * the payload rides `res.data.data`. The old `setPreview(res.data)`
+       * stored the ENVELOPE, so `preview.rows` was undefined and the
+       * preview stage crashed the page (found live by the F1 flow spec).
+       * unwrap() is the house helper for exactly this. */
+      const payload = await unwrap<PreviewOk | { fileError: string }>(
+        api.post('/users/bulk-import/preview', { csv }),
+      );
+      if ('fileError' in payload) {
+        setError(payload.fileError);
         return;
       }
-      setPreview(res.data);
+      setPreview(payload);
       setStage('preview');
     } catch (err) {
       setError(apiErrorMessage(err, 'تعذر تجهيز العرض المسبق — أعد المحاولة'));
@@ -110,10 +117,10 @@ export function BulkImportModal({ onClose }: { onClose: () => void }) {
     setBusy(true);
     setError(null);
     try {
-      const res = await api.post<CommitResponse>('/users/bulk-import/commit', { csv });
-      setSheet(res.data);
+      const payload = await unwrap<CommitResponse>(api.post('/users/bulk-import/commit', { csv }));
+      setSheet(payload);
       setStage('done');
-      toast.success(`تم إنشاء ${res.data.created} حساب طالب`);
+      toast.success(`تم إنشاء ${payload.created} حساب طالب`);
     } catch (err) {
       setError(apiErrorMessage(err, 'تعذر إتمام الاستيراد — راجع العرض المسبق وأعد المحاولة'));
     } finally {
