@@ -25,6 +25,14 @@ import '../../styles/r325-app.css';
 // z-run. Last word of the shell cascade (after r325-app.css, unlayered,
 // shell-imported — the same house contract).
 import '../../styles/r325-shell.css';
+// R325 (P2.5 · DESIGN.md §R325): the INDICATOR sheet — the seven
+// measurement instruments of components/patterns/indicators.tsx
+// (RulerGauge · SegmentedProgress · MasteryCells · StreakTicks ·
+// ScheduleStrip · AttendanceTicks · GradeBars) + the dashboard's
+// consumer seats. Same cascade contract (unlayered, shell-imported);
+// every ink is currentColor/theme-token, so the instruments are
+// theme-proof and deep-band-proof by construction.
+import '../../styles/r325-indicators.css';
 import { SheetFrame, SheetGrain } from './SheetFrame';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';

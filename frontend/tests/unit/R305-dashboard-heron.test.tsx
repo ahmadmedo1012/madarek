@@ -198,6 +198,11 @@ beforeEach(() => {
     '/training/catalog': [],
     '/enrollments/me': ENROLLMENTS,
     '/me/gaps': GAPS,
+    /* P2.5: the hero mounts the resume offering's lecture list for the
+       SegmentedProgress instrument row. Empty here — the pins below are
+       about the RulerGauge/hero anatomy, not the segments; a populated
+       fixture would need real watchEvents shapes to stay honest. */
+    '/offerings/o1/lectures': [],
   });
 });
 
@@ -217,8 +222,10 @@ describe('R305 — the hero band (the ONE next action)', () => {
     // The course name is the band's display line.
     const name = hero.querySelector('.dash-resume-course-name');
     expect(name?.textContent).toBe('قواعد البيانات المتقدّمة');
-    // The honest progress readout stays (quiet but precise).
-    expect(screen.getByRole('progressbar', { name: 'تقدّم مشاهدة المحاضرة: 42%' })).toBeTruthy();
+    // The honest progress readout stays (quiet but precise) — P2.5: the
+    // instrument is now the R325 RulerGauge (role=meter, same aria name
+    // the ProgressBar pin carried; the drafting ruler replaced the bar).
+    expect(screen.getByRole('meter', { name: 'تقدّم مشاهدة المحاضرة: 42%' })).toBeTruthy();
     expect(container).toBeTruthy();
   });
 
