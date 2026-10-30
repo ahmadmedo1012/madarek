@@ -20,11 +20,7 @@ import { expect, test } from '@playwright/test';
 
 import { flowPage, flowShot } from './fixtures/live';
 
-const TRACK_SLUG = 'academic-methodology';
 const TRACK_TITLE = 'منهجية الدراسة الجامعية';
-// The seed's model answer for the track's lesson-2 quiz
-// (seed.ts TRACKS — «كم عدد خصائص سؤال البحث الجيد؟» → 3).
-const QUIZ_ANSWER = '3';
 
 test('F12 · student walks a training track and reads badge + points on the leaderboard', async ({ browser }) => {
   test.setTimeout(180_000);
