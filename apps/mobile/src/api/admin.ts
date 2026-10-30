@@ -29,6 +29,23 @@ export interface AdminUserRow {
   [k: string]: unknown;
 }
 
+/** GET /admin/users/:id/permissions — the real backend response shape
+ *  (permissions.routes.ts: { data: { user, roleDefaults, effective, overrides } }). */
+export interface AdminUserPermissions {
+  user: {
+    id: string;
+    email: string;
+    role: string;
+    firstName: string;
+    lastName: string;
+    scopeFacultyId: string | null;
+    scopeFaculty: { id: string; name: string } | null;
+  };
+  roleDefaults: string[];
+  effective: string[];
+  overrides: { id: string; capability: string; grant: boolean; reason: string | null; grantedAt: string }[];
+}
+
 export const adminApi = {
   stats: () => get<AdminStats>("/admin/stats"),
   faculties: (institutionSlug?: string) =>
@@ -48,9 +65,11 @@ export const adminApi = {
   papers: (page = 1, limit = 20) => get<Paginated<unknown>>("/admin/papers", { page, limit }),
   users: (q?: { page?: number; limit?: number; q?: string; role?: string }) =>
     get<Paginated<AdminUserRow>>("/admin/users", { q: q?.q, role: q?.role, page: q?.page, limit: q?.limit ?? 50 }),
-  user: (userId: string) => get<AdminUserRow>(`/admin/users/${userId}`),
-  permissions: (userId: string) => get<{ capabilities: { capability: string; granted: boolean; reason?: string | null }[] }>(`/admin/users/${userId}/permissions`),
-  setPermission: (userId: string, payload: { capability: string; grant: boolean; institutionId?: string; reason?: string }) =>
+  /** Real contract: the permissions payload carries the full target user row
+   *  (incl. governance scope) — there is no separate GET /admin/users/:id. */
+  permissions: (userId: string) =>
+    get<AdminUserPermissions>(`/admin/users/${userId}/permissions`),
+  setPermission: (userId: string, payload: { capability: string; grant: boolean; reason?: string }) =>
     post<unknown>(`/admin/users/${userId}/permissions`, payload),
   setScope: (userId: string, scopeFacultyId: string | null) => post<unknown>(`/admin/users/${userId}/scope`, { scopeFacultyId }),
   verifyTeacher: (teacherId: string, payload: { verified: boolean; notes?: string }) =>

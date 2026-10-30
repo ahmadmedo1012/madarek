@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { apiWithCookieCapture, ApiError, post } from "@/api/client";
+import { apiWithCookieCapture, ApiError, post, put } from "@/api/client";
 import { useSession, ROLE_LABELS, POSITION_LABELS, RANK_LABELS } from "@/auth/session";
 import { setThemePreference, usePalette, useThemePreference, type ThemePreference } from "@/design/theme";
 import { sp } from "@/design/tokens";
@@ -40,7 +40,7 @@ export default function Settings() {
   const applyTheme = async (next: ThemePreference) => {
     setThemePreference(next);
     try {
-      await post("/me/theme", { themePreference: next.toUpperCase() });
+      await put("/me/theme", { themePreference: next.toUpperCase() });
     } catch {
       // Local preference still applies; server sync is best-effort.
     }

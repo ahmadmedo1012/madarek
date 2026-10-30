@@ -32,11 +32,6 @@ export default function AdminPermissions() {
   const myId = useSession((s) => s.user?.id);
   const isSelf = !!myId && myId === userId;
 
-  const user = useQuery({
-    queryKey: ["admin", "users", "detail", userId, scope],
-    queryFn: () => adminApi.user(userId),
-    enabled: !!userId,
-  });
   const permissions = useQuery({
     queryKey: ["admin", "users", userId, "permissions", scope],
     queryFn: () => adminApi.permissions(userId),
@@ -47,10 +42,11 @@ export default function AdminPermissions() {
     queryFn: async () => (await adminApi.faculties()) as FacultyNode[],
   });
 
-  const grantedMap = new Map(
-    (permissions.data?.capabilities ?? []).map((c) => [c.capability, c.granted]),
-  );
-  const grantedCount = [...grantedMap.values()].filter(Boolean).length;
+  // The permissions payload is the authoritative source for the target
+  // user row (no separate GET /admin/users/:id exists in the contract).
+  const target = permissions.data?.user;
+  const grantedSet = new Set(permissions.data?.effective ?? []);
+  const grantedCount = grantedSet.size;
 
   const setPermission = useMutation({
     mutationFn: (payload: { capability: string; grant: boolean }) =>
@@ -66,9 +62,7 @@ export default function AdminPermissions() {
     onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث الصلاحية"),
   });
 
-  const currentScopeFaculty = (
-    user.data as { scopeFaculty?: { id?: string; name?: string } | null } | undefined
-  )?.scopeFaculty;
+  const currentScopeFaculty = target?.scopeFaculty ?? null;
   const [scopeMode, setScopeMode] = useState<"UNIVERSITY" | "FACULTY">(
     currentScopeFaculty ? "FACULTY" : "UNIVERSITY",
   );
@@ -90,13 +84,13 @@ export default function AdminPermissions() {
   return (
     <Screen scroll>
       <StackHeader
-        title={user.data ? `${user.data.firstName} ${user.data.lastName}` : "إدارة الصلاحيات"}
+        title={target ? `${target.firstName} ${target.lastName}` : "إدارة الصلاحيات"}
         kicker="لوحة المسجل العام"
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        {user.data ? (
+        {target ? (
           <T variant="body" color="muted">
-            {ROLE_LABELS[user.data.role] ?? user.data.role} · {user.data.email}
+            {ROLE_LABELS[target.role] ?? target.role} · {target.email}
           </T>
         ) : null}
 
@@ -124,7 +118,7 @@ export default function AdminPermissions() {
 
             <RowList>
               {Object.entries(CAPABILITY_LABEL).map(([cap, label], i, arr) => {
-                const granted = grantedMap.get(cap) ?? false;
+                const granted = grantedSet.has(cap);
                 return (
                   <LedgerRow key={cap} last={i === arr.length - 1}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -195,8 +189,8 @@ export default function AdminPermissions() {
 
             <StatLine
               label="قدرات مُعروضة من الخادم"
-              value={num(permissions.data?.capabilities?.length ?? null)}
-              hint="عدد الصلاحيات التي أجاب عنها الخادم لهذا المستخدم"
+              value={num(permissions.data?.effective?.length ?? null)}
+              hint="عدد الصلاحيات الفعّالة التي أجاب عنها الخادم لهذا المستخدم"
             />
           </>
         )}

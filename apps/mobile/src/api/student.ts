@@ -1,5 +1,5 @@
 /** /me + student projection endpoints (student-dashboard.routes + me.routes). */
-import { get, patch, post } from "./client";
+import { get, patch, post, put } from "./client";
 import type { AchievementBadge, MatrixCourse, KnowledgeGap, Loan, ResumeCard, ResearchPaper, Message, Paginated, AppNotification, AuthUser } from "./types";
 
 export interface StudentDashboard {
@@ -32,14 +32,14 @@ export const studentApi = {
   myResearch: () => get<ResearchPaper[]>("/me/research"),
   submitResearch: (payload: { title: string; abstract?: string; offeringId?: string; fileUrl?: string }) =>
     post<ResearchPaper>("/me/research", payload),
-  notifications: (page: number, limit = 30, q?: string) => get<Paginated<AppNotification>>("/me/notifications", { page, limit, q }),
+  notifications: (page: number, limit = 30, q?: string) => get<Paginated<AppNotification>>("/notifications", { page, limit, q }),
   messages: (page: number, limit = 30) => get<Paginated<Message>>("/messages", { page, limit }),
   sendMessage: (payload: { toUserId: string; body: string }) => post<Message>("/messages", payload),
   readAllMessages: () => post("/messages/read-all"),
-  readAllNotifications: () => post<{ updated: number }>("/me/notifications/read-all"),
-  markNotification: (id: string) => patch<AppNotification>(`/me/notifications/${id}/read`),
+  readAllNotifications: () => post<{ updated: number }>("/notifications/read-all"),
+  markNotification: (id: string) => patch<AppNotification>(`/notifications/${id}/read`),
   onboardingComplete: () => post("/me/onboarding/complete"),
-  theme: (themePreference: "LIGHT" | "DARK" | "SYSTEM") => post("/me/theme", { themePreference }),
+  theme: (themePreference: "LIGHT" | "DARK" | "SYSTEM") => put("/me/theme", { themePreference }),
 };
 
 export interface ResultCourse {

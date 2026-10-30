@@ -69,7 +69,8 @@
     "export:android": "expo export --platform android",
     "export:ios": "expo export --platform ios",
     "export:web": "expo export --platform web",
-    "icons": "node scripts/generate-icons.mjs"
+    "icons": "node scripts/generate-icons.mjs",
+    "contract-check": "node scripts/contract-check.mjs"
   },
   "private": true,
   "engines": {

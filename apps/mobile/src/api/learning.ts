@@ -50,8 +50,8 @@ export const learningApi = {
   addChapter: (lectureId: string, payload: { title: string; startSec: number; endSec: number; conceptId?: string }) =>
     post<LectureChapter>(`/lectures/${lectureId}/chapters`, payload),
   updateChapter: (lectureId: string, chapterId: string, payload: Record<string, unknown>) =>
-    patch<LectureChapter>(`/lectures/${lectureId}/chapters/${chapterId}`, payload),
-  deleteChapter: (lectureId: string, chapterId: string) => del<void>(`/lectures/${lectureId}/chapters/${chapterId}`),
+    patch<LectureChapter>(`/chapters/${chapterId}`, payload),
+  deleteChapter: (lectureId: string, chapterId: string) => del<void>(`/chapters/${chapterId}`),
   addCheckpoint: (lectureId: string, payload: { conceptId?: string | null; triggerSec: number; question: string; options: string[]; correctIndex: number; explanation?: string }) =>
     post<unknown>(`/lectures/${lectureId}/checkpoints`, payload),
   updateCheckpoint: (checkpointId: string, payload: Record<string, unknown>) =>

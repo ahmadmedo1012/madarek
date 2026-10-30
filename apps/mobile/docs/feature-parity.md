@@ -23,8 +23,8 @@
 | Institution selection (multi-membership) | `app/select-institution.tsx` | `POST /auth/select-institution` | ✅ |
 | Settings (`/settings`) | `app/settings.tsx` | `PUT /me/theme`, `POST /auth/change-password` | ✅ |
 | Global search | `app/search.tsx` | `GET /search/global` | ✅ |
-| Notifications inbox (per role) | `app/{student,teacher,admin,quality,owner}/alerts` + owner `(tabs)/notifications` | `GET /me/notifications`, `PATCH /me/notifications/:id/read`, `POST /me/notifications/read-all` | ✅ |
-| Messages (DMs) | `student/messages`, `teacher/messages` | `GET /me/messages`, `POST /me/messages`, `POST /me/messages/read-all` | ✅ |
+| Notifications inbox (per role) | `app/{student,teacher,admin,quality,owner}/alerts` + owner `(tabs)/notifications` | `GET /notifications`, `PATCH /notifications/:id/read`, `POST /notifications/read-all` | ✅ (paths fixed by contract-check: mounted at `/api/v1`, not `/me/*`) |
+| Messages (DMs) | `student/messages`, `teacher/messages` | `GET /messages`, `POST /messages`, `POST /messages/read-all` | ✅ |
 | Document viewer (PDF) | `app/document/[filename].tsx` | `GET /files/papers/:f`, `GET /files/materials/:f` (Range, auth) | 🧩 pdf.js in WebView + authenticated cached download |
 | Vision roadmap | `app/vision/*` | — (static concepts) | ✅ |
 | Colleges public catalog | `app/colleges/*` | `GET /colleges`, `GET /colleges/leaderboard`, `GET /colleges/:id` | ✅ |
@@ -38,7 +38,7 @@
 | Feedback loop («أبلغ عن مشكلة») | `FeedbackSheetHost` (root) | `POST /feedback` | ✅ (no screenshot/console tape on mobile — disclosed) |
 | Theme sync (light/dark/system) | settings | `PUT /me/theme` | ✅ |
 | Onboarding/milestones | welcome + role home | `POST /me/onboarding/complete` fired on first role-home | ✅ (4-frame tour & milestone scenes are web instruments, not ported) |
-| Remote push notifications | — | backend has **no device-token model** | 🔗 additive backend proposal in `docs/push-backend-proposal.md`; Expo registration present, gated |
+| Remote push notifications | — | backend has **no device-token model** | 🔗 additive backend proposal in `docs/push-backend-proposal.md`; `expo-notifications` dependency declared, client registration **not yet wired** (needs the backend contract first) |
 
 ## 2. Student
 
@@ -90,7 +90,7 @@
 | Materials (JSON + PDF file) | `materials` | `POST /offerings/:id/materials`, `POST /offerings/:id/materials/file?name=&type=PDF` (raw ≤20MB) | ✅ |
 | Assignments + submissions | `assignments` | `GET /teacher/me/assignments`, `GET /teacher/me/pending-submissions`, `POST /offerings/:id/assignments`, `POST /submissions/:id/grade` | ✅ |
 | Exam authoring + question bank | `exams`, `exams/[templateId]` | `GET/POST /question-bank`, `GET /question-bank/categories`, `GET/POST /exams/templates`, `PATCH /exams/templates/:id`, `POST /exams/templates/:id/clone|publish`, `GET /exams/templates/:id/attempts`, `POST /exams/attempts/:id/grade` | ✅ |
-| Lecture/chapter/checkpoint authoring | `curriculum` | `POST/PATCH/DELETE /offerings/:oid/lectures`, `/chapters`, `/checkpoints`, reorder | ✅ |
+| Lecture/chapter/checkpoint authoring | `curriculum` | `POST /offerings/:oid/lectures` + `/lectures/:lid/chapters`, `PATCH/DELETE /chapters/:id`, `/checkpoints/:id`, reorder | ✅ |
 | Video upload (presign) | curriculum | `POST /files/uploads/presign`, `POST /files/uploads/complete` | 🧩 single PUT; multipart documented; requires S3-backed storage on prod |
 | Research review (queue/annotate/grade/publish) | `research-review` | `GET /research/queue`, `POST /research/:id/grade`, `POST /research/:id/publish`, annotations CRUD | ✅ annotations as native panel + PDF viewer |
 | Intelligence analytics | `(tabs)/intelligence` | `GET /teacher/offerings/:id/analytics`, `POST /teacher/offerings/:id/curriculum/suggest` | ⚠️ suggest = template simulation (disclosed) |
@@ -108,7 +108,7 @@
 | Students + enrollments | `(tabs)/students` | `GET /admin/users?role=STUDENT`, `GET /enrollments?studentId=`, `GET /enrollments/offerings`, `POST /enrollments`, `DELETE /enrollments/:id` | ✅ |
 | Teachers + positions + verify | `(tabs)/teachers` | `POST /admin/teachers/:id/verify`, `POST /admin/teachers/:id/position`, `GET /admin/teachers/:id/suggestions` | ✅ |
 | Courses CRUD + offerings | `courses` | `GET /admin/courses`, `POST /courses`, `PATCH /courses/:id`, `DELETE /courses/:id`, `POST /offerings` | ✅ |
-| Permissions & scope | `permissions/[id]` | `GET/POST /admin/users/:id/permissions`, `POST /admin/users/:id/scope` | ✅ |
+| Permissions & scope | `permissions/[id]` | `GET/POST /admin/users/:id/permissions` (payload carries the full target user row — no separate `GET /admin/users/:id` exists), `POST /admin/users/:id/scope` | ✅ |
 | Reports | `(tabs)/reports` | `GET /admin/reports` | ✅ |
 | Digital metrics | `digital` | `GET /admin/digital`, `GET /health` | ✅ |
 | Sync console | `sync` | `GET /admin/sync`, `POST /admin/sync/trigger` | ✅ «وضع محدود» disclosed |
@@ -145,7 +145,7 @@
 | System + settings + flags | `system` | `GET /owner/system`, `GET/PUT /owner/settings`, `GET/PUT /owner/feature-flags` | ✅ |
 | Alerts board | `alerts` | `GET /owner/alerts`, `POST /owner/alerts/:id/resolve` | ✅ |
 | Feedback inbox | `feedback` | `GET /feedback`, `PATCH /feedback/:id` | ✅ |
-| Personal inbox | `(tabs)/notifications` | `/me/notifications` | ✅ |
+| Personal inbox | `(tabs)/notifications` | `GET /notifications` | ✅ |
 
 ## 7. Cross-cutting integrations
 
