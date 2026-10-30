@@ -5691,7 +5691,13 @@
 .fb-fab {
   position: fixed;
   inset-inline-end: 18px;
-  inset-block-end: 18px;
+  /* Y6 (R325) — the BOTTOM-STACK top layer: the manager
+     (lib/bottomStack.ts) writes the measured offset of everything
+     below the FAB in the stack (the toast stack, the consent gate)
+     into the inline --app-bottom-stack; 0px fallback = the natural
+     seat with nothing else on screen. The FAB rises above toasts
+     (Material's snackbar+FAB behaviour) instead of being covered. */
+  inset-block-end: calc(var(--app-bottom-stack, 0px) + 18px);
   z-index: 60; /* under the overlay stack (70+), over page content */
   display: inline-flex;
   align-items: center;
@@ -5709,11 +5715,28 @@
   border-radius: var(--r-full);
   cursor: pointer;
   box-shadow: none;
+  /* Y6 — the seat eases between stack rungs as layers appear/disappear
+     (--t-fast = 200ms; the reduced-motion raw-ladder kill zeroes it). */
+  transition:
+    inset-block-end var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
 }
 .fb-fab:hover { border-color: var(--border-strong, var(--border)); }
 @media (max-width: 640px) {
-  .fb-fab { inset-block-end: calc(72px + env(safe-area-inset-bottom, 0px)); padding: var(--sp-2) var(--sp-3); }
+  /* Y6: the dock clearance (72px) keeps its safe-area growth and now
+     rides on the bottom-stack offset (toasts lift the FAB higher). */
+  .fb-fab {
+    inset-block-end: calc(
+      var(--app-bottom-stack, 0px) + 72px + env(safe-area-inset-bottom, 0px)
+    );
+    padding: var(--sp-2) var(--sp-3);
+  }
   .fb-fab span { display: none; } /* the icon carries the seat on phones */
+}
+@media (prefers-reduced-motion: reduce) {
+  .fb-fab {
+    transition: none;
+  }
 }
 
 .fb-sheet { display: grid; gap: 14px; /* spacing-gate: allow — reviewed authored literal (r-round sheet) */ min-inline-size: min(560px, 86vw); }

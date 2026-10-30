@@ -44,6 +44,7 @@ import {
 import { Icon } from '../Icon';
 import { useToastStore, type ToastItem, type ToastVariant } from '../../lib/toast';
 import { readMotionDurationMs } from './useDelayedUnmount';
+import { useBottomStackLayer } from '../../hooks/useBottomStackLayer';
 
 // r147: canonical home is lib/toast.ts (broke the repo's only cycle);
 // re-exported so existing `from './Toast'` type imports keep working.
@@ -308,9 +309,17 @@ function ToastCard({ item }: { item: ToastItem }) {
  */
 export function ToastStack() {
   const items = useToastStore((s) => s.items);
+  /* Y6 (R325) — the stack registers with the bottom-stack manager: its
+   * MEASURED height (0 while idle — the container draws nothing) is what
+   * the layers above it (the FAB) clear, and its own seat lifts above
+   * the consent gate whenever that occupies the bottom (the r324 X1
+   * :has() magic numbers, generalised). The container stays mounted for
+   * the whole session, so this is ONE registration; the manager's
+   * ResizeObserver tracks the cards entering/leaving. */
+  const stackRef = useBottomStackLayer('toast');
   if (typeof document === 'undefined') return null;
   return createPortal(
-    <div className="toast-stack" aria-live="polite">
+    <div ref={stackRef} className="toast-stack" aria-live="polite">
       {items.map((item) => (
         <ToastCard key={item.id} item={item} />
       ))}
