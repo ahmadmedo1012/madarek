@@ -82,8 +82,9 @@
  *   t 0.00–0.50  plaque 1 IN   (fade + 24px rise)
  *   t 1.00–1.50  plaque 1 OUT  (fade + −2.5px + 4% shrink)
  *   t 1.50–2.00  plaque 2 IN
- *   t 2.50–3.00  plaque 2 OUT + LAYER 1 (+ the room wash begins)
- *   t 3.02→5.52  layers 2–6, one per 0.5s (≈506px of scroll @1440)
+ *   t 2.50–3.00  plaque 2 OUT
+ *   t 0.35→3.52  layers 1–6 (one per ~0.5s — Y1: the build rides the
+ *                statement era instead of trailing it; see LAYER_WINDOWS)
  *   t ≥ 5.52     the closing flip (MONOTONIC — Heron's toggle is
  *                direction-sensitive; ours never un-flips on reverse,
  *                noted as the simplification)
@@ -99,6 +100,26 @@
  * stands at once (all 6 layers ON, the findings all readable in the
  * open card, the closing column revealed, no drift, no camera) — the
  * driver writes it idempotently and the r306 RM belt holds.
+ *
+ * R325 (Y1 — the map intro clip): the intro is never an empty-box
+ * show. Two machine changes, the owner's «plan drawn from frame one»:
+ *  · GHOST LINE-WORK — every progressive layer rests at XL_GHOST
+ *    opacity (18%) from frame one (CSS base + the driver's ramp
+ *    floor): the WHOLE plan reads as faint line-work at scroll
+ *    progress 0, both breakpoints, and each layer INKS IN
+ *    continuously (ghost → full) inside its own window — the draw is
+ *    progressive with scroll, never a late appearance and never a
+ *    discrete tone jump (the R323 0|1 envelope write retires: the
+ *    ramp floor replaces it — a wall at 18% is the DESIGNED ghost
+ *    state, and the build is one continuous crossfade).
+ *  · THE BUILD STARTS AT THE INTRO — layer 1 (envelope + lecture)
+ *    begins at t 0.35, ~82px of scroll BEFORE pin engage @1440: the
+ *    statement era's dead runway (headline alone, nothing moving) is
+ *    ≈0.36 screen heights @1440 / ≈0.24 @390 — under the 0.5 cap —
+ *    and the walls/rooms draw through the statements instead of after
+ *    them (the old table held the first layer until t 2.5 ⇒ ≈2.1
+ *    screens of empty grid after pin engage — the owner's «empty for
+ *    ~3 scroll frames»).
  *
  * Content is the honest capability ledger — every finding is a real,
  * live capability (the r168b pins `شروحات مخصَّصة` + `خطط مراجعة حسب
@@ -188,18 +209,30 @@ const SEQ_END_PIN = 0.952; /* …and ends at the measured scrub end — the clos
 const SEQ_SPAN_PIN = SEQ_END_PIN - SEQ_START_PIN;
 const SEQ_DUR_S = 5.52;
 
-/* the six progressive layer windows (seconds in the movie) — layer 1
- * with the first finding at t 2.5, then one per 0.5s step (Heron's
- * 3.02/3.52/4.02/4.52/5.02 table). The BASE (frame + envelope) is
- * never in this table: it is visible from frame one (the V2 kill). */
+/* the six progressive layer windows (seconds in the movie) — Y1
+ * re-timing: the build RIDES the statement era. Layer 1 (the envelope
+ * — the walls) starts at t 0.35, ~82px of scroll BEFORE pin engage
+ * @1440 (the intro runway — statement alone over a static ghost — is
+ * ≈0.36 screens @1440 / ≈0.24 @390, under the 0.5 cap), then one
+ * layer per 0.5s step; the six layers complete by t 3.52 and the
+ * findings era (t ≥ 2.5) narrates over the finishing drawing. Every
+ * layer's opacity ramps from the GHOST floor (XL_GHOST below) — the
+ * line-work stands from frame one. */
 const LAYER_WINDOWS: ReadonlyArray<readonly [number, number]> = [
-  [2.5, 3.0],
-  [3.02, 3.52],
-  [3.52, 4.02],
-  [4.02, 4.52],
-  [4.52, 5.02],
-  [5.02, 5.52],
+  [0.35, 0.85], // 1 · the envelope (the walls ink in AT the intro) + the lecture hall
+  [1.02, 1.52], // 2 · the checkpoint kiosk
+  [1.52, 2.02], // 3 · the exam hall
+  [2.02, 2.52], // 4 · the library wing + the entry reception
+  [2.52, 3.02], // 5 · the mastery room
+  [3.02, 3.52], // 6 · the annotations (the journey path, stations, dims)
 ];
+
+/* R325 (Y1) — the GHOST floor: the opacity every progressive layer
+ * rests at before its build window (and the landing.css base for the
+ * pre-driver/no-JS frames). The whole plan reads as faint line-work
+ * at scroll progress 0; each build ramps CONTINUOUSLY from this floor
+ * to 1 — never from 0, never a discrete jump. */
+const XL_GHOST = 0.18;
 
 /* the finding rotation: 5 equal 0.6s windows over t 2.5→5.5, one step
  * behind the layer builds (finding i narrates rooms i..i+1 — the
@@ -490,20 +523,20 @@ export function JourneyScene() {
 
       /* 3 · the six progressive layers — DIRECT opacity writes on the
        * ≤10 consuming group roots (the inherited-var walk is dead).
-       * R323 (A3 · defect 5): the STRUCTURE never renders mid-ink —
-       * the envelope (the walls' poché, .pl-l-envelope) writes
-       * DISCRETELY (0|1). A wall at partial opacity reads pale grey
-       * and then jumps to black when the layer settles — the owner's
-       * tone-jump defect; grey belongs to the ghost hairlines
-       * (.bp-hair #B3B3AF), never to the structure. The room layers
-       * keep their crossfade (they are washes, not structure). */
+       * R325 (Y1): every layer ramps CONTINUOUSLY from the GHOST floor
+       * (XL_GHOST) to 1 inside its own window — the plan's line-work
+       * stands at 18% from frame one and inks in with the scroll. The
+       * R323 discrete envelope write (0|1) retires: the ghost floor is
+       * the designed resting state and the ramp is continuous, so the
+       * old tone-jump defect (a wall jumping pale-grey→black) cannot
+       * recur — a wall now travels 18%→100% through its build window
+       * as one crossfade. */
       const groups = resolveLayers(track);
       for (let i = 0; i < LAYER_WINDOWS.length; i += 1) {
         const [a, b] = LAYER_WINDOWS[i]!;
-        const o = p2o((t - a) / (b - a));
+        const o = XL_GHOST + (1 - XL_GHOST) * p2o((t - a) / (b - a));
         for (const el of groups[i] ?? []) {
-          const oo = el.classList.contains('pl-l-envelope') ? (t >= a ? 1 : 0) : o;
-          setSheetVar(el.style, 'opacity', oo.toFixed(3));
+          setSheetVar(el.style, 'opacity', o.toFixed(3));
         }
       }
 
@@ -629,13 +662,13 @@ export function JourneyScene() {
               {/* the two statement plaques — Heron's intel cards as
                   content-sized title blocks ON the paper (the base
                   layer stays visible around them — the V2 kill).
-                  R323 (A3 · defect 5): the headline rides a PAPER
-                  PLATE — a pinned-light chip with a ≥24px clear zone
-                  — so the words never sit on a wall line (the old
-                  strike-through effect). The plate is part of the
-                  pinned light drawing world (literal paper + ink
-                  alpha hairline, both themes — matching the card's
-                  own pinned #282828 ink). */}
+                  R325 (Y1): the headline is UNBOXED — the old paper
+                  plate (solid chip + ink-alpha hairline + hard 16px
+                  halo, a visible ghost box that clipped the wrapped
+                  phone headline) retires for a FEATHERED paper mask
+                  behind the glyphs only (landing.css: a masked ::before,
+                  soft on every edge) — the words stay readable over the
+                  ghost line-work, no readable rectangle anywhere. */}
               <p className="jt-card jt-card1" ref={card1Ref}>
                 <span className="jt-card-plate">{STATEMENT_1_AR}</span>
               </p>

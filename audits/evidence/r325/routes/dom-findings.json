@@ -1,0 +1,310 @@
+{
+ "student/dashboard": [
+  {
+   "class": "fixed-overlap",
+   "desc": "div.sheet-frame × div.sheet-grain | div.sheet-frame × nav.sidebar.collapsed | div.sheet-frame × header.topbar",
+   "theme": "both"
+  }
+ ],
+ "student/calendar": [
+  {
+   "class": "fixed-overlap",
+   "desc": "div.sheet-frame × div.sheet-grain | div.sheet-frame × nav.sidebar.collapsed | div.sheet-frame × header.topbar",
+   "theme": "both"
+  }
+ ],
+ "student/courses": [
+  {
+   "class": "probe-timeout",
+   "desc": "evaluate did not settle (Y7-class wedged main thread)",
+   "theme": "both"
+  }
+ ],
+ "student/catalog": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/course-detail": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/lecture-player": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/schedule": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/results": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/matrix": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/online-exams": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/exam-detail": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/library": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/research": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/ai": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/labs": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/ar": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/live": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/training": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/training-track": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/training-lesson": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/achievements": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/mooc": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/jobs": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/gamification": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/skills": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/alerts": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/messages": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/social": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/downloads": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/university": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/payment": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/map": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/webinars": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/profile": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/community": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/competitions": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/competition-detail": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/colleges": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/colleges-leaderboard": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/college-detail": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/settings": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/vision": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/vision-detail": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ],
+ "student/forbidden-owner-users": [
+  {
+   "class": "probe-error",
+   "desc": "page.goto: Target page, context or browser has been closed",
+   "theme": "both"
+  }
+ ]
+}

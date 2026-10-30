@@ -755,7 +755,7 @@
 .rs-review-work-title {
   margin: 0;
   font-size: var(--fs-h3);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
   color: var(--text);
   line-height: var(--lh-snug);
   overflow-wrap: anywhere;

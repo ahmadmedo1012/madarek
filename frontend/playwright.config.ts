@@ -163,6 +163,43 @@ export default defineConfig({
         colorScheme: 'light',
       },
     },
+    {
+      // r325 P4(a) — the REAL-STACK flow walks (tests/r325/flows/*.spec.ts,
+      // the FLOWS.md rehearsal). Unlike the hermetic `e2e` project these
+      // specs ride the LIVE local stack (backend :4000 + seeded Postgres)
+      // through the real-API storage states (tests/r325/flows/fixtures/
+      // live.ts — the auth-storage.ts grammar with a shared session
+      // cache). Reach it via:
+      //   cd frontend && MADAREK_E2E_BASE_URL=http://localhost:5173 \
+      //     MADAREK_E2E_EXECUTABLE=<chromium> npx playwright test --project=flows
+      // The specs never start their own server — MADAREK_E2E_BASE_URL
+      // (or an already-running :5173 with reuseExistingServer) is expected.
+      name: 'flows',
+      testDir: './tests/r325/flows',
+      testMatch: /flow-.*\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 800 },
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
+    {
+      // Y6 (R325) — the consent/toast/FAB BOTTOM-STACK overlap probe
+      // (tests/r325/bottom-stack.spec.ts). Own testDir so the e2e/audit/
+      // r305 projects and vitest stay untouched; the spec self-scales
+      // its viewports (320/390/1440/1920) and drives both themes itself.
+      // The .spec.ts spelling is the task-pinned name — vitest excludes
+      // tests/r325/** for the same reason it excludes tests/audit/**.
+      name: 'r325',
+      testDir: './tests/r325',
+      testMatch: /bottom-stack\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
   ],
   webServer: process.env.MADAREK_E2E_BASE_URL
     ? undefined

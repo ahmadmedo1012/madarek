@@ -35,8 +35,19 @@ export function useFeedbackInbox(page: number, status: string | null) {
   const inst = useInstitutionScope();
   return useQuery({
     queryKey: withInstitutionScope(['feedback-inbox', page, status], inst),
-    queryFn: () =>
-      api.get('/feedback', { params: { page, limit: 20, ...(status ? { status } : {}) } }),
+    /* r325 P2.4 (found live by the route sweep): the queryFn used to
+     * resolve the whole AxiosResponse, so `inbox.data` was
+     * `{data: body, status, …}` and the page's `inbox.data.data` read
+     * the API ENVELOPE `{data: […], meta}` as the rows array —
+     * `rows.map is not a function` crashed the whole owner page into
+     * the error boundary. Resolve the BODY (rows + meta together). */
+    queryFn: async () => {
+      const res = await api.get<{ data: FeedbackRow[]; meta: { total: number; totalPages: number; page: number } }>(
+        '/feedback',
+        { params: { page, limit: 20, ...(status ? { status } : {}) } },
+      );
+      return res.data;
+    },
     staleTime: 15_000,
   });
 }

@@ -112,7 +112,14 @@
   gap: var(--sp-2);
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
-  color: var(--text);
+  /* P2.6 — was var(--text): the PAGE ink. The head is the page's ONE
+     deep band (r305rp-band--deep), whose own re-derivation to the band
+     fg (--neutral-0) lives in @layer pages — and THIS unlayered rule
+     outranks it regardless of specificity, so the title rendered the
+     page ink ON the band: paper-on-paper in Ink, ink-on-ink in Paper —
+     invisible in BOTH themes since r305. The band owns the ink:
+     inherit it (same ruling as the player's .page-index fix). */
+  color: inherit;
 }
 /* السجلّ يملأ المسافة بين الرأس والمرسِل — يلغي سقف student.css
    (480px) المضبوط لأجرئ بطاقة-داخل-شبكة؛ الخصوصية أعلى (محدّدان). */

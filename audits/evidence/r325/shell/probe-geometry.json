@@ -1,0 +1,41 @@
+{
+  "note": "R325 P2.3 shell geometry probe — Playwright (Chromium) against npx vite :5209, backend :4000. getBoundingClientRect + getComputedStyle, live logins (student@test.ly / teacher@test.ly). Captured 2026-10-31 in the r325/shell worktree session.",
+  "default_state": {
+    "sidebar_w": 72,
+    "topbar_h": 56,
+    "topbar_border_block_end": "rgb(179, 179, 175) 1px",
+    "grid_template_columns": "72px 1368px",
+    "route_entrance_animation_duration": "0.32s",
+    "role_code_student": "STU",
+    "role_code_teacher": "FAC",
+    "role_pattern_student": "radial-gradient(circle, …) — --app-role-pat-student (dots)",
+    "role_pattern_teacher": "repeating-linear-gradient(45deg, …) — --app-role-pat-faculty (hatch)",
+    "nav_section_label_font": "11.67px Geist Mono",
+    "fill_bg_light": "rgb(40, 40, 40)",
+    "fill_transform_active": "matrix(1, 0, 0, 1, 0, 0) (scaleX(1))",
+    "active_label_light": "rgb(246, 246, 238)",
+    "topbar_notif_min": ["44px", "44px"],
+    "topbar_user_trigger_min_block": "44px",
+    "topbar_theme_min": ["44px", "44px", "border-radius 0"],
+    "topbar_search_input_h": 44
+  },
+  "expanded_state": {
+    "sidebar_w": 264,
+    "grid_template_columns": "264px 1176px",
+    "tick_width": "2px",
+    "tick_color": "rgb(250, 54, 0)  [= --app-signal #FA3600]",
+    "tick_inset_inline_start": "0px",
+    "tick_animation_duration": "0.12s  [= --app-t-hover]",
+    "ink_theme": {
+      "sidebar_w": 264,
+      "topbar_h": 56,
+      "fill_bg_ink": "rgb(246, 246, 238)  (paper fill — inversion holds)",
+      "active_label_ink": "rgb(40, 40, 40)",
+      "topbar_bg": "rgb(46, 46, 46)"
+    }
+  },
+  "drawer_390": {
+    "sidebar_z": "530  [= --z-menu-drawer]",
+    "backdrop_z": "529"
+  }
+}

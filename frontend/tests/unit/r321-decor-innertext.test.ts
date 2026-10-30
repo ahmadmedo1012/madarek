@@ -28,8 +28,10 @@ const DECOR_FAMILIES = [
   'sheet-mark',
   'bp-plus',
   'bp-dmark',
-  'pr-panel-mark',
-  'pr-bar-plus',
+  // R325 override — `pr-panel-mark` and `pr-bar-plus` retired with the
+  // Y2 §05 rebuild (the filler chrome the brief ordered removed; the
+  // families no longer exist in src/ OR the sheets — the §A6 sweep
+  // re-lists them the day a decorative text glyph returns).
   'inkm-sketch-mark',
   'fo-cta-sketch-mark',
   'fo-wordmark-reg',

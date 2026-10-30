@@ -3,37 +3,37 @@
   "results": [
     {
       "width": 1440,
-      "atLoad": 12544,
-      "afterWalk": 12544,
+      "atLoad": 12428,
+      "afterWalk": 12428,
       "driftPct": 0,
       "ok": true
     },
     {
       "width": 1024,
-      "atLoad": 11247,
-      "afterWalk": 11247,
+      "atLoad": 11174,
+      "afterWalk": 11174,
       "driftPct": 0,
       "ok": true
     },
     {
       "width": 768,
-      "atLoad": 11928,
-      "afterWalk": 11928,
-      "driftPct": 0,
+      "atLoad": 11704,
+      "afterWalk": 11705,
+      "driftPct": 0.009,
       "ok": true
     },
     {
       "width": 390,
-      "atLoad": 11768,
-      "afterWalk": 11768,
+      "atLoad": 11733,
+      "afterWalk": 11733,
       "driftPct": 0,
       "ok": true
     },
     {
       "width": 360,
-      "atLoad": 11468,
-      "afterWalk": 11467,
-      "driftPct": 0.009,
+      "atLoad": 11520,
+      "afterWalk": 11518,
+      "driftPct": 0.017,
       "ok": true
     }
   ]

@@ -333,7 +333,14 @@ describe('R305 results — the summary strip is the ONE deep band', () => {
     const band = sheet.match(/\.results-summary\s*\{[^}]*\}/);
     expect(band).not.toBeNull();
     expect(band![0]).toContain('--text: var(--neutral-0)');
-    expect(band![0]).toContain('--text-muted: color-mix(in srgb, var(--neutral-0) 62%, var(--neutral-900))');
+    /* P2.6 — the muted/faint strengths re-tuned 62/55 → 72/67: the old
+     * rungs cleared the light pole (ink band) but landed 3.97:1 / 3.28:1
+     * on the dark theme's PAPER band — under the 4.5 small-text floor.
+     * 72/67 hold ≥4.58 on BOTH poles (engine math in
+     * audits/evidence/r325/ink-app/README.md). The -ink tones are
+     * unchanged. */
+    expect(band![0]).toContain('--text-muted: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900))');
+    expect(band![0]).toContain('--text-faint: color-mix(in srgb, var(--neutral-0) 67%, var(--neutral-900))');
     expect(band![0]).toContain('--success-ink: color-mix(in srgb, var(--success) 62%, var(--neutral-0))');
     expect(band![0]).toContain('--danger-ink: color-mix(in srgb, var(--danger) 62%, var(--neutral-0))');
     expect(band![0]).toContain('--accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-0))');

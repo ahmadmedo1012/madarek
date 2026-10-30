@@ -587,11 +587,6 @@ export function Pill({
   );
 }
 
-/* ─── Section title ─────────────────────────────────────── */
-export function SectionTitle({ children }: { children: ReactNode }) {
-  return <div className="section-title">{children}</div>;
-}
-
 /* ─── Tabs (segmented control) ──────────────────────────── */
 // ARIA tabs pattern with roving tabindex, arrow/Home/End navigation (RTL
 // aware — in RTL, ArrowLeft advances and ArrowRight goes back) and stable

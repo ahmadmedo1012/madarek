@@ -61,6 +61,13 @@
    Radius 0 everywhere — the canon. */
 .cb-banner {
   position: fixed;
+  /* Y6 (R325) — the banner is the BASE layer of the bottom stack: it
+     OWNS the viewport's bottom seat (offset 0 — the one layer that
+     never moves) and registers its measured height with
+     lib/bottomStack.ts, so the toast stack and the FAB lift above its
+     real box (the phone bar's expand toggle included) instead of
+     covering it. The manager writes an inline --app-bottom-stack: 0px
+     here; the seat itself never shifts. */
   inset-block-end: 0;
   left: 0;                        /* physical — the mirrored seat */
   z-index: 240;                   /* the ladder mapped in the header */

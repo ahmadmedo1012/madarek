@@ -1178,7 +1178,7 @@
     margin-block-end: var(--sp-2);
   }
   .search-empty-title {
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (the .state-title register; was 700) */
     color: var(--text);
     font-size: var(--fs-body);
     margin-block-end: var(--sp-3);

@@ -26,7 +26,11 @@ export default defineConfig({
     // under its own runner (npm run test:audit → playwright). Vitest
     // must NOT collect it — importing @playwright/test outside the
     // Playwright runner throws and breaks the whole collection.
-    exclude: [...configDefaults.exclude, 'tests/audit/**'],
+    // Y6 (R325): same reason — tests/r325/bottom-stack.spec.ts is the
+    // Playwright overlap probe (the playwright.config.ts `r325`
+    // project); the name keeps the task-pinned .spec.ts spelling, so
+    // the directory (not the suffix) is what vitest excludes.
+    exclude: [...configDefaults.exclude, 'tests/audit/**', 'tests/r325/**'],
     css: false,
   },
 });

@@ -97,12 +97,13 @@
    rhythm are r288 patterns-parity contracts); only voice + edges.
    ════════════════════════════════════════════════════════════════ */
 
-/* Page title — Alexandria 700. Legacy .page-title keeps its h1 step,
-   the patterns title keeps its r304 24px product register. */
+/* Page title — r325 Y4: 600 (the §R324 weight law; was Alexandria 700).
+   Legacy .page-title keeps its app-density h1 step (base.css --fs-app-h1),
+   the patterns title keeps its r304 product register. */
 .r305ao .page-title,
 .r305ao .pf-page-title {
   font-family: var(--font-display);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
   letter-spacing: var(--ls-normal);
   color: var(--text);
 }
@@ -591,7 +592,7 @@ body:has(.r305ao) .modal-card::before {
 /* Chrome — display title, hairline header/footer rules. */
 body:has(.r305ao) .modal-title {
   font-family: var(--font-display);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
   color: var(--text);
 }
 body:has(.r305ao) .modal-header { border-block-end-color: var(--border-faint); }

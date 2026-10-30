@@ -1,21 +1,30 @@
-import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Play, Eye, AlertCircle, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Badge, ProgressBar } from '../../components/primitives';
+import { Badge } from '../../components/primitives';
 import {
   ErrorState, EmptyState, ListSkeleton, Skeleton,
 } from '../../components/primitives/States';
-import { ProgressRing } from '../../components/primitives/Ledger';
 import {
   PageFrame, PageHeader, RowList, RowItem, StatLine, TodayList,
   type StatLineItem,
 } from '../../components/patterns';
+/* R325 P2.5 — the INDICATOR language (patterns/indicators): the
+ * dashboard is its showpiece. Imported DIRECTLY, not via the patterns
+ * barrel — the barrel's signatures are CONTRACT-frozen and a `RulerGauge`
+ * re-export there would collide with the r319 student kit's semester
+ * ruler (aliased `SemesterRuler` below). */
+import {
+  RulerGauge, SegmentedProgress, MasteryCells, StreakTicks,
+  ScheduleStrip, GradeBars, groupSlotsByDay, watchState, gradeBands,
+} from '../../components/patterns/indicators';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import {
   useStudentDashboard, useResume, useTrainingCatalog, useGaps,
-  useMyEnrollments, type MyEnrollment,
+  useMyEnrollments, useOfferingLectures, useStudentResults,
+  type MyEnrollment,
 } from '../../hooks/useResources';
 import { EXAM_KIND_LABEL, courseIcon, courseTint } from '../../lib/courseMeta';
 import { countAr } from '../../lib/format';
@@ -36,11 +45,15 @@ import '../../styles/r305-student-dashboard.css';
  * frame + grain + the ambient `SHEET S-01 · STUDENT` title line are
  * the shared shell's (C2-G2, live on every authenticated route); this
  * page's material is the SECTION BARS ([01]…[05] mono-indexed title
- * bars), the INDICATORS (RulerGauge semester ruler, per-course
- * CourseBars, StatusChips, the WeekStrip) and the hatched EmptyCells
- * (r319-student.css, the pdf.css page-chunk precedent). */
+ * bars), the INDICATORS (the r319 semester ruler, per-course
+ * CourseBars, StatusChips) and the hatched EmptyCells, joined since
+ * P2.5 by the R325 indicator language (patterns/indicators.tsx +
+ * r325-indicators.css — the showpiece application: the hero's
+ * RulerGauge + lecture SegmentedProgress, the ScheduleStrip week
+ * timetable, MasteryCells on the gaps rows, GradeBars + StreakTicks in
+ * the momentum band). */
 import {
-  SectionBar, BarCount, RulerGauge, CourseBar, StatusChip, WeekStrip,
+  SectionBar, BarCount, RulerGauge as SemesterRuler, CourseBar, StatusChip,
   EmptyCell, dueChip, type StatusChipTone,
 } from '../../components/student';
 import '../../styles/r319-student.css';
@@ -348,6 +361,9 @@ type ResumeFocus =
     lectureTitle: string;
     ordinal: number;
     durationSec: number;
+    /* P2.5 — the offering's id, so the hero can mount the real lecture
+     * SegmentedProgress (the course-completion instrument row). */
+    offeringId: string;
     to: string;
   }
   | {
@@ -373,6 +389,7 @@ function resumeFocus(
       lectureTitle: r.lecture.title,
       ordinal: r.lecture.ordinal,
       durationSec: r.lecture.durationSec,
+      offeringId: r.lecture.offeringId,
       to: `/student/lectures/${r.lecture.id}`,
     };
   }
@@ -401,28 +418,64 @@ function formatClock(totalSec: number): string {
    PP-X2 copper edge kept as the r305s-next rail grammar. The eyebrow
    lifts into the shared .r305s-eyebrow register; the course name is
    the band's display line; the CTA stays the page's ONLY accent
-   button. The ring's aria-label carries the honest state; the side
+   button. P2.5: the progress instrument is the R325 RulerGauge (the
+   drafting ruler — ink fill, orange end-tick, mono numerals) whose
+   currentColor inks make it deep-band-proof by construction; the side
    note keeps the course code + lecture clock (data, never decoration). */
 function DashResumeHero({ focus }: { focus: ResumeFocus }) {
+  /* P2.5 — the course-completion instrument row: the resume offering's
+   * lectures as ONE SegmentedProgress run (full=watched through,
+   * partial=begun, empty=untouched — the real watch events), mounted
+   * only when the query lands; a pending/slow payload never fakes a
+   * segment. The track arm has no offering — its query idles disabled. */
+  const offeringLectures = useOfferingLectures(
+    focus.kind === 'lecture' ? focus.offeringId : undefined,
+  );
+  const segments = useMemo(() => {
+    const rows = offeringLectures.data;
+    if (!rows || rows.length === 0) return null;
+    return [...rows]
+      .sort((a, b) => a.ordinal - b.ordinal)
+      .map((le) => watchState(
+        le.watchEvents?.reduce((m, w) => Math.max(m, w.watchedSec), 0) ?? 0,
+        le.durationSec,
+        le.watchEvents?.some((w) => w.completed) ?? false,
+      ));
+  }, [offeringLectures.data]);
+
   if (focus.kind === 'lecture') {
+    const doneCount = segments ? segments.filter((s) => s === 'full').length : 0;
     return (
       <section aria-label="الخطوة التعليمية التالية">
         <div className="dash-resume-card stu-hero r305s-band--deep dash-hero-deep">
-          <span className="dash-resume-ring">
-            <ProgressRing size={64} thickness={5} value={focus.continuing ? focus.progressPct : 0}
-              ariaLabel={focus.continuing ? `تقدّم مشاهدة المحاضرة المتوقّفة: ${focus.progressPct}%` : 'المحاضرة الأولى لم تُشاهد بعد'}
-              center={null} />
-          </span>
           <div className="dash-resume-main">
             <span className="dash-resume-eyebrow r305s-eyebrow">{focus.continuing ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
             <span className="dash-resume-course-name">{focus.courseName}</span>
             <span className="dash-resume-lecture">
               المحاضرة <bdi>{formatInt(focus.ordinal)}</bdi> · {focus.lectureTitle}
             </span>
-            {focus.continuing && (
-              <div className="dash-resume-progress">
-                <ProgressBar value={focus.progressPct} showValue={false}
-                  ariaLabel={`تقدّم مشاهدة المحاضرة: ${focus.progressPct}%`} />
+            {/* P2.5 — the lecture's watched share as the drafting ruler
+                (ink fill + the orange end-tick at the reading). The
+                not-yet-started arm still renders the ruler at 0 — the
+                honest empty register, never a fabricated progress. */}
+            <div className="dash-resume-progress">
+              <RulerGauge
+                value={focus.continuing ? focus.progressPct : 0}
+                ariaLabel={focus.continuing ? `تقدّم مشاهدة المحاضرة: ${focus.progressPct}%` : 'المحاضرة الأولى لم تُشاهد بعد'}
+              />
+            </div>
+            {segments && (
+              <div className="dash-resume-segments">
+                <span className="ind-microlabel">محاضرات المقرّر</span>
+                <div className="dash-resume-segments-row">
+                  <SegmentedProgress
+                    segments={segments}
+                    ariaLabel={`محاضرات المقرّر: أُنجزت ${formatInt(doneCount)} من ${formatInt(segments.length)}`}
+                  />
+                  <bdi className="ind-mono dash-resume-segcount" dir="ltr">
+                    {String(doneCount).padStart(2, '0')}/{String(segments.length).padStart(2, '0')}
+                  </bdi>
+                </div>
               </div>
             )}
           </div>
@@ -444,21 +497,18 @@ function DashResumeHero({ focus }: { focus: ResumeFocus }) {
   return (
     <section aria-label="الخطوة التعليمية التالية">
       <div className="dash-resume-card stu-hero r305s-band--deep dash-hero-deep">
-        <span className="dash-resume-ring">
-          <ProgressRing size={64} thickness={5} value={focus.started ? focus.progressPct : 0}
-            ariaLabel={focus.started ? `تقدّم المسار التدريبي: ${focus.progressPct}%` : 'مسار لم يبدأ بعد'}
-            center={null} />
-        </span>
         <div className="dash-resume-main">
           <span className="dash-resume-eyebrow r305s-eyebrow">{focus.started ? 'أكمل من حيث توقفت' : 'الخطوة التالية'}</span>
           <span className="dash-resume-course-name">{focus.title}</span>
           <span className="dash-resume-lecture">مسار التطوير الذاتي · {focus.started ? <>أنجزت <bdi>{formatInt(focus.progressPct)}%</bdi> من دروسه</> : 'سجّلت فيه ولم تبدأه بعد'}</span>
-          {focus.started && (
-            <div className="dash-resume-progress">
-              <ProgressBar value={focus.progressPct} showValue={false}
-                ariaLabel={`تقدّم المسار التدريبي: ${focus.progressPct}%`} />
-            </div>
-          )}
+          {/* P2.5 — the same drafting ruler on the training arm (0 stays
+              the honest empty register for an unstarted track). */}
+          <div className="dash-resume-progress">
+            <RulerGauge
+              value={focus.started ? focus.progressPct : 0}
+              ariaLabel={focus.started ? `تقدّم المسار التدريبي: ${focus.progressPct}%` : 'مسار لم يبدأ بعد'}
+            />
+          </div>
         </div>
         <div className="dash-resume-cta stu-hero-side">
           <Link to={`/training/${focus.slug}`} className="btn accent lg">
@@ -534,6 +584,32 @@ export default function StudentDashboardPage() {
   // R304: the «مقرّراتك» list rides its own query — the workspace's
   // current-courses surface, independent of the dashboard aggregate.
   const enrollments = useMyEnrollments();
+  // P2.5 — the results distribution feeds the momentum band's GradeBars
+  // (the graded works' own scores + the headline average marking the
+  // student's band). Independent query — renders when it lands.
+  const results = useStudentResults();
+
+  /* P2.5 — the week's real timetable for the [02] ScheduleStrip: every
+     enrollment's own schedule slots (dayOfWeek 0=Sunday … the
+     WEEKDAY_NAMES_AR contract) grouped Sunday-first. Enrollments
+     pending ⇒ seven honest empty day columns, never a fake timetable.
+     (Hooks ride before the early returns — the pending/error/preview
+     mirrors render from the same hook order.) */
+  const scheduleColumns = useMemo(
+    () => groupSlotsByDay(
+      (enrollments.data ?? []).flatMap((e) =>
+        e.offering.schedule.map((s) => ({
+          id: s.id,
+          dayOfWeek: s.dayOfWeek,
+          start: s.startTime,
+          end: s.endTime,
+          code: e.offering.course.code,
+          room: s.room ?? null,
+        })),
+      ),
+    ),
+    [enrollments.data],
+  );
 
   if (dash.isPending) {
     /* r220 loading mirror — the resolved page leads with the PageHeader,
@@ -562,11 +638,14 @@ export default function StudentDashboardPage() {
                skeleton reads as the same ink/paper surface the resolved
                hero lands on (the Heron pending mirror anatomy). */
             <div className="dash-resume-card stu-hero stu-hero-skel r305s-band--deep dash-hero-deep" aria-hidden="true">
-              <Skeleton width={64} height={64} rounded="var(--r-full)" />
               <div className="dash-resume-main">
                 <Skeleton width={120} height={13} />
                 <Skeleton width="52%" height={24} />
                 <Skeleton width="38%" height={13} />
+                {/* P2.5 — the mirror carries the RULER's footprint (the
+                    resolved hero's instrument row), not the retired ring. */}
+                <Skeleton width="46%" height={30} />
+                <Skeleton width="38%" height={12} />
               </div>
               <Skeleton width={170} height={48} rounded="var(--r-full)" />
             </div>
@@ -732,6 +811,16 @@ export default function StudentDashboardPage() {
   const sortedEnrollments = [...(enrollments.data ?? [])]
     .sort((a, b) => b.progressPct - a.progressPct);
 
+  /* P2.5 — the graded-works distribution: the recent assignments' own
+     scores over the six bands, the headline average marking the
+     student's band (the orange one). Nothing graded ⇒ no instrument. */
+  const gradedScores = (results.data?.recentAssignments ?? [])
+    .map((a) => a.gradePct)
+    .filter((v) => Number.isFinite(v));
+  const gradeDist = gradedScores.length > 0
+    ? gradeBands(gradedScores, results.data?.headline.avgGradePct ?? null)
+    : null;
+
   /* The momentum StatLine — same facts the old strip carried, printed
      as one calm line (r183-B3's verdict copy stays pinned here). */
   const statLineItems: StatLineItem[] = [
@@ -831,7 +920,7 @@ export default function StudentDashboardPage() {
             meta={<bdi className="r319s-mono" dir="ltr">{d.term.code}</bdi>}
           />
           <div className="r319s-term">
-            <RulerGauge
+            <SemesterRuler
               startsAt={d.term.startsAt}
               endsAt={d.term.endsAt}
               progressPct={termPct}
@@ -865,7 +954,13 @@ export default function StudentDashboardPage() {
             ) : undefined
           }
         />
-        <WeekStrip />
+        {/* P2.5 — the week as the real TIMETABLE: the ScheduleStrip grows
+            the WeekStrip grammar a slot body (same 7 columns, same mono
+            day labels, the today header cell keeps the inked inversion)
+            and fills each day with the enrollments' own schedule slots —
+            mono times + mono course codes. No slots yet ⇒ one honest
+            muted dash per day, never a fabricated timetable. */}
+        <ScheduleStrip columns={scheduleColumns} />
         <TodayList
           items={[
             ...today.map((item) => {
@@ -986,7 +1081,15 @@ export default function StudentDashboardPage() {
                     leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
                     title={g.conceptName}
                     meta={<>{g.courseName} · <bdi className="dash-gap-pct">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
-                    trailing={<span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>}
+                    trailing={
+                      <span className="dash-gap-side">
+                        <MasteryCells
+                          mastery={g.level}
+                          ariaLabel={`إتقان ${g.conceptName}: ${formatInt(Math.round(g.level * 100))}%`}
+                        />
+                        <span className="btn outline sm pf-chip"><Icon icon={Play} size={13} />سدّ الفجوة</span>
+                      </span>
+                    }
                   />
                 ) : (
                   <RowItem
@@ -994,7 +1097,17 @@ export default function StudentDashboardPage() {
                     leading={<Icon icon={AlertCircle} size={16} className="text-warning-ink" />}
                     title={g.conceptName}
                     meta={<>{g.courseName} · <bdi className="dash-gap-pct">{formatInt(Math.round(g.level * 100))}%</bdi> الآن</>}
-                    trailing={<span className="r305s-chip"><span className="r305s-chip-dot" aria-hidden="true" />لا توصية بعد</span>}
+                    trailing={
+                      <span className="dash-gap-side">
+                        {/* P2.5 — the concept's mastery as the 0–4 cell
+                            scale (the matrix register, in the row). */}
+                        <MasteryCells
+                          mastery={g.level}
+                          ariaLabel={`إتقان ${g.conceptName}: ${formatInt(Math.round(g.level * 100))}%`}
+                        />
+                        <span className="r305s-chip"><span className="r305s-chip-dot" aria-hidden="true" />لا توصية بعد</span>
+                      </span>
+                    }
                   />
                 )
               ))}
@@ -1009,13 +1122,51 @@ export default function StudentDashboardPage() {
           (c2-G1): the KPI block's summary instrument — the AVG
           CourseBar under the line (the same avgEnrollmentProgressPct
           datum the «إنجاز المقرّرات» stat prints, as a hairline +
-          end-tick reading). */}
+          end-tick reading). P2.5: two more instruments join the band —
+          GradeBars (the graded works' real distribution, the student's
+          own band in orange) and StreakTicks (the weekly study log —
+          NO daily datum exists in the API yet, so the row renders its
+          honest empty register: seven empty ticks, today outlined). */}
       <section aria-label="زخم الفصل" className="dash-momentum">
         <div className="r305s-rule-labeled" aria-hidden="true">زخم الفصل</div>
         <StatLine items={statLineItems} />
         {d.kpi.courseCount > 0 && (
           <CourseBar code="AVG" pct={courseProgressPct} ariaLabel="متوسط إنجاز مقرّراتك الحالية" />
         )}
+        <div className="dash-indicators">
+          {gradeDist && (
+            <div className="dash-indicator">
+              <span className="ind-microlabel">توزيع درجاتك</span>
+              <GradeBars
+                bands={gradeDist.counts}
+                ownIndex={gradeDist.ownIndex}
+                ariaLabel={`توزيع درجاتك على ${formatInt(gradedScores.length)} عمل مُقيَّم`}
+              />
+            </div>
+          )}
+          <div className="dash-indicator">
+            <span className="ind-microlabel">أسبوع الدراسة</span>
+            <StreakTicks
+              todayIndex={now.getDay()}
+              note="يُسجَّل تلقائيًا مع كل محاضرة تشاهدها — سجل الأسبوع يُعرض هنا"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* P2.5 — the AI assistant entry: a quiet hairline row (the §R325.c
+          hatch hover is its only flourish) pointing at the assistant the
+          sidebar already carries. The mono AI mark is the route's own
+          badge identity (nav.ts), never a new colour. */}
+      <section aria-label="المساعد الذكي" className="dash-ai">
+        <Link to="/student/ai" className="dash-ai-row">
+          <span className="dash-ai-mark" dir="ltr" aria-hidden="true">AI</span>
+          <span className="dash-ai-body">
+            <b>المساعد الذكي</b>
+            <span>اسأل عن مقرّر، لخّص محاضرة، أو اطلب خطة مراجعة.</span>
+          </span>
+          <Icon icon={ArrowLeft} size={14} />
+        </Link>
       </section>
 
       {/* [05] الأسبوع — the non-exam remainder grouped by real day.

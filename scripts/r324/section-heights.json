@@ -1,19 +1,46 @@
 {
-  "1024": {
-    ".st-section": 598,
-    ".pm-section": 528,
-    ".chapters": 5395,
-    ".pr-section": 505,
-    ".wy-section": 484,
-    ".rl-section": 759,
-    ".fo-cta": 496
+  "360": {
+    ".st-section": 865,
+    ".pm-section": 815,
+    ".chapters": 4426,
+    ".pr-section": 639,
+    ".wy-section": 688,
+    ".rl-section": 933,
+    ".fo-cta": 462
+  },
+  "390": {
+    ".st-section": 893,
+    ".pm-section": 870,
+    ".chapters": 4821,
+    ".pr-section": 654,
+    ".wy-section": 658,
+    ".rl-section": 948,
+    ".fo-cta": 500
+  },
+  "600": {
+    ".st-section": 1402,
+    ".pm-section": 1356,
+    ".chapters": 4280,
+    ".pr-section": 912,
+    ".wy-section": 1059,
+    ".rl-section": 1459,
+    ".fo-cta": 769
+  },
+  "768": {
+    ".st-section": 617,
+    ".pm-section": 1333,
+    ".chapters": 5455,
+    ".pr-section": 508,
+    ".wy-section": 653,
+    ".rl-section": 1337,
+    ".fo-cta": 541
   },
   "1440": {
     ".st-section": 731,
     ".pm-section": 743,
     ".chapters": 6272,
     ".pr-section": 710,
-    ".wy-section": 680,
+    ".wy-section": 564,
     ".rl-section": 887,
     ".fo-cta": 698
   }

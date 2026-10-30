@@ -13,6 +13,26 @@ import '../../styles/r305-shell.css';
 // mono registers + the last radius-0 chrome overrides. Same cascade
 // contract as r305-shell.css (unlayered, shell-imported, last word).
 import '../../styles/r319-shell.css';
+// R325 (P2.1 · DESIGN.md §R325): the app grammar tokens — --app-*
+// (grid/shell chrome, forms, tables, chips, role identity, motion) +
+// the .pat-* state primitives (.pat-hatch/.pat-dots/.pat-cross/
+// .pat-skeleton). Same cascade contract as the two sheets above
+// (unlayered, shell-imported); P2.2/P2.3 consume the --app-* seats.
+import '../../styles/r325-app.css';
+// R325 (P2.3 · DESIGN.md §R325): the shell grammar itself — the
+// active-nav tick/fill-wipe, the role identity seat, the topbar/bottom
+// nav conformance rules, the --app-t-page route register, the drawer
+// z-run. Last word of the shell cascade (after r325-app.css, unlayered,
+// shell-imported — the same house contract).
+import '../../styles/r325-shell.css';
+// R325 (P2.5 · DESIGN.md §R325): the INDICATOR sheet — the seven
+// measurement instruments of components/patterns/indicators.tsx
+// (RulerGauge · SegmentedProgress · MasteryCells · StreakTicks ·
+// ScheduleStrip · AttendanceTicks · GradeBars) + the dashboard's
+// consumer seats. Same cascade contract (unlayered, shell-imported);
+// every ink is currentColor/theme-token, so the instruments are
+// theme-proof and deep-band-proof by construction.
+import '../../styles/r325-indicators.css';
 import { SheetFrame, SheetGrain } from './SheetFrame';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';

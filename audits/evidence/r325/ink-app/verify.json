@@ -1,0 +1,1307 @@
+[
+ {
+  "key": "student/ai",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "ai-surface-head r305rp-band--deep r305ai-head",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "ai-surface",
+     "bg": "rgb(46, 46, 46)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "ai-layout",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "محادثتك مع المساعد\nمساعد محليّ\nواعٍ بمستوى إتقانك",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/ai",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "ai-surface-head r305rp-band--deep r305ai-head",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "ai-surface",
+     "bg": "rgb(46, 46, 46)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "ai-layout",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "محادثتك مع المساعد\nمساعد محليّ\nواعٍ بمستوى إتقانك",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/ai",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "span",
+     "cls": "r319s-empty-note",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(180, 180, 176)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-empty-body",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-empty",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "card",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "linear-gradient(color(srgb 0.211765 0.211765 0.21051), color"
+    },
+    {
+     "tag": "aside",
+     "cls": "ai-side",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "ابدأ بأول سؤال وستظهر محادثاتك هنا.",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/dashboard",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "span",
+     "cls": "dash-resume-course-name",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "dash-resume-main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "هندسة البرمجيات",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/dashboard",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أكمل من حيث توقفت\nهندسة البرمجيات\nالمحاضرة 2 · تحليل المتطلب",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/dashboard",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "مساحة الطالب\n\nلوحة التحكم\n\nمساء الخير، أحمد — كلية تقنية الم",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/forbidden-owner-users",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "span",
+     "cls": "dash-resume-course-name",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "dash-resume-main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "هندسة البرمجيات",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/forbidden-owner-users",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أكمل من حيث توقفت\nهندسة البرمجيات\nالمحاضرة 2 · تحليل المتطلب",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/forbidden-owner-users",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "مساحة الطالب\n\nلوحة التحكم\n\nمساء الخير، أحمد — كلية تقنية الم",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/gamification",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305g-level-foot",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305g-level-main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305g-level",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "متبقّي 45 نقطة للمستوى التالي",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/gamification",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305g-level-foot",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305g-level-main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305g-level",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "متبقّي 45 نقطة للمستوى التالي",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/gamification",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "li",
+     "cls": "leaderboard-row",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "ol",
+     "cls": "leaderboard-list",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "grid-2",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أح\nأحمد الزروق\nالمستوى 7\n2,340 نقطة",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/lecture-player",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "content",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "main",
+     "cls": "main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "has-shell",
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "body",
+     "cls": "",
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "المعامل والتقنيات\n\n[01]البث المباشر\n\nالجلسات الحيّة لمقرّرات",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/lecture-player",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "content",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "main",
+     "cls": "main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "has-shell",
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "body",
+     "cls": "",
+     "bg": "rgb(40, 40, 40)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "المعامل والتقنيات\n\n[01]البث المباشر\n\nالجلسات الحيّة لمقرّرات",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/lecture-player",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "main",
+     "cls": "main",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "المعامل والتقنيات\n\n[01]البث المباشر\n\nالجلسات الحيّة لمقرّرات",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/profile",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305p-hero-mail",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305p-hero-id",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep r305p-hero",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "student@test.ly\nموثَّق",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/profile",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep r305p-hero",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أح\nالملف الشخصي\nأحمد الزروق\nstudent@test.ly\nموثَّق\nاكتمال ال",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/profile",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep r305p-hero",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أح\nالملف الشخصي\nأحمد الزروق\nstudent@test.ly\nموثَّق\nاكتمال ال",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/research",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "section",
+     "cls": "r305rp-band r305rp-band--deep r305rp-res-band",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "ملخص الحالة\nإجمالي بحوثك\n1\nمنذ أول رفعة\nقيد المراجعة\n0\nلا شي",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/research",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "section",
+     "cls": "r305rp-band r305rp-band--deep r305rp-res-band",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "ملخص الحالة\nإجمالي بحوثك\n1\nمنذ أول رفعة\nقيد المراجعة\n0\nلا شي",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/research",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "بحوثي العلمية\n\nارفع بحوثك، اعرضها على فحص الانتحال وكشف الذك",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "student/results",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "pf-statline",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep results-summary",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أعلى درجة\n88%\nهندسة البرمجيات\nالمتوسّط\n88%\nعبر مقرّرين\nأدنى ",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/results",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "pf-statline",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep results-summary",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أعلى درجة\n88%\nهندسة البرمجيات\nالمتوسّط\n88%\nعبر مقرّرين\nأدنى ",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/results",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "pf-statline",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep results-summary",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "page-transition-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "أعلى درجة\n88%\nهندسة البرمجيات\nالمتوسّط\n88%\nعبر مقرّرين\nأدنى ",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/university",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305u-facts",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "الاسم الرسميّ\nجامعة مدارك التجريبية\nالنطاق\nبيانات اصطناعية —",
+   "isImg": null
+  }
+ },
+ {
+  "key": "student/university",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "r305u-facts",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305s-band r305s-band--deep",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "content-inner",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "الاسم الرسميّ\nجامعة مدارك التجريبية\nالنطاق\nبيانات اصطناعية —",
+   "isImg": null
+  }
+ },
+ {
+  "key": "teacher/ai",
+  "bp": "1440",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "ai-surface-head r305rp-band--deep r305ai-head",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "ai-surface",
+     "bg": "rgb(46, 46, 46)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "ai-layout",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "محادثتك مع المساعد\nمساعد محليّ",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "teacher/ai",
+  "bp": "768",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "ai-surface-head r305rp-band--deep r305ai-head",
+     "bg": "rgb(246, 246, 238)",
+     "color": "rgb(46, 46, 46)",
+     "bgi": "none"
+    },
+    {
+     "tag": "section",
+     "cls": "ai-surface",
+     "bg": "rgb(46, 46, 46)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "ai-layout",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "محادثتك مع المساعد\nمساعد محليّ",
+   "isImg": "ref: <Node>"
+  }
+ },
+ {
+  "key": "teacher/ai",
+  "bp": "390",
+  "probe": {
+   "chain": [
+    {
+     "tag": "div",
+     "cls": "card",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "linear-gradient(color(srgb 0.211765 0.211765 0.21051), color"
+    },
+    {
+     "tag": "aside",
+     "cls": "ai-side",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "ai-layout",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "pf-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    },
+    {
+     "tag": "div",
+     "cls": "r305rp r319s-page",
+     "bg": "rgba(0, 0, 0, 0)",
+     "color": "rgb(246, 246, 238)",
+     "bgi": "none"
+    }
+   ],
+   "text": "لا توجد محادثات سابقة بعد\nابدأ بأول سؤال وستظهر محادثاتك هنا",
+   "isImg": null
+  }
+ }
+]

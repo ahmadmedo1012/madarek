@@ -17,7 +17,9 @@ import { ROLE_SHOWCASES } from '../data/university-media';
 import { HERO_WORK_ITEMS, LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
-import { PlatformCanvas } from '../components/landing/PlatformCanvas';
+/* r325 Y2 — PlatformCanvas/PlatformPlanArt (the head-strip plan +
+ * its over-art pin) retire with the Y2 rebuild: the plan's caption
+ * lives under the ONE product frame now (see PlatformShowcase). */
 import { HeroInkWindow } from '../components/landing/HeroInkWindow';
 import { StatementArt } from '../components/landing/StatementArt';
 import { WhyScene } from '../components/landing/WhyScene';
@@ -201,97 +203,92 @@ const LEDGER_ROWS = [
   },
 ] as const;
 
-/* ── R323 (A3 · defect 6) — the platform §05's ONE designed product
- * frame: an original vector drawing built from the real components'
- * grammar (the mini lecture-player with its chapter list + checkpoint
- * card, the mastery matrix, one assistant bubble), replacing the raster
- * captures + the «real-ui» chip + the pasted tooltip. Honest by
- * construction: every cell states the grammar of a REAL surface (the
- * player's checkpoint mechanism, the qualitative matrix, the
- * assistant's LIVE concept-explain scope — the r168b truthfulness
+/* ── r325 Y2 — the platform §05's ONE product frame, rebuilt on the
+ * extracted grammar (docs/redesign/r324/heron/full-<bp>.json,
+ * home-platform: content 361px | img-wrap 601px | content-right 464px
+ * @1440 — the 3/5/4 twelve-col seat our ≥992 grid re-derives):
+ *
+ *   · ONE wide product frame — the drawn lecture-player (slide with a
+ *     concept chain, the playhead track, the checkpoint card) on the
+ *     sheet's hairline figure. The r323 frame-head chrome
+ *     («[05] · MADAREK · UI GRAMMAR») carried no information — the
+ *     filler label is retired with the bar.
+ *   · the floor-plan tooltip («قاعة المحاضرة التفاعلية — نقطة فحص
+ *     تُصحَّح فورًا») is re-seated as the frame's CAPTION BELOW the art
+ *     (the reference's own caption grammar) — nothing floats over the
+ *     drawing, and the plan miniature retires with its pin.
+ *   · the hairline step list (the player's concept index) moves
+ *     BESIDE the frame into the heading column (the extracted
+ *     content cell's own step list), drawn as ruled rows.
+ *   · the mastery matrix + the assistant cell ride the inline-end
+ *     column (the extracted content-right seat).
+ *
+ * Honest by construction: every cell states the grammar of a REAL
+ * surface (the player's checkpoint mechanism, the qualitative matrix,
+ * the assistant's LIVE concept-explain scope — the r168b truthfulness
  * canon: no summarisation promise), and the section carries exactly
  * ONE demo-data disclosure. Pure drafting chrome: the drawing body is
- * aria-hidden; the reading lives in the section's own copy. */
+ * aria-hidden; the reading lives in the caption, the lede and the
+ * section's own copy. */
 function PlatformShowcase() {
   return (
     <figure className="pr-frame">
-      <div className="pr-frame-head" aria-hidden="true">
-        <span className="fo-mono" dir="ltr">[05] · MADAREK · UI GRAMMAR</span>
-        <span className="pr-frame-sq" />
-      </div>
+      <div className="pr-frame-art" aria-hidden="true">
+        <div className="pr-cell-bar">
+          <span className="pr-cell-idx fo-mono" dir="ltr">[01]</span>
+          <span className="pr-cell-title">المحاضرة التفاعلية</span>
+          <span className="pr-cell-note fo-mono" dir="ltr">24:36</span>
+        </div>
 
-      <div className="pr-frame-body" aria-hidden="true">
-        {/* the mini lecture-player: hairline cell, chapter list, the
-            checkpoint card */}
-        <div className="pr-cell pr-cell-player">
-          <div className="pr-cell-bar">
-            <span className="pr-cell-idx fo-mono" dir="ltr">[01]</span>
-            <span className="pr-cell-title">المحاضرة التفاعلية</span>
-            <span className="pr-cell-note fo-mono" dir="ltr">24:36</span>
+        {/* the player screen — the slide's drafted plate: the position
+            counter, the heading mass, the concept chain with the ONE
+            accent checkpoint node, over the playhead track */}
+        <div className="pr-screen">
+          <span className="pr-slide-kicker fo-mono" dir="ltr">02 / 04</span>
+          <div className="pr-slide">
+            <span className="pr-slide-rule" />
+            <span className="pr-slide-rule is-sub" />
+            <div className="pr-chain">
+              <span className="pr-node">
+                <i className="pr-node-line" />
+                <i className="pr-node-line is-short" />
+              </span>
+              <span className="pr-chain-link" />
+              <span className="pr-node is-acc">
+                <i className="pr-node-dot" />
+                <i className="pr-node-line is-short" />
+              </span>
+              <span className="pr-chain-link" />
+              <span className="pr-node">
+                <i className="pr-node-line" />
+                <i className="pr-node-line is-short" />
+              </span>
+            </div>
+            <span className="pr-slide-line" />
+            <span className="pr-slide-line is-short" />
           </div>
-          <ul className="pr-chapters">
-            <li className="pr-ch is-done">
-              <span className="fo-mono" dir="ltr">[01]</span>
-              مفهوم: بناء المحاضرة
-            </li>
-            <li className="pr-ch is-now">
-              <span className="fo-mono" dir="ltr">[02]</span>
-              مفهوم: نقطة الفحص
-              <span className="pr-ch-play" />
-            </li>
-            <li className="pr-ch">
-              <span className="fo-mono" dir="ltr">[03]</span>
-              مفهوم: التصحيح التلقائي
-            </li>
-            <li className="pr-ch">
-              <span className="fo-mono" dir="ltr">[04]</span>
-              مفهوم: خطط المراجعة
-            </li>
-          </ul>
-          <div className="pr-check">
-            <span className="pr-check-k fo-mono" dir="ltr">[02] · نقطة فحص</span>
-            <p className="pr-check-q">سؤال قصير يُصحَّح فورًا داخل المحاضرة</p>
-            <span className="pr-check-btn">تحقّق</span>
+          <div className="pr-track">
+            <span className="pr-track-fill" />
+            <i className="pr-tick" />
+            <i className="pr-tick" />
+            <i className="pr-tick" />
+            <span className="pr-track-head" />
           </div>
         </div>
 
-        {/* the mastery matrix: a small grid of cells with the orange
-            fills as the single accent */}
-        <div className="pr-cell pr-cell-matrix">
-          <div className="pr-cell-bar">
-            <span className="pr-cell-idx fo-mono" dir="ltr">[02]</span>
-            <span className="pr-cell-title">مصفوفة الإتقان</span>
-          </div>
-          <div className="pr-matrix">
-            {/* r324 X3: ONE solid accent cell — three hot cells read an
-                orange flood; the reference's drawings carry one orange
-                signal per frame. The two warm cells keep the outline. */}
-            <span className="pr-mc is-hot" />
-            <span className="pr-mc" />
-            <span className="pr-mc is-warm" />
-            <span className="pr-mc" />
-            <span className="pr-mc" />
-            <span className="pr-mc is-warm" />
-            <span className="pr-mc" />
-            <span className="pr-mc" />
-          </div>
-          <div className="pr-mrows">
-            <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '78%' }} /></span>
-            <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '52%' }} /></span>
-            <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '31%' }} /></span>
-          </div>
-        </div>
-
-        {/* one assistant bubble — the LIVE concept-explain scope */}
-        <div className="pr-cell pr-cell-ai">
-          <div className="pr-cell-bar">
-            <span className="pr-cell-idx fo-mono" dir="ltr">[03]</span>
-            <span className="pr-cell-title">المساعد الأكاديمي</span>
-          </div>
-          <p className="pr-ai-q">اشرح لي مفهوم «نقطة الفحص»</p>
-          <p className="pr-ai-a">سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</p>
+        {/* the checkpoint card — the one honest checkpoint surface */}
+        <div className="pr-check">
+          <span className="pr-check-k">نقطة فحص</span>
+          <p className="pr-check-q">سؤال قصير يُصحَّح فورًا داخل المحاضرة</p>
+          <span className="pr-check-btn">تحقّق</span>
         </div>
       </div>
+
+      {/* the caption BELOW the frame — the former plan pin, re-seated */}
+      <figcaption className="pr-frame-cap">
+        <span className="pr-cap-title">قاعة المحاضرة التفاعلية</span>
+        <span className="pr-cap-line">نقطة فحص تُصحَّح فورًا داخل القاعة</span>
+      </figcaption>
     </figure>
   );
 }
@@ -1309,37 +1306,25 @@ export default function LandingPage() {
           <JourneyScene />
         </section>
 
-        {/* ═══ [5] المنصّة فعليًا — R323 (A3 · defect 6): ONE crisp
-            designed product frame. The blurry dashboard screenshots +
-            the pasted tooltip + the «real-ui» chips are retired; the
-            frame is an ORIGINAL vector drawing built from the real
-            components' grammar (mini lecture-player · mastery matrix ·
-            one assistant bubble) — hairline cells, mono index bars,
-            orange as the single accent, radius 0. Exactly ONE
-            disclosure line «بيانات تجريبية» (the second «اللقطات من
-            بيئة العرض…» line is gone with the captures). The CTA still
-            scrolls to the conversion row (the funnel counts stay exact
-            — no extra auth links on the sheet).
-            R318 §A5 (c3-plat): the band keeps the reference's measured
-            12-col hairline grammar — the SHEET (.pr-head — [05] mono
-            label + the D2 title + the muted sub, the PlatformCanvas
-            drawing ON the same paper inside the sheet's hairline frame)
-            at the reading-start edge; the frame ≈ the 601 tool canvas.
-            No h1-class text runs under any frame — the title seats
-            INSIDE the sheet's frame. The flow keeps the tier floors. ═══ */}
+        {/* ═══ [5] المنصّة فعليًا — r325 Y2: the band rebuilt on the
+            extracted grammar (full-<bp>.json, home-platform 361/601/464
+            @1440): the heading + hairline STEP LIST at the reading-start
+            column, ONE wide product frame (the drawn lecture-player) in
+            the centre, the matrix + assistant cells at the inline end,
+            and the former plan tooltip re-seated as the frame's CAPTION
+            BELOW the art — nothing floats over the drawing. The r323
+            frame-head chrome («[05] · MADAREK · UI GRAMMAR») and the
+            plan miniature retire (filler / overlaid art). Hairline
+            cells, mono indexes ≥11px, orange as the single accent,
+            radius 0. Exactly ONE disclosure line «بيانات تجريبية». The
+            CTA still scrolls to the conversion row (the funnel counts
+            stay exact — no extra auth links on the sheet). ═══ */}
         <section id="product" className="pr-section" aria-labelledby="pr-title">
-          {/* r324 P2 (X3) root cause — the R323 single-frame rewrite
-              (a79b71e6) shipped PlatformShowcase with ZERO CSS (no
-              .pr-frame/.pr-cell/.pr-chapters rules existed) and its
-              .pr-stage wrapper had NO seat in the ≥992 12-col grid
-              (the old .pr-grid rule points at a class the new DOM
-              retired) — auto-placement dropped the unstyled figure
-              into ONE 115px column (the word-by-word rail). The fix
-              lives in CSS: the stage seats 4/-1 and the frame family
-              is drawn (landing.css, the X3 block). The SHEET's 4-row
-              anatomy (label/title/lede/drawing) stays FLAT — the
-              ≥992 grid-template-rows contract seats the drawing in
-              its minmax(0,1fr) row. */}
+          {/* the heading column — the extracted content cell: label,
+              title, lede, then the player's concept steps as the
+              hairline index BESIDE the frame (the extracted cell's own
+              step list; aria-hidden drafting chrome — the honest read
+              lives in the title/lede/caption/note). */}
           <div className="pr-head">
             <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
             <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
@@ -1349,14 +1334,69 @@ export default function LandingPage() {
               بنية الواجهات نفسها برسم داخلي: مشغّل المحاضرة بنقاط الفحص،
               ومصفوفة الإتقان، والمساعد الأكاديمي — كما تعمل اليوم داخل المنصّة.
             </RevealCssClass>
-            {/* the sheet's drawing cell — the plan ON the sheet's paper
-                (aria-hidden decorative; hidden with the head at ≤991/992–1024,
-                the measured band floors are flow-identical at every tier) */}
-            <PlatformCanvas />
+            <ol className="pr-chapters" aria-hidden="true">
+              <li className="pr-ch">
+                <span className="fo-mono" dir="ltr">[01]</span>
+                مفهوم: بناء المحاضرة
+              </li>
+              <li className="pr-ch is-now">
+                <span className="fo-mono" dir="ltr">[02]</span>
+                مفهوم: نقطة الفحص
+                <span className="pr-ch-play" />
+              </li>
+              <li className="pr-ch">
+                <span className="fo-mono" dir="ltr">[03]</span>
+                مفهوم: التصحيح التلقائي
+              </li>
+              <li className="pr-ch">
+                <span className="fo-mono" dir="ltr">[04]</span>
+                مفهوم: خطط المراجعة
+              </li>
+            </ol>
           </div>
 
           <RevealCssClass as="div" className="pr-stage" delay={2}>
             <PlatformShowcase />
+          </RevealCssClass>
+
+          {/* the inline-end column — the two drawn surfaces (the
+              extracted content-right seat; aria-hidden drafting
+              chrome; folds at ≤1024 with the strips-only bands) */}
+          <RevealCssClass as="div" className="pr-side" delay={3} aria-hidden="true">
+            <div className="pr-cell pr-cell-matrix">
+              <div className="pr-cell-bar">
+                <span className="pr-cell-idx fo-mono" dir="ltr">[02]</span>
+                <span className="pr-cell-title">مصفوفة الإتقان</span>
+              </div>
+              <div className="pr-matrix">
+                {/* ONE solid accent cell — the reference's drawings
+                    carry one orange signal per frame; the two warm
+                    cells keep the outline. */}
+                <span className="pr-mc is-hot" />
+                <span className="pr-mc" />
+                <span className="pr-mc is-warm" />
+                <span className="pr-mc" />
+                <span className="pr-mc" />
+                <span className="pr-mc is-warm" />
+                <span className="pr-mc" />
+                <span className="pr-mc" />
+              </div>
+              <div className="pr-mrows">
+                <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '78%' }} /></span>
+                <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '52%' }} /></span>
+                <span className="pr-mrow"><span className="pr-mfill" style={{ inlineSize: '31%' }} /></span>
+              </div>
+            </div>
+
+            {/* one assistant bubble — the LIVE concept-explain scope */}
+            <div className="pr-cell pr-cell-ai">
+              <div className="pr-cell-bar">
+                <span className="pr-cell-idx fo-mono" dir="ltr">[03]</span>
+                <span className="pr-cell-title">المساعد الأكاديمي</span>
+              </div>
+              <p className="pr-ai-q">اشرح لي مفهوم «نقطة الفحص»</p>
+              <p className="pr-ai-a">سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</p>
+            </div>
           </RevealCssClass>
 
           {/* the row-2 note — a DIRECT child of the section grid (the
@@ -1393,8 +1433,12 @@ export default function LandingPage() {
 
           <WhyScene />
 
+          {/* R325 Y3 — the strip's ONE disclosure line: the per-frame
+              caption demos retired with the overlay chrome (both rode
+              the art or duplicated this note); this note carries the
+              demo-data confession once, below the whole strip. */}
           <RevealCssClass as="p" className="wy-note" delay={3}>
-            اللقطات من بيئة العرض — بيانات تجريبية اصطناعية بالكامل، وموثَّقة على كل إطار.
+            اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.
           </RevealCssClass>
         </section>
 

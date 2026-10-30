@@ -25,7 +25,16 @@
 
    Gate contract (enforced on this tree): colors var()/color-mix() only;
    type/radius/spacing on the token ladders; Lucide icons via Icon;
-   motion only via --t-*/--motion-* tokens and guarded hovers.
+   motion only via the --t-* and --motion-* tokens and guarded hovers.
+
+   P2.6 repair note: the motion line above once read «--t-* + --motion-*»
+   written with a slash between the families — that slash-star closed this
+   banner early and the BROWSER discarded the whole sheet (postcss was
+   lenient, Chromium parsed 0 rules — the profile/university/achievements/
+   gamification anatomy has been dead since r305). The same disease was
+   fixed in r305-student + training by the r321 c1 WP-C0 sweep; these two
+   sibling sheets (supplemental + schedule) were missed. Never write a
+   slash-star sequence inside a banner: spell token families out.
    ═════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
@@ -116,7 +125,11 @@
   .r305a-strip .stat-cell {
     border-color: color-mix(in srgb, var(--neutral-0) 16%, transparent);
   }
-  .r305a-strip .stat-label { color: var(--neutral-500); }
+  .r305a-strip .stat-label {
+    /* P2.6 — band-safe mix (the raw --neutral-500 rung washed to 1.87:1
+       on the dark paper pole; see the foundation eyebrow note). */
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+  }
   .r305a-strip .stat-value { color: var(--neutral-0); }
   .r305a-strip .stat-trend { color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900)); }
 
@@ -234,7 +247,10 @@
   .r305u-fact-label {
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
-    color: var(--neutral-500);
+    /* P2.6 — band-safe mix: the fact row rides the deep identity band,
+       where the raw --neutral-500 rung washes to 1.87:1 on the dark
+       paper pole (see the foundation eyebrow note). */
+    color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
   }
   .r305u-fact-value {
     font-size: var(--fs-sm);

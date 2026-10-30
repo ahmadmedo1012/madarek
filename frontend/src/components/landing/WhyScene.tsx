@@ -5,17 +5,20 @@
  * Heron's home-why answers "why this product" with the four journey
  * verbs over its product captures. The Madarek translation: the same
  * four verbs the journey walkthrough uses (شاهد / تحقّق / اختبر / أتقن),
- * each paired with one of the REAL student-surface captures — the
- * ProductFrame contract rides every frame (the honest demo-data
- * disclosure; the r324 X4 sweep retired the «real-ui» tag), so the
+ * each paired with one of the REAL student-surface captures — each
+ * frame's honest caption rides BELOW the art (R325 Y3: the mock-UI
+ * overlay collage and the per-frame demo disclosure are scoped OFF
+ * this strip — the caption + the section's one .wy-note confession
+ * carry the truth; nothing is pasted over the capture), so the
  * cross-fade never blurs what is shown. The capture hint seats at
  * 48rem so the browser picks the sharp 1280w asset (the r324 X4
  * re-encode: the 720w tier went q78 → q92 — text-heavy UI needs the
  * headroom).
  *
- *  · the section is ONE compact band (~77vh, the reference's 5.6%):
- *    the stage rail (always-readable verb cards) beside a capture
- *    stack; the scroll traversal (--wy-p) drives data-wy-stage =
+ *  · the section is ONE content-sized band (R325 Y3 — no forced
+ *    min-height floor, V4: no forced voids): the stage rail
+ *    (always-readable verb cards) beside a capture stack; the scroll
+ *    traversal (--wy-p) drives data-wy-stage =
  *    floor(traversal × 4) — the same flip formula the journey uses;
  *  · the active stage's verb card warms + its tag snaps with the
  *    reference's hold-plateau shape (0%→74% held, then resolves —

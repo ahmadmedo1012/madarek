@@ -195,8 +195,8 @@
 }
 .guest-cta-title {
   font-family: var(--font-display);
-  font-size: var(--type-headline-size-md);
-  font-weight: var(--fw-bold);
+  font-size: var(--type-headline-size-md); /* r325 Y4 — rides the re-keyed clamped d2 role */
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
   color: var(--text);
   /* r148 (AUDIT-4 I1): تتبّع سالب على h2 عربي («هل هذه كلّيتك؟») — الشدة
      في «كلّيتك» أسوأ حالة ممكنة للتتبّع السالب. */
@@ -420,14 +420,16 @@
   margin-block-end: var(--sp-1);
 }
 .college-hero-name {
-  /* r305: the detail hero joins the product type register — the 24px
-     display voice every framed page opens with (.pf-page-title,
-     .comp-hero-title), not the dashboard 30px slab. The college hero
-     shares its column with the StatStrip and eight section cards; the
-     identity accent on the masthead stripe already leads the eye. */
+  /* r305: the detail hero joins the product type register — the display
+     voice every framed page opens with (.pf-page-title,
+     .comp-hero-title). The college hero shares its column with the
+     StatStrip and eight section cards; the identity accent on the
+     masthead stripe already leads the eye. */
+  /* r325 Y4 — the CLAMPED d2 rung at 600 (the unclamped --fs-h2 alias
+     grew to 47.6px @390 — off every rung; 700 off the weight law). */
   font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: var(--fw-bold);
+  font-size: var(--fs-d2);
+  font-weight: var(--fw-semibold);
   line-height: var(--lh-snug);
   letter-spacing: 0;
   color: var(--text);
@@ -956,11 +958,12 @@ a.comp-card:focus-visible .comp-go {
 }
 .comp-hero-title {
   /* r304: the detail hero joins the product type register — display
-     voice at the 24px page-title rung (matches every pf-page-title),
-     not the dashboard 30px slab. */
+     voice (matches every pf-page-title), not the dashboard 30px slab. */
+  /* r325 Y4 — the CLAMPED d2 rung at 600 (the alias grew to 47.6px
+     @390; 700 off the §R324 weight law). */
   font-family: var(--font-display);
-  font-size: var(--fs-h2);
-  font-weight: var(--fw-bold);
+  font-size: var(--fs-d2);
+  font-weight: var(--fw-semibold);
   margin: 0;
   line-height: 1.2;
 }

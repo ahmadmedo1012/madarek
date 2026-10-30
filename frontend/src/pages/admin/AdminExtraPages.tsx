@@ -22,7 +22,10 @@ import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { BulkImportModal } from '../../components/admin/BulkImportModal';
-import { TablePaginationFooter, StatStripSkeleton } from './AdminPages';
+import { TablePaginationFooter } from './AdminPages';
+/* P2.2 dedup: re-pointed off AdminPages' retired byte-identical copy
+ * onto the canonical owner StatStripSkeleton (components/owner). */
+import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
 // D14 css split (13-17): colleges.css has owned the admin-extras surfaces
