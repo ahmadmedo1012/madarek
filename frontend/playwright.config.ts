@@ -164,6 +164,27 @@ export default defineConfig({
       },
     },
     {
+      // r325 P4(a) — the REAL-STACK flow walks (tests/r325/flows/*.spec.ts,
+      // the FLOWS.md rehearsal). Unlike the hermetic `e2e` project these
+      // specs ride the LIVE local stack (backend :4000 + seeded Postgres)
+      // through the real-API storage states (tests/r325/flows/fixtures/
+      // live.ts — the auth-storage.ts grammar with a shared session
+      // cache). Reach it via:
+      //   cd frontend && MADAREK_E2E_BASE_URL=http://localhost:5173 \
+      //     MADAREK_E2E_EXECUTABLE=<chromium> npx playwright test --project=flows
+      // The specs never start their own server — MADAREK_E2E_BASE_URL
+      // (or an already-running :5173 with reuseExistingServer) is expected.
+      name: 'flows',
+      testDir: './tests/r325/flows',
+      testMatch: /flow-.*\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 800 },
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
+    {
       // Y6 (R325) — the consent/toast/FAB BOTTOM-STACK overlap probe
       // (tests/r325/bottom-stack.spec.ts). Own testDir so the e2e/audit/
       // r305 projects and vitest stay untouched; the spec self-scales
