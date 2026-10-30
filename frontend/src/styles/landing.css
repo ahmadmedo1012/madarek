@@ -5390,9 +5390,18 @@ html[data-theme='dark'] body.mdrk-grain::before {
    (opacity does not inherit, so descendants never recalc: the R310
    stage-keyed stroke-dashoffset draw-in AND the inherited --jt-p var
    walk are both retired here — perf-baseline §3's 756-family and §7's
-   fix menu, items 1–2). */
+   fix menu, items 1–2).
+   R325 (Y1) — the GHOST base: the groups rest at 18%, not 0. The
+   WHOLE plan's line-work (walls, rooms, annotations) stands as faint
+   ghost line-work from the very first frame — scroll progress 0, both
+   breakpoints, pre-driver and no-JS alike — and each group's build
+   ramps CONTINUOUSLY from this floor to 1 (the driver's own floor:
+   JourneyScene XL_GHOST). The old 0 base is what rendered the owner's
+   «empty grid / nearly empty paper with a lone dot» intro frames: the
+   frame layer was alone for ≈3 screens @1440. The RM belt below still
+   stands every group at 1. */
 .jt .jt-plan [data-xl] {
-  opacity: 0;
+  opacity: 0.18;
   will-change: opacity;
 }
 
@@ -5658,20 +5667,41 @@ html[data-theme='dark'] body.mdrk-grain::before {
   will-change: opacity, transform;
 }
 
-/* R323 (A3 · defect 5) — the PAPER PLATE under the headline: a
- * pinned-light chip (literal paper + an ink-alpha hairline, both
- * themes — the same pinned-artifact world as the card's own ink)
- * giving the words a ≥24px clear zone above/below, so the display
- * line never sits ON a wall line (the strike-through effect is
- * dead). box-decoration-break keeps multi-line wraps honest. */
+/* R325 (Y1) — the plate is UNBOXED: no border, no solid paper slab,
+ * no box-shadow halo (the old ghost box — a full-width hairline rect
+ * with a hard 16px paper spread — was the owner's «visible box», and
+ * its full-width box is what clipped the wrapped headline against the
+ * window edge on phones). The clear zone is now a FEATHERED paper
+ * mask behind the glyphs only: a ::before paper layer (the plan
+ * artifact's pinned #F6F6EE, both themes) dissolved by two crossing
+ * mask gradients — soft on every edge (alpha reaches 0 at the box
+ * bounds), solid over the glyph zone (the text keeps its ≥16px clear
+ * zone in every direction), never a readable rectangle. The plate
+ * shrinks to its content (max-inline-size) and carries
+ * overflow-wrap so a narrow viewport can never push a line past the
+ * measured gutters. */
 .jt-card-plate {
+  position: relative;
   display: inline-block;
-  background: #F6F6EE; /* color-gate: allow — the pinned paper of the plan artifact */
-  box-shadow: 0 0 0 var(--sp-4) #F6F6EE; /* color-gate: allow — the clear-zone halo */
-  border: 1px solid rgb(40 40 40 / 0.14); /* color-gate: allow — the ink-alpha hairline */
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
   padding: var(--sp-4) var(--sp-5);
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
+}
+
+.jt-card-plate::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: #F6F6EE; /* color-gate: allow — the pinned paper of the plan artifact (both themes) */
+  /* the mask gradients carry ALPHA only (the pigment is the background
+   * above) — the #000 stops are the opaque mask shape, not a color. */
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%), /* color-gate: allow — mask alpha shape, not a pigment */
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%); /* color-gate: allow — mask alpha shape, not a pigment */
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%), /* color-gate: allow — mask alpha shape, not a pigment */
+    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%); /* color-gate: allow — mask alpha shape, not a pigment */
+  mask-composite: intersect;
 }
 
 /* ── the INTRODUCTION card — Heron's home-map-intro, measured ───────
@@ -6125,9 +6155,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   /* the two statement plaques — the D1 rung's phone floor (31.74px,
-   * Heron's own 3.2rem→4rem phone card measure, 2 lines balanced). */
+   * Heron's own 3.2rem→4rem phone card measure, 2 lines balanced).
+   * R325 (Y1): the card's own gutter bumps to the sp-4 rung — with the
+   * column's 8px inset the plate box sits ≥24px inside the viewport
+   * and the glyphs ≥40px (the measured ≥16px safe-area gutter), and
+   * the plate's max-inline-size + overflow-wrap (above) keep any wrap
+   * inside that box — no line can reach the window edge. */
   .jt-card {
-    padding-inline: var(--sp-3);
+    padding-inline: var(--sp-4);
   }
 
   /* R322 3-b-fix2 (review-c3 R1-N1): the phone's statement-era orange
