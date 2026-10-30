@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-import { View } from "react-native";
-import { Linking } from "react-native";
+import { View , Linking } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ExternalLink, MonitorPlay } from "lucide-react-native";
 import { liveApi } from "@/api/live";

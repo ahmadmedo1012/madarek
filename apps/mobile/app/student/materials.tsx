@@ -15,8 +15,7 @@ import { SectionBar } from "@/components/ui/screen";
 import { Badge } from "@/components/ui/surfaces";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
-import { sizeLabel } from "@/lib/format";
-import { latn } from "@/lib/format";
+import { sizeLabel , latn } from "@/lib/format";
 import { countAr } from "@/features/student/more";
 import {
   PushFrame,

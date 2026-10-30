@@ -3,7 +3,7 @@ import { RoleTabFrame } from "@/components/shell/TabFrame";
 import { NotificationsScreen } from "@/features/notifications/NotificationsScreen";
 
 function Alerts() {
-  return <NotificationsScreen title="الإشعارات" kicker="[Inbox]" />;
+  return <NotificationsScreen title="الإشعارات" kicker="بريدك" />;
 }
 
 

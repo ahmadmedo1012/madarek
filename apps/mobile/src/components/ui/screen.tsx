@@ -11,8 +11,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { T } from "./text";
-import { MonoLabel } from "./text";
+import { T , MonoLabel } from "./text";
 
 export interface ScreenProps {
   children: ReactNode;

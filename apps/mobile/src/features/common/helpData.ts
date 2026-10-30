@@ -59,10 +59,21 @@ export interface FaqItem {
   a: string;
 }
 
-export const FAQS: FaqItem[] = [
+/**
+ * r326 X15-parity — the pilot CREDENTIALS (@test.ly / the shared password)
+ * ride `showPilotAccounts`: true on dev builds and on a production build
+ * explicitly made with EXPO_PUBLIC_PILOT_HELP_ACCOUNTS=1 for the pilot
+ * cohort (same policy as the web's VITE_PILOT_HELP_ACCOUNTS). Default
+ * production builds get the honest credential-free variants — a public
+ * help page never publishes a working password.
+ */
+export function faqs(showPilotAccounts: boolean): FaqItem[] {
+  return [
   {
     q: "كيف أجرّب المنصّة؟",
-    a: "بحسابات الاختبار المنشورة: بريد ينتهي بـ @test.ly وكلمة المرور 12345678 — حساب واحد لكل دور.",
+    a: showPilotAccounts
+      ? "بحسابات الاختبار الموزّعة على المختبرين: بريد ينتهي بـ @test.ly وكلمة المرور 12345678 — حساب واحد لكل دور، تُعرض في لوحة «حسابات العرض» على شاشة الدخول في بنية التطوير."
+      : "حسابات التجربة تُوزّع على فريق المختبرين عند فتح كل مرحلة — إن كنت من المختبرين فاستخدم الحساب الذي وصلك من فريق مدارك، وإن لم يصل بعدُ فانتظر فتح التسجيل من شاشة إنشاء الحساب.",
   },
   {
     q: "ما الأدوار المتاحة في المنصّة؟",
@@ -70,7 +81,9 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "نسيت كلمة المرور — ماذا أفعل؟",
-    a: "الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حسابات @test.ly كلمة مرورها معروفة (12345678) فتُملأ من صفحة الدخول مباشرة؛ وإن كان حسابك الخاص فقدنا كلمة مروره فالطريق اليوم قناة التواصل — لا نعدك بغير ما يعمل.",
+    a: showPilotAccounts
+      ? "الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حسابات @test.ly كلمة مرورها معروفة (12345678) فتُملأ من شاشة الدخول مباشرة؛ وإن كان حسابك الخاص فقدنا كلمة مروره فالطريق اليوم قناة التواصل — لا نعدك بغير ما يعمل."
+      : "لا يوجد بريد يُرسَل من المنصّة بعد. إن فقدت كلمة مرور حسابك فالطريق اليوم قناة التواصل — نعالج الطلبات يدويًا ولا نعدك بغير ما يعمل فعلًا.",
   },
   {
     q: "ما المتصفحات المدعومة؟",
@@ -96,7 +109,13 @@ export const FAQS: FaqItem[] = [
     q: "هل يمكن طباعة السياسات؟",
     a: "نعم — على الموقع، صفحات السياسات مصمّمة للطباعة كوثيقة نظيفة بعمود واحد: أرسل أمر الطباعة من متصفحك مباشرة وستحصل على النص والإطارات الحاكمة وتاريخ آخر تحديث دون أي زخرفة شاشة.",
   },
-];
+  ];
+}
+
+/** Convenience for existing imports — same variant policy as the web. */
+export const FAQS: FaqItem[] = faqs(
+  __DEV__ || process.env.EXPO_PUBLIC_PILOT_HELP_ACCOUNTS === "1",
+);
 
 /* ═══ [C-03] التواصل والتسجيل المبكر ═══ */
 

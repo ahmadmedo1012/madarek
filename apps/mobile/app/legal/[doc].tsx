@@ -50,7 +50,7 @@ export default function LegalDocScreen() {
 
   return (
     <Screen scroll>
-      <StackHeader title={data.title} kicker="LEGAL SHEET" />
+      <StackHeader title={data.title} kicker="السياسات" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">

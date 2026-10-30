@@ -19,8 +19,7 @@ import { CircleAlert } from "lucide-react-native";
 import { teacherApi } from "@/api/teacher";
 import { ApiError } from "@/api/client";
 import type { KnowledgeGap, Submission } from "@/api/types";
-import type { MaterialRow } from "@/api/student";
-import type { ResultCourse, StudentDashboard } from "@/api/student";
+import type { MaterialRow , ResultCourse, StudentDashboard } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, type StatusToneName } from "@/design/tokens";
@@ -530,16 +529,34 @@ export interface CivilDate {
   d: number;
 }
 
-const civilFmt = new Intl.DateTimeFormat("en-u-nu-latn", {
-  timeZone: TZ,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
+// R326 crash fix (cause a): lazily built, guarded formatters — never at
+// module scope. An unsupported locale/option combo on Hermes must not throw
+// while the student tree is importing after login.
+function buildCivilFmt(): Intl.DateTimeFormat {
+  try {
+    return new Intl.DateTimeFormat("en-u-nu-latn", {
+      timeZone: TZ,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  } catch {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }
+}
+let civilFmt: Intl.DateTimeFormat | null = null;
+function civilFormatter(): Intl.DateTimeFormat {
+  if (!civilFmt) civilFmt = buildCivilFmt();
+  return civilFmt;
+}
 
 /** The audience-calendar date of an instant (Africa/Tripoli). */
 export function civilOf(value: string | Date): CivilDate {
-  const parts = civilFmt.formatToParts(value instanceof Date ? value : new Date(value));
+  const parts = civilFormatter().formatToParts(value instanceof Date ? value : new Date(value));
   const get = (t: string): number => Number(parts.find((x) => x.type === t)?.value ?? "0");
   return { y: get("year"), m: get("month"), d: get("day") };
 }
@@ -571,20 +588,40 @@ export function monthGridCells(y: number, m: number): { key: string; day: number
 }
 
 /** «يناير 2026» — Arabic month + latn year on the Tripoli clock. */
-const monthTitleFmt = new Intl.DateTimeFormat("ar-LY-u-nu-latn", {
-  timeZone: TZ,
-  month: "long",
-  year: "numeric",
-});
+let monthTitleFmt: Intl.DateTimeFormat | null = null;
+function monthTitleFormatter(): Intl.DateTimeFormat {
+  if (!monthTitleFmt) {
+    try {
+      monthTitleFmt = new Intl.DateTimeFormat("ar-LY-u-nu-latn", {
+        timeZone: TZ,
+        month: "long",
+        year: "numeric",
+      });
+    } catch {
+      monthTitleFmt = new Intl.DateTimeFormat("ar", { month: "long", year: "numeric" });
+    }
+  }
+  return monthTitleFmt;
+}
 
 export function monthTitle(y: number, m: number): string {
-  return monthTitleFmt.format(new Date(Date.UTC(y, m - 1, 15, 12)));
+  try {
+    return monthTitleFormatter().format(new Date(Date.UTC(y, m - 1, 15, 12)));
+  } catch {
+    return `${y}`;
+  }
 }
 
 /** Today's Tripoli day-of-week (0=Sunday) for schedule anchoring. */
 export function tripoliDow(): number {
-  const name = new Intl.DateTimeFormat("en-US", { timeZone: TZ, weekday: "short" }).format(new Date());
-  return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(name);
+  try {
+    const name = new Intl.DateTimeFormat("en-US", { timeZone: TZ, weekday: "short" }).format(new Date());
+    return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(name);
+  } catch {
+    // Fallback: the device clock's day-of-week (close enough to anchor the
+    // schedule strip; the API dates remain authoritative).
+    return new Date().getDay();
+  }
 }
 
 /* ══ Dashboard agenda helpers ═══════════════════════════════════════ */

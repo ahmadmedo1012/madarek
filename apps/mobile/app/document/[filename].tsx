@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, View , TextInput } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Sharing from "expo-sharing";
@@ -14,7 +14,6 @@ import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Card, Hairline, Sheet, Badge } from "@/components/ui/surfaces";
-import { TextInput } from "react-native";
 import { ErrorState } from "@/components/ui/states";
 import { dateTime, latn } from "@/lib/format";
 import type { PaperAnnotation } from "@/api/types";

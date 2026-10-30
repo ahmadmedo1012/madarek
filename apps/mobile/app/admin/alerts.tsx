@@ -3,7 +3,7 @@ import { NotificationsScreen } from "@/features/notifications/NotificationsScree
 
 /** Pushed: /admin/alerts — the registrar's personal notifications inbox. */
 export default function Alerts() {
-  return <NotificationsScreen title="الإشعارات" kicker="[Inbox]" />;
+  return <NotificationsScreen title="الإشعارات" kicker="بريدك" />;
 }
 
 

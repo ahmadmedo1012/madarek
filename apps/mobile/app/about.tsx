@@ -19,7 +19,7 @@ import { LEGAL_COLOPHON, LEGAL_UPDATED } from "@/features/common/legalData";
 export default function About() {
   return (
     <Screen scroll>
-      <StackHeader title="عن مدارك" kicker="ABOUT SHEET" />
+      <StackHeader title="عن مدارك" kicker="المنصّة" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">

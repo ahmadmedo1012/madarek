@@ -23,7 +23,7 @@ export default function Help() {
 
   return (
     <Screen scroll>
-      <StackHeader title="المساعدة والأسئلة الشائعة" kicker="HELP SHEET" />
+      <StackHeader title="المساعدة والأسئلة الشائعة" kicker="المساعدة" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">

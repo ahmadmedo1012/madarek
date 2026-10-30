@@ -23,7 +23,7 @@ export default function Contact() {
 
   return (
     <Screen scroll>
-      <StackHeader title="التواصل والتسجيل المبكر" kicker="CONTACT SHEET" />
+      <StackHeader title="التواصل والتسجيل المبكر" kicker="التواصل" />
 
       <View style={{ gap: sp[8], paddingBottom: sp[4] }}>
         <T variant="h3" weight="bold">

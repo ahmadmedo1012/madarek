@@ -4,7 +4,7 @@ import { NotificationsScreen } from "@/features/notifications/NotificationsScree
 
 /** (tabs) Owner inbox — the personal notifications feed (bell target). */
 function Notifications() {
-  return <NotificationsScreen title="بريدي" kicker="[Inbox]" />;
+  return <NotificationsScreen title="بريدي" kicker="بريدك" />;
 }
 
 

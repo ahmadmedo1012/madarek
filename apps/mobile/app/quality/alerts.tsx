@@ -29,7 +29,7 @@ export default function QualityAlerts() {
   const [tab, setTab] = useState<"board" | "inbox">("board");
 
   if (tab === "inbox") {
-    return <NotificationsScreen title="بريدي" kicker="[Inbox]" />;
+    return <NotificationsScreen title="بريدي" kicker="بريدك" />;
   }
   return <AlertsBoard onInbox={() => setTab("inbox")} />;
 }

@@ -4,7 +4,7 @@ import { NotificationsScreen } from "@/features/notifications/NotificationsScree
 
 /** /teacher/alerts — the teacher's personal notification inbox. */
 function Alerts() {
-  return <NotificationsScreen title="الإشعارات" kicker="[Inbox]" />;
+  return <NotificationsScreen title="الإشعارات" kicker="بريدك" />;
 }
 
 

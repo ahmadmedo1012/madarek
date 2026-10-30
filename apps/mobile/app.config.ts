@@ -57,11 +57,30 @@ const config: ExpoConfig = {
     ["expo-secure-store", {}],
     ["expo-document-picker", { iCloudDirectoryEnabled: false }],
     "expo-video",
-    ["expo-updates", { username: "rh2011" }],
+    // R326 M0.5 — real OTA: the project's update endpoint, not a username
+    // placeholder. runtimeVersion uses the fingerprint policy so any native
+    // dependency/plugin/config change produces a new binary+update pairing.
+    [
+      "expo-updates",
+      {
+        url: "https://u.expo.dev/afc4265f-664e-4325-a0ff-b621b81fe1b0",
+      },
+    ],
   ],
+  updates: {
+    url: "https://u.expo.dev/afc4265f-664e-4325-a0ff-b621b81fe1b0",
+    checkAutomatically: "ON_LOAD",
+    fallbackToCacheTimeout: 0,
+  },
+  runtimeVersion: {
+    policy: "fingerprint",
+  },
   experiments: {
     typedRoutes: true,
-    reactCompiler: true,
+    // R326 M1.3(b): reactCompiler disabled — suspected contributor to the
+    // post-login crash with reanimated 4.7 / worklets 0.13 on RN 0.88 (new
+    // architecture). Re-enable ONLY after a clean full device-matrix pass.
+    reactCompiler: false,
   },
   extra: {
     // Public configuration — safe to inline. The default targets the deployed

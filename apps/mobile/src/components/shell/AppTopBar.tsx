@@ -6,9 +6,8 @@ import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
 import { BrandMark } from "@/components/ui/brand";
-import { initials } from "@/lib/format";
+import { initials , latn } from "@/lib/format";
 import { useUnreadCount } from "@/hooks/useNotifications";
-import { latn } from "@/lib/format";
 
 /**
  * AppTopBar — the role shell header: brand, greeting + institution chip,

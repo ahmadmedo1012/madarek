@@ -10,6 +10,10 @@ import { ApiError } from "@/api/client";
 import { latn } from "@/lib/format";
 import { EmptyState } from "@/components/ui/states";
 
+/* ── Competition status grammar (task mapping) ─────────────────────── */
+import type { StatusToneName } from "@/design/tokens";
+import type { Competition } from "@/api/types";
+
 /* ── Counted Arabic nouns (web lib/format countAr grammar) ─────────
  * One / dual / few (3–10) / many (11+). Numbers ride latn(). */
 export function countAr(n: number, forms: [string, string, string, string]): string {
@@ -56,10 +60,6 @@ export function isUnauthError(e: unknown): boolean {
 export function apiMessage(e: unknown, fallback = "حدث خطأ غير متوقّع."): string {
   return e instanceof Error && e.message ? e.message : fallback;
 }
-
-/* ── Competition status grammar (task mapping) ─────────────────────── */
-import type { StatusToneName } from "@/design/tokens";
-import type { Competition } from "@/api/types";
 
 /** Competition status → Arabic label + Heron tone (task mapping). */
 export function competitionStatus(status: string): { label: string; tone: StatusToneName } {
