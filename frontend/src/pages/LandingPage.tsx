@@ -1393,8 +1393,12 @@ export default function LandingPage() {
 
           <WhyScene />
 
+          {/* R325 Y3 — the strip's ONE disclosure line: the per-frame
+              caption demos retired with the overlay chrome (both rode
+              the art or duplicated this note); this note carries the
+              demo-data confession once, below the whole strip. */}
           <RevealCssClass as="p" className="wy-note" delay={3}>
-            اللقطات من بيئة العرض — بيانات تجريبية اصطناعية بالكامل، وموثَّقة على كل إطار.
+            اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.
           </RevealCssClass>
         </section>
 
