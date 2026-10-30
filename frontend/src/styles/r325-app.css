@@ -1,0 +1,198 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R325 app grammar tokens (DESIGN.md §R325 — P2.1)
+   ─────────────────────────────────────────────────────────────────────
+   The authenticated app has NO Heron counterpart to trace: this sheet
+   is Heron's MATERIAL (§1, §4.d — paper, ink, hairlines, radius 0, the
+   ONE orange signal) applied with discipline to authenticated density.
+   It carries TWO things and nothing else:
+
+     1. the --app-* token seats — grid/shell chrome, structure, forms,
+        tables, chips, state patterns, role identity, motion — additive
+        only (nothing upstream is re-keyed; the R322 precedent), so
+        P2.2 (gallery) and P2.3 (shell) consume one name each;
+     2. the three state-pattern primitives the grammar names —
+        .pat-hatch (empty/hover tint) · .pat-dots (media placeholder) ·
+        .pat-cross (locked/denied) — plus .pat-skeleton (hatch shimmer).
+
+   INK PARITY BY CONSTRUCTION: every --app-* colour is a var() alias
+   into the §2 canonical pairs (or a color-mix() on currentColor), so
+   both themes resolve with ZERO app-local hex — P2.6's «no light-paper
+   islands» is structural here, not a re-skin.
+
+   CASCADE CONTRACT — the r305/r319 house precedent: imported ONLY by
+   AppShell.tsx (right after r319-shell.css), deliberately UNLAYERED,
+   no !important. Gate-clean by construction: no raw color literals,
+   font-size/border-radius only via var()/0, spacing only via the
+   --sp/--space ladders, durations only via the token seats below (the
+   RM block collapses them to 0 — the sweep has its same-sheet kill).
+   Smoke contract: tests/unit/r325-app-css-contract.test.ts.
+   ═════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── §R325.a — the app grid + shell chrome ──────────────────────────
+     12 columns ride --grid-cols (the R322 grid). Gutters 24px desktop /
+     16px phone ride the --sp ladder. Sidebar 264 expanded / 72 rail /
+     topbar 56 are the R325 pins — the as-shipped --sidebar-w 256 ·
+     --sidebar-w-collapsed 64 · --topbar-h 60 migrate in P2.3, which
+     re-points the shell onto these names and retires the delta. */
+  --app-grid-cols: var(--grid-cols);         /* 12 */
+  --app-gutter: var(--sp-6);                 /* 24px ≥921px */
+  --app-gutter-phone: var(--sp-4);           /* 16px ≤920px — the shell's phone band */
+  --app-content-max: var(--content-max-w);   /* 1280px */
+  --app-sidebar-w: 264px;                    /* expanded */
+  --app-sidebar-rail: 72px;                  /* collapsed rail */
+  --app-topbar-h: 56px;                      /* the reference's own chrome height (§0/D8) */
+
+  /* ── §R325.l — structure + ink (theme pairs, zero app-local hex) ──── */
+  --app-bg: var(--bg);                       /* paper #F6F6EE / charcoal #282828 */
+  --app-surface: var(--surface);             /* #FFFFFF / #2E2E2E */
+  --app-ink: var(--text);                    /* #282828 / #F6F6EE */
+  --app-ink-2: var(--text-secondary);        /* #414140 / #C9C9C5 */
+  --app-ink-3: var(--text-muted);            /* #626260 / #B4B4B0 */
+  --app-line: var(--rule);                   /* structural seams #B3B3AF / #4A4A48 */
+  --app-line-soft: var(--border);            /* row/card hairlines #E0E0DA / #4A4A48 */
+  --app-signal: var(--accent);               /* #FA3600 / #FF5A1F — the ONE signal */
+  --app-signal-ink: var(--accent-ink);       /* signal TEXT #C72E00 / #FF6B33 */
+  --app-signal-wash: var(--accent-soft);     /* tint well #FCE3D9 / #432015 */
+  --app-backdrop: var(--overlay-veil);       /* ink 40% / black 62% — one veil */
+
+  /* ── §R325.e — forms ─────────────────────────────────────────────────
+     Rest hairline = --rule-strong (the D4-measured #B3B3AF input edge);
+     focus re-keys the border to the signal at 2px (D4's measured
+     #ED4C1F mid-rung harmonizes onto the canonical seats — no third
+     orange); error = signal rule + signal-ink text below (the danger
+     family stays on destructive BUTTONS, not field borders). */
+  --app-input-line: var(--rule-strong);
+  --app-input-focus: var(--accent);
+  --app-input-focus-w: 2px;
+  --app-input-error-line: var(--accent);
+  --app-input-error-ink: var(--accent-ink);
+
+  /* ── §R325.c/d — cards, table rows, chips ─────────────────────────── */
+  --app-card-pad: var(--sp-4);               /* 16px — cards/cells */
+  --app-card-pad-lg: var(--sp-6);            /* 24px — feature cards ≥921px */
+  --app-row-min-h: 44px;                     /* the touch floor is the row floor */
+  --app-cell-pad-block: var(--sp-2-5);       /* 10px */
+  --app-cell-pad-inline: var(--sp-4);        /* 16px */
+  --app-chip-dot: 6px;                       /* the chip's status dot (--r-full) */
+
+  /* ── §R325.g — state-pattern inks ────────────────────────────────────
+     The patterns take their ink from the CONSUMING element's
+     currentColor (inherit by default), so a hatch inside muted chrome
+     reads muted and one inside a heading reads strong — one recipe,
+     every register, both themes. */
+  --app-hatch-ink: color-mix(in srgb, currentColor 16%, transparent);
+  --app-dots-ink: color-mix(in srgb, currentColor 24%, transparent);
+  --app-sheen: color-mix(in srgb, var(--app-surface) 72%, transparent);
+
+  /* The pattern recipes (geometry literals live here at the definition
+     site, like every texture in the canon — consumers never re-tune). */
+  --app-hatch: repeating-linear-gradient(
+    45deg,
+    var(--app-hatch-ink) 0 1px,
+    transparent 1px 7px
+  );
+  --app-dots: radial-gradient(circle, var(--app-dots-ink) 1px, transparent 1.4px);
+  --app-cross:
+    repeating-linear-gradient(45deg, var(--app-hatch-ink) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(-45deg, var(--app-hatch-ink) 0 1px, transparent 1px 7px);
+  --app-rules-v: repeating-linear-gradient(
+    90deg,
+    var(--app-hatch-ink) 0 1px,
+    transparent 1px 9px
+  );
+  --app-rules-h: repeating-linear-gradient(
+    0deg,
+    var(--app-hatch-ink) 0 1px,
+    transparent 1px 9px
+  );
+  --app-grid-pat:
+    repeating-linear-gradient(0deg, var(--app-hatch-ink) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(90deg, var(--app-hatch-ink) 0 1px, transparent 1px 9px);
+
+  /* ── §R325.m — role identity (pattern + glyph + mono code) ───────────
+     NO new colours: the seven RoleAccentKey values differentiate on
+     pattern alone, in ink; the owner alone carries the signal hatch.
+     Codes STU · FAC · DPT · DEA · ADM · QUA · OWN ride --fs-mono-md,
+     dir="ltr" (sidebar footer, gallery, print headers). */
+  --app-role-pat-student: var(--app-dots);     /* STUDENT ▸ dots      · STU */
+  --app-role-pat-faculty: var(--app-hatch);    /* TEACHER ▸ hatch     · FAC */
+  --app-role-pat-department-head: var(--app-rules-v); /* DEPT HEAD ▸ rules-v · DPT */
+  --app-role-pat-dean: var(--app-cross);       /* DEAN ▸ cross-hatch  · DEA */
+  --app-role-pat-admin: var(--app-rules-h);    /* ADMIN ▸ rules-h     · ADM */
+  --app-role-pat-quality: var(--app-grid-pat); /* QUALITY ▸ grid      · QUA */
+  --app-role-pat-owner: repeating-linear-gradient(
+    45deg,
+    var(--app-signal) 0 1px,
+    transparent 1px 7px
+  );                                           /* OWNER ▸ signal hatch · OWN */
+
+  /* ── §R325.k — motion (the app register) ─────────────────────────────
+     hover/press 120ms · dialogs/sheets/popovers ride --t-fast (200ms) ·
+     page transitions 320ms (≤350 — P2.3 retimes PageTransition off
+     --motion-duration-page 400). The RM block below collapses these to
+     0: reduced-motion = instant, the canonical belts keep holding. */
+  --app-t-hover: 120ms;
+  --app-t-page: 320ms;
+}
+
+@media (max-width: 920px) {
+  :root {
+    --app-gutter: var(--app-gutter-phone);
+  }
+}
+
+/* ═══ §R325.g — the state-pattern primitives ══════════════════════════
+   Texture only — no padding, no type, no borders: a .pat-* class paints
+   its pattern from the element's own ink and lets the consumer own the
+   composition (the patterns.css CONTRACT split). */
+
+/* Empty tables/lists/cards + the card/row HOVER tint (§R325.c/d). */
+.pat-hatch {
+  background-image: var(--app-hatch);
+}
+
+/* Media placeholders (photos, previews, document facades). */
+.pat-dots {
+  background-image: var(--app-dots);
+  background-size: 8px 8px;
+}
+
+/* Locked / denied cells and the forbidden panel (§R325.g). */
+.pat-cross {
+  background-image: var(--app-cross);
+}
+
+/* Skeleton = hatch shimmer. The sweep rides the canonical skeleton
+   duration (--motion-duration-skeleton) and transform only; under RM
+   the same-sheet kill below leaves the static hatch. */
+.pat-skeleton {
+  position: relative;
+  overflow: hidden;
+  background-image: var(--app-hatch);
+}
+.pat-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(90deg, transparent, var(--app-sheen), transparent);
+  animation: pat-hatch-sweep var(--motion-duration-skeleton) var(--ease) infinite;
+}
+
+@keyframes pat-hatch-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* The app register's own RM belt — instant, not merely slower. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --app-t-hover: 0ms;
+    --app-t-page: 0ms;
+  }
+  .pat-skeleton::after {
+    content: none;
+    animation: none;
+  }
+}

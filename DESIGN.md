@@ -431,3 +431,226 @@ owner flagged, not a style.
   regression); `scripts/r324/type-probe.mjs` is the headless census
   (every route × 1440/390) whose evidence lands in
   `audits/evidence/r324/type-probe.json`.
+
+## R325 — THE APP GRAMMAR (P2.1 — Heron material, no Heron counterpart)
+
+The authenticated app has no reference page to trace: its grammar is
+**Heron's MATERIAL (§1, §4.d) applied with discipline to authenticated
+density** — paper, ink, hairlines, radius 0, no elevation, the ONE
+orange signal — plus the drafting voice the landing already speaks
+(`[NN]` indices, mono micro-labels, ruled fields). The section pins the
+registers; the consumable seats land ADDITIVELY in
+`frontend/src/styles/r325-app.css` (`--app-*` + the `.pat-*` state
+primitives — nothing upstream re-keyed, the R322 precedent). P2.2
+(gallery: every component × state × 390/768/1440 × Paper/Ink) and P2.3
+(shell) consume these names. **Ink parity is structural:** every
+`--app-*` colour is a var() alias into the §2 pairs (or a color-mix()
+on currentColor) — zero app-local hex, both themes resolve for free,
+and P2.6's «no light-paper islands» is a property of the tokens, not a
+re-skin. Smoke contract: `tests/unit/r325-app-css-contract.test.ts`
+(gates + pins, sibling of the r305 shell contract).
+
+### §R325.a App grid + shell chrome
+
+- **12 columns** (`--app-grid-cols` = `--grid-cols`); content gutters
+  **24px desktop (≥921) / 16px phone (≤920)** — `--app-gutter` /
+  `--app-gutter-phone` (the `--sp-6`/`--sp-4` rungs); content
+  max-width **1280** (`--app-content-max` = `--content-max-w`).
+- **Shell:** sidebar **264px** expanded / **72px** rail
+  (`--app-sidebar-w` / `--app-sidebar-rail`); top bar **56px**
+  (`--app-topbar-h` — §0/D8's chrome height). *As-shipped delta:*
+  `--sidebar-w` 256 · `--sidebar-w-collapsed` 64 · `--topbar-h` 60 —
+  **P2.3 re-points the shell onto the R325 trio and retires the old
+  values** (the additive-token rule: one migration, no silent re-key).
+- **Bands:** desktop ≥921 (rail/expanded sidebar); phone ≤920 —
+  sidebar becomes a drawer (`--z-menu-drawer` 530) over a backdrop,
+  bottom-nav carries the role's five destinations, top bar persists.
+- **Z-order** rides the shipped scale (dropdown 100 → … → splash 800);
+  no new rungs.
+
+### §R325.b Page header — `[NN] TITLE`
+
+One opening header per route (the `PageHeader` pattern is normative):
+breadcrumbs → optional eyebrow (13px `--accent-ink`, a real
+classification, never decoration) → **the mono index bar + H1** →
+description → meta → **actions row** → tabs.
+
+- **Index bar:** `[01]`-style gutter index, mono `--fs-mono-md`,
+  `dir="ltr"`, `aria-hidden`, `--text-muted`, opened INLINE before the
+  H1 (`PageHeader index` prop — r319's `.page-index`; the r324/X10
+  `SHEET S-01` identity line stays retired — coordinates are not
+  content, the index is wayfinding).
+- **H1 = `--fs-app-h1` at 600** (28/24 — the §R324 app-density rung);
+  H2 20, H3 16; lead 15–16; exactly one H1 per route.
+- **Actions row:** 44px targets, hairline-joined, wraps under the title
+  at ≤920.
+- **Breadcrumbs:** 13px `--text-muted`; separator = `ChevronLeft`
+  (RTL-forward), `aria-hidden`; last crumb = `aria-current="page"` at
+  `--text` 600; 44px block targets on every crumb.
+
+### §R325.c Cards / cells
+
+1px `--app-line-soft` hairline, **radius 0**, no elevation (D3);
+padding **16** (`--app-card-pad`) / **24** for feature cards ≥921
+(`--app-card-pad-lg`); **hover = hatch tint only** — the `.pat-hatch`
+field at the element's own ink, 120ms. No lift, no shadow, no accent
+preview on hover (the signal is spent on active state, not browsing).
+
+### §R325.d Tables
+
+- **Header row:** mono `--fs-mono-md` (11–12px), 500, `--text-muted`,
+  Latin micro-labels `dir="ltr"`, **sticky** within the scroll scope,
+  underlined by the structural hairline `--app-line`.
+- **Rows:** min-height **44px** (`--app-row-min-h` — the touch floor is
+  the row floor); cells padded 10/16 (`--app-cell-pad-block/inline`);
+  row rules 1px `--app-line-soft`; **no static zebra — the hover row
+  wears the hatch** (`.pat-hatch`, 120ms); outer frame `--app-line`;
+  phones get scoped horizontal scroll.
+- **Numerals:** mono, tabular, **Western digits only** (the §3
+  `ar-LY latn` pin, `utils/numbers.ts`) — Arabic-Indic never renders in
+  numeric columns; numeric cells are end-aligned with `dir="ltr"`
+  isolation so the digits read LTR inside the RTL row.
+- **Long names:** one line, ellipsis-clipped **inside `<bdi>`** (Arabic
+  names never reverse in a clipped run); a tooltip only when actually
+  truncated.
+- **Empty:** the `.pat-hatch` field + one honest line (§R325.g).
+
+### §R325.e Forms
+
+- **Label above** the field — 13px, 500, `--text-secondary`; never
+  placeholder-as-label.
+- **Inputs:** `--fs-body` (16px), radius 0, **1px `--app-input-line`**
+  (`--rule-strong` — D4's measured `#B3B3AF` rest edge), `--app-surface`
+  ground, 44px targets, helper text 13px `--text-muted`.
+- **Focus:** the border re-keys **1px ink → 2px signal**
+  (`--app-input-focus` = `--accent`, `--app-input-focus-w` 2px; D4's
+  measured `#ED4C1F` mid-rung harmonizes onto the canonical seats — no
+  third orange). The universal ring (`--state-focus-ring-*`) stays the
+  fallback belt.
+- **Error = the signal, not rose:** rule → `--accent`
+  (`--app-input-error-line`), message below in `--accent-ink`
+  (`--app-input-error-ink`, 13px, `aria-describedby`). The danger
+  family stays on destructive buttons (§2), never field borders.
+- **Disabled = hatch:** the `.pat-hatch` field at `--app-ink-3` +
+  `--text-faint` label — the pattern IS the disabled register; no
+  opacity tricks.
+
+### §R325.f Status chips
+
+Hairline chip (1px `--app-line-soft`, radius 0, padding `--sp-1`/`--sp-2`),
+mono `--fs-mono-md` label, **6px dot** (`--app-chip-dot`, `--r-full`) —
+**ink/orange only, no new colours**. The dot's three states carry the
+axis: **hollow** = dormant (draft · archived · locked) · **ink** =
+settled (published · graded · active) · **signal** = awaiting action
+(pending · needs-review · overdue). Locked things additionally earn the
+`.pat-cross` at cell level. The §2 status families keep their seated
+consumers as the legacy inventory until P2.2 re-pins the chip set on
+this grammar — no NEW chip colour is ever minted.
+
+### §R325.g Empty / loading / error / forbidden
+
+- **`.pat-hatch`** — empty tables/lists/cards: the ruled field at the
+  element's own ink + one honest Arabic line + the primary action.
+- **`.pat-dots`** — media placeholders (photos, previews, document
+  facades) before load.
+- **`.pat-cross`** — locked cells and the forbidden panel (403 keeps
+  the shell's role-deny toast, A4).
+- **Skeleton = `.pat-skeleton`** — hatch + one sheen sweep on
+  `--motion-duration-skeleton`, transform-only; **RM: sweep dies, the
+  static hatch remains** (same-sheet kill, contract-pinned).
+- **Error:** a 2px `--accent` rule, `--accent-ink` copy, a 44px retry —
+  the same orange discipline as field errors.
+
+### §R325.h Dialogs / sheets / drawers
+
+Radius 0, 1px `--app-line`, `--app-surface` ground — **hairline depth,
+no shadow**. Backdrop = **`--app-backdrop`** (`--overlay-veil`: ink 40%
+light / black 62% night); the command palette takes `--overlay-veil-max`.
+At ≤920 the dialog becomes a **full-width bottom sheet** (radius 0, top
+hairline; drawers keep `--z-menu-drawer` 530). Focus trap, Escape, and
+focus-return are the existing overlayStack contracts (11-e) — not
+re-invented. Entrance 200ms (`--t-fast`); exits ride the shared
+accelerate register; RM = instant.
+
+### §R325.i Charts
+
+Hairline axes (`--app-line-soft`), mono tick labels `--fs-mono-md`
+`dir="ltr"`, **square markers** (r313). **Series discipline: series 1 =
+the signal (`--accent`), further series ride the ink ramp**
+(`--neutral-900/700/500`). No gradients, no shadows, no fills beyond a
+hairline outline. Gold remains achievement-series only (§2 law). The
+§2 `--chart-1..8` palette stays the legacy seat for shipped dashboards
+until P2.2 re-pins the chart theme on this register.
+
+### §R325.j Icons
+
+ONE family: **Lucide via `Icon.tsx` only** (§8.3). Register: **20px
+grid, 1.5px stroke, `currentColor`, decorative by default**
+(`aria-hidden`). *As-shipped delta:* the wrapper defaults (16px / 1.8)
+re-pin onto the grammar in P2.2 — call sites follow the wrapper, never
+raw Lucide. Directional glyphs flip only when semantics demand (§7).
+
+### §R325.k Motion
+
+- **Row/card hover & press: 120ms** (`--app-t-hover`) · **dialogs,
+  sheets, popovers: 200ms** (`--t-fast`) · **page transitions ≤350ms**
+  (`--app-t-page` 320 — P2.3 retimes `PageTransition` off
+  `--motion-duration-page` 400).
+- Easings: `--ease` only (the §4 register); layout-property transitions
+  stay banned (the motion gate enforces).
+- **Reduced motion = instant:** the RM belt collapses `--app-t-*` to
+  0ms and the skeleton sweep dies — content stands complete, static.
+
+### §R325.l Ink variants — one table, both themes
+
+Every seat resolves through a §2 pair; the hexes are quoted here for
+census work, never re-authored:
+
+| `--app-*` seat | Light (Paper) | Dark (Ink) |
+|---|---|---|
+| `--app-bg` | `#F6F6EE` paper | `#282828` charcoal |
+| `--app-surface` | `#FFFFFF` | `#2E2E2E` |
+| `--app-ink` / `-2` / `-3` | `#282828` / `#414140` / `#626260` | `#F6F6EE` / `#C9C9C5` / `#B4B4B0` |
+| `--app-line` (seams) | `#B3B3AF` | `#4A4A48` |
+| `--app-line-soft` (rows/cards) | `#E0E0DA` | `#4A4A48` |
+| `--app-signal` / `-ink` / `-wash` | `#FA3600` / `#C72E00` / `#FCE3D9` | `#FF5A1F` / `#FF6B33` / `#432015` |
+| `--app-backdrop` | ink 40% | black 62% |
+
+Patterns are theme-free by construction (currentColor mixes); the
+skeleton sheen derives from `--app-surface`. **P2.6 consumes the same
+names — an Ink audit is a var() read, not a screenshot hunt.**
+
+### §R325.m Role identity — pattern + glyph + mono code, no new colours
+
+A role is recognizable **with colour off**: the identity mark is a
+pattern seat (`--app-role-pat-*`, ink at the element's own currentColor)
++ the mono code + the signal glyph where an affordance needs one. The
+seven `RoleAccentKey` values map 1:1; the §2 role-accent washes keep
+their seated consumers but the identity system itself mints no hue —
+the owner alone carries the signal:
+
+| Key | Code | Pattern (`--app-role-pat-*`) |
+|---|---|---|
+| `student` | `STU` | dots (`--app-dots`) |
+| `faculty` | `FAC` | hatch (`--app-hatch`) |
+| `department-head` | `DPT` | vertical rules (`--app-rules-v`) |
+| `dean` | `DEA` | cross-hatch (`--app-cross`) |
+| `admin` | `ADM` | horizontal rules (`--app-rules-h`) |
+| `quality` | `QUA` | square grid (`--app-grid-pat`) |
+| `owner` | `OWN` | **signal hatch** (the one orange mark) |
+
+Codes ride `--fs-mono-md`, `dir="ltr"` — sidebar footer, the gallery,
+print headers. Patterns reuse the §R325.g state recipes; nothing new is
+drawn.
+
+### §R325.n Consumption + gates
+
+`r325-app.css` is imported ONLY by `AppShell.tsx` (right after
+`r319-shell.css` — the r305 house contract: unlayered, shell-owned, no
+`!important`). The sheet is gate-clean by construction (colors → §2
+vars, type/radius → var()/0, spacing → the ladders, durations → the
+token seats); `check-raw-css --strict` / `check-colors` /
+`check-motion-tokens` verified at P2.1. The smoke contract
+(`r325-app-css-contract.test.ts`) pins the §R325 values so a drift
+fails `npm test`, and P2.2's gallery mounts every state primitive at
+390/768/1440 × Paper/Ink before any page consumes them.
