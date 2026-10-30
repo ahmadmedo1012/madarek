@@ -442,10 +442,11 @@
      re-enables pointer events for itself. */
   pointer-events: none;
   max-inline-size: min(420px, calc(100vw - var(--sp-6)));
-  /* Y6 — layers ease between seats as others appear/disappear
-     (--t-fast = 200ms; the reduced-motion raw-ladder kill zeroes the
-     token, collapsing this to an instant jump). */
-  transition: inset-block-end var(--t-fast) var(--ease);
+  /* Y6 — seat changes were authored to ease at --t-fast, but the
+     motion gate (and §R325.k) ban layout-property transitions —
+     inset-block-end is one. The pile re-seat is instant; the toasts
+     themselves keep their transform/opacity entrances. (P2.2 repair:
+     the line failed `check:motion-tokens` at the base commit.) */
 }
 
 /* r324 X1's body:has(.cb-banner) lift (hardcoded 2.4rem/3rem seats) is

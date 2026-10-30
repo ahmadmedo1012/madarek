@@ -22,6 +22,11 @@ import { EmojiIcon } from '../../components/EmojiIcon';
 import { useReducedMotion } from '../../components/motion';
 import { Modal } from '../../components/overlays';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
+/* P2.2 dedup: the file carried a byte-identical copy of the canonical
+ * owner StatStripSkeleton (components/owner/StripSkeletons.tsx, r299);
+ * the copy is retired and the shared one re-pointed here + for
+ * AdminExtraPages' import. */
+import { StatStripSkeleton } from '../../components/owner/StripSkeletons';
 import { toast } from '../../lib/toast';
 import {
   useAdminStats, useAdminFaculties, useAdminReports, useAdminCourses, useAdminPapers,
@@ -1076,29 +1081,9 @@ const PAPER_UNIT: [string, string, string, string] = ['ورقة واحدة', 'و
  *  students «طالب») instead of the hardcoded «ورقة» it shipped with
  *  back when the papers register was its only consumer. Exported: the
  *  students roster (AdminExtraPages) joined the family this round. */
-/** r299: the StatStrip's shape-matched pending placeholder — the
- *  resolved band is the typographic strip, so the strip's cells are
- *  what the skeleton must occupy (the shared KpiSkeleton's .metric
- *  tiles are the retired icon-band's shape; a metric-tile flash
- *  followed by a typographic strip is a wrong-anatomy flash + CLS).
- *  Exported for AdminExtraPages (the digital page's pending mirror) —
- *  the cross-file import precedent TablePaginationFooter set. */
-export function StatStripSkeleton({ cells = 4 }: { cells?: number }) {
-  return (
-    <div className="stat-strip" aria-busy="true">
-      {Array.from({ length: cells }).map((_, i) => (
-        <div key={i} className="stat-cell">
-          <Skeleton width={80} height={11} />
-          <div style={{ marginBlock: 'var(--sp-1)' }}>
-            <Skeleton width={90} height={28} />
-          </div>
-          <Skeleton width={120} height={11} />
-        </div>
-      ))}
-    </div>
-  );
-}
-
+/* (r299's local StatStripSkeleton copy lived here; P2.2 retired the
+ *  byte-identical twin for components/owner/StripSkeletons.tsx — the
+ *  canonical import above keeps both call sites + AdminExtraPages.) */
 export function TablePaginationFooter({
   page, totalPages, total, unit = PAPER_UNIT, onPage,
 }: {
