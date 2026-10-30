@@ -599,13 +599,15 @@
     --text-on-accent: var(--warm-ink);   /* r305: ink on the luminous ember fill — 5.64:1 */
     --text-on-dark:   var(--neutral-900);
 
-    --border:        var(--neutral-200);
+    /* R324 X21 (reviewers A+C, round-2 follow-up): the dark hairline at
+     * neutral-200 read 1.62:1 on #282828 — the drafting texture
+     * dissolved. Round 2 verified the primary --rule closure but caught
+     * the secondary --border still at 1.66:1: both rungs now sit at
+     * neutral-400 (≈3:1 on the ground — the non-text UI boundary
+     * minimum), the strong rule stays neutral-300-stronger seats. */
+    --border:        var(--neutral-400);
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(246,248,250,0.08);   /* r305: paper-white hairline */
-    /* R324 X21 (reviewers A+C): the dark hairline at neutral-200 read
-     * 1.62:1 on #282828 — the drafting texture dissolved. One rung up
-     * (neutral-300) keeps it a whisper but present (1.95:1); the
-     * strong rule and the grid line stay as they were. */
     --rule:          var(--neutral-300);
     --rule-strong:   var(--border-strong);
     --grid-line:     var(--neutral-300);

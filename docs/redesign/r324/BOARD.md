@@ -49,6 +49,21 @@ polish · responsiveness. **Mean ≥ 9, no category < 8.** VLM advisory only.
 Evidence: `audits/evidence/r324/map-s1..s6-1440-dark.png` (REAL dark states now) ·
 `statement-x14-1440-{light,dark}.png` · `footer-x14-*`.
 
+### Round 2 — verification of the four fixes (same day)
+
+| axis | round 1 | round 2 | note |
+|---|---|---|---|
+| material/colour | 6.5–7.8 | **8.9** | X22/X23 pixel-verified literal; CTA seat 4.55:1 confirmed |
+| motion/scroll | 7.0 | **8.6** | 6/6 dark map states real (darkBg 81–94.5 %, pure-white 0.0 %) |
+| polish | 7.0–8.2 | **8.7** | no failing defects; riders only |
+
+**Estimated mean ≈ 8.6 · «no axis < 8» now MET.** The ≥9 mean now rests on the
+seven not-yet-re-audited axes (consistency 8.0 the lowest). One follow-up caught:
+the secondary `--border` dark rung (1.66:1) — raised to neutral-400 (≈3:1, the
+non-text UI minimum) in the same commit; the consent-banner «#000» claim did NOT
+verify in DOM (#282828 live) — no change. Mobile-dark post-X22 proof sheets:
+`statement-x22-390-dark.png` · `footer-x23-390-dark.png`.
+
 ## Kill list X1–X16
 
 | # | One-liner | Status |
