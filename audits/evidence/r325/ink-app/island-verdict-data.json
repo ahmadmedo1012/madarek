@@ -1,0 +1,307 @@
+[
+ {
+  "candidate": "student/ai@1440",
+  "before_pct": 1.7,
+  "after_pct": 1.54,
+  "bbox_before": "912, 416, 1216, 464",
+  "worst_band_text_cr": 7.67,
+  "carriers": [
+   "DIV.ai-surface-head"
+  ]
+ },
+ {
+  "candidate": "student/ai@390",
+  "before_pct": 4.7,
+  "after_pct": 3.11,
+  "bbox_before": "32, 512, 368, 592",
+  "worst_band_text_cr": 7.67,
+  "carriers": [
+   "DIV.ai-surface-head"
+  ]
+ },
+ {
+  "candidate": "student/ai@768",
+  "before_pct": 2.8,
+  "after_pct": 2.21,
+  "bbox_before": "416, 432, 736, 480",
+  "worst_band_text_cr": 7.67,
+  "carriers": [
+   "DIV.ai-surface-head"
+  ]
+ },
+ {
+  "candidate": "student/dashboard@1440",
+  "before_pct": 8.0,
+  "after_pct": 7.98,
+  "bbox_before": "144, 336, 1216, 464",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "A.btn",
+   "DIV.dash-resume-card"
+  ]
+ },
+ {
+  "candidate": "student/dashboard@390",
+  "before_pct": 17.7,
+  "after_pct": 17.73,
+  "bbox_before": "32, 336, 368, 640",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "A.btn",
+   "DIV.dash-resume-card"
+  ]
+ },
+ {
+  "candidate": "student/dashboard@768",
+  "before_pct": 7.1,
+  "after_pct": 7.1,
+  "bbox_before": "32, 320, 736, 448",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "A.btn",
+   "DIV.dash-resume-card"
+  ]
+ },
+ {
+  "candidate": "student/forbidden-owner-users@1440",
+  "before_pct": 8.0,
+  "after_pct": 7.98,
+  "bbox_before": "144, 336, 1216, 464",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "A.btn",
+   "DIV.dash-resume-card"
+  ]
+ },
+ {
+  "candidate": "student/forbidden-owner-users@390",
+  "before_pct": 17.6,
+  "after_pct": 17.58,
+  "bbox_before": "32, 336, 368, 640",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "A.btn",
+   "DIV.dash-resume-card"
+  ]
+ },
+ {
+  "candidate": "student/forbidden-owner-users@768",
+  "before_pct": 7.1,
+  "after_pct": 7.1,
+  "bbox_before": "32, 320, 736, 448",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "A.btn",
+   "DIV.dash-resume-card"
+  ]
+ },
+ {
+  "candidate": "student/gamification@1440",
+  "before_pct": 14.4,
+  "after_pct": 9.19,
+  "bbox_before": "144, 288, 1216, 496",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "DIV.has-shell",
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "student/gamification@390",
+  "before_pct": 13.6,
+  "after_pct": 8.56,
+  "bbox_before": "32, 400, 368, 624",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "DIV.has-shell",
+   "DIV.r305s-band",
+   "DIV.tier-orb"
+  ]
+ },
+ {
+  "candidate": "student/gamification@768",
+  "before_pct": 13.5,
+  "after_pct": 7.65,
+  "bbox_before": "32, 288, 736, 496",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "DIV.r305s-band",
+   "html"
+  ]
+ },
+ {
+  "candidate": "student/lecture-player@1440",
+  "before_pct": 5.1,
+  "after_pct": 5.04,
+  "bbox_before": "528, 560, 1216, 688",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "DIV.lecture-meta"
+  ]
+ },
+ {
+  "candidate": "student/lecture-player@390",
+  "before_pct": 9.6,
+  "after_pct": 9.64,
+  "bbox_before": "32, 352, 368, 512",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "DIV.lecture-meta",
+   "SPAN.badge"
+  ]
+ },
+ {
+  "candidate": "student/lecture-player@768",
+  "before_pct": 7.5,
+  "after_pct": 7.52,
+  "bbox_before": "32, 560, 736, 672",
+  "worst_band_text_cr": 7.92,
+  "carriers": [
+   "DIV.lecture-meta"
+  ]
+ },
+ {
+  "candidate": "student/profile@1440",
+  "before_pct": 14.6,
+  "after_pct": 8.34,
+  "bbox_before": "144, 176, 1216, 384",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "DIV.has-shell",
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "student/profile@390",
+  "before_pct": 15.6,
+  "after_pct": 8.79,
+  "bbox_before": "32, 192, 368, 416",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "DIV.r305s-band",
+   "SPAN.avatar"
+  ]
+ },
+ {
+  "candidate": "student/profile@768",
+  "before_pct": 14.5,
+  "after_pct": 7.88,
+  "bbox_before": "32, 176, 704, 384",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "DIV.has-shell",
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "student/research@1440",
+  "before_pct": 9.5,
+  "after_pct": 9.5,
+  "bbox_before": "144, 336, 1216, 464",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "SECTION.r305rp-band"
+  ]
+ },
+ {
+  "candidate": "student/research@390",
+  "before_pct": 19.7,
+  "after_pct": 19.6,
+  "bbox_before": "32, 416, 368, 656",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "SECTION.r305rp-band"
+  ]
+ },
+ {
+  "candidate": "student/research@768",
+  "before_pct": 11.3,
+  "after_pct": 11.26,
+  "bbox_before": "32, 320, 736, 464",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "SECTION.r305rp-band"
+  ]
+ },
+ {
+  "candidate": "student/results@1440",
+  "before_pct": 10.6,
+  "after_pct": 10.57,
+  "bbox_before": "144, 208, 1216, 352",
+  "worst_band_text_cr": 4.57,
+  "carriers": [
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "student/results@390",
+  "before_pct": 19.8,
+  "after_pct": 9.02,
+  "bbox_before": "32, 192, 368, 448",
+  "worst_band_text_cr": 4.57,
+  "carriers": [
+   "DIV.r305s-band",
+   "html"
+  ]
+ },
+ {
+  "candidate": "student/results@768",
+  "before_pct": 10.5,
+  "after_pct": 10.61,
+  "bbox_before": "32, 192, 736, 336",
+  "worst_band_text_cr": 4.57,
+  "carriers": [
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "student/university@1440",
+  "before_pct": 11.3,
+  "after_pct": 10.98,
+  "bbox_before": "144, 608, 1216, 768",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "student/university@768",
+  "before_pct": 11.8,
+  "after_pct": 16.93,
+  "bbox_before": "32, 608, 736, 784",
+  "worst_band_text_cr": 5.3,
+  "carriers": [
+   "DIV.r305s-band"
+  ]
+ },
+ {
+  "candidate": "teacher/ai@1440",
+  "before_pct": 2.2,
+  "after_pct": 2.01,
+  "bbox_before": "848, 176, 1216, 224",
+  "worst_band_text_cr": 12.5,
+  "carriers": [
+   "DIV.ai-surface-head"
+  ]
+ },
+ {
+  "candidate": "teacher/ai@390",
+  "before_pct": 2.0,
+  "after_pct": 0.0,
+  "bbox_before": "160, 240, 368, 272",
+  "worst_band_text_cr": 12.5,
+  "carriers": [
+   "DIV.ai-surface-head"
+  ]
+ },
+ {
+  "candidate": "teacher/ai@768",
+  "before_pct": 3.6,
+  "after_pct": 3.06,
+  "bbox_before": "352, 176, 736, 224",
+  "worst_band_text_cr": 12.5,
+  "carriers": [
+   "DIV.ai-surface-head"
+  ]
+ }
+]

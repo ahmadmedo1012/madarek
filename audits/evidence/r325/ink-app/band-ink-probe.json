@@ -1,0 +1,1852 @@
+{
+ "generatedAt": "2026-10-30T20:18:27.247Z",
+ "report": [
+  {
+   "route": "student/ai",
+   "bp": "1440",
+   "path": "/student/ai",
+   "els": [
+    {
+     "sel": ".r305ai-head",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".ai-surface-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-chip",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.305882 0.305882 0.300863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305ai-chip-deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.305882 0.305882 0.300863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/ai",
+   "bp": "768",
+   "path": "/student/ai",
+   "els": [
+    {
+     "sel": ".r305ai-head",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".ai-surface-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-chip",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.305882 0.305882 0.300863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305ai-chip-deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.305882 0.305882 0.300863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/ai",
+   "bp": "390",
+   "path": "/student/ai",
+   "els": [
+    {
+     "sel": ".r305ai-head",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".ai-surface-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-chip",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.305882 0.305882 0.300863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305ai-chip-deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.305882 0.305882 0.300863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/dashboard",
+   "bp": "1440",
+   "path": "/student/dashboard",
+   "els": [
+    {
+     "sel": ".dash-resume-card",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-lecture",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-main",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-course-name",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "20px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".momentum-center",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-time",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/dashboard",
+   "bp": "768",
+   "path": "/student/dashboard",
+   "els": [
+    {
+     "sel": ".dash-resume-card",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-lecture",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-main",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-course-name",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "18px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".momentum-center",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-time",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/dashboard",
+   "bp": "390",
+   "path": "/student/dashboard",
+   "els": [
+    {
+     "sel": ".dash-resume-card",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-lecture",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-main",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-course-name",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "18px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".momentum-center",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-time",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/forbidden-owner-users",
+   "bp": "1440",
+   "path": "/owner/users",
+   "els": [
+    {
+     "sel": ".dash-resume-card",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-lecture",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    }
+   ]
+  },
+  {
+   "route": "student/forbidden-owner-users",
+   "bp": "768",
+   "path": "/owner/users",
+   "els": [
+    {
+     "sel": ".dash-resume-card",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-lecture",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    }
+   ]
+  },
+  {
+   "route": "student/forbidden-owner-users",
+   "bp": "390",
+   "path": "/owner/users",
+   "els": [
+    {
+     "sel": ".dash-resume-card",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    },
+    {
+     "sel": ".dash-resume-lecture",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+    }
+   ]
+  },
+  {
+   "route": "student/gamification",
+   "bp": "1440",
+   "path": "/student/gamification",
+   "els": [
+    {
+     "sel": ".r305s-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-main",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-foot",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305a-strip .stat-label",
+     "missing": true
+    },
+    {
+     "sel": ".r305a-strip .stat-value",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/gamification",
+   "bp": "768",
+   "path": "/student/gamification",
+   "els": [
+    {
+     "sel": ".r305s-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-main",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-foot",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305a-strip .stat-label",
+     "missing": true
+    },
+    {
+     "sel": ".r305a-strip .stat-value",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/gamification",
+   "bp": "390",
+   "path": "/student/gamification",
+   "els": [
+    {
+     "sel": ".r305s-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-main",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305g-level-foot",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305a-strip .stat-label",
+     "missing": true
+    },
+    {
+     "sel": ".r305a-strip .stat-value",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "student/lecture-player",
+   "bp": "1440",
+   "path": "/student/lectures/cmvv0q0uj00fv78snnq41bqs9",
+   "els": [
+    {
+     "sel": ".lecture-meta",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "31.5px",
+     "fontWeight": "600",
+     "floor": 3,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-sub",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-badges",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-title .page-index",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".r305s-band-secondary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    }
+   ]
+  },
+  {
+   "route": "student/lecture-player",
+   "bp": "768",
+   "path": "/student/lectures/cmvv0q0uj00fv78snnq41bqs9",
+   "els": [
+    {
+     "sel": ".lecture-meta",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "27.6259px",
+     "fontWeight": "600",
+     "floor": 3,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-sub",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-badges",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-title .page-index",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".r305s-band-secondary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    }
+   ]
+  },
+  {
+   "route": "student/lecture-player",
+   "bp": "390",
+   "path": "/student/lectures/cmvv0q0uj00fv78snnq41bqs9",
+   "els": [
+    {
+     "sel": ".lecture-meta",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-title",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "31.7557px",
+     "fontWeight": "600",
+     "floor": 3,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-sub",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-badges",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".lecture-meta-title .page-index",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    },
+    {
+     "sel": ".r305s-band-secondary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+    }
+   ]
+  },
+  {
+   "route": "student/profile",
+   "bp": "1440",
+   "path": "/student/profile",
+   "els": [
+    {
+     "sel": ".r305p-hero",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-name",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "33.3333px",
+     "fontWeight": "700",
+     "floor": 3,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-mail",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-meter-head",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305s-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    }
+   ]
+  },
+  {
+   "route": "student/profile",
+   "bp": "768",
+   "path": "/student/profile",
+   "els": [
+    {
+     "sel": ".r305p-hero",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-name",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "36.8345px",
+     "fontWeight": "700",
+     "floor": 3,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-mail",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-meter-head",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305s-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    }
+   ]
+  },
+  {
+   "route": "student/profile",
+   "bp": "390",
+   "path": "/student/profile",
+   "els": [
+    {
+     "sel": ".r305p-hero",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-name",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "39.6947px",
+     "fontWeight": "700",
+     "floor": 3,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-mail",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305p-hero-meter-head",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.298039 0.298039 0.293333)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    },
+    {
+     "sel": ".r305s-eyebrow",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep r305p-hero"
+    }
+   ]
+  },
+  {
+   "route": "student/research",
+   "bp": "1440",
+   "path": "/student/research",
+   "els": [
+    {
+     "sel": ".r305rp-res-band",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "bg": "40,40,40",
+     "bgLum": 0.021,
+     "color": "rgb(180, 180, 176)",
+     "colLum": 0.455,
+     "cr": 7.09,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.has-shell"
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-res-metric-hint",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-metric-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-metric",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "24px",
+     "fontWeight": "700",
+     "floor": 3,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    }
+   ]
+  },
+  {
+   "route": "student/research",
+   "bp": "768",
+   "path": "/student/research",
+   "els": [
+    {
+     "sel": ".r305rp-res-band",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "bg": "40,40,40",
+     "bgLum": 0.021,
+     "color": "rgb(180, 180, 176)",
+     "colLum": 0.455,
+     "cr": 7.09,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.has-shell"
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-res-metric-hint",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-metric-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-metric",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "24px",
+     "fontWeight": "700",
+     "floor": 3,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    }
+   ]
+  },
+  {
+   "route": "student/research",
+   "bp": "390",
+   "path": "/student/research",
+   "els": [
+    {
+     "sel": ".r305rp-res-band",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "bg": "40,40,40",
+     "bgLum": 0.021,
+     "color": "rgb(180, 180, 176)",
+     "colLum": 0.455,
+     "cr": 7.09,
+     "fontSize": "13px",
+     "fontWeight": "600",
+     "floor": 4.5,
+     "carrier": "DIV.has-shell"
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-res-metric-hint",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-metric-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    },
+    {
+     "sel": ".r305rp-metric",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "24px",
+     "fontWeight": "700",
+     "floor": 3,
+     "carrier": "SECTION.r305rp-band r305rp-band--deep r305rp-res-band"
+    }
+   ]
+  },
+  {
+   "route": "student/results",
+   "bp": "1440",
+   "path": "/student/results",
+   "els": [
+    {
+     "sel": ".results-summary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat-hint",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.439216 0.439216 0.428863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-statline",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    }
+   ]
+  },
+  {
+   "route": "student/results",
+   "bp": "768",
+   "path": "/student/results",
+   "els": [
+    {
+     "sel": ".results-summary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat-hint",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.439216 0.439216 0.428863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-statline",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    }
+   ]
+  },
+  {
+   "route": "student/results",
+   "bp": "390",
+   "path": "/student/results",
+   "els": [
+    {
+     "sel": ".results-summary",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat-hint",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.439216 0.439216 0.428863)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-stat",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    },
+    {
+     "sel": ".pf-statline",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep results-summary"
+    }
+   ]
+  },
+  {
+   "route": "student/university",
+   "bp": "1440",
+   "path": "/student/university",
+   "els": [
+    {
+     "sel": ".r305s-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305u-fact-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305u-fact-value",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    }
+   ]
+  },
+  {
+   "route": "student/university",
+   "bp": "768",
+   "path": "/student/university",
+   "els": [
+    {
+     "sel": ".r305s-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305u-fact-label",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "color(srgb 0.4 0.4 0.391216)",
+     "colLum": null,
+     "cr": null,
+     "fontSize": "13px",
+     "fontWeight": "500",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    },
+    {
+     "sel": ".r305u-fact-value",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.r305s-band r305s-band--deep"
+    }
+   ]
+  },
+  {
+   "route": "teacher/ai",
+   "bp": "1440",
+   "path": "/teacher/ai",
+   "els": [
+    {
+     "sel": ".r305rp-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "13.3333px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-metric-label",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "teacher/ai",
+   "bp": "768",
+   "path": "/teacher/ai",
+   "els": [
+    {
+     "sel": ".r305rp-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "14.7338px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-metric-label",
+     "missing": true
+    }
+   ]
+  },
+  {
+   "route": "teacher/ai",
+   "bp": "390",
+   "path": "/teacher/ai",
+   "els": [
+    {
+     "sel": ".r305rp-band--deep",
+     "bg": "246,246,238",
+     "bgLum": 0.917,
+     "color": "rgb(46, 46, 46)",
+     "colLum": 0.027,
+     "cr": 12.5,
+     "fontSize": "15.8779px",
+     "fontWeight": "400",
+     "floor": 4.5,
+     "carrier": "DIV.ai-surface-head r305rp-band--deep r305ai-head"
+    },
+    {
+     "sel": ".r305rp-eyebrow",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-band-secondary",
+     "missing": true
+    },
+    {
+     "sel": ".r305rp-metric-label",
+     "missing": true
+    }
+   ]
+  }
+ ]
+}

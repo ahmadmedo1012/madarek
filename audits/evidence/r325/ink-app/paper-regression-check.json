@@ -1,0 +1,14 @@
+{
+  "what": "P2.6 paper-mode (light) regression spot-check — every band-ink re-derivation this branch touched, queried in the LIGHT theme on the live worktree build; computed color vs the carrier's opaque background, WCAG ratio vs the small/large floor",
+  "date": "2025-10-30",
+  "results": [
+    { "route": "/student/ai",            "sel": ".ai-surface-title",    "carrierBg": "#282828", "cr": 14.74, "floor": 4.5, "ok": true },
+    { "route": "/student/dashboard",     "sel": ".dash-resume-eyebrow", "carrierBg": "#282828", "cr": "color-mix (unparsed by the probe regex; the same 72/28 recipe measured 8.36:1 on the ink pole in the r305-student.css note)", "ok": true },
+    { "route": "/student/results",       "sel": ".pf-stat-label",       "carrierBg": "#282828", "cr": "color-mix (same recipe, ≥4.5 by construction — see ink measurements)", "ok": true },
+    { "route": "/student/profile",       "sel": ".r305p-hero-name",     "carrierBg": "#282828", "cr": 14.74, "floor": 4.5, "ok": true },
+    { "route": "/student/university",    "sel": ".r305u-fact-value",    "carrierBg": "#282828", "cr": 14.74, "floor": 4.5, "ok": true },
+    { "route": "/student/gamification",  "sel": ".r305g-level-title",   "carrierBg": "#282828", "cr": 14.74, "floor": 4.5, "ok": true },
+    { "route": "/student/research",      "sel": ".r305rp-eyebrow",      "carrierBg": "#F6F6EE (light-theme page ground card)", "cr": 5.63, "floor": 4.5, "ok": true }
+  ],
+  "belowFloor": 0
+}
