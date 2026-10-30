@@ -8473,7 +8473,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }   /* 502 @1024 · 597 @1440 — r324 X14 re-measure (59:50 art) */
 .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }   /* 432 @1024 · 609 @1440 — r324 X14 (89.1rem floor seat) */
 .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); } /* 5203 @1024 · 6080 @1440 — r324 X14 (658dvh track) */
-.pr-section { contain-intrinsic-size: auto 49.3vw; }      /* = the 85.2rem floor on the fluid root: 505 @1024 · 710 @1440 · 947 @1920 — r325 Y2 re-measure */
+.pr-section { contain-intrinsic-size: auto calc(-2px + 44.95vw); }  /* 458 @1024 · 645 @1440 — the r325 MERGED re-measure (Y2's local 49.3vw fit pre-dated the Y3 shared-floor retirement; measure-intrinsic.mjs post-merge) */
 /* R325 Y3 re-measure: the wy floors retired, so the placeholder re-fits
    to the CONTENT-SIZED band (measure-intrinsic.mjs @1024/1440).
    375 @1024 · 499 @1440 */
@@ -8486,7 +8486,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }
   .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }
   .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); }
-  .pr-section { contain-intrinsic-size: auto 49.3vw; } /* r325 Y2 re-measure — the floor is vw-proportional on the fluid root */
+  .pr-section { contain-intrinsic-size: auto calc(-2px + 44.95vw); } /* r325 merged re-measure — 458 @1024 */
   .wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); } /* r325 Y3 re-measure */
   .rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }
   .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }
@@ -8496,7 +8496,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 544px; }
   .pm-section { contain-intrinsic-size: auto 1260px; }
   .chapters   { contain-intrinsic-size: auto 4685px; }
-  .pr-section { contain-intrinsic-size: auto 508px; }   /* r325 Y2 re-measure (508.3 @768) */
+  .pr-section { contain-intrinsic-size: auto 471px; }   /* r325 merged re-measure (471 @768) */
   .wy-section { contain-intrinsic-size: auto 616px; } /* r325 Y3 re-measure */
   .rl-section { contain-intrinsic-size: auto 1300px; }
   .fo-cta     { contain-intrinsic-size: auto 468px; }
@@ -8506,7 +8506,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 1143px; }
   .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
-  .pr-section { contain-intrinsic-size: auto 912px; }   /* r325 Y2 re-measure (912 @600) */
+  .pr-section { contain-intrinsic-size: auto 856px; }   /* r325 merged re-measure (856 @600) */
   .wy-section { contain-intrinsic-size: auto 990px; } /* R325 Y3 re-measure — the phone rail folds back to the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 1409px; }
   .fo-cta     { contain-intrinsic-size: auto 713px; }
@@ -8516,7 +8516,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 820px; }
   .pm-section { contain-intrinsic-size: auto 797px; }
   .chapters   { contain-intrinsic-size: auto 4974px; }
-  .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 Y2 re-measure (604.7 @390) */
+  .pr-section { contain-intrinsic-size: auto 617px; }   /* r325 merged re-measure (617 @390) */
   .wy-section { contain-intrinsic-size: auto 613px; } /* R325 Y3 re-measure — the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 915px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
@@ -8526,7 +8526,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 798px; }
   .pm-section { contain-intrinsic-size: auto 748px; }
   .chapters   { contain-intrinsic-size: auto 4976px; }
-  .pr-section { contain-intrinsic-size: auto 639px; }   /* r325 Y2 re-measure (639 @360) */
+  .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 merged re-measure (605 @360) */
   .wy-section { contain-intrinsic-size: auto 646px; } /* R325 Y3 re-measure — the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 903px; }
   .fo-cta     { contain-intrinsic-size: auto 428px; }

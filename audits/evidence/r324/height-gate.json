@@ -24,16 +24,16 @@
     },
     {
       "width": 390,
-      "atLoad": 11620,
-      "afterWalk": 11620,
+      "atLoad": 11733,
+      "afterWalk": 11733,
       "driftPct": 0,
       "ok": true
     },
     {
       "width": 360,
-      "atLoad": 11412,
-      "afterWalk": 11410,
-      "driftPct": 0.018,
+      "atLoad": 11520,
+      "afterWalk": 11518,
+      "driftPct": 0.017,
       "ok": true
     }
   ]
