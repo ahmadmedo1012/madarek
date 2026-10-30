@@ -22,6 +22,13 @@ const browser = await chromium.launch({ executablePath: EXEC });
 const page = await browser.newPage({ viewport: { width: bp, height: 900 } });
 await page.goto(BASE, { waitUntil: 'load' });
 await page.waitForTimeout(3000);
+/* R324/X18 fix: the theme argument previously named the FILES only —
+ * the «dark» strips were byte-identical copies of the light ones
+ * (md5-verified by reviewer C). The attribute is actually set here,
+ * BEFORE the scroll probes, and re-asserted at every stop (the app's
+ * own ThemeProvider may re-key it on scroll-driven renders). */
+await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), theme);
+await page.waitForTimeout(400);
 
 const top = await page.evaluate(() => {
   const el = document.querySelector('#chapters');
@@ -35,6 +42,10 @@ for (let i = 0; i < stops.length; i++) {
   const y = Math.round(top + (H - 900) * stops[i]);
   await page.evaluate((yy) => window.scrollTo(0, yy), y);
   await page.waitForTimeout(1400);
+  await page.evaluate((t) => {
+    document.documentElement.setAttribute('data-theme', t);
+  }, theme);
+  await page.waitForTimeout(300);
   const file = path.join(OUT, `map-s${i + 1}-${bp}-${theme}.png`);
   await page.screenshot({ path: file });
   const st = await page.evaluate(() => ({

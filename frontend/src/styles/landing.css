@@ -2473,7 +2473,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * poster wordmark. */
 .fo-footer {
   border-block-start: 1px solid var(--rule-strong);
-  background: color-mix(in srgb, var(--surface) 35%, transparent);
+  /* R324 X23 (reviewer A): the footer is the page's own last band, not
+   * a raised card — --surface is WHITE in light, so the old 35% mix
+   * lifted the band to #F9F9F4 (a fourth ground off the paper/ink
+   * pair). The band rides the paper itself, both themes. */
+  background: transparent;
   /* R315 (K-F · B9): the colophon rides the page's own frame measure —
    * the reference's footer spans the frame's INNER width (1426.69
    * @1440, 374.13 @390 — never the full viewport), and its top rule

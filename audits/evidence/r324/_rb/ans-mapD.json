@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] لا توجد رسوم أو مخططات في هذا الجزء.\n[2] لا، جميع العناصر تبدو متسقة مع الثيم الداكن.\n[3] نعم، النصوص الصغيرة في الأعلى (رقم الفصل والوصف) رمادية وضعيفة التباين مقارنة بالعنوان الرئيسي.\n[4] لا يوجد لون برتقالي أو \"ember\" ظاهر.\n[5] الخط الرفيع الأفقي في أعلى الصفحة.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1793324046,
+  "id": "20261030093402ad48fe5603ea4b68",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261030093402ad48fe5603ea4b68",
+  "usage": {
+    "completion_tokens": 118,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 4336,
+    "prompt_tokens_details": {
+      "cached_tokens": 2
+    },
+    "total_tokens": 4454
+  }
+}

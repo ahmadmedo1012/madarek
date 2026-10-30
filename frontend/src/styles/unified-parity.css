@@ -567,7 +567,7 @@
     --neutral-500: #B4B4B0;          /* r305 ink-muted — the redeemed disable grey, 7.09:1 */
     --neutral-700: #C9C9C5;          /* ink-secondary */
     --neutral-800: #E0E0DC;
-    --neutral-900: #F6F8FA;          /* ink — the paper twin */
+    --neutral-900: #F6F6EE;          /* ink — the paper twin. R324 override (X22, reviewers A/B): the dark ink unifies to the SAME warm paper #F6F6EE as the light ground (the old blueprint-blue #F6F8FA ran a +12 blue channel — a second paper). Contrast rises (13.44:1 on #282828), no seat depends on the cool cast. */
 
     /* night hue families — ember-tinted deep grounds + luminous inks (r305) */
     --c-peach-bg:     #43241C;   --c-peach-ink:    #FF8E68;   --c-peach-deep:   #FFC5AE;
@@ -602,7 +602,11 @@
     --border:        var(--neutral-200);
     --border-strong: var(--neutral-300);
     --border-faint:  rgba(246,248,250,0.08);   /* r305: paper-white hairline */
-    --rule:          var(--neutral-200);
+    /* R324 X21 (reviewers A+C): the dark hairline at neutral-200 read
+     * 1.62:1 on #282828 — the drafting texture dissolved. One rung up
+     * (neutral-300) keeps it a whisper but present (1.95:1); the
+     * strong rule and the grid line stay as they were. */
+    --rule:          var(--neutral-300);
     --rule-strong:   var(--border-strong);
     --grid-line:     var(--neutral-300);
     --surface-border:  rgba(246,248,250,0.12);

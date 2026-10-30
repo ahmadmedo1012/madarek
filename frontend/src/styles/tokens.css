@@ -791,7 +791,7 @@
     --neutral-500: #B4B4B0;
     --neutral-700: #C9C9C5;
     --neutral-800: #E0E0DC;
-    --neutral-900: #F6F8FA;
+    --neutral-900: #F6F6EE; /* R324 X22 override — the warm paper twin (was #F6F8FA) */
 
     /* Night families: deep ember-tinted bgs + luminous inks. Contrast
        on --bg #282828 (engine-verified, r305): mint 8.08, yellow 9.28,

@@ -23,7 +23,31 @@ polish · responsiveness. **Mean ≥ 9, no category < 8.** VLM advisory only.
 
 ## Reviewer rounds
 
-(none yet — first round runs at the P2 wave completion)
+### Round 1 — the P2 wave (2026-10-30, three independent reviewers on the X14 sheets)
+
+| reviewer | mean | failing axes | headline findings |
+|---|---|---|---|
+| A (grid/discipline) | 7.75 | material/colour 6.5 · polish 7.0 · hierarchy 7.5 | dark ink cool-cast (+12 blue), footer 4th ground, circle axis chips, CTA-meta pixel read |
+| B (type/material) | 8.75 | material/colour 7.8 · polish 8.2 | statement-dark footer melt, CTA fill «off-token», ember as large fill |
+| C (motion/polish) | 8.35 | motion/scroll 7.0 · material/colour 7.5 | dark map-state sheets byte-identical to light, statement scrub «stuck», CTA button contrast |
+
+**Verdict: no acceptance (≥9 / no <8 required).** The claims were then verified against the live DOM (`scripts/r324/probe-r324-review.mjs`):
+
+| claim | verification | disposition |
+|---|---|---|
+| dark ink #F6F8FA cool-cast | **TRUE** (`--neutral-900` dark) | **X22 fixed** — re-pinned to the warm paper #F6F6EE (R324 override) |
+| footer rides a 4th ground | **TRUE** (`color-mix(--surface 35%)` — white in light) | **X23 fixed** — the band rides the paper (transparent) |
+| dark map-state sheets = light copies | **TRUE** (md5-identical; the shot tool never applied the theme) | **X18 fixed** — tool re-anchors the theme; sheets re-captured, md5 distinct |
+| dark hairline dissolves (1.62:1) | **TRUE** (`--rule` dark = neutral-200) | **X21 fixed** — one rung up (neutral-300, 1.95:1) |
+| CTA button fill «off-token» | pixel-true (#DB3A00) but **documented R318 AA seat** (white label 4.55:1 — probe-verified) | no change; documented |
+| CTA button contrast 3.46:1 | FALSE (measured on the token, not the seat) — the real seat is 4.55:1 | no change |
+| CTA-meta 1.63:1 | FALSE (pixels sampled over a layered area) — text-muted is 5.2:1 on paper | no change |
+| statement footer «melt» | the ticker's 64px edge mask — the strip CRAWLS (36s loop), no static state | no change (behaviour correct) |
+| circle axis chips | section-marker symbols inside the section-drawing SVG (drafting grammar, art exemption) | no change; documented |
+| ember as large dark fill | the dark twin of the light #FA3600 fill (theme-symmetric by construction) | no change; documented |
+
+Evidence: `audits/evidence/r324/map-s1..s6-1440-dark.png` (REAL dark states now) ·
+`statement-x14-1440-{light,dark}.png` · `footer-x14-*`.
 
 ## Kill list X1–X16
 
