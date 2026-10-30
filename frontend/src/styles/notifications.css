@@ -32,8 +32,10 @@
 .notif-panel-title {
   /* r155d: raw 14px/700 → the chrome rung + bold token (exact values —
      the panel title is interface chrome, not body copy). */
+  /* r325 Y4 — 600, the §R324 weight law: the panel title is a real <h3>
+     and the census asserts every heading ≤ 600 (was --fw-bold). */
   font-size: var(--fs-chrome);
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold);
   color: var(--text);
   /* 5-C2 (A3 P3-8 dead-declaration sweep): letter-spacing -0.01em
      removed — superseded by polish.css:1393 (ls normal, 21-c ruling

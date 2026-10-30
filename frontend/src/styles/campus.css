@@ -366,7 +366,7 @@
 .vc-title {
   font-family: var(--font-display);
   font-size: var(--fs-body-lg);
-  font-weight: 700;
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
   line-height: var(--type-display-line-height);
   color: var(--text);
 }

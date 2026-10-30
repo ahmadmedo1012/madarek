@@ -116,7 +116,7 @@
 .hr-section-head h2,
 .hr-section-head h3 {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law */
 }
 
 .hr-section-count {
@@ -517,7 +517,7 @@
 
 .hr-scope .pf-section-title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600 */
 }
 
 /* ── A3 · Queue count numerals — the ember metric voice ────────────
@@ -570,7 +570,7 @@
    the hairline the R304 head already draws. */
 .hr-scope .queue-group .tpg-queue-title {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600 */
 }
 
 /* ── A6 · Attendance roll call — crisp toggle feedback ─────────────

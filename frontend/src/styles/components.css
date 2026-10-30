@@ -159,7 +159,7 @@
   .card-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law (was --fw-bold) */
     color: var(--text);
     /* r149 (R3-A4 F2): تتبع سالب عند المنبع لعنوان عربي — كان يعتمد
        كليًا على حارس polish 21-c؛ الآن صفر عند المنبع. */
@@ -1403,7 +1403,9 @@
   .section-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-md);
-    font-weight: var(--fw-black);
+    /* r325 Y4 — 600, the §R324 weight law: the div-rendered section
+       heading rode --fw-black/700 outside every h* sweep. */
+    font-weight: var(--fw-semibold);
     color: var(--text);
     /* r149 (R3-A4 F2): ‎--ls-snug → --ls-normal — عنوان عربي بلا تتبع
        عند المنبع (كان محروسًا فقط في overrides). */
@@ -1456,8 +1458,12 @@
   
   .dash-section-title {
     font-family: var(--font-display);
-    font-size: var(--fs-h2);
-    font-weight: var(--fw-black);
+    /* r325 Y4 — no live consumer today (the r220 dashboards retired the
+       class; polish.css:lang(ar) still lists it for tracking), but the
+       pinned grammar stays on the law for any revival: the app-density
+       H2 rung at 600 (was --fs-h2 40px @1440 / 47.6px @390 at 700). */
+    font-size: var(--fs-app-h2);
+    font-weight: var(--fw-semibold);
     color: var(--text);
     letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين عربية — لا تتبّع سالب */
     margin-block-end: var(--sp-4);
@@ -2582,7 +2588,7 @@
     margin: 0;
     font-family: var(--font-display);
     font-size: var(--type-headline-size-md);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600 (was 700); the size rides the re-keyed clamped d2 role */
     color: var(--text);
     line-height: 1.25;
   }
@@ -2849,7 +2855,7 @@
   .thumb-card-title {
     font-family: var(--font-display);
     font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
     color: var(--text);
     /* r149 (R3-A4 F2): ‎--ls-snug → --ls-normal — مثل سابقيه عند المنبع. */
     letter-spacing: var(--ls-normal);
@@ -5074,7 +5080,7 @@
   .momentum-info { flex: 1; min-inline-size: 0; }
   .momentum-title {
     font-size: var(--type-headline-size-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (no live consumer; pinned for revival) */
     margin: 0 0 var(--sp-1);
   }
   .momentum-sub { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); }
