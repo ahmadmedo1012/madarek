@@ -33,6 +33,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronUp } from 'lucide-react';
 import { Icon } from '../../Icon';
+import { useBottomStackLayer } from '../../../hooks/useBottomStackLayer';
 
 /* ── The storage contract ────────────────────────────────────────────
  * `madarek.consent` holds the plain decision ("accepted"/"rejected") —
@@ -179,6 +180,15 @@ export function ConsentBanner() {
    * the button is hidden there. */
   const [expanded, setExpanded] = useState(false);
 
+  /* Y6 (R325) — the gate is the BASE layer of the bottom stack: it owns
+   * the viewport's bottom seat (inset-block-end: 0 — r314-chrome.css)
+   * and registers its MEASURED height with lib/bottomStack.ts, so the
+   * toast stack and the FAB lift above its real box (the phone bar's
+   * expand toggle included) instead of covering it. Answering the gate
+   * renders null → the callback ref fires with null → the layer
+   * deregisters and the layers above ease back down (200ms). */
+  const bannerRef = useBottomStackLayer('consent');
+
   /* The shared answer path — button clicks and the window API both
    * land here, so the two writers can never diverge. */
   const answer = useCallback((next: ConsentDecision) => {
@@ -225,6 +235,7 @@ export function ConsentBanner() {
     /* role="region" + label: announced as a landmark, not a modal —
      * the visitor's flow is never hijacked, keyboard or pointer. */
     <div
+      ref={bannerRef}
       className="cb-banner"
       role="region"
       aria-label="الموافقة على التخزين المحلي"

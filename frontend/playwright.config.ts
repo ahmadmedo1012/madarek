@@ -163,6 +163,22 @@ export default defineConfig({
         colorScheme: 'light',
       },
     },
+    {
+      // Y6 (R325) — the consent/toast/FAB BOTTOM-STACK overlap probe
+      // (tests/r325/bottom-stack.spec.ts). Own testDir so the e2e/audit/
+      // r305 projects and vitest stay untouched; the spec self-scales
+      // its viewports (320/390/1440/1920) and drives both themes itself.
+      // The .spec.ts spelling is the task-pinned name — vitest excludes
+      // tests/r325/** for the same reason it excludes tests/audit/**.
+      name: 'r325',
+      testDir: './tests/r325',
+      testMatch: /bottom-stack\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        colorScheme: 'light',
+        locale: 'ar',
+      },
+    },
   ],
   webServer: process.env.MADAREK_E2E_BASE_URL
     ? undefined

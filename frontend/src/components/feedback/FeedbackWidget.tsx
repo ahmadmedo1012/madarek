@@ -13,6 +13,7 @@ import { Modal } from '../overlays/Modal';
 import { Icon } from '../Icon';
 import { useSendFeedback } from '../../hooks/resources/feedback';
 import { consoleTapeEntries } from '../../lib/consoleTape';
+import { useBottomStackLayer } from '../../hooks/useBottomStackLayer';
 
 /** Downscale a picked image to ≤ 1280px-wide JPEG (≤ 0.6 quality when
  *  the first pass exceeds the 600 KB ceiling) — a data URL the server's
@@ -46,6 +47,13 @@ async function downscaleScreenshot(file: File): Promise<string | null> {
 
 export function FeedbackWidget() {
   const send = useSendFeedback();
+  /* Y6 (R325) — the FAB is the TOP layer of the bottom stack: it
+   * registers with lib/bottomStack.ts so it rises above the toast stack
+   * (and, should a consent-bearing surface ever host it, the consent
+   * gate too) instead of being covered — Material's snackbar+FAB
+   * behaviour. With nothing else on screen the manager reports offset
+   * 0 and the seat below is untouched (18px / 72px+safe-area). */
+  const fabRef = useBottomStackLayer('fab');
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<'BUG' | 'IDEA'>('BUG');
   const [note, setNote] = useState('');
@@ -107,6 +115,7 @@ export function FeedbackWidget() {
     <>
       <button
         type="button"
+        ref={fabRef}
         className="fb-fab"
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
