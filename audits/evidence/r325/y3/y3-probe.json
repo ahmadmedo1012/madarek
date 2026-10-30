@@ -1,6 +1,6 @@
 {
  "probe": "scripts/r325/y3-probe.mjs (VITE_URL :5203)",
- "note": "before = HEAD (tree stashed), after = the Y3 fix. Matcher: «التجريبية» / «عرض توضيحي» — the pre-fix .wy-note wording («بيانات تجريبية…») does not contain the definite article, so the before@390 row counts 0 (its only disclosure is the note; frames fold ≤767).",
+ "note": "before = HEAD (tree stashed), after = the Y3 fix. Matcher: «التجريبية» / «عرض توضيحي» — the pre-fix .wy-note wording («بيانات تجريبية…») does not contain the definite article, so the before@390 row counts 0 (its only disclosure is the note; frames fold ≤767). Frame-seated gaps read «folded» when the ≤767 belt hides the captures (display:none — the phone why is the state list); their void gate is the note→section-end gap alone.",
  "tolerance": "void gaps <= 1.5x section padding-block",
  "before": [
   {
@@ -449,8 +449,8 @@
    },
    "voids": {
     "stageToCaptionBottom": 52.9,
-    "frameToNote": 20.3,
-    "noteToSectionEnd": 31.7,
+    "frameToNote": 20,
+    "noteToSectionEnd": 32,
     "underFrameTotal": 73.4
    },
    "bp": 1440
@@ -495,8 +495,8 @@
    },
    "voids": {
     "stageToCaptionBottom": 52.9,
-    "frameToNote": 20.1,
-    "noteToSectionEnd": 31.9,
+    "frameToNote": 20,
+    "noteToSectionEnd": 32,
     "underFrameTotal": 73.4
    },
    "bp": 1440
@@ -632,10 +632,10 @@
     "ledeCellMatchesStack": "n/a (stack folded)"
    },
    "voids": {
-    "stageToCaptionBottom": 0,
-    "frameToNote": 671.4,
+    "stageToCaptionBottom": "folded",
+    "frameToNote": "folded",
     "noteToSectionEnd": 20,
-    "underFrameTotal": 734.3
+    "underFrameTotal": "folded"
    },
    "bp": 390
   },
@@ -678,10 +678,10 @@
     "ledeCellMatchesStack": "n/a (stack folded)"
    },
    "voids": {
-    "stageToCaptionBottom": 0,
-    "frameToNote": 671.4,
+    "stageToCaptionBottom": "folded",
+    "frameToNote": "folded",
     "noteToSectionEnd": 20,
-    "underFrameTotal": 734.3
+    "underFrameTotal": "folded"
    },
    "bp": 390
   }

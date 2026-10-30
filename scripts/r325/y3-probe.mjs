@@ -6,7 +6,9 @@
  *   1. the overlay tooltip is GONE — .wy .prf-cards resolves display:none
  *      and zero «عرض توضيحي» fragments render inside the section;
  *   2. the void under the capture ≤ 1.5× the section's own block padding
- *      (both gaps: frame→note and note→section end);
+ *      (both gaps: frame→note and note→section end; frame-seated gaps
+ *      read «folded» when the ≤767 belt hides the captures — the
+ *      reference's mobile why is the state list);
  *   3. ONE grid — the .wy-lede column's inline box equals the capture
  *      stack's (same x, same width, the shared minmax(0,58rem) track);
  *   4. exactly ONE demo-data disclosure line renders in the section.
@@ -100,11 +102,16 @@ for (const { w, h } of BPS) {
       const padTop = cs ? parseFloat(cs.paddingTop) : NaN;
       const padBottom = cs ? parseFloat(cs.paddingBottom) : NaN;
       const sectionBottom = sec ? sec.bottom : NaN;
+      // the ≤767 belt folds the captures away (display:none — the
+      // reference's mobile why is the state list): a hidden frame's
+      // rect zeroes out, so every frame-seated gap must read as
+      // «folded», never as a phantom void number.
+      const capVisible = !!cap && cap.width > 0 && cap.height > 0;
       // the frame (figure) bottom vs the section's inner end
-      const gapFrameToNote = note && cap ? px(note.top - cap.bottom) : null;
+      const gapFrameToNote = capVisible && note && cap ? px(note.top - cap.bottom) : 'folded';
       const gapNoteToSectionEnd = note && sec ? px(sectionBottom - note.bottom) : null;
-      const gapStageToCaption = cap && capStage ? px(cap.bottom - capStage.bottom) : null;
-      const voidUnderFrame = cap && sec ? px(sectionBottom - cap.bottom) : null;
+      const gapStageToCaption = capVisible && cap && capStage ? px(cap.bottom - capStage.bottom) : 'folded';
+      const voidUnderFrame = capVisible && cap && sec ? px(sectionBottom - cap.bottom) : 'folded';
 
       return {
         viewport: { w: innerWidth, h: innerHeight },
