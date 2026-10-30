@@ -1,0 +1,245 @@
+{
+ "tag": "after",
+ "bps": {
+  "390": {
+   "section": {
+    "x": 0,
+    "y": -0.7,
+    "w": 380,
+    "h": 654.3
+   },
+   "head": {
+    "x": 24,
+    "y": 20.4,
+    "w": 332,
+    "h": 308.3
+   },
+   "headChildrenH": 284.2,
+   "chapters": {
+    "x": 24,
+    "y": 201.3,
+    "w": 332,
+    "h": 127.4
+   },
+   "stage": {
+    "x": 24,
+    "y": 340.7,
+    "w": 332,
+    "h": 247.6
+   },
+   "frame": {
+    "x": 24,
+    "y": 340.7,
+    "w": 332,
+    "h": 247.6
+   },
+   "art": {
+    "x": 25,
+    "y": 341.7,
+    "w": 330,
+    "h": 189.6
+   },
+   "cap": {
+    "x": 25,
+    "y": 531.3,
+    "w": 330,
+    "h": 56
+   },
+   "captionBelowArt": {
+    "artBottom": 531.3,
+    "capTop": 531.3,
+    "below": true,
+    "overlapsArt": false
+   },
+   "overlays": [],
+   "side": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "sideChildrenH": 0,
+   "gaps": {
+    "head": 8,
+    "art": 8,
+    "side": 0,
+    "screen": 9
+   },
+   "monoSizes": {
+    "11px": 11
+   },
+   "monoMin": 11,
+   "filler": {
+    "frameHeadEl": false,
+    "uiGrammarLabel": false,
+    "pin": false,
+    "planwrap": false
+   },
+   "pct": {
+    "head": 87.4,
+    "stage": 87.4,
+    "side": 0
+   }
+  },
+  "768": {
+   "section": {
+    "x": 0,
+    "y": 871.6,
+    "w": 758,
+    "h": 508.3
+   },
+   "head": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "headChildrenH": 0,
+   "chapters": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "stage": {
+    "x": 24,
+    "y": 892.6,
+    "w": 710,
+    "h": 471.3
+   },
+   "frame": {
+    "x": 24,
+    "y": 892.6,
+    "w": 710,
+    "h": 471.3
+   },
+   "art": {
+    "x": 25,
+    "y": 893.6,
+    "w": 708,
+    "h": 413.5
+   },
+   "cap": {
+    "x": 25,
+    "y": 1307.1,
+    "w": 708,
+    "h": 55.9
+   },
+   "captionBelowArt": {
+    "artBottom": 1307.1,
+    "capTop": 1307.1,
+    "below": true,
+    "overlapsArt": false
+   },
+   "overlays": [],
+   "side": {
+    "x": 0,
+    "y": 0,
+    "w": 0,
+    "h": 0
+   },
+   "sideChildrenH": 0,
+   "gaps": {
+    "head": 0,
+    "art": 12,
+    "side": 0,
+    "screen": 9
+   },
+   "monoSizes": {
+    "11px": 11
+   },
+   "monoMin": 11,
+   "filler": {
+    "frameHeadEl": false,
+    "uiGrammarLabel": false,
+    "pin": false,
+    "planwrap": false
+   },
+   "pct": {
+    "head": 0,
+    "stage": 93.7,
+    "side": 0
+   }
+  },
+  "1440": {
+   "section": {
+    "x": 0,
+    "y": 131.5,
+    "w": 1430,
+    "h": 710
+   },
+   "head": {
+    "x": 1056.7,
+    "y": 164.5,
+    "w": 346.7,
+    "h": 645
+   },
+   "headChildrenH": 609,
+   "chapters": {
+    "x": 1056.7,
+    "y": 351.3,
+    "w": 346.7,
+    "h": 458.3
+   },
+   "stage": {
+    "x": 478.9,
+    "y": 164.5,
+    "w": 577.8,
+    "h": 591.6
+   },
+   "frame": {
+    "x": 478.9,
+    "y": 164.5,
+    "w": 577.8,
+    "h": 591.6
+   },
+   "art": {
+    "x": 479.9,
+    "y": 165.5,
+    "w": 575.8,
+    "h": 533.9
+   },
+   "cap": {
+    "x": 479.9,
+    "y": 699.4,
+    "w": 575.8,
+    "h": 55.7
+   },
+   "captionBelowArt": {
+    "artBottom": 699.4,
+    "capTop": 699.4,
+    "below": true,
+    "overlapsArt": false
+   },
+   "overlays": [],
+   "side": {
+    "x": 33.3,
+    "y": 164.5,
+    "w": 445.6,
+    "h": 591.6
+   },
+   "sideChildrenH": 579.6,
+   "gaps": {
+    "head": 12,
+    "art": 12,
+    "side": 12,
+    "screen": 9
+   },
+   "monoSizes": {
+    "11px": 11
+   },
+   "monoMin": 11,
+   "filler": {
+    "frameHeadEl": false,
+    "uiGrammarLabel": false,
+    "pin": false,
+    "planwrap": false
+   },
+   "pct": {
+    "head": 24.2,
+    "stage": 40.4,
+    "side": 31.2
+   }
+  }
+ }
+}
