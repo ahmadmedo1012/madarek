@@ -59,7 +59,7 @@ const H1_CEILING_AT_390 = 32;
 function collectVars(src: string, prefix = ''): Map<string, string> {
   const vars = new Map<string, string>();
   const re = /--([\w-]+)\s*:\s*([^;{}]+);/g;
-  for (const m of src.matchAll(re)) vars.set(prefix + '--' + m[1], m[2].trim());
+  for (const m of src.matchAll(re)) vars.set(prefix + '--' + m[1]!, m[2]!.trim());
   return vars;
 }
 
@@ -71,11 +71,11 @@ const TOKENS = new Map([...collectVars(paritySrc), ...collectVars(tokenSrc)]);
  *  Nvw, var(--x), max(a,b), clamp(a,b,c) — the grammar the ladder uses. */
 function resolveFs(expr: string, band: number, depth = 0): number | null {
   if (depth > 8) return null;
-  const root = ROOT_PX[band];
+  const root = ROOT_PX[band]!;
   let e = expr.trim().replace(/!important$/, '').trim();
   const varRef = e.match(/^var\(\s*(--[\w-]+)\s*(?:,\s*([^)]+))?\)$/);
   if (varRef) {
-    const val = TOKENS.get(varRef[1]);
+    const val = TOKENS.get(varRef[1]!);
     if (val === undefined) {
       if (varRef[2] !== undefined) return resolveFs(varRef[2], band, depth + 1);
       return null;
@@ -83,29 +83,29 @@ function resolveFs(expr: string, band: number, depth = 0): number | null {
     return resolveFs(val, band, depth + 1);
   }
   const px = e.match(/^(-?[\d.]+)px$/);
-  if (px) return parseFloat(px[1]);
+  if (px) return parseFloat(px[1]!);
   const rem = e.match(/^(-?[\d.]+)rem$/);
-  if (rem) return parseFloat(rem[1]) * root;
+  if (rem) return parseFloat(rem[1]!) * root;
   const vw = e.match(/^(-?[\d.]+)vw$/);
-  if (vw) return (parseFloat(vw[1]) * band) / 100;
+  if (vw) return (parseFloat(vw[1]!) * band) / 100;
   const max = e.match(/^max\(([^,]+),\s*([^)]+)\)$/);
   if (max) {
-    const a = resolveFs(max[1], band, depth + 1);
-    const b = resolveFs(max[2], band, depth + 1);
+    const a = resolveFs(max[1]!, band, depth + 1);
+    const b = resolveFs(max[2]!, band, depth + 1);
     return a !== null && b !== null ? Math.max(a, b) : null;
   }
   const clamp = e.match(/^clamp\(([^,]+),\s*([^,]+),\s*([^)]+)\)$/);
   if (clamp) {
-    const lo = resolveFs(clamp[1], band, depth + 1);
-    const mid = resolveFs(clamp[2], band, depth + 1);
-    const hi = resolveFs(clamp[3], band, depth + 1);
+    const lo = resolveFs(clamp[1]!, band, depth + 1);
+    const mid = resolveFs(clamp[2]!, band, depth + 1);
+    const hi = resolveFs(clamp[3]!, band, depth + 1);
     if (lo === null || mid === null || hi === null) return null;
     return Math.min(hi, Math.max(lo, mid));
   }
   const calc = e.match(/^calc\((.+)\)$/);
   if (calc) {
     // only the sum grammar the ladder actually uses: "a + b" / "2 * a"
-    const inner = calc[1].replace(/\s/g, '');
+    const inner = calc[1]!.replace(/\s/g, '');
     const parts = inner.split('+').map((p) => resolveFs(p, band, depth + 1));
     return parts.every((p) => p !== null) ? (parts as number[]).reduce((s, v) => s + v, 0) : null;
   }
@@ -134,12 +134,14 @@ function resolveFw(expr: string, depth = 0): number | null {
   if (depth > 8) return null;
   const varRef = expr.trim().match(/^var\(\s*(--[\w-]+)\s*\)$/);
   if (varRef) {
-    if (FW_TOKENS[varRef[1]] !== undefined) return FW_TOKENS[varRef[1]];
-    const next = TOKENS.get(varRef[1]); // type roles re-key onto the fw tokens
+    const key = varRef[1]!;
+    const fw = FW_TOKENS[key];
+    if (fw !== undefined) return fw;
+    const next = TOKENS.get(key); // type roles re-key onto the fw tokens
     return next ? resolveFw(next, depth + 1) : null;
   }
   const n = expr.trim().match(/^(\d+)$/);
-  return n ? Number(n[1]) : null;
+  return n ? Number(n[1]!) : null;
 }
 
 /* ── the sweep: every heading rule in every stylesheet ─────────────── */
@@ -201,13 +203,13 @@ function walkRules(src: string, media: string | null, out: CssRule[], counter: {
         else if (s[i] === '}') depth--;
         i++;
       }
-      walkRules(s.slice(at.index + at[0].length, i - 1), at[1] === 'media' ? at[2].trim() : media, out, counter);
+      walkRules(s.slice(at.index + at[0].length, i - 1), at[1] === 'media' ? at[2]!.trim() : media, out, counter);
       s = s.slice(i);
     } else if (rule) {
       const open = rule.index + rule[0].length - 1;
       const close = s.indexOf('}', open);
       if (close === -1) break; // truncated fragment — nothing more to read
-      out.push({ media, sel: rule[1].trim().replace(/\s+/g, ' '), body: s.slice(open + 1, close), order: counter.n++ });
+      out.push({ media, sel: rule[1]!.trim().replace(/\s+/g, ' '), body: s.slice(open + 1, close), order: counter.n++ });
       s = s.slice(close + 1);
     } else break;
   }
@@ -218,9 +220,9 @@ function walkRules(src: string, media: string | null, out: CssRule[], counter: {
 function mediaApplies(media: string | null, band: number): boolean {
   if (!media) return true;
   const max = media.match(/max-width\s*:\s*([\d.]+)px/);
-  if (max) return band <= parseFloat(max[1]);
+  if (max) return band <= parseFloat(max[1]!);
   const min = media.match(/min-width\s*:\s*([\d.]+)px/);
-  if (min) return band >= parseFloat(min[1]);
+  if (min) return band >= parseFloat(min[1]!);
   return true; // unknown conditions apply (never hide a rule from the gate)
 }
 
@@ -243,13 +245,6 @@ function gather(): (HeadingRule & { media: string | null; order: number })[] {
     }
   }
   return rules;
-}
-
-/** The winning font-size rule for a selector match at a band (the LAST
- *  media-applicable font-size declaration in file order — the cascade's
- *  honest approximation for these sheets). */
-function winningFsAt(band: number): (r: HeadingRule & { media: string | null }) => boolean {
-  return (r) => mediaApplies(r.media, band) && /font-size\s*:/.test(r.body);
 }
 
 const RULES = gather();
@@ -302,7 +297,7 @@ describe('r325 Y4 — the type census gate (every heading level × every seat ×
       for (const band of BANDS) {
         const applicable = grp.filter((r) => mediaApplies(r.media, band));
         expect(applicable.length, `some font-size rule for ${key} applies at @${band}`).toBeGreaterThan(0);
-        const winner = applicable[applicable.length - 1]; // last in file order
+        const winner = applicable[applicable.length - 1]!; // last in file order
         const raw = ((winner.body.match(/font-size\s*:\s*([^;]+);/) ?? [])[1] ?? '').trim();
         if (hasAllow(winner.body)) continue; // reviewed literal (documented in the rule)
         const px = resolveFs(raw, band);
@@ -333,7 +328,7 @@ describe('r325 Y4 — the type census gate (every heading level × every seat ×
         for (const [key, grp] of groups) {
           const applicable = grp.filter((r) => mediaApplies(r.media, 390));
           expect(applicable.length, `${key} applies at 390`).toBeGreaterThan(0);
-          const winner = applicable[applicable.length - 1];
+          const winner = applicable[applicable.length - 1]!;
           const raw = ((winner.body.match(/font-size\s*:\s*([^;]+);/) ?? [])[1] ?? '').trim();
           const px = resolveFs(raw, 390);
           expect(px, `${key} font-size "${raw.trim()}" resolves at 390`).not.toBeNull();
@@ -358,7 +353,7 @@ describe('r325 Y4 — the type census gate (every heading level × every seat ×
           const m = src.match(new RegExp(`${t}:\\s*([^;]+);`));
           expect(m, `${t} exists`).toBeTruthy();
           for (const band of BANDS) {
-            const px = resolveFs(m![1], band);
+            const px = resolveFs(m![1]!, band);
             expect(px, `${t} resolves at @${band}`).not.toBeNull();
             expect(px as number, `${t} @${band} = ${(px as number).toFixed(1)}px must be ≥ ${MONO_FLOOR}px (the mono rung)`).toBeGreaterThanOrEqual(MONO_FLOOR);
           }
@@ -390,7 +385,7 @@ describe('r325 Y4 — the type census gate (every heading level × every seat ×
     it('the probe seat list and this gate agree (no seat sweeps one gate misses)', () => {
       const m = probeSrc.match(/HEADING_SEATS = '([^']+)'/);
       expect(m, 'probe HEADING_SEATS exists').toBeTruthy();
-      const probeSeats = m![1].split(',').map((s) => s.trim().replace(/^\./, '').split(' ')[0]).filter(Boolean);
+      const probeSeats = (m![1] ?? '').split(',').map((s) => s.trim().replace(/^\./, '').split(' ')[0] ?? '').filter(Boolean);
       for (const seat of probeSeats) {
         expect(HEADING_SEATS, `seat "${seat}" is pinned by the unit gate too`).toContain(seat);
       }
