@@ -249,9 +249,14 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(JOURNEY_SRC).toMatch(/const SEQ_START_PIN = -0\.082;/);
     expect(JOURNEY_SRC).toMatch(/const SEQ_END_PIN = 0\.952;/);
     expect(JOURNEY_SRC).toMatch(/const SEQ_DUR_S = 5\.52;/);
-    /* the six progressive layer windows — layer 1 at t 2.5, then one
-     * per 0.5s step (Heron's 3.02/3.52/4.02/4.52/5.02 table) */
-    expect(JOURNEY_SRC).toMatch(/\[2\.5, 3\.0\],\s*\n\s*\[3\.02, 3\.52\],\s*\n\s*\[3\.52, 4\.02\],\s*\n\s*\[4\.02, 4\.52\],\s*\n\s*\[4\.52, 5\.02\],\s*\n\s*\[5\.02, 5\.52\],/);
+    /* the six progressive layer windows — R325 (Y1) re-timing: the
+     * build RIDES the statement era (layer 1 at t 0.35, ~82px before
+     * pin engage @1440 — the intro runway ≤ 0.5 screens), then one
+     * per 0.5s step; the six complete by t 3.52 */
+    expect(JOURNEY_SRC).toMatch(/\[0\.35, 0\.85\],[^\n]*\n\s*\[1\.02, 1\.52\],[^\n]*\n\s*\[1\.52, 2\.02\],[^\n]*\n\s*\[2\.02, 2\.52\],[^\n]*\n\s*\[2\.52, 3\.02\],[^\n]*\n\s*\[3\.02, 3\.52\],/);
+    /* the GHOST floor (Y1): every layer rests at 18% line-work from
+     * frame one and ramps continuously to 1 — never from 0 */
+    expect(JOURNEY_SRC).toMatch(/const XL_GHOST = 0\.18;/);
     /* the stage flip: the closing owns the scrub end (stage 5), the
      * statement/plan/card/findings/room eras cut at t 1.5/2.5/3.5/5 */
     expect(JOURNEY_SRC).toMatch(/pRaw >= SEQ_END_PIN\s*\?\s*5/);
@@ -273,17 +278,23 @@ describe('R312 mobile camera — the source contracts (R322 map override)', () =
     expect(JOURNEY_LIVE).not.toContain("'--jt-p'");
     expect(JOURNEY_LIVE).not.toContain('"--jt-p"');
     expect(JOURNEY_LIVE).not.toContain("'--wr-p'");
-    // R323 override (A3 · defect 5): the write loop gained the DISCRETE
-    // envelope branch — the structure (walls' poché) never renders
-    // mid-ink (the owner's tone-jump defect: grey walls in state 1 vs
-    // black later). The direct style.opacity write architecture is
-    // unchanged: still per-frame direct writes, zero custom properties.
+    // R325 override (Y1 · the map intro clip): the R323 DISCRETE
+    // envelope branch retires — every layer now ramps CONTINUOUSLY
+    // from the GHOST floor (XL_GHOST 18%) to 1 inside its own window.
+    // The ghost is the DESIGNED resting state (the whole plan reads as
+    // faint line-work at progress 0 — the owner's «plan drawn from
+    // frame one») and the build is one crossfade, so the old tone-jump
+    // defect (a wall jumping pale-grey→black) cannot recur. The direct
+    // style.opacity write architecture is unchanged: still per-frame
+    // direct writes, zero custom properties.
     expect(JOURNEY_SRC).toMatch(
-      /for \(const el of groups\[i\] \?\? \[\]\) \{\s*const oo = el\.classList\.contains\('pl-l-envelope'\) \? \(t >= a \? 1 : 0\) : o;\s*setSheetVar\(el\.style, 'opacity', oo\.toFixed\(3\)\);\s*\}/,
+      /const o = XL_GHOST \+ \(1 - XL_GHOST\) \* p2o\(\(t - a\) \/ \(b - a\)\);\s*\n\s*for \(const el of groups\[i\] \?\? \[\]\) \{\s*setSheetVar\(el\.style, 'opacity', o\.toFixed\(3\)\);\s*\}/,
     );
     /* landing.css: the six crossfade groups are opacity-only roots
-     * with the will-change budget; contain bounds the frame seats */
-    expect(LANDING_CSS).toMatch(/\.jt \.jt-plan \[data-xl\] \{\s*opacity: 0;\s*will-change: opacity;\s*\}/);
+     * with the will-change budget; the GHOST base (0.18, not 0) keeps
+     * the line-work standing for the pre-driver/no-JS frames; contain
+     * bounds the frame seats */
+    expect(LANDING_CSS).toMatch(/\.jt \.jt-plan \[data-xl\] \{\s*opacity: 0\.18;\s*will-change: opacity;\s*\}/);
     expect(LANDING_CSS).toMatch(/\.jt-map-col \{[^}]*contain: layout paint;/);
     expect(LANDING_CSS).toMatch(/\.jt-close \{[^}]*contain: layout paint;/);
     /* the closing column's final geometry is RESERVED from stage 0
@@ -413,10 +424,12 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     /* mid-story (p=0.5 ⇒ t≈3.11): the camera sits between the lecture
      * and checkpoint nodes — the interpolated landscape crop, quantized
      * whole units; stage 2 (the card era), finding 2, the LECTURE wash
-     * (R322 3-b-fix2 override, review-c3 R1#10: the wash rides one
-     * finding step later — it starts at t≈3.0 when layer 1 lands, so
-     * t=3.11 is the lecture beat; the card era's focal is the card);
-     * layer 1 fully in, layer 2 arriving, layers 3–6 still out */
+     * (the wash stays keyed to the findings era — it rotates the room
+     * highlights over the near-complete drawing);
+     * R325 (Y1): the layer windows ride the statement era, so by
+     * t≈3.11 layers 1–5 stand at full ink and layer 6 (the
+     * annotations) is mid-ramp — the plan is essentially drawn while
+     * the findings narrate. */
     setScrollY(GEO.top + 0.5 * (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
     await waitFor(
@@ -430,11 +443,15 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     expect(track?.dataset.stage).toBe('3');
     expect(track?.dataset.finding).toBe('2');
     expect(track?.dataset.wash).toBe('lecture');
-    expect(parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='1']")?.style.opacity ?? 'x')).toBeCloseTo(1, 2);
-    const layer2 = parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='2']")?.style.opacity ?? 'x');
-    expect(layer2).toBeGreaterThan(0.2);
-    expect(layer2).toBeLessThan(0.5);
-    expect(parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='3']")?.style.opacity ?? 'x')).toBe(0);
+    /* R325 (Y1): layers 1–5 complete by t 3.02; layer 6 (the
+     * annotations, window 3.02–3.52) is mid-ramp at t≈3.11
+     * (0.18 + 0.82·p2o(0.176) ≈ 0.44) */
+    for (const xl of ['1', '2', '3', '4', '5']) {
+      expect(parseFloat(document.querySelector<SVGGElement>(`.jt-plan [data-xl='${xl}']`)?.style.opacity ?? 'x')).toBeCloseTo(1, 2);
+    }
+    const layer6 = parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='6']")?.style.opacity ?? 'x');
+    expect(layer6).toBeGreaterThan(0.3);
+    expect(layer6).toBeLessThan(0.6);
 
     /* the release (p=1): the completed overview — the closing owns the
      * end of the track (the 809px map-end dead band is dead) */
