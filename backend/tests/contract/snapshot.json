@@ -1,0 +1,484 @@
+{
+  "routes": {
+    "GET /api/v1/ai/config": {
+      "status": 401,
+      "shape": {
+        "error": {
+          "code": "string",
+          "message": "string"
+        }
+      }
+    },
+    "GET /api/v1/announcements/feed": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "[]": {
+            "id": "string",
+            "authorId": "string",
+            "scope": "string",
+            "scopeId": "null",
+            "title": "string",
+            "body": "string",
+            "pinned": "boolean",
+            "publishedAt": "string",
+            "expiresAt": "null",
+            "iconEmoji": "string",
+            "author": {
+              "firstName": "string",
+              "lastName": "string",
+              "avatarColor": "string",
+              "avatarInitials": "string",
+              "role": "string"
+            }
+          }
+        }
+      }
+    },
+    "GET /api/v1/auth/me": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "id": "string",
+          "email": "string",
+          "role": "string",
+          "firstName": "string",
+          "lastName": "string",
+          "avatarColor": "string",
+          "avatarInitials": "string",
+          "scopeFacultyId": "null",
+          "themePreference": "string",
+          "themePreferenceUpdatedAt": "string",
+          "onboardingCompletedAt": "null",
+          "firedMilestones": {
+            "[]": "empty"
+          },
+          "createdAt": "string",
+          "scopeFaculty": "null",
+          "memberships": {
+            "[]": {
+              "institutionId": "string",
+              "name": "string",
+              "nameEn": "string",
+              "slug": "string",
+              "role": "string",
+              "isActive": "boolean"
+            }
+          },
+          "currentInstitution": {
+            "id": "string",
+            "name": "string",
+            "nameEn": "string",
+            "slug": "string"
+          },
+          "membershipRole": "string",
+          "studentProfile": {
+            "id": "string",
+            "userId": "string",
+            "membershipId": "string",
+            "institutionId": "string",
+            "universityId": "string",
+            "facultyId": "string",
+            "departmentId": "string",
+            "year": "number",
+            "gpa": "string",
+            "totalXp": "number",
+            "level": "number",
+            "createdAt": "string",
+            "updatedAt": "string",
+            "faculty": {
+              "id": "string",
+              "name": "string",
+              "nameEn": "string",
+              "iconEmoji": "string",
+              "city": "string",
+              "institutionId": "string",
+              "createdAt": "string"
+            },
+            "department": {
+              "id": "string",
+              "name": "string",
+              "nameEn": "string",
+              "facultyId": "string",
+              "createdAt": "string"
+            }
+          },
+          "teacherProfile": "null"
+        }
+      }
+    },
+    "GET /api/v1/colleges": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "[]": {
+            "id": "string",
+            "name": "string",
+            "nameEn": "string",
+            "iconEmoji": "string",
+            "city": "string",
+            "institution": {
+              "id": "string",
+              "name": "string",
+              "nameEn": "string",
+              "slug": "string"
+            },
+            "departmentCount": "number",
+            "studentCount": "number",
+            "teacherCount": "number",
+            "courseCount": "number"
+          }
+        }
+      }
+    },
+    "GET /api/v1/courses": {
+      "status": 401,
+      "shape": {
+        "error": {
+          "code": "string",
+          "message": "string"
+        }
+      }
+    },
+    "GET /api/v1/enrollments/me": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "[]": {
+            "id": "string",
+            "progressPct": "number",
+            "offering": {
+              "id": "string",
+              "room": "string",
+              "course": {
+                "id": "string",
+                "code": "string",
+                "name": "string",
+                "iconEmoji": "string",
+                "themeColor": "string",
+                "credits": "number",
+                "department": {
+                  "id": "string",
+                  "name": "string"
+                }
+              },
+              "teacher": {
+                "id": "string",
+                "firstName": "string",
+                "lastName": "string"
+              },
+              "schedule": {
+                "[]": {
+                  "id": "string",
+                  "dayOfWeek": "number",
+                  "startTime": "string",
+                  "endTime": "string",
+                  "room": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "GET /api/v1/health": {
+      "status": 200,
+      "shape": {
+        "ok": "boolean",
+        "dbLatencyMs": "number",
+        "env": "string",
+        "buildId": "string"
+      }
+    },
+    "GET /api/v1/me/dashboard": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "profile": {
+            "year": "number",
+            "gpa": "number",
+            "totalXp": "number",
+            "level": "number",
+            "facultyName": "string",
+            "departmentName": "string"
+          },
+          "kpi": {
+            "courseCount": "number",
+            "attendancePct": "number",
+            "pendingAssignmentsCount": "number",
+            "totalXp": "number",
+            "rank": "number",
+            "cohortSize": "number"
+          },
+          "term": {
+            "code": "string",
+            "startsAt": "string",
+            "endsAt": "string",
+            "progressPct": "number"
+          },
+          "progress": {
+            "avgEnrollmentProgressPct": "number"
+          },
+          "agenda": {
+            "classes": {
+              "[]": "empty"
+            },
+            "assignments": {
+              "[]": {
+                "id": "string",
+                "offeringId": "string",
+                "title": "string",
+                "type": "string",
+                "dueAt": "string",
+                "courseName": "string",
+                "courseCode": "string"
+              }
+            },
+            "live": {
+              "[]": "empty"
+            },
+            "exams": {
+              "[]": "empty"
+            }
+          }
+        }
+      }
+    },
+    "GET /api/v1/me/theme": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "themePreference": "string",
+          "themePreferenceUpdatedAt": "string"
+        }
+      }
+    },
+    "GET /api/v1/notifications": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "[]": {
+            "id": "string",
+            "userId": "string",
+            "type": "string",
+            "icon": "string",
+            "title": "string",
+            "body": "string",
+            "link": "null",
+            "readAt": "null",
+            "createdAt": "string"
+          }
+        },
+        "meta": {
+          "page": "number",
+          "limit": "number",
+          "total": "number",
+          "totalPages": "number",
+          "unread": "number"
+        }
+      }
+    },
+    "GET /api/v1/teacher/dashboard": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "kpi": {
+            "studentCount": "number",
+            "avgGradePct": "null",
+            "attendancePct": "number",
+            "needsReview": "number"
+          },
+          "trend": {
+            "[]": {
+              "week": "string",
+              "avgGradePct": "null",
+              "attendancePct": "null"
+            }
+          },
+          "feed": {
+            "[]": {
+              "kind": "string",
+              "id": "string",
+              "author": {
+                "firstName": "string",
+                "lastName": "string",
+                "avatarInitials": "string",
+                "avatarColor": "string"
+              },
+              "meta": "string",
+              "when": "string",
+              "title": "string",
+              "actionTo": "string"
+            }
+          },
+          "pendingGrading": {
+            "[]": "empty"
+          }
+        }
+      }
+    },
+    "GET /api/v1/teacher/me/offerings": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "[]": {
+            "id": "string",
+            "courseId": "string",
+            "teacherId": "string",
+            "term": "string",
+            "room": "string",
+            "capacity": "number",
+            "createdAt": "string",
+            "course": {
+              "id": "string",
+              "code": "string",
+              "name": "string",
+              "iconEmoji": "string",
+              "themeColor": "string",
+              "credits": "number"
+            },
+            "_count": {
+              "enrollments": "number",
+              "assignments": "number",
+              "lectures": "number",
+              "examTemplates": "number"
+            },
+            "schedule": {
+              "[]": "empty"
+            }
+          }
+        }
+      }
+    },
+    "POST /api/v1/auth/login#student": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "user": {
+            "id": "string",
+            "email": "string",
+            "role": "string",
+            "firstName": "string",
+            "lastName": "string",
+            "avatarColor": "string",
+            "avatarInitials": "string",
+            "scopeFacultyId": "null",
+            "themePreference": "string",
+            "themePreferenceUpdatedAt": "string",
+            "onboardingCompletedAt": "null",
+            "firedMilestones": {
+              "[]": "empty"
+            },
+            "createdAt": "string",
+            "memberships": {
+              "[]": {
+                "institutionId": "string",
+                "name": "string",
+                "nameEn": "string",
+                "slug": "string",
+                "role": "string",
+                "isActive": "boolean"
+              }
+            },
+            "currentInstitution": {
+              "id": "string",
+              "name": "string",
+              "nameEn": "string",
+              "slug": "string"
+            },
+            "membershipRole": "string"
+          },
+          "accessToken": "string"
+        }
+      }
+    },
+    "POST /api/v1/auth/login#teacher": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "user": {
+            "id": "string",
+            "email": "string",
+            "role": "string",
+            "firstName": "string",
+            "lastName": "string",
+            "avatarColor": "string",
+            "avatarInitials": "string",
+            "scopeFacultyId": "null",
+            "themePreference": "string",
+            "themePreferenceUpdatedAt": "string",
+            "onboardingCompletedAt": "null",
+            "firedMilestones": {
+              "[]": "empty"
+            },
+            "createdAt": "string",
+            "memberships": {
+              "[]": {
+                "institutionId": "string",
+                "name": "string",
+                "nameEn": "string",
+                "slug": "string",
+                "role": "string",
+                "isActive": "boolean"
+              }
+            },
+            "currentInstitution": {
+              "id": "string",
+              "name": "string",
+              "nameEn": "string",
+              "slug": "string"
+            },
+            "membershipRole": "string"
+          },
+          "accessToken": "string"
+        }
+      }
+    },
+    "POST /api/v1/auth/logout": {
+      "status": 204,
+      "shape": "empty"
+    },
+    "POST /api/v1/auth/refresh#student": {
+      "status": 200,
+      "shape": {
+        "data": {
+          "user": {
+            "id": "string",
+            "email": "string",
+            "role": "string",
+            "firstName": "string",
+            "lastName": "string",
+            "avatarColor": "string",
+            "avatarInitials": "string",
+            "scopeFacultyId": "null",
+            "themePreference": "string",
+            "themePreferenceUpdatedAt": "string",
+            "onboardingCompletedAt": "null",
+            "firedMilestones": {
+              "[]": "empty"
+            },
+            "createdAt": "string",
+            "memberships": {
+              "[]": {
+                "institutionId": "string",
+                "name": "string",
+                "nameEn": "string",
+                "slug": "string",
+                "role": "string",
+                "isActive": "boolean"
+              }
+            },
+            "currentInstitution": {
+              "id": "string",
+              "name": "string",
+              "nameEn": "string",
+              "slug": "string"
+            },
+            "membershipRole": "string"
+          },
+          "accessToken": "string"
+        }
+      }
+    }
+  }
+}
