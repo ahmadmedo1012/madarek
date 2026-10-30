@@ -136,10 +136,11 @@
     --fs-xs:      13px;
     --fs-xxs:     13px;
 
-    /* R313 — mono micro-label sizes (Latin-only, no floor) */
-    --fs-mono-md: 1.4rem;   /* 11.67px @1440 — Heron txt-14 */
-    --fs-mono-sm: 1.2rem;   /* 10px    @1440 — Heron txt-12 */
-    --fs-mono-xs: 1rem;     /* 8.33px  @1440 — Heron txt-10 */
+    /* R313 — mono micro-label sizes (r325 Y4 — 11px floors, mirrors
+       tokens.css: the mono rung is 11–12 per §R324) */
+    --fs-mono-md: max(11.67px, 1.4rem); /* 11.67px @1440 — Heron txt-14 */
+    --fs-mono-sm: max(11px, 1.2rem);    /* 11px floor (was 10px) — Heron txt-12 */
+    --fs-mono-xs: max(11px, 1rem);      /* 11px floor (was 8.33px) — Heron txt-10 */
 
     /* legacy aliases (r148-d: --fs-base/-4xl + headline/label pairs
        deleted with the canon — zero consumers) */
@@ -278,10 +279,10 @@
     --type-display-line-height:    1.28;
     --type-display-letter-spacing: var(--ls-normal);       /* 0 */
 
-    --type-headline-size-lg:        var(--fs-h1);          /* 30px */
-    --type-headline-size-md:        var(--fs-h2);          /* 22px */
-    --type-headline-size-sm:        var(--fs-h3);          /* 18px */
-    --type-headline-weight:         var(--fw-bold);        /* 700 */
+    --type-headline-size-lg:        var(--fs-d1);          /* the clamped d1 rung (r325 Y4) */
+    --type-headline-size-md:        var(--fs-d2);          /* the clamped d2 rung (r325 Y4) */
+    --type-headline-size-sm:        var(--fs-h3);
+    --type-headline-weight:         var(--fw-semibold);    /* 600 — §R324 weights 500/600 ONLY */
     --type-headline-line-height:    1.34;
     --type-headline-letter-spacing: var(--ls-normal);      /* 0 */
 
@@ -877,7 +878,7 @@
   .card-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
     color: var(--text);
     /* r155d declaration-level sync: --ls-snug → --ls-normal, mirrors
        components.css .card-title (r149 zeroed the negative tracking on

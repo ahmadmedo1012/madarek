@@ -667,7 +667,7 @@
   }
   .notif-panel-title {
     font-family: var(--font-display);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (was 700) */
     font-size: var(--fs-chrome); /* r157: 14px → --fs-chrome (exact) */
     letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
     color: var(--text);

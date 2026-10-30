@@ -314,7 +314,7 @@
        scale every converted sheet page rides): 46.67px @1440 ·
        4.4rem @≤991 · 3.2rem = 31.8px @≤767. The R315 display-lg seat
        read 71px/2 lines at 390 — the owner's «≈80px» finding. */
-    font-size: var(--fs-h1); /* = the d1 cap (46.67px @1440) */
+    font-size: var(--fs-d1); /* r325 Y4 — the clamped d1 rung (the unclamped --fs-h1 alias grew past the ladder below 1440) */
     font-weight: var(--fw-semibold); /* r324 P3 — 500/600 only */
     color: var(--text);
     letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */

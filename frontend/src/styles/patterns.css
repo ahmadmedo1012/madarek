@@ -422,7 +422,11 @@ a.pf-row-link {
 .pf-today-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-h2);
+  /* r325 Y4 — the app-density H2 rung (20 @1440 · 18 @390): the panel
+     h2 rode the unclamped --fs-h2 alias (4.8rem — 40px @1440, 47.6px
+     @390), towering over the 28px PageHeader h1 it sits under and off
+     every ladder rung on the phone band. §R324 app density: H2 20. */
+  font-size: var(--fs-app-h2);
   font-weight: 600;
   line-height: var(--lh-snug);
   color: var(--text);

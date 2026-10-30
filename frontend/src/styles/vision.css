@@ -16,7 +16,7 @@
   .vision-h2 {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-sm);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
     color: var(--text);
     /* (r148 AUDIT-4 C2): لا letter-spacing سالب على العربية —
        تظل القاعدة المُصفّرة من h1–h6 سارية. */
@@ -84,9 +84,9 @@
     font-family: var(--font-display);
     /* سلّم المسح r304: عنوان الصفحة 24px display — درجة .pf-page-title
        و.comp-hero-title نفسها، لا بلاطة الـ30px اللوحية. */
-    font-size: var(--fs-h2);
+    font-size: var(--fs-d2); /* r325 Y4 — the clamped d2 rung (the unclamped alias grows to 47.6px @390) */
     line-height: var(--lh-snug);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600 */
     letter-spacing: 0;
     color: var(--text);
     margin: 0;

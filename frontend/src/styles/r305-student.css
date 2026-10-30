@@ -183,7 +183,7 @@
   }
   .r305s-kicker-title {
     font-size: var(--fs-h3);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
     color: var(--text-strong);
     line-height: 1.3;
   }

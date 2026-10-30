@@ -92,12 +92,13 @@
 .r321c-page .pf-page-title {
   font-family: var(--font-display);
   font-size: 3.78rem;      /* type-gate: allow — 31.5px @1440 (fluid root 8.333px), the inner-page display rung (the cover pages' 46.67px is not this page's brief), the r321-exams ladder */
-  font-weight: var(--fw-bold);
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law (was 700) */
   line-height: 1.05;      /* the Alexandria display canon */
   letter-spacing: 0;      /* Arabic joins — never tracked */
   color: var(--text);
   overflow-wrap: break-word;
 }
+
 @media (max-width: 991px) {
   .r321c-page .pf-page-title { font-size: 3rem; } /* type-gate: allow — ~27.6px @768 (root ≈9.21px), clear of the section-h2's 25.78px rung — the tablet inner-page hierarchy */
 }

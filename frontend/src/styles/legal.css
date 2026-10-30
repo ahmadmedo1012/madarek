@@ -178,8 +178,12 @@
     padding-block-start: var(--sp-5);
     border-block-start: 1px solid var(--rule-strong);
     font-family: var(--font-display);
-    font-size: var(--fs-h2);
-    font-weight: 700;
+    /* r325 Y4 — the CLAMPED d2 rung at 600: the section bar rode the
+       unclamped --fs-h2 alias (4.8rem grows on the fluid root — 47.6px
+       @390, off every rung) at weight 700 — both off the §R324 law. d2
+       is the same 40px @1440 register, floored 31.74px @390. */
+    font-size: var(--fs-d2);
+    font-weight: var(--fw-semibold);
     line-height: var(--lh-snug);
     color: var(--text);
   }

@@ -51,9 +51,13 @@
   .dash-hero-deep .dash-resume-course-name {
     color: var(--neutral-0);
     /* The band's display line — the page's strongest content voice
-       after the h1 masthead (Heron strong type scale). Wraps, never
-       clips: long Arabic course names break instead of overflowing. */
-    font-size: var(--fs-h2);
+       after the h1 masthead. Wraps, never clips: long Arabic course
+       names break instead of overflowing. */
+    /* r325 Y4 — the app-density H2 rung (20 @1440 · 18 @390): the
+       unclamped --fs-h2 alias read 40px @1440 / 47.6px @390 — twice
+       the 28/24 masthead it answers to, off every rung on the phone
+       band. §R324 app density: H2 20. */
+    font-size: var(--fs-app-h2);
     line-height: var(--lh-snug);
     overflow-wrap: break-word;
   }
