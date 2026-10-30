@@ -38,7 +38,7 @@ polish · responsiveness. **Mean ≥ 9, no category < 8.** VLM advisory only.
 | X8 | phone header label+1px burger | **fixed** |
 | X9 | inner pages ignore the type ladder | **fixed** (census 0) |
 | X10 | debug/jargon sweep | **fixed** |
-| X11 | logo optical size at ≤32px | open |
+| X11 | logo optical size at ≤32px | **fixed** (markStrokePx ramp 1.5@32→1.125@16→0.9 floor; `logo-optical-1440-{light,dark}.png`) |
 | X12 | dark theme not Heron-grade | **fixed (map)** — app-wide pair sweep = P4 tail |
 | X13 | hero ticker cut @1440 | **fixed** |
 | X14 | landing docH drift +4.6 %/+2.4 % | open (re-verdict after X4/X7) |

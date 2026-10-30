@@ -58,3 +58,17 @@ export const MARK_GRID_POINTS: ReadonlyArray<readonly [number, number]> = [
  * deviation (BRAND.md §min-sizes). */
 export const MARK_STROKE_COMPONENT = 1.5; /* px, non-scaling */
 export const MARK_STROKE_FAVICON = 2.25;  /* viewBox units, proportional */
+
+/** The optical-size ramp (R324/X11). A CONSTANT 1.5 px screen stroke
+ * below the 32-grid design size reads progressively heavier: 12.5 % of
+ * the mark's height at the 12 px EdgeTab seat (2.7× the designed 4.7 %)
+ * — the small seats turn the hairline into a blob. The ramp tapers the
+ * screen stroke linearly from 1.5 px @32 down to 1.125 px @16 — exactly
+ * the favicon's sanctioned 2.25/32 ratio at 16 px — with a 0.9 px floor
+ * so the hairline never washes sub-pixel. ≥32 stays the design 1.5 px.
+ *   32→1.500 · 26→1.359 · 24→1.313 · 22→1.266 · 16→1.125 · 14→1.078 · 12→1.031 */
+export function markStrokePx(size: number): number {
+  if (size >= 32) return MARK_STROKE_COMPONENT;
+  const tapered = MARK_STROKE_COMPONENT - (0.375 * (32 - size)) / 16;
+  return Math.max(0.9, +tapered.toFixed(3));
+}

@@ -37,6 +37,7 @@ import { render } from '@testing-library/react';
 
 import { Logo } from '../../src/brand';
 import { LOCKUP } from '../../src/brand/lockups';
+import { markStrokePx } from '../../src/brand/mark';
 import { WORDMARK_AR } from '../../src/brand/wordmark.generated';
 
 const FRONTEND = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -337,5 +338,29 @@ describe('R323 contract — <Logo> (frontend/src/brand)', () => {
     const pointStyle = point?.getAttribute('style') ?? '';
     expect(pointStyle).toContain('animation');
     expect(pointStyle).toContain('750ms');
+  });
+
+  it('R324/X11 — the optical-size ramp tapers the hairline below 32px', () => {
+    /* the ramp itself: 1.5 @32, favicon ratio @16, 0.9 floor */
+    expect(markStrokePx(32)).toBe(1.5);
+    expect(markStrokePx(88)).toBe(1.5); /* ≥32 unchanged */
+    expect(markStrokePx(16)).toBe(1.125); /* = favicon 2.25 × 16/32 */
+    expect(markStrokePx(26)).toBeCloseTo(1.359, 3);
+    expect(markStrokePx(24)).toBeCloseTo(1.313, 3);
+    expect(markStrokePx(22)).toBeCloseTo(1.266, 3);
+    expect(markStrokePx(14)).toBeCloseTo(1.078, 3);
+    expect(markStrokePx(12)).toBeCloseTo(1.031, 3);
+    expect(markStrokePx(8)).toBeCloseTo(0.938, 3);
+    expect(markStrokePx(6)).toBe(0.9); /* the sub-pixel floor (<6.4px) */
+
+    /* rendered for real: the 12px EdgeTab seat carries the tapered
+     * stroke, the 32px design seat stays 1.5 */
+    const tiny = render(React.createElement(Logo, { variant: 'mark', size: 12 })).container;
+    const tinyG = tiny.querySelector('g[stroke]');
+    expect(Number(tinyG?.getAttribute('stroke-width'))).toBeCloseTo(1.031, 3);
+
+    const design = render(React.createElement(Logo, { variant: 'mark', size: 32 })).container;
+    const designG = design.querySelector('g[stroke]');
+    expect(Number(designG?.getAttribute('stroke-width'))).toBe(1.5);
   });
 });

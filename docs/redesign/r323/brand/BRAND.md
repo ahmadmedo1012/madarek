@@ -98,12 +98,18 @@ export function Logo(props: {
   لا شعرة جدول داخلها.
 - **الحد الأدنى**: الرمز `16px` · التركيب الأفقي `88px` (ارتفاع الرمز
   فيه). تحته: استخدم `mark` 16px أو لا تعرض شيئًا.
+- **المنحدر البصري (R324/X11)**: شعرة المكوّن غير القياسية تتدرّج تحت
+  32px — `1.5px @32 → 1.125px @16 (نسبة الـ favicon المعتمدة 2.25/32)
+  → أرضية 0.9px` — فلا تثقل المقاعد الصغيرة (كانت 12.5% عند 12px،
+  2.7× النسبة المصمّمة). الـ favicon نفسه لم يتغيّر.
 - الاستثناء المعتمد الوحيد: `favicon.svg` بشعرة 2.25/32 (النسبة
   الأصلية تذوب عند 16px الحقيقيين).
 
 EN: clear space = ½ mark height on every side; minimums: mark 16 px,
-horizontal lockup 88 px. The favicon's 2.25/32 stroke ratio is the
-only sanctioned deviation.
+horizontal lockup 88 px. The component's non-scaling hairline rides the
+optical-size ramp below 32 px (1.5 @32 → 1.125 @16 = the favicon's
+sanctioned 2.25/32 ratio → 0.9 px floor); the favicon's 2.25/32 stroke
+ratio remains the only sanctioned static deviation.
 
 ## ٦ · النغمات / Tones
 
