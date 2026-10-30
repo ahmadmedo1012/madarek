@@ -22,7 +22,7 @@ run in parallel from the first minute.
 |-------|---------------|--------|----------|
 | s0 | clone @ `284cbe27` + install + r324 handoff read | **done** | this commit |
 | P1 | landing tail ONE wave: Y1 map intro clip · Y2 platform §05 · Y3 why §06 · Y6 consent bottom-stack · Y4 landing/legal headings · Y5-landing Ink sheets | **pending** | — |
-| P2.1 | app grammar DESIGN.md §R325 (grid, sidebar, tables, forms, states, charts, icons) | **pending** | — |
+| P2.1 | app grammar DESIGN.md §R325 (grid, sidebar, tables, forms, states, charts, icons) | **done** | DESIGN.md §R325 · `frontend/src/styles/r325-app.css` (`--app-*` + `.pat-*`) · `tests/unit/r325-app-css-contract.test.ts` |
 | P2.2 | component gallery + `/__design` every component × state × 3 bps × 2 themes | **pending** | — |
 | P2.3 | app shell: sidebar, top bar, bottom nav, drawer, transitions | **pending** | — |
 | P2.4 | every route × role × 390/768/1440 × Paper/Ink on real seeded stack (10 accounts) | **pending** | — |
