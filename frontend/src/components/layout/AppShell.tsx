@@ -13,6 +13,12 @@ import '../../styles/r305-shell.css';
 // mono registers + the last radius-0 chrome overrides. Same cascade
 // contract as r305-shell.css (unlayered, shell-imported, last word).
 import '../../styles/r319-shell.css';
+// R325 (P2.1 · DESIGN.md §R325): the app grammar tokens — --app-*
+// (grid/shell chrome, forms, tables, chips, role identity, motion) +
+// the .pat-* state primitives (.pat-hatch/.pat-dots/.pat-cross/
+// .pat-skeleton). Same cascade contract as the two sheets above
+// (unlayered, shell-imported); P2.2/P2.3 consume the --app-* seats.
+import '../../styles/r325-app.css';
 import { SheetFrame, SheetGrain } from './SheetFrame';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
