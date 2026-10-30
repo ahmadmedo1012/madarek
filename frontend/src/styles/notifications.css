@@ -451,6 +451,12 @@
      re-enables pointer events for itself. */
   pointer-events: none;
   max-inline-size: min(420px, calc(100vw - var(--sp-6)));
+  /* Y6 — the seat eases at --t-fast, but on the TRANSFORM family only:
+     the original authored the transition on inset-block-end (a layout
+     property the motion gate and §R325.k ban — the P2.2 gate repair
+     caught it red at its base). The shell merge re-keyed the easing to
+     the `translate` family (same var, same geometry, gate-legal); the
+     toasts themselves keep their transform/opacity entrances. */
   transition: translate var(--t-fast) var(--ease);
 }
 
