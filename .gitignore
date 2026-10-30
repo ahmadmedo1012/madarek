@@ -142,3 +142,12 @@ _local/
 # data dir, server log. (backend/.env.local with the local-only JWT
 # secrets is already covered by `.env.*` + `*.local` above.)
 .local/
+
+# ── Mobile (apps/mobile) — Expo/RN build state never commits ──────────
+apps/mobile/.expo/
+apps/mobile/dist/
+apps/mobile/dist-*/
+apps/mobile/web-output/
+apps/mobile/ios/
+apps/mobile/android/
+apps/mobile/*.orig
