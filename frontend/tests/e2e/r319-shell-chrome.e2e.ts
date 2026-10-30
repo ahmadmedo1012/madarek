@@ -137,20 +137,21 @@ for (const theme of THEMES) {
       expect(grain!.repeat).toContain('repeat');
     });
 
-    test("PageHeader carries the ambient sheet code (S-01 · STUDENT) in the mono voice", async ({ page }) => {
+    test("PageHeader carries no ambient sheet code — the retirement stands (r324 X10)", async ({ page }) => {
       await page.goto('/student/library');
       await expect(page.locator('h1.pf-page-title')).toHaveText('المكتبة الإلكترونية', { timeout: 20000 });
 
+      /* r324 X10 re-pin: the SHEET S-01 · STUDENT corner code is
+       * RETIRED from every PageHeader (the unit belt
+       * PageHeader.test.tsx pins the retirement; this journey pins it
+       * on the real rendered page). The masthead keeps its mono
+       * station indexes [01]/[01/05] — the brief's own allowed voice. */
       const line = page.locator('.page-sheet-code');
-      await expect(line).toBeVisible();
-      await expect(line).toContainText('SHEET S-01 · STUDENT');
-      // the mono voice — the same stack the gate's mono-index check reads
-      const mono = await line.evaluate((el) => getComputedStyle(el).fontFamily);
-      expect(mono).toContain('Geist Mono');
-      // the Latin run is isolated LTR inside the RTL page
-      await expect(line.locator('span[dir="ltr"]')).toHaveText('SHEET S-01 · STUDENT');
-      // decorative chrome — never announced
-      await expect(line).toHaveAttribute('aria-hidden', 'true');
+      await expect(line).toHaveCount(0);
+      await expect(page.locator('h1.pf-page-title')).not.toContainText('SHEET');
+      /* the station-index voice survives — the [01] meta row keeps
+       * its mono register on the page (checked via the mono bar the
+       * grammar pins elsewhere in this suite) */
     });
 
     test('the card family renders radius 0 (hairline grammar, no rounded chrome)', async ({ page }) => {

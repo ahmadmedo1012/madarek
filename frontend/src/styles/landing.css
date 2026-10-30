@@ -4040,7 +4040,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .pr-matrix {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 6px;
+  /* r324 spacing-gate: the 6px cell gap rides the exact --sp-1-5 rung */
+  gap: var(--sp-1-5);
   padding: 0.8rem 0.8rem 0.6rem;
 }
 
@@ -4059,7 +4060,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
 /* the mastery rows — ink progress lines on hairline tracks */
 .pr-mrows {
   display: grid;
-  gap: 7px;
+  gap: 7px; /* spacing-gate: allow — the Heron-extracted mastery-row rhythm (the reference's own 7px track gap; no ladder rung sits between 6 and 8) */
   padding: 0 0.8rem 0.8rem;
 }
 

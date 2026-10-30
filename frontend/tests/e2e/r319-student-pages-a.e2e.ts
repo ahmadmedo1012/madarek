@@ -85,11 +85,17 @@ async function readBars(page: import('@playwright/test').Page) {
 }
 
 async function expectSheetContract(page: import('@playwright/test').Page) {
-  // The ambient sheet code rides the masthead — mono, LTR, decorative.
+  /* r324 X10 re-pin: the ambient sheet code is RETIRED from the DOM
+   * (the innerText jargon sweep — unit gate r324-text-gate.test.tsx and
+   * PageHeader.test.tsx already pin the retirement; this e2e belt now
+   * pins the same contract on the REAL rendered page: the corner-code
+   * line must be gone, never half-alive). Structure-agnostic — some
+   * of these routes carry no h1.pf-page-title, so the belt reads the
+   * page's own text, not a specific header node. */
   const code = page.locator('.page-sheet-code');
-  await expect(code).toHaveCount(1);
-  await expect(code).toContainText('SHEET S-01 · STUDENT');
-  expect(await code.locator('span').getAttribute('dir')).toBe('ltr');
+  await expect(code).toHaveCount(0);
+  const pageText = await page.evaluate(() => document.body?.innerText ?? '');
+  expect(pageText).not.toContain('SHEET S-01');
 }
 
 test.describe('student pages A — §B2 sheet grammar (chromium · light)', () => {

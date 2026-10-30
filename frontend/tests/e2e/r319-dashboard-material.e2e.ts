@@ -155,14 +155,18 @@ for (const theme of THEMES) {
       expect(grounds[0]).not.toBe(grounds[1]);
     });
 
-    test("the ambient sheet code rides the masthead (G2's shell, integrated)", async ({ page }) => {
+    test("the ambient sheet code is retired from the masthead (r324 X10 — the innerText jargon sweep)", async ({ page }) => {
       await page.goto('/student/dashboard');
       await expect(page.locator('h1.pf-page-title')).toBeVisible({ timeout: 20000 });
 
+      /* r324 X10 re-pin: SHEET S-01 · STUDENT left the DOM by owner
+       * order (the drafting-chrome identity lines retired; the unit
+       * gates r324-text-gate.test.tsx + PageHeader.test.tsx pin it).
+       * The e2e now pins the retirement on the real page — a regression
+       * that resurrects the corner code fails HERE, not just in units. */
       const line = page.locator('.page-sheet-code');
-      await expect(line).toBeVisible();
-      await expect(line).toContainText('SHEET S-01 · STUDENT');
-      await expect(line.locator('span[dir="ltr"]')).toHaveText('SHEET S-01 · STUDENT');
+      await expect(line).toHaveCount(0);
+      await expect(page.locator('h1.pf-page-title')).not.toContainText('SHEET');
     });
   });
 }
