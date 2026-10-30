@@ -3625,11 +3625,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
   /* the platform band keeps ONE capture on mobile (the lead — the
      reference's mobile platform cell is a single composition; the
      teacher capture stays on ≥761px) */
-  /* ProductFrame root is .prf — the std (teacher) capture folds on
-     mobile; the lead composition stays (single-cell platform band) */
-  .pr-section .prf--std {
-    display: none;
-  }
+  /* r325 Y2: the retired .prf--std fold retires with the class — the
+     band's surfaces live in .pr-side now (hidden ≤767 there). */
 
   /* the why cards compact to title+line rows */
   .wy-item {
@@ -3712,9 +3709,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .pr-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  /* r325 Y2: the retired .pr-grid pair's mobile fold retires with it
+     (the band is .pr-head + .pr-stage + .pr-side now). */
 
   /* R314 (V9): the cell grid keeps TWO columns on phones. R315
      (B9 · K-F): the address + contact cells take FULL rows — the
@@ -3875,10 +3871,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 }
 
-/* ── pr — المنصّة فعليًا (R313 · D7 §5): TWO product blocks — the
-   student surface (lead, 7fr) + the teacher cockpit (5fr). Frames
-   are honest ratio boxes — UI shots are never cropped. The band
-   holds ~79vh (the reference's 710px / 5.7%). ── */
+/* ── pr — المنصّة فعليًا (r325 Y2 rebuild): ONE product frame + a
+   hairline step list beside it + the inline-end surface cells — the
+   extracted 3/5/4 twelve-col seat (full-<bp>.json, home-platform
+   361/601/464 @1440). Hairline figures, mono index chrome, the ONE
+   accent orange, radius 0. The band holds ~79vh (the reference's
+   710px / 5.7%). ── */
 .pr-section {
   padding-block: var(--sp-7);
   border-block-start: 1px solid var(--rule-strong);
@@ -3891,16 +3889,18 @@ html[data-theme='dark'] body.mdrk-grain::before {
   margin-block-end: var(--sp-8);
 }
 
-/* ═══ r324 X3 — the showcase frame family (drawn at last) ══════════
- * PlatformShowcase (the R323 single-frame rewrite) shipped with ZERO
- * CSS — the figure rendered unstyled AND unseated (auto-placement
- * dropped it into one 115px column of the ≥992 grid). The family
- * rides the section's own grammar: hairline frames, mono chrome
- * bars, square corners, the ONE accent orange, tokens only (dark
- * rides the same tokens). Mobile-first: the base stack serves ≤767;
- * ≥768 splits [player 5fr | matrix+ai 4fr] with the hairline
- * boundary (the retired .pr-grid lead|std pair, one frame now);
- * ≥992 the stage seats cols 4/-1 row 1 of the section grid. ═══ */
+/* ═══ r325 Y2 — the showcase frame family (the X3 family re-drawn) ═══
+ * PlatformShowcase renders ONE figure: the drawn lecture-player
+ * (bar · slide screen · checkpoint card) + the CAPTION below the art
+ * (the former plan pin, re-seated — nothing floats over the drawing).
+ * The r323 frame-head chrome retired with Y2 (the «[05] · MADAREK ·
+ * UI GRAMMAR» label carried no information). The family rides the
+ * section's own grammar: hairline frames, mono chrome bars, square
+ * corners, the ONE accent orange, tokens only (dark rides the same
+ * tokens). Mobile-first: the base stack serves ≤767; ≥992 the stage
+ * seats the centre 5 cols of the 12-col grid (the extracted img-wrap
+ * seat) with the steps in the head column and the surfaces at the
+ * inline end. ═══ */
 .pr-stage {
   min-inline-size: 0;
 }
@@ -3913,31 +3913,171 @@ html[data-theme='dark'] body.mdrk-grain::before {
   border: 1px solid var(--rule);
 }
 
-.pr-frame-head {
+/* the frame's drawing body — the player chrome + the checkpoint card
+   (aria-hidden; the honest read is the caption below) */
+.pr-frame-art {
+  flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-2);
-  padding: 0.48rem 0.96rem;
-  border-block-end: 1px solid var(--rule);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono-xs);
-  line-height: 1;
+  flex-direction: column;
+  min-block-size: 0;
 }
 
-.pr-frame-sq {
-  inline-size: 6px;
-  block-size: 6px;
+.pr-frame-cap {
+  display: grid;
+  gap: 0.2rem;
+  padding: var(--sp-2) var(--sp-3);
+  border-block-start: 1px solid var(--rule);
+}
+
+.pr-cap-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.pr-cap-line {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* the player screen — the slide's drafted plate on the sheet's own
+ * grid paper (the air reads as drawing paper, never a dead void), the
+ * concept chain with the ONE accent checkpoint node, over the playhead
+ * track */
+.pr-screen {
+  position: relative;
+  flex: 1;
+  min-block-size: 8.75rem;
+  display: flex;
+  flex-direction: column;
+  margin: var(--sp-2) var(--sp-3) 0;
+  border: 1px solid var(--rule);
+  background-image:
+    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 2.4rem);
+}
+
+/* the slide position readout — the player's own counter (the
+   checkpoint is the second of the four concepts) */
+.pr-slide-kicker {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-start: var(--sp-2);
+  color: var(--text-muted);
+}
+
+.pr-slide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-3);
+}
+
+/* the slide's heading mass — the drafted title bar + its sub-rule */
+.pr-slide-rule {
+  inline-size: 46%;
+  block-size: 10px;
+  background: var(--text);
+}
+
+.pr-slide-rule.is-sub {
+  inline-size: 30%;
+  block-size: 4px;
+  background: var(--rule-strong);
+}
+
+.pr-chain {
+  display: flex;
+  align-items: center;
+}
+
+/* the concept node — a hairline plate with its own drafted label
+   rules; the accent node carries the checkpoint dot (the frame's
+   single orange signal) */
+.pr-node {
+  inline-size: 6rem;
+  block-size: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* spacing-gate: allow — the drafted plate's inner label rhythm (matches the mastery-row rung family), an external constant */
+  border: 1px solid var(--rule-strong);
+  background: var(--bg);
+}
+
+.pr-node.is-acc { border-color: var(--accent); }
+
+.pr-node-dot {
+  inline-size: 10px;
+  block-size: 10px;
   background: var(--accent);
 }
 
-.pr-frame-body {
-  flex: 1;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  min-block-size: 0;
+.pr-node-line {
+  inline-size: 60%;
+  block-size: 3px;
+  background: var(--rule-strong);
 }
+
+.pr-node-line.is-short { inline-size: 40%; }
+
+.pr-chain-link {
+  inline-size: 2.4rem;
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.pr-slide-line {
+  inline-size: 52%;
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.pr-slide-line.is-short { inline-size: 34%; }
+
+/* the playhead track — accent elapsed + chapter ticks + the head */
+.pr-track {
+  position: relative;
+  block-size: 3px;
+  margin: 0 var(--sp-3) var(--sp-2);
+  background: var(--rule);
+}
+
+.pr-track-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 38%;
+  background: var(--accent);
+}
+
+.pr-track-head {
+  position: absolute;
+  inset-block-start: -3px;
+  inset-inline-start: 38%;
+  inline-size: 2px;
+  block-size: 9px;
+  background: var(--text);
+}
+
+.pr-tick {
+  position: absolute;
+  inset-block-start: -2px;
+  inline-size: 1px;
+  block-size: 7px;
+  background: var(--rule-strong);
+}
+
+.pr-tick:nth-of-type(1) { inset-inline-start: 25%; }
+.pr-tick:nth-of-type(2) { inset-inline-start: 50%; }
+.pr-tick:nth-of-type(3) { inset-inline-start: 75%; }
 
 .pr-cell {
   display: flex;
@@ -3976,21 +4116,25 @@ html[data-theme='dark'] body.mdrk-grain::before {
   font-size: var(--fs-mono-xs);
 }
 
-/* the chapter list — the mini lecture-player's ledger (mono index ·
-   the concept name · the orange «now» square) */
+/* the concept step list — the player's index (the head column's
+   hairline rows: mono index ≥ the 11px floor · concept name · the
+   orange «now» square) */
 .pr-chapters {
   margin: 0;
-  padding: 0.4rem 0.8rem 0.5rem;
+  padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.28rem;
+  min-inline-size: 0;
 }
 
 .pr-ch {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 0.6rem;
+  padding-block: var(--sp-1-5);
+  border-block-start: 1px solid var(--rule);
   font-size: var(--fs-sm);
+  font-weight: 500;
   line-height: 1.45;
   color: var(--text-secondary);
 }
@@ -4004,7 +4148,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 .pr-ch.is-now {
   color: var(--text);
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .pr-ch-play {
@@ -4017,7 +4161,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 /* the checkpoint card — the one orange-adjacent honest surface */
 .pr-check {
-  margin: auto 0.8rem 0.8rem;
+  margin: var(--sp-2) var(--sp-3) var(--sp-3);
   display: grid;
   gap: 0.3rem;
   padding: 0.6rem 0.8rem;
@@ -4026,7 +4170,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 .pr-check-k {
   color: var(--text-muted);
-  font-size: var(--fs-mono-xs);
+  font-size: var(--fs-xs);
+  font-weight: 500;
 }
 
 .pr-check-q {
@@ -4046,13 +4191,16 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* the mastery matrix — 4×2 hairline cells, the solid accent fills as
-   the single signal, the warm cells keep the outline voice */
+   the single signal, the warm cells keep the outline voice.
+   r325 Y2: the plate centres in the side cell's stretched tail —
+   the cell's air reads around the diagram, never as a dead strip. */
 .pr-matrix {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   /* r324 spacing-gate: the 6px cell gap rides the exact --sp-1-5 rung */
   gap: var(--sp-1-5);
   padding: 0.8rem 0.8rem 0.6rem;
+  margin-block-start: auto;
 }
 
 .pr-mc {
@@ -4072,6 +4220,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   display: grid;
   gap: 7px; /* spacing-gate: allow — the Heron-extracted mastery-row rhythm (the reference's own 7px track gap; no ladder rung sits between 6 and 8) */
   padding: 0 0.8rem 0.8rem;
+  margin-block-end: auto;
 }
 
 .pr-mrow {
@@ -4125,26 +4274,27 @@ html[data-theme='dark'] body.mdrk-grain::before {
   margin-block-start: var(--sp-2);
 }
 
-/* ≥768 — the two-region split (the retired .pr-grid lead|std pair,
-   one frame now): the player rides the reading-start 5fr, the
-   matrix + assistant stack in the 4fr inspector; the hairline IS
-   the boundary (the std cells' inline-start border) */
-@media (min-width: 768px) {
-  .pr-frame-body {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 4fr);
-    /* the assistant cell absorbs the stretched frame's slack (air
-       inside the cell, never a dead strip below it) */
-    grid-template-rows: auto minmax(0, 1fr);
-  }
+/* the inline-end surface column — the drawn matrix + assistant cells
+   (the extracted content-right seat; hairline cells on the section
+   grid; hidden with the head at the strips-only ≤1024 bands) */
+.pr-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-inline-size: 0;
+}
 
-  .pr-cell-player { grid-row: 1 / span 2; }
+.pr-side .pr-cell {
+  border: 1px solid var(--rule);
+}
 
-  .pr-cell-matrix,
-  .pr-cell-ai {
-    border-inline-start: 1px solid var(--rule);
-  }
+.pr-cell-matrix {
+  flex: 1;
+}
 
-  .pr-cell-ai { border-block-start: 1px solid var(--rule); }
+/* the assistant cell rides the side column's tail (r325 Y2) */
+.pr-cell-ai {
+  flex: 0 0 auto;
 }
 
 .pr-title {
@@ -4171,18 +4321,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
   max-inline-size: 64ch;
 }
 
-.pr-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: var(--sp-5);
-  /* capped measure: TWO framed exhibits read as the platform's daily
-     surfaces (R313: the two-block composition widens the exhibit pair;
-     the remaining captures cross-fade in the why-section below). */
-  max-inline-size: 90rem;
-}
-
-/* r324 X3: the R313-era .pr-note text seat retires — the note is the
-   showcase's CTA line now (drawn with the frame family, above). */
+/* r324 X3/r325 Y2: the R313-era .pr-grid pair and the .pr-note text
+   seat retire — the note is the showcase's CTA line, the band is the
+   3/5/4 seat drawn above. */
 
 /* ── prf — ProductFrame: the real-capture figure ────────────────────
    Flat frame + the three-part caption: the mono «real-ui» tag, the
@@ -6597,12 +6738,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
     line-height: 1.55;
   }
 
-  /* ONE full-width composition — the base 7fr/5fr pair never applied
-   * its mobile override (see the block header) */
-  .pr-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+  /* r325 Y2: the retired .pr-grid mobile fold retires with the class
+     (the ≤767 band is the head + frame + caption + steps + note). */
   .pr-note {
     margin-block-start: var(--sp-3);
   }
@@ -6880,12 +7017,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .cg-strip { padding-block: var(--sp-2); }
 
   /* 5 — platform rides the reference's two full-width 254px strips
-   * (508 @768): the band head folds (each frame carries its own
-   * caption row — the honest equivalent of the reference's strip
-   * captions), the frames cap to the strip measure, the capture
-   * covers like the reference's own bg-global strips */
-  .pr-head, .pr-note { display: none; }
-  .pr-grid { grid-template-columns: minmax(0, 1fr); }
+   * (508 @768): the band head folds (the frame + caption carry the
+   * band — the honest equivalent of the reference's strip captions),
+   * the stage spans the full width, the surface column folds */
+  .pr-head, .pr-note, .pr-side { display: none; }
+  .pr-stage { grid-column: 1 / -1; }
   .prf-photo { block-size: 15rem; }
   .prf-photo img { block-size: 100%; object-fit: cover; }
 
@@ -7196,9 +7332,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
     block-size: min(68vh, calc(100svh - 295px));
   }
 
-  /* platform: the reference's strips-only band (no head/note), the
-   * desktop 2-up frame pair kept — the caption fold above fits it */
-  .pr-head, .pr-note { display: none; }
+  /* platform: the strips-only band — the Y2 end belt (file end) owns
+   * this slice's last word (head/note/side fold + the full-width
+   * stage) so the ≥992 3/5/4 seat never overrides it */
 
   /* statement/problem/why light trims (the wrap overshoot at the
    * 5.93px root — the 13px canon floor keeps the documented rest):
@@ -7985,123 +8121,95 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* ═════════════════════════════════════════════════════════════════════
-   R318 §A5 (c3-plat) — THE PLATFORM BAND ON THE REFERENCE'S HAIRLINE GRID
+   r325 Y2 — THE PLATFORM BAND ON THE EXTRACTED 3/5/4 HAIRLINE GRID
    ═════════════════════════════════════════════════════════════════════
-   The measured reference verdict (docs/redesign/r318/heron-platform.json,
-   1440×900): the platform section has NO h1 — its sheet column carries
-   the [01]/[02] mono labels (11.67px) + an h4-scale title (26.67px) and
-   a 13.33px muted sub; the columns are 361/601/464 with a full-height
-   1px hairline at x=968; the drawings sit ON PAPER (ink strokes + ONE
-   solid accent room, hairline cells); the tooltips live INSIDE their
-   raster frames. The R315 cycle-4 chrome put the plan on a wide
-   absolute panel under the band's left paper — the display-scale H1
-   ran under that panel's frame (§A5: 47,362px² of title×panel box
-   intersection at 1440, glyphs under the frame at x≈560) and the
-   wall-band rect's missing fill made the sheet read as a solid-black
-   slab (30.8% of the panel's pixels ≈ near-black).
+   Source of record: docs/redesign/r324/heron/full-<bp>.json
+   (home-platform @1440: content-left 361 · img-wrap 601 ·
+   content-right 464 — the 12-col grid, 103.6px cols, 16.67px gutters;
+   @768/390 the same cells re-stack; the extraction trees carry the
+   measured rects). The band re-composes RTL-mirrored on OUR 12-col
+   grid (content 1376.7 @1440 → the 3/5/4 spans land within ~3.5 % of
+   the extracted boxes — the difference is our 3.2rem page inset, the
+   W3 law's own constant):
 
-   This block re-composes the band onto the reference's own grammar,
-   RTL-mirrored, on a 12-column hairline grid (usable 1386.7 @1440 →
-   115.6px/col; the reference's 361/601/464 scaled to our measure =
-   351/584.5/451.2 → the 3/5/4 column split 346.7/577.8/462.2):
+     · cols 1–3 (reading start) — THE HEADING COLUMN (.pr-head): the
+       [05] label + the D2 title + the muted sub, then the STEP LIST
+       (.pr-chapters) as the column's 1fr tail — the extracted cell's
+       own step index, ruled rows on the hairline ladder. The old
+       sheet dressing (border + drafting grid + the crammed plan
+       miniature) retires — the column is a plain text column, the
+       reference's content-left anatomy.
+     · cols 4–8 — THE ONE PRODUCT FRAME (.pr-stage → figure.pr-frame):
+       the drawn lecture-player (bar · slide screen · checkpoint card)
+       with the CAPTION BELOW the art (.pr-frame-cap — the former plan
+       pin «قاعة المحاضرة التفاعلية…», re-seated; nothing floats over
+       the drawing). ≈ the extracted 601px img-wrap seat.
+     · cols 9–12 — THE SURFACE COLUMN (.pr-side): the mastery matrix +
+       the assistant cell (the extracted content-right seat ≈ 464px);
+       the .pr-note (demo disclosure + CTA) keeps its row-2 seat
+       beneath it — the reference's own inspector-note position.
+     · the section ::before full-height hairline retires: every cell
+       now carries its own 1px hairline frame (the reference's
+       verticals ride the cell edges).
 
-     · cols 1–3 (reading start) — THE SHEET (.pr-head): the [05] mono
-       label row + the sheet title (R322 1-d: the D2 rung — 40px
-       @1440, weight 600, like every section H2; the interim R318 h4
-       sheet-title literal retired) + the muted sub, then
-       the DRAWING CELL (.pr-drawing — the plan ON the sheet's paper:
-       toolbar strip + plan view + annotation pin) filling the sheet's
-       remaining height inside the SAME hairline frame. The title can
-       no longer run under any frame: it seats INSIDE the sheet's own
-       frame with 16px padding on every side.
-     · cols 4–8 (.pr-grid lead) — the primary real-UI capture ≈ the
-       reference's 601px tool canvas;
-     · cols 9–12 (.pr-grid std) — the secondary capture ≈ the 464px
-       inspector column, with the .pr-note (the honest inspector text)
-       seated under it in row 2;
-     · the full-height 1px hairline rides the canvas|inspector boundary
-       (.pr-section::before at the 4-col line, x=488.9 @1440 — the
-       reference's x=968 mirrored to 479 within the grid's quantized
-       columns), and the sheet's own border carries the sheet|canvas
-       line (the reference's implicit x=367 grid).
+   The floor-plan drawing (PlatformCanvas/PlatformPlanArt) retires
+   with the Y2 rebuild — the section's honest surfaces are exactly
+   the three the lede names (player · matrix · assistant).
 
-   THE LAW (cycle-3, still binding): the tier floors are untouched
-   (85.2rem ≥992 · 55.2rem 768–991 · the phone rungs) and the ≤991
-   compositions are unchanged — the drawing cell is display:none
-   there (it rides inside .pr-head, which is itself hidden on the
-   tablet strips and the 992–1024 slice), so every measured band
-   height and the docH ladder hold by construction. Colors/motion/type
-   ride the tokens (var(--rule/--text/--accent)/--warm-ink/
-   --grid-line + the bp-* drafting classes); the Arabic 13px floor
-   binds the honest copy; the mono micro voice carries every Latin
-   chrome label, LTR. The drawing cell, the mock cards and the chrome
-   stay aria-hidden decorative — the honest surfaces (title, lede,
-   captions, note) remain the accessible flow.
+   THE LAW (still binding): the tier floors are untouched (85.2rem
+   ≥992 · 55.2rem 768–991 · the phone rungs) and the ≤991
+   compositions keep their shapes — the head/side fold on the tablet
+   strips and the 992–1024 slice (the stage then spans 1/−1), so the
+   band heights re-verify against the measured floors. Colors/motion/
+   type ride the tokens; the Arabic 13px floor binds the honest copy;
+   every mono label in the band rides the 11px floor (the phone label
+   list rode --fs-mono-xs = 9.92px @390 — the Y2 defect). The drawing
+   chrome stays aria-hidden — the honest surfaces (title, lede,
+   caption, note) remain the accessible flow.
    ═════════════════════════════════════════════════════════════════════ */
 
-/* the drawing cell is desktop-only: below 992 it renders NOTHING
-   (it rides inside .pr-head, hidden with it at every smaller tier —
-   display, not visibility) */
-.pr-drawing,
+/* the retired viewport tag keeps its base display:none seat
+   (ProductFrame's prf-viewtag is out of this band's DOM since r323) */
 .prf-viewtag {
   display: none;
 }
 
 @media (min-width: 992px) {
-  /* the band becomes the 12-col hairline grid; the section keeps its
-   * own stacking context for the full-height hairline under the flow */
+  /* the band becomes the 12-col hairline grid with the reference's
+   * own 16.67px gutter (2rem on the 8.333px root) */
   .pr-section {
     position: relative;
     z-index: 0;
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    /* r324 X3 — row 1 (the stretched frame) absorbs the floor's
-       slack; row 2 is the note line. The sheet spans both, so its
-       drawing cell keeps filling the full band either way. */
+    column-gap: 2rem; /* spacing-gate: allow — the extracted grid's own measured gutter (16.6667px @1440, full-1440.json), an external constant */
+    /* row 1 (the stretched cells) absorbs the floor's slack; row 2 is
+       the note line under the surface column */
     grid-template-rows: minmax(0, 1fr) auto;
   }
 
-  /* the full-height hairline at the canvas|inspector boundary — the
-   * reference's x=968 line (1px, #B3B3AF, full 710px band), mirrored
-   * to the physical-left 4-col line of our RTL grid. Decorative. */
-  .pr-section::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    inset-block: 0;
-    inset-inline-end: calc(3.2rem + (100% - 6.4rem) * 4 / 12);
-    inline-size: 1px;
-    background: var(--rule);
-    pointer-events: none;
-  }
-
-  /* ── THE SHEET — the reference's 361px content column, mirrored to
-   * the reading-start edge. The head keeps its accessible flow text
-   * (label · title · sub) and carries the drawing cell as its 1fr
-   * row: everything sits INSIDE the sheet's hairline frame — the
-   * title's own padding (16px) clears the frame lines on every
-   * side, and the faint drafting grid is the sheet's paper ground.
-   * (No display here: the base .pr-head grids it, and the 992–1024
-   * slice's display:none keeps its last word.) */
+  /* ── THE HEADING COLUMN — the extracted content-left seat ───────
+   * A plain text column (no sheet dressing): the label, the D2 title,
+   * the muted sub, then the step list as the 1fr tail. The title can
+   * never run under a frame — no frame touches this column. */
   .pr-head {
     grid-column: 1 / span 3;
     grid-row: 1 / span 2;
     grid-template-rows: auto auto auto minmax(0, 1fr);
-    gap: var(--sp-2);
+    gap: var(--sp-3);
     margin-block-end: 0;
-    padding: 1.92rem;
-    border: 1px solid var(--rule);
-    background-image:
-      repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
-      repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 2.4rem);
-    background-position: center;
+    padding: 0;
+    border: 0;
+    background: none;
   }
 
-  /* R322 (1-d FINAL) — the ≥992 sheet-title literal (3.2rem — the
-   * interim R318 §A5 h4 seat) RETIRES: .pr-title resolves the D2
-   * rung from its base rule like every section H2 (40px @1440 ·
-   * weight 600 · lh 1.10 · balance); only the frame-level anatomy of
-   * this sheet grid is this block's business. */
+  /* the step index fills the column's tail: four equal ruled rows
+     (the hairlines travel at even intervals; the rows centre their
+     content — the extracted cell's tall single-cell index) */
+  .pr-head .pr-chapters {
+    grid-template-rows: repeat(4, 1fr);
+    align-self: stretch;
+  }
 
   /* the muted sub — the reference's 13.33px sheet sub-copy */
   .pr-lede {
@@ -8111,260 +8219,49 @@ html[data-theme='dark'] body.mdrk-grain::before {
     color: var(--text-secondary);
   }
 
-  /* the frames ride the canvas + inspector columns (5fr/4fr inside
-   * the 9-col region): the columns touch and the 1px hairline IS the
-   * boundary — the std's inline-start border, with its content
-   * padded clear of the line. */
-  /* the stage (the single showcase figure) rides the canvas +
-   * inspector region (cols 4–12, row 1): the retired .pr-grid seat
-   * re-pointed at the R323 rewrite's own wrapper — r324 X3. The
-   * figure stretches to the sheet's row height (the reference's
-   * aligned frames); the frame's body flex distributes the slack. */
+  /* ── THE ONE PRODUCT FRAME — the extracted img-wrap seat ────────
+   * The stage rides the centre 5 cols; the figure stretches the row
+   * and its flex body distributes the slack (the screen flexes — no
+   * dead strip under any list). */
+  /* the exact extracted boxes: the reference's own cells each eat one
+   * extra gutter (full-1440.json: content-left 361 = 3 cols + 3
+   * gutters of their 1427 container; img-wrap 601 = 5 cols + 5; the
+   * side keeps 4+3) — the negative end margin re-seats the same
+   * geometry on our measure: head 347px (25.3 %) · stage 578px
+   * (42.2 %) · side 446px (32.5 %) @1440, the extracted
+   * proportions to the pixel of the container */
+  .pr-head {
+    margin-inline-end: -2rem; /* spacing-gate: allow — the extracted cell's gutter-eat (361 = 3 cols + 3 gutters, full-1440.json), an external constant */
+  }
+
   .pr-stage {
-    grid-column: 4 / -1;
+    grid-column: 4 / span 5;
+    grid-row: 1;
+    min-inline-size: 0;
+    display: flex;
+    margin-inline-end: -2rem; /* spacing-gate: allow — the extracted img-wrap's gutter-eat (601 = 5 cols + 5 gutters), an external constant */
+  }
+
+  .pr-stage .pr-frame {
+    flex: 1;
+    min-block-size: 0;
+  }
+
+  /* ── THE SURFACE COLUMN — the extracted content-right seat ──────
+   * The matrix cell stretches (its plate centres in the tail); the
+   * assistant cell rides at the column's end above the note row. */
+  .pr-side {
+    grid-column: 9 / span 4;
     grid-row: 1;
     min-inline-size: 0;
   }
 
-  .pr-stage .pr-frame { block-size: 100%; }
-
-  .pr-section .prf--std {
-    border-inline-start: 1px solid var(--rule);
-    padding-inline-start: 1.92rem;
-  }
-
-  /* the honest inspector text — row 2 under the std column (the
-   * reference's inspector row seats its sub under the column) */
+  /* the honest inspector line — row 2 under the surface column (the
+   * reference's inspector row seats its note under the column) */
   .pr-note {
     grid-column: 9 / -1;
     grid-row: 2;
     margin-block-start: 1.92rem;
-  }
-
-  /* ── THE DRAWING CELL — the plan ON the sheet's paper ───────────
-   * A hairline cell on the sheet's own paper (the faint drafting
-   * grid + the registration marks): the toolbar strip, the plan
-   * view, the annotation pin. The reference's raster frames carry
-   * their tool chrome INSIDE the frame — ours does the same. */
-  .pr-drawing {
-    display: flex;
-    flex-direction: column;
-    min-block-size: 0;
-    border: 1px solid var(--rule);
-    background-image:
-      repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
-      repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 2.4rem);
-    background-position: center;
-  }
-
-  /* the drafting corner ± marks (the .bp-plus grammar, centered on the
-   * drawing cell's own corners — the reference's canvas crosshairs) */
-  .pr-panel-mark {
-    position: absolute;
-    z-index: 2;
-    color: var(--rule);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono-md);
-    line-height: 1;
-  }
-
-  .pr-panel-mark--tl { inset-block-start: 0.24rem; inset-inline-start: 0.24rem; }
-  .pr-panel-mark--tr { inset-block-start: 0.24rem; inset-inline-end: 0.24rem; }
-  .pr-panel-mark--bl { inset-block-end: 0.24rem; inset-inline-start: 0.24rem; }
-  .pr-panel-mark--br { inset-block-end: 0.24rem; inset-inline-end: 0.24rem; }
-  /* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
-     note in auth.css owns the reasoning). */
-  .pr-panel-mark::before { content: '+'; }
-
-  /* the toolbar strip — the drawing cell's top ruler */
-  .pr-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.96rem;
-    block-size: 1.6rem;
-    padding-inline: 0.96rem;
-    border-block-end: 1px solid var(--rule);
-  }
-
-  .pr-bar-plus {
-    color: var(--rule);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono-md);
-    line-height: 1;
-  }
-  /* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
-     note in auth.css owns the reasoning). */
-  .pr-bar-plus::before { content: '+'; }
-
-  .pr-bar-ticks {
-    flex: 1;
-    block-size: 7px;
-    background-image: repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 8px);
-  }
-
-  .pr-bar-label {
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono-xs);
-    line-height: 1;
-    white-space: nowrap;
-  }
-
-  /* the plan canvas — the SVG fills the cell and centres (never
-   * stretched); the annotation pin floats over the accent room. */
-  .pr-planwrap {
-    position: relative;
-    flex: 1;
-    min-block-size: 0;
-    padding: 0.48rem 0.72rem;
-  }
-
-  .prc-svg {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-  }
-
-  /* the plan's own pigment — every value rides a token */
-  .prc-poch {
-    fill: url(#prc-poch);
-    stroke: none;
-  }
-
-  .prc-poch-line {
-    stroke: var(--text);
-    stroke-width: 1;
-    opacity: 0.55;
-  }
-
-  .prc-wall {
-    fill: var(--text);
-  }
-
-  .prc-paper-gap {
-    fill: var(--bg);
-  }
-
-  .prc-room-acc {
-    fill: var(--accent);
-  }
-
-  .prc-furn {
-    stroke: var(--grid-line);
-    stroke-width: 1.5;
-    fill: none;
-  }
-
-  .prc-furn-acc {
-    stroke: var(--bg);
-    stroke-width: 1.5;
-    fill: none;
-  }
-
-  .prc-code-acc {
-    fill: var(--warm-ink);
-    font-weight: 700;
-  }
-
-  .prc-dim {
-    stroke: var(--rule-strong);
-    stroke-width: 1;
-  }
-
-  .prc-door {
-    stroke-width: 1.2;
-  }
-
-  /* the annotation pin — the highlighted room's honest note (the
-   * reference's floating inspector over the red room). The one
-   * Arabic surface in the chrome rides the 13px floor; the leader
-   * hairline + the accent square point into the room. */
-  .pr-pin {
-    position: absolute;
-    inset-inline-start: 50%;
-    inset-block-start: 30%;
-    display: grid;
-    gap: 0.2rem;
-    padding: 0.48rem 0.8rem;
-    border: 1px solid var(--rule-strong);
-    background: var(--bg);
-    max-inline-size: 14rem;
-  }
-
-  .pr-pin-title {
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    line-height: 1.4;
-    color: var(--text);
-  }
-
-  .pr-pin-line {
-    font-size: var(--fs-sm);
-    line-height: 1.4;
-    color: var(--text-muted);
-  }
-
-  /* the leader hairline + the accent finding square (the map band's
-   * red-room grammar, one seat down) */
-  .pr-pin::before {
-    content: '';
-    position: absolute;
-    inset-block-start: 100%;
-    inset-inline-start: 1.2rem;
-    inline-size: 1px;
-    block-size: 1.6rem;
-    background: var(--rule-strong);
-  }
-
-  .pr-pin::after {
-    content: '';
-    position: absolute;
-    inset-block-start: calc(100% + 1.4rem);
-    inset-inline-start: calc(1.2rem - 2.5px);
-    inline-size: 6px;
-    block-size: 6px;
-    background: var(--accent);
-  }
-
-  /* ── the viewports' own chrome ───────────────────────────────────
-   * VIEW-A/B — the mono viewport label over the capture's top
-   * reading-START corner (the reference's raster frames carry their
-   * viewport labels inside the frame edge; ours is the RTL mirror —
-   * top inline-start of the STAGE = the physical right edge). The
-   * mock cards seat at the cell's other corners, clear of the label.
-   *
-   * R319 D5 (c2-L3): the tag's own dir="ltr" (the Latin mono run)
-   * FLIPS its logical axis — inset-inline-start:0 resolved to the
-   * physical LEFT, the same corner the chat card holds (inset-
-   * inline-end on the RTL stage), and the two collided: 728px² of
-   * tag×card-title-bar @1440 (174px² @1024 · 1682px² @1920), the
-   * owner's «cards/tooltips overlap». inline-END on the ltr element
-   * lands on the stage's reading-start edge — one corner, one
-   * element, every tier. The max-inline-size belt keeps the label
-   * inside the frame even if the text grows (the stage's own
-   * overflow:clip stays the boundary of last resort). */
-  .pr-section .prf-viewtag {
-    display: block;
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-end: 0;
-    z-index: 3;
-    padding: 0.3rem 0.6rem;
-    background: var(--text);
-    color: var(--bg);
-    font-family: var(--font-mono);
-    font-size: var(--fs-mono-sm);
-    line-height: 1;
-    white-space: nowrap;
-    max-inline-size: calc(100% - 1.6rem);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  [data-theme='dark'] .pr-section .prf-viewtag {
-    background: var(--bg);
-    color: var(--text);
-    border-block-end: 1px solid var(--rule);
   }
 }
 
@@ -8520,7 +8417,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }   /* 502 @1024 · 597 @1440 — r324 X14 re-measure (59:50 art) */
 .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }   /* 432 @1024 · 609 @1440 — r324 X14 (89.1rem floor seat) */
 .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); } /* 5203 @1024 · 6080 @1440 — r324 X14 (658dvh track) */
-.pr-section { contain-intrinsic-size: auto calc(-2px + 44.95vw); }      /* 458 @1024 · 645 @1440 — r324 X3 re-measure (the drawn showcase keeps the band at its 79vh floor) */
+.pr-section { contain-intrinsic-size: auto 49.3vw; }      /* = the 85.2rem floor on the fluid root: 505 @1024 · 710 @1440 · 947 @1920 — r325 Y2 re-measure */
 .wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }    /* 449 @1024 · 615 @1440 */
 .rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }    /* 712 @1024 · 822 @1440 — r324 re-measure (the X5 ledger's real height; the pre-X5 guess ran 1090) */
 .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }   /* 451 @1024 · 625 @1440 */
@@ -8530,7 +8427,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }
   .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }
   .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); }
-  .pr-section { contain-intrinsic-size: auto calc(-2px + 44.95vw); }
+  .pr-section { contain-intrinsic-size: auto 49.3vw; } /* r325 Y2 re-measure — the floor is vw-proportional on the fluid root */
   .wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }
   .rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }
   .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }
@@ -8540,7 +8437,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 544px; }
   .pm-section { contain-intrinsic-size: auto 1260px; }
   .chapters   { contain-intrinsic-size: auto 4685px; }
-  .pr-section { contain-intrinsic-size: auto 471px; }
+  .pr-section { contain-intrinsic-size: auto 508px; }   /* r325 Y2 re-measure (508.3 @768) */
   .wy-section { contain-intrinsic-size: auto 840px; }
   .rl-section { contain-intrinsic-size: auto 1300px; }
   .fo-cta     { contain-intrinsic-size: auto 468px; }
@@ -8550,7 +8447,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 1143px; }
   .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
-  .pr-section { contain-intrinsic-size: auto 739px; }
+  .pr-section { contain-intrinsic-size: auto 912px; }   /* r325 Y2 re-measure (912 @600) */
   .wy-section { contain-intrinsic-size: auto 1171px; }
   .rl-section { contain-intrinsic-size: auto 1409px; }
   .fo-cta     { contain-intrinsic-size: auto 713px; }
@@ -8560,7 +8457,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 820px; }
   .pm-section { contain-intrinsic-size: auto 797px; }
   .chapters   { contain-intrinsic-size: auto 4974px; }
-  .pr-section { contain-intrinsic-size: auto 504px; }
+  .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 Y2 re-measure (604.7 @390) */
   .wy-section { contain-intrinsic-size: auto 761px; }
   .rl-section { contain-intrinsic-size: auto 915px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
@@ -8570,7 +8467,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .st-section { contain-intrinsic-size: auto 798px; }
   .pm-section { contain-intrinsic-size: auto 748px; }
   .chapters   { contain-intrinsic-size: auto 4976px; }
-  .pr-section { contain-intrinsic-size: auto 497px; }
+  .pr-section { contain-intrinsic-size: auto 639px; }   /* r325 Y2 re-measure (639 @360) */
   .wy-section { contain-intrinsic-size: auto 702px; }
   .rl-section { contain-intrinsic-size: auto 903px; }
   .fo-cta     { contain-intrinsic-size: auto 428px; }
@@ -8626,11 +8523,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
     min-block-size: 26rem;
   }
 
-  /* the platform showcase figure: the reference's phone seat is a
-   * compact card (~251px inside the 517px band), not the 65dvh window */
-  .pr-stage .pr-frame {
-    block-size: 30dvh;
-  }
+  /* the platform showcase: the frame rides its natural content height
+     (r325 Y2 — the fixed 30dvh window cropped its cells; the phone
+     band is the head + steps + frame + caption + note in flow) */
 
   /* the roles ledger rows: the sp-1 pad (the 3-line clamp keeps the
    * row readable; the reference's 948px band holds the same rows) */
@@ -8639,3 +8534,67 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 }
 
+
+/* ══════════════════════════════════════════════════════════════════════
+   r325 Y2 — the §05 platform rebuild's own belt (file END — the
+   cascade lesson: same-specificity rules resolve by document order).
+
+   Defects closed here:
+   · the mono labels rode --fs-mono-xs (1rem = 8.33px @1440 · 9.92px
+     @390 — the phone label list's 9px lines): every mono label in the
+     band now floors at 11px (the defect's own number), the Latin
+     chrome's honest floor.
+   · the phone band folds the surface column (the reference's phone
+     grammar is ONE composition: head → steps → frame+caption → note)
+     and the player screen keeps a readable drawn seat.
+   · the caption rides BELOW the frame's art at every tier (never
+     overlaid).
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* the mono legibility floor — the band's indexes, notes and the demo
+   chip (later in the cascade than .fo-label .fo-mono, same
+   specificity — the floor wins) */
+.pr-section .fo-mono {
+  font-size: max(var(--fs-mono-xs), 11px);
+}
+
+@media (max-width: 767px) {
+  /* the surface column folds — the phone band is ONE composition
+     (the reference's own phone platform: labels + text + the media
+     sliver, 517px); the drawn surfaces rejoin ≥768 */
+  .pr-side { display: none; }
+
+  /* the checkpoint card folds too — the caption BELOW the frame
+     carries the checkpoint story on the compact band (the reference's
+     own phone media is a 21px sliver; the full card rejoins ≥768) */
+  .pr-check { display: none; }
+
+  /* the drawn screen keeps a compact but readable seat (the slide's
+     chain + the track must both read) */
+  .pr-screen { min-block-size: 104px; }
+
+  /* the steps stay in flow under the lede (the extracted phone cell
+     carries the label run too) — rows ride their own hairlines */
+  .pr-head .pr-chapters { align-self: auto; }
+
+  /* the caption's two-part read tightens to the phone rhythm */
+  .pr-frame-cap { padding: var(--sp-2) var(--sp-2); }
+}
+
+/* 768–991 — the strips-only tablet band: the frame + caption fill the
+   55.2rem floor (the section bends to a flex column so the screen
+   flexes into the band's air — no dead strip under the frame) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .pr-section { display: flex; flex-direction: column; }
+  .pr-stage { flex: 1; display: flex; }
+  .pr-stage .pr-frame { flex: 1; min-block-size: 0; }
+}
+
+/* 992–1024 — the narrow-desktop slice keeps the strips-only read (the
+   head/side fold) with the frame + caption spanning the full width;
+   declared here so it stays the last word over the ≥992 3/5/4 seat */
+@media (min-width: 992px) and (max-width: 1024px) {
+  .pr-head, .pr-note, .pr-side { display: none; }
+  .pr-stage { grid-column: 1 / -1; margin-inline-end: 0; }
+  .pr-head { margin-inline-end: 0; }
+}
