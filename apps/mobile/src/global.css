@@ -1,0 +1,26 @@
+/* Web reset for the Madarek mobile-web output.
+   Native layouts own the real chrome; this keeps the paper ground, removes
+   default margins, and fixes text rendering for RTL Arabic. */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+html {
+  direction: rtl;
+  background: #f6f6ee;
+}
+html[data-theme="dark"] {
+  background: #282828;
+}
+body {
+  font-family: "Body-Regular", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+input,
+textarea {
+  font-family: inherit;
+}
