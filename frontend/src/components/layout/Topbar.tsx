@@ -327,6 +327,23 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
           </NavLink>
         ))}
         <InstitutionChip />
+        {/* R325 P2.3 — the top bar's THEME TOGGLE (§R325.a chrome
+            inventory: search · notifications · theme · profile). Compact
+            chrome control flipping the RESOLVED theme light↔dark — the
+            exact contract of the user-menu theme item; the 3-way
+            Light/Dark/System segmented control stays the sidebar
+            footer's (System has no one-icon voice here). 44px target
+            floor + the chrome control recipe ride r325-shell.css. */}
+        <button
+          type="button"
+          className="topbar-theme"
+          onClick={() => setThemeMode(resolved === 'dark' ? 'light' : 'dark')}
+          aria-label={resolved === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}
+          aria-pressed={resolved === 'dark'}
+          title={resolved === 'dark' ? 'الوضع الفاتح' : 'الوضع الداكن'}
+        >
+          <Icon icon={resolved === 'dark' ? Sun : Moon} size={16} />
+        </button>
         <NotificationDropdown alertsPath={alertsPath} />
 
         {user && (

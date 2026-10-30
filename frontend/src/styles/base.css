@@ -368,7 +368,10 @@
       padding: var(--page-gutter-mobile);
       padding-block-end: calc(var(--sp-13) + env(safe-area-inset-bottom));
     }
-    .topbar { block-size: 60px; }
+    /* R325 P2.3: was a raw 60px — the phone band re-joins the token so
+       the §R325 56px chrome height holds at every band (--topbar-h now
+       aliases --app-topbar-h, tokens.css). */
+    .topbar { block-size: var(--topbar-h); }
   }
 
   /* ─── PAGE primitive ───────────────────────────────────────────────

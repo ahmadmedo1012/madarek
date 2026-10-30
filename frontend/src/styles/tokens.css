@@ -428,11 +428,18 @@
     --section-pad-y-narrow: clamp(var(--sp-9), 6vw, var(--sp-11));   /* 48..72px */
 
     /* ─── Layout ────────────────────────────────────────────────────── */
-    --sidebar-w: 256px;
-    --sidebar-w-collapsed: 64px;
-    /* 60px — the rendered topbar's real height (sticky consumers float
-       exactly on it). */
-    --topbar-h: 60px;
+    /* R325 P2.3 migration (DESIGN.md §R325.a — ONE migration, no silent
+       re-key): the shell chrome rides the §R325 trio now. The old
+       literals (--sidebar-w 256 · --sidebar-w-collapsed 64 · --topbar-h
+       60) are RETIRED — the seats alias the --app-* tokens (r325-app.css,
+       imported by AppShell.tsx) with the migrated values as fallbacks so
+       the pre-shell bundle (landing/auth never render .sidebar/.topbar)
+       still resolves. Every consumer — the .has-shell grid, the sidebar
+       rail, the topbar band AND the sticky --topbar-h offsets in
+       pdf/research/teacher-quality/patterns — follows in this one move. */
+    --sidebar-w: var(--app-sidebar-w, 264px);
+    --sidebar-w-collapsed: var(--app-sidebar-rail, 72px);
+    --topbar-h: var(--app-topbar-h, 56px);
     --content-max-w: 1280px;
     --marketing-max-w: 1200px;
 

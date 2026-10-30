@@ -28,6 +28,23 @@ export type RoleAccentKey =
   | 'quality'
   | 'owner';
 
+/**
+ * §R325.m — the role identity MONO CODES, one per RoleAccentKey. The
+ * identity system differentiates on PATTERN (--app-role-pat-*, the
+ * r325-app.css seats) + these 3-letter codes; it mints no hue (the
+ * owner alone carries the signal hatch). Codes ride --fs-mono-md,
+ * dir="ltr" — sidebar footer, the gallery, print headers.
+ */
+export const ROLE_ACCENT_CODES: Record<RoleAccentKey, string> = {
+  student: 'STU',
+  faculty: 'FAC',
+  'department-head': 'DPT',
+  dean: 'DEA',
+  admin: 'ADM',
+  quality: 'QUA',
+  owner: 'OWN',
+};
+
 export function useRoleAccent(): RoleAccentKey | null {
   const { data: me } = useMe();
   const role = me?.role;
