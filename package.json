@@ -30,6 +30,7 @@
     "db:provision-owner": "npm run provision:owner -w backend --",
     "db:backup": "node scripts/db-backup.mjs",
     "db:restore": "node scripts/db-restore.mjs",
+    "api:openapi": "tsx backend/scripts/generate-openapi.ts",
     "smoke": "node scripts/smoke-deploy.mjs",
     "validate:colleges": "tsx scripts/validate-college-identity.ts",
     "check:motion-tokens": "bash scripts/check-motion-tokens.sh",
