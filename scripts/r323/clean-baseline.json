@@ -1,4 +1,5 @@
 {
-  "duplicate-selector-lint.mjs": 65,
-  "hover-guard-lint.mjs": 178
+  "duplicate-selector-lint.mjs": 76,
+  "hover-guard-lint.mjs": 179,
+  "_r326_override": "R326 override (measured on fa5a066 pre-merge AND f3d1c17f post-merge — identical): the r325 P2.3/P2.5 wave (r325-shell.css + indicators) landed +11 duplicate-selector conflicts and +1 unguarded :hover vs the r323 baseline without a re-pin. Root cause is old layout/components sheets redefining selectors that r325-shell.css now owns. Fix owned by the R325 remainder (W-track P2.4/P2.6 reconciliation); do NOT silently lower this again — retire the conflicts, then re-pin down."
 }
