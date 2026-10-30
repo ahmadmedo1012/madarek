@@ -1,17 +1,17 @@
 {
   "1024": {
     ".st-section": 598,
-    ".pm-section": 471,
-    ".chapters": 6182,
+    ".pm-section": 528,
+    ".chapters": 5395,
     ".pr-section": 505,
     ".wy-section": 484,
-    ".rl-section": 891,
+    ".rl-section": 759,
     ".fo-cta": 496
   },
   "1440": {
-    ".st-section": 824,
-    ".pm-section": 601,
-    ".chapters": 6191,
+    ".st-section": 731,
+    ".pm-section": 743,
+    ".chapters": 6272,
     ".pr-section": 710,
     ".wy-section": 680,
     ".rl-section": 887,

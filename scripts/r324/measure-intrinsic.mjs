@@ -26,7 +26,11 @@ const browser = await chromium.launch({ executablePath: EXEC });
 const borderBox = {};
 const intrinsic = {};
 for (const bp of BREAKPOINTS) {
-  const page = await browser.newPage({ viewport: { width: bp, height: 900 } });
+  /* X14: the Heron ledger anchors are REAL device pairs — width:height.
+   * A dvh-banded section inflates with viewport height, so the intrinsic
+   * rung must be measured at the same pair the ledger verdict uses. */
+  const ANCHORS = { 1440: 900, 1024: 768, 768: 1024, 600: 900, 390: 844, 360: 760 };
+  const page = await browser.newPage({ viewport: { width: bp, height: ANCHORS[bp] ?? 900 } });
   await page.goto(BASE, { waitUntil: 'load' });
   await page.waitForTimeout(3000);
   borderBox[bp] = {};

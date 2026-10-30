@@ -54,7 +54,7 @@ is accepted before a Heron|Madarek overlay sheet exists at the same scroll ancho
 | X4 | why §06 blurry screenshot + chips | 720w derivatives q78 (mushy Arabic UI at 672px seat) + a fake real-UI chip | 720w tier re-encoded q92 lanczos from capture archive; chip retired | **fixed** `29517897` |
 | X6 | map intro empty grid + boxes on walls | cascade war: PLAN_INK_CSS fill:var(--bg) (0,5,0) beat the designed accent-ink warm (0,4,0) → paper-on-paper label; wall debris boxes | cascade fixed + debris retired | **fixed** `65baefac` |
 | X11 | logo optical size ≤32px | the mark's non-scaling hairline is a CONSTANT 1.5px — 4.7% of height at the 32-grid design size, but 12.5% at the 12px EdgeTab seat (2.7× the designed weight): small seats bloat into a blob | markStrokePx ramp: 1.5@32 → 1.125@16 (exactly the favicon's sanctioned 2.25/32 ratio) → 0.9px floor; BRAND.md §٥ documents it; ramp pinned in the brand test + before/after sheet | **fixed** (this commit) |
-| X14 | landing docH ±2 % of Heron | roles ledger landed −268px vs its stale placeholder; platform holds 710 | re-measure all bands after the X4/X7 wave, then the ledger re-verdict | **open** |
+| X14 | landing docH ±2 % of Heron | the ledger compared h=900 sweeps against Heron's REAL device pairs (1024×768 · 768×1024 · 390×844) AND read stale contain-intrinsic-size guesses — the phantom +18.5 % was 649dvh × 132px of viewport-height mismatch | anchor parity + post-render reads: the map track 658dvh, the stacked column 466/473dvh, the statement art 59:50, the problem floor 89.1rem, the phone seats compacted; X2 rungs re-measured; verdict: **1440 +1.67 % · 1024 +1.90 % · 768 +0.76 % · 390 +0.63 % — PASS** | **fixed** (this commit) |
 | X16 | authenticated app unreviewed | (P5) | — | **open** |
 
 ### r324 gate hygiene note
@@ -66,12 +66,12 @@ updated with the same no-auth guard).
 
 ## Exact next 3 actions
 
-1. X14: the landing docH re-verdict — re-measure all bands at the 5
-   breakpoints post-X3/X4/X6/X7/X11, then the ±2 % ledger verdict.
+1. The P2 reviewer round: 3 independent reviewers on the finished
+   landing sections (BOARD rubric, mean ≥9, no category <8).
 2. The P4 tail: the app-wide theme-pair sweep (indicator/state
    colours) beyond the map pair.
-3. The P2 reviewer round: 3 independent reviewers on the finished
-   landing sections (BOARD rubric, mean ≥9, no category <8).
+3. P5: the authenticated app (gallery, shell, every route × role × bp
+   × theme) — X16 dies there.
 
 ## P7.0 evidence (commands + results, 2026-10-29)
 

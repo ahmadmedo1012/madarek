@@ -1463,12 +1463,18 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* the square massing study fills its 6-col cell edge to edge at
-   every breakpoint — the artwork's own 1:1 aspect drives the band
-   (the reference's 1766×1766 contain equivalent), dark twin included. */
+   every breakpoint — the artwork's own aspect drives the band
+   (the reference's 1766×1766 contain equivalent), dark twin included.
+   R324/X14: the band ran +101/+84/+90/+109px over the Heron intro at
+   1440/1024/768/390 — the square 1:1 art owned the band at every
+   breakpoint. The Heron-matched cut is 59:50 (art 590px on the 690px
+   cell @1440 → band 723 = Heron exact; 520/533 ≈ 514/527 at the
+   tablet pairs): the drawing letterboxes inside the wider cell (the
+   svg's own xMidYMid meet centers it on transparent paper). */
 .st-art-cell .st-art-svg {
   inline-size: 100%;
   block-size: auto;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 59 / 50;
 }
 
 .st-body-col {
@@ -5258,7 +5264,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
      exactly at the track's end — the closing state IS the end of the
      track: the old 809px map-end dead band is dead by construction
      (the revealed column rides the release up). */
-  block-size: 649dvh;
+  block-size: 658dvh;
   margin-block-start: var(--sp-6);
 }
 
@@ -6058,7 +6064,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .jt-map-col {
     flex: none;
     display: block;
-    block-size: 450dvh;
+    /* R324/X14: 450→466dvh — measured post-render at the REAL 768×1024
+     * pair the Heron ledger uses (the pre-X14 probe read the stale
+     * contain-intrinsic-size guess): 466dvh lands the section at
+     * 5455 vs Heron 5454 (+0.02%). */
+    block-size: 466dvh;
     padding-inline: 8px; /* spacing-gate: allow — the A8 sheet-frame inset seat (Heron's own mobile plan inset) */
   }
 
@@ -6185,12 +6195,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 @media (max-width: 399px) {
   .jt-map-col {
-    /* R322 3-b-fix3: 415dvh (was 425) — the round-2 closing FOOT row
-     * raised the stacked column by ~54px and pushed docH past the 320
-     * never-raise pin (9362 vs 9308); the rung recovers it exactly:
-     * @320 → 9308 (at pin) · @390 → 11279 (−1.42%, in band) ·
-     * @360 → 10701 (+0.16%, in band). */
-    block-size: 415dvh;
+    /* R322 3-b-fix3 → R324/X14 re-pin: 415→473dvh — measured post-render
+     * at the REAL 390×844 pair (the old probe read the stale
+     * intrinsic guess): 473dvh lands the section at 4821 vs Heron
+     * 4819 (+0.04%). (History: R322 pinned 425→415 for the 320
+     * never-raise pin; X14's ±2 % docH contract re-pins the rung.) */
+    block-size: 473dvh;
   }
 }
 
@@ -6964,6 +6974,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
 @media (min-width: 992px) {
   .st-section { min-block-size: 86.7rem; }
   .pr-section { min-block-size: 85.2rem; }
+  /* R324/X14: the problem band ran −142px @1440 / −57px @1024 short of
+   * the Heron problem (743/528 at the anchor pairs) — the only band
+   * with no floor on the desktop seat. The floor rides the same fluid
+   * root the other rungs use: 89.1rem = 742.5px @1440 (8.333px root),
+   * 528.0px @1024 (5.926px root) — both Heron-exact. */
+  .pm-section { min-block-size: 89.1rem; }
 
   /* the sheet measure rides the frame like every reference band.
    * R322 V7 (the edge-rail inset): the physical-left (inline-end in
@@ -8462,29 +8478,29 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * content-box sizes (1024/1280/1440/1920 → scripts/r324/
  * section-intrinsic.json), each rung anchored EXACT at its gate
  * breakpoint (1024 / 1440) with the local measured slope. */
-.st-section { contain-intrinsic-size: auto calc(39px + 45.2vw); }   /* 502 @1024 · 690 @1440 */
-.pm-section { contain-intrinsic-size: auto calc(148px + 22.12vw); }  /* 375 @1024 · 467 @1440 */
-.chapters   { contain-intrinsic-size: auto calc(5968px + 2.16vw); }  /* 5990 @1024 · 5999 @1440 */
-.pr-section { contain-intrinsic-size: auto calc(-3px + 45vw); }      /* 458 @1024 · 645 @1440 — r324 X3 re-measure (the drawn showcase keeps the band at its 79vh floor) */
+.st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }   /* 502 @1024 · 597 @1440 — r324 X14 re-measure (59:50 art) */
+.pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }   /* 432 @1024 · 609 @1440 — r324 X14 (89.1rem floor seat) */
+.chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); } /* 5203 @1024 · 6080 @1440 — r324 X14 (658dvh track) */
+.pr-section { contain-intrinsic-size: auto calc(-2px + 44.95vw); }      /* 458 @1024 · 645 @1440 — r324 X3 re-measure (the drawn showcase keeps the band at its 79vh floor) */
 .wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }    /* 449 @1024 · 615 @1440 */
-.rl-section { contain-intrinsic-size: auto calc(898px - 5.3vw); }    /* 844 @1024 · 822 @1440 — r324 re-measure (the X5 ledger's real height; the pre-X5 guess ran 1090) */
+.rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }    /* 712 @1024 · 822 @1440 — r324 re-measure (the X5 ledger's real height; the pre-X5 guess ran 1090) */
 .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }   /* 451 @1024 · 625 @1440 */
 
 /* 992–1179 — the rung below the 1180 red-team line (anchored @1024) */
 @media (min-width: 992px) and (max-width: 1179px) {
-  .st-section { contain-intrinsic-size: auto calc(39px + 45.2vw); }
-  .pm-section { contain-intrinsic-size: auto calc(148px + 22.12vw); }
-  .chapters   { contain-intrinsic-size: auto calc(5968px + 2.16vw); }
-  .pr-section { contain-intrinsic-size: auto calc(-3px + 45vw); }
+  .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }
+  .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }
+  .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); }
+  .pr-section { contain-intrinsic-size: auto calc(-2px + 44.95vw); }
   .wy-section { contain-intrinsic-size: auto calc(40px + 39.9vw); }
-  .rl-section { contain-intrinsic-size: auto calc(898px - 5.3vw); }
+  .rl-section { contain-intrinsic-size: auto calc(441px + 26.44vw); }
   .fo-cta     { contain-intrinsic-size: auto calc(23px + 41.83vw); }
 }
 /* 768–991 — the tablet composition (measured @768) */
 @media (min-width: 768px) and (max-width: 991px) {
   .st-section { contain-intrinsic-size: auto 544px; }
   .pm-section { contain-intrinsic-size: auto 1260px; }
-  .chapters   { contain-intrinsic-size: auto 4541px; }
+  .chapters   { contain-intrinsic-size: auto 4685px; }
   .pr-section { contain-intrinsic-size: auto 471px; }
   .wy-section { contain-intrinsic-size: auto 840px; }
   .rl-section { contain-intrinsic-size: auto 1300px; }
@@ -8492,31 +8508,95 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 /* 480–767 — the large-phone band (measured @600) */
 @media (min-width: 480px) and (max-width: 767px) {
-  .st-section { contain-intrinsic-size: auto 1223px; }
+  .st-section { contain-intrinsic-size: auto 1143px; }
   .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
-  .pr-section { contain-intrinsic-size: auto 1117px; }
+  .pr-section { contain-intrinsic-size: auto 739px; }
   .wy-section { contain-intrinsic-size: auto 1171px; }
-  .rl-section { contain-intrinsic-size: auto 1497px; }
+  .rl-section { contain-intrinsic-size: auto 1409px; }
   .fo-cta     { contain-intrinsic-size: auto 713px; }
 }
 /* ≤479 — the phone composition (measured @390) */
 @media (max-width: 479px) {
-  .st-section { contain-intrinsic-size: auto 873px; }
+  .st-section { contain-intrinsic-size: auto 820px; }
   .pm-section { contain-intrinsic-size: auto 797px; }
-  .chapters   { contain-intrinsic-size: auto 4452px; }
-  .pr-section { contain-intrinsic-size: auto 787px; }
+  .chapters   { contain-intrinsic-size: auto 4974px; }
+  .pr-section { contain-intrinsic-size: auto 504px; }
   .wy-section { contain-intrinsic-size: auto 761px; }
-  .rl-section { contain-intrinsic-size: auto 1040px; }
+  .rl-section { contain-intrinsic-size: auto 915px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
 }
 /* ≤374 — the narrow-phone rung (measured @360) */
 @media (max-width: 374px) {
-  .st-section { contain-intrinsic-size: auto 846px; }
+  .st-section { contain-intrinsic-size: auto 798px; }
   .pm-section { contain-intrinsic-size: auto 748px; }
-  .chapters   { contain-intrinsic-size: auto 4454px; }
-  .pr-section { contain-intrinsic-size: auto 774px; }
+  .chapters   { contain-intrinsic-size: auto 4976px; }
+  .pr-section { contain-intrinsic-size: auto 497px; }
   .wy-section { contain-intrinsic-size: auto 702px; }
-  .rl-section { contain-intrinsic-size: auto 1031px; }
+  .rl-section { contain-intrinsic-size: auto 903px; }
   .fo-cta     { contain-intrinsic-size: auto 428px; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   R324/X14 — the docH wave: the Heron-ledger anchors re-verified at the
+   REAL device pairs (1024×768 · 768×1024 · 390×844 — heron-extract
+   §BPS). The pre-X14 probes read stale contain-intrinsic-size guesses,
+   which is why the ledger drifted: this wave re-seats the four rungs
+   the real measures named (the map track 658dvh desktop, the stacked
+   column 466/473dvh tablet/phone, the statement art 59:50, the problem
+   floor 89.1rem) and compacts the phone seats the reference runs
+   shorter (the hero mat + tail, the platform frame, the roles rows).
+   Re-measured post-render (probe-x14-bands): every tracked band inside
+   ±0.4 % of its Heron counterpart (two documented riders: the
+   statement's Arabic copy +84px @1024, the identity wordmark re-pin
+   +226px @1440); docH verdict per anchor:
+   1440 +1.67 % · 1024 +1.90 % · 768 +0.76 % · 390 +0.63 % (±2 % contract).
+   ══════════════════════════════════════════════════════════════════ */
+
+/* the giant footer wordmark re-cut (X14): the full-width cut made the
+ * strip own the band at 766px @1440 (+452 over the reference's 314
+ * bottom band). The height-led cut keeps the drawn word — the R319
+ * §D1 full-cell-width ruling is re-pinned by this X14 override: the
+ * word letterboxes to a fixed ink height (the sheet's own aspect sets
+ * the width, centered by the cell grid), the lens row above it stays. */
+@media (min-width: 1200px) {
+  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
+    inline-size: auto;
+    block-size: 41.4rem; /* 345px @1440 — the strip lands ≈ the reference's own band */
+  }
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
+    inline-size: auto;
+    block-size: 23.6rem; /* 217px @768 (Heron footer exact) · 140px @1024 */
+  }
+}
+
+/* the phone seats the reference runs shorter */
+@media (max-width: 767px) {
+  /* the hero: the reference's phone band IS one viewport (828 @390×844)
+   * — ours ran 995: the 33rem stage mat + the sp-8 tail padding. The
+   * mat re-seats at 26rem (the 126px elevation letterboxes centered on
+   * its paper — contain, never crop) and the tail breathes at sp-4:
+   * the band lands ≈856 and docH @390 returns inside the contract. */
+  .fo-hero {
+    padding-block-end: var(--sp-4);
+  }
+
+  .fo-hero-art .bp-stage {
+    min-block-size: 26rem;
+  }
+
+  /* the platform showcase figure: the reference's phone seat is a
+   * compact card (~251px inside the 517px band), not the 65dvh window */
+  .pr-stage .pr-frame {
+    block-size: 30dvh;
+  }
+
+  /* the roles ledger rows: the sp-1 pad (the 3-line clamp keeps the
+   * row readable; the reference's 948px band holds the same rows) */
+  .rl-row {
+    padding-block: var(--sp-1);
+  }
+}
+

@@ -31,6 +31,21 @@ const SECTIONS = [
   '.fo-cta', // cta
 ];
 const BREAKPOINTS = [1440, 1024, 768, 600, 390, 360];
+/** X14 (R324): the Heron counterparts were measured at REAL device
+ * pairs — 1440×900 · 1024×768 · 768×1024 · 390×844 (heron-extract.mjs
+ * §BPS). The dvh-banded sections (the 649dvh map track, the 100dvh
+ * hero) inflate/deflate with viewport HEIGHT, so comparing our h=900
+ * sweep against Heron's pairs compared apples to oranges (the «+15 %
+ * map @1024» was exactly 649dvh × 132px). The ledger anchors re-pin to
+ * the same pairs; 600/360 stay as extra sanity rows (no Heron ledger). */
+const ANCHORS = {
+  1440: 900,
+  1024: 768,
+  768: 1024,
+  600: 900,
+  390: 844,
+  360: 760,
+};
 const BASE = process.env.VITE_URL || 'http://localhost:5173/';
 
 const write = process.argv.includes('--write');
@@ -40,7 +55,8 @@ const browser = await chromium.launch({
 });
 const result = {};
 for (const bp of BREAKPOINTS) {
-  const page = await browser.newPage({ viewport: { width: bp, height: 900 } });
+  const vh = ANCHORS[bp] ?? 900;
+  const page = await browser.newPage({ viewport: { width: bp, height: vh } });
   await page.goto(BASE, { waitUntil: 'load' });
   await page.waitForTimeout(3000);
   result[bp] = {};
