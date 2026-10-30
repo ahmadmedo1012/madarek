@@ -1,0 +1,12 @@
+{
+ "student/ai": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: light panel under «محادثات» holding the chat input + two pills (مساعد محادثات/أوامر مساعدة) — unthemed container" },
+ "student/dashboard": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: off-white next-lecture card («مقدمة إلى البرمجة», قاعة الدرس 12:00 SE301) + a white schedule cell — unthemed panel" },
+ "student/gamification": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: light rank/progress panel (profile summary + badge + progress bar)" },
+ "student/lecture-player": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: white lecture-meta panel below the player («مكانة اللغة وبيئتها» CT301 duration/views)" },
+ "student/profile": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: off-white profile-summary panel (avatar/name/email/progress)" },
+ "student/research": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: light «محددات النجاح» stats panel (1/0/1/0)" },
+ "student/results": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: light performance-stats panel (subject percentages)" },
+ "student/university": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: white skills/interests list panel under «بعضه تعريفي»" },
+ "teacher/ai": { "verdict": "ISLAND-UI", "note": "VLM @1440-ink: white panel under «مقدّمة» holding the «محاضرة فيديو» button" },
+ "student/forbidden-owner-users": { "verdict": "ISLAND-UI", "note": "the 403 bounce renders ROLE_HOME (/student/dashboard) — inherits its island" }
+}

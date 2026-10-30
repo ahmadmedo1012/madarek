@@ -1,0 +1,1015 @@
+{
+ "routes": 103,
+ "findings": [
+  {
+   "role": "student",
+   "slug": "ai",
+   "path": "/student/ai",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 14592px² at [912, 416, 1216, 464] (1.7% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/ai-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "ai",
+   "path": "/student/ai",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 14848px² at [416, 432, 736, 480] (2.8% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/ai-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "ai",
+   "path": "/student/ai",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 15616px² at [32, 512, 368, 592] (4.7% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/ai-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "dashboard",
+   "path": "/student/dashboard",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 103424px² at [144, 336, 1216, 464] (8.0% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/dashboard-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "dashboard",
+   "path": "/student/dashboard",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 55808px² at [32, 320, 736, 448] (7.1% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/dashboard-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "dashboard",
+   "path": "/student/dashboard",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 58368px² at [32, 336, 368, 640] (17.7% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/dashboard-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "document-viewer",
+   "path": "?",
+   "bp": "1440",
+   "theme": "paper",
+   "class": "SKIP",
+   "desc": "no-id",
+   "evidence": null
+  },
+  {
+   "role": "student",
+   "slug": "document-viewer",
+   "path": "?",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "SKIP",
+   "desc": "no-id",
+   "evidence": null
+  },
+  {
+   "role": "student",
+   "slug": "document-viewer",
+   "path": "?",
+   "bp": "768",
+   "theme": "paper",
+   "class": "SKIP",
+   "desc": "no-id",
+   "evidence": null
+  },
+  {
+   "role": "student",
+   "slug": "document-viewer",
+   "path": "?",
+   "bp": "768",
+   "theme": "ink",
+   "class": "SKIP",
+   "desc": "no-id",
+   "evidence": null
+  },
+  {
+   "role": "student",
+   "slug": "document-viewer",
+   "path": "?",
+   "bp": "390",
+   "theme": "paper",
+   "class": "SKIP",
+   "desc": "no-id",
+   "evidence": null
+  },
+  {
+   "role": "student",
+   "slug": "document-viewer",
+   "path": "?",
+   "bp": "390",
+   "theme": "ink",
+   "class": "SKIP",
+   "desc": "no-id",
+   "evidence": null
+  },
+  {
+   "role": "student",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 103424px² at [144, 336, 1216, 464] (8.0% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/forbidden-owner-users-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 55808px² at [32, 320, 736, 448] (7.1% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/forbidden-owner-users-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 57856px² at [32, 336, 368, 640] (17.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/forbidden-owner-users-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "gamification",
+   "path": "/student/gamification",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 186880px² at [144, 288, 1216, 496] (14.4% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/gamification-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "gamification",
+   "path": "/student/gamification",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 105984px² at [32, 288, 736, 496] (13.5% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/gamification-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "gamification",
+   "path": "/student/gamification",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 44800px² at [32, 400, 368, 624] (13.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/gamification-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "lecture-player",
+   "path": "/student/lectures/cmvv0q0uj00fv78snnq41bqs9",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 65536px² at [528, 560, 1216, 688] (5.1% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/lecture-player-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "lecture-player",
+   "path": "/student/lectures/cmvv0q0uj00fv78snnq41bqs9",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 59136px² at [32, 560, 736, 672] (7.5% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/lecture-player-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "lecture-player",
+   "path": "/student/lectures/cmvv0q0uj00fv78snnq41bqs9",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 31744px² at [32, 352, 368, 512] (9.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/lecture-player-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "profile",
+   "path": "/student/profile",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 189440px² at [144, 176, 1216, 384] (14.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/profile-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "profile",
+   "path": "/student/profile",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 114176px² at [32, 176, 704, 384] (14.5% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/profile-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "profile",
+   "path": "/student/profile",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 51200px² at [32, 192, 368, 416] (15.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/profile-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "research",
+   "path": "/student/research",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 123392px² at [144, 336, 1216, 464] (9.5% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/research-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "research",
+   "path": "/student/research",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 88576px² at [32, 320, 736, 464] (11.3% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/research-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "research",
+   "path": "/student/research",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 64768px² at [32, 416, 368, 656] (19.7% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/research-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "results",
+   "path": "/student/results",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 137472px² at [144, 208, 1216, 352] (10.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/results-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "results",
+   "path": "/student/results",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 82432px² at [32, 192, 736, 336] (10.5% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/results-768-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "results",
+   "path": "/student/results",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 65024px² at [32, 192, 368, 448] (19.8% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/results-390-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "university",
+   "path": "/student/university",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 146944px² at [144, 608, 1216, 768] (11.3% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/university-1440-ink.webp"
+  },
+  {
+   "role": "student",
+   "slug": "university",
+   "path": "/student/university",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 92416px² at [32, 608, 736, 784] (11.8% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/student/university-768-ink.webp"
+  },
+  {
+   "role": "teacher",
+   "slug": "ai",
+   "path": "/teacher/ai",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 17664px² at [848, 176, 1216, 224] (2.2% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/teacher/ai-1440-ink.webp"
+  },
+  {
+   "role": "teacher",
+   "slug": "ai",
+   "path": "/teacher/ai",
+   "bp": "768",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 18432px² at [352, 176, 736, 224] (3.6% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/teacher/ai-768-ink.webp"
+  },
+  {
+   "role": "teacher",
+   "slug": "ai",
+   "path": "/teacher/ai",
+   "bp": "390",
+   "theme": "ink",
+   "class": "INK-ISLAND",
+   "desc": "light mass 6656px² at [160, 240, 368, 272] (2.0% of frame) — verify text/raster vs surface",
+   "evidence": "/home/z/wt/capture/audits/evidence/r325/routes/teacher/ai-390-ink.webp"
+  },
+  {
+   "role": "registrar",
+   "slug": "alerts",
+   "path": "/admin/alerts",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "alerts",
+   "path": "/admin/alerts",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "alerts",
+   "path": "/admin/alerts",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "alerts",
+   "path": "/admin/alerts",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "analysis",
+   "path": "/admin/analysis",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "analysis",
+   "path": "/admin/analysis",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "analysis",
+   "path": "/admin/analysis",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "community",
+   "path": "/admin/community",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "community",
+   "path": "/admin/community",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "community",
+   "path": "/admin/community",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "community",
+   "path": "/admin/community",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "courses",
+   "path": "/admin/courses",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "courses",
+   "path": "/admin/courses",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "courses",
+   "path": "/admin/courses",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "dashboard",
+   "path": "/admin/dashboard",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "dashboard",
+   "path": "/admin/dashboard",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "dashboard",
+   "path": "/admin/dashboard",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "digital",
+   "path": "/admin/digital",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "digital",
+   "path": "/admin/digital",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "digital",
+   "path": "/admin/digital",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "digital",
+   "path": "/admin/digital",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "faculties",
+   "path": "/admin/faculties",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "faculties",
+   "path": "/admin/faculties",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "faculties",
+   "path": "/admin/faculties",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "forbidden-owner-users",
+   "path": "/owner/users",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "permissions-detail",
+   "path": "/admin/permissions/cmvv6krsc01onto7meia2gwwd",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "permissions-detail",
+   "path": "/admin/permissions/cmvv6krsc01onto7meia2gwwd",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "permissions-detail",
+   "path": "/admin/permissions/cmvv6krsc01onto7meia2gwwd",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "reports",
+   "path": "/admin/reports",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "reports",
+   "path": "/admin/reports",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "reports",
+   "path": "/admin/reports",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "reports",
+   "path": "/admin/reports",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "settings",
+   "path": "/admin/settings",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "settings",
+   "path": "/admin/settings",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "settings",
+   "path": "/admin/settings",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "settings",
+   "path": "/admin/settings",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "students",
+   "path": "/admin/students",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "students",
+   "path": "/admin/students",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "students",
+   "path": "/admin/students",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "sync",
+   "path": "/admin/sync",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "sync",
+   "path": "/admin/sync",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "sync",
+   "path": "/admin/sync",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "teachers",
+   "path": "/admin/teachers",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "teachers",
+   "path": "/admin/teachers",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "teachers",
+   "path": "/admin/teachers",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision",
+   "path": "/vision",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision",
+   "path": "/vision",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision",
+   "path": "/vision",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision",
+   "path": "/vision",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision-detail",
+   "path": "/vision/ai-predictor",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision-detail",
+   "path": "/vision/ai-predictor",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision-detail",
+   "path": "/vision/ai-predictor",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "registrar",
+   "slug": "vision-detail",
+   "path": "/vision/ai-predictor",
+   "bp": "390",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "403",
+   "path": "/403",
+   "bp": "1440",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "403",
+   "path": "/403",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "403",
+   "path": "/403",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "403",
+   "path": "/403",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "403",
+   "path": "/403",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "design",
+   "path": "/__design",
+   "bp": "1440",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "design",
+   "path": "/__design",
+   "bp": "1440",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "design",
+   "path": "/__design",
+   "bp": "768",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "design",
+   "path": "/__design",
+   "bp": "768",
+   "theme": "ink",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  },
+  {
+   "role": "system",
+   "slug": "design",
+   "path": "/__design",
+   "bp": "390",
+   "theme": "paper",
+   "class": "MISSING",
+   "desc": "no capture recorded",
+   "evidence": null
+  }
+ ]
+}
