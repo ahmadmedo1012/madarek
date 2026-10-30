@@ -430,8 +430,17 @@
      writes the layer's measured base offset into the inline
      --app-bottom-stack (the height of everything BELOW this layer in
      the stack — the consent gate when it occupies the seat), :root
-     carries the total. 0px fallback = the idle natural seat. */
-  inset-block-end: calc(var(--app-bottom-stack, 0px) + var(--sp-5));
+     carries the total. 0px fallback = the idle natural seat.
+     P2.3 gate fix (check-motion-tokens · 4-A11 P2-10): the offset used
+     to ride the inset itself (`transition: inset-block-end …` — a
+     layout-property transition, reflow on every seat change). The
+     geometry is identical translated: the inset parks at the natural
+     seat and the stack offset lifts the layer via `translate`
+     (transform-family, composite-only), easing between seats exactly
+     as before (--t-fast = 200ms; the reduced-motion raw-ladder kill
+     zeroes the token, collapsing this to an instant jump). */
+  inset-block-end: var(--sp-5);
+  translate: 0 calc(-1 * var(--app-bottom-stack, 0px));
   inset-inline-end: var(--sp-5);
   z-index: var(--z-toast, 500);
   display: flex;
@@ -442,10 +451,7 @@
      re-enables pointer events for itself. */
   pointer-events: none;
   max-inline-size: min(420px, calc(100vw - var(--sp-6)));
-  /* Y6 — layers ease between seats as others appear/disappear
-     (--t-fast = 200ms; the reduced-motion raw-ladder kill zeroes the
-     token, collapsing this to an instant jump). */
-  transition: inset-block-end var(--t-fast) var(--ease);
+  transition: translate var(--t-fast) var(--ease);
 }
 
 /* r324 X1's body:has(.cb-banner) lift (hardcoded 2.4rem/3rem seats) is

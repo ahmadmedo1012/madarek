@@ -1,0 +1,20 @@
+{
+  "shots": [
+    "student-dash-1440-paper.png",
+    "student-dash-1440-ink.png",
+    "student-dash-768-paper.png",
+    "student-dash-768-ink.png",
+    "student-dash-390-paper.png",
+    "student-dash-390-ink.png",
+    "student-subroute-active-1440-paper.png",
+    "student-rail-collapsed-1440-paper.png",
+    "teacher-dash-1440-paper.png",
+    "teacher-dash-1440-ink.png",
+    "teacher-dash-768-paper.png",
+    "teacher-dash-768-ink.png",
+    "teacher-dash-390-paper.png",
+    "teacher-dash-390-ink.png",
+    "teacher-subroute-active-1440-paper.png",
+    "teacher-rail-collapsed-1440-paper.png"
+  ]
+}

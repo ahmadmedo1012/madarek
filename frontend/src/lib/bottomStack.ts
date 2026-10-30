@@ -24,6 +24,12 @@
  *
  *     (the consent gate is the BASE layer — offset 0 — and simply owns
  *     the seat; it registers so the layers above can clear it).
+ *     P2.3 note: the toast stack (.toast-stack) reads the same var
+ *     through `translate` instead — the wake-pill seat is static (it
+ *     re-reads on seat changes without animating), and animating an
+ *     inset is a layout-property transition the motion gate bans
+ *     (4-A11 P2-10); the offset lifts the layer transform-only.
+ *     Same var, same geometry.
  *
  * Generalises the r324 X1 `body:has(.cb-banner)` lift: that fix hoisted
  * the toast stack over the consent seat with hardcoded rem numbers

@@ -19,6 +19,12 @@ import '../../styles/r319-shell.css';
 // .pat-skeleton). Same cascade contract as the two sheets above
 // (unlayered, shell-imported); P2.2/P2.3 consume the --app-* seats.
 import '../../styles/r325-app.css';
+// R325 (P2.3 · DESIGN.md §R325): the shell grammar itself — the
+// active-nav tick/fill-wipe, the role identity seat, the topbar/bottom
+// nav conformance rules, the --app-t-page route register, the drawer
+// z-run. Last word of the shell cascade (after r325-app.css, unlayered,
+// shell-imported — the same house contract).
+import '../../styles/r325-shell.css';
 import { SheetFrame, SheetGrain } from './SheetFrame';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';

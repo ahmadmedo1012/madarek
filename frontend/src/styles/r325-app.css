@@ -32,9 +32,11 @@
   /* ── §R325.a — the app grid + shell chrome ──────────────────────────
      12 columns ride --grid-cols (the R322 grid). Gutters 24px desktop /
      16px phone ride the --sp ladder. Sidebar 264 expanded / 72 rail /
-     topbar 56 are the R325 pins — the as-shipped --sidebar-w 256 ·
-     --sidebar-w-collapsed 64 · --topbar-h 60 migrate in P2.3, which
-     re-points the shell onto these names and retires the delta. */
+     topbar 56 are the R325 pins — MIGRATED in P2.3: tokens.css's
+     --sidebar-w / --sidebar-w-collapsed / --topbar-h now alias these
+     three seats (one loud migration, the old 256/64/60 literals
+     retired), and the shell's grammar rules live in r325-shell.css
+     (AppShell-imported, right after this sheet). */
   --app-grid-cols: var(--grid-cols);         /* 12 */
   --app-gutter: var(--sp-6);                 /* 24px ≥921px */
   --app-gutter-phone: var(--sp-4);           /* 16px ≤920px — the shell's phone band */

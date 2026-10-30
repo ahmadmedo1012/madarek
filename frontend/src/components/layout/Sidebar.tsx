@@ -10,6 +10,12 @@ import { FOCUSABLE_SELECTOR } from '../overlays/useFocusTrap';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuthStore } from '../../stores/auth.store';
 import { useLogout, useMe } from '../../hooks/useAuth';
+// R325 §R325.m (P2.3): the sidebar footer's role-identity seat — the
+// same accent key AppShell stamps on <body data-role> (useRoleAccent)
+// + the mono code table (STU/FAC/DPT/DEA/ADM/QUA/OWN). The PATTERN
+// chip selects its --app-role-pat-* seat in r325-shell.css via
+// [data-role] — one identity recipe, no new colours.
+import { useRoleAccent, ROLE_ACCENT_CODES } from '../../hooks/useRoleAccent';
 import { useOnboardingStore } from '../../stores/onboarding.store';
 import { useUiStore } from '../../stores/ui.store';
 import { acquireScrollLock, releaseScrollLock } from '../../lib/scrollLock';
@@ -25,6 +31,10 @@ export function Sidebar() {
   const toggleSidebarCollapsed = useUiStore((s) => s.toggleSidebarCollapsed);
   const logout = useLogout();
   const navigate = useNavigate();
+  // R325 §R325.m: the identity key (pattern + mono code) for the
+  // footer's role seat. Shared cache with AppShell's own useRoleAccent
+  // call — no second /auth/me request (react-query dedupes).
+  const accentKey = useRoleAccent();
   // Replay trigger writes the shared onboarding store directly — the
   // same store <OnboardingFlow /> renders from (audit 0-f P0-2 fix).
   const startOnboarding = useOnboardingStore((s) => s.start);
@@ -391,6 +401,13 @@ export function Sidebar() {
                        restores the name exactly when the text is hidden. */
                     aria-label={sidebarCollapsed ? item.label : undefined}
                   >
+                    {/* R325 (P2.3): the ink fill-wipe layer — a solid
+                        var(--app-ink) slab under the row's content that
+                        sweeps in via scaleX (200ms, --t-fast) when the
+                        route activates; r325-shell.css owns the recipe
+                        (the r305 ::after stand-down is untouched — this
+                        is a dedicated child, not a pseudo-element). */}
+                    <span className="nav-fill" aria-hidden />
                     <span className="nav-icon">
                       <Icon icon={item.icon} size={17} />
                     </span>
@@ -424,6 +441,24 @@ export function Sidebar() {
         </div>
 
         <div className="sidebar-footer">
+          {/* R325 §R325.m — the ROLE IDENTITY seat (pattern chip + mono
+              code). Recognizable with colour off: the pattern is ink at
+              the element's own currentColor (--app-role-pat-*), the code
+              rides --fs-mono-md dir="ltr". Decorative for AT (the role
+              is already announced by .sidebar-user-role below); the
+              title names it for sighted users. Hidden on the collapsed
+              rail (r325-shell.css) like every other footer label. */}
+          {accentKey && (
+            <div
+              className="sidebar-role-id"
+              data-role={accentKey}
+              aria-hidden
+              title={`${roleLabel} · ${ROLE_ACCENT_CODES[accentKey]}`}
+            >
+              <span className="sidebar-role-pat" />
+              <span className="sidebar-role-code" dir="ltr">{ROLE_ACCENT_CODES[accentKey]}</span>
+            </div>
+          )}
           <ThemeToggle />
           {/* R319 (c1-A · B1b): the tour button's label is only hidden
               on the COLLAPSED DESKTOP RAIL — in the mobile drawer it

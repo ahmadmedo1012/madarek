@@ -1,0 +1,306 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R325 shell layer (P2.3 · DESIGN.md §R325 — the app grammar
+   applied to the SHELL chrome)
+   ─────────────────────────────────────────────────────────────────────
+   P2.1 landed the --app-* token seats (r325-app.css); P2.3 moves the
+   shell itself onto them. This sheet carries ONLY the grammar moves
+   the shell owns:
+
+     §1  the shell trio — 264 / 72 / 56 (documentation; the re-key rode
+         tokens.css's --sidebar-w/--sidebar-w-collapsed/--topbar-h
+         aliases in ONE migration — every consumer, the sticky
+         --topbar-h offsets included, followed automatically);
+     §2  the ACTIVE NAV state — the orange tick re-keyed to --app-signal
+         + the §R325 ink fill-wipe (a 200ms scaleX sweep, RM = instant);
+     §3  nav group headers at the mono micro-label rung (--fs-mono-md);
+     §4  the §R325.m ROLE IDENTITY seat — pattern chip + mono code in
+         the sidebar footer (--app-role-pat-* + STU/FAC/DPT/DEA/ADM/
+         QUA/OWN);
+     §5  the top bar — 56px band conformance + the 44px target floor
+         (§R325.b) + the compact theme toggle's chrome recipe;
+     §6  the phone bottom nav — opaque --app-bg ground, the 2px signal
+         top rule on the active cell, motion re-keyed off
+         --motion-duration-page;
+     §7  page transitions — the shell's route entrance rides --app-t-page
+         (320ms ≤ 350, §R325.k), RM = instant;
+     §8  the drawer z-run — --z-menu-drawer 530 (§R325.a / the R323
+         adopted scale), backdrop one rung under.
+
+   CASCADE CONTRACT — the r305/r319 house precedent: imported ONLY by
+   AppShell.tsx (right after r325-app.css), deliberately UNLAYERED, no
+   !important. Gate-clean by construction: colors ride the --app-* /
+   §2 pairs (zero raw literals), type/radius via var()/0, spacing via
+   the --sp ladders, durations via the token seats, logical properties
+   only, no authored @keyframes (the wipe and the pop are TRANSFORM
+   transitions/duration re-keys of existing animations — the same-sheet
+   RM belt below + the global 0.01ms belts bound them).
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ═══ §1 — THE SHELL TRIO (264 / 72 / 56) — verified, no rules ════════
+   The migration is a DEFINITION re-key, not a consumer sweep:
+   tokens.css now reads
+     --sidebar-w:          var(--app-sidebar-w, 264px)
+     --sidebar-w-collapsed: var(--app-sidebar-rail, 72px)
+     --topbar-h:           var(--app-topbar-h, 56px)
+   so every consumer moved in one edit: the .has-shell grid tracks
+   (base.css), the rail's inline-size (layout.css + polish.css's
+   .sidebar.collapsed), the topbar band at every breakpoint (base.css's
+   phone-band block rode a raw 60px — re-pointed), and the sticky
+   --topbar-h offsets in pdf.css / research.css / teacher-quality.css /
+   patterns.css (they float ON the bar, so they must move WITH it).
+   The fallbacks exist for the pre-shell bundle: landing/auth never
+   render .sidebar/.topbar, so no rendered surface can read them.
+   Restating any rule here would be drift — this section pins the audit.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ═══ §2 — THE ACTIVE NAV: signal tick + ink fill-wipe (§R325) ════════
+   The active row is the ONE spent signal (§R325.c: «the signal is
+   spent on active state, not browsing»):
+     · the TICK — the square 2px inset-inline-start bar (layout.css's
+       ::before marker) re-keyed from --accent to --app-signal (same
+       pair, the grammar's name) and retimed to the app hover register
+       (--app-t-hover 120ms — the 400ms medium-duration pop predates
+       the §R325.k register);
+     · the FILL-WIPE — on activation the row inverts: a solid
+       var(--app-ink) slab sweeps in via scaleX from the seam edge
+       (200ms --t-fast — the dialogs/entrance rung), the label + icon
+       flip to var(--app-bg) in lockstep (the house .btn::before
+       fill-wipe recipe — components.css R313 WP-D · D4: label and
+       layer travel together so ink never sits on ink mid-flight).
+   The layer is a DEDICATED CHILD (.nav-fill, Sidebar.tsx), not a
+   pseudo-element: r305-shell.css §3's .nav-item.on::after stand-down
+   (the one-active-marker contract) stays untouched and still pinned by
+   r305-shell-css-contract.test.ts.
+   DEACTIVATION wipes out symmetrically (scaleX 1 → 0). RM: the global
+   0.01ms belt collapses the sweep to an instant state — the fill is
+   simply there, the same-sheet kill below retires the transition
+   explicitly. */
+.nav-item {
+  /* The r305 outline-sweep containment: the -1 fill layer paints above
+     the row's own ground, below the in-flow label — inside the row. */
+  isolation: isolate;
+}
+.nav-item .nav-fill {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--app-ink);
+  transform: scaleX(0);
+  /* The sweep grows from the SEAM edge — inline-start, where the tick
+     sits; the [dir] twin below mirrors it for the RTL rail. */
+  transform-origin: 0 50%;
+  transition: transform var(--t-fast) var(--ease);
+  pointer-events: none;
+}
+[dir="rtl"] .nav-item .nav-fill {
+  transform-origin: 100% 50%;
+}
+/* The active pair flips WITH the wipe (lockstep — the .btn recipe).
+   Unlayered, so the layered hover/press twins can never out-rank the
+   active state's inversion on an active row. */
+.nav-item.on {
+  --_fg: var(--app-bg);
+  --_icon-fg: var(--app-bg);
+}
+.nav-item.on .nav-fill {
+  transform: scaleX(1);
+}
+/* The tick: grammar name + the app register's activation timing. */
+.nav-item.on::before {
+  background: var(--app-signal);
+  animation-duration: var(--app-t-hover);
+}
+/* The app register's RM belt for §2 — instant, not merely slower. */
+@media (prefers-reduced-motion: reduce) {
+  .nav-item .nav-fill {
+    transition: none;
+  }
+}
+
+/* ═══ §3 — NAV GROUP HEADERS: the mono micro-label rung (§R325.d) ═════
+   R313 made the section labels Geist Mono at --fs-xxs (13px — the
+   Arabic text floor). §R325's instrument voice pins the mono
+   micro-label register at --fs-mono-md (1.4rem ≈ 11.67px @1440 — the
+   §R325.d table-header rung; Latin/digit-capable, the labels ride
+   weight 600). */
+.nav-section-label {
+  font-size: var(--fs-mono-md);
+}
+
+/* ═══ §4 — THE ROLE IDENTITY SEAT (§R325.m · Sidebar.tsx footer) ══════
+   A role is recognizable WITH COLOUR OFF: the pattern seat
+   (--app-role-pat-*, ink at the element's own currentColor) + the mono
+   code (STU/FAC/DPT/DEA/ADM/QUA/OWN — ROLE_ACCENT_CODES, useRoleAccent).
+   No hue: six roles ride ink patterns, the owner alone carries the
+   signal hatch. The chip is the §R325.f hairline chip grammar (1px
+   --app-line-soft, radius 0). aria-hidden in the markup — the role is
+   already announced by .sidebar-user-role; the title names it for
+   sighted users. Hidden on the collapsed rail (the rail hides every
+   footer label). */
+.sidebar-role-id {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-inline: var(--sp-3);
+  /* the patterns' ink source — currentColor at the consuming element */
+  color: var(--text-muted);
+}
+.sidebar-role-pat {
+  display: inline-block;
+  inline-size: var(--sp-6);
+  block-size: var(--sp-4);
+  border: 1px solid var(--app-line-soft);
+  background-repeat: repeat;
+}
+.sidebar-role-code {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  font-weight: var(--fw-semibold);
+  color: var(--text-muted);
+  /* Latin code run — the markup carries dir="ltr"; tracking stays 0. */
+  letter-spacing: 0;
+}
+/* The seven seats — one rule per RoleAccentKey, straight from §R325.m
+   (the identity system mints no hue; the owner's hatch is the signal). */
+.sidebar-role-id[data-role="student"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-student);          /* dots      · STU */
+}
+.sidebar-role-id[data-role="faculty"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-faculty);          /* hatch     · FAC */
+}
+.sidebar-role-id[data-role="department-head"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-department-head);  /* rules-v   · DPT */
+}
+.sidebar-role-id[data-role="dean"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-dean);             /* cross     · DEA */
+}
+.sidebar-role-id[data-role="admin"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-admin);            /* rules-h   · ADM */
+}
+.sidebar-role-id[data-role="quality"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-quality);          /* grid      · QUA */
+}
+.sidebar-role-id[data-role="owner"] .sidebar-role-pat {
+  background-image: var(--app-role-pat-owner);            /* signal    · OWN */
+}
+@media (min-width: 921px) {
+  .sidebar.collapsed .sidebar-role-id {
+    display: none;
+  }
+}
+
+/* ═══ §5 — THE TOP BAR (§R325.a/b): 56px band, 44px targets ═══════════
+   The band height rides --app-topbar-h via the tokens.css alias (§1).
+   The bottom hairline is already always-on (polish v9's 1px --rule —
+   the §R325.a seam; .topbar.scrolled only re-colors it, base.css).
+   What the band still owed §R325.b: the 44px target floor on the
+   desktop cluster — the bell (36×36), the user trigger (~40px) and the
+   search input (38px) sat under it at ≥921px; the min-* form grows the
+   HIT AREA over the visual box at used-value time (the 4-A2 P2-6
+   trick), so the visual grammar is untouched. */
+.topbar-notif {
+  min-inline-size: 44px;
+  min-block-size: 44px;
+}
+.topbar-user-trigger {
+  min-block-size: 44px;
+}
+.topbar-search input {
+  block-size: 44px;
+}
+/* The compact THEME TOGGLE (Topbar.tsx) — the §R325.a chrome
+   inventory's fourth seat (search · notifications · theme · profile).
+   One control recipe: rest flat on the hairline, hover = the surface
+   step (guarded to fine pointers — the R319 stick-guard), radius 0,
+   44px target floor over the 36px visual box (the bell's twin). */
+.topbar-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    background var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .topbar-theme:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+}
+.topbar-theme:active {
+  background: var(--surface-3);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* ═══ §6 — THE PHONE BOTTOM NAV (§R325.a phone band) ══════════════════
+   Verified against the mission pins:
+     · OPAQUE — polish v22's container already paints alpha-1 paper;
+       re-keyed to the grammar's name (--app-bg ≡ --bg, one §2 pair) so
+       an Ink audit is a var() read;
+     · the ORANGE 2px TOP RULE — the ACTIVE CELL's marker (the dock's
+       twin of the sidebar's tick, notifications.css). A permanent
+       signal bar on the container would spend the one signal on chrome
+       AND visually swallow the active cell's own 2px marker — the
+       restrained-signal law (§R325.c) keeps the rule on the state;
+     · targets — the cells already floor at 52px block-size, the
+       five equal 1fr tracks clear 44px inline at 320px;
+     · safe-area — the container's padding-block-end already carries
+       max(--sp-1-5, env(safe-area-inset-bottom)) (polish v22 §F).
+   Motion: the activation pop rode --motion-duration-page (400ms — a
+   §R325.k violator by inheritance); it joins the app page register
+   (--app-t-page 320ms ≤ 350, RM-instant via the same-sheet :root
+   collapse in r325-app.css + notifications.css's own kill). */
+.bottom-nav {
+  background: var(--app-bg);
+  border-block-start-color: var(--app-line);
+}
+.bottom-nav-item[aria-current="page"]::before,
+.bottom-nav-item.active::before {
+  background: var(--app-signal);
+}
+.bottom-nav-item.active .bottom-nav-icon {
+  animation-duration: var(--app-t-page);
+}
+
+/* ═══ §7 — PAGE TRANSITIONS (§R325.k): the shell rides --app-t-page ═══
+   As-found: the shell's ONE route entrance (PageTransition's keyed
+   remount → polish r162's `.content-inner > *` page-enter fade) rode
+   --motion-duration-short (200ms) — NOT the 400ms the §R325.a delta
+   note records (that token's shell-side consumer was the bottom-nav
+   pop, retimed in §6). The grammar register is --app-t-page 320ms:
+   pinned here, shell-scoped, so the guest surfaces' 200ms fade (the
+   CollegesLayout mount — the landing's motion tokens stay untouched)
+   and the app's 320ms entrance each keep one home. ≤ 350 ✓. RM: the
+   polish r162 kill (animation: none) + r325-app.css's --app-t-page →
+   0ms collapse = instant, content stands complete. */
+.has-shell .content-inner > * {
+  animation-duration: var(--app-t-page);
+}
+
+/* ═══ §8 — THE DRAWER Z-RUN (§R325.a): --z-menu-drawer 530 ════════════
+   §R325.a pins the phone drawer at --z-menu-drawer (the R323-adopted
+   rung, tokens.css 530 — above dialogs, under the loader family). The
+   as-shipped drawer rode --z-sheet (300); the backdrop moves with it
+   (one rung under). Same relative order to every overlay the drawer
+   can coexist with — the overlayStack contract owns the choreography,
+   this only lands the rung the grammar names. */
+@media (max-width: 920px) {
+  .sidebar {
+    z-index: var(--z-menu-drawer);
+  }
+  .sidebar-backdrop {
+    z-index: calc(var(--z-menu-drawer) - 1);
+  }
+}
