@@ -454,8 +454,8 @@ const CHECKS = [
   ['dark', '--neutral-500', '#b4b4b0', "night ink-muted (r305 — the reference's disable grey redeemed as TEXT: 7.09:1)"],
   ['dark', '--neutral-700', '#c9c9c5', 'night ink-secondary (r305)'],
   ['dark', '--neutral-800', '#e0e0dc', 'night strong (r305)'],
-  ['dark', '--neutral-900', '#f6f8fa', 'night ink — the paper twin (KEPT in R313: readability on #282828; the reference\'s own dark body #B4B4B0 is the muted tier. This is the ONE remaining #F6F8FA seat — it is NOT a forbidden needle for exactly this reason)'],
-  ['dark', '--text', '#f6f8fa', 'dark text = night ink (the same single remaining #F6F8FA use)'],
+  ['dark', '--neutral-900', '#f6f6ee', 'night ink — the paper twin (R324 X22 override, reviewers A/B: unified to the SAME warm paper #F6F6EE as the light ground — the blueprint-blue #F6F8FA ran a +12 blue channel, a second paper. Contrast rises to 13.44:1 on #282828; with this seat re-keyed, #F6F8FA is FULLY retired and joined the forbidden list below)'],
+  ['dark', '--text', '#f6f6ee', 'dark text = night ink (the X22 warm paper twin — same seat, same value)'],
   ['dark', '--text-muted', '#b4b4b0', 'dark muted (r305 — 7.09:1 bg · 6.53:1 surface · 5.90:1 s2)'],
   ['dark', '--text-faint', '#a2a29d', 'dark faint (r305: AA tier — 5.75:1 bg · 5.30:1 surface)'],
   ['dark', '--text-on-accent', '#191918', 'warm-ink on the luminous ember fill — 5.64:1 (r305)'],
@@ -578,9 +578,12 @@ const FORBIDDEN_VALUES = [
   // r305: the Webflow-default link blue leak (the reference's own vestige)
   '#3898ec',
   // R313: the retired blue-grey light-paper ramp (the warm vintage paper
-  // re-key — #F6F8FA itself is deliberately NOT here: it survives as
-  // the DARK ink --neutral-900/--text, its one remaining seat, pinned
-  // in CHECKS above with the same note).
+  // re-key). r324 X22 completes the retirement: the dark ink seat —
+  // #F6F8FA's one remaining survival, deliberately exempt until now —
+  // unified to the warm paper #F6F6EE, so the spelling joins the
+  // forbidden list outright (comments are stripped before the scan, so
+  // the tombstone prose quoting the old value cannot trip it).
+  '#f6f8fa', '#F6F8FA',
   '#f0f2f5', '#F0F2F5', '#e9ecef', '#E9ECEF', '#c8c8c8', '#C8C8C8',
   '--ln-', '--stage-', '--aura-', '--glow-accent', '--shell-aurora-azure', // retired landing vocabulary
   // r306: the poster divergence namespace retired with the Heron-only
@@ -676,7 +679,14 @@ if (auditShared.broken.length) {
 if (auditFail) process.exitCode = 1;
 
 /* Gate 3 — forbidden retired values */
-const scanText = (css) => css.replace(/\s+/g, ' ');
+/* r324 (parity-gate hardening): strip block comments BEFORE the needle
+ * scan — the repo's tombstone convention (every sibling gate already
+ * works this way: r306-landing-sheet.test.ts, SmartBot's source-scan
+ * family). Prose quoting a RETIRED value (unified-parity.css:570's X22
+ * tombstone narrating the old blueprint-blue hex) must never trip the
+ * forbidden scan; only live declarations can. Whitespace still collapses
+ * so multi-line spellings can't evade the needle. */
+const scanText = (css) => stripComments(css).replace(/\s+/g, ' ');
 const forbiddenHits = [];
 for (const [file, css] of [
   ['unified-parity.css', read(PATHS.parity)],
