@@ -24,7 +24,7 @@ is accepted before a Heron|Madarek overlay sheet exists at the same scroll ancho
 | P1 | Heron extraction completed (platform/why/roles/CTA/footer/menu + inner pages) + section ledger | **done** | `docs/redesign/r324/heron/*.json` + `section-ledger.md` (commit `6a6a9edd`) |
 | P3 | one type system (DESIGN.md §R324) + inner-page fixes + census gate | **done** | type-gate standing · census 0 violations (commits `50963260`/`5bf8f663`) |
 | P4 | themes Paper/Ink token-driven + pattern language + indicators | **done (map pair)** | X12 map Ink ground (commit `56c58b1d`) · app-wide indicator sweep = remaining P4 tail |
-| P2 | landing rebuild per section + overlay sheets + reviewers | **in progress** | X5 roles ledger `15a4d016` · X3 platform drawn+seated `25e5d150` (710px @1440 = Heron exact) · why/CTA/footer/menu heads remain |
+| P2 | landing rebuild per section + overlay sheets + reviewers | **in progress — reviewer rounds 1+2 done** | R1: A 7.75 / B 8.75 / C 8.35 (no acceptance) → 4 TRUE fixes (X18/X21/X22/X23) + claims table; R2: material 8.9 · motion 8.6 · polish 8.7 — «no axis <8» met, mean ≈8.6; the ≥9 push = consistency (8.0) + the unaudited axes |
 | P5 | app after login: gallery, shell, every route × role × bp × theme | **pending** | — |
 | P6 | scroll & motion finished (X2 first) + screencast comparison | **pending** | — |
 | P7 | B1.4/B1.5 + flows 1–13 E2E + dress rehearsal + B5/B6 remainders | **pending** | — |
@@ -66,8 +66,10 @@ updated with the same no-auth guard).
 
 ## Exact next 3 actions
 
-1. The P2 reviewer round: 3 independent reviewers on the finished
-   landing sections (BOARD rubric, mean ≥9, no category <8).
+1. The consistency push (the lowest axis, 8.0): one sweep that
+   unifies the remaining cross-section drift the reviewers named —
+   the statement h2 rung question, the hero-390 dead gap, footer
+   column alignment — then re-sheet.
 2. The P4 tail: the app-wide theme-pair sweep (indicator/state
    colours) beyond the map pair.
 3. P5: the authenticated app (gallery, shell, every route × role × bp
