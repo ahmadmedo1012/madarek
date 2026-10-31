@@ -66,7 +66,10 @@ const flag = (k) => args.includes('--' + k);
 const BASE = (opt('base', 'http://localhost:5173')).replace(/\/+$/, '');
 const API = (opt('api', 'http://localhost:4000')).replace(/\/+$/, '');
 const ROOT = path.resolve(import.meta.dirname, '../..');
-const OUT = path.resolve(ROOT, 'audits/evidence/r325/routes');
+/* --out PATH — redirect the capture tree + manifest (r327 re-captures
+ * write to audits/evidence/r327/... and never touch the r325 originals;
+ * default = the r325 routes folder, unchanged). */
+const OUT = path.isAbsolute(opt('out', '')) ? opt('out', '') : path.resolve(ROOT, opt('out', 'audits/evidence/r325/routes'));
 const MANIFEST = path.join(OUT, 'manifest.json');
 const BPS = (opt('bps', '1440,768,390')).split(',').map((s) => s.trim()).filter(Boolean);
 const THEMES = (opt('themes', 'paper,ink')).split(',').map((s) => s.trim()).filter(Boolean);

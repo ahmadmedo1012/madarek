@@ -1,0 +1,767 @@
+{
+ "generatedAt": "2026-10-31T22:05:10.170Z",
+ "base": "http://localhost:5173",
+ "lecturePath": "/student/lectures/cmvwl5p6700fv124xx7bvmb1c",
+ "report": [
+  {
+   "route": "student/dashboard",
+   "bp": 1440,
+   "path": "/student/dashboard",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 103424px² at [144, 336, 1216, 464] (8.0% of frame) — verify text/raster vs surface",
+     "box": [
+      144,
+      336,
+      1216,
+      464
+     ],
+     "samples": [
+      {
+       "x": 278,
+       "y": 368,
+       "tag": "DIV",
+       "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+       "text": "",
+       "textLum": null,
+       "ownBg": "246,246,238,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 278,
+       "y": 432,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "متابعة المشاهدة",
+       "textLum": 0.01,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 546,
+       "y": 368,
+       "tag": "SPAN",
+       "cls": "dash-resume-eyebrow r305s-eyebrow",
+       "text": "أكمل من حيث توقفت",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 546,
+       "y": 432,
+       "tag": "DIV",
+       "cls": "dash-resume-main",
+       "text": "تحليل المتطلبات ومخططات UML",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 680,
+       "y": 400,
+       "tag": "SPAN",
+       "cls": "dash-resume-course-name",
+       "text": "هندسة البرمجيات",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      }
+     ]
+    }
+   ],
+   "onboardingDismissed": true,
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-dashboard-1440-ink-reprobe.webp"
+  },
+  {
+   "route": "student/dashboard",
+   "bp": 768,
+   "path": "/student/dashboard",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 55808px² at [32, 320, 736, 448] (7.1% of frame) — verify text/raster vs surface",
+     "box": [
+      32,
+      320,
+      736,
+      448
+     ],
+     "samples": [
+      {
+       "x": 120,
+       "y": 352,
+       "tag": "DIV",
+       "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+       "text": "",
+       "textLum": null,
+       "ownBg": "246,246,238,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 120,
+       "y": 416,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "",
+       "textLum": null,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 296,
+       "y": 352,
+       "tag": "SPAN",
+       "cls": "dash-resume-eyebrow r305s-eyebrow",
+       "text": "أكمل من حيث توقفت",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 296,
+       "y": 416,
+       "tag": "DIV",
+       "cls": "dash-resume-main",
+       "text": "تحليل المتطلبات ومخططات UML",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 384,
+       "y": 384,
+       "tag": "SPAN",
+       "cls": "dash-resume-course-name",
+       "text": "هندسة البرمجيات",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      }
+     ]
+    }
+   ],
+   "onboardingDismissed": true,
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-dashboard-768-ink-reprobe.webp"
+  },
+  {
+   "route": "student/dashboard",
+   "bp": 390,
+   "path": "/student/dashboard",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 58368px² at [32, 336, 368, 640] (17.7% of frame) — verify text/raster vs surface",
+     "box": [
+      32,
+      336,
+      368,
+      640
+     ],
+     "samples": [
+      {
+       "x": 74,
+       "y": 387,
+       "tag": "SPAN",
+       "cls": "dash-resume-course-name",
+       "text": "هندسة البرمجيات",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 74,
+       "y": 488,
+       "tag": "DIV",
+       "cls": "dash-resume-main",
+       "text": "",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 74,
+       "y": 589,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "",
+       "textLum": null,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 158,
+       "y": 589,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "متابعة المشاهدة",
+       "textLum": 0.01,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 242,
+       "y": 589,
+       "tag": "svg",
+       "cls": "[object SVGAnimatedString]",
+       "text": "",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      }
+     ]
+    }
+   ],
+   "onboardingDismissed": true,
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-dashboard-390-ink-reprobe.webp"
+  },
+  {
+   "route": "student/forbidden-owner-users",
+   "bp": 1440,
+   "path": "/owner/users",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 103424px² at [144, 336, 1216, 464] (8.0% of frame) — verify text/raster vs surface",
+     "box": [
+      144,
+      336,
+      1216,
+      464
+     ],
+     "samples": [
+      {
+       "x": 278,
+       "y": 368,
+       "tag": "DIV",
+       "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+       "text": "",
+       "textLum": null,
+       "ownBg": "246,246,238,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 278,
+       "y": 432,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "متابعة المشاهدة",
+       "textLum": 0.01,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 546,
+       "y": 368,
+       "tag": "SPAN",
+       "cls": "dash-resume-eyebrow r305s-eyebrow",
+       "text": "أكمل من حيث توقفت",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 546,
+       "y": 432,
+       "tag": "DIV",
+       "cls": "dash-resume-main",
+       "text": "تحليل المتطلبات ومخططات UML",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 680,
+       "y": 400,
+       "tag": "SPAN",
+       "cls": "dash-resume-course-name",
+       "text": "هندسة البرمجيات",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      }
+     ]
+    }
+   ],
+   "onboardingDismissed": true,
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-forbidden-owner-users-1440-ink-reprobe.webp"
+  },
+  {
+   "route": "student/forbidden-owner-users",
+   "bp": 768,
+   "path": "/owner/users",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 55808px² at [32, 320, 736, 448] (7.1% of frame) — verify text/raster vs surface",
+     "box": [
+      32,
+      320,
+      736,
+      448
+     ],
+     "samples": [
+      {
+       "x": 120,
+       "y": 352,
+       "tag": "DIV",
+       "cls": "dash-resume-card stu-hero r305s-band--deep dash-hero-deep",
+       "text": "",
+       "textLum": null,
+       "ownBg": "246,246,238,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 120,
+       "y": 416,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "",
+       "textLum": null,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 296,
+       "y": 352,
+       "tag": "SPAN",
+       "cls": "dash-resume-eyebrow r305s-eyebrow",
+       "text": "أكمل من حيث توقفت",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 296,
+       "y": 416,
+       "tag": "DIV",
+       "cls": "dash-resume-main",
+       "text": "تحليل المتطلبات ومخططات UML",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 384,
+       "y": 384,
+       "tag": "SPAN",
+       "cls": "dash-resume-course-name",
+       "text": "هندسة البرمجيات",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      }
+     ]
+    }
+   ],
+   "onboardingDismissed": true,
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-forbidden-owner-users-768-ink-reprobe.webp"
+  },
+  {
+   "route": "student/forbidden-owner-users",
+   "bp": 390,
+   "path": "/owner/users",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 57856px² at [32, 336, 368, 640] (17.6% of frame) — verify text/raster vs surface",
+     "box": [
+      32,
+      336,
+      368,
+      640
+     ],
+     "samples": [
+      {
+       "x": 74,
+       "y": 387,
+       "tag": "SPAN",
+       "cls": "dash-resume-course-name",
+       "text": "هندسة البرمجيات",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 74,
+       "y": 488,
+       "tag": "DIV",
+       "cls": "dash-resume-main",
+       "text": "",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.dash-resume-card stu-hero r305s-band--deep dash-hero-deep"
+      },
+      {
+       "x": 74,
+       "y": 589,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "",
+       "textLum": null,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 158,
+       "y": 589,
+       "tag": "A",
+       "cls": "btn accent lg",
+       "text": "متابعة المشاهدة",
+       "textLum": 0.01,
+       "ownBg": "255,90,31,1",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      },
+      {
+       "x": 242,
+       "y": 589,
+       "tag": "svg",
+       "cls": "[object SVGAnimatedString]",
+       "text": "",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "255,90,31,1",
+       "resolvedLum": 0.287,
+       "carrier": "A.btn accent lg"
+      }
+     ]
+    }
+   ],
+   "onboardingDismissed": true,
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-forbidden-owner-users-390-ink-reprobe.webp"
+  },
+  {
+   "route": "student/lecture-player",
+   "bp": 1440,
+   "path": "/student/lectures/cmvwl5p6700fv124xx7bvmb1c",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 65536px² at [528, 560, 1216, 688] (5.1% of frame) — verify text/raster vs surface",
+     "box": [
+      528,
+      560,
+      1216,
+      688
+     ],
+     "samples": [
+      {
+       "x": 614,
+       "y": 592,
+       "tag": "DIV",
+       "cls": "lecture-meta-badges",
+       "text": "0",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 614,
+       "y": 656,
+       "tag": "DIV",
+       "cls": "lecture-meta-sub r305s-band-secondary",
+       "text": "نقطة تفاعل واحدة",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 872,
+       "y": 624,
+       "tag": "H1",
+       "cls": "lecture-meta-title",
+       "text": "مكونات الحاسوب وبنيته",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      }
+     ]
+    }
+   ],
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-lecture-player-1440-ink-reprobe.webp"
+  },
+  {
+   "route": "student/lecture-player",
+   "bp": 768,
+   "path": "/student/lectures/cmvwl5p6700fv124xx7bvmb1c",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 59136px² at [32, 560, 736, 672] (7.5% of frame) — verify text/raster vs surface",
+     "box": [
+      32,
+      560,
+      736,
+      672
+     ],
+     "samples": [
+      {
+       "x": 120,
+       "y": 588,
+       "tag": "DIV",
+       "cls": "lecture-meta-badges",
+       "text": "0",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 120,
+       "y": 644,
+       "tag": "DIV",
+       "cls": "lecture-meta-sub r305s-band-secondary",
+       "text": "نقطة تفاعل واحدة",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 648,
+       "y": 588,
+       "tag": "SPAN",
+       "cls": "text-xs text-subtle r305s-band-secondary",
+       "text": "المحاضرة",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 384,
+       "y": 616,
+       "tag": "H1",
+       "cls": "lecture-meta-title",
+       "text": "مكونات الحاسوب وبنيته",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      }
+     ]
+    }
+   ],
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-lecture-player-768-ink-reprobe.webp"
+  },
+  {
+   "route": "student/lecture-player",
+   "bp": 390,
+   "path": "/student/lectures/cmvwl5p6700fv124xx7bvmb1c",
+   "ink": "dark",
+   "boxes": [
+    {
+     "desc": "light mass 31744px² at [32, 352, 368, 512] (9.6% of frame) — verify text/raster vs surface",
+     "box": [
+      32,
+      352,
+      368,
+      512
+     ],
+     "samples": [
+      {
+       "x": 74,
+       "y": 392,
+       "tag": "DIV",
+       "cls": "lecture-meta-badges",
+       "text": "0",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 74,
+       "y": 472,
+       "tag": "H1",
+       "cls": "lecture-meta-title",
+       "text": "مكونات الحاسوب وبنيته",
+       "textLum": 0.027,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 242,
+       "y": 392,
+       "tag": "SPAN",
+       "cls": "text-xs text-subtle r305s-band-secondary",
+       "text": "المحاضرة",
+       "textLum": null,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "246,246,238,1",
+       "resolvedLum": 0.917,
+       "carrier": "DIV.lecture-meta r305s-band r305s-band--deep r305c-now"
+      },
+      {
+       "x": 326,
+       "y": 392,
+       "tag": "BDI",
+       "cls": "",
+       "text": "CT301",
+       "textLum": 0.582,
+       "ownBg": "0,0,0,0",
+       "hasBgImage": false,
+       "raster": false,
+       "resolvedBg": "61,61,61,1",
+       "resolvedLum": 0.047,
+       "carrier": "SPAN.badge"
+      }
+     ]
+    }
+   ],
+   "shot": "/home/z/madarek/audits/evidence/r327/p2p6/ink-app/student-lecture-player-390-ink-reprobe.webp"
+  }
+ ]
+}

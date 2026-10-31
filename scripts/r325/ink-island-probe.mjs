@@ -11,12 +11,15 @@
  *   island — an opaque LIGHT surface (luminance ≥ .45) with NO light
  *            text/raster on top — a real surface island → fix
  *
- * AFTER-shots per route × bp land in audits/evidence/r325/ink-app/.
+ * AFTER-shots per route × bp land in the --out folder.
  *
- * USAGE
  *   node scripts/r325/ink-island-probe.mjs                 # all 29
  *   node scripts/r325/ink-island-probe.mjs --only student/ai
  *   node scripts/r325/ink-island-probe.mjs --shots none    # probe only
+ *   --base http://localhost:5173   (default :5211 — pass the LIVE stack)
+ *   --out audits/evidence/r327/p2p6/ink-app  (default r325/ink-app —
+ *     r327 re-verification writes to its own folder, never over the
+ *     r325 originals)
  */
 import { chromium } from 'playwright-core';
 import fs from 'node:fs';
@@ -31,7 +34,7 @@ const ONLY = (opt('only', '')).split(',').map((s) => s.trim()).filter(Boolean);
 const SHOTS = opt('shots', 'webp');
 const ROOT = path.resolve(import.meta.dirname, '../..');
 const LEDGER = path.join(ROOT, 'audits/evidence/r325/routes/ledger-findings.json');
-const OUT = path.join(ROOT, 'audits/evidence/r325/ink-app');
+const OUT = path.isAbsolute(opt('out', '')) ? opt('out', '') : path.join(ROOT, opt('out', 'audits/evidence/r325/ink-app'));
 const EXE = path.join(process.env.HOME || '', '.cache/ms-playwright/chromium_headless_shell-1200/chrome-headless-shell-linux64/chrome-headless-shell');
 
 const VP_SIZES = { 1440: { width: 1440, height: 900 }, 768: { width: 768, height: 1024 }, 390: { width: 390, height: 844 } };
