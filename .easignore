@@ -1,0 +1,12 @@
+# R327 — shrink the EAS upload archive (was 377 MB; tracked content is 4.4 MB).
+# The mobile build needs: apps/mobile, shared/, root package manifests, the
+# EAS workflow files. Everything else is web/backend/docs/evidence weight.
+**/node_modules/
+audits/
+docs/
+frontend/
+backend/
+specs/
+tools/
+*.sqlite
+*.db
