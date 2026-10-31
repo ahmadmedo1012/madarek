@@ -32,6 +32,14 @@ const AUTH_LANDMARKS = ['.auth-card', '.auth-top', '.auth-bottom'];
 const GUEST_COLLEGES_LANDMARKS = ['main#main', 'h1.pf-page-title', '.pf-rowlist'];
 /** Shell pages: topbar title + bottom nav + the page header. */
 const SHELL_LANDMARKS = ['.topbar-title', 'h1.pf-page-title', '.bottom-nav'];
+/* r327 E2 (P5 small screens): the LANDING is the third public route
+ * of the no-horizontal-break contract (الرئيسية/الدخول/الكلّيات) but
+ * was never in this suite — only auth/404/colleges were. Landmarks are
+ * the CONTAINERS (header bar, main, hero title cell, footer): never
+ * the marquee tracks (.fo-hero-work-track/.fo-ticker-track) — those
+ * deliberately run past both edges inside an overflow-hidden clip,
+ * exactly like a printed strip wider than the window. */
+const LANDING_LANDMARKS = ['.fo-header-inner', 'main#main', '.fo-hero-title', '.fo-footer-inner'];
 
 test.describe('الزائر — فيض أفقي صفري', () => {
   for (const vp of NARROW_VIEWPORTS) {
@@ -48,6 +56,20 @@ test.describe('الزائر — فيض أفقي صفري', () => {
         await page.goto('/404');
         await expect(page.locator('.nf-title')).toHaveText('هذه الصفحة تغيّبت عن الحضور');
         await expectNoHorizontalOverflow(page, ['.nf-title']);
+      });
+
+      test('/ (الرئيسية) بلا فيض — فوق وطول الصفحة', async ({ page }) => {
+        await page.goto('/');
+        await expect(page.locator('.fo-hero-title')).toBeVisible();
+        await expectNoHorizontalOverflow(page, LANDING_LANDMARKS);
+        // The landing is the longest public sheet — lazy sections
+        // (reveal-on-scroll, footer) only lay out once scrolled past,
+        // so the same contract is re-probed at the bottom of the page.
+        await page.evaluate(() =>
+          window.scrollTo(0, document.scrollingElement?.scrollHeight ?? 0),
+        );
+        await expect(page.locator('.fo-footer-inner')).toBeVisible();
+        await expectNoHorizontalOverflow(page, LANDING_LANDMARKS);
       });
 
       test('/colleges (قناة الزائر) بلا فيض', async ({ page }) => {
