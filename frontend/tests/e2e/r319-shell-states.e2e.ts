@@ -101,10 +101,26 @@ async function rowStates(page: Page): Promise<RowState[]> {
       const fg = getComputedStyle((label ?? el) as Element).color;
       const own = cs.backgroundColor;
       const painted = own !== 'rgba(0, 0, 0, 0)';
+      /* R326 fill-aware ground (the R325 P2.3 fill-wipe): the ACTIVE
+       * row paints its ink slab as a child (.nav-fill) — the row's own
+       * ground stays transparent by design. Without this the active
+       * row reads paper-on-paper 1:1 while the user sees paper-on-ink. */
+      let bg = painted ? own : '';
+      if (!bg) {
+        const fill = el.querySelector('.nav-fill');
+        if (fill) {
+          const fb = getComputedStyle(fill).backgroundColor;
+          const t = getComputedStyle(fill).transform;
+          const m = /matrix\(([\d.eE+-]+),/.exec(t);
+          const sx = m ? Math.abs(parseFloat(m[1]!)) : t === 'none' ? 1 : 0;
+          if (fb !== 'rgba(0, 0, 0, 0)' && sx >= 0.5) bg = fb;
+        }
+      }
+      if (!bg) bg = drawerBg;
       return {
         text: label?.textContent ?? '',
         on: el.classList.contains('on'),
-        bg: painted ? own : drawerBg,
+        bg,
         fg,
       };
     });
@@ -171,13 +187,24 @@ async function openDrawer(page: Page): Promise<void> {
 /** The «مقرّراتي الدراسية» row — the owner's exact ghost row. */
 const GHOST_ROW_TEXT = 'مقرّراتي الدراسية';
 
-async function ghostRowState(page: Page): Promise<{ bg: string; fg: string }> {
+async function ghostRowState(page: Page): Promise<{ bg: string; fill: string | null; fg: string }> {
   return page.evaluate((needle) => {
     const el = [...document.querySelectorAll('.sidebar .nav-item')].find((n) =>
       n.textContent?.includes(needle),
     )!;
     const label = el.querySelector('.nav-label')!;
-    return { bg: getComputedStyle(el).backgroundColor, fg: getComputedStyle(label).color };
+    /* R326 fill-aware: the landed .nav-fill slab (the R325 active-row
+     * ink wipe) — null when the wipe hasn't landed. */
+    let fill: string | null = null;
+    const fillEl = el.querySelector('.nav-fill');
+    if (fillEl) {
+      const fb = getComputedStyle(fillEl).backgroundColor;
+      const t = getComputedStyle(fillEl).transform;
+      const m = /matrix\(([\d.eE+-]+),/.exec(t);
+      const sx = m ? Math.abs(parseFloat(m[1]!)) : t === 'none' ? 1 : 0;
+      if (fb !== 'rgba(0, 0, 0, 0)' && sx >= 0.5) fill = fb;
+    }
+    return { bg: getComputedStyle(el).backgroundColor, fill, fg: getComputedStyle(label).color };
   }, GHOST_ROW_TEXT);
 }
 
@@ -214,15 +241,24 @@ for (const theme of THEMES) {
       await page.locator('.sidebar .nav-item', { hasText: GHOST_ROW_TEXT }).first().hover();
       const hovered = await ghostRowState(page);
       expect(hovered.bg, 'hovered row paints NO wash under (hover: none)').toBe('rgba(0, 0, 0, 0)');
-      const hoverRatio = await contrast(page, hovered.fg, await drawerBg(page));
+      const hoverGround = hovered.bg !== 'rgba(0, 0, 0, 0)' ? hovered.bg : hovered.fill ?? (await drawerBg(page));
+      const hoverRatio = await contrast(page, hovered.fg, hoverGround);
       expect(hoverRatio, `hovered «${GHOST_ROW_TEXT}» label ≥4.5:1 (was ≈1.1:1 before the fix)`).toBeGreaterThanOrEqual(4.5);
 
       // TAP the row (sticky hover on touch) — the owner's exact
-      // gesture. The row keeps its pair through the tap.
+      // gesture. The R325 fill-wipe may sweep the active slab in on
+      // nav; let it land and read the fill-aware pair.
       await page.tap('.sidebar .nav-item', { position: { x: 100, y: 14 } });
-      const tapped = await ghostRowState(page);
+      let tapped!: Awaited<ReturnType<typeof ghostRowState>>;
+      let tapGround = '';
+      let tapRatio = -1;
+      for (let attempt = 0; attempt < 40 && tapRatio < 4.5; attempt += 1) {
+        tapped = await ghostRowState(page);
+        tapGround = tapped.bg !== 'rgba(0, 0, 0, 0)' ? tapped.bg : tapped.fill ?? (await drawerBg(page));
+        tapRatio = await contrast(page, tapped.fg, tapGround);
+        if (tapRatio < 4.5) await page.waitForTimeout(100);
+      }
       expect(tapped.bg, 'tapped row paints NO wash (the B1 ghost is dead)').toBe('rgba(0, 0, 0, 0)');
-      const tapRatio = await contrast(page, tapped.fg, await drawerBg(page));
       expect(tapRatio, `tapped «${GHOST_ROW_TEXT}» label ≥4.5:1 after the tap`).toBeGreaterThanOrEqual(4.5);
 
       await context.close();

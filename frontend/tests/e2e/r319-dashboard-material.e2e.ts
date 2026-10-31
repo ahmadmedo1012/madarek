@@ -134,22 +134,28 @@ for (const theme of THEMES) {
 
     test('the week strip: 7 Sunday-first cells, exactly today inked', async ({ page }) => {
       await page.goto('/student/dashboard');
-      await expect(page.locator('.r319s-weekstrip')).toBeVisible({ timeout: 20000 });
+      /* R326 re-pin: the R325 P2.5 dashboard grew the WeekStrip grammar
+       * into ScheduleStrip (indicators.tsx) — same 7-column Sunday-first
+       * contract, same today ink-inversion (now on the head cell), the
+       * timetable slots added under each day. The selectors follow the
+       * shipped component; the contract is unchanged. */
+      await expect(page.locator('.ind-sched')).toBeVisible({ timeout: 20000 });
 
-      const strip = page.locator('.r319s-weekstrip');
-      const cells = strip.locator('.r319s-weekcell');
+      const strip = page.locator('.ind-sched');
+      const cells = strip.locator('.ind-sched-day');
       await expect(cells).toHaveCount(7);
       // FIXED_NOW 2026-03-15 is a Sunday → cell 0 (الأحد, inline-start
       // in the RTL row) is the inked one.
-      await expect(strip.locator('.r319s-weekcell--today')).toHaveCount(1);
-      await expect(cells.nth(0)).toHaveClass(/r319s-weekcell--today/);
+      await expect(strip.locator('.ind-sched-day--today')).toHaveCount(1);
+      await expect(cells.nth(0)).toHaveClass(/ind-sched-day--today/);
       await expect(cells.nth(0)).toHaveAttribute('aria-current', 'date');
       // Dates 15–21, Latin mono (the one-numeral convention).
-      const dates = await strip.locator('.r319s-weekcell-date').allTextContents();
+      const dates = await strip.locator('.ind-sched-date').allTextContents();
       expect(dates).toEqual(['15', '16', '17', '18', '19', '20', '21']);
-      // The inked cell inverts its ground (ink fill, paper label) —
+      // The inked head cell inverts its ground (ink fill, paper label) —
       // theme-reactive by construction.
-      const grounds = await cells.evaluateAll((els) =>
+      const heads = strip.locator('.ind-sched-head');
+      const grounds = await heads.evaluateAll((els) =>
         els.map((el) => getComputedStyle(el).backgroundColor),
       );
       expect(grounds[0]).not.toBe(grounds[1]);

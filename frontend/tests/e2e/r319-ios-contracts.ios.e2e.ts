@@ -74,6 +74,7 @@ import {
   createIphoneContext,
   drawerRowContracts,
   drawerScrollerContracts,
+  effectiveGround,
   fieldContracts,
   navRowPair,
   openDrawer,
@@ -176,10 +177,10 @@ for (const theme of THEMES) {
       expect(rest.bg, 'at-rest row paints NO wash (transparent ground)').toBe(
         'rgba(0, 0, 0, 0)',
       );
-      const restRatio = await contrastRatio(page, rest.fg, rest.drawerBg);
+      const restRatio = await contrastRatio(page, rest.fg, effectiveGround(rest));
       expect(
         restRatio,
-        `«${GHOST_ROW_TEXT}» at rest: ${rest.fg} on ${rest.drawerBg} = ${restRatio.toFixed(2)}:1 (≥4.5; was ≈1.1:1 before C1-A)`,
+        `«${GHOST_ROW_TEXT}» at rest: ${rest.fg} on ${effectiveGround(rest)} = ${restRatio.toFixed(2)}:1 (≥4.5; was ≈1.1:1 before C1-A)`,
       ).toBeGreaterThanOrEqual(4.5);
 
       // evidence frame — the owner's first screenshot, re-shot (drawer
@@ -195,7 +196,7 @@ for (const theme of THEMES) {
         expect(hovered.bg, 'hovered row paints NO wash under (hover: none)').toBe(
           'rgba(0, 0, 0, 0)',
         );
-        const hoverRatio = await contrastRatio(page, hovered.fg, hovered.drawerBg);
+        const hoverRatio = await contrastRatio(page, hovered.fg, effectiveGround(hovered));
         expect(hoverRatio, `hovered «${GHOST_ROW_TEXT}» ≥4.5:1`).toBeGreaterThanOrEqual(4.5);
       }
 
@@ -203,14 +204,25 @@ for (const theme of THEMES) {
       // click. The drawer closes on nav; the row stays in the DOM, its
       // computed pair still readable — and still no wash.
       await page.locator('.sidebar .nav-item', { hasText: GHOST_ROW_TEXT }).first().tap();
-      const tapped = await navRowPair(page, GHOST_ROW_TEXT);
+      /* R326: the tap ACTIVATES the row — the R325 fill-wipe sweeps the ink
+       * slab in (200ms) and the label flips to paper IN LOCKSTEP (by
+       * design: ink never sits on ink mid-flight). Let the wipe land, then
+       * read the pair against the fill-aware effective ground. */
+      let tapped!: Awaited<ReturnType<typeof navRowPair>>;
+      let tapGround = '';
+      let tapRatio = -1;
+      for (let attempt = 0; attempt < 40 && tapRatio < 4.5; attempt += 1) {
+        tapped = await navRowPair(page, GHOST_ROW_TEXT);
+        tapGround = effectiveGround(tapped);
+        tapRatio = await contrastRatio(page, tapped.fg, tapGround);
+        if (tapRatio < 4.5) await page.waitForTimeout(100);
+      }
       expect(tapped.bg, 'tapped row paints NO ghost wash — B1 is dead').toBe(
         'rgba(0, 0, 0, 0)',
       );
-      const tapRatio = await contrastRatio(page, tapped.fg, tapped.drawerBg);
       expect(
         tapRatio,
-        `tapped «${GHOST_ROW_TEXT}»: ${tapped.fg} on ${tapped.drawerBg} = ${tapRatio.toFixed(2)}:1 (≥4.5)`,
+        `tapped «${GHOST_ROW_TEXT}»: ${tapped.fg} on ${tapGround} = ${tapRatio.toFixed(2)}:1 (≥4.5)`,
       ).toBeGreaterThanOrEqual(4.5);
 
       await context.close();

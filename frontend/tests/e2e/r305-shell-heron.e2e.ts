@@ -74,8 +74,13 @@ async function assertNoHorizontalOverflow(page: Page, label: string): Promise<vo
 }
 
 /* ─── مساعدات القشرة ───────────────────────────────────────────── */
-const SIDEBAR_W_EXPANDED = 256;
-const SIDEBAR_W_COLLAPSED = 64;
+/* R326 re-pin: the R325 P2.3 app shell moved the sidebar to the
+ * r325-shell.css ladder — 264px expanded / 72px rail (was 256/64 in
+ * tokens.css; --sidebar-w / --sidebar-w-collapsed now route through
+ * --app-sidebar-w / --app-sidebar-rail). The e2e contract tracks the
+ * shipped design; the width assertions below follow the new ladder. */
+const SIDEBAR_W_EXPANDED = 264;
+const SIDEBAR_W_COLLAPSED = 72;
 
 async function sidebarWidth(page: Page): Promise<number> {
   const box = await page.locator('nav.sidebar').boundingBox();

@@ -398,6 +398,7 @@ export function ScheduleStrip({
           <div
             key={name}
             className={`ind-sched-day${i === todayDow ? ' ind-sched-day--today' : ''}`}
+            aria-current={i === todayDow ? 'date' : undefined}
           >
             <span className="ind-sched-head">
               <span className="ind-sched-dayname">{name}</span>

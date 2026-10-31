@@ -15,8 +15,9 @@ import { ToastHost } from "@/components/ui/toast";
 import { FeedbackSheetHost } from "@/features/feedback/FeedbackFab";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { installGlobalErrorHandlers } from "@/lib/telemetry";
+import { installGlobalErrorHandlers, crumb } from "@/lib/telemetry";
 import { ensureRTL } from "@/lib/rtl";
+import { BlockingUpdateGate, useAppUpdates, useVersionGate } from "@/lib/updates";
 // Arabic-first: the app is authored RTL. Applied at module scope; Android
 // bakes the direction at startup (first-ever launch applies on next start).
 I18nManager.allowRTL(true);
@@ -29,6 +30,8 @@ installGlobalErrorHandlers();
 
 function RootNavigator() {
   const { name } = useTheme();
+  // R326 M0.7 — silent OTA check (cold start + foreground, throttled).
+  useAppUpdates();
   return (
     // R326 M1.3/M2.3: no global `slide_from_left` — the physical direction is
     // wrong/janky under forced RTL on Android. Platform-default stack
@@ -60,6 +63,12 @@ export default function RootLayout() {
   // been applied yet (first-ever launch). While the check runs we keep the
   // splash up — no LTR flash, no mirrored screens.
   const [rtlReady, setRtlReady] = useState(false);
+  // R326 M0.7 — the server-issued minimum-version floor: below it, the
+  // blocking gate replaces the app (nothing runs under the floor).
+  const gate = useVersionGate();
+  useEffect(() => {
+    crumb("app: root layout mounted");
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -83,6 +92,14 @@ export default function RootLayout() {
 
   if (!loaded || !rtlReady) {
     return null;
+  }
+
+  if (gate.status === "blocked") {
+    return (
+      <ErrorBoundary scope="root">
+        <BlockingUpdateGate updateUrl={gate.updateUrl} />
+      </ErrorBoundary>
+    );
   }
 
   return (

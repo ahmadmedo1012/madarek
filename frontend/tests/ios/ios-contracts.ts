@@ -226,7 +226,28 @@ export async function drawerRowContracts(page: Page): Promise<IosRowContract[]> 
       const fg = getComputedStyle((label ?? el) as Element).color;
       const own = cs.backgroundColor;
       const painted = own !== 'rgba(0, 0, 0, 0)';
-      const bg = painted ? own : drawerBg;
+      /* R326 fill-aware ground: the R325 P2.3 active row paints its ink
+       * slab as a DEDICATED CHILD (.nav-fill, z-index -1) — the row's own
+       * background stays transparent by design. The effective ground for
+       * the label is therefore: the row's own paint, else the FIRST
+       * painted full-cover child (.nav-fill), else the drawer sheet.
+       * (Without this, the active row reads paper-on-paper ≈1:1 while the
+       * user sees paper-on-ink — a probe gap, not a paint bug.) */
+      let bg = own;
+      if (!painted) {
+        const fill = el.querySelector('.nav-fill');
+        const fillBg = fill ? getComputedStyle(fill).backgroundColor : '';
+        if (fill && fillBg !== 'rgba(0, 0, 0, 0)') {
+          // Only when the wipe has actually landed (scaleX ≥ 0.5 — the
+          // 200ms transition may be mid-flight on a just-activated route;
+          // scaleX(0) is the at-rest invisible rail).
+          const t = getComputedStyle(fill).transform;
+          const m = /matrix\(([\d.eE+-]+),/.exec(t);
+          const sx = m ? Math.abs(parseFloat(m[1]!)) : t === 'none' ? 1 : 0;
+          if (sx >= 0.5) bg = fillBg;
+        }
+      }
+      if (bg === 'rgba(0, 0, 0, 0)') bg = drawerBg;
       return {
         text: (label?.textContent ?? '').trim(),
         on: el.classList.contains('on'),
@@ -238,25 +259,45 @@ export async function drawerRowContracts(page: Page): Promise<IosRowContract[]> 
   });
 }
 
-/** One row's paint pair (own background + label color + the drawer ground). */
+/** One row's paint pair (own background + the landed R325 fill-wipe +
+ * label color + the drawer ground). `fill` is the ink slab's color when
+ * the wipe has landed (scaleX ≥ 0.5) and null otherwise — the caller
+ * picks the effective ground: own paint, else fill, else drawer sheet. */
 export async function navRowPair(
   page: Page,
   text: string,
-): Promise<{ bg: string; fg: string; drawerBg: string }> {
+): Promise<{ bg: string; fill: string | null; fg: string; drawerBg: string }> {
   return page.evaluate(
     (needle) => {
       const el = [...document.querySelectorAll('.sidebar .nav-item')].find((n) =>
         n.textContent?.includes(needle),
       )!;
       const label = el.querySelector('.nav-label')!;
+      let fill: string | null = null;
+      const fillEl = el.querySelector('.nav-fill');
+      if (fillEl) {
+        const fb = getComputedStyle(fillEl).backgroundColor;
+        const t = getComputedStyle(fillEl).transform;
+        const m = /matrix\(([\d.eE+-]+),/.exec(t);
+        const sx = m ? Math.abs(parseFloat(m[1]!)) : t === 'none' ? 1 : 0;
+        if (fb !== 'rgba(0, 0, 0, 0)' && sx >= 0.5) fill = fb;
+      }
       return {
         bg: getComputedStyle(el).backgroundColor,
+        fill,
         fg: getComputedStyle(label).color,
         drawerBg: getComputedStyle(document.querySelector('nav.sidebar')!).backgroundColor,
       };
     },
     text,
   );
+}
+
+/** The label's effective ground: the row's own paint, else the landed
+ * fill-wipe slab, else the drawer sheet (R326 fill-aware contract). */
+export function effectiveGround(pair: { bg: string; fill: string | null; drawerBg: string }): string {
+  if (pair.bg !== 'rgba(0, 0, 0, 0)') return pair.bg;
+  return pair.fill ?? pair.drawerBg;
 }
 
 /** The engine's own hover/pointer media truth (annotated per test). */

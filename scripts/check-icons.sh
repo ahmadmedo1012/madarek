@@ -72,7 +72,13 @@ violations=0
 # belong to), each carrying a role="img"/progressbar contract and real
 # data — NOT iconography. UI icons keep going through <Icon icon={...} />
 # everywhere, this file included.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/|frontend/src/brand/|frontend/src/pages/BrandPage\.tsx'
+# R325 P2.5 (re-pinned R326): components/patterns/indicators.tsx — the
+# seven drafting instruments' glyph ALPHABET (✓/✗/▨/▨·dots/hatch) is the
+# documented indicator language itself (DESIGN.md §R325: attendance
+# ticks, mastery cells, streak ticks): the glyphs ARE the data mark, the
+# same class as Ledger's chart marks. UI icons elsewhere still go through
+# <Icon icon={...} />.
+ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/components/patterns/indicators\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/|frontend/src/brand/|frontend/src/pages/BrandPage\.tsx'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):
