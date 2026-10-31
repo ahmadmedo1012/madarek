@@ -27,19 +27,29 @@ without a device is written «غير مُثبَت — يحتاج جهازاً» 
 | A4 | CI gate «poisoned responses» (render net × malformed API) | **done** | `a569d5a1`+`17298674` — poisoned-net.test.tsx: 112 routes × 5 hostile feeds = 560 combos, contract = real tree with text, never a throw/white screen. CAUGHT & FIXED: (1) parseEnvelope `{data:null}` → truthy envelope → every `q.data?.a.b` crash — the owner's post-login white screen; (2) `training/[slug]`, `training/[slug]/lesson/[lessonId]`, `competitions/[id]` `return null` white screens → honest EmptyStates; (3) api() 20s timer leak per request. Also: SafeAreaProvider jest mock — the real provider NEVER rendered children under jest (the old net was hollow) |
 | B1 | the ONE logo (build-app-icons.mjs, all assets, cross-fade splash) | **done** | `a6033675` — scripts/brand/build-app-icons.mjs parses the 32-grid geometry OUT of mark.ts and renders icon · adaptive fg/bg/mono · splash-icon · favicon(48) · notification-icon(96) + shared/brand/mark.svg (the one SVG). tokens:check now byte-verifies all 8 assets in CI (icons:check 8/8). Old hand-restated script deleted |
 | B2 | loader orchestrator (`Boot`/`Skeleton`/`InlineBusy`) | **done** | `8df42d47` — BootMark (two squares converging, heronEase, reduce-motion static), Boot at the splash's exact geometry (120, centred — cross-fade parity), honest 6s «الخادم يستيقظ…» + retry, LoadingScreen reroutes to Boot, Skeleton drafting pulse, InlineBusy + Button ≥300ms anti-flicker, ActivityIndicator eliminated. Deterministic hand-rolled reanimated jest mock |
-| B3 | navigation (role tabs, RTL transitions, deep links, new help copy) | **pending** | — |
-| B4 | B acceptance — RN-web shots × role × theme × width, 3 reviewers ≥ 9 | **pending** | — |
+| B3 | navigation (role tabs, RTL transitions, deep links, new help copy) | **done** | `6bf435d2` — slide_from_left removed from ALL role stacks + auth sub-screens (platform-default = RTL-aware; the R326 fix had covered the root stack only); tab state lights on sub-screens (prefix match) + 2dp orange underline marker; dismissTo keeps the LIVE tab instance (scroll preserved); settings/account reachable for every role (AppTopBar «حسابي»). Help copy already clean (M1.3) |
+| B4 | B acceptance — RN-web shots × role × theme × width, 3 reviewers ≥ 9 | **partial — 1/3 ≥ 9, findings feed C2** | 20 shots in docs/redesign/r327/screens/ (5 roles × light+dark @390, student 360/768 × both themes, welcome/auth/tabs) via expo export web + same-origin proxy + Playwright (real production API logins). Reviewers (VLM, independent): R1 Heron audit **9.06 ✓** · R2 UX **~8** (login error clarity, courses attention, profile/AI empty states) · R3 red-team **3 real defects**: content↔tab-bar overlap @360 (cut button), empty box in agenda @768, registrar topbar name ellipsis → filed as Z6-Z8, C2 owns the fixes |
 | C1 | mobile design system = Heron (tokens-only, lint rule, ui library) | **pending** | — |
 | C2 | screens (student → teacher → registrar → owner) with all 6 states | **pending** | — |
 | C3 | native features (push, PDF, upload, video, biometric, 401 logout) | **pending** | — |
 | C4 | performance budgets (cold < 2.5s, 60fps lists, bundle ≤ +5%, .hbc) | **pending** | — |
 | C5 | fix the 87 pinned lint warnings screen-by-screen → reactCompiler decision | **pending** | — |
-| D1 | web `/app` distribution page (downloads, QR, OTA channels, min version) | **pending** | — |
+| D1 | web `/app` distribution page (downloads, QR, OTA channels, min version) | **done** | `ed284bca` — the sheet the backend already promises (status.updateUrl=…/app): APK artifact + builds page, TestFlight honestly pending, ink-on-paper QR (zero external services), OTA channels explainer, LIVE minAppVersion from /api/v1/status, linked from landing footer + student dashboard. tsc 0 · vitest 3049/3049 · build 8.07s |
 | D2 | Android AAB production build + submit prep (owner key documented) | **pending** | — |
 | D3 | iOS prep (everything without Apple) + docs/RELEASE.md owner steps | **pending** | — |
 | D4 | OTA auto-update proven (3 examples) in docs/RELEASE.md | **pending** | — |
 | E | W remainder (P2.4, P3, P4b–f, P5, Y7, Y8, keep-warm) | **pending** | see `docs/redesign/r325/HANDOFF.md` |
 | F | red team + release rehearsal + `docs/redesign/r327/REPORT.md` | **pending** | — |
+
+## Defect ledger (Z-series, R327)
+
+| # | Defect | Status |
+|---|--------|--------|
+| Z6 | RN-web @360: scroll content collides with the bottom tab bar (a cut button behind the bar) | **open — C2** (screenshots: student-dash-360-light/dark) |
+| Z7 | RN-web @768: an empty white box renders in the agenda section (broken/missing badge) | **open — C2** |
+| Z8 | Registrar topbar name clipped with ellipsis while space remains (numberOfLines=1) | **open — C2** |
+| Z9 | agent-browser coordinate clicks are unreliable on the RN-web app (previous Stack screens stay mounted → text-includes matches stale buttons; use exact-match dispatch) | **documented — test tooling note, not an app defect** |
+| Z10 | The user-profile themePreference (LIGHT default) overrides the system dark scheme — «dark screenshots» initially captured LIGHT; in-app toggle is the honest path | **documented — behavior by design (profile sync), noted for screenshot runs** |
 
 ## Skills/tools actually used (logged as they fire)
 
