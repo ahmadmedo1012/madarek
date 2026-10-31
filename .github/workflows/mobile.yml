@@ -59,6 +59,8 @@ jobs:
         run: npx expo lint -- --max-warnings 999
       - name: Contract-check (consumed endpoints vs backend source)
         run: npm run contract-check
+      - name: Render net (jest — every route screen mounts, 112 routes)
+        run: npm test -- --ci
       - name: Export bundle (android)
         run: npx expo export --platform android --output-dir dist-export-android
       - name: Export bundle (ios)

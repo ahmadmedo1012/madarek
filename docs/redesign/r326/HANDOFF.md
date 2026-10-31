@@ -22,12 +22,12 @@ M-streams and W run in parallel; M0 went first.
 | M0.3 | ONE branch | **done** | `a80931c5`; `git ls-remote --heads` → `main` only; ledger `docs/history/branches.md` (r322/map's 2 unique commits = superseded Heron study stubs, discarded with proof) |
 | M1.3 | crash causes a–c, e + nav/UX defects | **done** | `b063f4e2` — Intl lazy+safe ×7 sites, reactCompiler OFF, 5 unused native modules removed, RTL one-time reload, `slide_from_left` removed, `/auth/login` alias, SHEET jargon killed, help creds behind `EXPO_PUBLIC_PILOT_HELP_ACCOUNTS` |
 | M0.5 | EAS OTA config | **done** | `app.config.ts`: `runtimeVersion: fingerprint`, `updates.url` + `ON_LOAD` + `fallbackToCacheTimeout: 0`; `eas.json` channels + `appVersionSource: remote` + preview `autoIncrement` |
-| M1.1 | crash visibility (client) | **done (client)** | `ErrorBoundary` root+navigator, global handlers, breadcrumbs, `telemetry.ts` → `/client-errors`; **backend endpoint pending** |
-| M0.4 | shared tokens/brand/API client | **pending** | — |
-| M0.6 | automation (Actions + EAS workflows) | **pending** | — |
-| M0.7 | update UX + min-version gate | **pending** | needs `/status` fields |
+| M0.6 | automation | **done** | `.github/workflows/mobile.yml` (gates→OTA both channels→preview build on native diff) + `deploy-smoke.yml` (buildId wait → health/logins/dashboard/OpenAPI); `render.yaml` buildFilter; `docs/RELEASE.md`; **EXPO_TOKEN secret set** (API-encrypted, HTTP 201). **Proven live on `f40181f1`**: Mobile workflow 3/3 jobs green — OTA published to production+preview branches; channels created+linked (production/preview/development); device manifest fetch with runtime headers → HTTP 200, manifestId `01a18f57-ceb5…`, launchAsset on assets.eascdn.net, 57 assets |
+| M0.7 | update UX + min-version gate | **done** | `apps/mobile/src/lib/updates.tsx` — silent OTA check (cold start + foreground, 15s throttle) with «تحديث جاهز» toast; `/status` minAppVersion compare → blocking «يلزم تحديث التطبيق» screen; **live on Render** (buildId `f40181f1cb5c` serves minAppVersion/updateUrl) |
+| M1.1 | crash visibility | **done** | client (ErrorBoundary root+navigator, global handlers, breadcrumbs, telemetry.ts) + backend (POST/GET/PATCH /client-errors, 15/15 tests) + owner inbox UI («أخطاء تطبيق الجوّال» in FeedbackInboxPage); E2E on local stack: anonymous report → owner inbox → review toggle; openapi 247→253 ops |
 | M0.8 | `/app` distribution page | **pending** | — |
-| M1.2 | Maestro + jest render tests | **pending** | — |
+| M2.6 | push backend half | **done (registration)** | `PushDevice` model + `POST/GET/DELETE /me/push-devices` (the mobile proposal contract verbatim); reinstall upsert E2E-proven on local stack; `PUSH_ENABLED` env flag ready; the Expo fan-out + client wiring land with M2.6 |
+| CI-green | the four r325-era reds fixed | **done** | `b159390d` — icons allowlist (indicators glyph alphabet), bundle 768→776 re-pin (+1.0% documented), shell widths 256/64→264/72 (P2.3 ladder), iOS drawer probe fill-aware (.nav-fill effective ground + lockstep settle), ScheduleStrip re-pin + aria-current restored, deploy-smoke OpenAPI tolerance. Hermetic e2e 144 passed before fixes; failing specs re-verified green (29+8+19+10) |
 | M2.1–2.3 | brand, loaders, navigation | **pending** | — |
 | M2.4–2.6 | design system, screens, device features | **pending** | — |
 | M3 | store prep | **pending** | — |
