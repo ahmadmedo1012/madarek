@@ -10,6 +10,7 @@ import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { adminApi } from "@/api/admin";
 import { get } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { latn } from "@/lib/format";
 
 interface DigitalPayload {
@@ -34,6 +35,7 @@ interface HealthPayload {
 
 /** Pushed: /admin/digital — «التحوّل الرقميّ» (web AdminDigitalPage parity) + the real /health probe. */
 export default function AdminDigital() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const metrics = useQuery({
     queryKey: ["admin", "digital", scope],
@@ -71,7 +73,7 @@ export default function AdminDigital() {
           <SkeletonList rows={5} />
         ) : metrics.isError ? (
           <ErrorState
-            message={(metrics.error as Error).message}
+            message={(metrics.error as Error | null)?.message}
             onRetry={() => metrics.refetch()}
           />
         ) : d ? (
@@ -112,7 +114,7 @@ export default function AdminDigital() {
           <RowList>
             <LedgerRow last>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                <Server size={18} color="#62625F" />
+                <Server size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="medium">
                     قاعدة البيانات

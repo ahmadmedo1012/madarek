@@ -58,7 +58,7 @@ function AdminReports() {
         {reports.isLoading ? (
           <SkeletonList rows={6} />
         ) : reports.isError ? (
-          <ErrorState message={(reports.error as Error).message} onRetry={() => reports.refetch()} />
+          <ErrorState message={(reports.error as Error | null)?.message} onRetry={() => reports.refetch()} />
         ) : !reports.data || typeof reports.data !== "object" ? (
           <EmptyState title="لا توجد بيانات بعد" message="ستظهر التقارير فور توفّر بيانات المؤسسة." />
         ) : (

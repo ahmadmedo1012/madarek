@@ -13,6 +13,7 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
 import { ApiError } from "@/api/client";
+import { usePalette } from "@/design/theme";
 import { fromNow } from "@/lib/format";
 import {
   FlagToggle,
@@ -45,6 +46,7 @@ interface FlagRow {
  * registry-only effect).
  */
 export default function OwnerSystem() {
+  const p = usePalette();
   const qc = useQueryClient();
   const [editKey, setEditKey] = useState<{ key: string; value: string } | null>(null);
   const [flagConfirm, setFlagConfirm] = useState<FlagRow | null>(null);
@@ -126,7 +128,7 @@ export default function OwnerSystem() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : sys.isError ? (
             <ErrorState
-              message={(sys.error as Error).message}
+              message={(sys.error as Error | null)?.message}
               onRetry={() => sys.refetch()}
               compact
             />
@@ -176,7 +178,7 @@ export default function OwnerSystem() {
             <RowList>
               <LedgerRow last>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                  <HardDrive size={18} color="#62625F" />
+                  <HardDrive size={18} color={p.textMuted} />
                   <T variant="body" color="muted">
                     {sys.isError ? "—" : "غير متوفر"}
                   </T>
@@ -224,7 +226,7 @@ export default function OwnerSystem() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : settings.isError ? (
             <ErrorState
-              message={(settings.error as Error).message}
+              message={(settings.error as Error | null)?.message}
               onRetry={() => settings.refetch()}
               compact
             />
@@ -269,13 +271,13 @@ export default function OwnerSystem() {
             <SkeletonList rows={3} rowHeight={56} />
           ) : flags.isError ? (
             <ErrorState
-              message={(flags.error as Error).message}
+              message={(flags.error as Error | null)?.message}
               onRetry={() => flags.refetch()}
               compact
             />
           ) : flagRows.length === 0 ? (
             <EmptyState
-              icon={<Settings size={22} color="#62625F" />}
+              icon={<Settings size={22} color={p.textMuted} />}
               title="لا توجد أعلام مُعرَّفة"
               message="لم تُعرَّف أعلام ميزات بعد؛ تُدار حالياً مباشرةً من قاعدة بيانات المنصّة."
             />

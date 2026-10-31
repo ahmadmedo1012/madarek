@@ -13,6 +13,7 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
 import { ApiError } from "@/api/client";
+import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
 import { alertCategoryLabel } from "@/features/governance/components";
 
@@ -33,6 +34,7 @@ interface OwnerAlertRow {
  * audit row). This is the owner bell target from every tab's AppTopBar.
  */
 export default function OwnerAlerts() {
+  const tones = useStatusTones();
   const qc = useQueryClient();
   const [resolveTarget, setResolveTarget] = useState<OwnerAlertRow | null>(null);
 
@@ -72,10 +74,10 @@ export default function OwnerAlerts() {
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
         ) : alerts.isError ? (
-          <ErrorState message={(alerts.error as Error).message} onRetry={() => alerts.refetch()} />
+          <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            icon={<CheckCircle2 size={22} color="#3F8F5C" />}
+            icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
             title="لا توجد تنبيهات مفتوحة"
             message="كل أنظمة المنصّة تعمل بشكل طبيعيّ — تابع آخر العمليّات من سجلّ النشاط."
           />

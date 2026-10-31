@@ -12,6 +12,7 @@ import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { dateTime, fromNow, latn, num } from "@/lib/format";
 import {
   countAr,
@@ -47,6 +48,7 @@ interface SyncStatusPayload {
 
 /** Pushed: /admin/sync — «المزامنة مع البيانات الرسمية» (web AdminSyncPage parity). */
 export default function AdminSync() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const status = useQuery({
@@ -83,7 +85,7 @@ export default function AdminSync() {
         <Button
           label={trigger.isPending ? "جارٍ التشغيل…" : "تشغيل المزامنة"}
           kind="primary"
-          icon={<RefreshCw size={14} color="#FFFFFF" />}
+          icon={<RefreshCw size={14} color={p.primaryFg} />}
           disabled={trigger.isPending}
           onPress={() => trigger.mutate()}
         />
@@ -91,7 +93,7 @@ export default function AdminSync() {
         {status.isLoading ? (
           <SkeletonList rows={5} />
         ) : status.isError ? (
-          <ErrorState message={(status.error as Error).message} onRetry={() => status.refetch()} />
+          <ErrorState message={(status.error as Error | null)?.message} onRetry={() => status.refetch()} />
         ) : !status.data ? (
           <EmptyState
             title="لم تُنفَّذ أي مزامنة بعد"

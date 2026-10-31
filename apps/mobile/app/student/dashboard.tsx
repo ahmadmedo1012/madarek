@@ -92,7 +92,7 @@ function StudentDashboard() {
         {dash.isLoading ? (
           <SkeletonList rows={2} rowHeight={72} />
         ) : dash.isError ? (
-          <ErrorState message={(dash.error as Error).message} onRetry={() => dash.refetch()} />
+          <ErrorState message={(dash.error as Error | null)?.message} onRetry={() => dash.refetch()} />
         ) : !d || !kpi ? null : (
           <View style={{ gap: sp[12] }}>
             <View style={{ flexDirection: "row", gap: sp[8] }}>
@@ -162,7 +162,7 @@ function StudentDashboard() {
           {gaps.isLoading ? (
             <SkeletonList rows={2} rowHeight={56} />
           ) : gaps.isError ? (
-            <ErrorState message={(gaps.error as Error).message} onRetry={() => gaps.refetch()} compact />
+            <ErrorState message={(gaps.error as Error | null)?.message} onRetry={() => gaps.refetch()} compact />
           ) : (
             <GapList gaps={gaps.data ?? []} max={3} fallbackToMatrix />
           )}

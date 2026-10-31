@@ -16,6 +16,7 @@ import { adminApi } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { useSession, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { latn, num } from "@/lib/format";
 import { CAPABILITY_LABEL, type FacultyNode } from "@/features/governance/components";
 
@@ -25,6 +26,7 @@ import { CAPABILITY_LABEL, type FacultyNode } from "@/features/governance/compon
  * governance scope selector.
  */
 export default function AdminPermissions() {
+  const p = usePalette();
   const { id } = useLocalSearchParams<{ id: string }>();
   const userId = typeof id === "string" ? id : Array.isArray(id) ? id[0] : "";
   const scope = useInstitutionScope();
@@ -97,7 +99,7 @@ export default function AdminPermissions() {
         {permissions.isLoading ? (
           <SkeletonList rows={6} />
         ) : permissions.isError ? (
-          <ErrorState message={(permissions.error as Error).message} onRetry={() => permissions.refetch()} />
+          <ErrorState message={(permissions.error as Error | null)?.message} onRetry={() => permissions.refetch()} />
         ) : (
           <>
             <StatLine
@@ -139,7 +141,7 @@ export default function AdminPermissions() {
                         kind={granted ? "ghost" : "primary"}
                         small
                         disabled={busy || isSelf}
-                        icon={granted ? undefined : <ShieldCheck size={13} color="#FFFFFF" />}
+                        icon={granted ? undefined : <ShieldCheck size={13} color={p.primaryFg} />}
                         onPress={() => setPermission.mutate({ capability: cap, grant: !granted })}
                       />
                     </View>

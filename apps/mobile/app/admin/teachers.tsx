@@ -19,6 +19,7 @@ import type { AdminUserRow } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { POSITION_LABELS, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { initials, num } from "@/lib/format";
 import {
   pageOf,
@@ -104,7 +105,7 @@ function AdminTeachers() {
         {roster.isLoading ? (
           <SkeletonList rows={6} />
         ) : roster.isError ? (
-          <ErrorState message={(roster.error as Error).message} onRetry={() => roster.refetch()} />
+          <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا نتائج مطابقة" : "لم يتم تسجيل أساتذة بعد"}
@@ -178,6 +179,7 @@ interface SuggestionPayload {
 }
 
 function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: () => void }) {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [mode, setMode] = useState<"actions" | "position">("actions");
@@ -279,7 +281,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
             <Button
               label={verify.isPending ? "جارٍ التوثيق…" : "توثيق"}
               kind="primary"
-              icon={<ShieldCheck size={14} color="#FFFFFF" />}
+              icon={<ShieldCheck size={14} color={p.primaryFg} />}
               disabled={verify.isPending}
               onPress={() => verify.mutate(true)}
             />
@@ -288,7 +290,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
           <Button
             label="تعيين منصب"
             kind="accent"
-            icon={<Crown size={14} color="#FFFFFF" />}
+            icon={<Crown size={14} color={p.accentFg} />}
             onPress={() => setMode("position")}
           />
           <Button

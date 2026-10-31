@@ -61,7 +61,7 @@ function TeacherSchedule() {
       {offs.isLoading ? (
         <SkeletonList rows={5} />
       ) : offs.isError ? (
-        <ErrorState message={(offs.error as Error).message} onRetry={() => offs.refetch()} />
+        <ErrorState message={(offs.error as Error | null)?.message} onRetry={() => offs.refetch()} />
       ) : days.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجَّل"

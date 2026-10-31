@@ -125,7 +125,7 @@ function OwnerUsers() {
         {directory.isLoading ? (
           <SkeletonList rows={6} />
         ) : directory.isError ? (
-          <ErrorState message={(directory.error as Error).message} onRetry={() => directory.refetch()} />
+          <ErrorState message={(directory.error as Error | null)?.message} onRetry={() => directory.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}

@@ -72,7 +72,7 @@ function QualityCurriculum() {
         {tree.isLoading ? (
           <SkeletonList rows={6} />
         ) : tree.isError ? (
-          <ErrorState message={(tree.error as Error).message} onRetry={() => tree.refetch()} />
+          <ErrorState message={(tree.error as Error | null)?.message} onRetry={() => tree.refetch()} />
         ) : facs.length === 0 ? (
           <EmptyState
             title="لا مناهج بعد"

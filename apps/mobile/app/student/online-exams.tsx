@@ -68,7 +68,7 @@ export default function OnlineExamsScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={5} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : visible.length === 0 ? (
         <EmptyState
           title="لا توجد اختبارات هنا"

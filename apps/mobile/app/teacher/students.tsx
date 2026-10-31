@@ -29,7 +29,7 @@ function TeacherStudents() {
         <Card>
           <T variant="body" color="danger">تعذَّر تحميل مقرّراتك</T>
           <T variant="sm" color="muted">
-            {(offs.error as Error).message} — أعد المحاولة من ملفك أو اسحب للتحديث.
+            {(offs.error as Error | null)?.message} — أعد المحاولة من ملفك أو اسحب للتحديث.
           </T>
         </Card>
       ) : offerings.length === 0 ? (

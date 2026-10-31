@@ -14,6 +14,7 @@ import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { fullDate, latn } from "@/lib/format";
 import {
   type FacultyNode,
@@ -39,6 +40,7 @@ type ScopeKind = "none" | "faculty" | "department" | "offering";
 
 /** Pushed: /admin/invites — invite codes console (registration codes). */
 export default function AdminInvites() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const invites = useQuery({
@@ -120,14 +122,14 @@ const [maxUses, setMaxUses] = useState("1");
         <Button
           label="دعوة جديدة"
           kind="primary"
-          icon={<Plus size={14} color="#FFFFFF" />}
+          icon={<Plus size={14} color={p.primaryFg} />}
           onPress={() => setCreateOpen(true)}
         />
 
         {invites.isLoading ? (
           <SkeletonList rows={4} />
         ) : invites.isError ? (
-          <ErrorState message={(invites.error as Error).message} onRetry={() => invites.refetch()} />
+          <ErrorState message={(invites.error as Error | null)?.message} onRetry={() => invites.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد دعوات بعد"
@@ -165,7 +167,7 @@ const [maxUses, setMaxUses] = useState("1");
                     label="حذف"
                     kind="ghost"
                     small
-                    icon={<Trash2 size={13} color="#C72E00" />}
+                    icon={<Trash2 size={13} color={p.accentInk} />}
                     onPress={() => setDeleting(inv)}
                   />
                 </View>

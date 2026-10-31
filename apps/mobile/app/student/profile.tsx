@@ -141,7 +141,7 @@ function StudentProfile() {
           <SkeletonList rows={4} rowHeight={56} />
         ) : profile.isError ? (
           <ErrorState
-            message={(profile.error as Error).message}
+            message={(profile.error as Error | null)?.message}
             onRetry={() => profile.refetch()}
             compact
           />

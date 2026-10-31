@@ -100,10 +100,10 @@ export default function CatalogScreen() {
       />
 
       {catalog.isError ? (
-        <ErrorState message={(catalog.error as Error).message} onRetry={() => catalog.refetch()} />
+        <ErrorState message={(catalog.error as Error | null)?.message} onRetry={() => catalog.refetch()} />
       ) : !slug ? (
         <EmptyState
-          icon={<BookOpen size={22} color="#62625F" />}
+          icon={<BookOpen size={22} color={p.textMuted} />}
           title="لم تُحدَّد مؤسستك بعد"
           message="اختر مؤسستك من مبدّل المؤسسة لعرض دليل مقرّراتها."
         />

@@ -132,7 +132,7 @@ function BooksTab() {
         {loans.isLoading ? (
           <SkeletonList rows={2} rowHeight={56} />
         ) : loans.isError ? (
-          <ErrorState message={(loans.error as Error).message} onRetry={() => loans.refetch()} compact />
+          <ErrorState message={(loans.error as Error | null)?.message} onRetry={() => loans.refetch()} compact />
         ) : openLoans.length === 0 ? (
           <SectionNote>لا استعارات نشطة — اضغط «استعارة» على أي كتاب متاح ليظهر هنا.</SectionNote>
         ) : (
@@ -157,7 +157,7 @@ function BooksTab() {
         {books.isLoading ? (
           <SkeletonList rows={5} />
         ) : books.isError ? (
-          <ErrorState message={(books.error as Error).message} onRetry={() => books.refetch()} />
+          <ErrorState message={(books.error as Error | null)?.message} onRetry={() => books.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<BookOpen size={24} color={p.textFaint} />}
@@ -365,10 +365,10 @@ function ResearchTab() {
       {archive.isLoading && debouncedQ.length < 2 ? (
         <SkeletonList rows={4} />
       ) : archive.isError && debouncedQ.length < 2 ? (
-        <ErrorState message={(archive.error as Error).message} onRetry={() => archive.refetch()} />
+        <ErrorState message={(archive.error as Error | null)?.message} onRetry={() => archive.refetch()} />
       ) : null}
       {search.isError && debouncedQ.length >= 2 ? (
-        <ErrorState message={(search.error as Error).message} onRetry={() => search.refetch()} />
+        <ErrorState message={(search.error as Error | null)?.message} onRetry={() => search.refetch()} />
       ) : null}
       {hits.length > 0 ? (
         <RowList>

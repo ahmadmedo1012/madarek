@@ -139,7 +139,7 @@ export default function Materials() {
       {materials.isLoading ? (
         <SkeletonList rows={5} />
       ) : materials.isError ? (
-        <ErrorState message={(materials.error as Error).message} onRetry={() => materials.refetch()} />
+        <ErrorState message={(materials.error as Error | null)?.message} onRetry={() => materials.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم ترفع ملفات بعد"

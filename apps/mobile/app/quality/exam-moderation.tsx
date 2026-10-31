@@ -15,6 +15,7 @@ import { examsApi } from "@/api/exams";
 import type { ExamQuestionRow, ExamTemplateRow } from "@/api/exams";
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette, useStatusTones } from "@/design/theme";
 import { fromNow, latn, num } from "@/lib/format";
 import { EXAM_KIND_LABEL, countAr, pageOf } from "@/features/governance/components";
 
@@ -26,6 +27,8 @@ interface ModerationTarget {
 
 /** Pushed: /quality/exam-moderation — «مراجعة الاختبارات» (web ExamModerationPage parity). */
 export default function QualityExamModeration() {
+  const p = usePalette();
+  const tones = useStatusTones();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const queue = useQuery({
@@ -114,10 +117,10 @@ export default function QualityExamModeration() {
           {queue.isLoading ? (
             <SkeletonList rows={4} />
           ) : queue.isError ? (
-            <ErrorState message={(queue.error as Error).message} onRetry={() => queue.refetch()} />
+            <ErrorState message={(queue.error as Error | null)?.message} onRetry={() => queue.refetch()} />
           ) : templates.length === 0 ? (
             <EmptyState
-              icon={<CheckCircle2 size={22} color="#3F8F5C" />}
+              icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
               title="لا شيء بانتظار المراجعة"
               message="كل قوالب الاختبارات المتاحة للطلاب اجتازت المراجعة."
             />
@@ -174,13 +177,13 @@ export default function QualityExamModeration() {
             <SkeletonList rows={2} />
           ) : questionBank.isError ? (
             <ErrorState
-              message={(questionBank.error as Error).message}
+              message={(questionBank.error as Error | null)?.message}
               onRetry={() => questionBank.refetch()}
               compact
             />
           ) : pendingQuestions.length === 0 ? (
             <EmptyState
-              icon={<ClipboardCheck size={22} color="#62625F" />}
+              icon={<ClipboardCheck size={22} color={p.textMuted} />}
               title="لا أسئلة بانتظار الاعتماد حالياً"
               message="لا يعرض مسار بنك الأسئلة أسئلة غير معتمدة في هذا الطابور بعد."
             />
@@ -232,14 +235,14 @@ export default function QualityExamModeration() {
           <Button
             label={busy ? "جارٍ الاعتماد…" : "اعتماد"}
             kind="primary"
-            icon={<CheckCircle2 size={14} color="#FFFFFF" />}
+            icon={<CheckCircle2 size={14} color={p.primaryFg} />}
             disabled={busy}
             onPress={() => target && runModeration(target, true)}
           />
           <Button
             label="رفض"
             kind="danger"
-            icon={<XCircle size={14} color="#FFFFFF" />}
+            icon={<XCircle size={14} color={p.accentFg} />}
             disabled={busy}
             onPress={() => target && setRejectConfirm(target)}
           />

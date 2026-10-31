@@ -16,6 +16,7 @@ import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { latn, num } from "@/lib/format";
 import {
   countAr,
@@ -48,6 +49,7 @@ const EMPTY_DRAFT: CourseDraft = {
 
 /** Pushed: /admin/courses — «إدارة المقرّرات» with CRUD + offerings. */
 export default function AdminCourses() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -172,7 +174,7 @@ export default function AdminCourses() {
         <Button
           label="مقرر جديد"
           kind="primary"
-          icon={<Plus size={14} color="#FFFFFF" />}
+          icon={<Plus size={14} color={p.primaryFg} />}
           onPress={() => {
             setEditingId(null);
             setDraft({ ...EMPTY_DRAFT });
@@ -182,7 +184,7 @@ export default function AdminCourses() {
         {courses.isLoading ? (
           <SkeletonList rows={5} />
         ) : courses.isError ? (
-          <ErrorState message={(courses.error as Error).message} onRetry={() => courses.refetch()} />
+          <ErrorState message={(courses.error as Error | null)?.message} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا توجد نتائج" : "لا توجد مقرّرات بعد"}
@@ -218,7 +220,7 @@ export default function AdminCourses() {
                       label="شعبة جديدة"
                       kind="ghost"
                       small
-                      icon={<Plus size={13} color="#282828" />}
+                      icon={<Plus size={13} color={p.text} />}
                       onPress={() => setOfferingCourse(c)}
                     />
                     <Button
@@ -241,7 +243,7 @@ export default function AdminCourses() {
                       label="حذف"
                       kind="ghost"
                       small
-                      icon={<Trash2 size={13} color="#C72E00" />}
+                      icon={<Trash2 size={13} color={p.accentInk} />}
                       onPress={() => setDeleting(c)}
                     />
                   </View>

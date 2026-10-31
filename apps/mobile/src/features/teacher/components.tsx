@@ -494,7 +494,7 @@ export function OfferingRoster({
 
   if (roster.isLoading) return <SkeletonList rows={5} />;
   if (roster.isError) {
-    return <ErrorState message={(roster.error as Error).message} onRetry={() => roster.refetch()} />;
+    return <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />;
   }
   if (rows.length === 0) {
     return (

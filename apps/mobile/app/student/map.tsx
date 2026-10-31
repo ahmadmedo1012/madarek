@@ -67,7 +67,7 @@ export default function CampusMapScreen() {
       onRefresh={() => faculties.refetch()}
     >
       {faculties.isError ? (
-        <ErrorState message={(faculties.error as Error).message} onRetry={() => faculties.refetch()} />
+        <ErrorState message={(faculties.error as Error | null)?.message} onRetry={() => faculties.refetch()} />
       ) : !slug ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}

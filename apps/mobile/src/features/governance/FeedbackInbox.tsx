@@ -81,7 +81,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
         {inbox.isLoading ? (
           <SkeletonList rows={4} />
         ) : inbox.isError ? (
-          <ErrorState message={(inbox.error as Error).message} onRetry={() => inbox.refetch()} />
+          <ErrorState message={(inbox.error as Error | null)?.message} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا تقارير هنا"

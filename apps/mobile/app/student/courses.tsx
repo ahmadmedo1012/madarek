@@ -13,6 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { BookOpen } from "lucide-react-native";
 import { learningApi } from "@/api/learning";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { Screen , SectionBar } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
@@ -24,6 +25,7 @@ import { countAr } from "@/features/student/more";
 import { CourseWell, ScrollBody, courseProgressHint } from "@/features/student/components";
 
 function StudentCourses() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const feed = useQuery({
     queryKey: ["enrollments", "me", scope],
@@ -41,10 +43,10 @@ function StudentCourses() {
         {feed.isLoading ? (
           <SkeletonList rows={5} rowHeight={96} />
         ) : feed.isError ? (
-          <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+          <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
-            icon={<BookOpen size={22} color="#62625F" />}
+            icon={<BookOpen size={22} color={p.textMuted} />}
             title="لم تُسجَّل في مقررات بعد"
             message="الإضافة تتم عبر إدارة شؤون الطلاب — ستظهر مقرّراتك هنا فور اعتماد تسجيلك."
             actionLabel="دليل المقرّرات"

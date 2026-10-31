@@ -70,7 +70,7 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
         ) : alerts.isError ? (
-          <ErrorState message={(alerts.error as Error).message} onRetry={() => alerts.refetch()} />
+          <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد تنبيهات حالياً"

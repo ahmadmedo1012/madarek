@@ -185,9 +185,9 @@ export default function CalendarScreen() {
       {loading ? (
         <SkeletonList rows={6} rowHeight={56} />
       ) : enrollments.isError ? (
-        <ErrorState message={(enrollments.error as Error).message} onRetry={() => enrollments.refetch()} />
+        <ErrorState message={(enrollments.error as Error | null)?.message} onRetry={() => enrollments.refetch()} />
       ) : dash.isError ? (
-        <ErrorState message={(dash.error as Error).message} onRetry={() => dash.refetch()} />
+        <ErrorState message={(dash.error as Error | null)?.message} onRetry={() => dash.refetch()} />
       ) : (
         <>
           {/* Month navigation */}

@@ -31,6 +31,7 @@ import {
  * badges grid keyed by rarity tones.
  */
 export default function GamificationScreen() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const profile = useQuery({
     queryKey: ["me", "profile", scope],
@@ -61,7 +62,7 @@ export default function GamificationScreen() {
       {profile.isLoading ? (
         <SkeletonList rows={2} rowHeight={72} />
       ) : profile.isError ? (
-        <ErrorState message={(profile.error as Error).message} onRetry={() => profile.refetch()} />
+        <ErrorState message={(profile.error as Error | null)?.message} onRetry={() => profile.refetch()} />
       ) : (
         <Card style={{ gap: sp[10] }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
@@ -76,7 +77,8 @@ export default function GamificationScreen() {
                 justifyContent: "center",
               }}
             >
-              <T variant="h2" weight="bold" style={{ color: "#FFFFFF" }}>
+              {/* C2b: tier orb is a data color — paper (p.surface) reads best on it, no tierFg token. */}
+              <T variant="h2" weight="bold" style={{ color: p.surface }}>
                 {num(level ?? null)}
               </T>
             </View>
@@ -106,7 +108,7 @@ export default function GamificationScreen() {
         {leaderboard.isLoading ? (
           <SkeletonList rows={5} rowHeight={56} />
         ) : leaderboard.isError ? (
-          <ErrorState message={(leaderboard.error as Error).message} onRetry={() => leaderboard.refetch()} compact />
+          <ErrorState message={(leaderboard.error as Error | null)?.message} onRetry={() => leaderboard.refetch()} compact />
         ) : (leaderboard.data ?? []).length === 0 ? (
           <SectionNote>لا يوجد ترتيب بعد — اكسب النقاط بإكمال الدروس والمسارات.</SectionNote>
         ) : (
@@ -157,7 +159,7 @@ export default function GamificationScreen() {
         {badges.isLoading ? (
           <SkeletonList rows={3} rowHeight={64} />
         ) : badges.isError ? (
-          <ErrorState message={(badges.error as Error).message} onRetry={() => badges.refetch()} compact />
+          <ErrorState message={(badges.error as Error | null)?.message} onRetry={() => badges.refetch()} compact />
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             title="لا أوسمة بعد"

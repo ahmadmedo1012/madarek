@@ -11,6 +11,7 @@ import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { num } from "@/lib/format";
 import {
   HonestLedger,
@@ -34,6 +35,7 @@ const ATTENDANCE_KEY_LABEL: Record<string, string> = {
 
 /** (tabs) Quality dashboard — «لوحة الجودة» (web QualityDashboardPage parity, honest rendering). */
 function QualityDashboard() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const overview = useQuery({
     queryKey: ["quality", "overview", scope],
@@ -70,7 +72,7 @@ function QualityDashboard() {
           <SkeletonList rows={6} />
         ) : overview.isError ? (
           <ErrorState
-            message={(overview.error as Error).message}
+            message={(overview.error as Error | null)?.message}
             onRetry={() => overview.refetch()}
           />
         ) : !data ? null : (
@@ -155,7 +157,7 @@ function QualityDashboard() {
             ) : null}
 
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-              <Eye size={12} color="#70706A" />
+              <Eye size={12} color={p.textFaint} />
               <T variant="xs" color="faint">
                 قطاع ضمان الجودة — وصول قراءة فقط · قراءة لحظية للمؤشرات.
               </T>

@@ -162,7 +162,7 @@ export function MessagesUI() {
         {feed.isLoading ? (
           <SkeletonList rows={6} />
         ) : feed.isError ? (
-          <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+          <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
         ) : conversations.length === 0 ? (
           <EmptyState
             title="لا رسائل بعد"

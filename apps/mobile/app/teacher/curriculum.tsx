@@ -175,7 +175,7 @@ export default function Curriculum() {
           {lectures.isLoading ? (
             <SkeletonList rows={3} />
           ) : lectures.isError ? (
-            <ErrorState message={(lectures.error as Error).message} onRetry={() => lectures.refetch()} />
+            <ErrorState message={(lectures.error as Error | null)?.message} onRetry={() => lectures.refetch()} />
           ) : rows.length === 0 ? (
             <EmptyState
               title="لا توجد محاضرات بعد"
@@ -406,7 +406,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
 
   if (detail.isLoading) return <SkeletonList rows={2} />;
   if (detail.isError) {
-    return <ErrorState message={(detail.error as Error).message} onRetry={() => detail.refetch()} compact />;
+    return <ErrorState message={(detail.error as Error | null)?.message} onRetry={() => detail.refetch()} compact />;
   }
 
   const chapters = lecture?.chapters ?? [];

@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { ApiError, post } from "@/api/client";
 import { sp } from "@/design/tokens";
+import { usePalette } from "@/design/theme";
 import { Screen, PageHeader } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { SecretField } from "@/components/ui/fields";
@@ -11,6 +12,7 @@ import { Card } from "@/components/ui/surfaces";
 
 /** /auth/reset-password?token=… — single-use 30-min token. */
 export default function ResetPassword() {
+  const p = usePalette();
   const params = useLocalSearchParams<{ token?: string }>();
   const [token, setToken] = useState("");
   const [password, setPassword] = useState("");
@@ -64,7 +66,7 @@ export default function ResetPassword() {
           <SecretField label="كلمة المرور الجديدة" value={password} onChangeText={setPassword} />
           <SecretField label="تأكيد كلمة المرور" value={confirm} onChangeText={setConfirm} onSubmitEditing={submit} />
           {error ? (
-            <Card style={{ borderColor: "#C72E00" }}>
+            <Card style={{ borderColor: p.accentInk }}>
               <T variant="sm" color="danger">{error}</T>
             </Card>
           ) : null}

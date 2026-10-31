@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/pressables";
 import { BrandMark } from "@/components/ui/brand";
 import { Card, Badge } from "@/components/ui/surfaces";
 import { RowList, LedgerRow } from "@/components/ui/data";
+import { usePalette } from "@/design/theme";
 
 /** The brand asset register (frontend/public/brand) — SVG sources named
  *  verbatim; the mobile app draws its own vector BrandMark twin. */
@@ -27,6 +28,7 @@ const BRAND_ASSETS: { file: string; label: string }[] = [
  * the official asset register and links to the platform identity page.
  */
 export default function OwnerContent() {
+  const p = usePalette();
   return (
     <Screen scroll>
       <StackHeader title="المحتوى والعلامة التجاريّة" kicker="لوحة المالك" />
@@ -76,7 +78,7 @@ export default function OwnerContent() {
         <Card>
           <View style={{ gap: 8 }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Info size={16} color="#62625F" />
+              <Info size={16} color={p.textMuted} />
               <T variant="body" weight="bold" style={{ flex: 1 }}>
                 قيد التطوير
               </T>
@@ -94,7 +96,7 @@ export default function OwnerContent() {
           <Card>
             <View style={{ gap: 8 }}>
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                <Palette size={16} color="#62625F" />
+                <Palette size={16} color={p.textMuted} />
                 <T variant="body" weight="bold" style={{ flex: 1 }}>
                   الإعلانات وأعلام الميزات
                 </T>
@@ -107,7 +109,7 @@ export default function OwnerContent() {
                 label="عن مدارك — الهويّة والمنصّة"
                 kind="ghost"
                 small
-                icon={<ArrowRight size={14} color="#282828" />}
+                icon={<ArrowRight size={14} color={p.text} />}
                 onPress={() => router.push("/about" as never)}
               />
             </View>
@@ -126,7 +128,7 @@ export default function OwnerContent() {
                 label="فتح صندوق التغذية الراجعة"
                 kind="ghost"
                 small
-                icon={<ArrowRight size={14} color="#282828" />}
+                icon={<ArrowRight size={14} color={p.text} />}
                 onPress={() => router.push("/owner/feedback" as never)}
               />
             </View>

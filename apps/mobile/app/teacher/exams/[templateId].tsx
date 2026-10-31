@@ -205,7 +205,7 @@ export default function ExamTemplateDetail() {
     return (
       <Screen scroll>
         <StackHeader title="قالب الاختبار" />
-        <ErrorState message={(template.error as Error).message} onRetry={() => template.refetch()} />
+        <ErrorState message={(template.error as Error | null)?.message} onRetry={() => template.refetch()} />
       </Screen>
     );
   }
@@ -338,7 +338,7 @@ export default function ExamTemplateDetail() {
       {attempts.isLoading ? (
         <SkeletonList rows={3} />
       ) : attempts.isError ? (
-        <ErrorState message={(attempts.error as Error).message} onRetry={() => attempts.refetch()} />
+        <ErrorState message={(attempts.error as Error | null)?.message} onRetry={() => attempts.refetch()} />
       ) : attemptRows.length === 0 ? (
         <EmptyState
           title="لا محاولات بعد"

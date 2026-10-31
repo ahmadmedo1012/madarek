@@ -77,7 +77,7 @@ export default function SelectInstitution() {
           </Card>
         ) : null}
         {error ? (
-          <Card style={{ borderColor: "#C72E00", backgroundColor: p.surface }}>
+          <Card style={{ borderColor: p.accentInk, backgroundColor: p.surface }}>
             <T variant="sm" color="danger">{error}</T>
           </Card>
         ) : null}

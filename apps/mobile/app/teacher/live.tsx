@@ -160,7 +160,7 @@ export default function TeacherLive() {
       {sessions.isLoading ? (
         <SkeletonList rows={4} />
       ) : sessions.isError ? (
-        <ErrorState message={(sessions.error as Error).message} onRetry={() => sessions.refetch()} />
+        <ErrorState message={(sessions.error as Error | null)?.message} onRetry={() => sessions.refetch()} />
       ) : (
         <>
           <View style={{ flexDirection: "row", gap: sp[8] }}>

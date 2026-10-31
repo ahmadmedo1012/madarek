@@ -132,7 +132,7 @@ function TeacherProfile() {
       {profile.isLoading ? (
         <SkeletonList rows={5} />
       ) : profile.isError ? (
-        <ErrorState message={(profile.error as Error).message} onRetry={() => profile.refetch()} />
+        <ErrorState message={(profile.error as Error | null)?.message} onRetry={() => profile.refetch()} />
       ) : !me ? (
         <EmptyState
           title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"

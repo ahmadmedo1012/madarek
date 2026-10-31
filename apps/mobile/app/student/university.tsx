@@ -187,7 +187,7 @@ export default function UniversityScreen() {
       {facts.isLoading ? (
         <SkeletonList rows={6} rowHeight={56} />
       ) : facts.isError ? (
-        <ErrorState message={(facts.error as Error).message} onRetry={() => facts.refetch()} />
+        <ErrorState message={(facts.error as Error | null)?.message} onRetry={() => facts.refetch()} />
       ) : !sheet || sheet.sections.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}

@@ -112,7 +112,7 @@ export default function SocialScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={4} rowHeight={96} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : posts.length === 0 ? (
         <EmptyState title="لا منشورات بعد" message="كن أول من يشارك تجربته أو سؤاله." />
       ) : (

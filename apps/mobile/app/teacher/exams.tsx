@@ -177,7 +177,7 @@ export default function Exams() {
           {templates.isLoading ? (
             <SkeletonList rows={4} />
           ) : templates.isError ? (
-            <ErrorState message={(templates.error as Error).message} onRetry={() => templates.refetch()} />
+            <ErrorState message={(templates.error as Error | null)?.message} onRetry={() => templates.refetch()} />
           ) : (templates.data ?? []).length === 0 ? (
             <EmptyState
               title="لم تُنشئ قوالب اختبارات بعد"
@@ -254,7 +254,7 @@ export default function Exams() {
           {bank.isLoading ? (
             <SkeletonList rows={5} />
           ) : bank.isError ? (
-            <ErrorState message={(bank.error as Error).message} onRetry={() => bank.refetch()} />
+            <ErrorState message={(bank.error as Error | null)?.message} onRetry={() => bank.refetch()} />
           ) : bankRows.length === 0 ? (
             <EmptyState
               title={q.trim() !== "" ? "لا توجد أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}

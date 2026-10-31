@@ -163,7 +163,7 @@ export default function Attendance() {
       {offs.isLoading ? (
         <T variant="body" color="muted">جارٍ تحميل مقرّراتك…</T>
       ) : offs.isError ? (
-        <ErrorState message={(offs.error as Error).message} onRetry={() => offs.refetch()} compact />
+        <ErrorState message={(offs.error as Error | null)?.message} onRetry={() => offs.refetch()} compact />
       ) : offerings.length === 0 ? (
         <EmptyState title="لا توجد مقرّرات" message="ستظهر المقرّرات هنا حين تُسنَد إليك." />
       ) : (
@@ -201,7 +201,7 @@ export default function Attendance() {
           {roster.isLoading ? (
             <SkeletonList rows={4} />
           ) : roster.isError ? (
-            <ErrorState message={(roster.error as Error).message} onRetry={() => roster.refetch()} />
+            <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
             <EmptyState title="لا يوجد طلاب" message="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
           ) : (

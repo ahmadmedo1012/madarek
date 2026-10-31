@@ -59,7 +59,7 @@ function QualityEngagement() {
           <SkeletonList rows={5} />
         ) : engagement.isError ? (
           <ErrorState
-            message={(engagement.error as Error).message}
+            message={(engagement.error as Error | null)?.message}
             onRetry={() => engagement.refetch()}
           />
         ) : !d ? null : (

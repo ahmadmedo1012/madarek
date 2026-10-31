@@ -48,7 +48,7 @@ export default function ResultsScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={6} rowHeight={72} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : !hasGrades ? (
         <EmptyState
           title="لم تُسجَّل أي درجات بعد"

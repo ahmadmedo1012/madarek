@@ -139,7 +139,7 @@ function TeacherDashboard() {
       <Screen scroll>
         <AppTopBar alertsPath="/teacher/alerts" />
         <PageHeader title="لوحة الأستاذ" />
-        <ErrorState message={(dash.error as Error).message} onRetry={() => dash.refetch()} />
+        <ErrorState message={(dash.error as Error | null)?.message} onRetry={() => dash.refetch()} />
       </Screen>
     );
   }
@@ -220,7 +220,7 @@ function TeacherDashboard() {
       {offs.isLoading ? (
         <SkeletonList rows={2} rowHeight={48} />
       ) : offs.isError ? (
-        <ErrorState message={(offs.error as Error).message} onRetry={() => offs.refetch()} compact />
+        <ErrorState message={(offs.error as Error | null)?.message} onRetry={() => offs.refetch()} compact />
       ) : slots.length === 0 ? (
         <Card>
           <T variant="body" weight="bold">لا محاضرات اليوم</T>

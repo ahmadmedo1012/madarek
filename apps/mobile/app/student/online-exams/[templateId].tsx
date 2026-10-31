@@ -763,7 +763,7 @@ function ResultBody({
                 جارٍ تحميل المراجعة…
               </T>
             ) : review.isError ? (
-              <ErrorState message={(review.error as Error).message} onRetry={() => review.refetch()} compact />
+              <ErrorState message={(review.error as Error | null)?.message} onRetry={() => review.refetch()} compact />
             ) : (
               <View style={{ gap: sp[10] }}>
                 {(review.data?.questions ?? []).map((q, i) => (

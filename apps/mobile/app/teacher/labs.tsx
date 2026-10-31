@@ -78,7 +78,7 @@ export default function TeacherLabs() {
       {labs.isLoading ? (
         <SkeletonList rows={4} />
       ) : labs.isError ? (
-        <ErrorState message={(labs.error as Error).message} onRetry={() => labs.refetch()} />
+        <ErrorState message={(labs.error as Error | null)?.message} onRetry={() => labs.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم تُضف معامل بعد"

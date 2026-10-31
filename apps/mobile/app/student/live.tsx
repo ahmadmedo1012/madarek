@@ -74,7 +74,7 @@ export default function LiveScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={4} rowHeight={72} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : list.length === 0 ? (
         <EmptyState
           title="لا توجد بثوث بعد"

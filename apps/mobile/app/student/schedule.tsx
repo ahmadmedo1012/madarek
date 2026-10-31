@@ -89,7 +89,7 @@ export default function ScheduleScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={6} rowHeight={64} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : daysWithItems.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجّل"

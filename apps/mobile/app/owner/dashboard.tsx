@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/pressables";
 import { RowList, LedgerRow, KpiCard } from "@/components/ui/data";
 import { SkeletonList, ErrorState, EmptyState, Skeleton } from "@/components/ui/states";
 import { ownerApi } from "@/api/owner";
+import { usePalette } from "@/design/theme";
 import { fromNow, num } from "@/lib/format";
 import {
   SeverityChip,
@@ -42,6 +43,7 @@ interface OwnerAlert {
 
 /** (tabs) Owner dashboard — «لوحة التحكم الرئيسية» (web OwnerDashboardPage parity). */
 function OwnerDashboard() {
+  const p = usePalette();
   const stats = useQuery({ queryKey: ["owner", "stats"], queryFn: () => ownerApi.stats() });
   const alerts = useQuery({
     queryKey: ["owner", "alerts"],
@@ -73,7 +75,7 @@ function OwnerDashboard() {
         {stats.isLoading ? (
           <SkeletonList rows={4} />
         ) : stats.isError ? (
-          <ErrorState message={(stats.error as Error).message} onRetry={() => stats.refetch()} />
+          <ErrorState message={(stats.error as Error | null)?.message} onRetry={() => stats.refetch()} />
         ) : s ? (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             <KpiCard label="إجمالي المستخدمين" value={num(s.totalUsers ?? null)} style={{ minWidth: "47%" }} />
@@ -103,7 +105,7 @@ function OwnerDashboard() {
               <Skeleton h={44} />
             </View>
           ) : alerts.isError ? (
-            <ErrorState message={(alerts.error as Error).message} onRetry={() => alerts.refetch()} compact />
+            <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} compact />
           ) : alertRows.length === 0 ? (
             <T variant="body" color="muted">
               النظام يعمل بشكل طبيعي — لا تنبيهات مفتوحة.
@@ -140,7 +142,7 @@ function OwnerDashboard() {
           {activity.isLoading ? (
             <SkeletonList rows={3} />
           ) : activity.isError ? (
-            <ErrorState message={(activity.error as Error).message} onRetry={() => activity.refetch()} compact />
+            <ErrorState message={(activity.error as Error | null)?.message} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
             <EmptyState title="لا توجد أحداث بعد" message="ستظهر أحدث العمليّات هنا فور حدوثها." />
           ) : (
@@ -176,7 +178,7 @@ function OwnerDashboard() {
               accessibilityLabel="المؤسسات"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Landmark size={18} color="#62625F" />
+                <Landmark size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     المؤسسات
@@ -192,7 +194,7 @@ function OwnerDashboard() {
               accessibilityLabel="سجلّ النشاط"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Activity size={18} color="#62625F" />
+                <Activity size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     سجلّ النشاط والمراقبة
@@ -208,7 +210,7 @@ function OwnerDashboard() {
               accessibilityLabel="التنبيهات التشغيليّة"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <TriangleAlert size={18} color="#62625F" />
+                <TriangleAlert size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     التنبيهات التشغيليّة
@@ -224,7 +226,7 @@ function OwnerDashboard() {
               accessibilityLabel="مركز الذكاء الاصطناعيّ"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Bot size={18} color="#62625F" />
+                <Bot size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     مركز الذكاء الاصطناعيّ
@@ -240,7 +242,7 @@ function OwnerDashboard() {
               accessibilityLabel="النظرة التعليميّة"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <FileText size={18} color="#62625F" />
+                <FileText size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     النظرة التعليميّة
@@ -256,7 +258,7 @@ function OwnerDashboard() {
               accessibilityLabel="النظام والتشغيل"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Settings size={18} color="#62625F" />
+                <Settings size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     النظام والتشغيل
@@ -273,7 +275,7 @@ function OwnerDashboard() {
               last
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Palette size={18} color="#62625F" />
+                <Palette size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     المحتوى والعلامة التجاريّة

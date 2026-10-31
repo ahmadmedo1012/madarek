@@ -194,7 +194,7 @@ function TeacherIntelligence() {
       {risks.isLoading ? (
         <SkeletonList rows={3} />
       ) : risks.isError ? (
-        <ErrorState message={(risks.error as Error).message} onRetry={() => risks.refetch()} compact />
+        <ErrorState message={(risks.error as Error | null)?.message} onRetry={() => risks.refetch()} compact />
       ) : riskRows.length === 0 ? (
         <EmptyState
           title="جميع طلابك في وضع جيد"
@@ -272,7 +272,7 @@ function TeacherIntelligence() {
             <SkeletonList rows={3} rowHeight={44} />
           ) : analytics.isError ? (
             <ErrorState
-              message={(analytics.error as Error).message}
+              message={(analytics.error as Error | null)?.message}
               onRetry={() => analytics.refetch()}
               compact
             />

@@ -94,7 +94,7 @@ export default function Search() {
         <SkeletonList rows={4} />
       ) : results.isError ? (
         <T variant="body" color="muted">
-          تعذّر جلب النتائج — {(results.error as Error).message}
+          تعذّر جلب النتائج — {(results.error as Error | null)?.message}
         </T>
       ) : sections.length === 0 ? (
         <EmptyState title="لا نتائج" message={`لا شيء يطابق «${submitted}» في نطاق حسابك الحالي.`} />

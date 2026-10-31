@@ -17,6 +17,7 @@ import { adminApi } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { useSession } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { num } from "@/lib/format";
 import {
   countAr,
@@ -27,6 +28,7 @@ import {
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
 function AdminFaculties() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const institutionId = useSession((s) => s.user?.currentInstitution?.id) ?? undefined;
@@ -100,7 +102,7 @@ function AdminFaculties() {
             label="كلية جديدة"
             kind="primary"
             small
-            icon={<Plus size={14} color="#FFFFFF" />}
+            icon={<Plus size={14} color={p.primaryFg} />}
             onPress={() => setFacultyOpen(true)}
           />
         </View>
@@ -117,7 +119,7 @@ function AdminFaculties() {
           {facs.isLoading ? (
             <SkeletonList rows={5} />
           ) : facs.isError ? (
-            <ErrorState message={(facs.error as Error).message} onRetry={() => facs.refetch()} />
+            <ErrorState message={(facs.error as Error | null)?.message} onRetry={() => facs.refetch()} />
           ) : facs.data && facs.data.length > 0 ? (
             <View style={{ gap: 8 }}>
               {facs.data.map((f) => {
@@ -179,7 +181,7 @@ function AdminFaculties() {
                         label="قسم جديد"
                         kind="ghost"
                         small
-                        icon={<Plus size={14} color="#282828" />}
+                        icon={<Plus size={14} color={p.text} />}
                         onPress={() => setDeptTarget(f)}
                       />
                     </View>

@@ -17,6 +17,7 @@ import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
 import {
   countAr,
@@ -84,7 +85,7 @@ function AdminStudents() {
         {users.isLoading ? (
           <SkeletonList rows={6} />
         ) : users.isError ? (
-          <ErrorState message={(users.error as Error).message} onRetry={() => users.refetch()} />
+          <ErrorState message={(users.error as Error | null)?.message} onRetry={() => users.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
@@ -165,6 +166,7 @@ function EnrollmentManager({
   onClose: () => void;
   onChanged: () => void;
 }) {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const enrollments = useQuery({
@@ -236,7 +238,7 @@ function EnrollmentManager({
             <Skeleton h={44} />
           </View>
         ) : enrollments.isError ? (
-          <ErrorState message={(enrollments.error as Error).message} onRetry={() => enrollments.refetch()} compact />
+          <ErrorState message={(enrollments.error as Error | null)?.message} onRetry={() => enrollments.refetch()} compact />
         ) : (enrollments.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
             لا تسجيلات حاليًا.
@@ -267,7 +269,7 @@ function EnrollmentManager({
                     label="إلغاء التسجيل"
                     kind="ghost"
                     small
-                    icon={<UserMinus size={13} color="#C72E00" />}
+                    icon={<UserMinus size={13} color={p.accentInk} />}
                     onPress={() => setConfirming(e)}
                   />
                 </View>
@@ -282,7 +284,7 @@ function EnrollmentManager({
         {offerings.isLoading ? (
           <Skeleton h={48} />
         ) : offerings.isError ? (
-          <ErrorState message={(offerings.error as Error).message} onRetry={() => offerings.refetch()} compact />
+          <ErrorState message={(offerings.error as Error | null)?.message} onRetry={() => offerings.refetch()} compact />
         ) : (offerings.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
             لا توجد مقرّرات متاحة للتسجيل.
@@ -300,7 +302,7 @@ function EnrollmentManager({
             <Button
               label={enroll.isPending ? "جارٍ التسجيل…" : "تسجيل"}
               kind="primary"
-              icon={<GraduationCap size={14} color="#FFFFFF" />}
+              icon={<GraduationCap size={14} color={p.primaryFg} />}
               disabled={!picked || enroll.isPending}
               onPress={() => enroll.mutate()}
             />

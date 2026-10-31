@@ -37,7 +37,7 @@ export default function SkillsScreen() {
       {skills.isLoading ? (
         <SkeletonList rows={4} rowHeight={72} />
       ) : skills.isError ? (
-        <ErrorState message={(skills.error as Error).message} onRetry={() => skills.refetch()} />
+        <ErrorState message={(skills.error as Error | null)?.message} onRetry={() => skills.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Gauge size={24} color={p.textFaint} />}

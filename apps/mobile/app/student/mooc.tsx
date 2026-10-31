@@ -48,7 +48,7 @@ export default function MoocScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={5} rowHeight={72} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<GraduationCap size={24} color={p.textFaint} />}

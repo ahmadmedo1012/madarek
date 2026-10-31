@@ -119,7 +119,7 @@ export default function MatrixScreen() {
         {gaps.isLoading ? (
           <SkeletonList rows={2} rowHeight={56} />
         ) : gaps.isError ? (
-          <ErrorState message={(gaps.error as Error).message} onRetry={() => gaps.refetch()} compact />
+          <ErrorState message={(gaps.error as Error | null)?.message} onRetry={() => gaps.refetch()} compact />
         ) : (gaps.data ?? []).length === 0 ? (
           <T variant="sm" color="muted">
             لا فجوات حالياً — أحسنت! استمر بحضور المحاضرات والإجابة على نقاط التفاعل.
@@ -133,7 +133,7 @@ export default function MatrixScreen() {
       {matrix.isLoading ? (
         <SkeletonList rows={5} rowHeight={72} />
       ) : matrix.isError ? (
-        <ErrorState message={(matrix.error as Error).message} onRetry={() => matrix.refetch()} />
+        <ErrorState message={(matrix.error as Error | null)?.message} onRetry={() => matrix.refetch()} />
       ) : courses.length === 0 ? (
         <EmptyState
           title="لم تتشكّل مصفوفتك بعد"

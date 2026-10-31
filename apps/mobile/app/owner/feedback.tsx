@@ -107,7 +107,7 @@ export default function OwnerFeedback() {
         {inbox.isLoading ? (
           <SkeletonList rows={4} />
         ) : inbox.isError ? (
-          <ErrorState message={(inbox.error as Error).message} onRetry={() => inbox.refetch()} />
+          <ErrorState message={(inbox.error as Error | null)?.message} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={status === "all" ? "لا تقارير هنا" : "لا تقارير في هذه الحالة"}

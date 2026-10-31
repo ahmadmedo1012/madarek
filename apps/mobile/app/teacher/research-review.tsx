@@ -161,7 +161,7 @@ export default function ResearchReview() {
       {queue.isLoading ? (
         <SkeletonList rows={5} />
       ) : queue.isError ? (
-        <ErrorState message={(queue.error as Error).message} onRetry={() => queue.refetch()} />
+        <ErrorState message={(queue.error as Error | null)?.message} onRetry={() => queue.refetch()} />
       ) : (
         <>
           {/* The honest KPI trio. */}

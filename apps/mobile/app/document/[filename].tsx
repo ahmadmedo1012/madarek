@@ -240,7 +240,7 @@ function AnnotationRow({ a, onDelete }: { a: PaperAnnotation; onDelete: () => vo
         </T>
         <View style={{ flex: 1 }} />
         <Pressable accessibilityRole="button" accessibilityLabel="حذف التعليق" onPress={onDelete}>
-          <Trash2 size={16} color="#C72E00" />
+          <Trash2 size={16} color={p.accentInk} />
         </Pressable>
       </View>
       <T variant="body" color="secondary">{a.comment}</T>

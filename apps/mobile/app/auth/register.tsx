@@ -285,7 +285,7 @@ export default function Register() {
           error={fieldErrors.inviteCode}
         />
         {error ? (
-          <Card style={{ borderColor: "#C72E00" }}>
+          <Card style={{ borderColor: p.accentInk }}>
             <T variant="sm" color="danger">{error}</T>
           </Card>
         ) : null}

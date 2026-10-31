@@ -69,7 +69,7 @@ export default function ResearchScreen() {
       {mine.isLoading ? (
         <SkeletonList rows={4} />
       ) : mine.isError ? (
-        <ErrorState message={(mine.error as Error).message} onRetry={() => mine.refetch()} />
+        <ErrorState message={(mine.error as Error | null)?.message} onRetry={() => mine.refetch()} />
       ) : papers.length === 0 ? (
         <EmptyState
           icon={<FileText size={24} color={p.textFaint} />}
@@ -250,6 +250,7 @@ function DetailSheet({
 
 /* ── Upload sheet ──────────────────────────────────────────────────── */
 function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => void; onDone: () => void }) {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const enrollments = useQuery({
     queryKey: ["learning", "enrollments", scope],
@@ -356,7 +357,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
             disabled={!canSubmit}
             loading={busy}
             onPress={() => void submit()}
-            icon={<Upload size={16} color="#FFFFFF" />}
+            icon={<Upload size={16} color={p.primaryFg} />}
           />
         </View>
       }

@@ -85,7 +85,7 @@ export function NotificationsScreen({ title, kicker }: { title?: string; kicker?
         </View>
       ) : feed.isError ? (
         <View style={{ padding: sp[16] }}>
-          <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+          <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
         </View>
       ) : rows.length === 0 ? (
         <View style={{ flex: 1 }}>

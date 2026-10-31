@@ -10,6 +10,7 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { get } from "@/api/client";
 import { RANK_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
 import { countAr, type ProfessorRow } from "@/features/governance/components";
 
@@ -22,6 +23,7 @@ const ROSTER_CAP = 100;
  * (server caps at take:100; disclosed honestly when hit).
  */
 export default function QualityProfessors() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const professors = useQuery({
     queryKey: ["quality", "professors", scope],
@@ -54,7 +56,7 @@ export default function QualityProfessors() {
           <SkeletonList rows={5} />
         ) : professors.isError ? (
           <ErrorState
-            message={(professors.error as Error).message}
+            message={(professors.error as Error | null)?.message}
             onRetry={() => professors.refetch()}
           />
         ) : rows.length === 0 ? (
@@ -99,7 +101,7 @@ export default function QualityProfessors() {
                       {latn(t.totals?.materials ?? 0)} ملف · {latn(t.totals?.lectures ?? 0)} محاضرة
                     </T>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <Star size={13} color="#8F5A28" />
+                      <Star size={13} color={p.goldInk} />
                       <T variant="sm" color="gold">
                         رضا {latn(Math.round((t.satisfaction ?? 0) * 10) / 10)}/5
                       </T>

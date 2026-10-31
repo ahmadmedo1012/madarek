@@ -15,6 +15,7 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { adminApi } from "@/api/admin";
 import { useSession, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { latn, num, fromNow } from "@/lib/format";
 import {
   PaperStatusChip,
@@ -24,6 +25,7 @@ import {
 
 /** (tabs) Admin dashboard — «لوحة المسجل العام» (web AdminDashboardPage parity). */
 function AdminDashboard() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
   const stats = useQuery({
@@ -52,7 +54,7 @@ function AdminDashboard() {
         {stats.isLoading ? (
           <SkeletonList rows={3} />
         ) : stats.isError ? (
-          <ErrorState message={(stats.error as Error).message} onRetry={() => stats.refetch()} />
+          <ErrorState message={(stats.error as Error | null)?.message} onRetry={() => stats.refetch()} />
         ) : stats.data ? (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             <KpiCard label="الطلاب" value={num(stats.data.totalStudents ?? null)} style={{ minWidth: "47%" }} />
@@ -73,7 +75,7 @@ function AdminDashboard() {
           {papers.isLoading ? (
             <SkeletonList rows={2} />
           ) : papers.isError ? (
-            <ErrorState message={(papers.error as Error).message} onRetry={() => papers.refetch()} compact />
+            <ErrorState message={(papers.error as Error | null)?.message} onRetry={() => papers.refetch()} compact />
           ) : papers.data && papers.data.rows.length > 0 ? (
             <RowList>
               {papers.data.rows.map((p, i) => (
@@ -122,7 +124,7 @@ function AdminDashboard() {
               accessibilityLabel="إدارة المقرّرات"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <BookOpen size={18} color="#62625F" />
+                <BookOpen size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     إدارة المقرّرات
@@ -138,7 +140,7 @@ function AdminDashboard() {
               accessibilityLabel="المزامنة مع البيانات الرسمية"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <RefreshCw size={18} color="#62625F" />
+                <RefreshCw size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     المزامنة مع البيانات الرسمية
@@ -154,7 +156,7 @@ function AdminDashboard() {
               accessibilityLabel="التحوّل الرقميّ"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <ShieldCheck size={18} color="#62625F" />
+                <ShieldCheck size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     التحوّل الرقميّ
@@ -170,7 +172,7 @@ function AdminDashboard() {
               accessibilityLabel="دعوات التسجيل"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <Inbox size={18} color="#62625F" />
+                <Inbox size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     دعوات التسجيل
@@ -187,7 +189,7 @@ function AdminDashboard() {
               last
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                <FileText size={18} color="#62625F" />
+                <FileText size={18} color={p.textMuted} />
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="bold">
                     صندوق التغذية الراجعة

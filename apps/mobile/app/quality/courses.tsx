@@ -50,7 +50,7 @@ function QualityCourses() {
         {courses.isLoading ? (
           <SkeletonList rows={5} />
         ) : courses.isError ? (
-          <ErrorState message={(courses.error as Error).message} onRetry={() => courses.refetch()} />
+          <ErrorState message={(courses.error as Error | null)?.message} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد مقرّرات نشطة بعد"

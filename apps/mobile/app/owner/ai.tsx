@@ -10,6 +10,7 @@ import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { ownerApi } from "@/api/owner";
 import { get } from "@/api/client";
+import { usePalette, useStatusTones } from "@/design/theme";
 import { latn } from "@/lib/format";
 import { numOf, type AiMetricsRow } from "@/features/governance/components";
 
@@ -33,6 +34,8 @@ function featureLabel(feature?: string): string {
  * model name renders as itself. No badge before the config answers.
  */
 export default function OwnerAi() {
+  const p = usePalette();
+  const tones = useStatusTones();
   const metrics = useQuery({
     queryKey: ["owner", "ai-metrics"],
     queryFn: () => ownerApi.aiMetrics(),
@@ -73,7 +76,7 @@ export default function OwnerAi() {
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
         ) : metrics.isError ? (
-          <ErrorState message={(metrics.error as Error).message} onRetry={() => metrics.refetch()} />
+          <ErrorState message={(metrics.error as Error | null)?.message} onRetry={() => metrics.refetch()} />
         ) : (
           <View style={{ gap: 16 }}>
             {/* [01] الحقائق الأساسية */}
@@ -116,7 +119,7 @@ export default function OwnerAi() {
               <SectionBar index={2} title="الطلبات حسب الميزة" />
               {(m?.byFeature ?? []).length === 0 ? (
                 <EmptyState
-                  icon={<Bot size={22} color="#62625F" />}
+                  icon={<Bot size={22} color={p.textMuted} />}
                   title="لا توجد طلبات لعرضها"
                   message="تظهر مؤشّرات الاستخدام هنا فور تسجيل أوّل طلب."
                 />
@@ -155,7 +158,7 @@ export default function OwnerAi() {
 
             {cfg.data?.provider === "local" ? (
               <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                <Sparkles size={14} color="#A8750F" />
+                <Sparkles size={14} color={tones.yellow.ink} />
                 <T variant="sm" color="muted">
                   المزوّد محليّ (قالبيّ) — الردود تُركَّب من قوالب على الخادم وليست من نموذج لغويّ
                   خارجيّ.

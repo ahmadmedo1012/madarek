@@ -76,7 +76,7 @@ function QualityReports() {
           {overview.isLoading ? (
             <SkeletonList rows={3} />
           ) : overview.isError ? (
-            <ErrorState message={(overview.error as Error).message} onRetry={() => overview.refetch()} compact />
+            <ErrorState message={(overview.error as Error | null)?.message} onRetry={() => overview.refetch()} compact />
           ) : (
             <RowList>
               <LedgerRow last>
@@ -94,7 +94,7 @@ function QualityReports() {
           {engagement.isLoading ? (
             <SkeletonList rows={3} />
           ) : engagement.isError ? (
-            <ErrorState message={(engagement.error as Error).message} onRetry={() => engagement.refetch()} compact />
+            <ErrorState message={(engagement.error as Error | null)?.message} onRetry={() => engagement.refetch()} compact />
           ) : (
             <RowList>
               <LedgerRow last>
@@ -124,7 +124,7 @@ function QualityReports() {
               <Skeleton h={44} />
             </View>
           ) : alerts.isError ? (
-            <ErrorState message={(alerts.error as Error).message} onRetry={() => alerts.refetch()} compact />
+            <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} compact />
           ) : alertRows.length === 0 ? (
             <T variant="body" color="muted">
               لا توجد تنبيهات — كل المؤشرات ضمن النطاق الطبيعي حالياً.

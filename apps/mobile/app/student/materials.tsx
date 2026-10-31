@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FolderDown } from "lucide-react-native";
 import { studentApi } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { View } from "react-native";
 import { T } from "@/components/ui/text";
@@ -35,6 +36,7 @@ const MATERIAL_TYPE_LABEL: Record<string, string> = {
 };
 
 export default function MaterialsScreen() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const feed = useQuery({
     queryKey: ["me", "materials", scope],
@@ -65,10 +67,10 @@ export default function MaterialsScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={5} rowHeight={64} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
-          icon={<FolderDown size={22} color="#62625F" />}
+          icon={<FolderDown size={22} color={p.textMuted} />}
           title="لا توجد ملفّات بعد"
           message="ستظهر هنا فور رفع موادّ في أيٍّ من مقرّراتك المسجَّلة."
         />

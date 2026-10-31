@@ -80,7 +80,7 @@ export default function LabsScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={3} rowHeight={80} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
+        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<FlaskConical size={24} color={p.textFaint} />}

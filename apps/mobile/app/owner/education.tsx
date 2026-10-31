@@ -56,7 +56,7 @@ export default function OwnerEducation() {
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />
         ) : edu.isError ? (
-          <ErrorState message={(edu.error as Error).message} onRetry={() => edu.refetch()} />
+          <ErrorState message={(edu.error as Error | null)?.message} onRetry={() => edu.refetch()} />
         ) : (
           <View style={{ gap: 16 }}>
             {/* [01] الإجماليات */}

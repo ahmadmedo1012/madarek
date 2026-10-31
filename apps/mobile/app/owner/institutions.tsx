@@ -14,6 +14,7 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi, type OwnerInstitution } from "@/api/owner";
 import { ApiError } from "@/api/client";
+import { usePalette } from "@/design/theme";
 import { fullDate } from "@/lib/format";
 import {
   INST_STATUS_LABEL,
@@ -41,6 +42,7 @@ function InstitutionStatusBadge({ status }: { status?: string }) {
  * institution's own console context.
  */
 export default function OwnerInstitutions() {
+  const p = usePalette();
   const qc = useQueryClient();
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -93,7 +95,7 @@ export default function OwnerInstitutions() {
         <Button
           label="مؤسسة جديدة"
           kind="accent"
-          icon={<Plus size={14} color="#FFFFFF" />}
+          icon={<Plus size={14} color={p.accentFg} />}
           onPress={() => setCreateOpen(true)}
         />
 
@@ -103,7 +105,7 @@ export default function OwnerInstitutions() {
             <SkeletonList rows={4} />
           ) : listing.isError ? (
             <ErrorState
-              message={(listing.error as Error).message}
+              message={(listing.error as Error | null)?.message}
               onRetry={() => listing.refetch()}
             />
           ) : rows.length === 0 ? (
@@ -210,6 +212,7 @@ function CreateInstitutionSheet({
   onClose: () => void;
   create: CreateMutation;
 }) {
+  const p = usePalette();
   const [draft, setDraft] = useState<CreateDraft>(EMPTY_DRAFT);
   const pending = create.isPending;
   const nameProblem =
@@ -263,7 +266,7 @@ function CreateInstitutionSheet({
         <Button
           label={pending ? "جارٍ الإنشاء…" : "إنشاء المؤسسة"}
           kind="primary"
-          icon={<Plus size={14} color="#FFFFFF" />}
+          icon={<Plus size={14} color={p.primaryFg} />}
           disabled={!canSubmit}
           onPress={() => {
             void submit();

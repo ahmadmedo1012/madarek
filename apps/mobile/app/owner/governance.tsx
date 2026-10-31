@@ -55,7 +55,7 @@ function OwnerGovernance() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : gov.isError ? (
             <ErrorState
-              message={(gov.error as Error).message}
+              message={(gov.error as Error | null)?.message}
               onRetry={() => gov.refetch()}
               compact
             />
@@ -109,7 +109,7 @@ function OwnerGovernance() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : logins.isError ? (
             <ErrorState
-              message={(logins.error as Error).message}
+              message={(logins.error as Error | null)?.message}
               onRetry={() => logins.refetch()}
               compact
             />

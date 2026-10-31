@@ -196,7 +196,7 @@ export default function Assignments() {
       {pending.isLoading ? (
         <SkeletonList rows={3} />
       ) : pending.isError ? (
-        <ErrorState message={(pending.error as Error).message} onRetry={() => pending.refetch()} />
+        <ErrorState message={(pending.error as Error | null)?.message} onRetry={() => pending.refetch()} />
       ) : pendingRows.length === 0 ? (
         <EmptyState title="لا تسليمات بانتظار التصحيح" message="ستظهر هنا تسليمات طلابك فور وصولها." />
       ) : (
@@ -242,7 +242,7 @@ export default function Assignments() {
       {assignments.isLoading ? (
         <SkeletonList rows={4} />
       ) : assignments.isError ? (
-        <ErrorState message={(assignments.error as Error).message} onRetry={() => assignments.refetch()} />
+        <ErrorState message={(assignments.error as Error | null)?.message} onRetry={() => assignments.refetch()} />
       ) : assignmentRows.length === 0 ? (
         <EmptyState
           title="لا توجد واجبات بعد"

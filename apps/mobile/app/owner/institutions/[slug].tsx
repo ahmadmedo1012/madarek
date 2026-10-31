@@ -14,6 +14,7 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
 import { ApiError } from "@/api/client";
+import { usePalette } from "@/design/theme";
 import { fullDate } from "@/lib/format";
 import {
   INST_STATUS_LABEL,
@@ -60,7 +61,7 @@ export default function OwnerInstitutionDetail() {
         <StackHeader title="المؤسسة" kicker="لوحة المالك" />
         <View style={{ paddingTop: 16 }}>
           <ErrorState
-            message={(listing.error as Error).message}
+            message={(listing.error as Error | null)?.message}
             onRetry={() => listing.refetch()}
           />
         </View>
@@ -86,6 +87,7 @@ export default function OwnerInstitutionDetail() {
 }
 
 function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
+  const p = usePalette();
   const qc = useQueryClient();
   const [renameOpen, setRenameOpen] = useState(false);
   const [provisionOpen, setProvisionOpen] = useState(false);
@@ -180,7 +182,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
                 label="تعديل الأسماء"
                 kind="ghost"
                 small
-                icon={<Pencil size={14} color="#282828" />}
+                icon={<Pencil size={14} color={p.text} />}
                 onPress={() => setRenameOpen(true)}
               />
             }
@@ -210,7 +212,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
                 label="تجهيز"
                 kind="ghost"
                 small
-                icon={<UserPlus size={14} color="#282828" />}
+                icon={<UserPlus size={14} color={p.text} />}
                 onPress={() => setProvisionOpen(true)}
               />
             }
