@@ -139,11 +139,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      # R327 D2/Z14: the EAS CLI resolves the app's config plugins
+      # (expo-router, splash, notifications, local-authentication…)
+      # LOCALLY before queueing — without apps/mobile's node_modules it
+      # dies with «Failed to resolve plugin for module "expo-router"».
+      # This job had never actually run (it was skipped behind the red
+      # icons gate from B1 to C5), so the gap only surfaced now.
+      - run: npm ci --no-audit --no-fund
       - name: Detect native-affecting changes (fingerprint inputs)
         id: native
         run: |
           CHANGED=$(git diff --name-only HEAD~1 HEAD || echo "")
-          NATIVE=$(echo "$CHANGED" | grep -E '^apps/mobile/(package(-lock)?\.json|app\.config\.ts|eas\.json|assets/|plugins?/)' || true)
+          NATIVE=$(echo "$CHANGED" | grep -E '^apps/mobile/(package(-lock)?\.json|app\.config\.ts|eas\.json|assets/|plugins?/)|^\.github/workflows/mobile\.yml' || true)
           SHARED=$(echo "$CHANGED" | grep -E '^shared/' || true)
           # shared/** feeds tokens/brand → generated files land in the app;
           # a regenerated token file is JS-only, but shared BRAND assets can
@@ -158,9 +168,19 @@ jobs:
           fi
       - name: Build preview (internal APK + iOS simulator, no wait)
         if: steps.native.outputs.native == 'true'
+        # R327 D2: the old `|| cat build-out.txt` swallowed EAS failures —
+        # the job went green while NO build was queued (that is exactly how
+        # the missing-npm_ci gap hid). The step now fails loudly.
         run: |
-          npx eas-cli@latest build --profile preview --platform all --non-interactive --no-wait > build-out.txt 2>&1 || cat build-out.txt
+          set +e
+          npx eas-cli@latest build --profile preview --platform all --non-interactive --no-wait > build-out.txt 2>&1
+          STATUS=$?
+          set -e
           cat build-out.txt
+          if [ "$STATUS" -ne 0 ]; then
+            echo "::error::EAS build queueing failed (exit $STATUS — see output above)"
+            exit "$STATUS"
+          fi
           grep -oE 'https://expo\.dev/artifacts/[^ )]+' build-out.txt >> "$GITHUB_STEP_SUMMARY" || true
           echo "## EAS preview builds queued" >> "$GITHUB_STEP_SUMMARY"
         env:
