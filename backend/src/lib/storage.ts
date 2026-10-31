@@ -122,9 +122,25 @@ export function storageKeyIsValid(key: string): boolean {
   if (slash === -1) return false;
   const namespace = key.slice(0, slash);
   const filename = key.slice(slash + 1);
-  if (namespace !== 'papers' && namespace !== 'materials') return false;
   if (filename.length === 0 || filename.includes('/')) return false;
-  return filename.toLowerCase().endsWith('.pdf');
+  if (namespace === 'papers' || namespace === 'materials') {
+    return filename.toLowerCase().endsWith('.pdf');
+  }
+  if (namespace === 'lectures') {
+    // r327 P4(d) B2: the lectures namespace (r323 B2.1 presigned videos
+    // + B2.3 transcript sidecars) rides the SAME driver-side belt. Bare
+    // filenames only (nested segments rejected above); the extension
+    // must be a natively-decodable video format or the
+    // `<lectureId>.vtt` transcript sidecar the routes mint. Anything
+    // else (.txt, .exe, double extensions) is a shape no platform code
+    // path ever stores. Before this branch the gate rejected EVERY
+    // lectures key, so PUT /lectures/:id/transcript (and the STT job's
+    // landing put, and any lecture-video stat/serve) threw at the
+    // driver on ALL three drivers — proven live on the local stack
+    // (audits/evidence/r327/p4/b2/).
+    return isVideoFilename(filename) || filename.toLowerCase().endsWith('.vtt');
+  }
+  return false;
 }
 
 /** Serving URL for a paper file (the value stored in ResearchPaper.fileUrl). */

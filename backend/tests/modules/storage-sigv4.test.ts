@@ -203,6 +203,27 @@ describe('buildStorageKey + storageKeyIsValid (key shape guards)', () => {
     expect(storageKeyIsValid('papers')).toBe(false);
     expect(storageKeyIsValid('')).toBe(false);
   });
+
+  // r327 P4(d) B2: the lectures namespace (r323 B2.1 videos + B2.3
+  // transcript sidecars) — the gate used to reject EVERY lectures key,
+  // so the transcript ingest landed a 500 at the driver on all three
+  // drivers (proven live; audits/evidence/r327/p4/b2/).
+  it('accepts the lectures keys the platform mints (video + .vtt sidecar)', () => {
+    expect(storageKeyIsValid(`lectures/${generateStorageId()}.mp4`)).toBe(true);
+    expect(storageKeyIsValid(`lectures/${generateStorageId()}.webm`)).toBe(true);
+    expect(storageKeyIsValid('lectures/cmvwl5osh006k124x36ba8nec.vtt')).toBe(true); // transcriptKeyFor shape
+  });
+
+  it('rejects hostile lectures key shapes with the same belt', () => {
+    expect(storageKeyIsValid('lectures/x.txt')).toBe(false);
+    expect(storageKeyIsValid('lectures/x.mp4.exe')).toBe(false);
+    expect(storageKeyIsValid('lectures/x.vtt.exe')).toBe(false);
+    expect(storageKeyIsValid('lectures/a/b.mp4')).toBe(false); // flat only
+    expect(storageKeyIsValid('lectures//b.mp4')).toBe(false); // empty segment
+    expect(storageKeyIsValid('lectures/')).toBe(false);
+    expect(storageKeyIsValid('lectures/../secret.pdf')).toBe(false);
+    expect(storageKeyIsValid('lectures/..\\x.mp4')).toBe(false);
+  });
 });
 
 describe('serving-path helpers', () => {

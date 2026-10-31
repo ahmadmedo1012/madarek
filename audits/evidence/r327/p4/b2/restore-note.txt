@@ -1,0 +1,25 @@
+B2 roundtrip — sandbox state ledger (2026-10-31)
+================================================
+
+What the roundtrip left behind, deliberately, and what was restored:
+
+KEPT (demo artifacts, no delete route exists):
+- ResearchPaper row cmvx032i00006bmz525osvdpx (student@test.ly, status
+  UPLOADED, title «ورقة اختبار سلسلة التخزين r327-B2 …») — papers have
+  no delete route by design; one extra seeded-style row on a dev DB.
+- Two orphan upload bytes from the two runs' step-1 uploads:
+  storage/papers/ca47eaeee72c84a56b5a7fde999a2457d.pdf (first, failed
+  run — row never minted) and storage/papers/ccf24260bf3ba4f63bb77c6f0c2ac18e2.pdf
+  (the passing run's, referenced by the kept paper row).
+  Orphans are inert by design: the serving gate 404s any filename
+  without an authorizing paper row (files.routes.ts PUT /papers doc).
+
+RESTORED (pre-test state was transcriptUrl=null, transcriptStatus=NONE):
+- Lecture cmvwl5osh006k124x36ba8nec: transcriptUrl reset to null,
+  transcriptStatus NONE (direct prisma update — no delete-transcript
+  route exists).
+- storage/lectures/cmvwl5osh006k124x36ba8nec.vtt sidecar removed.
+
+The showcase institution's AiKnowledgeChunk set is untouched: no
+reindex ran after the transcript PUT, so the 25-chunk baseline from the
+P4b evidence still holds.

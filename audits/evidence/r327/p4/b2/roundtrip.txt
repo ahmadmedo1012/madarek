@@ -1,0 +1,36 @@
+━━━ r327 P4(d) B2 — upload → storage → serve roundtrip ━━━
+BASE_URL: http://localhost:4000 · started 2026-10-31T22:56:29.335Z
+
+fixture PDF: 612 bytes · %PDF-1.4 header + xref table · sha256 a1dc67ca1bd15d94…
+logged in: student (uploader), teacher (transcript owner)
+
+1) POST /files/papers (valid PDF) → HTTP 201 in 14ms
+   fileUrl: /api/v1/files/papers/ccf24260bf3ba4f63bb77c6f0c2ac18e2.pdf
+   rate-limit headers: remaining=null reset=null
+
+2) POST /files/papers (no %PDF- magic) → HTTP 400
+   message: الملف المرفق ليس ملف PDF صالحاً
+
+3) POST /me/research (fileUrl from step 1) → HTTP 201
+   paper id: cmvx032i00006bmz525osvdpx · status: UPLOADED · institutionId: bound
+
+4) GET /api/v1/files/papers/ccf24260bf3ba4f63bb77c6f0c2ac18e2.pdf → HTTP 200 in 20ms
+   content-type: application/pdf · accept-ranges: bytes
+   bytes: 612 · magic: %PDF-
+   sha256 out: a1dc67ca1bd15d94… == uploaded ✓
+
+4b) GET with Range: bytes=0-15 → HTTP 206 · content-range: bytes 0-15/612 · 16 bytes
+
+5a) POST /lectures/:id/transcript/generate (STT_* unset) → HTTP 409
+    message: تحويل الكلام إلى نص غير مهيأ على المنصة — أضف STT_API_URL و STT_API_KEY في متغيرات البيئة، أو ارفع ملف نصوص SRT/VTT يدويًا.
+
+5b) PUT /lectures/:id/transcript (2-cue Arabic SRT) → HTTP 201
+    transcriptUrl: /api/v1/files/lectures/cmvwl5osh006k124x36ba8nec.vtt
+
+5c) GET /api/v1/files/lectures/cmvwl5osh006k124x36ba8nec.vtt → HTTP 200 · 149 chars
+    head: "WEBVTT\n\n1\n00:00:01.000 --> 00:00:04.000\nمرحبًا بكم في محاضرة"
+    WEBVTT header + both Arabic cues + SRT→VTT timestamp normalization: ✓
+
+━━━ B2 roundtrip: all steps passed ━━━
+paper row kept as the demo artifact (cmvx032i00006bmz525osvdpx); lecture cmvwl5osh006k124x36ba8nec
+transcript restored to its pre-test state separately (see restore note in the log).
