@@ -21,8 +21,12 @@
  *
  * Pure: no React, no axios — both modals call it from their submit
  * guards and render the returned Arabic message inline (role=alert via
- * their FormField error slots).
+ * their FormField error slots). The failed-request twin lives here too:
+ * pdfUploadErrorMessage maps an HTTP 413 to the numbered size-cap copy
+ * (r327 Y8) — same module, same caps, one home.
  */
+
+import { apiErrorMessage } from './format';
 
 /** 20 MiB — the byte ceiling both upload routes enforce server-side. */
 export const PDF_MAX_BYTES = 20 * 1024 * 1024;
@@ -120,4 +124,61 @@ export async function validatePdfFileDeep(file: File): Promise<string | null> {
     return 'محتوى الملف ليس PDF صالحاً — قد يكون ملفاً آخر أُعيدت تسميته؛ صدّره بصيغة PDF من جديد.';
   }
   return null;
+}
+
+/* ─── r327 Y8: the honest 413 surface ────────────────────────────
+ *
+ * The pick-time mirrors above stop a >20 MiB file BEFORE any request
+ * leaves the browser — but the upload can still be refused with a 413
+ * AFTER the round trip (a stale deployed bundle predating the mirror,
+ * an edge proxy with a lower body cap than the app's, the body-parser
+ * 20mb gate rejecting mid-body). Those responses used to fall into the
+ * callers' generic «تحقّق من اتصالك» fallback: a proxy 413 carries no
+ * Arabic envelope at all, and the body-parser one answers «حجم الطلب
+ * يتجاوز الحد المسموح» with no number and no next step. This mapper
+ * names the REAL limit and the actionable fix, reading the number from
+ * the shared cap constant — never an invented digit.
+ */
+
+/** The cap in whole megabytes — derived from PDF_MAX_BYTES so a future
+ *  cap change updates the Arabic copy with the constant, not by hand. */
+export const PDF_MAX_MB = Math.round(PDF_MAX_BYTES / (1024 * 1024));
+
+/** The numbered, actionable size-refusal copy both upload modals render
+ *  on a 413 (Y8): names the limit, then the two real ways out. */
+export const PDF_SIZE_LIMIT_MESSAGE =
+  `حجم الملف يتجاوز الحد المسموح (${PDF_MAX_MB} ميغابايت) — اضغط الملف أو اختر ملفاً أصغر.`;
+
+/** The axios error shape this mapper inspects — plain structural
+ *  typing keeps the module import-free (no axios dependency), exactly
+ *  like format.ts's apiErrorDetailRaw. */
+type HttpErrorLike = {
+  response?: { status?: number; data?: { error?: { message?: string } } };
+};
+
+/** True when `error` is an HTTP 413 response (the axios error shape):
+ *  the upload routes' size gate, the body-parser 20mb cap, or an edge
+ *  proxy's refusal — regardless of the body's language. */
+export function isPayloadTooLargeResponse(error: unknown): boolean {
+  return (error as HttpErrorLike | null)?.response?.status === 413;
+}
+
+/**
+ * The upload-error mapper both modals render on a FAILED REQUEST (the
+ * pick-time guards above own the pre-request rejections):
+ *   · a 413 that is NOT the per-user quota refusal → the numbered
+ *     size-cap message (PDF_SIZE_LIMIT_MESSAGE);
+ *   · the quota 413 («تجاوزت حصة التخزين الخاصة بك», r170g
+ *     files.routes.ts) keeps its own honest backend copy — mapping it
+ *     to «20 ميغابايت» would lie about which limit was hit;
+ *   · everything else → the apiErrorMessage contract (the API's own
+ *     Arabic message when present, else the caller's fallback).
+ */
+export function pdfUploadErrorMessage(error: unknown, fallback: string): string {
+  if (isPayloadTooLargeResponse(error)) {
+    const apiMsg = (error as HttpErrorLike).response?.data?.error?.message;
+    if (typeof apiMsg === 'string' && apiMsg.includes('حصة')) return apiMsg;
+    return PDF_SIZE_LIMIT_MESSAGE;
+  }
+  return apiErrorMessage(error, fallback);
 }

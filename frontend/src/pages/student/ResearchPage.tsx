@@ -11,7 +11,7 @@ import { ErrorState, EmptyState } from '../../components/primitives/States';
 import { Modal } from '../../components/overlays/Modal';
 import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { PAPER_STATUS_TONE } from '../../lib/paperStatus';
-import { validatePdfFileDeep } from '../../lib/pdfUpload';
+import { validatePdfFileDeep, pdfUploadErrorMessage } from '../../lib/pdfUpload';
 import { Icon } from '../../components/Icon';
 import { toast } from '../../lib/toast';
 import { countAr, formatDateWithYearAr } from '../../lib/format';
@@ -338,8 +338,14 @@ export default function StudentResearchPage() {
               });
             } catch (e) {
               // Keep the modal open with the entered values; the message
-              // renders inside the modal so the student can retry.
-              setUploadError(apiErrorMessage(e, 'تعذَّر رفع البحث — تحقّق من اتصالك وحاول مرة أخرى.'));
+              // renders inside the modal so the student can retry. r327
+              // Y8: a 413 (size cap — proxy, body-parser or the route's
+              // own gate) gets the NUMBERED limit copy instead of the
+              // generic «تحقّق من اتصالك» fallback; the quota 413 keeps
+              // its own honest backend message.
+              setUploadError(
+                pdfUploadErrorMessage(e, 'تعذَّر رفع البحث — تحقّق من اتصالك وحاول مرة أخرى.'),
+              );
             }
           }}
         />

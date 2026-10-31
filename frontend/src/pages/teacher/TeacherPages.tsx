@@ -47,7 +47,7 @@ import {
   WEEKDAY_NAMES_AR,
 } from '../../lib/format';
 import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } from '../../lib/courseMeta';
-import { validatePdfFile } from '../../lib/pdfUpload';
+import { validatePdfFile, pdfUploadErrorMessage } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 import '../../styles/teacher-quality.css'; // R304: the family sheet (tpg- section lives here)
@@ -1389,7 +1389,14 @@ function MaterialFormModal({ onClose }: { onClose: () => void }) {
             <div className="form-feedback fail" role="alert" style={{ marginBlockStart: 'var(--sp-2)' }}>
               <Icon icon={X} size={14} />
               <span className="flex-1">
-                {apiErrorMessage(mode === 'file' ? uploadMaterial.error : create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
+                {/* r327 Y8: the file mode rides the shared upload-error
+                    mapper — a 413 renders the numbered size-cap copy
+                    (20 ميغابايت + the actionable fix) instead of the
+                    generic fallback; the link mode keeps
+                    apiErrorMessage. */}
+                {mode === 'file'
+                  ? pdfUploadErrorMessage(uploadMaterial.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')
+                  : apiErrorMessage(create.error, 'تعذّرت إضافة المادة — حاول مرة أخرى.')}
               </span>
               <button
                 type="button"

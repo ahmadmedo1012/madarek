@@ -27,8 +27,12 @@
 import { describe, expect, it } from 'vitest';
 import {
   PDF_MAX_BYTES,
+  PDF_MAX_MB,
   PDF_MAGIC_PREFIX,
+  PDF_SIZE_LIMIT_MESSAGE,
   isPdfFile,
+  isPayloadTooLargeResponse,
+  pdfUploadErrorMessage,
   sniffPdfMagicBytes,
   validatePdfFile,
   validatePdfFileDeep,
@@ -181,5 +185,85 @@ describe('lib/pdfUpload — validatePdfFileDeep (the submit guard, byte-level)',
     expect(await validatePdfFileDeep(big)).toBe(
       'حجم الملف يتجاوز الحد الأقصى المسموح (20 ميغابايت).',
     );
+  });
+});
+
+/* ───────────────────────────────────────────────
+ * r327 Y8 — the honest 413 surface (pdfUploadErrorMessage).
+ *
+ * The pick-time mirrors above reject an oversize file BEFORE any
+ * request leaves the browser; these pins hold the AFTER-the-round-trip
+ * twin: an HTTP 413 must never fall into the callers' generic
+ * «تحقّق من اتصالك» fallback — a proxy 413 carries no Arabic envelope
+ * and the body-parser one carries no number. The real cap (20) comes
+ * from PDF_MAX_BYTES, never a hand-typed digit; the per-user QUOTA 413
+ * keeps the backend's own honest copy (mapping it to «20 ميغابايت»
+ * would lie about which limit was hit).
+ * ─────────────────────────────────────────────── */
+
+/** The axios error shape (what a rejected request hands the catch). */
+function httpError(status: number, message?: string): unknown {
+  return message === undefined
+    ? { response: { status } }
+    : { response: { status, data: { error: { code: 'PAYLOAD_TOO_LARGE', message } } } };
+}
+
+describe('lib/pdfUpload — r327 Y8: the numbered 413 copy', () => {
+  it('PDF_MAX_MB derives from the byte cap — exactly 20, never hand-typed', () => {
+    expect(PDF_MAX_MB).toBe(20);
+    expect(PDF_MAX_MB).toBe(PDF_MAX_BYTES / (1024 * 1024));
+  });
+
+  it('PDF_SIZE_LIMIT_MESSAGE names the real limit and the two ways out', () => {
+    expect(PDF_SIZE_LIMIT_MESSAGE).toBe(
+      'حجم الملف يتجاوز الحد المسموح (20 ميغابايت) — اضغط الملف أو اختر ملفاً أصغر.',
+    );
+  });
+});
+
+describe('lib/pdfUpload — isPayloadTooLargeResponse (the axios 413 shape)', () => {
+  it('true for a 413 response, with or without an error envelope', () => {
+    expect(isPayloadTooLargeResponse(httpError(413, 'حجم الطلب يتجاوز الحد المسموح'))).toBe(true);
+    expect(isPayloadTooLargeResponse({ response: { status: 413 } })).toBe(true); // proxy body
+  });
+
+  it('false for every other shape: 5xx, 4xx≠413, network error, non-error', () => {
+    expect(isPayloadTooLargeResponse(httpError(500))).toBe(false);
+    expect(isPayloadTooLargeResponse(httpError(400, 'تحقّق من البيانات المُدخلة'))).toBe(false);
+    expect(isPayloadTooLargeResponse(new Error('Network Error'))).toBe(false); // no response
+    expect(isPayloadTooLargeResponse(null)).toBe(false);
+  });
+});
+
+describe('lib/pdfUpload — pdfUploadErrorMessage (the failed-request mapper)', () => {
+  const FALLBACK = 'تعذَّر رفع البحث — تحقّق من اتصالك وحاول مرة أخرى.';
+
+  it('the route gate 413 renders the numbered copy — number and next step, not the generic fallback', () => {
+    expect(pdfUploadErrorMessage(httpError(413, 'حجم الملف يتجاوز الحد المسموح (20 ميجابايت)'), FALLBACK))
+      .toBe(PDF_SIZE_LIMIT_MESSAGE);
+  });
+
+  it('the body-parser 413 (no number in its message) renders the numbered copy', () => {
+    expect(pdfUploadErrorMessage(httpError(413, 'حجم الطلب يتجاوز الحد المسموح'), FALLBACK))
+      .toBe(PDF_SIZE_LIMIT_MESSAGE);
+  });
+
+  it('a proxy 413 with NO Arabic envelope at all renders the numbered copy — the Y8 swallow', () => {
+    expect(pdfUploadErrorMessage({ response: { status: 413 } }, FALLBACK)).toBe(PDF_SIZE_LIMIT_MESSAGE);
+  });
+
+  it('the per-user QUOTA 413 keeps its own honest backend copy — never the «20 ميغابايت» lie', () => {
+    expect(pdfUploadErrorMessage(httpError(413, 'تجاوزت حصة التخزين الخاصة بك'), FALLBACK))
+      .toBe('تجاوزت حصة التخزين الخاصة بك');
+  });
+
+  it('non-413 keeps the apiErrorMessage contract: the API\'s Arabic message wins', () => {
+    expect(pdfUploadErrorMessage(httpError(400, 'الملف المرفق ليس ملف PDF صالحاً'), FALLBACK))
+      .toBe('الملف المرفق ليس ملف PDF صالحاً');
+  });
+
+  it('non-413 with no readable message falls back to the caller\'s Arabic copy', () => {
+    expect(pdfUploadErrorMessage(new Error('Network Error'), FALLBACK)).toBe(FALLBACK);
+    expect(pdfUploadErrorMessage(httpError(500, 'request entity too large'), FALLBACK)).toBe(FALLBACK);
   });
 });
