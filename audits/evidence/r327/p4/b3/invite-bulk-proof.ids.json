@@ -1,0 +1,23 @@
+{
+ "codeId": "cmvx0dcv0000dbmz5dgvhfk7g",
+ "code": "Z2X9AQ3R",
+ "created": [
+  {
+   "email": "r327b3-mvx0dcvf-1@demo.madarek.ly",
+   "id": "cmvx0dcw7000fbmz5ale8d4pt",
+   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbXZ4MGRjdzcwMDBmYm16NWFsZThkNHB0Iiwicm9sZSI6IlNUVURFTlQiLCJpbnN0IjoiaW5zdC16YXdpYS1zaG93Y2FzZSIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3OTM0ODc4NjksImV4cCI6MTc5MzQ4ODc2OX0.g05SEcAMOrtj5hFpELAFmYQnuYJ7ahddkoEGQwoOO0A"
+  },
+  {
+   "email": "r327b3-mvx0dcvf-2@demo.madarek.ly",
+   "id": "cmvx0dcx7000pbmz5grp6u5w2",
+   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbXZ4MGRjeDcwMDBwYm16NWdycDZ1NXcyIiwicm9sZSI6IlNUVURFTlQiLCJpbnN0IjoiaW5zdC16YXdpYS1zaG93Y2FzZSIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3OTM0ODc4NjksImV4cCI6MTc5MzQ4ODc2OX0.tF0I6Sk8Y-0ehCUEazGITh4aY-qyNGEapJXQDlVZdZI"
+  },
+  {
+   "email": "r327b3-mvx0dcvf-3@demo.madarek.ly",
+   "id": "cmvx0dcyb000zbmz5ms0y2i4n",
+   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbXZ4MGRjeWIwMDB6Ym16NW1zMHkyaTRuIiwicm9sZSI6IlNUVURFTlQiLCJpbnN0IjoiaW5zdC16YXdpYS1zaG93Y2FzZSIsInR5cGUiOiJhY2Nlc3MiLCJpYXQiOjE3OTM0ODc4NjksImV4cCI6MTc5MzQ4ODc2OX0.DkvZHUlgt48yKhs2UcSTKWDrE93acYdN7re7PbAMyJ8"
+  }
+ ],
+ "institutionId": "inst-zawia-showcase",
+ "offeringId": "cmvwl5onk003s124xe5r1ufgt"
+}

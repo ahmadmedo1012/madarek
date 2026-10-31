@@ -421,3 +421,166 @@ production‑mode acceptance bar for the owner's rerun
 harness `scripts/ai-eval-live.mjs` stays the free‑tier‑respectful
 12‑turn production probe).
 
+
+---
+
+## 10. Uploads & transcripts — the storage chain, environment by environment (r327 P4d B2)
+
+> The B2 row asked where files go and whether the chain is real. The
+> whole chain was proven live on the local stack on 2026‑10‑31
+> (`scripts/r327/b2-storage-roundtrip.mjs` — the as‑run log and the
+> pre‑fix failure it uncovered are in `audits/evidence/r327/p4/b2/`).
+
+### 10.1 The storage abstraction — one contract, three drivers
+
+`backend/src/lib/storage.ts` exposes one `StorageDriver` contract
+(`put`/`get`/`getRange`/`stat`) with three drivers selected by
+`STORAGE_DRIVER` (fail‑closed at boot, `env.ts`):
+
+| Driver | Bytes land in | Where it is the right choice |
+|---|---|---|
+| `local` (default) | `backend/storage/<namespace>/<file>` via fs/promises | dev only — Render's disk is EPHEMERAL (a boot log warns in prod); files vanish on every redeploy |
+| `s3` | any S3‑compatible store (AWS S3 / Cloudflare R2 / MinIO), path‑style, hand‑rolled SigV4 (no new npm deps) | production persistence — requires `S3_ENDPOINT`+`S3_REGION`+`S3_BUCKET`+`S3_ACCESS_KEY_ID`+`S3_SECRET_ACCESS_KEY`, otherwise boot refuses |
+| `postgres` | BYTEA rows in the app's own PostgreSQL (`BinaryObject`) | the bounded Render‑Free pilot mode (durable, no new infra — explicitly a 5–10‑student trade‑off, not an object‑store architecture) |
+
+Namespaces: `papers/` (research PDFs), `materials/` (course PDFs),
+`lectures/` (r323: videos + `.vtt` transcript sidecars). Every driver
+method runs `storageKeyIsValid` — the driver‑side belt (traversal,
+control bytes, namespace + extension shape) — and `LocalDriver` adds a
+resolved‑path pin inside its root.
+
+### 10.2 The research‑paper chain (student)
+
+1. `POST /api/v1/files/papers` — STUDENT only (10/min/user), RAW
+   `application/pdf` body ≤20 MB (no multipart). Gates in order: role →
+   Buffer → size 413 → `%PDF-` magic bytes → active‑content heuristic
+   (`/JavaScript` `/OpenAction` `/Launch` → 400) → verified institution
+   context (fail‑closed) → per‑user quota (200 MB ≈ 10 stored papers;
+   external‑URL papers store zero bytes and don't count). Stores the
+   bytes, mints `<uuid>.pdf`, answers **201 `{ data: { fileUrl } }` —
+   no paper row here**.
+2. `POST /api/v1/me/research` — STUDENT (10/min), consumes that
+   `fileUrl` (or an external https URL), mints the **institution‑bound**
+   `ResearchPaper` row (status `UPLOADED`) with a 5‑min double‑submit
+   guard (`FOR UPDATE` row lock). Until this row exists the uploaded
+   bytes are an inert orphan — the serving gate 404s any filename
+   without an authorizing row.
+3. `GET /api/v1/files/papers/:filename` — Bearer, access‑gated
+   (PUBLISHED / owner / reviewer / oversight), path‑traversal protected,
+   single‑range 206/416.
+
+**Proven live (local, `local` driver):** 612‑byte valid PDF (real
+`%PDF-1.4` header + xref) → 201 in 9–14 ms → paper row 201
+(institution bound) → GET back **200, sha256 identical**,
+`application/pdf`, `Range: bytes=0-15` → 206. Negative: no `%PDF-`
+magic → **400 Arabic** «الملف المرفق ليس ملف PDF صالحاً» (never a
+silent save). Roundtrip log: `audits/evidence/r327/p4/b2/roundtrip.txt`.
+
+### 10.3 The lecture‑video chain (teacher)
+
+Platform‑hosted video uses **presigned direct upload** (r323 B2.1):
+`POST /api/v1/files/uploads/presign` (TEACHER+, 30/min) mints a
+server‑generated key `lectures/c<32hex>.<mp4|webm|m4v|ogv|ogg>` and a
+≤15‑min SigV4‑query‑presigned PUT URL — the browser uploads straight
+to the store (single ≤100 MB or multipart ≤4 GB), Render's disk and
+the backend's memory never see a lecture‑sized payload;
+`POST /files/uploads/complete` verifies and stamps `Lecture.videoUrl`.
+**This path requires `STORAGE_DRIVER=s3`** — on local/postgres the
+presign route answers an honest Arabic 503 («الرفع المباشر للفيديو
+يتطلب تخزينًا متوافقًا مع S3…»). Serving: `GET /files/lectures/:filename`
+— S3 → 302 to a 10‑min presigned GET (range support from the store);
+local/postgres → streamed through the backend, range‑aware.
+
+### 10.4 The transcript story — generation vs. ingest
+
+Two ways a lecture gets captions, one storage seat:
+
+- **STT generation** (`POST /lectures/:id/transcript/generate`,
+  TEACHER/ADMIN/OWNER, owns the offering): 202 fire‑and‑forget job —
+  storage get → 25 MB gate → multipart POST to an OpenAI‑compatible
+  `/audio/transcriptions` (`STT_API_URL`/`STT_API_KEY`/`STT_MODEL` —
+  Groq Whisper / OpenAI / self‑hosted Whisper) → VTT → same storage
+  seat, `transcriptStatus` QUEUED→RUNNING→DONE|FAILED. **Without
+  `STT_*` the route refuses honestly (409, Arabic) — proven live**;
+  it never fabricates a transcript.
+- **Manual ingest (the fallback)**: `PUT /lectures/:id/transcript` —
+  the owning teacher pastes SRT/VTT (≤2 MiB), the platform
+  SRT→VTT‑normalizes, validates ≥1 cue, stores
+  `lectures/<lectureId>.vtt` in the same abstraction, stamps
+  `Lecture.transcriptUrl`. The player's `<track>` and the AI knowledge
+  indexer read the same bytes (`readPlatformText`).
+
+**Proven live:** generate → 409 Arabic (STT unset, the honest refusal);
+ingest of a 2‑cue Arabic SRT → 201 → `GET /files/lectures/<id>.vtt` →
+200 `text/vtt` with both cues and SRT→VTT timestamps normalized.
+
+### 10.5 The defect the roundtrip uncovered (and the fix)
+
+The first run of the roundtrip caught a real r323 regression: the
+`lectures` namespace was added to `buildStorageKey` but **not** to the
+driver‑side key gate — `storageKeyIsValid` admitted only
+`<papers|materials>/*.pdf`, so **every** lectures key (transcript
+sidecar, video stat/serve, the presign paths) threw at the driver on
+all three drivers: `PUT /lectures/:id/transcript` answered a 500
+(`invalid storage key: "lectures/<id>.vtt"` — server log in the
+evidence), and the STT job's landing put / video serve / presigned
+upload were dead the same way. Fixed in the same row by teaching the
+gate the lectures shapes (video extensions + `.vtt`, same
+belt: flat, no traversal, no control bytes) — unit tests pin both the
+accepted mint shapes and the hostile ones (`storage-sigv4.test.ts`),
+and the roundtrip above then passed end‑to‑end.
+
+---
+
+## 11. Bulk onboarding — the honest answer (r327 P4d B3)
+
+> The r325 row said «B3 bulk import proven». The finding, stated
+> plainly: **there is no CSV/file‑upload bulk import of students in
+> this codebase — and never was.** The r323 "B3.1 bulk‑import
+> remainder" shipped as **invite codes** (self‑serve bulk onboarding),
+> and the `admin/sync` path (SyncRun) syncs **university facts**, not
+> users. Both statements below are backed by a live run on the seeded
+> stack (`audits/evidence/r327/p4/b3/invite-bulk-proof.txt`).
+
+### 11.1 What exists — invite codes (r323 B3.1)
+
+| Route | Who | What |
+|---|---|---|
+| `POST /invites` | TEACHER (own offering) / ADMIN / OWNER | Mint a code: role STUDENT or TEACHER, **exactly one** scope (offering \| department \| faculty), expiry 1–90 d, `maxUses` 1–500 |
+| `GET /invites` | creator | Their codes + live `usedCount` |
+| `DELETE /invites/:id` | creator (OWNER bypasses) | Revoke |
+| `GET /invites/:code/validate` | **public** | Pre‑submit verdict for the register page (Arabic scope label + honest refusal reasons) |
+| `POST /auth/register` + `inviteCode` | public | The bulk path: each student self‑registers; the code is validated **before** the user row, then consumed **inside the registration transaction** (counted claim under the cap — a racing over‑consume loses the `updateMany` and the account rolls back), the use is ledgered (`InviteUse`, unique per user), and the student is **enrolled into the scoped offering** automatically |
+
+The registrar's bulk story is therefore: mint one code per cohort with
+`maxUses = N`, share it, and every registration lands enrolled + counted.
+`DELETE /users/demo-cohort` (ADMIN/OWNER) is the counterpart bulk
+**removal** — the one‑transaction sweep of the `@demo.madarek.ly`
+pilot sample (30 seeded users on the showcase institution).
+
+### 11.2 What was proven live (seeded DB, real API)
+
+`scripts/r327/b3-invite-bulk-proof.mjs` — teacher@test.ly mints a
+STUDENT code scoped to their SE301 offering (`maxUses` 3, 7 d) →
+**201**; public validate → **200** `مقرر SE301 — هندسة البرمجيات`
+(role mismatch → **400** «هذا الكود مخصص لنوع حساب آخر.»); three
+throwaway students register with the code → **201 each**, and throwaway
+#1's `GET /enrollments/me` shows the scoped offering **active**; the
+teacher's `GET /invites` shows `usedCount 3/3`; a 4th registration with
+the same code → **400** «استُنفد هذا الكود (بلغ أقصى عدد للاستخدام).»
+Throwaways registered under `@demo.madarek.ly` and were removed
+immediately after by id (ordered delete mirroring `removeDemoCohort`;
+the seed's own 30 demo users untouched — recorded in the evidence log).
+
+### 11.3 What is owner‑only / out of scope here
+
+- **CSV import by the registrar does not exist** — if the mission's
+  r325 row meant a CSV uploader, that is a feature gap, not an unproven
+  feature. (The invite‑code design was the deliberate r323 decision:
+  self‑serve, no password handling by staff, no CSV parsing attack
+  surface.)
+- `POST /admin/sync/trigger` (ADMIN with institution context / OWNER)
+  re‑syncs an institution's **UniversityFact** rows from its configured
+  source — institutional statistics, not user import. It ran on this
+  stack only as the scheduler's boot tick (`initial: SUCCESS,
+  factsAdded: 0`); no user rows are touched.
