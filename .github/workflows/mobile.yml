@@ -25,7 +25,15 @@ on:
       - 'apps/mobile/**'
       - 'shared/**'
       - '.github/workflows/mobile.yml'
+  # R327 D2: the owner's manual build trigger — e.g. when the Android
+  # free-plan quota is spent but iOS still has headroom, or to re-cut
+  # preview builds after a quota reset without waiting for a push.
   workflow_dispatch:
+    inputs:
+      platforms:
+        description: 'EAS platforms (all | ios | android)'
+        required: false
+        default: 'all'
 
 permissions:
   contents: read
@@ -129,7 +137,9 @@ jobs:
   eas-build:
     name: EAS Build (preview — native change detected)
     needs: mobile-gates
-    if: github.event_name == 'push'
+    # push: only native-affecting changes; manual dispatch: always (the
+    # human pressed the button — that IS the intent).
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push')
     runs-on: ubuntu-latest
     timeout-minutes: 12
     defaults:
@@ -151,6 +161,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Detect native-affecting changes (fingerprint inputs)
         id: native
+        if: github.event_name == 'push'
         run: |
           CHANGED=$(git diff --name-only HEAD~1 HEAD || echo "")
           NATIVE=$(echo "$CHANGED" | grep -E '^apps/mobile/(package(-lock)?\.json|app\.config\.ts|eas\.json|assets/|plugins?/)|^\.github/workflows/mobile\.yml' || true)
@@ -167,13 +178,13 @@ jobs:
             echo "JS-only change — OTA suffices, no build needed."
           fi
       - name: Build preview (internal APK + iOS simulator, no wait)
-        if: steps.native.outputs.native == 'true'
+        if: github.event_name == 'workflow_dispatch' || steps.native.outputs.native == 'true'
         # R327 D2: the old `|| cat build-out.txt` swallowed EAS failures —
         # the job went green while NO build was queued (that is exactly how
         # the missing-npm_ci gap hid). The step now fails loudly.
         run: |
           set +e
-          npx eas-cli@latest build --profile preview --platform all --non-interactive --no-wait > build-out.txt 2>&1
+          npx eas-cli@latest build --profile preview --platform "${{ github.event.inputs.platforms || 'all' }}" --non-interactive --no-wait > build-out.txt 2>&1
           STATUS=$?
           set -e
           cat build-out.txt
