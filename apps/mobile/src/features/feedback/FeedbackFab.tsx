@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import * as Haptics from "expo-haptics";
 import { usePathname } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
-import { Bug, Lightbulb } from "lucide-react-native";
+import { Flag, Lightbulb } from "lucide-react-native";
 import { ApiError, post } from "@/api/client";
 import { useSession } from "@/auth/session";
 import { usePalette } from "@/design/theme";
@@ -52,7 +52,10 @@ export function FeedbackSheetHost() {
           slabs: unmistakable against the paper ground. Explicit `left`
           (not `start`) pins the RTL-mirrored Material seat identically on
           native and web — `start` resolved differently between the two
-          (native: right · web export: left). */}
+          (native: right · web export: left).
+          B4 re-review: THREE independent reviewers read the Bug glyph as
+          a SUN (its legs read as rays at 22px). Flag = «report», the one
+          glyph with no radial misread. */}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="أبلغ عن مشكلة أو اقتراح"
@@ -71,7 +74,7 @@ export function FeedbackSheetHost() {
           justifyContent: "center",
         }}
       >
-        <Bug size={22} color={p.primaryFg} />
+        <Flag size={22} color={p.primaryFg} />
       </Pressable>
       <Sheet
         open={open}
@@ -91,7 +94,7 @@ export function FeedbackSheetHost() {
           <View style={{ flexDirection: "row", gap: sp[8] }}>
             {(
               [
-                { id: "BUG", label: "مشكلة", icon: <Bug size={16} color={p.text} /> },
+                { id: "BUG", label: "مشكلة", icon: <Flag size={16} color={p.text} /> },
                 { id: "IDEA", label: "اقتراح", icon: <Lightbulb size={16} color={p.text} /> },
               ] as const
             ).map((o) => (

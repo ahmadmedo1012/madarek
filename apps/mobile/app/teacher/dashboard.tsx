@@ -9,7 +9,7 @@ import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarDays, ClipboardCheck, FileText, Microscope, TriangleAlert } from "lucide-react-native";
+import { CalendarDays, ClipboardCheck, FileText, LineChart, Microscope, TriangleAlert } from "lucide-react-native";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { teacherApi } from "@/api/teacher";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
@@ -152,10 +152,24 @@ function TeacherDashboard() {
         kicker="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
       />
 
-      {/* KPI strip — the mobile spec's four labels. */}
-      <View style={{ flexDirection: "row", gap: sp[8] }}>
-        <KpiCard label="طلابي" value={kpi?.studentCount ?? 0} />
-        <KpiCard label="متوسط الدرجات" value={kpi?.avgGradePct !== null && kpi?.avgGradePct !== undefined ? pct(kpi.avgGradePct) : "—"} />
+      {/* KPI strip — the mobile spec's four labels.
+          R2 (B4 final panel): a wall of «—» on a fresh account reads
+          «broken», not «awaiting data». With no students enrolled there
+          IS nothing to average — one honest consolidated card beats a
+          2×2 grid of dashes. Counts take over the moment they exist. */}
+      {kpi && (kpi.studentCount ?? 0) === 0 && kpi.avgGradePct == null && kpi.attendancePct == null ? (
+        <Card>
+          <EmptyState
+            icon={<ClipboardCheck size={22} color={p.textMuted} />}
+            title="لا بيانات فصلية بعد"
+            message="لا طلاب مسجّلين لديك حاليًا — عند تسجيل الطلاب في شُعَبك ستظهر هنا معدلات الدرجات ونسب الحضور أسبوعًا بعد أسبوع."
+          />
+        </Card>
+      ) : (
+        <>
+          <View style={{ flexDirection: "row", gap: sp[8] }}>
+            <KpiCard label="طلابي" value={kpi?.studentCount ?? 0} />
+            <KpiCard label="متوسط الدرجات" value={kpi?.avgGradePct !== null && kpi?.avgGradePct !== undefined ? pct(kpi.avgGradePct) : "—"} />
       </View>
       <View style={{ flexDirection: "row", gap: sp[8] }}>
         <KpiCard label="الحضور" value={kpi?.attendancePct !== null && kpi?.attendancePct !== undefined ? pct(kpi.attendancePct) : "—"} />
@@ -166,6 +180,8 @@ function TeacherDashboard() {
           style={{ justifyContent: "center" }}
         />
       </View>
+        </>
+      )}
 
       {/* طابور التصحيح — the pending-grading queue. */}
       <SectionBar index={1} title="طابور التصحيح" />
@@ -267,6 +283,7 @@ function TeacherDashboard() {
         </T>
         {!trendDrawable ? (
           <EmptyState
+            icon={<LineChart size={22} color={p.textMuted} />}
             title="لا تتوفّر بيانات كافية بعد لرسم الاتجاه"
             message="لم يُسجَّل أي أسبوع حتى الآن — يُرسم المخطط تلقائيًا بعد اكتمال أسبوعين على الأقل."
           />

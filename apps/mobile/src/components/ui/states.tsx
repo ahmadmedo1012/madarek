@@ -82,18 +82,25 @@ export function EmptyState({
   const p = usePalette();
   return (
     <View style={{ alignItems: "center", paddingVertical: sp[40], gap: sp[8], paddingHorizontal: sp[24] }}>
-      <View
-        style={{
-          width: 56,
-          height: 56,
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: p.rule,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {icon}
-      </View>
+      {/* B4 re-review (R2+R3, three panels): the icon frame rendered even
+          with NO icon — a blank 56×56 bordered square that every reviewer
+          read as «a broken/unloaded component». The frame exists to seat
+          an icon; no icon, no frame — the title + message carry the empty
+          state cleanly. */}
+      {icon ? (
+        <View
+          style={{
+            width: 56,
+            height: 56,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: p.rule,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {icon}
+        </View>
+      ) : null}
       <T variant="h4" weight="bold" align="center">
         {title}
       </T>
