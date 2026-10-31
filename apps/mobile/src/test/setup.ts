@@ -4,6 +4,9 @@
  * imports. A route screen under test must never depend on a live API,
  * SecureStore, fonts, or the update runtime.
  */
+// R327 A4 — suites flip POISON (see ./poison.ts); "ok" is the render-net baseline.
+import { POISON } from "./poison";
+
 /* ── network: the API transport + telemetry fire-and-forget ─────────── */
 
 const EMPTY_PAGE = {
@@ -28,9 +31,48 @@ export const MOCK_ROUTER_PARAMS: Record<string, string | string[] | undefined> =
 
 globalThis.fetch = jest.fn((_input: RequestInfo | URL) => {
   const url = typeof _input === "string" ? _input : _input.toString();
-  // Paginated list endpoints → an honest empty page; everything else →
-  // { data: null } (the API envelope). Screens must handle both without
-  // crashing — exactly the render-time crash class this net catches.
+  const kind = POISON.kind;
+  // Poisoned modes — every transport failure the production API can produce.
+  if (kind === "garbage") {
+    return Promise.resolve({
+      ok: true,
+      status: 200,
+      headers: { get: () => "text/html" },
+      json: async () => {
+        throw new Error("not json");
+      },
+      text: async () => "<html>gateway error page — not json</html>",
+    });
+  }
+  if (kind === "401" || kind === "500") {
+    const status = kind === "401" ? 401 : 500;
+    const body = {
+      error: {
+        code: status === 401 ? "UNAUTHENTICATED" : "HTTP_ERROR",
+        message: status === 401 ? "انتهت صلاحية الجلسة — سجّل الدخول من جديد" : "خطأ في الخادم",
+      },
+    };
+    const payload = JSON.stringify(body);
+    return Promise.resolve({
+      ok: false,
+      status,
+      headers: { get: () => null },
+      json: async () => body,
+      text: async () => payload,
+    });
+  }
+  if (kind === "missing-fields") {
+    return Promise.resolve(ok({ data: {} }));
+  }
+  if (kind === "null-data") {
+    return Promise.resolve(ok(null));
+  }
+  if (kind === "empty-list") {
+    return Promise.resolve(ok(EMPTY_PAGE));
+  }
+  // "ok" — the baseline: paginated list endpoints → an honest empty page;
+  // everything else → { data: null } (the API envelope). Screens must handle
+  // both without crashing — exactly the render-time crash class this net catches.
   if (/\/(notifications|announcements|feedback|messages|alerts)/.test(url)) {
     return Promise.resolve(ok(EMPTY_PAGE));
   }
@@ -41,6 +83,15 @@ globalThis.fetch = jest.fn((_input: RequestInfo | URL) => {
 
 jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
+);
+
+/* ── safe-area: the REAL provider only renders children after the native
+      onInsetsChange event — which NEVER fires under jest, silently
+      hollowing every mount. The official mock is a passthrough context
+      with zero insets, so screens actually render in the nets (R327 A2). ─ */
+
+jest.mock("react-native-safe-area-context", () =>
+  require("react-native-safe-area-context/jest/mock").default,
 );
 
 jest.mock("expo-secure-store", () => ({
