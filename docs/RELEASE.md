@@ -19,6 +19,14 @@ native dependency/plugin/config change silently produces a new fingerprint:
 OTA updates then wait for the matching build (the workflow queues it
 automatically).
 
+## Keep-warm (free tier)
+
+Render's free plan sleeps the web service after ~15 idle minutes;
+`.github/workflows/keep-warm.yml` pings `GET /api/v1/health` every 10
+minutes so visitors never pay the 30–60s cold boot. Upgrading the
+Render service to **Starter** removes the sleep behaviour entirely —
+then delete the workflow.
+
 ## The one-time setup that is already done
 
 - `EXPO_TOKEN` is set as the GitHub Actions secret `EXPO_TOKEN`

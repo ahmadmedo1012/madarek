@@ -1,0 +1,45 @@
+# Keep-warm — R327 E1: Render's free tier spins the web service down
+# after ~15 minutes without inbound traffic; the next visitor then pays
+# a 30–60s cold boot (the «الخادم يستيقظ…» moment). This workflow keeps
+# the instance awake by touching the public health endpoint every 10
+# minutes — one cheap request, no auth, no side effects.
+#
+# The honest trade-off (documented in docs/RELEASE.md §Keep-warm):
+# upgrading the Render service to the Starter plan removes the sleep
+# behaviour entirely and makes this workflow unnecessary — delete it
+# with the upgrade. Until then: cron every 10 minutes + a manual
+# workflow_dispatch for ad-hoc pings.
+name: Keep warm
+
+on:
+  schedule:
+    # Every 10 minutes, UTC. GitHub Actions cron can lag a few minutes
+    # on busy hours — well inside the ~15-minute free-tier sleep window.
+    - cron: '*/10 * * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: keep-warm
+  cancel-in-progress: true
+
+env:
+  HEALTH_URL: https://madarek.onrender.com/api/v1/health
+
+jobs:
+  ping:
+    name: Ping the health endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: curl GET /api/v1/health
+        run: |
+          # -f fails on HTTP ≥400, --max-time bounds a wedged cold boot
+          # (the ping must never hang the runner for minutes), and the
+          # grep proves the body is the real health JSON, not a proxy
+          # error page.
+          BODY=$(curl -sf --max-time 60 "$HEALTH_URL")
+          echo "health: $BODY"
+          echo "$BODY" | grep -q '"ok":true'
