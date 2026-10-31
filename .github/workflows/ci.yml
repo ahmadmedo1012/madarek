@@ -300,6 +300,10 @@ jobs:
       # (verify-parity-export.mjs) was missing from CI — it only ran
       # locally. It reads the working tree from the repo root, so the
       # default working-directory is correct.
+      # R326 M0.4 — generated-token drift gate (dependency-free): the
+      # committed generated halves (web CSS + mobile TS) and the RN
+      # brand port must match shared/design-tokens.json byte-for-byte.
+      - run: node scripts/tokens/build.mjs --check
       - run: bash scripts/check-icons.sh
       - run: bash scripts/check-motion-tokens.sh
       # CSP pin drift guard (dependency-free): r133 changed the inline

@@ -34,6 +34,10 @@
 # Wholesale-allowlisted files (foundations + safety belts — raw values
 # are their job):
 #   frontend/src/styles/tokens.css   (the canonical token source)
+#   frontend/src/styles/tokens.generated.css  (R326 M0.4 — the generated
+#                                    shared half; the --t-*/--ease seats
+#                                    live there. Source:
+#                                    shared/design-tokens.json)
 #   frontend/src/styles/motion.css   (motion foundation: spinner loop,
 #                                    reduced-motion token overrides)
 #   frontend/src/styles/base.css     (global reduced-motion belt with
@@ -99,6 +103,9 @@ EXTS = {'.css', '.ts', '.tsx'}
 # ── wholesale allowlist ────────────────────────────────────────────────
 WHOLESALE = {
     'frontend/src/styles/tokens.css',
+    # R326 M0.4 — the generated shared half (the --t-*/--ease seats);
+    # source: shared/design-tokens.json, regen npm run tokens:build
+    'frontend/src/styles/tokens.generated.css',
     'frontend/src/styles/motion.css',
     'frontend/src/styles/base.css',
     'frontend/src/styles/landing.css',

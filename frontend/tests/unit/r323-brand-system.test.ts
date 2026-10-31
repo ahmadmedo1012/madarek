@@ -104,9 +104,18 @@ function copperCensus(): CopperHit[] {
  * re-open the entry). */
 const COPPER_ALLOWLIST: Readonly<Record<string, string>> = {
   /* live: the achievement-gold token kept its seat (light + print lock)
-     — the A5 design-system pass owns the move, not the brand task. */
+     — the A5 design-system pass owns the move, not the brand task.
+     R326 M0.4: the light --gold VALUE moved to the generated shared
+     half (below); tokens.css keeps the prefers-contrast print lock and
+     the historical comments. */
   'src/styles/tokens.css':
-    'R323-PENDING — live --gold achievement token (tokens.css:685 light, :1236 print lock) + historical comments (:79,:681); owner: A5 token pass',
+    'R323-PENDING — prefers-contrast print lock --gold (tokens.css:1133) + historical comments (:79,:635); owner: A5 token pass',
+  /* R326 M0.4 — the generated shared half: the light --gold achievement
+     token landed here when the values moved out of tokens.css. It is
+     byte-drift-gated (npm run tokens:check against
+     shared/design-tokens.json) and can only move WITH the JSON. */
+  'src/styles/tokens.generated.css':
+    'R323-PENDING — generated --gold light (#B57438) from shared/design-tokens.json (R326 M0.4); byte-gated by tokens:check — moves only WITH the JSON',
   /* live: the parity-export mirror is value-pinned by
      scripts/verify-parity-export.mjs — it can only move WITH tokens.css. */
   'src/styles/unified-parity.css':

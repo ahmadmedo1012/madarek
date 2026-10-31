@@ -78,7 +78,10 @@ function resolveToken(name: string, map: Map<string, string>): string {
   throw new Error(`var() chain too deep for ${name}`);
 }
 
-const TOKENS = read('src/styles/tokens.css');
+/* R326 M0.4 — the shared seats (triads · semantic · status families)
+   live in the generated half now; concat it FIRST so extractBlock
+   resolves the theme blocks where the values live. */
+const TOKENS = read('src/styles/tokens.generated.css') + '\n' + read('src/styles/tokens.css');
 const base = parseDecls(extractBlock(TOKENS, ':root {'));
 const light = new Map([...base, ...parseDecls(extractBlock(TOKENS, '[data-theme="light"] {'))]);
 const dark = new Map([...base, ...parseDecls(extractBlock(TOKENS, '[data-theme="dark"] {'))]);

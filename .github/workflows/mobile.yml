@@ -3,8 +3,9 @@
 # ONE branch (main). This workflow runs ONLY when the push touches the
 # mobile app or the shared package; every other push never queues it.
 #
-#   mobile-gates   → typecheck · expo lint · contract-check · expo export
-#                     (both platforms) — fast, additive, must be green
+#   mobile-gates   → typecheck · expo lint · contract-check · generated-
+#                     drift (tokens/brand/OpenAPI) · expo export (both
+#                     platforms) — fast, additive, must be green
 #   eas-ota        → after gates: `eas update --auto` to the production
 #                     AND preview branches (JS/asset changes reach every
 #                     installed build whose fingerprint matches)
@@ -55,10 +56,24 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - name: Typecheck (tsc strict)
         run: npm run typecheck
-      - name: Lint (expo lint — 0 errors; 79 pinned warnings, r326 HANDOFF Z2)
+      - name: Lint (expo lint — 0 errors; 87 pinned warnings, r326 HANDOFF Z2 — recounted at M0.4)
         run: npx expo lint -- --max-warnings 999
       - name: Contract-check (consumed endpoints vs backend source)
         run: npm run contract-check
+      - name: Generated-code drift (tokens · brand · OpenAPI types)
+        # R326 M0.4 — the committed generated files must match their
+        # sources byte-for-byte: shared/design-tokens.json → web CSS +
+        # mobile TS + the RN brand port (tokens:check), and
+        # docs/api/openapi.json → src/api/schema.generated.ts (api:types
+        # regen + diff). npx pins the generator (its ^5 typescript peer
+        # lags the app's TS6 — the tree stays untouched by design).
+        run: |
+          npm run tokens:check
+          npm run api:types
+          git diff --exit-code -- src/api/schema.generated.ts || {
+            echo "::error::src/api/schema.generated.ts drifted — run npm run api:types and commit (backend route change?)"
+            exit 1
+          }
       - name: Render net (jest — every route screen mounts, 112 routes)
         run: npm test -- --ci
       - name: Export bundle (android)
@@ -66,12 +81,22 @@ jobs:
       - name: Export bundle (ios)
         run: npx expo export --platform ios --output-dir dist-export-ios
       - name: Bundle budget (JS ≤ 8 MB per platform)
+        # R326 M0.4 fix: SDK 58 exports Hermes bytecode (.hbc) — the old
+        # *.js glob matched NOTHING (a vacuous 0.00 MB pass since M0.6).
+        # Measure the real per-platform chunks; FAIL when a platform
+        # exports none (layout changed again) so the gate can never go
+        # vacuous silently.
         run: |
           for p in android ios; do
-            SIZE=$(du -sb dist-export-$p/_expo/static/js/*.js 2>/dev/null | awk '{s+=$1} END {print s+0}')
-            MB=$(echo "scale=2; $SIZE / 1048576" | bc)
-            echo "$p JS bundle: ${MB} MB"
-            if (( $(echo "$MB > 8" | bc -l) )); then
+            SIZE=$(du -sb dist-export-$p/_expo/static/js/$p/* 2>/dev/null | awk '{s+=$1} END {print s+0}')
+            FILES=$(find dist-export-$p/_expo/static/js/$p -type f 2>/dev/null | wc -l)
+            if [ "$FILES" -eq 0 ]; then
+              echo "::error::$p exported no bundle chunks — the budget cannot be measured (export layout changed?)"
+              exit 1
+            fi
+            MB=$(awk "BEGIN {printf \"%.2f\", $SIZE / 1048576}")
+            echo "$p JS bundle: ${MB} MB ($FILES chunks)"
+            if awk "BEGIN {exit !($MB > 8)}"; then
               echo "::error::$p JS bundle ${MB} MB exceeds the 8 MB budget"
               exit 1
             fi

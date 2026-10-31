@@ -106,12 +106,8 @@
     /* Half-steps: --sp-0-5 (2px: chip vertical 2/8 rhythm + optical
        alignment), --sp-1-5 (6px), --sp-2-5 (10px: compact-control
        padding). 2px is the smallest sanctioned rung; below is anomaly. */
-    --sp-0-5: 2px;
-    --sp-1:  4px;   --sp-1-5: 6px;  --sp-2:  8px;   --sp-2-5: 10px;
-    --sp-3: 12px;   --sp-4: 16px;
-    --sp-5: 20px;   --sp-6: 24px;   --sp-7: 32px;   --sp-8: 40px;
-    --sp-9: 48px;   --sp-10:56px;   --sp-11:72px;   --sp-12:96px;
-    --sp-13:128px;  --sp-14:160px;  --sp-15:192px;  --sp-16:240px;
+    /* R326 M0.4 — the ladder moved to tokens.generated.css (source:
+       shared/design-tokens.json; imported above this sheet). */
 
     /* r304 — legacy spacing aliases restored (historical mapping,
        verbatim) so older consumers and sibling branches resolve. */
@@ -132,15 +128,9 @@
        every marketing/product surface is square. The whole ladder
        rides 0; ONLY genuinely circular primitives (avatars, status
        dots) consume --r-full. */
-    /* R313 override: radius ladder collapsed to 0 (owner decision — Heron parity) */
-    --r-xs: 0px;
-    --r-sm: 0px;
-    --r-md: 0px;
-    --r-lg: 0px;
-    --r-xl: 0px;
-    --r-2xl: 0px;
-    --r-3xl: 0px;
-    --r-full: 9999px;   /* circular primitives only: avatars, status dots */
+    /* R326 M0.4 — the rungs moved to tokens.generated.css (source:
+       shared/design-tokens.json): the zero ladder + --r-full 9999px
+       (circular primitives only). */
     /* r304 — radius aliases restored (historical names → rungs). The
        rungs are the R313 zero ladder; the alias wires are verbatim
        r304. */
@@ -254,23 +244,20 @@
        cubic-bezier(.625,.05,0,1) ×3 (enter/roll). Ladder re-keyed to
        the same feel: micro stays 80 (press feedback), the interaction
        band moves to 200/400/500, cinematic rungs 650/900. */
-    --t-micro: 80ms;
-    --t-fast:  200ms;
-    --t-base:  400ms;
-    --t-slow:  500ms;
-    --t-slower:650ms;
-    --t-cinema:900ms;
+    /* R326 M0.4 — the raw rungs moved to tokens.generated.css (source:
+       shared/design-tokens.json); the reduced-motion kill below still
+       wins by import order. */
     /* R313 (D10) — the loader's measured center-out two-band clip
        split (the reference's exit: 835ms, slit 49.94/50.06% → 0/100%;
        was the R309 fixed 650ms whose animation raced to ~21ms). */
-    --t-sheet-exit: 835ms;
-    --t-guest-reveal: 700ms;   /* R313 (D11): reveal phase — cover 900ms + reveal 700ms ≈ reference 1.6s */
+
 
     /* r305 — --ease re-keys to the reference's decel standard
        (.23,1,.32,1); --ease-in adopts its roll/exit curve (.625,.05,0,1).
        --ease-out keeps the tighter (.16,1,.3,1) for entrances that must
        settle faster than the standard. */
-    --ease:        cubic-bezier(0.23, 1, 0.32, 1);
+    /* R326 M0.4 — --ease itself moved to tokens.generated.css (shared
+       with the app); the rest of the easing vocabulary stays here. */
     --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
     --ease-in:     cubic-bezier(0.625, 0.05, 0, 1);
     /* constant speed — the correct curve for CONTINUOUS infinite loops
@@ -531,17 +518,10 @@
        to the reference's construction hairline #B3B3AF
        (--content--border — the border-strong/rule/grid-line seat); the
        mid rungs stay the reference's own technical greys. */
-    --neutral-0:   #FFFFFF;          /* clear product surface */
-    --neutral-50:  #F6F6EE;          /* page ground — the warm vintage paper (R313) */
-    --neutral-100: #F0F0E6;          /* hover / subtle band — warm paper step */
-    --neutral-150: #EFEFE4;          /* inset well — warm paper step */
-    --neutral-200: #E0E0DA;          /* hairline (the reference's guide grey) */
-    --neutral-300: #B3B3AF;          /* strong border / rule / grid-line (the reference's --content--border) */
-    --neutral-400: #B4B4B0;          /* disable / non-text rung (technical grey) */
-    --neutral-500: #72726F;          /* mid gray (granite) */
-    --neutral-700: #414140;          /* secondary ink (the reference's own) */
-    --neutral-800: #333330;
-    --neutral-900: #282828;          /* primary ink (the charcoal) */
+    /* R326 M0.4 — the ramp values moved to tokens.generated.css
+       (source: shared/design-tokens.json); the provenance comments
+       above remain the documentation of record: #F6F6EE ground ·
+       #282828 charcoal ink · the reference's own technical greys. */
 
     /* The 9 section families (r305 re-key). Each has a soft tinted
        ground (band fill), a saturated "ink" for fills/UI accents, and a
@@ -557,73 +537,51 @@
        icon-well pins (light -deep on -bg ≥3:1) re-verified numerically:
        mint 7.31 · yellow 7.85 · rose 7.22 · sky 7.74 · peach 6.29 ·
        grey 12.55 · sand 7.62 · lavender 9.24 · copper 6.10. */
-    --c-peach-bg:     #FCE5DE;   --c-peach-ink:    #F15534;   --c-peach-deep:   #9C2B0F;
-    --c-mint-bg:      #E3EBE1;   --c-mint-ink:     #3F8F5C;   --c-mint-deep:    #1B5430;
-    --c-lavender-bg:  #ECE6FA;   --c-lavender-ink: #8A6FE0;   --c-lavender-deep:#3F2D7A;
-    --c-sky-bg:       #E1E9F0;   --c-sky-ink:      #4A7FA8;   --c-sky-deep:     #1F4968;
-    --c-yellow-bg:    #F5EBD6;   --c-yellow-ink:   #A8750F;   --c-yellow-deep:  #5E420C;
-    --c-rose-bg:      #F9E3DC;   --c-rose-ink:     #F15534;   --c-rose-deep:    #8C230A;
-    --c-sand-bg:      #F1ECDF;   --c-sand-ink:     #B59868;   --c-sand-deep:    #5A4623;
-    --c-grey-bg:      #ECEDEB;   --c-grey-ink:     #626260;   --c-grey-deep:    #282828;
-    --c-copper-bg:    #FCE3D9;   --c-copper-ink:   #FA3600;   --c-copper-deep:  #A32400;
+    /* R326 M0.4 — the 9 families moved to tokens.generated.css (source:
+       shared/design-tokens.json; the contrast pins live in its notes). */
 
     /* r305 — the coral alias namespace (additive; the warm secondary of
-       the reference). Resolves onto the re-keyed peach seat. */
-    --c-coral-bg:  var(--c-peach-bg);
-    --c-coral-ink: var(--c-peach-ink);
-    --c-coral-deep: var(--c-peach-deep);
+       the reference). R326 M0.4: emitted by tokens.generated.css now. */
 
     /* ═════ ROLE TOKENS — components consume these ═════
        Two-surface rule: --bg is the PAGE GROUND (paper), --surface the
        CARD GROUND — hierarchy via surface step + one soft shadow, not
        border stacks. */
-    --bg:               var(--neutral-50);
-    --surface:          var(--neutral-0);
-    --surface-1:        var(--neutral-0);
-    --surface-2:        var(--neutral-100);
-    --surface-3:        var(--neutral-150);
+    /* R326 M0.4 — the shared role seats (bg · surface · surface-1..3 ·
+       bg-soft · surface-elevated · the text/border/accent/status
+       families · brand/gold/primary) moved to tokens.generated.css
+       (source: shared/design-tokens.json); values unchanged. */
     /* r304 restorations — the subtle/elevated surface roles: */
-    --bg-soft:          var(--surface-2);   /* subtle surface (bands, wells) */
-    --surface-elevated: var(--surface-1);   /* floats above the ground */
 
-    --text:        var(--neutral-900);
-    --text-strong: var(--neutral-900);   /* r304: primary-text emphasis alias */
-    --text-secondary: var(--neutral-700);   /* #414140 — 9.41:1 bg · 10.04:1 surface (AAA) */
+
     /* R313 — muted is the solid equivalent of the reference's own
        rgba(40,40,40,.72) tertiary ink, derived on the NEW paper:
        #62625F = the exact alpha blend on #F6F6EE = 5.63:1 bg ·
        6.12:1 surface · 5.34:1 surface-2 · 5.29:1 surface-3 — clears
        4.5 on every light text ground (warm, unlike the retired cool
        #626260 granite). */
-    --text-muted:  #62625F;
     /* R313 — faint is one step FAINTER than muted, re-derived warm on
        the new paper: #70706A = 4.59:1 bg · 4.98:1 surface — AA where
        it carries text; deliberately under AA on --accent-soft and
        inset wells — faint never carries text there (contract unchanged
        from r304/r305; the retired cool #72726F measured 4.44 on the
        new ground and dipped under the floor). */
-    --text-faint:  #70706A;
     /* R313 — labels on the orange fill read WHITE (the reference's own
        recipe, measured on every button; 3.76:1 = AA-large). The r305
        warm-ink-only rule is SUPERSEDED. AA EXCEPTION: small Arabic
        labels on the accent fill get font-weight ≥600 (the .btn
        semibold default) and size ≥14px where feasible; body-size
        accent TEXT still routes through --accent-ink (5.06:1). */
-    --text-on-accent: #FFFFFF;
-    --text-on-dark:   var(--neutral-50);
 
-    --border:        var(--neutral-200);
-    --border-strong: var(--neutral-300);
+
     --border-faint:  rgba(40,40,40,0.07);
     /* R313 — the rule tier re-keys to the reference's construction
        hairline #B3B3AF (--content--border — every 1px line on the
        reference: frame, inputs, loader bar items); the guide grey
        #E0E0DA stays the soft border tier above. */
-    --rule:          var(--neutral-300);
     /* One step stronger than --rule on the hairline→divider ramp —
        referencing the token keeps the prefers-contrast + dark remaps
        working for free. */
-    --rule-strong:   var(--border-strong);
     /* R313 — the grid/rule grey is the reference's own #B3B3AF
        (via --neutral-300): DECORATIVE construction lines only on light
        (1.94:1 — the reference uses it exactly so); on dark the same
@@ -642,10 +600,7 @@
        --warm-ink (4.69:1). Gold leaves the accent seat for achievements
        only — and re-claims the retired copper hexes (circular economy:
        the old signal IS the new gold). */
-    --accent:        var(--c-copper-ink);
-    --accent-hover:  #D03000;
-    --accent-soft:   var(--c-copper-bg);
-    --accent-strong: var(--c-copper-deep);
+
     /* r305 — label ink on the accent fill → R313: WHITE (the reference
        ships white-on-#FA3600 labels on every measured button recipe;
        3.76:1 = AA-large). The r305 warm-ink-only rule is superseded by
@@ -653,12 +608,10 @@
        accent fill get weight ≥600 + size ≥14px where feasible (the
        .btn semibold default already satisfies the weight); body-size
        accent TEXT keeps routing through --accent-ink (5.06:1 AA). */
-    --accent-fg:     #FFFFFF;
     /* r305 — the TEXT-safe accent: #C72E00 = 5.16:1 bg · 5.50:1 surface
        · 5.27:1 #FAFAFA (AA as link/label text; the binary-searched
        floor was #D92F00 at 4.53 — one step darker for margin). The raw
        --accent stays the fill/stroke tone (3.53:1 — UI-large only). */
-    --accent-ink:    #C72E00;
 
     /* r305 — the focus ring clears ≥3:1 against every adjacent light
        surface (#C72E00 = 5.16:1 bg · 5.50:1 surface · 4.48:1 on
@@ -666,40 +619,24 @@
        (see the night block). */
     --state-focus-ring-color: #C72E00;
 
-    --success:      var(--c-mint-ink);
-    --success-soft: var(--c-mint-bg);
-    --warning:      var(--c-yellow-ink);
-    --warning-soft: var(--c-yellow-bg);
-    --danger:       var(--c-rose-ink);
-    --danger-soft:  var(--c-rose-bg);
-    --info:         var(--c-sky-ink);
-    --info-soft:    var(--c-sky-bg);
-
     /* Status INK tokens for TEXT usages — the deep "text-on-pastel"
        shades of the same families (all ≥7.2:1 on their tints and ≥7:1
        on the paper): mint-deep 7.31:1, yellow-deep 7.85:1, rose-deep
        7.22:1, sky-deep 7.74:1. */
-    --success-ink: var(--c-mint-deep);
-    --warning-ink: var(--c-yellow-deep);
-    --danger-ink:  var(--c-rose-deep);
-    --info-ink:    var(--c-sky-deep);
+
 
     /* Label ink ON A --danger FILL: r305 — the danger fill is the coral
        #F15534 and warm-ink labels read 5.10:1 (white would be 3.45:1).
        Consumed by .btn.danger + notif-badge via --_btn-fg. */
     --danger-fg:   var(--warm-ink);
 
-    --brand:         var(--accent);            /* r304: restored */
     --brand-purple:  var(--c-lavender-ink);
     /* r305 — the achievement gold re-claims the retired copper seat
        (circular economy: #B57438 was the r303/r304 signal; demoted to
        the achievement tone it is distinct from the orange signal
        again). 3.57:1 on the paper — large/decorative tier; text routes
        through --gold-ink #8F5A28 (5.39:1, AA). Achievements ONLY. */
-    --gold:          #B57438;
-    --gold-ink:      #8F5A28;
-    --primary:       var(--neutral-900);   /* charcoal slab CTA — white label 14.74:1 */
-    --primary-fg:    #FFFFFF;
+
 
     /* ─── Elevation — R313: the decorative ladder is RETIRED ─────────
        The reference measures 1 shadow in 2774 sampled surfaces (a
@@ -795,17 +732,9 @@
        ink is the paper twin #F6F8FA. The technical greys come home:
        #B4B4B0 — a decorative non-text rung on light — is a legitimate
        TEXT tone here (7.09:1 on the ground, AAA). */
-    --neutral-0:   #2E2E2E;
-    --neutral-50:  #282828;
-    --neutral-100: #353535;
-    --neutral-150: #3D3D3D;
-    --neutral-200: #4A4A48;
-    --neutral-300: #5C5C5A;
-    --neutral-400: #8A8A86;
-    --neutral-500: #B4B4B0;
-    --neutral-700: #C9C9C5;
-    --neutral-800: #E0E0DC;
-    --neutral-900: #F6F6EE; /* R324 X22 override — the warm paper twin (was #F6F8FA) */
+    /* R326 M0.4 — the night ramp moved to tokens.generated.css; the
+       R324 X22 override (ink #F6F6EE, was #F6F8FA) is preserved there
+       and the old spelling stays on the parity gate's FORBIDDEN list. */
 
     /* Night families: deep ember-tinted bgs + luminous inks. Contrast
        on --bg #282828 (engine-verified, r305): mint 8.08, yellow 9.28,
@@ -813,51 +742,27 @@
        badge triads re-verified (family ink-on-bg ≥6.5; the copper/
        ember ink IS the signal — 4.73, the AA-large/UI register by
        design). */
-    --c-peach-bg:     #43241C;   --c-peach-ink:    #FF8E68;   --c-peach-deep:   #FFC5AE;
-    --c-mint-bg:      #24372B;   --c-mint-ink:     #84D0A0;   --c-mint-deep:    #C4EBD2;
-    --c-lavender-bg:  #2D2545;   --c-lavender-ink: #B7A0F4;   --c-lavender-deep:#DCD2F9;
-    --c-sky-bg:       #23313F;   --c-sky-ink:      #93C2E9;   --c-sky-deep:     #C9E2F5;
-    --c-yellow-bg:    #3B331F;   --c-yellow-ink:   #EFC87B;   --c-yellow-deep:  #F8E3B4;
-    --c-rose-bg:      #43241C;   --c-rose-ink:     #FF8E68;   --c-rose-deep:    #FFC5AE;
-    --c-sand-bg:      #2D2820;   --c-sand-ink:     #D9C18C;   --c-sand-deep:    #EFE2C5;
-    --c-grey-bg:      #2A2A28;   --c-grey-ink:     #B7B2A6;   --c-grey-deep:    #DDD8CB;
-    --c-copper-bg:    #432015;   --c-copper-ink:   #FF5A1F;   --c-copper-deep:  #FFC5AE;
+    /* R326 M0.4 — the night families moved to tokens.generated.css
+       (source: shared/design-tokens.json). */
 
-    /* r305 — the night coral alias namespace (additive). */
-    --c-coral-bg:  var(--c-peach-bg);
-    --c-coral-ink: var(--c-peach-ink);
-    --c-coral-deep: var(--c-peach-deep);
+    /* r305 — the night coral alias namespace (additive). R326 M0.4:
+       emitted by tokens.generated.css now. */
 
-    --bg:               var(--neutral-50);
-    --surface:          var(--neutral-0);
-    --surface-1:        var(--neutral-0);
-    --surface-2:        var(--neutral-100);
-    --surface-3:        var(--neutral-150);
     /* Night roles: the subtle surface is the raised step; the elevated
-       surface lifts one further (deliberate counterpart, not inversion). */
-    --bg-soft:          var(--surface-2);
-    --surface-elevated: var(--surface-2);
+       surface lifts one further (deliberate counterpart, not inversion).
+       R326 M0.4 — the seat values moved to tokens.generated.css. */
 
-    --text:        var(--neutral-900);
-    --text-strong: var(--neutral-900);
-    --text-secondary: var(--neutral-700);
+
     /* #B4B4B0 — the reference's disable grey redeemed as the dark
        muted TEXT tier: 7.09:1 bg · 6.53:1 surface · 5.90:1 surface-2
        (worst dark ground) — clears 4.5 everywhere (r305, measured). */
-    --text-muted:  var(--neutral-500);
     /* #A2A29D — the AA-verified one-step-fainter tier: 5.75:1 bg ·
        5.30:1 surface — clears 4.5 on every dark text surface; under AA
        on --accent-soft by construction (faint never carries text
        there). */
-    --text-faint:  #A2A29D;
-    --text-on-accent: var(--warm-ink);   /* ink on the luminous night ember fill (5.64:1) */
-    --text-on-dark:   var(--neutral-900);
 
-    --border:        var(--neutral-200);
-    --border-strong: var(--neutral-300);
+
     --border-faint:  rgba(246,248,250,0.08);   /* paper-white hairline */
-    --rule:          var(--neutral-200);
-    --rule-strong:   var(--border-strong);
     --grid-line:     var(--neutral-300);
     /* 012 theme-tokens contract §1 — formalised surface edge tokens. */
     --surface-border:  rgba(246,248,250,0.12);
@@ -867,11 +772,7 @@
        (#FF5A1F — 4.73:1 bg, AA-large/UI; --warm-ink labels 5.64:1);
        --accent-strong becomes the light ember tier for text/icons/
        links on the night ground (9.72:1 bg). */
-    --accent:        var(--c-copper-ink);
-    --accent-hover:  #FF6B33;
-    --accent-soft:   var(--c-copper-bg);
-    --accent-strong: var(--c-copper-deep);
-    --accent-fg:     var(--warm-ink);
+
     /* r305 — the night ring re-keys to the luminous ember hover tier
        (#FF6B33 = 5.20:1 on the night ground · 6.14:1 on a generic
        near-black ground · 4.32:1 on the worst raised surface — clears
@@ -888,31 +789,13 @@
        (measured 4.79:1 surface · 5.20:1 bg · 5.08:1 accent-soft; ==
        --accent-hover, the exact value of W6's page-scoped fix, now carried
        by the token itself — the campus override retired). */
-    --accent-ink:   #FF6B33;
-    --success-ink:  var(--c-mint-ink);
-    --warning-ink:  var(--c-yellow-ink);
-    --danger-ink:   var(--c-rose-ink);
-    --info-ink:     var(--c-sky-ink);
+
 
     /* Label ink on the night coral fill (ink #191918 on #FF8E68 =
        7.81:1). Consumed by .btn.danger / notif badge. */
     --danger-fg:    var(--warm-ink);
 
-    --success:      var(--c-mint-ink);
-    --success-soft: var(--c-mint-bg);
-    --warning:      var(--c-yellow-ink);
-    --warning-soft: var(--c-yellow-bg);
-    --danger:       var(--c-rose-ink);
-    --danger-soft:  var(--c-rose-bg);
-    --info:         var(--c-sky-ink);
-    --info-soft:    var(--c-sky-bg);
-
-    --brand:         var(--accent);            /* r304: restored */
     --brand-purple:  var(--c-lavender-ink);
-    --gold:          #E0A067;      /* night gold achievement tone (the demoted r304 seat) */
-    --gold-ink:      #F2B782;
-    --primary:       #FFFFFF;               /* the night CTA — white slab, ink label */
-    --primary-fg:    var(--warm-ink);
 
     /* Night shadows — R313: the decorative ladder is retired here too
        (the shadow-removal policy is theme-wide); dark depth = surface

@@ -37,22 +37,28 @@ const STYLES_DIR = path.join(
 const readStyle = (f: string) => readFileSync(path.join(STYLES_DIR, f), 'utf-8');
 
 // ── RA1: parse the LIVE token source ──────────────────────────
+// R326 M0.4 — the theme seats span TWO sheets now: the generated
+// shared half (colors/semantic — tokens.generated.css) + the hand
+// remainder (chrome/shadows/role accents — tokens.css). The generated
+// sheet is concatenated FIRST so themeBlock() finds the theme blocks
+// where their values live.
 const tokensCss = readStyle('tokens.css');
+const tokensAll = readStyle('tokens.generated.css') + '\n' + tokensCss;
 
 /** Extract a top-level `[data-theme="X"] { … }` block by brace match. */
 function themeBlock(theme: 'light' | 'dark'): string {
   const opener = `[data-theme="${theme}"] {`;
-  const start = tokensCss.indexOf(opener);
-  expect(start, `tokens.css: [data-theme="${theme}"] block not found`).toBeGreaterThanOrEqual(0);
+  const start = tokensAll.indexOf(opener);
+  expect(start, `tokens: [data-theme="${theme}"] block not found`).toBeGreaterThanOrEqual(0);
   let depth = 0;
-  for (let i = start + opener.length - 1; i < tokensCss.length; i++) {
-    if (tokensCss[i] === '{') depth++;
-    else if (tokensCss[i] === '}') {
+  for (let i = start + opener.length - 1; i < tokensAll.length; i++) {
+    if (tokensAll[i] === '{') depth++;
+    else if (tokensAll[i] === '}') {
       depth--;
-      if (depth === 0) return tokensCss.slice(start, i + 1);
+      if (depth === 0) return tokensAll.slice(start, i + 1);
     }
   }
-  throw new Error(`tokens.css: unterminated [data-theme="${theme}"] block`);
+  throw new Error(`tokens: unterminated [data-theme="${theme}"] block`);
 }
 
 /** Read `--name: <value>` from a block (comments stripped). */

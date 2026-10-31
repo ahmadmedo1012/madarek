@@ -1,0 +1,280 @@
+{
+  "name": "madarek-heron",
+  "version": 1,
+  "$doc": "R326 M0.4 — the ONE source of truth for the shared Heron design tokens (web + mobile). Provenance: frontend/src/styles/tokens.css (R313/R322/R323/R324 canon) and the r325-era apps/mobile/src/design/tokens.ts hand-copy it replaces. Regen: npm run tokens:build (repo root). Outputs: frontend/src/styles/tokens.generated.css (web CSS vars, imported BEFORE tokens.css, same @layer tokens) + apps/mobile/src/design/tokens.generated.ts (mobile TS). Drift gate: npm run tokens:check (CI-enforced). Reference grammar: 'neutral.50' | 'triad.<family>.<bg|ink|deep>' | 'brand.<key>' | a semantic seat name (another ref, one tier up) | a literal '#hex'. External seat: brand.warmInk emits var(--warm-ink) on web — its definition stays hand-written in tokens.css base :root. NOT shared (deliberately): the web fluid-rem type ladder + font stacks (tokens.css hand section — web-only), the mobile px ladder lives here under typography.mobile; --state-focus-ring-color / --danger-fg / glass / veils / chrome / charts stay hand-written in tokens.css (web-only seats).",
+  "color": {
+    "brand": {
+      "$doc": "The only three brand colours (R323): paper #F6F6EE · ink #282828 · orange #FA3600 — plus the dark-theme luminous ember #FF5A1F and the warm label ink #191918. Consumed by the RN <Logo> tones and the mobile palette; web emits var(--warm-ink) refs only.",
+      "paper": "#F6F6EE",
+      "ink": "#282828",
+      "warmInk": "#191918",
+      "orange": "#FA3600",
+      "orangeDark": "#FF5A1F",
+      "white": "#FFFFFF"
+    },
+    "neutral": {
+      "$doc": "The warm vintage-paper ramp (R313). Light: near-white ground #F6F6EE over white surfaces, charcoal ink #282828 (13.57:1 AAA). Dark: the charcoal itself as ground (#282828), surfaces one step up (#2E2E2E), warm hairlines #4A4A48/#5C5C5A, near-white ink. neutral-900 dark is the R324 X22 warm paper twin #F6F6EE (was #F6F8FA — that spelling is on the parity gate's FORBIDDEN list).",
+      "light": {
+        "0": "#FFFFFF",
+        "50": "#F6F6EE",
+        "100": "#F0F0E6",
+        "150": "#EFEFE4",
+        "200": "#E0E0DA",
+        "300": "#B3B3AF",
+        "400": "#B4B4B0",
+        "500": "#72726F",
+        "700": "#414140",
+        "800": "#333330",
+        "900": "#282828"
+      },
+      "dark": {
+        "0": "#2E2E2E",
+        "50": "#282828",
+        "100": "#353535",
+        "150": "#3D3D3D",
+        "200": "#4A4A48",
+        "300": "#5C5C5A",
+        "400": "#8A8A86",
+        "500": "#B4B4B0",
+        "700": "#C9C9C5",
+        "800": "#E0E0DC",
+        "900": "#F6F6EE"
+      }
+    },
+    "triad": {
+      "$doc": "The 9 section families (r305 re-key, engine-verified contrasts): each a soft tinted ground (band fill), a saturated ink for fills/UI accents, a deep shade for text. Badge-rarity pins (yellow/grey/peach deep-vs-bg ≥4.5 both themes) and icon-well pins (light -deep on -bg ≥3:1) verified: mint 7.31 · yellow 7.85 · rose 7.22 · sky 7.74 · peach 6.29 · grey 12.55 · sand 7.62 · lavender 9.24 · copper 6.10. Dark = deep ember-tinted grounds + luminous inks (family ink-on-bg ≥6.5; the ember ink 4.73 AA-large/UI by design).",
+      "peach": {
+        "light": { "bg": "#FCE5DE", "ink": "#F15534", "deep": "#9C2B0F" },
+        "dark": { "bg": "#43241C", "ink": "#FF8E68", "deep": "#FFC5AE" }
+      },
+      "mint": {
+        "light": { "bg": "#E3EBE1", "ink": "#3F8F5C", "deep": "#1B5430" },
+        "dark": { "bg": "#24372B", "ink": "#84D0A0", "deep": "#C4EBD2" }
+      },
+      "lavender": {
+        "light": { "bg": "#ECE6FA", "ink": "#8A6FE0", "deep": "#3F2D7A" },
+        "dark": { "bg": "#2D2545", "ink": "#B7A0F4", "deep": "#DCD2F9" }
+      },
+      "sky": {
+        "light": { "bg": "#E1E9F0", "ink": "#4A7FA8", "deep": "#1F4968" },
+        "dark": { "bg": "#23313F", "ink": "#93C2E9", "deep": "#C9E2F5" }
+      },
+      "yellow": {
+        "light": { "bg": "#F5EBD6", "ink": "#A8750F", "deep": "#5E420C" },
+        "dark": { "bg": "#3B331F", "ink": "#EFC87B", "deep": "#F8E3B4" }
+      },
+      "rose": {
+        "light": { "bg": "#F9E3DC", "ink": "#F15534", "deep": "#8C230A" },
+        "dark": { "bg": "#43241C", "ink": "#FF8E68", "deep": "#FFC5AE" }
+      },
+      "sand": {
+        "light": { "bg": "#F1ECDF", "ink": "#B59868", "deep": "#5A4623" },
+        "dark": { "bg": "#2D2820", "ink": "#D9C18C", "deep": "#EFE2C5" }
+      },
+      "grey": {
+        "light": { "bg": "#ECEDEB", "ink": "#626260", "deep": "#282828" },
+        "dark": { "bg": "#2A2A28", "ink": "#B7B2A6", "deep": "#DDD8CB" }
+      },
+      "copper": {
+        "$doc": "The signal family — the ONE vivid orange #FA3600 (the reference's --content--brand). Raw orange is a LARGE-TEXT/UI tone on light (3.53:1); text routes through accentInk #C72E00 (AA). Dark ink is the luminous ember #FF5A1F (4.73:1 AA-large/UI).",
+        "light": { "bg": "#FCE3D9", "ink": "#FA3600", "deep": "#A32400" },
+        "dark": { "bg": "#432015", "ink": "#FF5A1F", "deep": "#FFC5AE" }
+      }
+    },
+    "semantic": {
+      "$doc": "The role seats components consume. Two-surface rule: bg = PAGE GROUND (paper), surface = CARD GROUND — hierarchy via surface step + hairlines, zero shadows (R313). Light labels on the accent fill read WHITE (AA-large, weight ≥600); body-size accent text routes through accentInk. Dark: luminous ember fills with warm-ink labels; status -ink ≡ the family ink (icon-well no-op).",
+      "light": {
+        "bg": "neutral.50",
+        "surface": "neutral.0",
+        "surface1": "neutral.0",
+        "surface2": "neutral.100",
+        "surface3": "neutral.150",
+        "bgSoft": "surface2",
+        "surfaceElevated": "surface1",
+        "text": "neutral.900",
+        "textStrong": "neutral.900",
+        "textSecondary": "neutral.700",
+        "textMuted": "#62625F",
+        "textFaint": "#70706A",
+        "textOnAccent": "#FFFFFF",
+        "textOnDark": "neutral.50",
+        "border": "neutral.200",
+        "borderStrong": "neutral.300",
+        "rule": "neutral.300",
+        "ruleStrong": "borderStrong",
+        "accent": "triad.copper.ink",
+        "accentHover": "#D03000",
+        "accentSoft": "triad.copper.bg",
+        "accentStrong": "triad.copper.deep",
+        "accentFg": "#FFFFFF",
+        "accentInk": "#C72E00",
+        "success": "triad.mint.ink",
+        "successSoft": "triad.mint.bg",
+        "successInk": "triad.mint.deep",
+        "warning": "triad.yellow.ink",
+        "warningSoft": "triad.yellow.bg",
+        "warningInk": "triad.yellow.deep",
+        "danger": "triad.rose.ink",
+        "dangerSoft": "triad.rose.bg",
+        "dangerInk": "triad.rose.deep",
+        "info": "triad.sky.ink",
+        "infoSoft": "triad.sky.bg",
+        "infoInk": "triad.sky.deep",
+        "brand": "accent",
+        "gold": "#B57438",
+        "goldInk": "#8F5A28",
+        "primary": "neutral.900",
+        "primaryFg": "#FFFFFF"
+      },
+      "dark": {
+        "bg": "neutral.50",
+        "surface": "neutral.0",
+        "surface1": "neutral.0",
+        "surface2": "neutral.100",
+        "surface3": "neutral.150",
+        "bgSoft": "surface2",
+        "surfaceElevated": "surface2",
+        "text": "neutral.900",
+        "textStrong": "neutral.900",
+        "textSecondary": "neutral.700",
+        "textMuted": "neutral.500",
+        "textFaint": "#A2A29D",
+        "textOnAccent": "brand.warmInk",
+        "textOnDark": "neutral.900",
+        "border": "neutral.200",
+        "borderStrong": "neutral.300",
+        "rule": "neutral.200",
+        "ruleStrong": "borderStrong",
+        "accent": "triad.copper.ink",
+        "accentHover": "#FF6B33",
+        "accentSoft": "triad.copper.bg",
+        "accentStrong": "triad.copper.deep",
+        "accentFg": "brand.warmInk",
+        "accentInk": "#FF6B33",
+        "success": "triad.mint.ink",
+        "successSoft": "triad.mint.bg",
+        "successInk": "triad.mint.ink",
+        "warning": "triad.yellow.ink",
+        "warningSoft": "triad.yellow.bg",
+        "warningInk": "triad.yellow.ink",
+        "danger": "triad.rose.ink",
+        "dangerSoft": "triad.rose.bg",
+        "dangerInk": "triad.rose.ink",
+        "info": "triad.sky.ink",
+        "infoSoft": "triad.sky.bg",
+        "infoInk": "triad.sky.ink",
+        "brand": "accent",
+        "gold": "#E0A067",
+        "goldInk": "#F2B782",
+        "primary": "#FFFFFF",
+        "primaryFg": "brand.warmInk"
+      }
+    },
+    "mobile": {
+      "$doc": "Mobile-only palette seats (no web var counterpart): the hover step and the sheet-overlay ground, expressed as refs so they track the ramps.",
+      "surfaceHover": { "light": "neutral.100", "dark": "neutral.100" },
+      "overlay": { "light": "neutral.0", "dark": "neutral.0" }
+    },
+    "tones": {
+      "$doc": "The status-tone families (mobile statusTones / notification & attendance kinds), in display order.",
+      "families": ["mint", "yellow", "rose", "sky", "lavender", "copper", "grey"]
+    },
+    "tiers": {
+      "$doc": "Gamification tier orbs (mobile).",
+      "BRONZE": "#A7724E",
+      "SILVER": "#9CA3AF",
+      "GOLD": "#D4A537",
+      "PLATINUM": "#7B3AED"
+    },
+    "webAliases": {
+      "$doc": "Web-only alias namespace (r305 — the warm secondary of the reference; resolves onto the peach seat). Emitted verbatim into both theme blocks.",
+      "c-coral-bg": "var(--c-peach-bg)",
+      "c-coral-ink": "var(--c-peach-ink)",
+      "c-coral-deep": "var(--c-peach-deep)"
+    }
+  },
+  "spacing": {
+    "$doc": "The 4px-base ladder. `webRungs` carries the HISTORICAL web rung names (the r305 re-key kept the names and re-keyed the values — index ≠ px/4 above --sp-6: --sp-7 IS 32px, --sp-16 IS 240px); `px` is the px-keyed ladder the mobile app consumes. Every webRung value must exist in px with the same value (validated). The --sp-Nx legacy aliases stay hand-written in tokens.css.",
+    "webRungs": {
+      "0-5": 2,
+      "1": 4,
+      "1-5": 6,
+      "2": 8,
+      "2-5": 10,
+      "3": 12,
+      "4": 16,
+      "5": 20,
+      "6": 24,
+      "7": 32,
+      "8": 40,
+      "9": 48,
+      "10": 56,
+      "11": 72,
+      "12": 96,
+      "13": 128,
+      "14": 160,
+      "15": 192,
+      "16": 240
+    },
+    "px": {
+      "2": 2,
+      "4": 4,
+      "6": 6,
+      "8": 8,
+      "10": 10,
+      "12": 12,
+      "16": 16,
+      "20": 20,
+      "24": 24,
+      "32": 32,
+      "40": 40,
+      "48": 48,
+      "56": 56,
+      "72": 72,
+      "96": 96,
+      "128": 128,
+      "160": 160,
+      "192": 192,
+      "240": 240
+    }
+  },
+  "radius": {
+    "$doc": "R313: the ladder collapses to 0 — square corners everywhere; ONLY genuinely circular primitives (avatars, status dots) consume full.",
+    "xs": 0,
+    "sm": 0,
+    "md": 0,
+    "lg": 0,
+    "xl": 0,
+    "2xl": 0,
+    "3xl": 0,
+    "full": 9999
+  },
+  "motion": {
+    "$doc": "The measured Heron register (r305 census: .4s ×174 dominant; decel standard .23,1,.32,1). Web: the prefers-reduced-motion kill in tokens.css zeroes the rungs by import order. The --ease-out/in/linear/soft/spring family stays hand-written in tokens.css (web-only).",
+    "micro": 80,
+    "fast": 200,
+    "base": 400,
+    "slow": 500,
+    "slower": 650,
+    "cinema": 900,
+    "sheetExit": 835,
+    "guestReveal": 700,
+    "ease": [0.23, 1, 0.32, 1]
+  },
+  "typography": {
+    "$doc": "The mobile px ladder (Arabic 13px readability floor; hierarchy via weight + size, no tracking). The WEB type voice is the fluid-rem ladder + font stacks hand-written in tokens.css (R313) — platform-specific by design, not shared here.",
+    "mobile": {
+      "monoXXS": 10,
+      "xs": 11,
+      "sm": 12,
+      "body": 13,
+      "bodyLg": 15,
+      "h4": 17,
+      "h3": 20,
+      "h2": 24,
+      "h1": 30,
+      "display": 36
+    }
+  },
+  "touchFloor": 44
+}

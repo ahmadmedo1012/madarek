@@ -17,6 +17,9 @@
 #   frontend/src/styles/tokens.css   (the canonical token source —
 #                                    its :root / [data-theme] blocks
 #                                    ARE the raw values, by design)
+#   frontend/src/styles/tokens.generated.css  (R326 M0.4 — the generated
+#                                    shared half; raw values are its job
+#                                    too. Source: shared/design-tokens.json)
 #   frontend/src/styles/fonts.css    (@font-face only — no colors
 #                                    today; sanctioned so a font file
 #                                    never needs a literal)
@@ -112,6 +115,9 @@ mode = sys.argv[1] if len(sys.argv) > 1 else '--report'
 # ── sanctioned zones ──────────────────────────────────────────────────
 WHOLESALE_CSS = {
     'frontend/src/styles/tokens.css',                # the token source
+    # R326 M0.4 — the generated shared half (raw values are its job;
+    # source: shared/design-tokens.json, regen npm run tokens:build)
+    'frontend/src/styles/tokens.generated.css',
     'frontend/src/styles/fonts.css',                 # @font-face only
     # r127-F1 parity precedent (see header): unwired export pair,
     # value-pinned to tokens.css by verify-parity-export.mjs.

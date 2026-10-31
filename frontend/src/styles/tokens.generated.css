@@ -1,0 +1,210 @@
+/* ═════════════════════════════════════════════════════════════════════
+   tokens.generated.css — GENERATED FILE — DO NOT EDIT BY HAND.
+   Source of truth: shared/design-tokens.json (R326 M0.4).
+   Regen: npm run tokens:build · Drift gate: npm run tokens:check
+
+   The WEB half of the shared Heron token set: the spacing/radius/
+   motion ladder + both theme palettes (neutrals · triads · semantic
+   seats). Imported by main.tsx BEFORE tokens.css, inside the same
+   @layer tokens — the hand-written seats in tokens.css compose on
+   top, and its prefers-reduced-motion kill still wins by order.
+   The MOBILE half: apps/mobile/src/design/tokens.generated.ts.
+   ═════════════════════════════════════════════════════════════════════ */
+
+@layer tokens {
+
+  :root {
+    /* ── Spacing — the 4px base ladder (historical rung names — index ≠ px/4 above --sp-6) ── */
+    --sp-1: 4px;
+    --sp-2: 8px;
+    --sp-3: 12px;
+    --sp-4: 16px;
+    --sp-5: 20px;
+    --sp-6: 24px;
+    --sp-7: 32px;
+    --sp-8: 40px;
+    --sp-9: 48px;
+    --sp-10: 56px;
+    --sp-11: 72px;
+    --sp-12: 96px;
+    --sp-13: 128px;
+    --sp-14: 160px;
+    --sp-15: 192px;
+    --sp-16: 240px;
+    --sp-0-5: 2px;
+    --sp-1-5: 6px;
+    --sp-2-5: 10px;
+
+    /* ── Radius — R313: the ladder collapses to 0; full = circular primitives ── */
+    --r-xs: 0px;
+    --r-sm: 0px;
+    --r-md: 0px;
+    --r-lg: 0px;
+    --r-xl: 0px;
+    --r-2xl: 0px;
+    --r-3xl: 0px;
+    --r-full: 9999px;
+
+    /* ── Motion — the measured Heron register (r305) ── */
+    --t-micro: 80ms;
+    --t-fast: 200ms;
+    --t-base: 400ms;
+    --t-slow: 500ms;
+    --t-slower: 650ms;
+    --t-cinema: 900ms;
+    --t-sheet-exit: 835ms;
+    --t-guest-reveal: 700ms;
+    --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  /* LIGHT THEME — the Heron blueprint paper */
+  :root,
+  [data-theme="light"] {
+    /* The warm vintage-paper neutral ramp (light) */
+    --neutral-0: #FFFFFF;
+    --neutral-50: #F6F6EE;
+    --neutral-100: #F0F0E6;
+    --neutral-150: #EFEFE4;
+    --neutral-200: #E0E0DA;
+    --neutral-300: #B3B3AF;
+    --neutral-400: #B4B4B0;
+    --neutral-500: #72726F;
+    --neutral-700: #414140;
+    --neutral-800: #333330;
+    --neutral-900: #282828;
+
+    /* The 9 section families — soft ground · saturated ink · deep text */
+    --c-peach-bg: #FCE5DE;  --c-peach-ink: #F15534;  --c-peach-deep: #9C2B0F;
+    --c-mint-bg: #E3EBE1;  --c-mint-ink: #3F8F5C;  --c-mint-deep: #1B5430;
+    --c-lavender-bg: #ECE6FA;  --c-lavender-ink: #8A6FE0;  --c-lavender-deep: #3F2D7A;
+    --c-sky-bg: #E1E9F0;  --c-sky-ink: #4A7FA8;  --c-sky-deep: #1F4968;
+    --c-yellow-bg: #F5EBD6;  --c-yellow-ink: #A8750F;  --c-yellow-deep: #5E420C;
+    --c-rose-bg: #F9E3DC;  --c-rose-ink: #F15534;  --c-rose-deep: #8C230A;
+    --c-sand-bg: #F1ECDF;  --c-sand-ink: #B59868;  --c-sand-deep: #5A4623;
+    --c-grey-bg: #ECEDEB;  --c-grey-ink: #626260;  --c-grey-deep: #282828;
+    --c-copper-bg: #FCE3D9;  --c-copper-ink: #FA3600;  --c-copper-deep: #A32400;
+
+    /* r305 — the coral alias namespace (resolves onto the peach seat) */
+    --c-coral-bg: var(--c-peach-bg);
+    --c-coral-ink: var(--c-peach-ink);
+    --c-coral-deep: var(--c-peach-deep);
+
+    /* Role tokens — components consume these */
+    --bg: var(--neutral-50);
+    --surface: var(--neutral-0);
+    --surface-1: var(--neutral-0);
+    --surface-2: var(--neutral-100);
+    --surface-3: var(--neutral-150);
+    --bg-soft: var(--surface-2);
+    --surface-elevated: var(--surface-1);
+    --text: var(--neutral-900);
+    --text-strong: var(--neutral-900);
+    --text-secondary: var(--neutral-700);
+    --text-muted: #62625F;
+    --text-faint: #70706A;
+    --text-on-accent: #FFFFFF;
+    --text-on-dark: var(--neutral-50);
+    --border: var(--neutral-200);
+    --border-strong: var(--neutral-300);
+    --rule: var(--neutral-300);
+    --rule-strong: var(--border-strong);
+    --accent: var(--c-copper-ink);
+    --accent-hover: #D03000;
+    --accent-soft: var(--c-copper-bg);
+    --accent-strong: var(--c-copper-deep);
+    --accent-fg: #FFFFFF;
+    --accent-ink: #C72E00;
+    --success: var(--c-mint-ink);
+    --success-soft: var(--c-mint-bg);
+    --success-ink: var(--c-mint-deep);
+    --warning: var(--c-yellow-ink);
+    --warning-soft: var(--c-yellow-bg);
+    --warning-ink: var(--c-yellow-deep);
+    --danger: var(--c-rose-ink);
+    --danger-soft: var(--c-rose-bg);
+    --danger-ink: var(--c-rose-deep);
+    --info: var(--c-sky-ink);
+    --info-soft: var(--c-sky-bg);
+    --info-ink: var(--c-sky-deep);
+    --brand: var(--accent);
+    --gold: #B57438;
+    --gold-ink: #8F5A28;
+    --primary: var(--neutral-900);
+    --primary-fg: #FFFFFF;
+  }
+
+  /* DARK THEME — the charcoal night */
+  [data-theme="dark"] {
+    /* The warm vintage-paper neutral ramp (dark) */
+    --neutral-0: #2E2E2E;
+    --neutral-50: #282828;
+    --neutral-100: #353535;
+    --neutral-150: #3D3D3D;
+    --neutral-200: #4A4A48;
+    --neutral-300: #5C5C5A;
+    --neutral-400: #8A8A86;
+    --neutral-500: #B4B4B0;
+    --neutral-700: #C9C9C5;
+    --neutral-800: #E0E0DC;
+    --neutral-900: #F6F6EE;
+
+    /* The 9 section families — soft ground · saturated ink · deep text */
+    --c-peach-bg: #43241C;  --c-peach-ink: #FF8E68;  --c-peach-deep: #FFC5AE;
+    --c-mint-bg: #24372B;  --c-mint-ink: #84D0A0;  --c-mint-deep: #C4EBD2;
+    --c-lavender-bg: #2D2545;  --c-lavender-ink: #B7A0F4;  --c-lavender-deep: #DCD2F9;
+    --c-sky-bg: #23313F;  --c-sky-ink: #93C2E9;  --c-sky-deep: #C9E2F5;
+    --c-yellow-bg: #3B331F;  --c-yellow-ink: #EFC87B;  --c-yellow-deep: #F8E3B4;
+    --c-rose-bg: #43241C;  --c-rose-ink: #FF8E68;  --c-rose-deep: #FFC5AE;
+    --c-sand-bg: #2D2820;  --c-sand-ink: #D9C18C;  --c-sand-deep: #EFE2C5;
+    --c-grey-bg: #2A2A28;  --c-grey-ink: #B7B2A6;  --c-grey-deep: #DDD8CB;
+    --c-copper-bg: #432015;  --c-copper-ink: #FF5A1F;  --c-copper-deep: #FFC5AE;
+
+    /* r305 — the coral alias namespace (resolves onto the peach seat) */
+    --c-coral-bg: var(--c-peach-bg);
+    --c-coral-ink: var(--c-peach-ink);
+    --c-coral-deep: var(--c-peach-deep);
+
+    /* Role tokens — components consume these */
+    --bg: var(--neutral-50);
+    --surface: var(--neutral-0);
+    --surface-1: var(--neutral-0);
+    --surface-2: var(--neutral-100);
+    --surface-3: var(--neutral-150);
+    --bg-soft: var(--surface-2);
+    --surface-elevated: var(--surface-2);
+    --text: var(--neutral-900);
+    --text-strong: var(--neutral-900);
+    --text-secondary: var(--neutral-700);
+    --text-muted: var(--neutral-500);
+    --text-faint: #A2A29D;
+    --text-on-accent: var(--warm-ink);
+    --text-on-dark: var(--neutral-900);
+    --border: var(--neutral-200);
+    --border-strong: var(--neutral-300);
+    --rule: var(--neutral-200);
+    --rule-strong: var(--border-strong);
+    --accent: var(--c-copper-ink);
+    --accent-hover: #FF6B33;
+    --accent-soft: var(--c-copper-bg);
+    --accent-strong: var(--c-copper-deep);
+    --accent-fg: var(--warm-ink);
+    --accent-ink: #FF6B33;
+    --success: var(--c-mint-ink);
+    --success-soft: var(--c-mint-bg);
+    --success-ink: var(--c-mint-ink);
+    --warning: var(--c-yellow-ink);
+    --warning-soft: var(--c-yellow-bg);
+    --warning-ink: var(--c-yellow-ink);
+    --danger: var(--c-rose-ink);
+    --danger-soft: var(--c-rose-bg);
+    --danger-ink: var(--c-rose-ink);
+    --info: var(--c-sky-ink);
+    --info-soft: var(--c-sky-bg);
+    --info-ink: var(--c-sky-ink);
+    --brand: var(--accent);
+    --gold: #E0A067;
+    --gold-ink: #F2B782;
+    --primary: #FFFFFF;
+    --primary-fg: var(--warm-ink);
+  }
+}

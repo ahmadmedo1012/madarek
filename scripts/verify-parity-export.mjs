@@ -43,6 +43,13 @@ const PATHS = {
   shared: join(ROOT, 'frontend/src/styles/shared-design-system.css'),
 };
 const read = (p) => readFileSync(p, 'utf8');
+
+/* R326 M0.4 — the canonical source is TWO sheets now: the generated
+ * shared half + the hand-written remainder, concatenated in import
+ * order. buildThemeMap merges by tier + file order exactly like the
+ * live cascade, so CHECKS rows resolve wherever the seat lives. */
+const canonicalCss = () =>
+  read(join(ROOT, 'frontend/src/styles/tokens.generated.css')) + '\n' + read(PATHS.canonical);
 const lineCount = (s) => s.split('\n').length;
 
 /* ── CSS parsing (comments stripped, blocks walked, @media tracked) ── */
@@ -253,7 +260,7 @@ function auditVars(css, defs, label, extraExternals = new Set()) {
 
 /* ── Gate 1: token parity checks ────────────────────────────────────── */
 
-const canonBlocks = parseCss(read(PATHS.canonical));
+const canonBlocks = parseCss(canonicalCss());
 const parityBlocks = parseCss(read(PATHS.parity));
 const maps = {
   canonical: { light: buildThemeMap(canonBlocks, 'light'), dark: buildThemeMap(canonBlocks, 'dark') },
@@ -599,7 +606,7 @@ const failures = [];
 let passCount = 0;
 
 console.log('verify-parity-export — canonical parity gate (r127-F1)');
-console.log(`  canonical: frontend/src/styles/tokens.css (${lineCount(read(PATHS.canonical))} lines)`);
+console.log(`  canonical: tokens.css + tokens.generated.css (${lineCount(canonicalCss())} lines combined)`);
 console.log(`  export:    frontend/src/styles/unified-parity.css (${lineCount(read(PATHS.parity))} lines)`);
 console.log(`  companion: frontend/src/styles/shared-design-system.css (${lineCount(read(PATHS.shared))} lines)`);
 console.log('');

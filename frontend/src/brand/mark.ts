@@ -46,7 +46,7 @@ export const MARK_POINT_CENTRE = { x: 24, y: 8 } as const;
 export const MARK_INK = { x: 5, y: 5, w: 22, h: 22 } as const;
 
 /** The five grid intersections the construction is judged on. */
-export const MARK_GRID_POINTS: ReadonlyArray<readonly [number, number]> = [
+export const MARK_GRID_POINTS: readonly (readonly [number, number])[] = [
   [8, 8], [24, 8], [24, 24], [8, 24], /* axis square corners */
   [16, 5], [27, 16], [16, 27], [5, 16], /* rotated square vertices */
   [24, 8], /* the point's seat (NE) */

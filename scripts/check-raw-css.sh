@@ -179,7 +179,7 @@ class ScanError(Exception):
 
 
 # ── scope tables (per axis, r185) ─────────────────────────────────
-WHOLESALE_ALWAYS = {'tokens.css', 'fonts.css'}
+WHOLESALE_ALWAYS = {'tokens.css', 'fonts.css', 'tokens.generated.css'}
 TYPE_RADIUS_EXTRA = {
     'unified-parity.css',      # parity pair — value-pinned export
     'shared-design-system.css',
@@ -439,21 +439,28 @@ def find_px_literals(value, context='value'):
 
 # ── ladder loading (live truth, fail closed) ──────────────────────
 def load_ladder():
-    tokens = STYLES / 'tokens.css'
-    if not tokens.is_file():
-        raise ScanError(f'missing ladder source: {tokens}')
-    text = strip_comments(tokens.read_text(encoding='utf-8'))
+    # R326 M0.4 — the --sp rungs live in the generated shared half now
+    # (source: shared/design-tokens.json); tokens.css keeps only the
+    # --sp-Nx legacy aliases. Load BOTH (generated first — same import
+    # order as main.tsx) so the engine still reads live truth wherever
+    # a rung is defined, and keep failing closed when neither parses.
+    sources = [STYLES / 'tokens.generated.css', STYLES / 'tokens.css']
     ladder = {}
-    for m in re.finditer(r'(--sp-[a-z0-9-]+)\s*:\s*(\d+(?:\.\d+)?)px\s*;',
-                         text):
-        val = float(m.group(2))
-        if val not in ladder:
-            ladder[val] = m.group(1)
+    for tokens in sources:
+        if not tokens.is_file():
+            continue
+        text = strip_comments(tokens.read_text(encoding='utf-8'))
+        for m in re.finditer(r'(--sp-[a-z0-9-]+)\s*:\s*(\d+(?:\.\d+)?)px\s*;',
+                             text):
+            val = float(m.group(2))
+            if val not in ladder:
+                ladder[val] = m.group(1)
     if len(ladder) < 8:
         raise ScanError(
-            f'ladder unparseable: only {len(ladder)} --sp rungs in '
-            f'{tokens} — the spacing engine refuses to run against a '
-            f'broken scale (fail closed, not fail silent)')
+            f'ladder unparseable: only {len(ladder)} --sp rungs across '
+            f'{" + ".join(s.name for s in sources)} — the spacing engine '
+            f'refuses to run against a broken scale (fail closed, not '
+            f'fail silent)')
     return ladder
 
 

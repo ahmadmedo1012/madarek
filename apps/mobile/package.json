@@ -72,6 +72,9 @@
     "export:web": "expo export --platform web",
     "icons": "node scripts/generate-icons.mjs",
     "contract-check": "node scripts/contract-check.mjs",
+    "api:types": "npx --yes openapi-typescript@7.13.0 ../../docs/api/openapi.json --output src/api/schema.generated.ts",
+    "tokens:build": "node ../../scripts/tokens/build.mjs",
+    "tokens:check": "node ../../scripts/tokens/build.mjs --check",
     "test": "jest"
   },
   "private": true,
