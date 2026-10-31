@@ -1,39 +1,33 @@
-# EAS Workflow — Maestro e2e on an Android emulator (R327 A1).
-# Same flows as e2e-ios, on the android-emulator runner (Release variant).
+# EAS Workflow — Maestro e2e on Android (R327 A1).
+#
+# build (preview profile = internal APK) → maestro job boots an emulator,
+# installs the APK, and runs every flow in apps/mobile/.maestro/ (first
+# open + login for all five roles → tabs → logout). Screen recording ON.
 name: e2e-android
 on:
   push:
     branches: [main]
     paths:
-      - 'apps/mobile/**'
+      - 'apps/mobile/.maestro/**'
       - '.eas/workflows/e2e-android.yml'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 jobs:
+  build-android-apk:
+    name: Build (preview — Android APK)
+    type: build
+    params:
+      platform: android
+      profile: preview
+      message: "R327 e2e-android — Maestro flows"
+
   maestro-android:
     name: Maestro e2e — Android emulator
-    type: android-emulator
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Install app dependencies
-        run: cd apps/mobile && npm ci --no-audit --no-fund
-      - name: Install Maestro
-        run: curl -fsSL "https://get.maestro.mobile.dev" | bash
-      - name: Build the app for the emulator (release)
-        run: cd apps/mobile && npx expo run:android --variant release
-      - name: Run the flows (first open + all five roles)
-        run: |
-          export PATH="$PATH:$HOME/.maestro/bin"
-          cd apps/mobile
-          maestro test .maestro/ --output-dir .maestro-output
-      - name: Flow results (JUnit + screenshots listing)
-        if: always
-        run: |
-          cd apps/mobile
-          find .maestro-output -type f | sort | head -80
-          echo "--- JUnit summaries ---"
-          find .maestro-output -name '*.xml' -exec sh -c 'echo "## $1"; sed -e "s/></>\n</g" "$1" | grep -E "testsuite name|testcase name|failure" | head -20' _ {} \; || true
+    type: maestro
+    needs: [build-android-apk]
+    params:
+      build_id: ${{ needs.build-android-apk.outputs.build_id }}
+      flow_path: apps/mobile/.maestro
+      record_screen: true
+      retries: 1
+      output_format: junit
