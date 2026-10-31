@@ -85,6 +85,50 @@ jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
 
+/* ── reanimated: the R327 B2 loaders animate via Reanimated 4. The
+      official mock still boots the native initializers chain
+      (runOnUISync-on-web crash); the app's surface is small, so a
+      deterministic hand-rolled mock covers it: animated components are
+      passthroughs, animation builders resolve instantly, styles are {}. ─ */
+
+jest.mock("react-native-reanimated", () => {
+  const React = require("react");
+  const { View, Text, Image, ScrollView } = require("react-native");
+  const passthrough = (Component: unknown) =>
+    React.forwardRef((props: Record<string, unknown>, ref: unknown) =>
+      React.createElement(Component as never, { ...props, ref }));
+  const animated = {
+    View: passthrough(View),
+    Text: passthrough(Text),
+    Image: passthrough(Image),
+    ScrollView: passthrough(ScrollView),
+    createAnimatedComponent: passthrough,
+  };
+  return {
+    ...animated,
+    default: animated,
+    useAnimatedStyle: () => ({}),
+    useDerivedValue: (fn: () => unknown) => ({ value: fn() }),
+    useSharedValue: (v: unknown) => ({ value: v }),
+    withTiming: (v: unknown) => v,
+    withSequence: (...steps: unknown[]) => steps[steps.length - 1],
+    withRepeat: (animation: unknown) => animation,
+    withDelay: (_ms: number, animation: unknown) => animation,
+    withSpring: (v: unknown) => v,
+    withClamp: (animation: unknown) => animation,
+    cancelAnimation: () => undefined,
+    Easing: {
+      bezier: () => ({}),
+      inOut: (x: unknown) => x,
+      out: (x: unknown) => x,
+      in: (x: unknown) => x,
+      quad: { factory: () => ({}) },
+    },
+    runOnJS: (fn: (...args: unknown[]) => unknown) => fn,
+    runOnUI: (fn: (...args: unknown[]) => unknown) => fn,
+  };
+});
+
 /* ── safe-area: the REAL provider only renders children after the native
       onInsetsChange event — which NEVER fires under jest, silently
       hollowing every mount. The official mock is a passthrough context

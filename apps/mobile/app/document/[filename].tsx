@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View , TextInput } from "react-native";
+import { Pressable, StyleSheet, View , TextInput } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Sharing from "expo-sharing";
@@ -18,6 +18,7 @@ import { ErrorState } from "@/components/ui/states";
 import { dateTime, latn } from "@/lib/format";
 import type { PaperAnnotation } from "@/api/types";
 
+import { InlineBusy } from "@/components/ui/boot";
 /**
  * /document/[filename] — authenticated PDF surface (papers / materials).
  * Native: downloads with Bearer auth to the app cache, then opens the real
@@ -128,7 +129,7 @@ export default function DocumentViewer() {
           </T>
           {downloading ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-              <ActivityIndicator size="small" color={p.accent} />
+              <InlineBusy size={12} color={p.accent} />
               <T variant="body" color="muted">جارٍ التنزيل…</T>
             </View>
           ) : downloadError ? (

@@ -1,6 +1,5 @@
 import { type ReactNode, useRef } from "react";
 import {
-  ActivityIndicator,
   Pressable,
   StyleSheet,
   View,
@@ -12,6 +11,7 @@ import { usePalette } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
 import { T } from "./text";
 
+import { InlineBusy, useStableFlag } from "./boot";
 export type ButtonKind = "primary" | "accent" | "ghost" | "danger" | "plain";
 
 export interface ButtonProps {
@@ -43,6 +43,8 @@ export function Button({
 }: ButtonProps) {
   const p = usePalette();
   const busy = loading || disabled;
+  // R327 B2: a busy flash shorter than 300ms reads as a glitch — hold it.
+  const showBusy = useStableFlag(loading, 300);
   const height = small ? 36 : 48;
   const bg =
     kind === "primary" ? p.primary : kind === "accent" ? p.accent : kind === "danger" ? "#F15534" : "transparent";
@@ -72,8 +74,8 @@ export function Button({
         style,
       ]}
     >
-      {loading ? (
-        <ActivityIndicator size="small" color={kind === "ghost" ? p.text : fg} />
+      {showBusy ? (
+        <InlineBusy size={12} color={kind === "ghost" ? p.text : fg} />
       ) : (
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           {icon}

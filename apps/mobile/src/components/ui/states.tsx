@@ -1,24 +1,32 @@
 import { type ReactNode } from "react";
-import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import Animated from "react-native-reanimated";
 import { WifiOff } from "lucide-react-native";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "./text";
 import { Button } from "./pressables";
+import { Boot, usePulseStyle } from "./boot";
+import { useReduceMotion } from "@/hooks/useReduceMotion";
 
-/** Skeleton — drafting pulse block. */
+/** Skeleton — drafting pulse block (paper rhythm, reduced-motion safe). */
 export function Skeleton({ w = "100%", h = 16, style }: { w?: number | string; h?: number; style?: StyleProp<ViewStyle> }) {
   const p = usePalette();
+  const reduced = useReduceMotion();
+  const pulse = usePulseStyle(reduced);
+  if (reduced) {
+    return <View style={[{ width: w, height: h, backgroundColor: p.border, opacity: 0.7 }, style]} />;
+  }
   return (
-    <View
+    <Animated.View
       style={[
         {
           width: w,
           height: h,
           backgroundColor: p.border,
-          opacity: 0.8,
         },
-        style,
+        pulse,
+        style as StyleProp<never>,
       ]}
     />
   );
@@ -48,16 +56,13 @@ export function SkeletonList({ rows = 5, rowHeight = 64 }: { rows?: number; rowH
   );
 }
 
-export function LoadingScreen({ label = "جارٍ التحميل…" }: { label?: string }) {
-  const p = usePalette();
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: p.bg, gap: sp[12] }}>
-      <ActivityIndicator size="large" color={p.accent} />
-      <T variant="sm" color="muted">
-        {label}
-      </T>
-    </View>
-  );
+/**
+ * LoadingScreen — R327 B2: the ONE boot state (mark at splash position,
+ * converging squares, honest 6s «الخادم يستيقظ…» slow label). Every
+ * transient full-screen wait routes here — no generic spinner survives.
+ */
+export function LoadingScreen({ label = "جارٍ التحميل…", onRetry }: { label?: string; onRetry?: () => void }) {
+  return <Boot label={label} onRetry={onRetry} />;
 }
 
 /** EmptyState — honest emptiness with an optional action. */
