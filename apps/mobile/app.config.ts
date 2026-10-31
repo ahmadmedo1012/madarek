@@ -66,6 +66,9 @@ const config: ExpoConfig = {
     ],
     ["expo-document-picker", { iCloudDirectoryEnabled: false }],
     "expo-video",
+    // R327 C3 — the biometric app-lock (cold-start gate; the
+    // faceID permission prompt on iOS).
+    "expo-local-authentication",
     // R326 M0.5 — real OTA: the project's update endpoint, not a username
     // placeholder. runtimeVersion uses the fingerprint policy so any native
     // dependency/plugin/config change produces a new binary+update pairing.

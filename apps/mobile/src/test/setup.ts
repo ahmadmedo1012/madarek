@@ -100,6 +100,17 @@ jest.mock("expo-notifications", () => ({
   AndroidNotificationVisibility: { PRIVATE: 1 },
 }));
 
+/* ── expo-local-authentication: the R327 C3 biometric lock —
+      deterministic stub (no hardware under jest; the gate stays
+      unlocked because SecureStore flag reads null). ─ */
+jest.mock("expo-local-authentication", () => ({
+  hasHardwareAsync: jest.fn().mockResolvedValue(false),
+  isEnrolledAsync: jest.fn().mockResolvedValue(false),
+  supportedAuthenticationTypesAsync: jest.fn().mockResolvedValue([]),
+  authenticateAsync: jest.fn().mockResolvedValue({ success: false }),
+  cancelAuthenticate: jest.fn().mockResolvedValue(true),
+}));
+
 /* ── reanimated: the R327 B2 loaders animate via Reanimated 4. The
       official mock still boots the native initializers chain
       (runOnUISync-on-web crash); the app's surface is small, so a

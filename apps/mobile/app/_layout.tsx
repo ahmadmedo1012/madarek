@@ -20,6 +20,7 @@ import { installGlobalErrorHandlers, crumb } from "@/lib/telemetry";
 import { ensureRTL } from "@/lib/rtl";
 import { BlockingUpdateGate, useAppUpdates, useVersionGate } from "@/lib/updates";
 import { PushRegistrar } from "@/lib/push";
+import { BiometricGate } from "@/lib/biometric";
 // Arabic-first: the app is authored RTL. Applied at module scope; Android
 // bakes the direction at startup (first-ever launch applies on next start).
 I18nManager.allowRTL(true);
@@ -109,10 +110,15 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <SafeAreaProvider>
-            <StatusBar style="auto" />
-            <ErrorBoundary scope="navigator">
-              <RootNavigator />
-            </ErrorBoundary>
+            {/* R327 C3 — the optional cold-start biometric lock. Off by
+                default; renders nothing until the SecureStore flag says
+                otherwise. Web: hasHardware=false → permanent no-op. */}
+            <BiometricGate>
+              <StatusBar style="auto" />
+              <ErrorBoundary scope="navigator">
+                <RootNavigator />
+              </ErrorBoundary>
+            </BiometricGate>
             {/* R327 C3 — channels + tap→deep-link + silent registration. */}
             <PushRegistrar />
             <ToastHost />
