@@ -87,7 +87,10 @@ export function RoleTabFrame({ role, children }: { role: AppRole; children: Reac
         accessibilityRole="tablist"
       >
         {tabs.map((tab) => {
-          const active = pathname === tab.path;
+          // R327 B3: sub-screens keep their tab lit — /student/courses/[id]
+          // highlights «مقرراتي», not nothing.
+          const active =
+            pathname === tab.path || pathname.startsWith(tab.path + "/");
           const Icon = tab.icon;
           const badge = tab.inbox ? unread : 0;
           return (
@@ -97,11 +100,24 @@ export function RoleTabFrame({ role, children }: { role: AppRole; children: Reac
               accessibilityLabel={tab.label}
               accessibilityState={{ selected: active }}
               onPress={() => {
-                if (active) return;
+                if (pathname === tab.path) return; // already at this tab's root
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
-                router.replace(tab.path as never);
+                // R327 B3: dismissTo returns to the LIVE instance when one is
+                // in the stack (scroll position preserved) and only pushes
+                // when the tab root isn't mounted yet.
+                router.dismissTo(tab.path as never);
               }}
-              style={{ flex: 1, alignItems: "center", justifyContent: "center", minHeight: 54, paddingTop: 8 }}
+              style={{
+                flex: 1,
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 54,
+                paddingTop: 8,
+                // R327 B3: the active marker — a 2dp orange underline on the
+                // tab's bottom edge (no shadows, radius 0, Heron discipline).
+                borderBottomWidth: active ? 2 : 0,
+                borderBottomColor: p.accent,
+              }}
             >
               <View>
                 <Icon size={22} color={active ? p.accent : p.text} />
