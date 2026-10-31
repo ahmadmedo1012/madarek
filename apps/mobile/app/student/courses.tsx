@@ -103,9 +103,9 @@ function StudentCourses() {
                         label={`تقدّم مقرّر ${c.name}: ${pct(e.progressPct)}`}
                       />
                       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                        <T variant="xs" color="muted">
-                          {pct(e.progressPct)}
-                        </T>
+                        {/* R2 (B4 re-review): the bare pct duplicated the hint's
+                            number («33% تابع 33%») — the bar carries the value,
+                            the hint carries the action. One number, one verb. */}
                         <T variant="xs" color="accentInk" weight="bold">
                           {courseProgressHint(e.progressPct)}
                         </T>

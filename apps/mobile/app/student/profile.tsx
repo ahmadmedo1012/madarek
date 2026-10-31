@@ -51,7 +51,7 @@ import { T } from "@/components/ui/text";
 import { PageHeader, Screen, SectionBar } from "@/components/ui/screen";
 import { Badge, Card } from "@/components/ui/surfaces";
 import { Avatar, KpiCard, LedgerRow, RowList, StatLine } from "@/components/ui/data";
-import { ErrorState, SkeletonList } from "@/components/ui/states";
+import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { initials } from "@/lib/format";
 import { ScrollBody } from "@/features/student/components";
 
@@ -146,11 +146,14 @@ function StudentProfile() {
             compact
           />
         ) : !student ? (
-          <Card>
-            <T variant="sm" color="muted">
-              لا يوجد ملف طالب مرتبط بحسابك بعد — تواصل مع شؤون الطلاب لإكمال بياناتك الأكاديمية.
-            </T>
-          </Card>
+          /* R2 (B4 review): the bare muted Card became a real EmptyState —
+             icon + title + honest guidance, the kit's grammar everywhere
+             else. */
+          <EmptyState
+            icon={<ScrollText size={22} color={p.textMuted} />}
+            title="لا يوجد ملف طالب بعد"
+            message="لم يُربَط ملف طالب بحسابك — تواصل مع شؤون الطلاب لإكمال بياناتك الأكاديمية، وبمجرد اعتماده ستظهر سنتك ومعدّلك وجدولك هنا."
+          />
         ) : (
           <>
             <View style={{ flexDirection: "row", gap: sp[8] }}>

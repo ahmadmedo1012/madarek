@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { TriangleAlert } from "lucide-react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { ApiError } from "@/api/client";
 import { useSession, ROLE_HOME } from "@/auth/session";
@@ -31,6 +32,21 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fieldError, setFieldError] = useState<string | null>(null);
+
+  /* R2 (B4 review) — login error clarity: an API refusal (wrong
+   * password, locked account, waking server) is NOT an email-field
+   * problem. Field errors = validation only; API errors get the
+   * dedicated alert banner under the button — the web AuthPage's
+   * contract (A13 P2-1: a 429 lockout is honestly a lockout, never
+   * «تحقّق من البيانات»). */
+  const apiMessage = (err: unknown): string => {
+    const api = err as ApiError | null;
+    if (api?.code === "TOO_MANY_REQUESTS" || api?.status === 429) {
+      return api.message || "محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.";
+    }
+    return api?.message || "تعذّر تسجيل الدخول — تحقّق من اتصالك ثم أعد المحاولة.";
+  };
 
   const go = (user: { role: string; currentInstitution?: { id: string } | null }) => {
     const cont = params.continue ? decodeURIComponent(params.continue) : null;
@@ -49,17 +65,17 @@ export default function SignIn() {
 
   const submit = async () => {
     if (!email.trim() || !password) {
-      setError("أدخل البريد ورقم التسجيل مع كلمة المرور.");
+      setFieldError("أدخل البريد ورقم التسجيل مع كلمة المرور.");
       return;
     }
+    setFieldError(null);
     setBusy(true);
     setError(null);
     try {
       const user = await login(email.trim(), password);
       go(user);
     } catch (err) {
-      const api = err as ApiError;
-      setError(api.message ?? "تعذّر تسجيل الدخول — تحقق من البيانات.");
+      setError(apiMessage(err));
     } finally {
       setBusy(false);
     }
@@ -84,7 +100,7 @@ export default function SignIn() {
             autoCapitalize="none"
             autoCorrect={false}
             inputMode="email"
-            error={error}
+            error={fieldError}
           />
           <SecretField
             label="كلمة المرور"
@@ -96,6 +112,27 @@ export default function SignIn() {
         </View>
 
         <Button label={busy ? "جارٍ الدخول…" : "دخول"} onPress={submit} loading={busy} />
+
+        {error ? (
+          <View
+            accessibilityRole="alert"
+            style={{
+              flexDirection: "row",
+              alignItems: "flex-start",
+              gap: sp[8],
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: p.accentInk,
+              backgroundColor: p.accentSoft,
+              paddingHorizontal: sp[12],
+              paddingVertical: sp[10],
+            }}
+          >
+            <TriangleAlert size={15} color={p.accentInk} />
+            <T variant="sm" style={{ flex: 1, color: p.accentInk }}>
+              {error}
+            </T>
+          </View>
+        ) : null}
 
         <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
           <Pressable accessibilityRole="button" onPress={() => router.push("/auth/forgot-password")}>
