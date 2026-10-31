@@ -60,3 +60,46 @@ export function useFeedbackStatus() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['feedback-inbox'] }),
   });
 }
+
+/* ── r326 M1.1 — native client-error telemetry (the owner inbox half) ── */
+
+export interface ClientErrorRow {
+  id: string;
+  kind: 'crash' | 'js_error' | 'unhandled_rejection' | 'api_error' | 'render';
+  message: string;
+  stack: string | null;
+  route: string | null;
+  role: string | null;
+  breadcrumbs: { rows: string[] } | null;
+  appVersion: string | null;
+  updateId: string | null;
+  runtimeVersion: string | null;
+  deviceModel: string | null;
+  osName: string | null;
+  osVersion: string | null;
+  reviewedAt: string | null;
+  createdAt: string;
+  user?: { id: string; firstName: string; lastName: string; email: string } | null;
+}
+
+export function useClientErrors(page: number, reviewed: 'no' | 'yes' | 'all') {
+  return useQuery({
+    queryKey: ['client-errors', page, reviewed],
+    queryFn: async () => {
+      const res = await api.get<{
+        data: ClientErrorRow[];
+        meta: { total: number; totalPages: number; page: number; unreviewed: number };
+      }>('/client-errors', { params: { page, limit: 20, reviewed } });
+      return res.data;
+    },
+    staleTime: 15_000,
+  });
+}
+
+export function useClientErrorReview() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id }: { id: string }) => api.patch(`/client-errors/${id}/reviewed`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['client-errors'] }),
+  });
+}

@@ -7,13 +7,13 @@
  * dismissed (terminal — the backend owns the transition verdict).
  */
 import { useState } from 'react';
-import { Inbox, MessageSquarePlus, RefreshCw } from 'lucide-react';
+import { Inbox, MessageSquarePlus, RefreshCw, Smartphone } from 'lucide-react';
 import { Card } from '../../components/primitives';
 /* The patterns PageHeader — breadcrumbs brow + meta, the owner pages' seat. */
 import { PageHeader } from '../../components/patterns';
 import { EmptyState, ErrorState, Skeleton } from '../../components/primitives/States';
 import { Icon } from '../../components/Icon';
-import { useFeedbackInbox, useFeedbackStatus, type FeedbackRow } from '../../hooks/resources/feedback';
+import { useFeedbackInbox, useFeedbackStatus, useClientErrors, useClientErrorReview, type FeedbackRow, type ClientErrorRow } from '../../hooks/resources/feedback';
 import { formatDate } from '../../utils/numbers';
 
 const STATUS_LABELS: Record<FeedbackRow['status'], string> = {
@@ -93,12 +93,89 @@ const FILTERS: { value: string | null; label: string }[] = [
   { value: 'dismissed', label: 'مُستبعد' },
 ];
 
+const ERROR_KIND_LABELS: Record<ClientErrorRow['kind'], string> = {
+  crash: 'انهيار',
+  js_error: 'خطأ JS',
+  unhandled_rejection: 'وعد مرفوض',
+  api_error: 'خطأ API',
+  render: 'خطأ عرض',
+};
+
+function ClientErrorCard({ row }: { row: ClientErrorRow }) {
+  const review = useClientErrorReview();
+  const [showStack, setShowStack] = useState(false);
+  const crumbs = row.breadcrumbs?.rows ?? [];
+  return (
+    <article className="fb-row" data-reviewed={row.reviewedAt ? 'yes' : 'no'}>
+      <div className="fb-row-head">
+        <span className="fb-chip" data-kind={row.kind === 'crash' ? 'BUG' : 'IDEA'}>{ERROR_KIND_LABELS[row.kind]}</span>
+        {row.reviewedAt ? (
+          <span className="fb-chip" data-status="fixed">مُراجَع</span>
+        ) : (
+          <span className="fb-chip" data-status="open">جديد</span>
+        )}
+        {row.route && <span className="fb-row-route" dir="ltr">{row.route}</span>}
+        <span className="fb-row-user" dir="auto">
+          {row.user ? `${row.user.firstName} ${row.user.lastName} · ` : 'مجهول · '}
+          {row.deviceModel ?? 'جهاز غير معروف'}
+          {row.osName ? ` · ${row.osName} ${row.osVersion ?? ''}` : ''}
+          {row.appVersion ? ` · إصدار ${row.appVersion}` : ''} · {formatDate(row.createdAt, { day: 'numeric', month: 'short' })}
+        </span>
+      </div>
+      <p className="fb-row-note" dir="auto">{row.message}</p>
+      <div className="fb-status-actions">
+        <button type="button" className="btn ghost sm" onClick={() => setShowStack((v) => !v)}>
+          {showStack ? 'إخفاء التفاصيل' : 'التفاصيل'}
+        </button>
+        <button
+          type="button"
+          className="btn ghost sm"
+          disabled={review.isPending}
+          onClick={() => review.mutate({ id: row.id })}
+        >
+          {row.reviewedAt ? 'إرجاع كجديد' : 'علّم كمراجَع'}
+        </button>
+      </div>
+      {showStack && (
+        <>
+          {row.stack && (
+            <pre className="fb-console" dir="ltr">
+              {row.stack}
+            </pre>
+          )}
+          {crumbs.length > 0 && (
+            <pre className="fb-console" dir="ltr">
+              {crumbs.join('\n')}
+            </pre>
+          )}
+          {row.updateId && (
+            <p className="fb-row-user" dir="ltr">
+              update {row.updateId.slice(0, 8)} · runtime {row.runtimeVersion ?? '—'}
+            </p>
+          )}
+        </>
+      )}
+    </article>
+  );
+}
+
+const ERROR_FILTERS: { value: 'no' | 'yes' | 'all'; label: string }[] = [
+  { value: 'no', label: 'الجديدة' },
+  { value: 'yes', label: 'المُراجَعة' },
+  { value: 'all', label: 'الكل' },
+];
+
 export default function FeedbackInboxPage() {
   const [status, setStatus] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const inbox = useFeedbackInbox(page, status);
   const rows = (inbox.data as { data?: FeedbackRow[] } | undefined)?.data ?? [];
   const meta = (inbox.data as { meta?: { total: number; totalPages: number; page: number } } | undefined)?.meta;
+  const [errFilter, setErrFilter] = useState<'no' | 'yes' | 'all'>('no');
+  const [errPage, setErrPage] = useState(1);
+  const errors = useClientErrors(errPage, errFilter);
+  const errRows = (errors.data as { data?: ClientErrorRow[] } | undefined)?.data ?? [];
+  const errMeta = (errors.data as { meta?: { total: number; totalPages: number; page: number; unreviewed: number } } | undefined)?.meta;
 
   return (
     <div className="page">
@@ -171,6 +248,72 @@ export default function FeedbackInboxPage() {
         <p className="inv-note">
           <Icon icon={MessageSquarePlus} size={12} /> الودجت العائم على كل شاشة مسجّل الدخول هو مصدر هذه التقارير.
         </p>
+      </Card>
+
+      <Card
+        title="أخطاء تطبيق الجوّال"
+        subtitle={
+          errMeta
+            ? `${errMeta.unreviewed} خطأً غير مراجَع — تصل تلقائيًا من التطبيق عند حدوث انهيار أو خلل.`
+            : 'تقارير الأعطال التي يرسلها تطبيق الجوّال تلقائيًا مع مسارها وجهازها وإصدارها.'
+        }
+      >
+        <div className="fb-status-actions" style={{ marginInlineStart: 0, marginBottom: 'var(--sp-2-5)' }}>
+          {ERROR_FILTERS.map((f) => (
+            <button
+              key={f.label}
+              type="button"
+              className="btn ghost sm"
+              data-active={errFilter === f.value}
+              onClick={() => {
+                setErrFilter(f.value);
+                setErrPage(1);
+              }}
+            >
+              {f.label}
+            </button>
+          ))}
+          <button type="button" className="btn ghost sm" onClick={() => void errors.refetch()}>
+            <Icon icon={RefreshCw} size={13} /> تحديث
+          </button>
+        </div>
+
+        {errors.isPending ? (
+          <Skeleton width="100%" height={140} />
+        ) : errors.isError ? (
+          <ErrorState error={errors.error} onRetry={() => void errors.refetch()} />
+        ) : errRows.length === 0 ? (
+          <EmptyState
+            icon={Smartphone}
+            title="لا أخطاء تطبيق هنا"
+            description="عندما ينهار التطبيق أو يتعثّر، يصل التقرير هنا تلقائيًا — لا يحتاج المستخدم شيئًا."
+          />
+        ) : (
+          <div className="fb-inbox">
+            {errRows.map((row) => (
+              <ClientErrorCard key={row.id} row={row} />
+            ))}
+          </div>
+        )}
+
+        {errMeta && errMeta.totalPages > 1 && (
+          <div className="fb-status-actions" style={{ marginInlineStart: 0, marginTop: 'var(--sp-2-5)' }}>
+            <button type="button" className="btn ghost sm" disabled={errPage <= 1} onClick={() => setErrPage((p) => p - 1)}>
+              السابق
+            </button>
+            <span className="fb-row-user">
+              صفحة {errMeta.page} من {errMeta.totalPages} · {errMeta.total} خطأً
+            </span>
+            <button
+              type="button"
+              className="btn ghost sm"
+              disabled={errPage >= errMeta.totalPages}
+              onClick={() => setErrPage((p) => p + 1)}
+            >
+              التالي
+            </button>
+          </div>
+        )}
       </Card>
     </div>
   );
