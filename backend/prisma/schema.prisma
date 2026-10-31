@@ -422,6 +422,13 @@ model User {
 
   // r323 B3.6 — the pilot feedback loop the user filed.
   feedbackSent   PilotFeedback[]
+
+  // r326 M1.1 — the client-error telemetry the user's devices sent
+  // (optional userId — anonymous crash reports are accepted).
+  clientErrors   ClientError[]
+
+  // r326 M2.6 — the push devices registered by this user's installs.
+  pushDevices    PushDevice[]
 }
 
 model StudentProfile {
@@ -2162,4 +2169,50 @@ model PilotFeedback {
 
   @@index([status, createdAt])
   @@index([userId])
+}
+
+// r326 M1.1 — native client crash/error telemetry (additive). Written by
+// the mobile app's telemetry layer (fire-and-forget POST /client-errors,
+// unauthenticated so login-time crashes still report; strict rate limit +
+// zod validation at the route). The OWNER inbox reads it.
+model ClientError {
+  id             String    @id @default(cuid())
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id])
+  kind           String // crash | js_error | unhandled_rejection | api_error | render
+  message        String    @db.Text
+  stack          String?   @db.Text
+  route          String?
+  role           String?
+  breadcrumbs    Json? // [{ t, text }] ring (≤ 30 rows)
+  appVersion     String?
+  updateId       String? // expo-updates id — which OTA the user runs
+  runtimeVersion String?
+  deviceModel    String?
+  osName         String?
+  osVersion      String?
+  userAgent      String?
+  reviewedAt     DateTime?
+  createdAt      DateTime  @default(now())
+
+  @@index([kind, createdAt])
+  @@index([reviewedAt, createdAt])
+  @@index([userId])
+}
+
+// r326 M2.6 — Expo push device registration (additive; per the mobile
+// proposal apps/mobile/docs/push-backend-proposal.md). Upserted by token;
+// pruned when Expo reports DeviceNotRegistered or after 180 idle days.
+model PushDevice {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  platform   String // ANDROID | IOS | WEB
+  expoToken  String   @unique
+  appVersion String?
+  lastSeenAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([lastSeenAt])
 }

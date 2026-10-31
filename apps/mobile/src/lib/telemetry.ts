@@ -102,7 +102,7 @@ export async function reportClientError(report: {
       await fetch(`${API_BASE}/client-errors`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: payload }),
+        body: JSON.stringify(payload),
         signal: ctrl.signal,
       });
     } finally {

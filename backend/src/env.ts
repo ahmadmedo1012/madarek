@@ -109,6 +109,18 @@ const schema = z
     STT_API_URL: z.string().trim().url().optional(),
     STT_API_KEY: z.string().trim().min(1).optional(),
     STT_MODEL: z.string().trim().min(1).max(120).optional(),
+    // ── r326 M0.7 — the mobile minimum-version gate ── GET /status
+    // reports minAppVersion + updateUrl; the native app compares its
+    // semver against minAppVersion on cold start and shows the blocking
+    // «يلزم تحديث التطبيق» screen when below. Defaults keep a bare
+    // clone permissive (no gate) and the download page is /app on the
+    // deployed site.
+    MIN_APP_VERSION: z.string().trim().regex(/^\d+\.\d+\.\d+$/, 'MIN_APP_VERSION must be semver (e.g. 1.0.0)').optional(),
+    APP_DOWNLOAD_URL: z.string().trim().url().optional(),
+    // ── r326 M2.6 — Expo push fan-out switch ── dark until the project
+    // is fully configured on the Expo dashboard (FCM/APNs credentials);
+    // registration routes are always on, only the send path is gated.
+    PUSH_ENABLED: z.coerce.boolean().default(false),
     AI_MODELS: z
       .string()
       .trim()

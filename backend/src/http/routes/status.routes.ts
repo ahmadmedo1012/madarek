@@ -46,6 +46,12 @@ router.get('/status', async (_req, res) => {
       mailProvider: env.MAIL_PROVIDER,
       buildId: BUILD_ID,
       serverTime: new Date().toISOString(),
+      // r326 M0.7 — the mobile minimum-version gate: the native app
+      // compares its semver on cold start; below minAppVersion it shows
+      // the blocking «يلزم تحديث التطبيق» screen pointing at updateUrl.
+      // Unset MIN_APP_VERSION = no gate (bare-clone/dev default).
+      minAppVersion: env.MIN_APP_VERSION ?? null,
+      updateUrl: env.APP_DOWNLOAD_URL ?? 'https://madarek.onrender.com/app',
     },
   });
 });

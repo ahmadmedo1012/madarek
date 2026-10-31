@@ -58,6 +58,8 @@ import inviteRoutes from './http/routes/invite.routes.js';
 // r323 B3.6 — the pilot feedback loop: the floating «أبلغ عن مشكلة /
 // اقتراح» + the registrar/owner inbox with the status grammar.
 import feedbackRoutes from './http/routes/feedback.routes.js';
+import clientErrorRoutes from './http/routes/client-error.routes.js';
+import pushRoutes from './http/routes/push.routes.js';
 import { themeRouter } from './modules/theme/router.js';
 import { onboardingRouter } from './modules/onboarding/router.js';
 import { milestonesRouter } from './modules/milestones/router.js';
@@ -265,6 +267,10 @@ export function createApp() {
   app.use('/api/v1', inviteRoutes);
   // r323 B3.6 — the pilot feedback loop.
   app.use('/api/v1', feedbackRoutes);
+  // r326 M1.1 — native client-error telemetry (POST public + OWNER inbox).
+  // No router-level auth (per-route middleware only) — safe before the
+  // public routers.
+  app.use('/api/v1', clientErrorRoutes);
   // ── PUBLIC routers — must be registered BEFORE any router that
   //    uses `router.use(authMiddleware)` and mounts at the broad
   //    `/api/v1` prefix. Otherwise their global middleware fires
@@ -301,6 +307,11 @@ export function createApp() {
   // collides with a meRoutes path.
   app.use('/api/v1', catalogRoutes);
   app.use('/api/v1', meRoutes);
+  // r326 M2.6 — push device registration (proposal contract). MUST sit
+  // after the public routers above (same ordering lesson as meRoutes:
+  // router-level authMiddleware would otherwise 401 anonymous public
+  // paths that fall through it).
+  app.use('/api/v1', pushRoutes);
   app.use('/api/v1', learningRoutes); // /lectures, /me/matrix, /me/gaps, /research, /quality
   app.use('/api/v1', trainingRoutes); // /training/* (catalog, lessons, badges, certificates, leaderboard)
   app.use('/api/v1', teacherRoutes);  // /teacher/* (offerings, students, risks, attendance, curriculum)
