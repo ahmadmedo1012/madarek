@@ -19,6 +19,7 @@
  *     checkpoints) into AiKnowledgeChunk, idempotent per source
  *   · searchKnowledge — trigram prefilter → JS re-score → top hits
  */
+import { Prisma } from '@prisma/client';
 import type { PrismaClient } from '@prisma/client';
 import { normalizeArabicSearch } from '../search/normalize.js';
 
@@ -276,6 +277,22 @@ export async function indexLectureTranscript(
  * hits. The raw query and the normalized query BOTH prefilter (the
  * stored text is as-written; folding happens only in the ranker), so
  * a hamza/diacritic mismatch still finds its chunk.
+ *
+ * r327 (P4b, measured live on the local PG16 build): pg_trgm's `%`
+ * operator extracts NO trigrams from Arabic script —
+ * `similarity('الذاكرة', 'الذاكرة')` returns 0.000, so for Arabic
+ * questions the trigram half of the prefilter is dead and only the
+ * whole-phrase ILIKE branch carried recall (a natural question with
+ * different word order or extra words retrieved NOTHING → the answer
+ * shipped ungrounded with zero citations). The fix: a per-token ILIKE
+ * branch — the query's own tokens (≥3 chars, first 6, deduped) each
+ * prefilter content OR title via `ILIKE ANY(...)` (the re-ranker
+ * scores title+content, so the prefilter must see both — a question
+ * naming the LECTURE topic often appears only in the chunk's title),
+ * restoring Arabic recall. The Arabic-aware re-ranker
+ * (scoreKnowledgeHits, ≥0.25 gate) stays the sole arbiter of
+ * relevance; the prefilter only widens the candidate set (still
+ * capped at 60).
  */
 export async function searchKnowledge(
   prisma: PrismaLike,
@@ -285,12 +302,18 @@ export async function searchKnowledge(
 ): Promise<ScoredKnowledgeHit[]> {
   const trimmed = query.trim();
   if (trimmed.length < 3) return [];
+  const tokens = [...new Set(trimmed.split(TOKEN_SPLIT).map((t) => t.trim()).filter((t) => t.length >= 3 && t.length <= 40))].slice(0, 6);
+  const tokenPatterns = tokens.map((t) => `%${t}%`);
+  const tokenClause =
+    tokenPatterns.length > 0
+      ? Prisma.sql` OR ("content" ILIKE ANY(${tokenPatterns}) OR title ILIKE ANY(${tokenPatterns}))`
+      : Prisma.empty;
   const candidates = await prisma.$queryRaw<KnowledgeHitRow[]>`
     SELECT id, "sourceType" AS "sourceType", "sourceId" AS "sourceId",
            title, locator, url, content
     FROM "AiKnowledgeChunk"
     WHERE "institutionId" = ${institutionId}
-      AND ("content" % ${trimmed} OR "content" ILIKE ${'%' + trimmed.slice(0, 60) + '%'})
+      AND ("content" % ${trimmed} OR "content" ILIKE ${'%' + trimmed.slice(0, 60) + '%'}${tokenClause})
     ORDER BY GREATEST(similarity("content", ${trimmed}), 0)
     LIMIT 60`;
   if (candidates.length === 0) return [];

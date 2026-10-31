@@ -1,0 +1,34 @@
+━━━ r327 P4(b) — grounded-retrieval check ━━━
+institution: inst-zawia-showcase · AiKnowledgeChunk rows: 25
+
+1) pg_trgm similarity (the measured root cause):
+   similarity('الذاكرة الافتراضية', 'الذاكرة الافتراضية') = 0.000  ← identical ARABIC strings score ZERO
+   similarity('virtual memory', 'virtual memory management')  = 0.600  ← latin scores normally
+
+2) prefilter candidates — OLD (trigram % OR whole-phrase ILIKE) vs NEW (+ per-token ILIKE):
+   os-virtual-memory      old= 0  new= 2
+   os-role                old= 0  new= 1
+   sql-having             old= 1  new= 1
+   sql-joins              old= 0  new= 5
+   db-foreign-key         old= 0  new= 2
+   db-3nf                 old= 1  new= 1
+   arch-cache             old= 0  new= 3
+   arch-twos-complement   old= 0  new= 2
+   data-representation    old= 0  new= 3
+   hardware-components    old= 0  new= 0
+
+3) searchKnowledge() (the chat route's own retrieval) — hits after the Arabic-aware re-ranker:
+   os-virtual-memory      hits=2  top: «أنظمة التشغيل: الدور والوظائف» · الدقيقة 16:20 (score 1.10)
+   os-role                hits=2  top: «أنظمة التشغيل: الدور والوظائف» · الدقيقة 16:20 (score 0.75)
+   sql-having             hits=1  top: «SQL: الاستعلام والتجميع» · الدقيقة 17:20 (score 0.83)
+   sql-joins              hits=6  top: «مخططات تدفق البيانات (DFD)» · الدقيقة 15:40 (score 0.79)
+   db-foreign-key         hits=2  top: «النموذج العلائقي والمفاتيح» · الدقيقة 16:10 (score 1.10)
+   db-3nf                 hits=1  top: «التطبيع حتى 3NF» · الدقيقة 15:20 (score 0.93)
+   arch-cache             hits=3  top: «مكونات الحاسوب وبنيته» · الدقيقة 8:20 (score 0.64)
+   arch-twos-complement   hits=2  top: «تمثيل البيانات والأرقام» · الدقيقة 14:40 (score 0.67)
+   data-representation    hits=5  top: «تمثيل البيانات والأرقام» · الدقيقة 14:40 (score 0.83)
+   hardware-components    hits=1  top: «مكونات الحاسوب وبنيته» · الدقيقة 8:20 (score 1.25)
+
+retrieved ≥1 grounded source for 10/10 natural Arabic questions
+(local-mode chat envelopes stay citations:[] by design — the composer never cites;
+ these hits are what a provider-mode answer cites, and what the reindex index)

@@ -975,9 +975,14 @@ router.post('/chat', aiLimiter, validate(chatSchema), async (req, res, next) => 
         engine: aiProviderLabel,
         model: engine.model,
         /* r323 B1.2 — the JSON grammar carries the same citations the
-         * SSE grammar does (parity across transports; local mode stays
-         * empty — the rule-based composer never pretends to cite). */
-        citations: rag.citations,
+         * SSE grammar does (parity across transports). r327 (P4b): the
+         * local composer NEVER cites — its reply is template-composed
+         * and never read the retrieved sources, so attaching
+         * rag.citations would dress a template answer in a grounding
+         * badge it did not earn. Local mode returns [] exactly like
+         * the SSE path always has (the comment claimed this; the code
+         * leaked the citations — proven live before this fix). */
+        citations: aiProvider ? rag.citations : ([] as KnowledgeCitation[]),
       },
     });
   } catch (e) {
