@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { View , Linking } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import ExternalLink from "lucide-react-native/icons/external-link";
@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/pressables";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
-import { dateTime, latn, num } from "@/lib/format";
+import { dateTime, num } from "@/lib/format";
 import { LIVE_STATUS, SectionNote, countAr, fmtClock } from "@/features/student/more";
 
 /** The backend opens the join window 10 minutes before the scheduled time. */

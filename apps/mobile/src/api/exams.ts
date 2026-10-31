@@ -1,6 +1,5 @@
 /** Exams: student attempts + teacher authoring + question bank + moderation. */
 import { get, post, patch } from "./client";
-import type { Paginated } from "./types";
 
 export type ExamQuestionType = "MCQ" | "TRUE_FALSE" | "SHORT" | "ESSAY";
 export type ExamKind = "QUIZ" | "MIDTERM" | "FINAL" | "PRACTICE";

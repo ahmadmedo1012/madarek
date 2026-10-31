@@ -697,7 +697,6 @@ function ResultBody({
   deepLinked?: boolean;
   onBackToList: () => void;
 }) {
-  const p = usePalette();
   const tones = useStatusTones();
   const awaitingManual = result.passed === null && result.status !== "GRADED";
   const [reviewOpen, setReviewOpen] = useState(Boolean(deepLinked) && !awaitingManual);
@@ -792,8 +791,6 @@ function ResultBody({
 }
 
 function ReviewQuestion({ q, index }: { q: ReviewPayload["questions"][number]; index: number }) {
-  const p = usePalette();
-  const tones = useStatusTones();
   const myChoice =
     q.myChoiceIndex !== null && q.myChoiceIndex !== undefined && q.choices ? q.choices[q.myChoiceIndex] ?? null : null;
   const keyChoice =

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { createContext, useEffect, useMemo, type ReactNode } from "react";
 import { useColorScheme } from "react-native";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -55,22 +55,6 @@ export function usePalette(): HeronPalette {
 
 export function useStatusTones(): Record<StatusToneName, StatusTone> {
   return useTheme().tones;
-}
-
-/** Server profile sync: reflects the preference stored on the user record. */
-export function useSyncThemeProfile(profilePreference: "LIGHT" | "DARK" | "SYSTEM" | null | undefined, enabled: boolean) {
-  const preference = useThemePreference();
-  const [appliedServer, setAppliedServer] = useState(false);
-  useEffect(() => {
-    if (!enabled || appliedServer || !profilePreference) return;
-    const mapped = profilePreference.toLowerCase() as ThemePreference;
-    if (mapped === preference) {
-      setAppliedServer(true);
-      return;
-    }
-    setThemePreference(mapped);
-    setAppliedServer(true);
-  }, [profilePreference, enabled, appliedServer, preference]);
 }
 
 export interface ThemeContextValue {

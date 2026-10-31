@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/pressables";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
-import { latn, num } from "@/lib/format";
+import { num } from "@/lib/format";
 import { SectionNote, countAr } from "@/features/student/more";
 /**
  * /student/mooc — دورات MOOC (web MoocPage parity): the external-course

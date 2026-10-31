@@ -12,10 +12,10 @@
  * signed-in states — those are Maestro/EAS and W-track scope. This net
  * only proves: no route screen explodes when it renders.
  */
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import React from "react";
-import { render, waitFor } from "@testing-library/react-native";
+import { render } from "@testing-library/react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -74,7 +74,7 @@ function mountRoute(Component: React.ComponentType): void {
 
 describe("every route screen renders without crashing (the render net)", () => {
   test.each(routes)("route: %s", (route) => {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+     
     const mod = require(route.file) as { default?: unknown };
     const Component = mod.default;
     expect(typeof Component).toBe("function");

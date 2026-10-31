@@ -99,7 +99,6 @@ export default function OnlineExamsScreen() {
 function ExamRow({ exam, last }: { exam: ExamTemplateRow; last: boolean }) {
   const ws = examWindowState(exam);
   const verdict = attemptVerdict(exam);
-  const inProgress = exam.myAttempt?.status === "IN_PROGRESS";
 
   const windowText = exam.openAt
     ? exam.closeAt

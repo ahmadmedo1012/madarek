@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View , TextInput } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Send from "lucide-react-native/icons/send";
@@ -10,9 +10,9 @@ import { ApiError } from "@/api/client";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
-import { Button, IconButton } from "@/components/ui/pressables";
-import { Badge, Card, ConfirmDialog, Hairline } from "@/components/ui/surfaces";
-import { EmptyState, ErrorState } from "@/components/ui/states";
+import { IconButton } from "@/components/ui/pressables";
+import { Badge, Card, ConfirmDialog } from "@/components/ui/surfaces";
+import { ErrorState } from "@/components/ui/states";
 import { BrandMark } from "@/components/ui/brand";
 
 /**

@@ -103,7 +103,7 @@ describe("every route survives hostile API responses (the poisoned net)", () => 
   test.each(routes.flatMap((r) => POISONS.map((k) => [r.name, k] as const)))(
     "route %s × poison %s",
     async (route, kind) => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+       
       const mod = require(
         routes.find((r) => r.name === route)!.file,
       ) as { default?: unknown };

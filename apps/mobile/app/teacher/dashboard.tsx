@@ -29,6 +29,8 @@ import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { Segmented } from "@/components/ui/fields";
 import { arCount, useTeacherOfferings } from "@/features/teacher/components";
 
+const NO_OFFERINGS: Awaited<ReturnType<typeof teacherApi.offerings>> = [];
+
 type FeedFilter = "all" | "submissions" | "research" | "attendance";
 
 const FEED_ACTION: Record<string, { label: string; to: string }> = {
@@ -128,7 +130,7 @@ function TeacherDashboard() {
     return null;
   }, [d]);
 
-  const offerings = offs.data ?? [];
+  const offerings = offs.data ?? NO_OFFERINGS;
   const slots = useMemo(() => todaySlots(offerings, new Date()), [offerings]);
 
   if (dash.isLoading) {

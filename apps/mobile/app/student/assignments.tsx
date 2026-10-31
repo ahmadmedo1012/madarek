@@ -131,6 +131,7 @@ export default function AssignmentsScreen() {
 
       {target ? (
         <AssignSubmitSheet
+          key={target.id}
           open={!!target}
           onClose={() => setTarget(null)}
           offeringId={feed.data?.agenda.assignments.find((a) => a.id === target.id)?.offeringId ?? ""}

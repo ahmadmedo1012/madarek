@@ -4,7 +4,6 @@ import { useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Sharing from "expo-sharing";
 import { File } from "expo-file-system";
-import Download from "lucide-react-native/icons/download";
 import ExternalLink from "lucide-react-native/icons/external-link";
 import Plus from "lucide-react-native/icons/plus";
 import Share2 from "lucide-react-native/icons/share-2";
@@ -42,28 +41,39 @@ export default function DocumentViewer() {
   const title = typeof params.title === "string" ? params.title : params.filename ?? "مستند";
   const remotePath = `/api/v1/files/${ns}/${params.filename}`;
 
-  const [file, setFile] = useState<File | null>(null);
-  const [downloading, setDownloading] = useState(true);
-  const [downloadError, setDownloadError] = useState<string | null>(null);
+  /* One attempt per path: every setState happens after an await (the
+   * sync resets at effect-start were the set-state-in-effect class —
+   * the states below are DERIVED from the attempt + the path it belongs
+   * to, so a new file derives a fresh "downloading" for free). */
+  const [attempt, setAttempt] = useState<{
+    path: string;
+    file: File | null;
+    error: string | null;
+  } | null>(null);
 
   useEffect(() => {
     let alive = true;
-    setDownloading(true);
-    setDownloadError(null);
     (async () => {
       try {
         const local = await downloadAuthenticated(remotePath, `${params.filename}`);
-        if (alive) setFile(local);
+        if (alive) setAttempt({ path: remotePath, file: local, error: null });
       } catch (err) {
-        if (alive) setDownloadError((err as ApiError).message ?? "تعذّر تنزيل المستند.");
-      } finally {
-        if (alive) setDownloading(false);
+        if (alive)
+          setAttempt({
+            path: remotePath,
+            file: null,
+            error: (err as ApiError).message ?? "تعذّر تنزيل المستند.",
+          });
       }
     })();
     return () => {
       alive = false;
     };
   }, [remotePath, params.filename]);
+
+  const file = attempt?.path === remotePath ? attempt.file : null;
+  const downloadError = attempt?.path === remotePath ? attempt.error : null;
+  const downloading = attempt?.path !== remotePath || attempt.file === null && attempt.error === null;
 
   const paperId = typeof params.paper === "string" ? params.paper : null;
   const annotations = useQuery({
@@ -101,7 +111,7 @@ export default function DocumentViewer() {
       try {
         await Sharing.shareAsync(file.uri, { mimeType: "application/pdf", dialogTitle: title });
       } catch {
-        setDownloadError("لا يوجد عارض PDF على هذا الجهاز — جرّب مشاركة الملف.");
+        setAttempt({ path: remotePath, file, error: "لا يوجد عارض PDF على هذا الجهاز — جرّب مشاركة الملف." });
       }
     }
   };

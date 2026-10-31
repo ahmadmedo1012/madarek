@@ -11,7 +11,7 @@
  * lives in the sibling More module (countAr / SectionNote / letters) is
  * imported, never duplicated.
  */
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { RefreshControl, ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -309,15 +309,9 @@ export function AssignSubmitSheet({
   const [validationError, setValidationError] = useState<string | null>(null);
   const [done, setDone] = useState<Submission | null>(null);
 
-  // A fresh sheet per assignment/open — drafts never leak across targets.
-  useEffect(() => {
-    if (open) {
-      setTextAnswer("");
-      setFileUrl("");
-      setValidationError(null);
-      setDone(null);
-    }
-  }, [open, assignment.id]);
+  // A fresh sheet per assignment — the caller keys this component by
+  // assignment.id, so every target starts from initial state (the old
+  // reset-effect was the set-state-in-effect cascading class).
 
   const submit = useMutation({
     mutationFn: () =>

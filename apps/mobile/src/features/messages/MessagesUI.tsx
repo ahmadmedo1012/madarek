@@ -29,6 +29,8 @@ import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 
+const NO_MESSAGES: Awaited<ReturnType<typeof studentApi.messages>>["data"] = [];
+
 const LIMIT = 30;
 
 interface Correspondent {
@@ -58,7 +60,7 @@ export function MessagesUI() {
   const [reply, setReply] = useState("");
   const [replyError, setReplyError] = useState<string | null>(null);
 
-  const rows = feed.data?.data ?? [];
+  const rows = feed.data?.data ?? NO_MESSAGES;
   const meta = feed.data?.meta;
 
   /** Conversations composed client-side from the flat feed — the same

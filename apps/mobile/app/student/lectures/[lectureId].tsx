@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { VideoView, useVideoPlayer } from "expo-video";
+import { VideoPlayer, VideoView, useVideoPlayer } from "expo-video";
 import CircleCheck from "lucide-react-native/icons/circle-check";
 import CircleX from "lucide-react-native/icons/circle-x";
 import Play from "lucide-react-native/icons/play";
@@ -45,6 +45,8 @@ import {
   parseVttCues,
   type VttCue,
 } from "@/features/student/components";
+
+const NO_CUES: Awaited<ReturnType<typeof parseVttCues>> = [];
 
 type CheckpointWithAnswers = LectureCheckpoint & { answers?: { checkpointId: string }[] };
 
@@ -105,6 +107,14 @@ function ScrollFrame({ title, children }: { title: string; children: ReactNode }
   );
 }
 
+/** expo-video's documented seek contract is a property assignment on
+ * the player handle (an external SDK object) — seated here, at module
+ * scope, once: event handlers and listeners call this, no render value
+ * is ever mutated in place. */
+function seekPlayer(player: VideoPlayer, sec: number) {
+  player.currentTime = Math.max(0, sec);
+}
+
 function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | null }) {
   const qc = useQueryClient();
   const p = usePalette();
@@ -115,16 +125,21 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
     pl.timeUpdateEventInterval = 0.25;
   });
 
-  const [loadError, setLoadError] = useState(false);
+  /* The error is keyed to the url it belongs to (derive — not state),
+   * and every setter fires after a promise settles: a NEW source derives
+   * a clean slate for free (the old sync reset at effect-start was the
+   * set-state-in-effect cascading class). */
+  const [errUrl, setErrUrl] = useState<string | null>(null);
+  const loadError = errUrl !== null && errUrl === lecture.videoUrl;
   const loadSource = useCallback(() => {
     const url = absoluteUrl(lecture.videoUrl);
     if (!url) return;
     // Bearer always — harmless for external URLs, required for /api/v1/files/lectures.
     const token = useSession.getState().accessToken;
-    setLoadError(false);
     void player
       .replaceAsync({ uri: url, headers: token ? { Authorization: `Bearer ${token}` } : undefined })
-      .catch(() => setLoadError(true));
+      .then(() => setErrUrl(null))
+      .catch(() => setErrUrl(lecture.videoUrl));
   }, [player, lecture.videoUrl]);
 
   useEffect(() => {
@@ -195,16 +210,13 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
     };
   }, [lecture.id, lecture.durationSec]);
 
-  /* Player listeners: progress mirror, resume-seek, ended report. */
+  /* Player listeners: status mirror, resume-seek, ended report (the
+   * timeUpdate subscription lives with the checkpoint states below —
+   * it needs their freshest values through a mirror ref). */
+   
   useEffect(() => {
-    const timeSub = player.addListener("timeUpdate", (pl) => {
-      const t = pl.currentTime;
-      if (t > highWaterRef.current) highWaterRef.current = t;
-      const floored = Math.floor(t);
-      setCurrentSec((prev) => (prev === floored ? prev : floored));
-    });
     const statusSub = player.addListener("statusChange", (pl) => {
-      if (pl.status === "error") setLoadError(true);
+      if (pl.status === "error") setErrUrl(lecture.videoUrl);
       const dur = player.duration;
       durationRef.current = dur;
       setMediaDuration(dur);
@@ -214,8 +226,10 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
         if (we && !we.completed && we.watchedSec > 5) {
           const target = Math.max(0, we.watchedSec - 3);
           const dur2 = player.duration;
-          player.currentTime =
-            Number.isFinite(dur2) && dur2 > 0 ? Math.min(target, Math.max(0, Math.floor(dur2) - 1)) : target;
+          seekPlayer(
+            player,
+            Number.isFinite(dur2) && dur2 > 0 ? Math.min(target, Math.max(0, Math.floor(dur2) - 1)) : target,
+          );
         }
       }
     });
@@ -225,11 +239,10 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
       report(true);
     });
     return () => {
-      timeSub.remove();
       statusSub.remove();
       endSub.remove();
     };
-  }, [player, lecture.id, lecture.watchEvents, report]);
+  }, [player, lecture.id, lecture.watchEvents, report, lecture.videoUrl]);
 
   /* The 10s reporting ticker (while playing — web cadence). */
   useEffect(() => {
@@ -252,37 +265,62 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
     return new Set([...fromCheckpoints, ...fromLecture]);
   }, [checkpoints, lecture.answers]);
 
-  const [answeredIds, setAnsweredIds] = useState<Set<string>>(() => new Set(seededAnswered));
+  /* Server answer memory + the live session additions, UNIONED at
+   * render (derived — the old merge-in-effect was the set-state-in-effect
+   * cascading class). */
+  const [liveAnswered, setLiveAnswered] = useState<Set<string>>(() => new Set());
+  const answeredIds = useMemo(() => {
+    if (seededAnswered.size === 0) return liveAnswered;
+    const u = new Set(liveAnswered);
+    for (const id of seededAnswered) u.add(id);
+    return u;
+  }, [liveAnswered, seededAnswered]);
   const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
+
   const [activeCp, setActiveCp] = useState<CheckpointWithAnswers | null>(null);
   const [picked, setPicked] = useState<number | null>(null);
   const [reveal, setReveal] = useState<CheckpointAnswerFeedback | null>(null);
   const [answerErr, setAnswerErr] = useState(false);
 
-  /* Server answer memory stays merged with the live set across refetches. */
+  /* Freshest checkpoint context for the timeUpdate listener — updated
+   * after every render (an EXTERNAL event callback cannot see render
+   * state; the crossing detection used to live in a setState effect —
+   * the cascading class). */
+  const cpCtxRef = useRef({
+    answered: answeredIds,
+    skipped: skippedIds,
+    active: activeCp,
+    cps: checkpoints,
+  });
   useEffect(() => {
-    if (seededAnswered.size === 0) return;
-    setAnsweredIds((prev) => {
-      const next = new Set(prev);
-      for (const id of seededAnswered) next.add(id);
-      return next.size === prev.size ? prev : next;
-    });
-  }, [seededAnswered]);
+    cpCtxRef.current = { answered: answeredIds, skipped: skippedIds, active: activeCp, cps: checkpoints };
+  });
 
-  /* Fire a checkpoint once per session when the playhead crosses it. */
+  /* Progress mirror + the checkpoint crossing — AT the event source. */
   useEffect(() => {
-    if (activeCp) return;
-    const due = checkpoints.find(
-      (c) => currentSec >= c.triggerSec && !answeredIds.has(c.id) && !skippedIds.has(c.id),
-    );
-    if (due) {
-      player.pause();
-      setActiveCp(due);
-      setPicked(null);
-      setReveal(null);
-      setAnswerErr(false);
-    }
-  }, [currentSec, activeCp, answeredIds, skippedIds, checkpoints, player]);
+    const timeSub = player.addListener("timeUpdate", (pl) => {
+      const t = pl.currentTime;
+      if (t > highWaterRef.current) highWaterRef.current = t;
+      const floored = Math.floor(t);
+      setCurrentSec((prev) => (prev === floored ? prev : floored));
+
+      /* Fire a checkpoint once per session when the playhead crosses it. */
+      const ctx = cpCtxRef.current;
+      if (!ctx.active) {
+        const due = ctx.cps.find(
+          (c) => t >= c.triggerSec && !ctx.answered.has(c.id) && !ctx.skipped.has(c.id),
+        );
+        if (due) {
+          player.pause();
+          setActiveCp(due);
+          setPicked(null);
+          setReveal(null);
+          setAnswerErr(false);
+        }
+      }
+    });
+    return () => timeSub.remove();
+  }, [player]);
 
   const answerCp = useMutation({
     mutationFn: (input: { cp: CheckpointWithAnswers; idx: number }) =>
@@ -308,7 +346,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
   const closeCheckpoint = () => {
     if (!activeCp) return;
     const id = activeCp.id;
-    setAnsweredIds((prev) => new Set(prev).add(id));
+    setLiveAnswered((prev) => new Set(prev).add(id));
     setActiveCp(null);
     setPicked(null);
     setReveal(null);
@@ -331,7 +369,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
   /** Explicit return: un-skip, seek to the trigger, re-open the quiz. */
   const openCheckpointExplicit = (cp: CheckpointWithAnswers) => {
     player.pause();
-    player.currentTime = Math.max(0, cp.triggerSec);
+    seekPlayer(player, cp.triggerSec);
     setSkippedIds((prev) => {
       if (!prev.has(cp.id)) return prev;
       const next = new Set(prev);
@@ -345,7 +383,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
   };
 
   const seekTo = (sec: number) => {
-    player.currentTime = Math.max(0, sec);
+    seekPlayer(player, sec);
     player.play();
   };
 
@@ -366,7 +404,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
     },
   });
   const [cueQuery, setCueQuery] = useState("");
-  const cues = transcript.data ?? [];
+  const cues = transcript.data ?? NO_CUES;
   const filteredCues = useMemo(() => {
     const q = cueQuery.trim();
     const list = q === "" ? cues : cues.filter((c) => c.text.includes(q));

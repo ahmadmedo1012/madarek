@@ -57,17 +57,6 @@ function persistTokens(accessToken: string | null, refreshCookie: string | null)
   void setToken(KEY_REFRESH, refreshCookie);
 }
 
-/** SecureStore may be a non-resolving shim on web — always settle hydration. */
-function settled<T>(p: Promise<T>, ms = 1500): Promise<T | null> {
-  return Promise.race([
-    p.then(
-      (v) => v,
-      () => null,
-    ),
-    new Promise<null>((resolve) => setTimeout(() => resolve(null), ms)),
-  ]);
-}
-
 export const useSession = create<SessionState>((set, get) => ({
   user: null,
   accessToken: null,

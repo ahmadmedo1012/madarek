@@ -11,6 +11,7 @@ import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { ownerApi } from "@/api/owner";
 import { latn, timeOf } from "@/lib/format";
 import { numOf } from "@/features/governance/components";
+import { useNow } from "@/hooks/useNow";
 
 const POLL_MS = 15_000;
 
@@ -36,6 +37,7 @@ function realtimeKeyLabel(key: string): string {
  * via latn), the band discloses the cadence and the last fresh reading.
  */
 function OwnerRealtime() {
+  const now = useNow();
   const rt = useQuery({
     queryKey: ["owner", "realtime"],
     queryFn: () => ownerApi.realtime(),
@@ -49,7 +51,7 @@ function OwnerRealtime() {
   const numeric = entries.filter(([, v]) => typeof v === "number" && Number.isFinite(v));
   const other = entries.filter(([k, v]) => !(typeof v === "number" && Number.isFinite(v)) && v !== null && v !== undefined);
 
-  const updatedAt = new Date(rt.dataUpdatedAt || Date.now());
+  const updatedAt = new Date(rt.dataUpdatedAt || now);
 
   return (
     <Screen scroll>

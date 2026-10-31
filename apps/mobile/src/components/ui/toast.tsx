@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { create } from "zustand";
 import CheckCircle2 from "lucide-react-native/icons/circle-check";
@@ -46,7 +45,6 @@ export function useToast() {
 
 export function ToastHost() {
   const toasts = useToastStore((s) => s.toasts);
-  const dismiss = useToastStore((s) => s.dismiss);
   const p = usePalette();
   const tones = useStatusTones();
   return (

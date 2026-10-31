@@ -25,8 +25,6 @@ const STATUS_URL =
   (process.env.EXPO_PUBLIC_API_BASE_URL as string | undefined) ||
   "https://madarek.onrender.com/api/v1";
 
-const FOREGROUND_RECHECK_MS = 30 * 60 * 1000;
-
 function appSemver(): string {
   return (
     Constants.expoConfig?.version ??

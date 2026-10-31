@@ -1,5 +1,5 @@
 import { type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "./text";

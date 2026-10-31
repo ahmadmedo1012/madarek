@@ -15,7 +15,7 @@ import { dateTime, latn } from "@/lib/format";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
-import { Badge, Card, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
+import { Badge, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
 import { KpiCard, LedgerRow, RowList } from "@/components/ui/data";
 import { Button } from "@/components/ui/pressables";
 import { Field } from "@/components/ui/fields";
@@ -28,6 +28,8 @@ import {
   arCount,
   useTeacherOfferings,
 } from "@/features/teacher/components";
+
+const NO_SESSIONS: Awaited<ReturnType<typeof liveApi.sessions>> = [];
 
 export default function TeacherLive() {
   const scope = useInstitutionScope();
@@ -101,7 +103,7 @@ export default function TeacherLive() {
     },
   });
 
-  const all = sessions.data ?? [];
+  const all = sessions.data ?? NO_SESSIONS;
   const live = useMemo(() => all.filter((s) => s.status === "LIVE"), [all]);
   const scheduled = useMemo(() => all.filter((s) => s.status === "SCHEDULED"), [all]);
   const past = useMemo(

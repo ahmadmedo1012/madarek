@@ -14,7 +14,6 @@ import { Field, SecretField, SelectField } from "@/components/ui/fields";
 import { Button } from "@/components/ui/pressables";
 import { Card } from "@/components/ui/surfaces";
 import { BrandMark } from "@/components/ui/brand";
-import { LoadingScreen } from "@/components/ui/states";
 
 interface InstitutionRow { id: string; name: string; slug: string }
 interface FacultyRow { id: string; name: string; departments: { id: string; name: string }[] }

@@ -1,5 +1,5 @@
 /** Learning: enrollments, offerings, lectures, checkpoints, transcripts. */
-import { get, post, patch, put, del } from "./client";
+import { get, post, patch, del } from "./client";
 import type { EnrollmentRow, Lecture, LectureChapter, Material, Assignment, WatchEvent, CheckpointAnswerFeedback } from "./types";
 
 export interface OfferingFull {

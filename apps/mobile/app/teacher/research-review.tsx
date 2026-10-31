@@ -25,6 +25,8 @@ import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { PAPER_STATUS_MAP, StatusBadge } from "@/features/teacher/components";
 
+const NO_PAPERS: Awaited<ReturnType<typeof researchApi.queue>> = [];
+
 /** التقدير — the web's band copy for the 0–20 grade. */
 function taqdir(score: number): string {
   if (score >= 17) return "ممتاز";
@@ -48,7 +50,7 @@ export default function ResearchReview() {
   const [gradeError, setGradeError] = useState<string | null>(null);
   const [confirmPublish, setConfirmPublish] = useState(false);
 
-  const papers = queue.data ?? [];
+  const papers = queue.data ?? NO_PAPERS;
   const passed = useMemo(
     () =>
       papers

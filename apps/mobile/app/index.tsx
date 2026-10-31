@@ -25,7 +25,7 @@ import { LoadingScreen } from "@/components/ui/states";
  * post-auth return.
  */
 export default function Welcome() {
-  const { bg, surface, border, text } = usePalette();
+  const { bg, text } = usePalette();
   const user = useSession((s) => s.user);
   const isHydrated = useSession((s) => s.isHydrated);
   const params = useLocalSearchParams<{ continue?: string }>();

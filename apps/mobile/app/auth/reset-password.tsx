@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { ApiError, post } from "@/api/client";
@@ -14,16 +14,16 @@ import { Card } from "@/components/ui/surfaces";
 export default function ResetPassword() {
   const p = usePalette();
   const params = useLocalSearchParams<{ token?: string }>();
-  const [token, setToken] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof params.token === "string") setToken(params.token);
-  }, [params.token]);
+  /* The token rides the URL (single-use, 30-min) — derived, never state:
+   * seeding state from params via an effect was the set-state-in-effect
+   * cascading class. */
+  const token = typeof params.token === "string" ? params.token : "";
 
   const submit = async () => {
     setError(null);

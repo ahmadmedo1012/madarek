@@ -82,7 +82,6 @@ export default function AdminCourses() {
 
   const [draft, setDraft] = useState<CourseDraft | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const editing = editingId !== null && draft !== null;
   const [deleting, setDeleting] = useState<CourseRow | null>(null);
   const [offeringCourse, setOfferingCourse] = useState<CourseRow | null>(null);
 

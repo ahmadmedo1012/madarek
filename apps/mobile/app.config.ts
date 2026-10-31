@@ -89,12 +89,14 @@ const config: ExpoConfig = {
   },
   experiments: {
     typedRoutes: true,
-    // R326 M1.3(b): reactCompiler disabled — suspected contributor to the
-    // post-login crash with reanimated 4.7 / worklets 0.13 on RN 0.88 (new
-    // architecture). R327 C4 removed reanimated+worklets entirely (the
-    // loaders ride core Animated); the suspected interaction is gone —
-    // the re-enable decision belongs to C5 with its own device pass.
-    reactCompiler: false,
+    // R327 C5 — reactCompiler ON: the M1.3 crash suspect (reanimated ×
+    // compiler) left the tree in C4, and the 87-warning purity ratchet is
+    // at zero (every set-state-in-effect / purity / immutability finding
+    // fixed by refactor, not suppression). With the plugin on: tsc 0 ·
+    // jest 726/726 · export green (4.51 MB, −27% vs the R327-open
+    // baseline). D2 fresh device builds are the confirmation step; the
+    // rollback is this one flag.
+    reactCompiler: true,
   },
   extra: {
     // Public configuration — safe to inline. The default targets the deployed

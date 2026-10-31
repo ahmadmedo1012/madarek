@@ -73,4 +73,15 @@ export default [
       ],
     },
   },
+  // R327 C5 — test-infra exemptions: jest.mock factories need require()
+  // (the mocked module must load lazily inside the factory), and the
+  // useFocusEffect mock intentionally mounts once ([]) — the app tree
+  // keeps both rules at full strength.
+  {
+    files: ["src/test/**"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+      "react-hooks/exhaustive-deps": "off",
+    },
+  },
 ];

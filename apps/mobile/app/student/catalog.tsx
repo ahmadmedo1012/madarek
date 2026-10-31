@@ -33,20 +33,27 @@ export default function CatalogScreen() {
   const slug = useSession((s) => s.user?.currentInstitution?.slug ?? null);
 
   const [q, setQ] = useState("");
-  const [debouncedQ, setDebouncedQ] = useState("");
-  const [page, setPage] = useState(1);
 
-  /* 250ms debounce — the LibraryPage convention; a changed term restarts at page 1. */
+  /* 250ms debounce — the LibraryPage convention; a changed term restarts
+   * at page 1 ATOMICALLY (query+page ride one state — no reset effect). */
+  const [query, setQuery] = useState({ q: "", page: 1 });
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedQ(q.trim()), 250);
+    const t = setTimeout(
+      () => setQuery((prev) => (prev.q === q.trim() ? prev : { q: q.trim(), page: 1 })),
+      250,
+    );
     return () => clearTimeout(t);
   }, [q]);
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedQ]);
+  const debouncedQ = query.q;
+  const setPage = (p: number | ((prev: number) => number)) =>
+    setQuery((prev) => ({
+      ...prev,
+      page: typeof p === "function" ? p(prev.page) : p,
+    }));
 
+  const rawPage = query.page;
   const catalog = useQuery({
-    queryKey: ["courses", "catalog", debouncedQ, page, scope],
+    queryKey: ["courses", "catalog", debouncedQ, rawPage, scope],
     queryFn: () =>
       learningApi.courses({ page, limit: PAGE_SIZE, q: debouncedQ || undefined, institutionSlug: slug ?? undefined }),
     placeholderData: (prev) => prev,
@@ -56,12 +63,13 @@ export default function CatalogScreen() {
   const meta = catalog.data?.meta;
   const totalPages = Math.max(1, meta?.totalPages ?? 1);
 
-  /* A narrowed search can leave the pointer past the last page — fold back. */
-  useEffect(() => {
-    if (meta && page > Math.max(1, meta.totalPages)) {
-      setPage(Math.max(1, meta.totalPages));
-    }
-  }, [meta, page]);
+  /* A narrowed result can leave the pointer past the last page — fold
+   * back with the React-blessed "adjust state during render" pattern
+   * (the effect version was the set-state-in-effect cascading class). */
+  const page = Math.min(rawPage, totalPages);
+  if (rawPage > totalPages) {
+    setQuery((prev) => ({ ...prev, page: totalPages }));
+  }
 
   const searching = debouncedQ.length > 0;
 
@@ -96,7 +104,7 @@ export default function CatalogScreen() {
         placeholder="ابحث باسم المقرّر أو رمزه…"
         onClear={() => {
           setQ("");
-          setDebouncedQ("");
+          setQuery({ q: "", page: 1 });
         }}
       />
 

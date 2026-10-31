@@ -13,6 +13,7 @@ import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui/screen";
+import { useNow } from "@/hooks/useNow";
 import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { LedgerRow, RowList } from "@/components/ui/data";
@@ -26,6 +27,7 @@ import { LIVE_STATUS, SectionNote, countAr } from "@/features/student/more";
  * rows only, no join action (the live screen owns joining).
  */
 export default function WebinarsScreen() {
+  const now = useNow(60_000);
   const p = usePalette();
   const scope = useInstitutionScope();
   const feed = useQuery({
@@ -37,9 +39,9 @@ export default function WebinarsScreen() {
   const upcoming = useMemo(
     () =>
       (feed.data ?? [])
-        .filter((s) => s.status === "SCHEDULED" && new Date(s.scheduledAt).getTime() > Date.now())
+        .filter((s) => s.status === "SCHEDULED" && new Date(s.scheduledAt).getTime() > now)
         .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt)),
-    [feed.data],
+    [feed.data, now],
   );
 
   return (

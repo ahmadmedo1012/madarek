@@ -99,13 +99,13 @@ function expectNotWhiteScreen(tree: Awaited<ReturnType<typeof render>>): void {
   expect(tree.queryAllByText(/[\s\S]/).length).toBeGreaterThan(0);
 }
 
-/* eslint-disable @typescript-eslint/no-require-imports */
+ 
 function routeModule(rel: string): React.ComponentType {
   const mod = require(`../../app/${rel}`) as { default?: unknown };
   expect(typeof mod.default).toBe("function");
   return mod.default as React.ComponentType;
 }
-/* eslint-enable @typescript-eslint/no-require-imports */
+ 
 
 describe("A2 — post-login survival, per role (hostile /me and everything else)", () => {
   let spy: jest.SpyInstance;

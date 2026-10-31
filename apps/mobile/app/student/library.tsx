@@ -12,6 +12,7 @@ import { studentApi } from "@/api/student";
 import { ApiError } from "@/api/client";
 import type { Book, Loan, ResearchPaper } from "@/api/types";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { useNow } from "@/hooks/useNow";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
@@ -70,15 +71,23 @@ function BooksTab() {
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
-  const [debouncedQ, setDebouncedQ] = useState("");
-  const [page, setPage] = useState(1);
+  /* Debounced search; a changed term restarts at page 1 ATOMICALLY
+   * (query+page ride one state — no reset effect, no cascading render). */
+  const [query, setQuery] = useState({ q: "", page: 1 });
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedQ(q.trim()), 250);
+    const t = setTimeout(
+      () => setQuery((prev) => (prev.q === q.trim() ? prev : { q: q.trim(), page: 1 })),
+      250,
+    );
     return () => clearTimeout(t);
   }, [q]);
-  useEffect(() => {
-    setPage(1);
-  }, [debouncedQ]);
+  const debouncedQ = query.q;
+  const setPage = (p: number | ((prev: number) => number)) =>
+    setQuery((prev) => ({
+      ...prev,
+      page: typeof p === "function" ? p(prev.page) : p,
+    }));
+  const page = query.page;
 
   const books = useQuery({
     queryKey: ["library", "books", page, debouncedQ, scope],
@@ -124,7 +133,7 @@ function BooksTab() {
         placeholder="ابحث عن كتاب أو مؤلف…"
         onClear={() => {
           setQ("");
-          setDebouncedQ("");
+          setQuery({ q: "", page: 1 });
         }}
       />
 
@@ -267,9 +276,10 @@ function LoanRow({
   onReturn: () => void;
   returning: boolean;
 }) {
+  const now = useNow(5 * 60_000);
   const p = usePalette();
   const status = LOAN_STATUS[loan.status] ?? { label: loan.status, tone: "grey" as const };
-  const overdue = loan.status === "OVERDUE" || (loan.dueAt ? new Date(loan.dueAt).getTime() < Date.now() : false);
+  const overdue = loan.status === "OVERDUE" || (loan.dueAt ? new Date(loan.dueAt).getTime() < now : false);
   return (
     <LedgerRow last={last} accessibilityLabel={`استعارة: ${loan.book?.title ?? "كتاب"}`}>
       <T variant="body" weight="bold">

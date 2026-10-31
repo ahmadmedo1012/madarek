@@ -21,7 +21,6 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
 import {
-  countAr,
   pageOf,
   PagerFooter,
   UNIT,

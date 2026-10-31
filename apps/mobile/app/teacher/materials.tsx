@@ -16,7 +16,7 @@ import { latn, sizeLabel, fromNow } from "@/lib/format";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
-import { Badge, Card, Sheet } from "@/components/ui/surfaces";
+import { Badge, Sheet } from "@/components/ui/surfaces";
 import { LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
 import { Button } from "@/components/ui/pressables";
 import { Field, Segmented, SelectField } from "@/components/ui/fields";

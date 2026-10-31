@@ -85,7 +85,6 @@ function analyticsValue(key: string, v: unknown): string {
 
 /** The simulated outline rendered as honest text lines (no fake depth). */
 function OutlineText({ outline }: { outline: unknown }) {
-  const p = usePalette();
   const lines: string[] = [];
   const walk = (node: unknown, prefix: string) => {
     if (node === null || node === undefined) return;

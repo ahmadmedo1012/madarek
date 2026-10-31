@@ -2,19 +2,18 @@ import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import Dot from "lucide-react-native/icons/dot";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp , toneForNotificationType } from "@/design/tokens";
-import { Badge, Card } from "@/components/ui/surfaces";
+import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { T, MonoLabel } from "@/components/ui/text";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { currentPermission, requestAndRegisterPush } from "@/lib/push";
 import { fromNow } from "@/lib/format";
 import {
-  NOTIFICATIONS_FEED_LIMIT,
   safeDeepLink,
   useMarkAllRead,
   useMarkRead,
@@ -28,7 +27,6 @@ import type { AppNotification } from "@/api/types";
  */
 export function NotificationsScreen({ title, kicker }: { title?: string; kicker?: string }) {
   const p = usePalette();
-  const qc = useQueryClient();
   const [page, setPage] = useState(1);
   const feed = useNotifications(page);
   const markRead = useMarkRead();

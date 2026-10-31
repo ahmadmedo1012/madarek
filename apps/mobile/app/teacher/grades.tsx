@@ -3,7 +3,7 @@
  * table + SemesterGradeEntry: kind picker + shared max/weight scale +
  * per-student score/feedback drafts + the batch «حفظ الدرجات» upsert).
  */
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -27,6 +27,8 @@ import {
   toRosterEntry,
   useTeacherOfferings,
 } from "@/features/teacher/components";
+
+const NO_GRADE_ROWS: GradeRow[] = [];
 
 /** Wire shape of GET /offerings/:id/grades (offerings.routes.ts). */
 type GradeRow = {
@@ -67,7 +69,7 @@ export default function Grades() {
   const [formError, setFormError] = useState<string | null>(null);
 
   const rows = useMemo(() => (roster.data ?? []).map(toRosterEntry), [roster.data]);
-  const gradeRows = (existing.data ?? []) as unknown as GradeRow[];
+  const gradeRows = (existing.data ?? NO_GRADE_ROWS) as unknown as GradeRow[];
 
   const existingByKind = useMemo(() => {
     const m = new Map<string, GradeRow[]>();
@@ -86,15 +88,18 @@ export default function Grades() {
   }, [existingByKind, kind]);
 
   /* Scale adoption: an untouched scale follows the stored rows of the
-   * picked kind (the web SemesterGradeEntry contract). */
-  useEffect(() => {
-    if (scaleTouched) return;
-    const stored = existingByKind.get(kind);
-    if (stored && stored.length > 0 && stored[0]) {
-      if (stored[0].maxScore !== null) setMaxScore(String(stored[0].maxScore));
-      if (stored[0].weight !== null && stored[0].weight !== undefined) setWeight(String(stored[0].weight));
-    }
-  }, [kind, existingByKind, scaleTouched]);
+   * picked kind (the web SemesterGradeEntry contract) — the React-blessed
+   * "adjust state during render" (the effect version was the
+   * set-state-in-effect cascading class). The signature re-adopts when a
+   * refetch changes the stored scale while the user hasn't touched it. */
+  const storedRow = existingByKind.get(kind)?.[0];
+  const storedSig = `${kind}:${storedRow?.maxScore ?? ""}:${storedRow?.weight ?? ""}`;
+  const [adoptedSig, setAdoptedSig] = useState<string | null>(null);
+  if (!scaleTouched && storedRow && adoptedSig !== storedSig) {
+    if (storedRow.maxScore !== null) setMaxScore(String(storedRow.maxScore));
+    if (storedRow.weight !== null && storedRow.weight !== undefined) setWeight(String(storedRow.weight));
+    setAdoptedSig(storedSig);
+  }
 
   const draftKey = (studentId: string) => `${kind}:${studentId}`;
 

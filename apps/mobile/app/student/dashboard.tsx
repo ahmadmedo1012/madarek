@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/pressables";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { dateTime, dueLabel, greeting, latn, pct } from "@/lib/format";
 import { AppTopBar } from "@/components/shell/AppTopBar";
+import { useNow } from "@/hooks/useNow";
 import { SectionNote, countAr } from "@/features/student/more";
 import { GapList, ScrollBody, classWhenLabel } from "@/features/student/components";
 
@@ -33,6 +34,7 @@ import { GapList, ScrollBody, classWhenLabel } from "@/features/student/componen
 let onboardingFired = false;
 
 function StudentDashboard() {
+  const now = useNow();
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
   const p = usePalette();
@@ -275,7 +277,7 @@ function StudentDashboard() {
           {dash.isLoading ? null : agenda && agenda.exams.length > 0 ? (
             <RowList>
               {agenda.exams.slice(0, 4).map((e, i, arr) => {
-                const opensFuture = e.openAt ? new Date(e.openAt).getTime() > Date.now() : false;
+                const opensFuture = e.openAt ? new Date(e.openAt).getTime() > now : false;
                 const phase = opensFuture
                   ? `يفتح باب الاختبار ${dateTime(e.openAt)}`
                   : e.closeAt

@@ -159,9 +159,12 @@ export function PushRegistrar(): null {
     };
   }, []);
 
+  const userId = user?.id;
   useEffect(() => {
-    if (user) void registerIfGranted();
-  }, [user?.id, sessionEpoch]);
+    // registerIfGranted is module-level — the id IS the dependency that
+    // matters (object identity would re-fire on every profile refetch).
+    if (userId) void registerIfGranted();
+  }, [userId, sessionEpoch]);
 
   return null;
 }
