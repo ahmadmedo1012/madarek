@@ -102,7 +102,16 @@ async function parseEnvelope<T>(res: Response): Promise<T> {
     const message = obj?.error?.message ?? `فشل الطلب (رمز ${res.status})`;
     throw new ApiError(code, message, res.status, obj?.error?.details);
   }
-  return (obj?.data ?? (obj as unknown)) as T;
+  // R327 A4 — unwrap the envelope by KEY PRESENCE, not truthiness:
+  // `{ data: null }` must resolve to null. The old `obj?.data ?? obj`
+  // returned the whole envelope (truthy!) for explicit data:null, so any
+  // screen reading `q.data?.field.sub` crashed with "reading 'sub' of
+  // undefined" — the post-login white-screen class on real devices
+  // (e.g. /me/resume legitimately returns { data: null } for fresh users).
+  if (obj !== null && typeof obj === "object" && "data" in obj) {
+    return obj.data as T;
+  }
+  return obj as T;
 }
 
 /** Single-flight refresh — concurrent 401s share one /auth/refresh call. */
@@ -173,6 +182,10 @@ export async function api<T>(path: string, opts: RequestOptions = {}): Promise<T
       throw new ApiError("TIMEOUT", "انتهت مهلة الطلب — الخادم بطيء، أعد المحاولة", 0);
     }
     throw new ApiError(NETWORK_ERROR, networkMessage, 0);
+  } finally {
+    // R327 A4: the timeout timer MUST be cleared — it was leaking a live
+    // 20s handle (and the AbortController) on every request.
+    clearTimeout(timer);
   }
 }
 

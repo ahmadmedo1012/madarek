@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Send, Sparkles } from "lucide-react-native";
 import { socialApi } from "@/api/social";
@@ -65,6 +65,20 @@ export default function CompetitionDetail() {
     onError: (e) => toast.error(apiMessage(e, "تعذّر تقديم المشاركة. تحقّق من البيانات وحاول مرة أخرى.")),
   });
 
+  if (!params.id) {
+    // R327 A4: broken deep link → honest state, never a white screen.
+    return (
+      <Screen scroll>
+        <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
+        <EmptyState
+          title="الرابط غير مكتمل"
+          message="لا توجد مسابقة في هذا الرابط — اختر واحدة من قائمة المسابقات."
+          actionLabel="عرض المسابقات"
+          onAction={() => router.push("/competitions" as never)}
+        />
+      </Screen>
+    );
+  }
   if (q.isLoading) {
     return (
       <Screen scroll>
@@ -85,7 +99,20 @@ export default function CompetitionDetail() {
       </Screen>
     );
   }
-  if (!q.data) return null;
+  if (!q.data) {
+    // Success-but-null — honest emptiness, never a white screen (R327 A4).
+    return (
+      <Screen scroll>
+        <StackHeader title="مسابقة" kicker="المسابقات الأكاديمية" />
+        <EmptyState
+          title="لا توجد بيانات لهذه المسابقة"
+          message="ربما انتهت أو أُزيلت — شاهد المسابقات الجارية."
+          actionLabel="عرض المسابقات"
+          onAction={() => router.push("/competitions" as never)}
+        />
+      </Screen>
+    );
+  }
 
   const c = q.data;
   const ended = submissionEnded(c as Competition);

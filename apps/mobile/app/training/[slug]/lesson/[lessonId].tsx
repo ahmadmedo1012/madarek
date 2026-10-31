@@ -67,6 +67,20 @@ export default function TrainingLesson() {
       toast.error(apiMessage(e, "تعذّر احتساب الدرس — تحقّق من اتصالك وحاول مرة أخرى.")),
   });
 
+  if (!params.slug || !params.lessonId) {
+    // R327 A4: broken deep link → honest state, never a white screen.
+    return (
+      <Screen scroll>
+        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <EmptyState
+          title="الرابط غير مكتمل"
+          message="لا يوجد درس في هذا الرابط — افتح المسار من قائمة التطوير الذاتي."
+          actionLabel="عرض المسارات"
+          onAction={() => router.push("/training" as never)}
+        />
+      </Screen>
+    );
+  }
   if (q.isLoading) {
     return (
       <Screen scroll>
@@ -87,7 +101,20 @@ export default function TrainingLesson() {
       </Screen>
     );
   }
-  if (!q.data) return null;
+  if (!q.data) {
+    // Success-but-null — honest emptiness, never a white screen (R327 A4).
+    return (
+      <Screen scroll>
+        <StackHeader title="درس" kicker="التطوير الذاتي" />
+        <EmptyState
+          title="لا توجد بيانات لهذا المسار"
+          message="ربما أُزيل المسار أو أن الرابط قديم."
+          actionLabel="عرض المسارات"
+          onAction={() => router.push("/training" as never)}
+        />
+      </Screen>
+    );
+  }
 
   const track = q.data;
   const lessons = track.lessons ?? [];

@@ -52,6 +52,21 @@ export default function TrainingTrack() {
     onError: (e) => toast.error(apiMessage(e, "تعذّر التسجيل في المسار — تحقّق من اتصالك وأعد المحاولة.")),
   });
 
+  if (!params.slug) {
+    // R327 A4: a broken/partial deep link must land on an honest state —
+    // `return null` here was a white screen (the exact M1 crash class).
+    return (
+      <Screen scroll>
+        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <EmptyState
+          title="الرابط غير مكتمل"
+          message="لا يوجد مسار في هذا الرابط — اختر مساراً من قائمة التطوير الذاتي."
+          actionLabel="عرض المسارات"
+          onAction={() => router.push("/training" as never)}
+        />
+      </Screen>
+    );
+  }
   if (q.isLoading) {
     return (
       <Screen scroll>
@@ -72,7 +87,21 @@ export default function TrainingTrack() {
       </Screen>
     );
   }
-  if (!q.data) return null;
+  if (!q.data) {
+    // Success-but-null (API returned { data: null }) — honest emptiness,
+    // never a white screen (R327 A4).
+    return (
+      <Screen scroll>
+        <StackHeader title="مسار تدريبي" kicker="التطوير الذاتي" />
+        <EmptyState
+          title="لا توجد بيانات لهذا المسار"
+          message="ربما أُزيل المسار أو أن الرابط قديم."
+          actionLabel="عرض المسارات"
+          onAction={() => router.push("/training" as never)}
+        />
+      </Screen>
+    );
+  }
 
   const track = q.data;
   const lessons = track.lessons ?? [];
