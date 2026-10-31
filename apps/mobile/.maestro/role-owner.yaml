@@ -1,0 +1,36 @@
+# role-owner — المالك: دخول ← تبويبات ← خروج عبر رابط عميق.
+# OWNER is platform-level (no institution gate) → lands straight on the owner dashboard.
+appId: ly.madarek.mobile
+name: "06 — مالك: دخول، تبويبات، خروج"
+---
+- launchApp
+- tapOn: "تسجيل الدخول"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "owner@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- hideKeyboard
+- tapOn: "دخول"
+- extendedWaitUntil:
+    visible: "المستخدمون"
+    timeout: 120000
+- tapOn: "المستخدمون"
+- tapOn: "الحواكمة"
+- extendedWaitUntil:
+    visible: "الإشعارات"
+    timeout: 30000
+- openLink: "madarek://settings"
+- extendedWaitUntil:
+    visible: "تسجيل الخروج"
+    timeout: 30000
+- tapOn: "تسجيل الخروج"
+- tapOn: "خروج"
+- extendedWaitUntil:
+    visible: "منصّة التعليم الذكي"
+    timeout: 60000

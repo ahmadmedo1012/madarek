@@ -1,0 +1,10 @@
+# first-open — أولاً: يفتح التطبيق بارداً ولا ينهار.
+# The very first proof: cold launch reaches the welcome sheet.
+appId: ly.madarek.mobile
+name: "01 — أول فتح (بدون انهيار)"
+---
+- launchApp
+- extendedWaitUntil:
+    visible: "منصّة التعليم الذكي"
+    timeout: 60000
+- assertVisible: "تسجيل الدخول"

@@ -1,0 +1,42 @@
+# role-student — طالب: دخول ← تبويبات ← خروج.
+# Full cycle for the STUDENT role: login → main tabs → profile → settings → logout.
+# NOTE: 120s login timeout — the Render free tier may be waking up on the
+# first authenticated call of the run.
+appId: ly.madarek.mobile
+name: "02 — طالب: دخول، تبويبات، خروج"
+---
+- launchApp
+- tapOn: "تسجيل الدخول"
+- extendedWaitUntil:
+    visible:
+      id: "login-email"
+    timeout: 30000
+- tapOn:
+    id: "login-email"
+- inputText: "student@test.ly"
+- tapOn:
+    id: "login-password"
+- inputText: "12345678"
+- hideKeyboard
+- tapOn: "دخول"
+- extendedWaitUntil:
+    visible: "مقرراتي"
+    timeout: 120000
+- tapOn: "مقرراتي"
+- extendedWaitUntil:
+    visible: "المساعد"
+    timeout: 30000
+- tapOn: "المساعد"
+- tapOn: "حسابي"
+- extendedWaitUntil:
+    visible: "الإعدادات"
+    timeout: 30000
+- tapOn: "الإعدادات"
+- extendedWaitUntil:
+    visible: "تسجيل الخروج"
+    timeout: 30000
+- tapOn: "تسجيل الخروج"
+- tapOn: "خروج"
+- extendedWaitUntil:
+    visible: "منصّة التعليم الذكي"
+    timeout: 60000

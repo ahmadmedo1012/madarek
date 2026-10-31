@@ -77,6 +77,7 @@ export default function SignIn() {
         <View style={{ gap: sp[12] }}>
           <Field
             label="البريد الإلكتروني أو رقم التسجيل"
+            testID="login-email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
@@ -85,7 +86,13 @@ export default function SignIn() {
             inputMode="email"
             error={error}
           />
-          <SecretField label="كلمة المرور" value={password} onChangeText={setPassword} onSubmitEditing={submit} />
+          <SecretField
+            label="كلمة المرور"
+            testID="login-password"
+            value={password}
+            onChangeText={setPassword}
+            onSubmitEditing={submit}
+          />
         </View>
 
         <Button label={busy ? "جارٍ الدخول…" : "دخول"} onPress={submit} loading={busy} />

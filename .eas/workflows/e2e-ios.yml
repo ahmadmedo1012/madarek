@@ -1,0 +1,45 @@
+# EAS Workflow — Maestro e2e on an iOS simulator (R327 A1).
+#
+# The device proof the project lacks: install → first open → login for every
+# role (student/teacher/registrar/quality/owner) → main tabs → logout.
+# Flows live in apps/mobile/.maestro/*.yaml (Arabic selectors, madarek://
+# deep links). The Release build embeds the JS bundle; the app talks to the
+# production API on Render (its free tier may be waking — the flows allow
+# 120s for the first authenticated call).
+name: e2e-ios
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - '.eas/workflows/e2e-ios.yml'
+  workflow_dispatch:
+
+jobs:
+  maestro-ios:
+    name: Maestro e2e — iOS simulator
+    type: ios-simulator
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install app dependencies
+        run: cd apps/mobile && npm ci --no-audit --no-fund
+      - name: Install Maestro
+        run: curl -fsSL "https://get.maestro.mobile.dev" | bash
+      - name: Build the app for the simulator (Release)
+        run: cd apps/mobile && npx expo run:ios --configuration Release
+      - name: Run the flows (first open + all five roles)
+        run: |
+          export PATH="$PATH:$HOME/.maestro/bin"
+          cd apps/mobile
+          maestro test .maestro/ --output-dir .maestro-output
+      - name: Flow results (JUnit + screenshots listing)
+        if: always
+        run: |
+          cd apps/mobile
+          find .maestro-output -type f | sort | head -80
+          echo "--- JUnit summaries ---"
+          find .maestro-output -name '*.xml' -exec sh -c 'echo "## $1"; sed -e "s/></>\n</g" "$1" | grep -E "testsuite name|testcase name|failure" | head -20' _ {} \; || true
