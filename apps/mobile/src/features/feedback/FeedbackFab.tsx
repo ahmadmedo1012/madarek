@@ -46,6 +46,13 @@ export function FeedbackSheetHost() {
   if (!user) return null;
   return (
     <>
+      {/* Z7 (B4 review): the FAB read as «a broken empty badge» over the
+          agenda rows — a paper square with a hairline border camouflages
+          as a list item at the badge column. Heron controls are charcoal
+          slabs: unmistakable against the paper ground. Explicit `left`
+          (not `start`) pins the RTL-mirrored Material seat identically on
+          native and web — `start` resolved differently between the two
+          (native: right · web export: left). */}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="أبلغ عن مشكلة أو اقتراح"
@@ -56,17 +63,15 @@ export function FeedbackSheetHost() {
         style={{
           position: "absolute",
           bottom: 76,
-          start: sp[16],
+          left: sp[16],
           width: 52,
           height: 52,
-          borderWidth: StyleSheet.hairlineWidth,
-          borderColor: p.rule,
-          backgroundColor: p.surface,
+          backgroundColor: p.primary,
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Bug size={22} color={p.accent} />
+        <Bug size={22} color={p.primaryFg} />
       </Pressable>
       <Sheet
         open={open}

@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { ArrowRight, Building2, Search } from "lucide-react-native";
-import { useSession, ROLE_LABELS } from "@/auth/session";
+import { useSession } from "@/auth/session";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
@@ -35,9 +35,13 @@ export function AppTopBar({ alertsPath }: { alertsPath: string }) {
     >
       <BrandMark size={28} />
       <View style={{ flex: 1, gap: 0 }}>
+        {/* Z8 (B4 review): the role prefix crowded the name into an
+            ellipsis while space remained. The web Topbar shows the NAME
+            only — the role already lives in every tab label and screen
+            title, so the prefix was pure duplication. Web parity wins. */}
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
           <T variant="xs" weight="bold" numberOfLines={1}>
-            {user ? `${ROLE_LABELS[user.role] ?? ""} · ${user.firstName} ${user.lastName}` : "مدارك"}
+            {user ? `${user.firstName} ${user.lastName}` : "مدارك"}
           </T>
         </View>
         {user?.currentInstitution ? (
