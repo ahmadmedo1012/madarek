@@ -216,7 +216,11 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
     // future bundle-diet round re-pins DOWN, never up.
     // R324 override: the feedback inbox seat + the phone-header X8
     // rework measured 90.3 KB gz — 90→92 (documented, same policy).
-    expect(script).toContain('LIMIT_TOTAL_KB = 768');
+    // R326 override: the R325 P2 wave (gallery + app shell + the seven
+    // drafting instruments + the dashboard showpiece) measured 769.6 KB
+    // gz / 168 chunks at fa5a066 — 768→776 (+1.0%, documented in the
+    // gate header; a future bundle-diet round re-pins DOWN, never up).
+    expect(script).toContain('LIMIT_TOTAL_KB = 776');
     expect(script).toContain('LIMIT_ENTRY_KB = 92');
     expect(script).toContain('LIMIT_PDF_KB = 110');
     // Fail-closed scanner errors are a distinct exit code, so a missing

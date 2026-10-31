@@ -358,16 +358,16 @@ const CHECKS = [
   ['root', '--fs-display-xl', '8rem', 'R313: the +0.8rem h-ladder continuation (66.67px @1440)'],
   ['root', '--fs-body', 'max(13px,1.6rem)', 'R313 override: 16px → max(13px,1.6rem) (owner decision — Heron txt-16 13.33px @1440, Arabic-floored)'],
   ['root', '--fs-body-lg', 'max(13px,1.8rem)', 'R313 override: 18px → max(13px,1.8rem) (owner decision — the lead step, Arabic-floored)'],
-  ['root', '--fs-mono-md', '1.4rem', 'R313: Heron txt-14 mono micro-label (11.67px @1440, Latin-only, no floor)'],
-  ['root', '--fs-mono-sm', '1.2rem', 'R313: Heron txt-12 (10px @1440 — the loader % size)'],
-  ['root', '--fs-mono-xs', '1rem', 'R313: Heron txt-10 (8.33px @1440 — the coordinate readout size)'],
+  ['root', '--fs-mono-md', 'max(11.67px,1.4rem)', 'R313 Heron txt-14 mono micro-label — R325 Y4 re-pin: the 11.67px mono rung'],
+  ['root', '--fs-mono-sm', 'max(11px,1.2rem)', 'R313 Heron txt-12 — R325 Y4 re-pin: the 11px floor (mono ≥11 per §R324)'],
+  ['root', '--fs-mono-xs', 'max(11px,1rem)', 'R313 Heron txt-10 — R325 Y4 re-pin: the 11px floor'],
   ['root', '--ls-display-tight', '-0.02em', 'R313: the reference\'s Latin display tracking (−0.93px on the 46.67px h1); Arabic stays 0'],
   ['root', '--type-display-line-height', '1.28', 'r192 measured-safe Arabic display leading'],
   ['root', '--type-metric-letter-spacing', '0', 'tracking misaligns tnum columns'],
   ['root', '--ls-tight', '0', 'zero tracking (Arabic joins; the reference -0.02em stays Latin-only-banned)'],
   ['root', '--ls-snug', '0', 'zero tracking (Arabic joins)'],
   // ── :root primitives — layout ──
-  ['root', '--sidebar-w', '256px', 'sidebar width'],
+  ['root', '--sidebar-w', '264px', 'sidebar width — R325 P2.3 re-pin: the r325 app-shell ladder (264 expanded / 72 rail)'],
   ['root', '--content-max-w', '1280px', 'content measure'],
 
   // ── LIGHT theme — the warm vintage paper + orange signal (R313) ──

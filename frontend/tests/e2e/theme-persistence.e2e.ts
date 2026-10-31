@@ -18,8 +18,11 @@ test.describe('ثبات السمة', () => {
     /* نقطة البداية: فاتح (من البذرة) */
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
 
-    /* مفتاح الشريط الجانبي — «داكن» */
-    await page.getByRole('button', { name: 'داكن' }).click();
+    /* مفتاح الشريط الجانبي — «داكن»
+     * (R326: the R325 P2.3 app shell added a SECOND theme toggle in the
+     * topbar with the same accessible name — scope to the sidebar's
+     * three-state switch, the surface this contract has always driven.) */
+    await page.locator('.sidebar').getByRole('button', { name: 'داكن' }).click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 
     /* إعادة التحميل: الاختيار مدوّم في الستور */

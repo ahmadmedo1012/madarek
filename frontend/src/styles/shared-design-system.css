@@ -56,6 +56,12 @@
     --fs-display-md: clamp(28px, 3.6vw, 40px);
 
     --fs-h1: 30px;    --fs-h2: 22px;    --fs-h3: 18px;
+    /* r325 Y4 — the clamped display ladder (tokens.css:1337); defined
+       here so the export's var() chains resolve standalone (R326 audit). */
+    --fs-d1: clamp(31.74px, 4.8vw, 5.6rem);
+    --fs-d2: clamp(31.74px, 4.8vw, 4.8rem);
+    --fs-d3: clamp(23.33px, 2.8vw, 2.8rem);
+    --fs-st: clamp(22.1px, 2.87vw, 4rem);
     --fs-body-lg: 17px; --fs-body: 15px;
     /* r140 — the fleet chrome step (r133 fleet accord, canonized):
        14px for UI chrome runs; body copy stays 15px. */
@@ -141,7 +147,7 @@
     --z-toast: 500;       --z-lightbox: 600;
 
     /* ─── Layout dimensions ────────────────────────────────────────── */
-    --sidebar-w: 256px;
+    --sidebar-w: 264px;
     --sidebar-w-collapsed: 64px;
     --topbar-h: 60px; /* r158: synced with tokens.css (the rendered topbar) */
     --content-max-w: 1280px;

@@ -127,6 +127,15 @@
     --fs-h2: 4.8rem;          /* 40px    @1440 — Heron h2 */
     --fs-h3: 4rem;            /* 33.33px @1440 — Heron h3 */
 
+    /* r325 Y4 — the CLAMPED display ladder (tokens.css:1337): floors are
+       Heron's own phone sizes; the 4.8vw mid-term reproduces Heron's
+       768/991 values exactly. The export defines them so its var() chains
+       resolve standalone (the R326 undefined-var audit). */
+    --fs-d1: clamp(31.74px, 4.8vw, 5.6rem);
+    --fs-d2: clamp(31.74px, 4.8vw, 4.8rem);
+    --fs-d3: clamp(23.33px, 2.8vw, 2.8rem);
+    --fs-st: clamp(22.1px, 2.87vw, 4rem);
+
     --fs-body-lg: max(13px, 1.8rem);
     --fs-body:    max(13px, 1.6rem);
     /* r140 → R313 — the chrome step joins the reference's uniform
@@ -312,7 +321,7 @@
     /* (r148-d: --section-pad-y-wide deleted with the canon) */
 
     /* ─── Layout ──────────────────────────────────────────────────── */
-    --sidebar-w: 256px;
+    --sidebar-w: 264px;
     --sidebar-w-collapsed: 64px;
     --topbar-h: 60px; /* r158: synced with tokens.css (the rendered topbar) */
     --content-max-w: 1280px;
