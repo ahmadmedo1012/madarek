@@ -244,7 +244,11 @@ condensed overview.
 | GET | `/search/global?q=` | Bearer | Cross‑entity autocomplete |
 | GET/POST | `/admin/sync` `/admin/sync/trigger` | USERS_MANAGE/QUALITY_VIEW | Sync status / trigger |
 | GET | `/university/facts` | Bearer | Institutional facts |
-| POST/GET | `/ai/chat` `/ai/conversations` `/ai/conversations/:id/messages` | Bearer (chat rate‑limited 20/min) | AI chat + history (messages capped at newest 200) |
+| POST/GET | `/ai/chat` `/ai/conversations` `/ai/conversations/:id/messages` | Bearer (chat rate‑limited 20/min) | AI chat + history (messages capped at newest 200). `POST /ai/chat` serves BOTH transports: the JSON envelope (additive `X-Ai-Quota-Remaining` header) and SSE streaming (`?stream=1` or `Accept: text/event-stream` — `token`/`done`/`error` frames). Daily ask quota (default 25/user/day via `AI_DAILY_LIMIT_DEFAULT`) → honest Arabic 429 |
+| GET | `/ai/config` | Bearer | The honest-surface badge — `{ provider, model }` (`local` + `null` in local mode; never a fake model name) |
+| POST | `/ai/feedback` | Bearer | Per-answer thumbs ±1 (one rating per user per answer, upsert) |
+| POST | `/ai/knowledge/reindex` | ADMIN/OWNER | (Re)index the institution's course truth (course descriptions, lecture checkpoints, platform-hosted SRT/VTT transcripts) into `AiKnowledgeChunk` — idempotent per source, reports skips honestly |
+| DELETE | `/ai/conversations/:id` | Bearer | Conversation clear (messages cascade) |
 | POST | `/files/papers` | STUDENT (10/min per user) | Upload research‑paper PDF (raw `application/pdf` ≤20 MB, `%PDF-` magic bytes) → `{ data: { fileUrl } }`; no paper row here — `POST /me/research` consumes the fileUrl (an orphan 404s on serve) |
 | GET | `/files/papers/:filename` | Bearer | Serve PDF via the storage abstraction (access‑gated: PUBLISHED / owner / reviewer / oversight; path‑traversal protected, `.pdf` only, single‑range 206/416) |
 | GET | `/files/materials/:filename` | Bearer | Serve material PDF (access‑gated: offering’s teacher / active enrollment / oversight) |
@@ -333,4 +337,87 @@ condensed overview.
   test-pinned; `getAiProvider()` is boot-frozen; provider failures map
   to one honest Arabic error (no silent template fallback) and
   telemetry records the real model + token usage verbatim.
+
+---
+
+## 9. AI assistant — coverage, evaluation & grounding (r327 P4b)
+
+> Proven on the local stack (`http://localhost:4000`, provider = `local`)
+> on 2026‑10‑31. Evidence: `audits/evidence/r327/p4/` (retrieval check,
+> 61‑case eval + as‑run console log). What needs a real LLM key is marked
+> «يتطلب نموذجًا لغويًا» and stays owner‑runnable — never faked.
+
+### 9.1 Coverage map — where AI lives (and where it deliberately does not)
+
+| Surface | Route | Who | State |
+|---|---|---|---|
+| Student assistant (SSE streaming + JSON fallback, quota card, thumbs, conversations sidebar) | `/student/ai` → `POST /ai/chat` | STUDENT | live — mastery‑aware composer locally; real LLM when `AI_PROVIDER=openai` |
+| Teacher assistant (same page, generic persona + the caller's teaching context lines) | `/teacher/ai` → `POST /ai/chat` | TEACHER | live |
+| Owner AI metrics (telemetry aggregates: success rate, latency, models) | `/owner/ai` → `GET /owner/ai-metrics` | OWNER | live — now carries 71 real telemetry rows from the r327 eval run |
+| Knowledge (re)index (the grounding source of truth) | `POST /ai/knowledge/reindex` | ADMIN/OWNER | live — 25 checkpoint chunks indexed from the showcase institution on 2026‑10‑31 |
+| Lecture transcript ingest (SRT/VTT paste → stored as VTT → player `<track>` + knowledge index read the same bytes) | `PUT /lectures/:id/transcript` | TEACHER/ADMIN/OWNER | live |
+| Lecture transcript generation (STT, OpenAI‑compatible `/audio/transcriptions`) | `POST /lectures/:id/transcript/generate` | TEACHER/ADMIN/OWNER | refuses honestly (409, Arabic) while `STT_*` is unset — the local stack has no STT key; the manual ingest path is the fallback |
+| Registrar / quality / dean consoles | — | — | **no AI surface by design** — `/ai/chat` serves every authenticated role, but the UI exposes it only where it has student‑facing value |
+
+### 9.2 Grounded answers w/ citations — the mechanism, measured
+
+The grounding chain (r323 B1.2 + the r327 fixes): `POST
+/ai/knowledge/reindex` indexes course truth (descriptions, checkpoints,
+platform‑hosted transcripts) into `AiKnowledgeChunk` → every chat turn
+runs `searchKnowledge()` (lexical retrieval: pg_trgm prefilter →
+per‑token ILIKE → Arabic‑aware re‑ranker) → hits ride the system prompt
+as a numbered «السياق من مقرراتك» block → the envelope returns
+`citations[]` (title + «الدقيقة م:ث» locator + player deep link +
+snippet) on BOTH transports.
+
+**Two defects found and fixed live (commit `bdc792ed`):**
+
+1. *pg_trgm is blind to Arabic.* `similarity('الذاكرة الافتراضية',
+   'الذاكرة الافتراضية')` = **0.000** on the local PG16 build — the
+   trigram prefilter passed only 2/10 natural Arabic questions (the two
+   carrying Latin SQL terms). With the per‑token ILIKE branch (content
+   OR title — the re‑ranker scores both, so the prefilter must see
+   both), the same 10 questions retrieve **10/10** through the real
+   `searchKnowledge()` (evidence: `ai-retrieval-check.txt`).
+2. *The JSON envelope leaked citations in local mode.* The SSE path
+   (and the route's own comment) pinned «local mode never cites» — the
+   template composer never read the sources, so a citation dressed a
+   template reply. Local mode now returns `citations: []` on both
+   transports; citations flow in provider mode only, where the reply is
+   actually grounded.
+
+**Honest gaps:** the frontend does not yet render the `citations[]` the
+backend returns — neither `frontend/src/lib/ai-stream.ts`'s
+`AiStreamDone` nor `hooks/resources/ai.ts`'s chat types carry it, and
+the chat page renders no «المصدر» chip — that UI is the remaining
+owner‑side work. And a live provider‑mode citation is «يتطلب نموذجًا
+لغويًا» (no LLM key in this sandbox); the mechanism is proven locally
+end‑to‑end through `searchKnowledge()`, the citation objects it
+returns, and the reindex that feeds it.
+
+### 9.3 The 61‑case Arabic evaluation (≥60 required)
+
+`scripts/r327/ai-eval-60.mjs` — owner‑runnable against any stack
+(`BASE_URL=… node scripts/r327/ai-eval-60.mjs [out.json]`, credentials
+via `EVAL_*_EMAIL`/`EVAL_PASSWORD`, defaults = the documented demo
+accounts). 61 Arabic cases across 6 domains (grounded course content
+24, teaching 10, advisory 8, missing‑data honesty 9, behavioral 7,
+injection 3), spread 20/21/20 over the three documented test accounts
+(every account under its 25/day quota), paced 3.5 s (under the 20/60 s
+chat rate limiter), then one account is deliberately walked into the
+daily wall.
+
+| Metric | Result (local stack, engine `local`) |
+|---|---|
+| ok | **61/61** — median 15 ms, max 92 ms, `engine=local` on every turn |
+| Structural checks | **57/57** — Arabic script, injection resistance (ar/en + system‑prompt‑leak probe), envelope honesty, follow‑up threads, 1‑char & 3999‑char bounds, plain‑text rule |
+| LLM‑only probes | 0/4 (worked‑example numerals ×2, language switch ×2) — expected 0 in local mode; these are the provider‑mode acceptance items, reported separately, never faked |
+| Citations | 0 on all 61 turns — the local never‑cites rule held |
+| Daily quota wall | **proven live** — day‑ask 26 → HTTP 429 «وصلتَ حدَّ الأسئلة اليوميّ للمساعد الذكيّ (25 سؤالًا) — عُد غدًا أو تابع من محادثاتك السابقة.» |
+
+The 4 LLM‑only probes and citation presence on grounded cases are the
+production‑mode acceptance bar for the owner's rerun
+(`BASE_URL=https://madarek.onrender.com` + eval creds; the bounded r176
+harness `scripts/ai-eval-live.mjs` stays the free‑tier‑respectful
+12‑turn production probe).
 
