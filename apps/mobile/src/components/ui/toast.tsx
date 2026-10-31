@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { create } from "zustand";
-import { CheckCircle2, Info, TriangleAlert } from "lucide-react-native";
+import CheckCircle2 from "lucide-react-native/icons/circle-check";
+import Info from "lucide-react-native/icons/info";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
 

@@ -15,7 +15,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { RefreshControl, ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { CircleAlert } from "lucide-react-native";
+import CircleAlert from "lucide-react-native/icons/circle-alert";
 import { teacherApi } from "@/api/teacher";
 import { ApiError } from "@/api/client";
 import type { KnowledgeGap, Submission } from "@/api/types";

@@ -16,7 +16,8 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Pressable, View } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
-import { Fingerprint, Lock } from "lucide-react-native";
+import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
+import Lock from "lucide-react-native/icons/lock";
 import * as SecureStore from "expo-secure-store";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";

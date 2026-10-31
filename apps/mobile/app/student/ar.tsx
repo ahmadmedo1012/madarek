@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Headset } from "lucide-react-native";
+import Headset from "lucide-react-native/icons/headset";
 import { catalogApi } from "@/api/catalog";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";

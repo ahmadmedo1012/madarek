@@ -1,19 +1,17 @@
 import { useState, type ReactNode } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Bookmark,
-  CalendarDays,
-  CheckCircle2,
-  Heart,
-  MapPin,
-  MessageCircle,
-  Plus,
-  Send,
-  UserMinus,
-  UserPlus,
-  Users,
-} from "lucide-react-native";
+import Bookmark from "lucide-react-native/icons/bookmark";
+import CalendarDays from "lucide-react-native/icons/calendar-days";
+import CheckCircle2 from "lucide-react-native/icons/circle-check";
+import Heart from "lucide-react-native/icons/heart";
+import MapPin from "lucide-react-native/icons/map-pin";
+import MessageCircle from "lucide-react-native/icons/message-circle";
+import Plus from "lucide-react-native/icons/plus";
+import Send from "lucide-react-native/icons/send";
+import UserMinus from "lucide-react-native/icons/user-minus";
+import UserPlus from "lucide-react-native/icons/user-plus";
+import Users from "lucide-react-native/icons/users";
 import { socialApi } from "@/api/social";
 import type { StudyRoom } from "@/api/social";
 import type { Announcement, CampusEvent, Post } from "@/api/types";

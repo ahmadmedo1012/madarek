@@ -7,7 +7,8 @@
 import { View } from "react-native";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Info } from "lucide-react-native";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Info from "lucide-react-native/icons/info";
 import { learningApi } from "@/api/learning";
 import { useSession } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";

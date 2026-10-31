@@ -10,7 +10,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ShieldCheck } from "lucide-react-native";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { teacherApi } from "@/api/teacher";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";

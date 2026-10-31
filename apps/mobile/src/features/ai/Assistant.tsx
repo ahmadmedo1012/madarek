@@ -1,7 +1,10 @@
 import { useMemo, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View , TextInput } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Send, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react-native";
+import Send from "lucide-react-native/icons/send";
+import ThumbsDown from "lucide-react-native/icons/thumbs-down";
+import ThumbsUp from "lucide-react-native/icons/thumbs-up";
+import Trash2 from "lucide-react-native/icons/trash";
 import { aiApi, AI_QUOTA_MARKER } from "@/api/ai";
 import { ApiError } from "@/api/client";
 import { usePalette, useStatusTones } from "@/design/theme";

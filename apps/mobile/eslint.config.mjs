@@ -49,4 +49,28 @@ export default [
       ],
     },
   },
+  // R327 C4 — Metro does not tree-shake the lucide-react-native barrel:
+  // a single value import ships ALL ~2000 icon modules (~1MB of mapped
+  // JS ≈ 2.3MB of .hbc — the Z12 measurement). Icons must import their
+  // own module directly (lucide-react-native/icons/<kebab-name>, alias-
+  // resolved). `import type { LucideIcon }` stays allowed (types ship
+  // zero bytes).
+  {
+    files: ["app/**", "src/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "lucide-react-native",
+              message:
+                "The barrel ships every icon in the library — import the icon's own module: import X from \"lucide-react-native/icons/<kebab-name>\" (see scripts/codemod-lucide-direct.mjs).",
+              allowTypeImports: true,
+            },
+          ],
+        },
+      ],
+    },
+  },
 ];

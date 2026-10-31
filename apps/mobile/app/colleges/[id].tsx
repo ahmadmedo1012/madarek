@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { Building2 } from "lucide-react-native";
+import Building2 from "lucide-react-native/icons/building-complex";
 import { collegesApi } from "@/api/catalog";
 import type { Faculty } from "@/api/types";
 import { useSession } from "@/auth/session";

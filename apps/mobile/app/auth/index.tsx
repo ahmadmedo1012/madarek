@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { TriangleAlert } from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import { router, useLocalSearchParams } from "expo-router";
 import { ApiError } from "@/api/client";
 import { useSession, ROLE_HOME } from "@/auth/session";

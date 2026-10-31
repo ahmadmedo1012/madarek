@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
-import { HardDrive, Settings } from "lucide-react-native";
+import HardDrive from "lucide-react-native/icons/hard-drive";
+import Settings from "lucide-react-native/icons/settings";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";

@@ -1,6 +1,8 @@
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Crown, Medal, Star } from "lucide-react-native";
+import Crown from "lucide-react-native/icons/crown";
+import Medal from "lucide-react-native/icons/medal";
+import Star from "lucide-react-native/icons/star";
 import { studentApi } from "@/api/student";
 import { catalogApi } from "@/api/catalog";
 import { trainingApi } from "@/api/training";

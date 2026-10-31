@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { TriangleAlert } from "lucide-react-native";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { catalogApi } from "@/api/catalog";
 import { studentApi } from "@/api/student";

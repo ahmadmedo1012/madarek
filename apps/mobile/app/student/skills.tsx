@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Gauge } from "lucide-react-native";
+import Gauge from "lucide-react-native/icons/gauge";
 import { studentApi } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";

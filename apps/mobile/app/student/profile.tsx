@@ -11,36 +11,34 @@ import { RoleTabFrame } from "@/components/shell/TabFrame";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  BookOpen,
-  Briefcase,
-  CalendarClock,
-  CalendarDays,
-  CircleHelp,
-  ClipboardCheck,
-  ClipboardList,
-  CreditCard,
-  Dumbbell,
-  FileText,
-  FlaskConical,
-  Gauge,
-  Globe,
-  Grid3x3,
-  Landmark,
-  Library,
-  Mail,
-  Map,
-  Medal,
-  MessageSquare,
-  Presentation,
-  Radio,
-  ScanLine,
-  ScrollText,
-  Settings,
-  Trophy,
-  Users,
-  type LucideIcon,
-} from "lucide-react-native";
+import type { LucideIcon } from "lucide-react-native";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Briefcase from "lucide-react-native/icons/briefcase";
+import CalendarClock from "lucide-react-native/icons/calendar-clock";
+import CalendarDays from "lucide-react-native/icons/calendar-days";
+import CircleHelp from "lucide-react-native/icons/circle-question-mark";
+import ClipboardCheck from "lucide-react-native/icons/clipboard-check";
+import ClipboardList from "lucide-react-native/icons/clipboard-list";
+import CreditCard from "lucide-react-native/icons/credit-card";
+import Dumbbell from "lucide-react-native/icons/dumbbell";
+import FileText from "lucide-react-native/icons/file-text";
+import FlaskConical from "lucide-react-native/icons/flask-conical";
+import Gauge from "lucide-react-native/icons/gauge";
+import Globe from "lucide-react-native/icons/globe";
+import Grid3x3 from "lucide-react-native/icons/grid-3x3";
+import Landmark from "lucide-react-native/icons/landmark";
+import Library from "lucide-react-native/icons/library";
+import Mail from "lucide-react-native/icons/mail";
+import Map from "lucide-react-native/icons/map";
+import Medal from "lucide-react-native/icons/medal";
+import MessageSquare from "lucide-react-native/icons/message-square";
+import Presentation from "lucide-react-native/icons/presentation";
+import Radio from "lucide-react-native/icons/radio";
+import ScanLine from "lucide-react-native/icons/scan-line";
+import ScrollText from "lucide-react-native/icons/scroll-text";
+import Settings from "lucide-react-native/icons/settings";
+import Trophy from "lucide-react-native/icons/trophy";
+import Users from "lucide-react-native/icons/users";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { studentApi } from "@/api/student";
 import { useSession } from "@/auth/session";

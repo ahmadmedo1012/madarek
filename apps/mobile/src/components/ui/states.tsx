@@ -1,7 +1,14 @@
 import { type ReactNode } from "react";
-import { RefreshControl, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
-import Animated from "react-native-reanimated";
-import { WifiOff } from "lucide-react-native";
+import {
+  Animated,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
+import WifiOff from "lucide-react-native/icons/wifi-off";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "./text";
@@ -26,7 +33,7 @@ export function Skeleton({ w = "100%", h = 16, style }: { w?: number | string; h
           backgroundColor: p.border,
         },
         pulse,
-        style as StyleProp<never>,
+        style,
       ]}
     />
   );

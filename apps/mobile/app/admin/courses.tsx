@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Trash2 } from "lucide-react-native";
+import Plus from "lucide-react-native/icons/plus";
+import Trash2 from "lucide-react-native/icons/trash";
 import { Screen } from "@/components/ui";
 import { StackHeader as NavHeader } from "@/components/shell/AppTopBar";
 import { T, MonoLabel } from "@/components/ui/text";

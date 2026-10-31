@@ -12,7 +12,7 @@
 import { useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCheck } from "lucide-react-native";
+import CheckCheck from "lucide-react-native/icons/check-check";
 import { ApiError } from "@/api/client";
 import { studentApi } from "@/api/student";
 import type { Message } from "@/api/types";

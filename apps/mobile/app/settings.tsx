@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Fingerprint } from "lucide-react-native";
+import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
 import { router } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiWithCookieCapture, ApiError, post, put } from "@/api/client";

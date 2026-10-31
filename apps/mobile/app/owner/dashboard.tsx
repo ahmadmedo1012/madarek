@@ -3,15 +3,13 @@ import { RoleTabFrame } from "@/components/shell/TabFrame";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Activity,
-  Bot,
-  FileText,
-  Landmark,
-  Palette,
-  Settings,
-  TriangleAlert,
-} from "lucide-react-native";
+import Activity from "lucide-react-native/icons/activity";
+import Bot from "lucide-react-native/icons/bot";
+import FileText from "lucide-react-native/icons/file-text";
+import Landmark from "lucide-react-native/icons/landmark";
+import Palette from "lucide-react-native/icons/palette";
+import Settings from "lucide-react-native/icons/settings";
+import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";

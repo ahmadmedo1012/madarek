@@ -2,15 +2,13 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
-import {
-  Award,
-  CheckCircle2,
-  Crown,
-  Lock,
-  Medal,
-  Sparkles,
-  Star,
-} from "lucide-react-native";
+import Award from "lucide-react-native/icons/award";
+import CheckCircle2 from "lucide-react-native/icons/circle-check";
+import Crown from "lucide-react-native/icons/crown";
+import Lock from "lucide-react-native/icons/lock";
+import Medal from "lucide-react-native/icons/medal";
+import Sparkles from "lucide-react-native/icons/sparkles";
+import Star from "lucide-react-native/icons/star";
 import { trainingApi } from "@/api/training";
 import type { TrainingBadge } from "@/api/training";
 import { usePalette } from "@/design/theme";

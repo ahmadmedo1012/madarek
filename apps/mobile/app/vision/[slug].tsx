@@ -1,6 +1,9 @@
 import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
-import { ArrowLeft, ArrowRight, Bell, Sparkles } from "lucide-react-native";
+import ArrowLeft from "lucide-react-native/icons/arrow-left";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
+import Bell from "lucide-react-native/icons/bell";
+import Sparkles from "lucide-react-native/icons/sparkles";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { latn } from "@/lib/format";

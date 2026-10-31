@@ -1,6 +1,8 @@
 import { View } from "react-native";
 import { router } from "expo-router";
-import { ArrowRight, Info, Palette } from "lucide-react-native";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
+import Info from "lucide-react-native/icons/info";
+import Palette from "lucide-react-native/icons/palette";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";

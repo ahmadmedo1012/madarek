@@ -12,7 +12,7 @@ import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Play } from "lucide-react-native";
+import Play from "lucide-react-native/icons/play";
 import { studentApi } from "@/api/student";
 import { useSession } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";

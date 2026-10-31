@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CheckCircle2, ClipboardCheck, XCircle } from "lucide-react-native";
+import CheckCircle2 from "lucide-react-native/icons/circle-check";
+import ClipboardCheck from "lucide-react-native/icons/clipboard-check";
+import XCircle from "lucide-react-native/icons/circle-x";
 import { Screen } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";

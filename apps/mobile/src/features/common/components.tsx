@@ -4,7 +4,7 @@
  * about / help / contact). Built here because the shared UI kit is FROZEN
  * — anything it doesn't provide lives in this features folder.
  */
-import { LogIn } from "lucide-react-native";
+import LogIn from "lucide-react-native/icons/log-in";
 import { router } from "expo-router";
 import { ApiError } from "@/api/client";
 import { latn } from "@/lib/format";

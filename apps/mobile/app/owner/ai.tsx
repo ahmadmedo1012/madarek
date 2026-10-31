@@ -1,7 +1,8 @@
 
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Bot, Sparkles } from "lucide-react-native";
+import Bot from "lucide-react-native/icons/bot";
+import Sparkles from "lucide-react-native/icons/sparkles";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";

@@ -22,7 +22,9 @@
  */
 import { type ReactNode, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { Check, ChevronDown, X } from "lucide-react-native";
+import Check from "lucide-react-native/icons/check";
+import ChevronDown from "lucide-react-native/icons/chevron-down";
+import X from "lucide-react-native/icons/x";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, type StatusToneName } from "@/design/tokens";
 import { T } from "@/components/ui/text";

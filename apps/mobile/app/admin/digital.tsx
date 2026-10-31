@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Server } from "lucide-react-native";
+import Server from "lucide-react-native/icons/server";
 import { Screen , SectionBar } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";

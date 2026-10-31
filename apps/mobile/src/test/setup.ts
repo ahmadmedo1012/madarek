@@ -111,52 +111,10 @@ jest.mock("expo-local-authentication", () => ({
   cancelAuthenticate: jest.fn().mockResolvedValue(true),
 }));
 
-/* ── reanimated: the R327 B2 loaders animate via Reanimated 4. The
-      official mock still boots the native initializers chain
-      (runOnUISync-on-web crash); the app's surface is small, so a
-      deterministic hand-rolled mock covers it: animated components are
-      passthroughs, animation builders resolve instantly, styles are {}. ─ */
-
-jest.mock("react-native-reanimated", () => {
-  const React = require("react");
-  const { View, Text, Image, ScrollView } = require("react-native");
-  const passthrough = (Component: unknown) => {
-    const C = React.forwardRef((props: Record<string, unknown>, ref: unknown) =>
-      React.createElement(Component as never, { ...props, ref }));
-    C.displayName = "AnimatedPassthrough";
-    return C;
-  };
-  const animated = {
-    View: passthrough(View),
-    Text: passthrough(Text),
-    Image: passthrough(Image),
-    ScrollView: passthrough(ScrollView),
-    createAnimatedComponent: passthrough,
-  };
-  return {
-    ...animated,
-    default: animated,
-    useAnimatedStyle: () => ({}),
-    useDerivedValue: (fn: () => unknown) => ({ value: fn() }),
-    useSharedValue: (v: unknown) => ({ value: v }),
-    withTiming: (v: unknown) => v,
-    withSequence: (...steps: unknown[]) => steps[steps.length - 1],
-    withRepeat: (animation: unknown) => animation,
-    withDelay: (_ms: number, animation: unknown) => animation,
-    withSpring: (v: unknown) => v,
-    withClamp: (animation: unknown) => animation,
-    cancelAnimation: () => undefined,
-    Easing: {
-      bezier: () => ({}),
-      inOut: (x: unknown) => x,
-      out: (x: unknown) => x,
-      in: (x: unknown) => x,
-      quad: { factory: () => ({}) },
-    },
-    runOnJS: (fn: (...args: unknown[]) => unknown) => fn,
-    runOnUI: (fn: (...args: unknown[]) => unknown) => fn,
-  };
-});
+/* ── reanimated: GONE in R327 C4 — the three loader loops ride RN's
+      built-in Animated (native driver, zero marginal bundle bytes);
+      react-native-reanimated + worklets left the dependency tree. The
+      render nets exercise the real core-Animated components directly. ─ */
 
 /* ── safe-area: the REAL provider only renders children after the native
       onInsetsChange event — which NEVER fires under jest, silently

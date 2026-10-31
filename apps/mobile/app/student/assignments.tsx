@@ -9,7 +9,7 @@ import { View } from "react-native";
 import { useState } from "react";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { Send } from "lucide-react-native";
+import Send from "lucide-react-native/icons/send";
 import { studentApi } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";

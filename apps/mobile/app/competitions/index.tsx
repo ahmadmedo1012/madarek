@@ -1,7 +1,9 @@
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { Calendar, Send, Trophy } from "lucide-react-native";
+import Calendar from "lucide-react-native/icons/calendar";
+import Send from "lucide-react-native/icons/send";
+import Trophy from "lucide-react-native/icons/trophy";
 import { socialApi } from "@/api/social";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";

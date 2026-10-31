@@ -10,7 +10,7 @@ import { RoleTabFrame } from "@/components/shell/TabFrame";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen } from "lucide-react-native";
+import BookOpen from "lucide-react-native/icons/book-open";
 import { learningApi } from "@/api/learning";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";

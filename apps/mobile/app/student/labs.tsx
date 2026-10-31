@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { FlaskConical, Microscope } from "lucide-react-native";
+import FlaskConical from "lucide-react-native/icons/flask-conical";
+import Microscope from "lucide-react-native/icons/microscope";
 import { catalogApi } from "@/api/catalog";
 import { studentApi, type LabSession } from "@/api/student";
 import { ApiError } from "@/api/client";

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Briefcase, MapPin } from "lucide-react-native";
+import Briefcase from "lucide-react-native/icons/briefcase";
+import MapPin from "lucide-react-native/icons/map-pin";
 import { catalogApi } from "@/api/catalog";
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";

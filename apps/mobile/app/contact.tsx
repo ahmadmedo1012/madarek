@@ -1,6 +1,7 @@
 import { View } from "react-native";
 import { router } from "expo-router";
-import { Bug, Info } from "lucide-react-native";
+import Bug from "lucide-react-native/icons/bug";
+import Info from "lucide-react-native/icons/info";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { Screen } from "@/components/ui/screen";

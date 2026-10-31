@@ -3,10 +3,24 @@ import type { ComponentType, ReactNode } from "react";
 import { router, usePathname } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as Haptics from "expo-haptics";
-import {
-  Activity, BadgeCheck, BarChart3, Bell, BookOpen, CalendarDays, ClipboardList, FileSearch, Home,
-  Landmark, LineChart, Network, Scale, School, ScrollText, Sparkles, User, Users,
-} from "lucide-react-native";
+import Activity from "lucide-react-native/icons/activity";
+import BadgeCheck from "lucide-react-native/icons/badge-check";
+import BarChart3 from "lucide-react-native/icons/chart-column";
+import Bell from "lucide-react-native/icons/bell";
+import BookOpen from "lucide-react-native/icons/book-open";
+import CalendarDays from "lucide-react-native/icons/calendar-days";
+import ClipboardList from "lucide-react-native/icons/clipboard-list";
+import FileSearch from "lucide-react-native/icons/file-search";
+import Home from "lucide-react-native/icons/house";
+import Landmark from "lucide-react-native/icons/landmark";
+import LineChart from "lucide-react-native/icons/chart-line";
+import Network from "lucide-react-native/icons/network";
+import Scale from "lucide-react-native/icons/scale";
+import School from "lucide-react-native/icons/school";
+import ScrollText from "lucide-react-native/icons/scroll-text";
+import Sparkles from "lucide-react-native/icons/sparkles";
+import User from "lucide-react-native/icons/user";
+import Users from "lucide-react-native/icons/users";
 import { usePalette } from "@/design/theme";
 import { T } from "@/components/ui/text";
 import { useUnreadCount } from "@/hooks/useNotifications";

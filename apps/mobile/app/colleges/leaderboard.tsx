@@ -1,7 +1,8 @@
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { Crown, Medal } from "lucide-react-native";
+import Crown from "lucide-react-native/icons/crown";
+import Medal from "lucide-react-native/icons/medal";
 import { collegesApi } from "@/api/catalog";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";

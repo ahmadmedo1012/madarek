@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Wallet } from "lucide-react-native";
+import Wallet from "lucide-react-native/icons/wallet";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";

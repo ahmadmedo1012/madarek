@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
-import { ChevronDown, ChevronUp, LifeBuoy } from "lucide-react-native";
+import ChevronDown from "lucide-react-native/icons/chevron-down";
+import ChevronUp from "lucide-react-native/icons/chevron-up";
+import LifeBuoy from "lucide-react-native/icons/life-buoy";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { Screen } from "@/components/ui/screen";

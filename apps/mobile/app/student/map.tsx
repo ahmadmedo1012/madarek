@@ -10,7 +10,7 @@
 import { useMemo } from "react";
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Building2 } from "lucide-react-native";
+import Building2 from "lucide-react-native/icons/building-complex";
 import { catalogApi } from "@/api/catalog";
 import { useSession } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";

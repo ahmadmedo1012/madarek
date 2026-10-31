@@ -13,18 +13,23 @@
  *   · respect prefers-reduced-motion: static mark, no animation.
  *   · <InlineBusy> — the small inline variant for buttons and rows; pair
  *     with useStableFlag(busy) for the ≥300ms anti-flicker hold.
+ *
+ * R327 C4: the animations ride React Native's built-in Animated (native
+ * driver — UI thread, the same 60fps path) instead of react-native-
+ * reanimated. These loops are plain transform/opacity cycles; the whole
+ * reanimated+worklets runtime (~420kB of mapped JS ≈ 0.95MB of .hbc) was
+ * riding the bundle for three pulse loops. Core Animated ships with RN —
+ * zero marginal bytes.
  */
 import { useEffect, useRef, useState } from "react";
-import { View } from "react-native";
-import Animated, {
+import {
+  Animated,
   Easing,
-  useAnimatedStyle,
-  withDelay,
-  withRepeat,
-  withSequence,
-  withTiming,
-  type AnimatedStyle,
-} from "react-native-reanimated";
+  View,
+  type EasingFunction,
+  type StyleProp,
+  type ViewStyle,
+} from "react-native";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { heronEase } from "@/design/tokens.generated";
@@ -34,6 +39,68 @@ import { Button } from "./pressables";
 
 const EASE = Easing.bezier(heronEase[0], heronEase[1], heronEase[2], heronEase[3]);
 const CYCLE = 520;
+
+/* ── core-Animated helpers ──────────────────────────────────────────── */
+
+/**
+ * A value looping between two targets forever (paper rhythm). The loop
+ * runs on the native driver — transform/opacity only, which is exactly
+ * the loader vocabulary. Stops on unmount; returns the value so it can
+ * seat in an Animated.View style.
+ */
+function usePulseLoop(
+  from: number,
+  to: number,
+  duration: number,
+  easing: EasingFunction,
+  enabled: boolean,
+): Animated.Value {
+  // lazily-created, identity-stable — useState initializer instead of a
+  // ref read during render (react-compiler clean). Never set → no re-renders.
+  const [v] = useState(() => new Animated.Value(from));
+  useEffect(() => {
+    if (!enabled) return;
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(v, { toValue: to, duration, easing, useNativeDriver: true }),
+        Animated.timing(v, { toValue: from, duration, easing, useNativeDriver: true }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [v, from, to, duration, easing, enabled]);
+  return v;
+}
+
+/** One-time phase offset for staggered loops (starts after `delay` ms). */
+function useDelayedPulseLoop(
+  from: number,
+  to: number,
+  duration: number,
+  easing: EasingFunction,
+  delay: number,
+  enabled: boolean,
+): Animated.Value {
+  const [v] = useState(() => new Animated.Value(from));
+  useEffect(() => {
+    if (!enabled) return;
+    let loop: Animated.CompositeAnimation | null = null;
+    const t = setTimeout(() => {
+      loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(v, { toValue: to, duration, easing, useNativeDriver: true }),
+          Animated.timing(v, { toValue: from, duration, easing, useNativeDriver: true }),
+        ]),
+      );
+      loop.start();
+    }, delay);
+    return () => {
+      clearTimeout(t);
+      loop?.stop();
+    };
+  }, [v, from, to, duration, easing, delay, enabled]);
+  return v;
+}
 
 /* ── BootMark — the two squares + the point, converging ─────────────── */
 
@@ -50,45 +117,10 @@ export function BootMark({ size = 120 }: { size?: number }) {
   const stroke = 1.5; // the mark's non-scaling hairline (mark.ts)
   const diamondSide = 15.556; // the √2-snapped rotated square (mark.ts)
 
-  const axisStyle = useAnimatedStyle(() => ({
-    transform: [
-      {
-        scale: withRepeat(
-          withSequence(
-            withTiming(0.88, { duration: CYCLE, easing: EASE }),
-            withTiming(1, { duration: CYCLE, easing: EASE }),
-          ),
-          -1,
-          false,
-        ),
-      },
-    ],
-  }));
-  const diamondStyle = useAnimatedStyle(() => ({
-    transform: [
-      { rotate: "45deg" },
-      {
-        scale: withRepeat(
-          withSequence(
-            withTiming(1.09, { duration: CYCLE, easing: EASE }),
-            withTiming(1, { duration: CYCLE, easing: EASE }),
-          ),
-          -1,
-          false,
-        ),
-      },
-    ],
-  }));
-  const pointStyle = useAnimatedStyle(() => ({
-    opacity: withRepeat(
-      withSequence(
-        withTiming(0.35, { duration: CYCLE, easing: EASE }),
-        withTiming(1, { duration: CYCLE, easing: EASE }),
-      ),
-      -1,
-      false,
-    ),
-  }));
+  // counter-phase: the axis eases in while the diamond eases out
+  const axisScale = usePulseLoop(1, 0.88, CYCLE, EASE, !reduced);
+  const diamondScale = usePulseLoop(1, 1.09, CYCLE, EASE, !reduced);
+  const pointOpacity = usePulseLoop(1, 0.35, CYCLE, EASE, !reduced);
 
   const axis = {
     position: "absolute" as const,
@@ -129,9 +161,11 @@ export function BootMark({ size = 120 }: { size?: number }) {
 
   return (
     <View style={{ width: size, height: size }}>
-      <Animated.View style={[axis, axisStyle]} />
-      <Animated.View style={[diamond, diamondStyle]} />
-      <Animated.View style={[point, pointStyle]} />
+      <Animated.View style={[axis, { transform: [{ scale: axisScale }] }]} />
+      <Animated.View
+        style={[diamond, { transform: [{ rotate: "45deg" }, { scale: diamondScale }] }]}
+      />
+      <Animated.View style={[point, { opacity: pointOpacity }]} />
     </View>
   );
 }
@@ -191,14 +225,9 @@ export function InlineBusy({ size = 14, color }: { size?: number; color?: string
   const c = color ?? p.text;
   const gap = Math.max(3, Math.round(size / 3));
 
-  const seq = () =>
-    withSequence(
-      withTiming(0.25, { duration: 260, easing: EASE }),
-      withTiming(1, { duration: 260, easing: EASE }),
-    );
-  const a = useAnimatedStyle(() => ({ opacity: withRepeat(seq(), -1, false) }));
-  const b = useAnimatedStyle(() => ({ opacity: withDelay(170, withRepeat(seq(), -1, false)) }));
-  const c2 = useAnimatedStyle(() => ({ opacity: withDelay(340, withRepeat(seq(), -1, false)) }));
+  const a = usePulseLoop(1, 0.25, 260, EASE, !reduced);
+  const b = useDelayedPulseLoop(1, 0.25, 260, EASE, 170, !reduced);
+  const c2 = useDelayedPulseLoop(1, 0.25, 260, EASE, 340, !reduced);
 
   if (reduced) {
     return (
@@ -212,27 +241,24 @@ export function InlineBusy({ size = 14, color }: { size?: number; color?: string
 
   return (
     <View style={{ flexDirection: "row", gap, alignItems: "center" }}>
-      <Animated.View style={[{ width: size, height: size, backgroundColor: c }, a]} />
-      <Animated.View style={[{ width: size, height: size, backgroundColor: c }, b]} />
-      <Animated.View style={[{ width: size, height: size, backgroundColor: c }, c2]} />
+      <Animated.View style={[{ width: size, height: size, backgroundColor: c }, { opacity: a }]} />
+      <Animated.View style={[{ width: size, height: size, backgroundColor: c }, { opacity: b }]} />
+      <Animated.View style={[{ width: size, height: size, backgroundColor: c }, { opacity: c2 }]} />
     </View>
   );
 }
 
 /* ── shared motion ──────────────────────────────────────────────────── */
 
-/** The drafting-table pulse for skeletons (paper rhythm, ~1.3s cycle). */
-export function usePulseStyle(reduced: boolean): AnimatedStyle<{ opacity: number }> {
-  return useAnimatedStyle(() => ({
-    opacity: withRepeat(
-      withSequence(
-        withTiming(0.35, { duration: 640, easing: Easing.inOut(Easing.quad) }),
-        withTiming(0.85, { duration: 640, easing: Easing.inOut(Easing.quad) }),
-      ),
-      -1,
-      true,
-    ),
-  }));
+/**
+ * The drafting-table pulse for skeletons (paper rhythm, ~1.3s cycle).
+ * Returns the opacity style seat for an Animated.View (static opacity
+ * when reduced — the caller's plain View path renders instead).
+ */
+export function usePulseStyle(reduced: boolean): Animated.WithAnimatedValue<StyleProp<ViewStyle>> {
+  const quad = Easing.inOut(Easing.quad);
+  const v = usePulseLoop(0.85, 0.35, 640, quad, !reduced);
+  return reduced ? {} : { opacity: v };
 }
 
 /** A busy flag that, once raised, holds ≥ `minMs` after it drops (anti-flicker). */

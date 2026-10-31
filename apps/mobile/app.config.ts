@@ -91,7 +91,9 @@ const config: ExpoConfig = {
     typedRoutes: true,
     // R326 M1.3(b): reactCompiler disabled — suspected contributor to the
     // post-login crash with reanimated 4.7 / worklets 0.13 on RN 0.88 (new
-    // architecture). Re-enable ONLY after a clean full device-matrix pass.
+    // architecture). R327 C4 removed reanimated+worklets entirely (the
+    // loaders ride core Animated); the suspected interaction is gone —
+    // the re-enable decision belongs to C5 with its own device pass.
     reactCompiler: false,
   },
   extra: {

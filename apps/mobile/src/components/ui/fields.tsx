@@ -9,7 +9,11 @@ import {
   type ViewStyle,
   type TextInputProps,
 } from "react-native";
-import { ChevronDown, Eye, EyeOff, Search, X } from "lucide-react-native";
+import ChevronDown from "lucide-react-native/icons/chevron-down";
+import Eye from "lucide-react-native/icons/eye";
+import EyeOff from "lucide-react-native/icons/eye-off";
+import Search from "lucide-react-native/icons/search";
+import X from "lucide-react-native/icons/x";
 import { usePalette } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
 import { T } from "./text";

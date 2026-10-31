@@ -32,7 +32,7 @@ without a device is written «غير مُثبَت — يحتاج جهازاً» 
 | C1 | mobile design system = Heron (tokens-only, lint rule, ui library) | **done** | `9519cf3b` — the hex lint rule (no-restricted-syntax, WARN-ratcheted; design/brand/test exempt — they ARE the source) + the frozen kit goes clean: data/fields/pressables/surfaces/AppTopBar hand-copies → tokens (danger rides the orange signal), OfflineBanner's hand-copied yellow family → statusTones().yellow (gains its designed dark variant), Assistant quota · SignInPrompt · _layout bg tokenized, dead IconButton `tone` prop deleted (zero callers). 54 hex seats remain, ALL in screens → C2 owns them. Gates: tsc 0 · lint 0 err/143 warn · jest 726/726 · tokens:check 8/8 |
 | C2 | screens (student → teacher → registrar → owner) with all 6 states | **done** | C2a `48a66d27` Z6/Z7/Z8 (see Z-ledger; Z6 closed as not-reproduced with pixel evidence). C2b `8f60b830` all 54 hex seats → tokens (+101 query-error guards; hex count 0, warnings 143→87). C2c `4e2bf1ae`+`8efc1821` R2's findings (login error banner w/ honest 429 contract, courses pct dedupe, profile EmptyState) + the panel's root causes (ghost box, FAB glyph, dash wall). States: loading/empty/error/offline/success/guest ride the shared kit — structural half proven by the A4 poisoned net (560 combos), visual half verified live this session |
 | C3 | native features (push, PDF, upload, video, biometric, 401 logout) | **done** | push `70f3e797` (both halves) · PDF pick→magic-byte validation→progress upload (research) · video expo-video lecture player · 401 logout single-flight-refresh→epoch→RoleGate→/auth · biometric `1b401751` — optional cold-start lock (Face/fingerprint + device-PIN fallback, enable-proves-it toggle, honest self-disable when enrollment vanishes, web/hardware-less see the honest unavailable card — verified live) |
-| C4 | performance budgets (cold < 2.5s, 60fps lists, bundle ≤ +5%, .hbc) | **pending** | — |
+| C4 | performance budgets (cold < 2.5s, 60fps lists, bundle ≤ +5%, .hbc) | **done (bundle + .hbc) · cold/fps غير مُثبَت — يحتاج جهازاً** | Budget was BLOWN at entry: 7.36/7.37 MB (CI du formula) vs the R327-open baseline 6.20/6.22 (re-exported from `364b71dd` in a worktree — matches the recorded numbers exactly) = **+18.5%**. Source-map diff (scripts/analyze-bundle.mjs) found the growth: (1) reanimated+worklets were DEAD at baseline (0 mapped bytes — dep present, nothing imported); B2's three loader loops pulled the whole runtime in (+416 kB mapped ≈ 0.95 MB .hbc); (2) Metro does NOT tree-shake the lucide barrel — ALL 1999 icon modules shipped for the 90 icons used (1058 kB mapped ≈ 2.3 MB .hbc). Fixes: the loaders (BootMark · InlineBusy · skeleton pulse) rewritten on RN **core Animated** — native driver, the same UI-thread 60fps path, react-compiler-clean (warnings 87→84) — reanimated+worklets left the dependency tree (expo-router's peer is test-mock-only; no runtime importer); 82 files migrated to direct `lucide-react-native/icons/<kebab>` imports (scripts/codemod-lucide-direct.mjs — alias-resolved via the barrel: Trash2→trash.mjs, Building2→building-complex.mjs); jest maps icons to the CJS build; an ESLint **error**-level guard (no-restricted-imports, allowTypeImports) makes the barrel un-returnable. Final: **android 4.28 / ios 4.29 MB = −31% vs baseline** (ceiling was 6.51/6.53; the 8 MB CI budget now has 3.7 MB headroom). `.hbc`: both exports are Hermes bytecode (`entry-*.hbc`) — the Z13 note pins the measurement variant. Gates: tsc 0 · lint 0 err/84 warn · jest 726/726 · contract ✔ · tokens 8/8 · web export (Z11 command) ✔ · live web session on the fresh bundle: renders, navigates, SVG icons, console clean (FCP 756 ms local — a proxy only). Cold <2.5s: boot-timeline crumbs instrumented (ms since first app-JS: root-layout-mounted · rtl-ready · fonts+rtl→splash-handoff=first-frame · session-hydrated) — every telemetry ring now carries the timeline for the owner's device; proof غير مُثبَت without hardware. 60 fps lists: notifications = FlashList (the one unbounded feed, virtualized, paged); users/library/materials/messages = server-paged 20–30 + explicit load-more; per-course lists naturally bounded; fps on device غير مُثبَت |
 | C5 | fix the 87 pinned lint warnings screen-by-screen → reactCompiler decision | **pending** | — |
 | D1 | web `/app` distribution page (downloads, QR, OTA channels, min version) | **done** | `ed284bca` — the sheet the backend already promises (status.updateUrl=…/app): APK artifact + builds page, TestFlight honestly pending, ink-on-paper QR (zero external services), OTA channels explainer, LIVE minAppVersion from /api/v1/status, linked from landing footer + student dashboard. tsc 0 · vitest 3049/3049 · build 8.07s |
 | D2 | Android AAB production build + submit prep (owner key documented) | **pending** | — |
@@ -51,12 +51,16 @@ without a device is written «غير مُثبَت — يحتاج جهازاً» 
 | Z9 | agent-browser coordinate clicks are unreliable on the RN-web app (previous Stack screens stay mounted → text-includes matches stale buttons; use exact-match dispatch) | **documented + extended** — even role-exact clicks can fail to drive RN-web Pressables; the reliable pattern is the full PointerEvent sequence (pointerover → pointerdown → pointerup → click) via eval. `find text` is substring: «دخول» matches «تسجيل الدخول» first |
 | Z10 | The user-profile themePreference (LIGHT default) overrides the system dark scheme — «dark screenshots» initially captured LIGHT; in-app toggle is the honest path | **documented — behavior by design (profile sync), noted for screenshot runs** |
 | Z11 | The web export's API base is compile-time: the same-origin proxy contract requires `EXPO_PUBLIC_API_BASE_URL=/api/v1 npx expo export --platform web --output-dir dist-web` — a plain export silently calls production DIRECTLY (CORS-blocked POSTs hang) | **documented — export command pinned (C2a session)** |
+| Z12 | Metro does NOT tree-shake the lucide-react-native barrel — one value import ships ALL ~2000 icon modules (measured: 1999 icon files, 1058 kB mapped JS, for the 90 icons the app uses) | **fixed (C4)** — 82 files migrate to direct `lucide-react-native/icons/<kebab>` imports (scripts/codemod-lucide-direct.mjs, alias-resolved through the barrel); an error-level ESLint guard (no-restricted-imports, `allowTypeImports: true` — `import type { LucideIcon }` stays legal, types ship zero bytes) makes the barrel un-returnable; jest maps the subpath to the CJS build (moduleNameMapper) |
+| Z13 | The export `.hbc` embeds ~1.5 MB of debug info when exported WITHOUT `--source-maps` (7.36 MB vs 5.85 MB with an external map) — the CI du-formula and the recorded baselines measure the debug-embedded variant, and the OTA-shipped bundle IS that export | **documented (C4)** — budget numbers always compare like-with-like (the no-source-maps export, same as mobile.yml); a `--source-maps` export is ~1.5 MB smaller but is NOT the shipped artifact |
 
 ## Skills/tools actually used (logged as they fire)
 
 - EAS CLI (workflow:run validation pipeline, build queue, build:list) — A1/A3
 - sharp (apps/mobile devDep) — B1 deterministic rasterization
 - jest-expo + RNTL (poisoned net, role nets) — A2/A4
+- agent-browser (RN-web live session via the :8091 screenshot server) — B4, C4
+- scripts/analyze-bundle.mjs (source-map VLQ attribution → per-package deltas) — C4
 
 ## Environment (verified this session)
 
@@ -79,11 +83,14 @@ recorded here verbatim and the fallback is jest + RN-web + telemetry.
 
 ## Exact next 3 actions
 
-1. **A1** — write `.eas/workflows/e2e-ios.yml` + `e2e-android.yml` +
-   `apps/mobile/.maestro/` flows (install → first open → login per role →
-   tabs → logout); run `eas workflow:run`; record build IDs + artifacts or
-   the plan rejection verbatim.
-2. **A2** — static module-scope/first-effect audit + jest per role with
-   missing/`null` `/me` → screen renders or structured error, never white.
-3. **A3** — `eas build --profile preview` iOS-simulator + Android-APK on
-   current main; build IDs + download links here for the owner's simulators.
+1. **C5** — the 84 remaining WARN-ratchet lint warnings screen-by-screen
+   (87 at C2b, −3 after the C4 loader rewrite), then the reactCompiler
+   decision — NOTE: reanimated+worklets left the tree in C4, so the M1.3
+   suspected crash interaction is gone; the re-enable needs its own device
+   pass.
+2. **D2** — Android: fresh EAS production build on the post-C4 tree (the
+   fingerprint moved: reanimated/worklets removal + lockfile) — quota was
+   reset by now; cut the AAB + the preview APK for the owner, record build
+   IDs, and refresh the `/app` page links.
+3. **D3** — iOS prep without Apple + `docs/RELEASE.md` (owner steps,
+   keystores, OTA channel map) — then D4 proves OTA with 3 examples.

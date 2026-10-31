@@ -2,7 +2,7 @@ import { RoleTabFrame } from "@/components/shell/TabFrame";
 
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Eye } from "lucide-react-native";
+import Eye from "lucide-react-native/icons/eye";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";

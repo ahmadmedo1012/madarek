@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { router } from "expo-router";
-import { Sparkles } from "lucide-react-native";
+import Sparkles from "lucide-react-native/icons/sparkles";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { latn } from "@/lib/format";

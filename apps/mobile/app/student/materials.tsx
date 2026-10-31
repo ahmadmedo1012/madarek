@@ -5,7 +5,7 @@
  * authenticated PDF surface (/document/<filename>?ns=materials).
  */
 import { useQuery } from "@tanstack/react-query";
-import { FolderDown } from "lucide-react-native";
+import FolderDown from "lucide-react-native/icons/folder-down";
 import { studentApi } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";

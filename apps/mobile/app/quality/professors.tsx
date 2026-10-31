@@ -1,6 +1,6 @@
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
-import { Star } from "lucide-react-native";
+import Star from "lucide-react-native/icons/star";
 import { Screen } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";

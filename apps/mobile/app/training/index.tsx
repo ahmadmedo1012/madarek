@@ -1,7 +1,10 @@
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Clock, GraduationCap, Sparkles } from "lucide-react-native";
+import BookOpen from "lucide-react-native/icons/book-open";
+import Clock from "lucide-react-native/icons/clock";
+import GraduationCap from "lucide-react-native/icons/graduation-cap";
+import Sparkles from "lucide-react-native/icons/sparkles";
 import { trainingApi } from "@/api/training";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";

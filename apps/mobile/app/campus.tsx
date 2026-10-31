@@ -1,5 +1,6 @@
 import { View } from "react-native";
-import { Camera, Video } from "lucide-react-native";
+import Camera from "lucide-react-native/icons/camera";
+import Video from "lucide-react-native/icons/video";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { Screen } from "@/components/ui/screen";

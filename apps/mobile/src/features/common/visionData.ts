@@ -12,20 +12,18 @@
  * honest kicker «مفاهيم استكشافية — ليست ميزات مطلقة».
  */
 import type { LucideIcon } from "lucide-react-native";
-import {
-  Sparkles,
-  FileQuestion,
-  Eye,
-  Bot,
-  Mic,
-  Languages,
-  FileUser,
-  FlaskConical,
-  Boxes,
-  ShieldCheck,
-  Globe,
-  AppWindow,
-} from "lucide-react-native";
+import Sparkles from "lucide-react-native/icons/sparkles";
+import FileQuestion from "lucide-react-native/icons/file-question-mark";
+import Eye from "lucide-react-native/icons/eye";
+import Bot from "lucide-react-native/icons/bot";
+import Mic from "lucide-react-native/icons/mic";
+import Languages from "lucide-react-native/icons/languages";
+import FileUser from "lucide-react-native/icons/file-user";
+import FlaskConical from "lucide-react-native/icons/flask-conical";
+import Boxes from "lucide-react-native/icons/boxes";
+import ShieldCheck from "lucide-react-native/icons/shield-check";
+import Globe from "lucide-react-native/icons/globe";
+import AppWindow from "lucide-react-native/icons/app-window";
 import type { StatusToneName } from "@/design/tokens";
 
 export type VisionStatus = "research" | "planning" | "prototype" | "beta";

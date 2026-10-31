@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
-import { ArrowRight, Building2, Search } from "lucide-react-native";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
+import Building2 from "lucide-react-native/icons/building-complex";
+import Search from "lucide-react-native/icons/search";
 import { useSession } from "@/auth/session";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";

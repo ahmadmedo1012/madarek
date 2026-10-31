@@ -26,6 +26,16 @@ import { BiometricGate } from "@/lib/biometric";
 I18nManager.allowRTL(true);
 I18nManager.forceRTL(true);
 
+// R327 C4 — the boot timeline (ms since first app-JS evaluation). The
+// cold-start budget (<2.5s) is a DEVICE measurement («غير مُثبَت» without
+// hardware); these crumbs seat the real milestones in every telemetry
+// breadcrumb ring, so the owner's device — or a future simulator run —
+// reads the timeline straight out of any crash report.
+const BOOT_T0 = Date.now();
+const bootMs = (mark: string) => `boot: ${mark} +${Date.now() - BOOT_T0}ms`;
+
+crumb(bootMs("app JS evaluated"));
+
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 // R326 M1.1: global JS-exception + unhandled-rejection capture → /client-errors.
@@ -70,13 +80,16 @@ export default function RootLayout() {
   // blocking gate replaces the app (nothing runs under the floor).
   const gate = useVersionGate();
   useEffect(() => {
-    crumb("app: root layout mounted");
+    crumb(bootMs("root layout mounted"));
   }, []);
 
   useEffect(() => {
     let cancelled = false;
     void ensureRTL().then((reloading) => {
-      if (!cancelled && !reloading) setRtlReady(true);
+      if (!cancelled && !reloading) {
+        crumb(bootMs("rtl ready"));
+        setRtlReady(true);
+      }
     });
     return () => {
       cancelled = true;
@@ -84,11 +97,12 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    void hydrate();
+    void hydrate().then(() => crumb(bootMs("session hydrated")));
   }, [hydrate]);
 
   useEffect(() => {
     if (loaded && rtlReady) {
+      crumb(bootMs("fonts+rtl ready — splash handoff (first frame)"));
       void SplashScreen.hideAsync().catch(() => undefined);
     }
   }, [loaded, rtlReady]);

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { View , Linking } from "react-native";
-import { GraduationCap } from "lucide-react-native";
+import GraduationCap from "lucide-react-native/icons/graduation-cap";
 import * as WebBrowser from "expo-web-browser";
 import { catalogApi } from "@/api/catalog";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";

@@ -1,7 +1,11 @@
 import { View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, CheckCircle2, ChevronLeft, Clock, Sparkles } from "lucide-react-native";
+import BookOpen from "lucide-react-native/icons/book-open";
+import CheckCircle2 from "lucide-react-native/icons/circle-check";
+import ChevronLeft from "lucide-react-native/icons/chevron-left";
+import Clock from "lucide-react-native/icons/clock";
+import Sparkles from "lucide-react-native/icons/sparkles";
 import { trainingApi } from "@/api/training";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";

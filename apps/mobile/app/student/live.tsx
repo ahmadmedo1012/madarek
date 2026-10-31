@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
 import { View , Linking } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { ExternalLink, MonitorPlay } from "lucide-react-native";
+import ExternalLink from "lucide-react-native/icons/external-link";
+import MonitorPlay from "lucide-react-native/icons/monitor-play";
 import { liveApi } from "@/api/live";
 import type { LiveSession } from "@/api/types";
 import { ApiError } from "@/api/client";
