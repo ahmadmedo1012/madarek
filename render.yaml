@@ -27,6 +27,18 @@ services:
     startCommand: npm run start
     healthCheckPath: /api/v1/health
     autoDeploy: true
+    # r326 M0.6 — the web service must NOT redeploy for mobile-only or
+    # docs-only commits (Render free-tier builds are slow and precious).
+    # Only backend/ (incl. backend/prisma), frontend/, shared/, and the
+    # root workspace files deploy the web.
+    buildFilter:
+      paths:
+        - backend/**
+        - frontend/**
+        - shared/**
+        - package.json
+        - package-lock.json
+        - render.yaml
     envVars:
       - key: NODE_ENV
         value: production

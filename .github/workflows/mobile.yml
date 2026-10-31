@@ -1,0 +1,140 @@
+# Mobile — R326 M0.6: the app updates when the project updates.
+#
+# ONE branch (main). This workflow runs ONLY when the push touches the
+# mobile app or the shared package; every other push never queues it.
+#
+#   mobile-gates   → typecheck · expo lint · contract-check · expo export
+#                     (both platforms) — fast, additive, must be green
+#   eas-ota        → after gates: `eas update --auto` to the production
+#                     AND preview branches (JS/asset changes reach every
+#                     installed build whose fingerprint matches)
+#   eas-build      → after gates, ONLY when the change is native-affecting
+#                     (package.json/lock, app.config.ts, eas.json, plugin
+#                     config, icons/splash): a preview-profile build for
+#                     both platforms (internal APK + iOS simulator),
+#                     --no-wait, links in the summary.
+#
+# Production (store) builds stay manual: workflow_dispatch → RELEASE.md.
+name: Mobile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - 'shared/**'
+      - '.github/workflows/mobile.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+  EAS_NO_VCS: '1'
+
+jobs:
+  mobile-gates:
+    name: Mobile gates (typecheck · lint · contract · export)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: apps/mobile/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - name: Typecheck (tsc strict)
+        run: npm run typecheck
+      - name: Lint (expo lint — 0 errors; 79 pinned warnings, r326 HANDOFF Z2)
+        run: npx expo lint -- --max-warnings 999
+      - name: Contract-check (consumed endpoints vs backend source)
+        run: npm run contract-check
+      - name: Export bundle (android)
+        run: npx expo export --platform android --output-dir dist-export-android
+      - name: Export bundle (ios)
+        run: npx expo export --platform ios --output-dir dist-export-ios
+      - name: Bundle budget (JS ≤ 8 MB per platform)
+        run: |
+          for p in android ios; do
+            SIZE=$(du -sb dist-export-$p/_expo/static/js/*.js 2>/dev/null | awk '{s+=$1} END {print s+0}')
+            MB=$(echo "scale=2; $SIZE / 1048576" | bc)
+            echo "$p JS bundle: ${MB} MB"
+            if (( $(echo "$MB > 8" | bc -l) )); then
+              echo "::error::$p JS bundle ${MB} MB exceeds the 8 MB budget"
+              exit 1
+            fi
+          done
+
+  eas-ota:
+    name: EAS Update (OTA to production + preview)
+    needs: mobile-gates
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      - run: npm ci --no-audit --no-fund
+      - name: Publish OTA update (production)
+        run: npx eas-cli@latest update --branch production --auto --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      - name: Publish OTA update (preview)
+        run: npx eas-cli@latest update --branch preview --auto --non-interactive
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
+  eas-build:
+    name: EAS Build (preview — native change detected)
+    needs: mobile-gates
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: Detect native-affecting changes (fingerprint inputs)
+        id: native
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD || echo "")
+          NATIVE=$(echo "$CHANGED" | grep -E '^apps/mobile/(package(-lock)?\.json|app\.config\.ts|eas\.json|assets/|plugins?/)' || true)
+          SHARED=$(echo "$CHANGED" | grep -E '^shared/' || true)
+          # shared/** feeds tokens/brand → generated files land in the app;
+          # a regenerated token file is JS-only, but shared BRAND assets can
+          # change icons → treat shared changes as native-affecting (safe).
+          if [ -n "$NATIVE" ] || [ -n "$SHARED" ]; then
+            echo "native=true" >> "$GITHUB_OUTPUT"
+            echo "Native-affecting files:"
+            echo "$NATIVE $SHARED"
+          else
+            echo "native=false" >> "$GITHUB_OUTPUT"
+            echo "JS-only change — OTA suffices, no build needed."
+          fi
+      - name: Build preview (internal APK + iOS simulator, no wait)
+        if: steps.native.outputs.native == 'true'
+        run: |
+          npx eas-cli@latest build --profile preview --platform all --non-interactive --no-wait > build-out.txt 2>&1 || cat build-out.txt
+          cat build-out.txt
+          grep -oE 'https://expo\.dev/artifacts/[^ )]+' build-out.txt >> "$GITHUB_STEP_SUMMARY" || true
+          echo "## EAS preview builds queued" >> "$GITHUB_STEP_SUMMARY"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
