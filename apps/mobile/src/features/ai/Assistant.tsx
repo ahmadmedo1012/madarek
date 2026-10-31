@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Send, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react-native";
 import { aiApi, AI_QUOTA_MARKER } from "@/api/ai";
 import { ApiError } from "@/api/client";
-import { usePalette } from "@/design/theme";
+import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button, IconButton } from "@/components/ui/pressables";
@@ -20,6 +20,7 @@ import { BrandMark } from "@/components/ui/brand";
  */
 export function Assistant() {
   const p = usePalette();
+  const warn = useStatusTones().yellow;
   const qc = useQueryClient();
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [input, setInput] = useState("");
@@ -165,7 +166,7 @@ export function Assistant() {
         ) : null}
         {error ? <ErrorState message={error} compact /> : null}
         {quotaHit ? (
-          <Card style={{ borderColor: "#A8750F" }}>
+          <Card style={{ borderColor: warn.ink }}>
             <T variant="body" weight="bold">وصلت حدّ الأسئلة اليومي</T>
             <T variant="sm" color="muted">عُد غدًا — الحد اليومي يحفظ عدالة استخدام الخدمة للجميع.</T>
           </Card>

@@ -95,7 +95,7 @@ export function AppTopBar({ alertsPath }: { alertsPath: string }) {
             justifyContent: "center",
           }}
         >
-          <T variant="xs" weight="bold" style={{ color: "#FFFFFF" }}>
+          <T variant="xs" weight="bold" style={{ color: p.accentFg }}>
             {user ? initials(user.firstName, user.lastName) : "؟"}
           </T>
         </View>

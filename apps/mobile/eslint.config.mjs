@@ -24,4 +24,29 @@ export default [
       "react-hooks/refs": "warn",
     },
   },
+  // R327 C1 — the design system is the ONLY colour source: raw hex
+  // literals outside design/ + brand/ are a drift risk (the Z3-class
+  // bug the token pipeline exists to kill). WARN-ratcheted: the
+  // remaining hits are pinned in docs/redesign/r327/HANDOFF.md and
+  // retire screen-by-screen with the C2 wave. New code: zero.
+  {
+    files: ["app/**", "src/**"],
+    ignores: [
+      "src/design/**",
+      "src/brand/**",
+      "src/test/**",
+      "**/*.test.*",
+    ],
+    rules: {
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector:
+            "Literal[value=/#[0-9a-fA-F]{6}/]",
+          message:
+            "Raw hex colour — use the palette (usePalette) / tokens (design/tokens). If a seat is missing, add it to shared/design-tokens.json (never here).",
+        },
+      ],
+    },
+  },
 ];

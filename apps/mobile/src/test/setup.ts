@@ -109,9 +109,12 @@ jest.mock("expo-notifications", () => ({
 jest.mock("react-native-reanimated", () => {
   const React = require("react");
   const { View, Text, Image, ScrollView } = require("react-native");
-  const passthrough = (Component: unknown) =>
-    React.forwardRef((props: Record<string, unknown>, ref: unknown) =>
+  const passthrough = (Component: unknown) => {
+    const C = React.forwardRef((props: Record<string, unknown>, ref: unknown) =>
       React.createElement(Component as never, { ...props, ref }));
+    C.displayName = "AnimatedPassthrough";
+    return C;
+  };
   const animated = {
     View: passthrough(View),
     Text: passthrough(Text),

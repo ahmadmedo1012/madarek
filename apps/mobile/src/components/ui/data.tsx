@@ -19,7 +19,7 @@ export function StatLine({
 }) {
   const p = usePalette();
   const color =
-    tone === "accent" ? p.accentInk : tone === "gold" ? p.goldInk : tone === "danger" ? "#C72E00" : p.text;
+    tone === "accent" ? p.accentInk : tone === "gold" ? p.goldInk : tone === "danger" ? p.accentInk : p.text;
   return (
     <View style={{ minHeight: 44, justifyContent: "center", paddingVertical: sp[6] }}>
       <View style={{ flexDirection: "row", alignItems: "baseline", gap: sp[8] }}>
@@ -141,7 +141,7 @@ export function Avatar({
         justifyContent: "center",
       }}
     >
-      <T variant="sm" weight="bold" style={{ color: color ? "#FFFFFF" : p.text }}>
+      <T variant="sm" weight="bold" style={{ color: color ? p.accentFg : p.text }}>
         {initials}
       </T>
     </View>

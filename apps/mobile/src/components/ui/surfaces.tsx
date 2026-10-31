@@ -120,7 +120,7 @@ export function Sheet({
           { backgroundColor: p.surface, borderColor: p.rule, borderTopWidth: StyleSheet.hairlineWidth },
         ]}
       >
-          <View style={styles.grab} />
+          <View style={[styles.grab, { backgroundColor: p.rule }]} />
           <T variant="h4" weight="bold" style={{ paddingBottom: sp[12] }}>
             {title}
           </T>
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: sp[20],
     paddingTop: sp[8],
   },
-  grab: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, backgroundColor: "#B3B3AF", marginBottom: sp[8] },
+  grab: { alignSelf: "center", width: 36, height: 4, borderRadius: 2, marginBottom: sp[8] },
   dialog: {
     marginHorizontal: sp[24],
     borderWidth: StyleSheet.hairlineWidth,

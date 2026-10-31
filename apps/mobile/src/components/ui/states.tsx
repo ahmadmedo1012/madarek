@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import { RefreshControl, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import { WifiOff } from "lucide-react-native";
-import { usePalette } from "@/design/theme";
+import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "./text";
 import { Button } from "./pressables";
@@ -153,15 +153,15 @@ export function ErrorState({
 
 /** Offline banner — real connectivity state via NetInfo. */
 export function OfflineBanner({ visible }: { visible: boolean }) {
-  const p = usePalette();
+  const warn = useStatusTones().yellow;
   if (!visible) return null;
   return (
     <View
       accessibilityLabel="لا يوجد اتصال بالإنترنت"
       style={{
-        backgroundColor: "#F5EBD6",
+        backgroundColor: warn.bg,
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#A8750F",
+        borderColor: warn.ink,
         paddingVertical: 6,
         paddingHorizontal: sp[16],
         flexDirection: "row",
@@ -169,8 +169,8 @@ export function OfflineBanner({ visible }: { visible: boolean }) {
         gap: sp[8],
       }}
     >
-      <WifiOff size={16} color="#5E420C" />
-      <T variant="sm" style={{ color: "#5E420C" }}>
+      <WifiOff size={16} color={warn.deep} />
+      <T variant="sm" style={{ color: warn.deep }}>
         لا يوجد اتصال — تُعرض بيانات محفوظة قد تكون قديمة، ولن تُرسَل أي عمليات كتابة.
       </T>
     </View>

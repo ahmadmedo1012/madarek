@@ -1,4 +1,4 @@
-import { type ReactNode, useRef } from "react";
+import { type ReactNode } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -47,9 +47,9 @@ export function Button({
   const showBusy = useStableFlag(loading, 300);
   const height = small ? 36 : 48;
   const bg =
-    kind === "primary" ? p.primary : kind === "accent" ? p.accent : kind === "danger" ? "#F15534" : "transparent";
+    kind === "primary" ? p.primary : kind === "accent" ? p.accent : kind === "danger" ? p.accent : "transparent";
   const fg =
-    kind === "primary" ? p.primaryFg : kind === "accent" ? p.accentFg : kind === "danger" ? "#FFFFFF" : p.text;
+    kind === "primary" ? p.primaryFg : kind === "accent" ? p.accentFg : kind === "danger" ? p.accentFg : p.text;
   const border = kind === "ghost" ? p.rule : "transparent";
   return (
     <Pressable
@@ -92,7 +92,7 @@ export function Button({
   );
 }
 
-/** Square icon-only pressable (44px floor). */
+/** Square icon-only pressable (44px floor). Icons carry their own colour. */
 export function IconButton({
   children,
   onPress,
@@ -100,7 +100,6 @@ export function IconButton({
   accessibilityLabel,
   style,
   disabled,
-  tone = "default",
 }: {
   children: ReactNode;
   onPress?: () => void;
@@ -108,10 +107,7 @@ export function IconButton({
   accessibilityLabel?: string;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
-  tone?: "default" | "accent" | "danger";
 }) {
-  const p = usePalette();
-  const fg = tone === "accent" ? p.accentInk : tone === "danger" ? "#C72E00" : p.text;
   return (
     <Pressable
       accessibilityRole="button"

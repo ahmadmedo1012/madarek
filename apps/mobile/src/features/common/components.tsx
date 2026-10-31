@@ -8,6 +8,7 @@ import { LogIn } from "lucide-react-native";
 import { router } from "expo-router";
 import { ApiError } from "@/api/client";
 import { latn } from "@/lib/format";
+import { usePalette } from "@/design/theme";
 import { EmptyState } from "@/components/ui/states";
 
 /* ── Competition status grammar (task mapping) ─────────────────────── */
@@ -86,11 +87,12 @@ export function SignInPrompt({
 }: {
   message?: string;
 }) {
+  const p = usePalette();
   return (
     <EmptyState
       title="سجّل الدخول للمشاركة"
       message={message}
-      icon={<LogIn size={22} color="#70706A" />}
+      icon={<LogIn size={22} color={p.textFaint} />}
       actionLabel="تسجيل الدخول"
       onAction={() => router.push("/auth")}
     />

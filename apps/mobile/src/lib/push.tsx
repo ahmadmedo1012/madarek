@@ -20,6 +20,7 @@
 import { useEffect, useRef } from "react";
 import { Platform } from "react-native";
 import * as Notifications from "expo-notifications";
+import { AndroidImportance } from "expo-notifications";
 import Constants from "expo-constants";
 import { router } from "expo-router";
 import { get, post, del } from "@/api/client";
@@ -48,7 +49,7 @@ export function ensurePushRuntime(): void {
   if (Platform.OS === "android") {
     void Notifications.setNotificationChannelAsync(CHANNEL_ALERTS, {
       name: "الإشعارات",
-      importance: Notifications.AndroidImportance.HIGH,
+      importance: AndroidImportance.HIGH,
       sound: "default",
       bypassDnd: false,
     }).catch(() => undefined);

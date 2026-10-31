@@ -10,6 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { queryClient } from "@/lib/queryClient";
 import { ThemeProvider, useTheme } from "@/design/theme";
+import { heron } from "@/design/tokens";
 import { fontMap } from "@/design/fonts";
 import { ToastHost } from "@/components/ui/toast";
 import { FeedbackSheetHost } from "@/features/feedback/FeedbackFab";
@@ -41,7 +42,7 @@ function RootNavigator() {
     <Stack
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: name === "dark" ? "#282828" : "#F6F6EE" },
+        contentStyle: { backgroundColor: heron[name].bg },
         gestureEnabled: true,
       }}
     >

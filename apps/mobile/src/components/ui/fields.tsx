@@ -43,7 +43,7 @@ export function Field({ label, error, hint, required, containerStyle, ...input }
           {
             backgroundColor: p.surface,
             borderWidth: StyleSheet.hairlineWidth,
-            borderColor: error ? "#C72E00" : p.rule,
+            borderColor: error ? p.accentInk : p.rule,
             paddingHorizontal: sp[12],
             minHeight: 48,
             color: p.text,
@@ -134,7 +134,7 @@ export function SelectField({
           gap: sp[8],
           backgroundColor: pressed ? p.surfaceHover : p.surface,
           borderWidth: StyleSheet.hairlineWidth,
-          borderColor: error ? "#C72E00" : p.rule,
+          borderColor: error ? p.accentInk : p.rule,
           paddingHorizontal: sp[12],
           minHeight: 48,
           opacity: disabled ? 0.5 : 1,
