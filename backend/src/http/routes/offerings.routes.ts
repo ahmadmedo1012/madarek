@@ -30,6 +30,7 @@ import { isPdfMagicBytes, isUploadSizeOk, assertOfferingInstitutionForUpload } f
 // offering's active students (payloads pure-tested in notifications/core).
 import { assignmentCreatedPayload, materialCreatedPayload } from '../../modules/notifications/core.js';
 import { notifyOfferingStudents, notifyOfferingStudentsTx } from '../../modules/notifications/fire.js';
+import { fanOutPush } from '../../modules/notifications/push.js';
 // The list-side role/visibility twin of assertOfferingAccess — shared
 // with GET /courses/:id and the global search (its docblock names this
 // file's consumers). Importing a route module for a helper follows the
@@ -338,7 +339,8 @@ router.post(
         where: { id: offeringId },
         select: { course: { select: { code: true } } },
       });
-      const created = await prisma.$transaction(async (tx) => {
+      const materialPayload = materialCreatedPayload(offering?.course.code ?? '', req.body.name);
+      const { row: created, recipientIds } = await prisma.$transaction(async (tx) => {
         const row = await tx.material.create({
           data: {
             ...req.body,
@@ -349,13 +351,11 @@ router.post(
             uploaderId: req.user!.id,
           },
         });
-        await notifyOfferingStudentsTx(
-          tx,
-          offeringId,
-          materialCreatedPayload(offering?.course.code ?? '', req.body.name),
-        );
-        return row;
+        const recipientIds = await notifyOfferingStudentsTx(tx, offeringId, materialPayload);
+        return { row, recipientIds };
       });
+      // R327 C3 — the push rides the COMMITTED material only. Best-effort.
+      await fanOutPush(recipientIds, materialPayload);
       res.status(201).json({ data: serializeMaterial(created) });
     } catch (e) {
       next(e);
@@ -515,17 +515,20 @@ router.post(
         where: { id: offeringId },
         select: { course: { select: { code: true } } },
       });
-      const created = await prisma.$transaction(async (tx) => {
+      const assignmentPayload = assignmentCreatedPayload(
+        offering?.course.code ?? '',
+        req.body.title,
+        req.body.dueAt,
+      );
+      const { row: created, recipientIds } = await prisma.$transaction(async (tx) => {
         const row = await tx.assignment.create({
           data: { ...req.body, offeringId },
         });
-        await notifyOfferingStudentsTx(
-          tx,
-          offeringId,
-          assignmentCreatedPayload(offering?.course.code ?? '', req.body.title, req.body.dueAt),
-        );
-        return row;
+        const recipientIds = await notifyOfferingStudentsTx(tx, offeringId, assignmentPayload);
+        return { row, recipientIds };
       });
+      // R327 C3 — the push rides the COMMITTED assignment only. Best-effort.
+      await fanOutPush(recipientIds, assignmentPayload);
       res.status(201).json({ data: created });
     } catch (e) {
       next(e);

@@ -85,6 +85,21 @@ jest.mock("@react-native-async-storage/async-storage", () =>
   require("@react-native-async-storage/async-storage/jest/async-storage-mock"),
 );
 
+/* ── expo-notifications: the R327 C3 push client — deterministic stub. ─ */
+
+jest.mock("expo-notifications", () => ({
+  setNotificationHandler: jest.fn(),
+  setNotificationChannelAsync: jest.fn().mockResolvedValue(undefined),
+  getPermissionsAsync: jest.fn().mockResolvedValue({ granted: false, canAskAgain: true }),
+  requestPermissionsAsync: jest.fn().mockResolvedValue({ granted: false, canAskAgain: true }),
+  getExpoPushTokenAsync: jest.fn().mockResolvedValue({ data: "" }),
+  setBadgeCountAsync: jest.fn().mockResolvedValue(undefined),
+  addNotificationResponseReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
+  addNotificationReceivedListener: jest.fn().mockReturnValue({ remove: jest.fn() }),
+  AndroidImportance: { HIGH: 4, DEFAULT: 3 },
+  AndroidNotificationVisibility: { PRIVATE: 1 },
+}));
+
 /* ── reanimated: the R327 B2 loaders animate via Reanimated 4. The
       official mock still boots the native initializers chain
       (runOnUISync-on-web crash); the app's surface is small, so a

@@ -5,6 +5,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { apiWithCookieCapture, ApiError, post, put } from "@/api/client";
 import { useSession, ROLE_LABELS, POSITION_LABELS, RANK_LABELS } from "@/auth/session";
 import { setThemePreference, usePalette, useThemePreference, type ThemePreference } from "@/design/theme";
+import { currentPermission, requestAndRegisterPush, unregisterPushDevices } from "@/lib/push";
 import { sp } from "@/design/tokens";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
 import { T, MonoLabel } from "@/components/ui/text";
@@ -154,6 +155,8 @@ export default function Settings() {
         onCancel={() => setConfirmLogout(false)}
         onConfirm={async () => {
           setConfirmLogout(false);
+          // R327 C3 — a handed-over phone must not keep pushing.
+          await unregisterPushDevices().catch(() => undefined);
           await logout();
           qc.clear();
           router.replace("/");

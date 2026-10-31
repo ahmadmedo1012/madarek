@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCheck, Dot } from "lucide-react-native";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp , toneForNotificationType } from "@/design/tokens";
@@ -10,6 +10,7 @@ import { Badge, Card } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { T, MonoLabel } from "@/components/ui/text";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { currentPermission, requestAndRegisterPush } from "@/lib/push";
 import { fromNow } from "@/lib/format";
 import {
   NOTIFICATIONS_FEED_LIMIT,
@@ -87,7 +88,10 @@ export function NotificationsScreen({ title, kicker }: { title?: string; kicker?
           <ErrorState message={(feed.error as Error).message} onRetry={() => feed.refetch()} />
         </View>
       ) : rows.length === 0 ? (
+        <View style={{ flex: 1 }}>
+        <PushActivationCard />
         <EmptyState title="لا إشعارات بعد" message="ستظهر هنا إعلانات المقرّرات والدرجات والرسائل الأكاديمية." />
+        </View>
       ) : (
         <FlashList
           data={rows}
@@ -146,5 +150,57 @@ function NotificationRow({ n, onOpen }: { n: AppNotification; onOpen: () => void
         </T>
       ) : null}
     </Pressable>
+  );
+}
+
+
+/** R327 C3 — the value-shown push ask: only when permission is not yet
+ *  granted, one honest sentence + one button. Never at first open. */
+function PushActivationCard() {
+  const p = usePalette();
+  const qc = useQueryClient();
+  const perm = useQuery({
+    queryKey: ["push", "permission"],
+    queryFn: currentPermission,
+    staleTime: 60_000,
+  });
+  const [busy, setBusy] = useState(false);
+  const state = perm.data;
+  if (state === "granted" || state === "unavailable" || state === undefined) return null;
+
+  const go = async () => {
+    setBusy(true);
+    try {
+      await requestAndRegisterPush();
+    } finally {
+      setBusy(false);
+      void qc.invalidateQueries({ queryKey: ["push", "permission"] });
+    }
+  };
+
+  return (
+    <View
+      style={{
+        marginHorizontal: sp[16],
+        marginTop: sp[12],
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: p.rule,
+        backgroundColor: p.surface,
+        padding: sp[12],
+        gap: sp[8],
+      }}
+    >
+      <T variant="body" weight="bold">إشعارات فورية على جهازك</T>
+      <T variant="sm" color="muted">
+        {state === "denied"
+          ? "الإشعارات مقفلة من إعدادات النظام — فعّلها لمدارك من هناك لتصلك الإعلانات والدرجات لحظة صدورها."
+          : "فعّلها لتصلك الإعلانات والدرجات والتكاليف لحظة صدورها — لا رسائل إعلانية، وتلغيها متى شئت."}
+      </T>
+      {state !== "denied" ? (
+        <View style={{ alignSelf: "flex-start" }}>
+          <Button label={busy ? "جارٍ التفعيل…" : "تفعيل الإشعارات"} kind="accent" small onPress={go} />
+        </View>
+      ) : null}
+    </View>
   );
 }

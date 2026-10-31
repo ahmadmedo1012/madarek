@@ -14,6 +14,7 @@ import { resolveStudentProfile, resolveTeacherProfile } from '../../lib/profile-
 // transaction as the row: the write and the tell land together).
 import { announcementPayload } from '../../modules/notifications/core.js';
 import { notifyAnnouncementScopeTx } from '../../modules/notifications/fire.js';
+import { fanOutPush } from '../../modules/notifications/push.js';
 
 const router = Router();
 router.use(authMiddleware);
@@ -520,7 +521,7 @@ router.post(
         assertScopeTargetPermitted(body.scope, body.scopeId, permitted);
       }
 
-      const created = await prisma.$transaction(async (tx) => {
+      const { row: created, recipientIds } = await prisma.$transaction(async (tx) => {
         const row = await tx.announcement.create({
           data: {
             authorId: req.user!.id,
@@ -535,7 +536,7 @@ router.post(
         });
         // r323 B3.3 — the audience resolves inside the same
         // transaction; the author is never in it.
-        await notifyAnnouncementScopeTx(
+        const recipientIds = await notifyAnnouncementScopeTx(
           tx,
           {
             scope: body.scope,
@@ -545,8 +546,11 @@ router.post(
           },
           announcementPayload(body.title, body.iconEmoji ?? null),
         );
-        return row;
+        return { row, recipientIds };
       });
+      // R327 C3 — the push rides the COMMITTED announcement only
+      // (a rollback must never produce a phantom bell). Best-effort.
+      await fanOutPush(recipientIds, announcementPayload(body.title, body.iconEmoji ?? null));
       res.status(201).json({ data: created });
     } catch (e) { next(e); }
   },

@@ -13,36 +13,42 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '../../db.js';
 import { logger } from '../../logger.js';
 import type { NotificationPayload } from './core.js';
+import { fanOutPush } from './push.js';
 
 type NotifyTx = Pick<Prisma.TransactionClient, 'enrollment' | 'notification' | 'user'>;
 
 /** The offering's ACTIVE students receive the payload — createMany
  *  (one round-trip for the whole roster), author excluded upstream
- *  where the caller knows them. Returns the recipient count. */
+ *  where the caller knows them. Returns the recipient IDS (R327 C3:
+ *  the caller pushes them post-commit; count = ids.length). */
 export async function notifyOfferingStudentsTx(
   tx: NotifyTx,
   offeringId: string,
   payload: NotificationPayload,
-): Promise<number> {
+): Promise<string[]> {
   const students = await tx.enrollment.findMany({
     where: { offeringId, status: 'active' },
     select: { studentId: true },
   });
-  if (students.length === 0) return 0;
+  if (students.length === 0) return [];
+  const ids = students.map((s) => s.studentId);
   await tx.notification.createMany({
-    data: students.map((s) => ({ userId: s.studentId, ...payload })),
+    data: ids.map((userId) => ({ userId, ...payload })),
   });
-  return students.length;
+  return ids;
 }
 
 /** The degraded twin — its own transaction, failure = warn, never a
- *  thrown error into a caller whose real write already succeeded. */
+ *  thrown error into a caller whose real write already succeeded.
+ *  R327 C3: after the commit lands, the push fan-out rides the same
+ *  payload (best-effort, PUSH_ENABLED-gated, never fails the event). */
 export async function notifyOfferingStudents(
   offeringId: string,
   payload: NotificationPayload,
 ): Promise<void> {
   try {
-    await prisma.$transaction((tx) => notifyOfferingStudentsTx(tx, offeringId, payload));
+    const ids = await prisma.$transaction((tx) => notifyOfferingStudentsTx(tx, offeringId, payload));
+    await fanOutPush(ids, payload);
   } catch (e) {
     logger.warn({ err: e, offeringId, title: payload.title }, 'notify: degraded (offering fire failed)');
   }
@@ -64,7 +70,7 @@ export async function notifyAnnouncementScopeTx(
     institutionId: string | null;
   },
   payload: NotificationPayload,
-): Promise<number> {
+): Promise<string[]> {
   const { scope, scopeId, authorId, institutionId } = params;
   const activeMembership = {
     memberships: { some: { isActive: true, ...(institutionId ? { institutionId } : {}) } },
@@ -121,7 +127,7 @@ export async function notifyAnnouncementScopeTx(
     ids = rows.map((r) => r.id);
   }
 
-  if (ids.length === 0) return 0;
+  if (ids.length === 0) return [];
   await tx.notification.createMany({ data: ids.map((userId) => ({ userId, ...payload })) });
-  return ids.length;
+  return ids;
 }

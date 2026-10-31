@@ -55,6 +55,15 @@ const config: ExpoConfig = {
       },
     ],
     ["expo-secure-store", {}],
+    // R327 C3 — the push notification icon (the brand's white silhouette)
+    // + the orange accent for the Android status-bar tint.
+    [
+      "expo-notifications",
+      {
+        icon: "./assets/images/notification-icon.png",
+        color: "#FA3600",
+      },
+    ],
     ["expo-document-picker", { iCloudDirectoryEnabled: false }],
     "expo-video",
     // R326 M0.5 — real OTA: the project's update endpoint, not a username
