@@ -146,6 +146,25 @@ npx eas-cli build --profile preview   --platform all --non-interactive --no-wait
 #   APP_DOWNLOAD_URL). The app reads /api/v1/status minAppVersion on cold start.
 ```
 
+## Backup & restore — the drill record
+
+The DB backup path is a first-class release surface: `npm run db:backup` →
+`db:restore` → `db:verify` (scripts/db-*.mjs, the runbook canon in
+docs/12-deployment §2–3). Every drill gets a fill-in entry in
+**docs/runbooks/restore-exercise-log.md** — six entries to date: two local
+(r167/r169), one from real production (r183, Neon source), a re-run on r187,
+an r189 secrets-rotation round, and **r327 P4e** (2026-10-31, the latest
+full pass: backup 294 KB / 241 ms → restore into a scratch DB / 379 ms →
+`db:verify` PASS (90 tables, 30 migrations, 42 users) → per-table row
+counts identical one-to-one (1059 rows, empty diff) → live second backend
+on the restored DB (health + login + dashboard 200) → scratch DB dropped.
+Raw evidence: `audits/evidence/r327/p4/backup/`).
+
+The one remaining owner act, unchanged since r183: **move dump files
+off-site** (backups/ is gitignored — a dump on the same box as the DB is
+not a backup). Live-DB restore is refused by default
+(`--confirm-live-restore` is the conscious emergency override).
+
 ## The min-version gate
 
 `GET /api/v1/status` → `{ minAppVersion, updateUrl }`. The native app
