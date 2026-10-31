@@ -902,6 +902,7 @@ export default function StudentDashboardPage() {
           meta={
             <>
               <bdi>{dateLine}</bdi> · يبدأ <bdi>{arDate(d.term.startsAt, { day: 'numeric', month: 'long' })}</bdi> وينتهي <bdi>{arDate(d.term.endsAt, { day: 'numeric', month: 'long' })}</bdi>
+              {' '}· <Link to="/app" className="text-link">تطبيق الجوال</Link>
             </>
           }
         />

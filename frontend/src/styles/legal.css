@@ -550,3 +550,49 @@
     }
   }
 }
+
+
+/* ═══ R327 D1 — the /app distribution sheet's own cells ═══════════════
+ * The QR cell (mark colors, hairline frame) and the actions row (real
+ * download buttons inside the document measure — the sheet's only CTA
+ * seats). */
+
+.lg-qr {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.lg-qr img {
+  width: 168px;
+  height: 168px;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  padding: 8px;
+  flex: 0 0 auto;
+}
+
+.lg-p-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.lg-p-note {
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 560px) {
+  .lg-qr {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .lg-qr .lg-p-note {
+    text-align: center;
+  }
+}

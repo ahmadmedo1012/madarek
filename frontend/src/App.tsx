@@ -211,6 +211,9 @@ const DataPage = lazy(() => import('./pages/legal/LegalPages').then((m) => ({ de
 const AboutPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.AboutPage })));
 const HelpPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.HelpPage })));
 const ContactPage = lazy(() => import('./pages/PublicPages').then((m) => ({ default: m.ContactPage })));
+// R327 D1 (M0.8) — the /app distribution sheet (the backend already serves
+// this URL as `updateUrl` in /api/v1/status: the blocking update gate lands here).
+const AppDownloadPage = lazy(() => import('./pages/AppDownloadPage').then((m) => ({ default: m.AppDownloadPage })));
 /* R323 §A1 — the brand specimen sheet (construction grid, lockups,
  * clear-space, min sizes, tones): the reviewers' evidence surface. */
 const BrandPage = lazy(() => import('./pages/BrandPage'));
@@ -690,6 +693,14 @@ export function AppRoutes() {
           element={(
             <GuestReveal>
               <ContactPage />
+            </GuestReveal>
+          )}
+        />
+        <Route
+          path="/app"
+          element={(
+            <GuestReveal>
+              <AppDownloadPage />
             </GuestReveal>
           )}
         />

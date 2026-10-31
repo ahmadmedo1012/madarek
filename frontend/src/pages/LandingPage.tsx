@@ -1706,6 +1706,9 @@ export default function LandingPage() {
               <Link to="/help" className="fo-legal-link">المساعدة</Link>
               <span className="fo-legal-sep" aria-hidden="true">·</span>
               <Link to="/contact" className="fo-legal-link">التواصل</Link>
+              <span className="fo-legal-sep" aria-hidden="true">·</span>
+              {/* R327 D1 — the distribution sheet beside the legal row */}
+              <Link to="/app" className="fo-legal-link">تطبيق الجوال</Link>
             </nav>
             <span className="fo-footer-cluster">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</span>
           </div>
