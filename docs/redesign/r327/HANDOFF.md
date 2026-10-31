@@ -38,7 +38,7 @@ without a device is written «غير مُثبَت — يحتاج جهازاً» 
 | D2 | Android AAB production build + submit prep (owner key documented) | **pending** | — |
 | D3 | iOS prep (everything without Apple) + docs/RELEASE.md owner steps | **pending** | — |
 | D4 | OTA auto-update proven (3 examples) in docs/RELEASE.md | **pending** | — |
-| E | W remainder (P2.4, P3, P4b–f, P5, Y7, Y8, keep-warm) | **pending** | see `docs/redesign/r325/HANDOFF.md` |
+| E | W remainder (P2.4, P3, P4b–f, P5, Y7, Y8, keep-warm) | **Y7+Y8+keep-warm+P5 done · P2.4/P3/P4 open** | **E1** `e7301d94` Y7 /owner/system settles on ONE bounded 30s visible-tab poll (was thrashing) · `89bc0734` Y8 the 413 names the REAL size limit (pdfUpload twin of the pick-time mirrors) · `2f45c45c` keep-warm cron */10 on /api/v1/health. **E2** `d6737c10` PWA: SW cache-first static belt (fonts/brand) + 120-entry purge cap + offline.html (PWA manifest/icons already existed) · `36136632` 320/360 no-overflow belt: LIVE production-build measurement scrollWidth==innerWidth on //auth//colleges + landing joins the e2e (18/18). Gates after both: tsc 0 · lint 0/15 · build 14.4s · vitest 3067/3067. P2.4 (770-shot queue) · P3 (Lenis/GSAP) · P4b–f (AI coverage/load/backup) remain open — see r325 HANDOFF |
 | F | red team + release rehearsal + `docs/redesign/r327/REPORT.md` | **pending** | — |
 
 ## Defect ledger (Z-series, R327)
