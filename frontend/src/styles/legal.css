@@ -559,7 +559,7 @@
 
 .lg-qr {
   display: flex;
-  gap: 20px;
+  gap: var(--sp-5);
   align-items: flex-start;
   flex-wrap: wrap;
 }
@@ -569,20 +569,20 @@
   height: 168px;
   border: 1px solid var(--rule);
   background: var(--paper);
-  padding: 8px;
+  padding: var(--sp-2);
   flex: 0 0 auto;
 }
 
 .lg-p-actions {
   display: flex;
-  gap: 12px;
+  gap: var(--sp-3);
   flex-wrap: wrap;
   align-items: center;
 }
 
 .lg-p-note {
   color: var(--text-muted);
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   line-height: 1.7;
 }
 

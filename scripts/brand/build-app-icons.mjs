@@ -28,6 +28,7 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
+import { createRequire } from "node:module";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const MARK_TS = join(ROOT, "apps", "mobile", "src", "brand", "mark.ts");
@@ -98,11 +99,20 @@ const ASSETS = {
 const MODE = process.argv.includes("--check") ? "check" : process.argv.includes("--png") ? "png" : "dry";
 const sha = (b) => createHash("sha256").update(b).digest("hex").slice(0, 16);
 
+/* R327 D2/Z14: sharp is a devDependency of apps/mobile — resolve it from
+ * THERE. A bare import("sharp") from this script's location walked up to
+ * the AMBIENT node_modules (this sandbox's /home/z/node_modules happened
+ * to have sharp — CI and any fresh clone do not, which kept the Mobile
+ * workflow red since B1). */
+const mobileRequire = createRequire(
+  new URL("../../apps/mobile/package.json", import.meta.url),
+);
+
 let sharpMod = null;
 async function rasterize(svgString) {
   if (!sharpMod) {
     try {
-      sharpMod = (await import("sharp")).default;
+      sharpMod = mobileRequire("sharp");
     } catch {
       console.error("build-app-icons: sharp is not installed — run `npm ci` in apps/mobile (devDependency).");
       process.exit(1);
