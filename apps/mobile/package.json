@@ -56,7 +56,8 @@
     "eslint-config-expo": "^58.0.4",
     "jest": "^30.5.2",
     "jest-expo": "^58.0.13",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "sharp": "^0.34.5"
   },
   "scripts": {
     "start": "expo start",
@@ -70,12 +71,13 @@
     "export:android": "expo export --platform android",
     "export:ios": "expo export --platform ios",
     "export:web": "expo export --platform web",
-    "icons": "node scripts/generate-icons.mjs",
+    "icons": "node ../../scripts/brand/build-app-icons.mjs --png",
     "contract-check": "node scripts/contract-check.mjs",
     "api:types": "npx --yes openapi-typescript@7.13.0 ../../docs/api/openapi.json --output src/api/schema.generated.ts",
     "tokens:build": "node ../../scripts/tokens/build.mjs",
-    "tokens:check": "node ../../scripts/tokens/build.mjs --check",
-    "test": "jest"
+    "tokens:check": "node ../../scripts/tokens/build.mjs --check && npm run icons:check",
+    "test": "jest",
+    "icons:check": "node ../../scripts/brand/build-app-icons.mjs --check"
   },
   "private": true,
   "engines": {
