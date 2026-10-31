@@ -1,0 +1,413 @@
+{
+  "base": "http://localhost:5173",
+  "api": "http://localhost:4000",
+  "capturedAt": "2026-10-31T23:17:59.664Z",
+  "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.0.0 Safari/537.36",
+  "summary": {
+    "hard": 22,
+    "hardFailed": 0,
+    "soft": 6
+  },
+  "results": [
+    {
+      "id": "A:/",
+      "rule": "guest window surface mounts the Lenis engine (D6)",
+      "expect": "html[data-lenis-on] present",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": true,
+        "url": "http://localhost:5173/"
+      }
+    },
+    {
+      "id": "A:/auth",
+      "rule": "guest window surface mounts the Lenis engine (D6)",
+      "expect": "html[data-lenis-on] present",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": true,
+        "url": "http://localhost:5173/auth"
+      }
+    },
+    {
+      "id": "A:/help",
+      "rule": "guest window surface mounts the Lenis engine (D6)",
+      "expect": "html[data-lenis-on] present",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": true,
+        "url": "http://localhost:5173/help"
+      }
+    },
+    {
+      "id": "A:/about",
+      "rule": "guest window surface mounts the Lenis engine (D6)",
+      "expect": "html[data-lenis-on] present",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": true,
+        "url": "http://localhost:5173/about"
+      }
+    },
+    {
+      "id": "A:/contact",
+      "rule": "guest window surface mounts the Lenis engine (D6)",
+      "expect": "html[data-lenis-on] present",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": true,
+        "url": "http://localhost:5173/contact"
+      }
+    },
+    {
+      "id": "A:/colleges",
+      "rule": "guest window surface mounts the Lenis engine (D6)",
+      "expect": "html[data-lenis-on] present",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": true,
+        "url": "http://localhost:5173/colleges"
+      }
+    },
+    {
+      "id": "A:/legal/privacy",
+      "rule": "document sheet stays native (R320 §D)",
+      "expect": "html[data-lenis-on] ABSENT",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": false
+      }
+    },
+    {
+      "id": "A:/legal/terms",
+      "rule": "document sheet stays native (R320 §D)",
+      "expect": "html[data-lenis-on] ABSENT",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "on": false
+      }
+    },
+    {
+      "id": "B1",
+      "rule": "scrollbar hidden while Lenis is live (base.css html[data-lenis-on])",
+      "expect": "scrollbar-width 'none' + gutter 'stable' on guest sheets",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "attr": true,
+        "scrollbarWidth": "none",
+        "gutter": "stable"
+      }
+    },
+    {
+      "id": "G1",
+      "rule": "RM: the engine never inits — native scroll under RM",
+      "expect": "no data-lenis-on, scrollbar visible, durations collapsed",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "attr": false,
+        "scrollbarWidth": "thin",
+        "durMedium": "0ms",
+        "durPage": "80ms"
+      }
+    },
+    {
+      "id": "G2",
+      "rule": "RM: wheel scrolls natively (no glide)",
+      "expect": "scrollY moves within 40ms of the wheel",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "at40ms": 400,
+        "at640ms": 400
+      }
+    },
+    {
+      "id": "G3",
+      "rule": "RM: reveal seats stand complete at rest (no spatial movement)",
+      "expect": "opacity ≈ 1 · transform none/identity on .reveal-up",
+      "kind": "soft",
+      "pass": null,
+      "measured": {
+        "count": 37,
+        "samples": [
+          {
+            "inView": true,
+            "opacity": "1",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)"
+          },
+          {
+            "inView": true,
+            "opacity": "1",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)"
+          },
+          {
+            "inView": true,
+            "opacity": "1",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)"
+          },
+          {
+            "inView": true,
+            "opacity": "1",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)"
+          },
+          {
+            "inView": true,
+            "opacity": "1",
+            "transform": "matrix(1, 0, 0, 1, 0, 0)"
+          }
+        ],
+        "allVisible": true,
+        "allNoTransform": true,
+        "allRevealed": true
+      }
+    },
+    {
+      "id": "H",
+      "rule": "zero React commits per scroll tick (imperative chrome contract)",
+      "expect": "commit delta === 0 across a 14-tick wheel run",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "before": 7,
+        "after": 7,
+        "delta": 0
+      }
+    },
+    {
+      "id": "I",
+      "rule": "idle page holds zero awake frames (conductor sleep)",
+      "expect": "conductor not running, 0 subscribers, ZERO new rAF requests in the idle second",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "idleSecondStart": {
+          "raf": 476,
+          "running": false,
+          "subscribers": 0,
+          "y": 3640
+        },
+        "idleSecondEnd": {
+          "raf": 476,
+          "running": false,
+          "subscribers": 0
+        },
+        "rafDelta": 0
+      }
+    },
+    {
+      "id": "A:glide",
+      "rule": "guest wheel glides (engine live, not native)",
+      "expect": "a fraction of the delta at +40ms (lerp step 1 ≈ 40px), near target by +740ms",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "at40ms": 35,
+        "at740ms": 395
+      }
+    },
+    {
+      "id": "C1",
+      "rule": "authenticated shell: Lenis OFF, .content native (D6)",
+      "expect": "no data-lenis-on; overflow-y auto; overflow-x clip (Chrome serializes the paired value as hidden); overscroll contain",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "lenisAttr": false,
+        "gutterHtml": "auto",
+        "overflowY": "auto",
+        "overflowX": "hidden",
+        "overscrollY": "contain",
+        "scrollbarWidth": "thin",
+        "scrollbarColor": "rgba(40, 40, 40, 0.16) rgba(0, 0, 0, 0)",
+        "dir": "rtl",
+        "scrollHeight": 1502,
+        "clientHeight": 844,
+        "scrollWidth": 1368,
+        "clientWidth": 1368,
+        "rectWidth": 1368,
+        "innerLeft": 44,
+        "boxLeft": 0
+      },
+      "note": "computed overflow-x reads hidden — Chrome maps the clip axis of overflow:clip auto to hidden in computed style (verified on a bare page: clipOnly→clip, clipAuto→hidden); the shipped rule is overflow: clip auto"
+    },
+    {
+      "id": "C2",
+      "rule": "PUSH reset + scroll gutter contract (r299)",
+      "expect": "html gutter auto on shell sheets; .content thin token scrollbar",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "lenisAttr": false,
+        "gutterHtml": "auto",
+        "overflowY": "auto",
+        "overflowX": "hidden",
+        "overscrollY": "contain",
+        "scrollbarWidth": "thin",
+        "scrollbarColor": "rgba(40, 40, 40, 0.16) rgba(0, 0, 0, 0)",
+        "dir": "rtl",
+        "scrollHeight": 1502,
+        "clientHeight": 844,
+        "scrollWidth": 1368,
+        "clientWidth": 1368,
+        "rectWidth": 1368,
+        "innerLeft": 44,
+        "boxLeft": 0
+      }
+    },
+    {
+      "id": "C3",
+      "rule": ".content long enough to scroll (seeded library)",
+      "expect": "scrollHeight > clientHeight",
+      "kind": "soft",
+      "pass": null,
+      "measured": {
+        "scrollHeight": 1502,
+        "clientHeight": 844,
+        "scrollable": true
+      }
+    },
+    {
+      "id": "C4",
+      "rule": "the window never scrolls on shell routes (.content is the only scroller)",
+      "expect": "contentTop 400, window.scrollY 0, doc not scrollable",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "contentTop": 400,
+        "windowY": 0,
+        "docScrollable": false
+      }
+    },
+    {
+      "id": "C5",
+      "rule": "PUSH navigation resets .content to top",
+      "expect": "scrollTop 0 on /student/dashboard after a PUSH",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "path": "/student/dashboard",
+        "contentTop": 0,
+        "sessionStorageEntries": 1
+      }
+    },
+    {
+      "id": "C6",
+      "rule": "POP restores the outgoing entry's .content offset",
+      "expect": "back to /student/library at ≈600",
+      "kind": "soft",
+      "pass": null,
+      "measured": {
+        "path": "/student/library",
+        "contentTop": 600
+      }
+    },
+    {
+      "id": "D1",
+      "rule": "keyboard scrolls .content (scrollable-region-focusable, tabindex=0)",
+      "expect": "ArrowDown moves >0, PageDown moves further, Home returns 0",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "arrowDown6": 240,
+        "pageDown": 658,
+        "home": 0,
+        "regionFocused": true
+      }
+    },
+    {
+      "id": "D2",
+      "rule": "focusing an off-screen control scrolls it into view",
+      "expect": "scrollTop > 0 after el.focus() on a below-fold control",
+      "kind": "soft",
+      "pass": null,
+      "measured": {
+        "found": true,
+        "scrollTopAfter": 480
+      }
+    },
+    {
+      "id": "F1",
+      "rule": "RTL: the vertical scroller rests at scrollLeft 0 with no horizontal overflow",
+      "expect": "scrollLeft 0 · scrollX 0 · scrollWidth ≤ clientWidth",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "dir": "rtl",
+        "scrollLeft": 0,
+        "scrollX": 0,
+        "noHorizontalOverflow": true,
+        "barOccupiesLayout": 0,
+        "barSide": "overlay/none (no layout cost)"
+      }
+    },
+    {
+      "id": "F2",
+      "rule": "RTL scrollbar side (inline-end = left) + layout occupation",
+      "expect": "classic bar at inline-end when it occupies layout",
+      "kind": "soft",
+      "pass": null,
+      "measured": {
+        "barOccupiesLayoutPx": 0,
+        "barSide": "overlay/none (no layout cost)"
+      },
+      "note": "headless renders overlay scrollbars (clientWidth == box width) — side unverifiable here, marked honestly"
+    },
+    {
+      "id": "E2",
+      "rule": "sticky thead pins inside its own capped scrollport",
+      "expect": "thead rect.top unchanged (±1px) while the wrap scrolls 140px",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "found": true,
+        "thead": true,
+        "before": 2082.140625,
+        "during": 2082.140625,
+        "pinned": true,
+        "wrapOverflow": "auto"
+      }
+    },
+    {
+      "id": "E1",
+      "rule": "sticky seats inside .content pin against the scroller (not the window)",
+      "expect": "panel clamps at its sticky offset (scrollport-frame) while .content scrolls",
+      "kind": "hard",
+      "pass": true,
+      "measured": {
+        "found": true,
+        "topVar": "16px",
+        "before": 96,
+        "during": 16,
+        "scrolled": 209,
+        "maxScroll": 209,
+        "stillInside": true,
+        "scrollable": true
+      }
+    },
+    {
+      "id": "F3",
+      "rule": "RTL horizontal strips scroll toward NEGATIVE scrollLeft (CSSOM inline-start)",
+      "expect": "rest 0 · -80 sticks · +80 clamps to 0",
+      "kind": "soft",
+      "pass": null,
+      "measured": {
+        "found": true,
+        "overflowX": "auto",
+        "rest": 0,
+        "afterMinus80": -80,
+        "afterPlus80": 0,
+        "overflowPx": 114
+      }
+    }
+  ]
+}

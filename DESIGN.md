@@ -654,3 +654,101 @@ token seats); `check-raw-css --strict` / `check-colors` /
 (`r325-app-css-contract.test.ts`) pins the §R325 values so a drift
 fails `npm test`, and P2.2's gallery mounts every state primitive at
 390/768/1440 × Paper/Ink before any page consumes them.
+
+## R327 — THE APP SCROLL RULES (P3 — proven live, not asserted)
+
+> Measured 2026-10-31 on the running stack by
+> `scripts/r327/scroll-rules-probe.mjs` (22 hard rules, 0 failed, 6 soft
+> rows recorded honestly) and `scripts/r327/scroll-screencast.mjs` (the
+> Heron↔Madarek screencast + glide curves). Evidence:
+> `audits/evidence/r327/p3/` — `scroll-rules.json` · `scroll-curve.json` ·
+> `{heron,madarek-landing}-1440x900.webm`. The rules below quote their own
+> probe IDs; a rule without a passing probe is not a rule.
+
+### §R327.a Who scrolls — the D6 boundary, route by route
+
+- **Guest window-scrolled surfaces mount the Lenis engine** (lerp 0.1,
+  `data-lenis-on` on `<html>`): `/` `/auth` `/help` `/about` `/contact`
+  and `/colleges` for guests — probes `A:/ · A:/auth · A:/help ·
+  A:/about · A:/contact · A:/colleges`, all pass. `/colleges` behind a
+  session is AppShell — native (the App.tsx route set, unchanged).
+- **Document sheets stay native** (R320 §D): `/legal/*` — probes
+  `A:/legal/privacy · A:/legal/terms`, pass: no engine attribute.
+- **The authenticated shell NEVER inits the engine** (the owner
+  decision, §0 D6): probe `C1` — no `data-lenis-on`, `.content` is the
+  one scroller (`overflow: clip auto` computed `hidden auto`,
+  `overscroll-behavior: contain`, thin token scrollbar
+  `rgba(40,40,40,.16)`), and probe `C4`: the window itself never
+  scrolls on shell routes (`window.scrollY` stays 0, document not
+  scrollable).
+- **The scrollbar disappears while the engine is live** (§6 D6's
+  «scrollbar hidden» clause): probe `B1` — `html[data-lenis-on]` hides
+  the gutter; native surfaces get it back.
+
+### §R327.b Navigation — reset and restore
+
+- **PUSH resets `.content` to top**: probe `C5` — arriving at
+  `/student/dashboard` after a PUSH reads `scrollTop 0` (one
+  scroll-restoration entry in session storage).
+- **POP restores the outgoing entry's offset**: probe `C6` (soft,
+  measured) — back to `/student/library` returns to ≈600px, the
+  `useScrollRestoration` contract.
+
+### §R327.c Input & focus
+
+- **The scroller is keyboard-operable**: probe `D1` — `.content` carries
+  `tabindex=0` (`scrollable-region-focusable`), ArrowDown ×6 → 240px,
+  PageDown → 658px, Home → 0.
+- **Focus scrolls into view**: probe `D2` (soft) — `el.focus()` on a
+  below-fold control scrolls `.content` (480px measured).
+
+### §R327.d Sticky geometry
+
+- **Sticky seats inside `.content` pin against the scroller, not the
+  window**: probe `E1` — the panel clamps at its `--top 16px` while
+  `.content` scrolls 209px.
+- **The sticky thead pins inside its own capped scrollport**: probe
+  `E2` — thead rect.top unchanged (±0px) while the wrap scrolls 140px.
+
+### §R327.e RTL geometry
+
+- **No horizontal overflow anywhere**: probe `F1` — vertical scroller
+  rests at `scrollLeft 0`, `scrollWidth == clientWidth`, zero layout
+  cost from the bar (overlay in headless — side unverifiable there,
+  soft row `F2` records it honestly).
+- **Horizontal strips move toward NEGATIVE `scrollLeft`** (the CSSOM
+  inline-start convention): probe `F3` (soft) — rest 0 · −80 sticks ·
+  +80 clamps to 0. Test writers: assert negative, never positive.
+
+### §R327.f Reduced motion & the frame budget
+
+- **RM: the engine never inits** (probe `G1`) and the wheel scrolls
+  natively — no glide (probe `G2`: 400px at +40ms, unchanged at
+  +640ms). Reveal seats stand complete at rest — opacity 1, identity
+  transform (soft row `G3`, 37 seats sampled).
+- **Zero React commits per scroll tick** (the imperative-chrome
+  contract, §4): probe `H` — commit delta **0** across a 14-tick wheel
+  run, counted through a pre-boot DevTools hook.
+- **An idle page holds zero awake frames** (the conductor sleep
+  contract): probe `I` — conductor `running === false`, 0 subscribers,
+  **0 new rAF requests** in the idle second (pre-boot rAF census).
+
+### §R327.g Parity with the reference — the screencast verdict
+
+One viewport (1440×900), one scroll program (wheel 320px/120ms down,
+pause, up to 35%), both sites recorded on the same machine:
+
+| Glide, one 720px impulse | first motion | t63 | t98.6 | settle |
+|---|---|---|---|---|
+| **heronaiapp.com** (wrapper-Lenis + gsap ticker) | 179 ms | 562 ms | 806 ms | **887 ms** |
+| **Madarek landing** (window-Lenis, lerp 0.1) | 107 ms | 278 ms | 810 ms | **868 ms** |
+
+Same exponential ease-out family, settle within **19 ms (2.2%)** on the
+same machine; both videos sit in the evidence folder for the eyeball
+verdict. Honest differences, recorded not hidden: Heron replays its
+entrance loader on every full load and scrolls an inner
+`.main-inner.lenis` wrapper (`window.scrollY` stays 0); Madarek's intro
+is hermetically skipped for the recording (the subject is scroll feel,
+not the entrance) and the window itself scrolls (the D6 owner
+decision). No scrolljacking anywhere: RM collapses everything to
+static, and an authenticated route never feels the engine.
