@@ -97,6 +97,11 @@
       "reason": "historical design specs (r191 era) — frozen records, not live copy"
     },
     {
+      "file": "docs/history/audits/",
+      "phrase": "",
+      "reason": "frozen audit records (moved verbatim to docs/history by the M0.2 hygiene pass, 69a790fa) — they quote the pre-rename navigation as it was measured; history is not renamed"
+    },
+    {
       "file": "CHANGELOG.md",
       "phrase": "",
       "reason": "the immutable release history — 30 occurrences across past rounds"
