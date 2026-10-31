@@ -292,6 +292,14 @@ export function useOwnerSystem() {
     queryKey: ['owner', 'system'],
     queryFn: () => unwrap<OwnerSystem>(api.get('/owner/system')),
     staleTime: 30_000,
+    /* r327 Y7 — the System console refreshes on ONE bounded cadence: a
+     * 30s poll while the tab is visible (never in the background — an
+     * E2E sweep, a hidden tab and a phone in a pocket all stop the
+     * churn; the backend's reachability memo is built for exactly this
+     * rhythm: STORAGE_PROBE_TTL_MS 60s ≥ 2× this interval). Explicit
+     * like the sibling polls (useOwnerRealtime, AdminSyncPage). */
+    refetchInterval: 30_000,
+    refetchIntervalInBackground: false,
   });
 }
 

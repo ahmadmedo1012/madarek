@@ -208,6 +208,21 @@ export function OwnerSystemPage() {
           </h1>
           <p className="page-subtitle">إدارة البنية التحتية وحالة الخدمات</p>
         </div>
+        {/* r327 Y7 — the ONE manual refresh. The console refreshes on a
+            single bounded cadence (useOwnerSystem: 30s while the tab is
+            visible, never in the background); this button covers the
+            «أحتاجها الآن» moment (بعد نشرٍ أو إصلاح). Anatomy = the
+            owner-family refresh idiom (FeedbackInbox/Activity: ghost sm
+            + RefreshCw 12). */}
+        <button
+          type="button"
+          className="btn ghost sm"
+          onClick={() => void sys.refetch()}
+          disabled={sys.isFetching}
+        >
+          <Icon icon={RefreshCw} size={12} />
+          {sys.isFetching ? 'جارٍ التحديث…' : 'تحديث'}
+        </button>
       </header>
 
       {/* Real metrics — service health derives from the live query state */}
