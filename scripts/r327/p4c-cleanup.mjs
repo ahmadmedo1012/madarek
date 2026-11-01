@@ -29,7 +29,11 @@ const require = createRequire(path.resolve('backend/package.json'));
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
-const { codeId, code, created } = JSON.parse(readFileSync(IDS_FILE, 'utf8'));
+/* the rehearsal ids.json: { stamp, cohort: [{ email, id }] } — the invite
+ * code itself is NOT retired here: it expires in 7 days and its uses
+ * cascade with the users above (InviteUse rows are deleted explicitly). */
+const { cohort } = JSON.parse(readFileSync(IDS_FILE, 'utf8'));
+const created = cohort;
 const ids = created.map((c) => c.id);
 const uid = { in: ids };
 
@@ -43,18 +47,28 @@ const deleted = await prisma.$transaction(async (tx) => {
   const enrollments = await tx.enrollment.deleteMany({ where: { studentId: uid } });
   const uses = await tx.inviteUse.deleteMany({ where: { userId: uid } });
   const notifications = await tx.notification.deleteMany({ where: { userId: uid } });
+  // P4c rehearsal extra: the students ASKED THE AI — their conversations,
+  // messages, quotas, telemetry and feedback ride non-cascading FKs too.
+  const conversations = await tx.aiConversation.deleteMany({ where: { userId: uid } });
+  const messages = await tx.aiMessage.deleteMany({ where: { conversation: { userId: uid } } });
+  const quotas = await tx.aiQuota.deleteMany({ where: { userId: uid } });
+  const telemetry = await tx.aiTelemetry.deleteMany({ where: { userId: uid } });
   // cascading plumbing + the users
   await tx.studentProfile.deleteMany({ where: { userId: uid } });
   await tx.membership.deleteMany({ where: { userId: uid } });
   const users = await tx.user.deleteMany({ where: { id: uid } });
   // the invite code the test minted (registrar surfaces stay clean)
-  const codes = codeId ? await tx.inviteCode.deleteMany({ where: { id: codeId, code } }) : { count: 0 };
-  return { enrollments, uses, notifications, users, codes };
+  // the rehearsal's invite code is NOT retired here: it expires in 7
+  // days on its own and its InviteUse rows are deleted above.
+  const codes = { count: 0 };
+  return { enrollments, uses, notifications, conversations, messages, quotas, telemetry, users, codes };
 });
 
 console.log(
   `deleted: ${deleted.users.count} users · ${deleted.enrollments.count} enrollments · ` +
-  `${deleted.uses.count} inviteUses · ${deleted.notifications.count} notifications · ${deleted.codes.count} inviteCode`,
+  `${deleted.uses.count} inviteUses · ${deleted.notifications.count} notifications · ` +
+  `${deleted.conversations.count} conversations · ${deleted.messages.count} messages · ` +
+  `${deleted.quotas.count} quotas · ${deleted.telemetry.count} telemetry · ${deleted.codes.count} inviteCode`,
 );
 
 // sanity: the seed's demo cohort must be untouched (30 users)
