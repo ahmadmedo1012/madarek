@@ -1,0 +1,2435 @@
+{
+ "capturedAt": "2026-11-01T15:19:58.111Z",
+ "url": "https://heronaiapp.com/",
+ "title": "Heron AI | Works inside your design tools",
+ "httpStatus": 200,
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "loaderSettle": {
+  "polls": 14,
+  "lastState": {
+   "cls": [
+    "loading"
+   ],
+   "visible": true
+  }
+ },
+ "rootFs": 8.33333,
+ "scroller": {
+  "selector": "div.main-inner.lenis",
+  "maxScroll": 13240
+ },
+ "docH": 14127,
+ "container": "div.main-content",
+ "sections": [
+  {
+   "order": 0,
+   "identity": "home-hero-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 7,
+    "w": 1427,
+    "h": 887
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [
+    {
+     "role": "h1",
+     "charCount": 47,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "46.6667px",
+      "fw": "700",
+      "lh": "46.6667px",
+      "ls": "-0.933333px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 780,
+      "w": 772,
+      "h": 93
+     }
+    }
+   ],
+   "textEls": [
+    {
+     "role": "h1",
+     "charCount": 47,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "46.6667px",
+      "fw": "700",
+      "lh": "46.6667px",
+      "ls": "-0.933333px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 780,
+      "w": 772,
+      "h": 93
+     }
+    },
+    {
+     "role": "link",
+     "charCount": 15,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "13.3333px",
+      "fw": "600",
+      "lh": "17.3333px",
+      "ls": "-0.266667px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "none"
+     },
+     "rect": {
+      "x": 845,
+      "y": 791,
+      "w": 422,
+      "h": 33
+     }
+    }
+   ],
+   "counts": {
+    "text": 2,
+    "imgs": 1,
+    "svgs": 23
+   },
+   "children": [
+    {
+     "id": "section.home-hero",
+     "x": 7,
+     "y": 7,
+     "w": 1427,
+     "h": 887
+    }
+   ]
+  },
+  {
+   "order": 1,
+   "identity": "home-intro-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 893,
+    "w": 1427,
+    "h": 723
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [],
+   "textEls": [],
+   "counts": {
+    "text": 0,
+    "imgs": 9,
+    "svgs": 7
+   },
+   "children": [
+    {
+     "id": "section.home-intro",
+     "x": 7,
+     "y": 893,
+     "w": 1427,
+     "h": 723
+    }
+   ]
+  },
+  {
+   "order": 2,
+   "identity": "home-problem-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 1616,
+    "w": 1427,
+    "h": 743
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [
+    {
+     "role": "h2",
+     "charCount": 53,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 1672,
+      "w": 695,
+      "h": 80
+     }
+    }
+   ],
+   "textEls": [
+    {
+     "role": "h2",
+     "charCount": 53,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 1672,
+      "w": 695,
+      "h": 80
+     }
+    }
+   ],
+   "counts": {
+    "text": 1,
+    "imgs": 0,
+    "svgs": 20
+   },
+   "children": [
+    {
+     "id": "section.home-problem",
+     "x": 7,
+     "y": 1616,
+     "w": 1427,
+     "h": 743
+    }
+   ]
+  },
+  {
+   "order": 3,
+   "identity": "home-map-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 2358,
+    "w": 1427,
+    "h": 6300
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [
+    {
+     "role": "h2",
+     "charCount": 35,
+     "lineCount": 3,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 1460,
+      "y": 2796,
+      "w": 410,
+      "h": 120
+     }
+    }
+   ],
+   "textEls": [
+    {
+     "role": "h2",
+     "charCount": 35,
+     "lineCount": 3,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 1460,
+      "y": 2796,
+      "w": 410,
+      "h": 120
+     }
+    }
+   ],
+   "counts": {
+    "text": 1,
+    "imgs": 4,
+    "svgs": 10
+   },
+   "children": [
+    {
+     "id": "section.home-map",
+     "x": 7,
+     "y": 2358,
+     "w": 1427,
+     "h": 6300
+    }
+   ]
+  },
+  {
+   "order": 4,
+   "identity": "home-platform-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 8658,
+    "w": 1427,
+    "h": 710
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [],
+   "textEls": [],
+   "counts": {
+    "text": 0,
+    "imgs": 4,
+    "svgs": 6
+   },
+   "children": [
+    {
+     "id": "section.home-platform",
+     "x": 7,
+     "y": 8658,
+     "w": 1427,
+     "h": 710
+    }
+   ]
+  },
+  {
+   "order": 5,
+   "identity": "home-why-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 9368,
+    "w": 1427,
+    "h": 2469
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [
+    {
+     "role": "h2",
+     "charCount": 28,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 9513,
+      "w": 375,
+      "h": 80
+     }
+    }
+   ],
+   "textEls": [
+    {
+     "role": "h2",
+     "charCount": 28,
+     "lineCount": 2,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 9513,
+      "w": 375,
+      "h": 80
+     }
+    }
+   ],
+   "counts": {
+    "text": 1,
+    "imgs": 13,
+    "svgs": 23
+   },
+   "children": [
+    {
+     "id": "section.home-why",
+     "x": 7,
+     "y": 9368,
+     "w": 1427,
+     "h": 2469
+    }
+   ]
+  },
+  {
+   "order": 6,
+   "identity": "home-usecase-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 11838,
+    "w": 1427,
+    "h": 887
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [
+    {
+     "role": "h2",
+     "charCount": 32,
+     "lineCount": 3,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 848,
+      "y": 11894,
+      "w": 457,
+      "h": 120
+     }
+    }
+   ],
+   "textEls": [
+    {
+     "role": "h2",
+     "charCount": 32,
+     "lineCount": 3,
+     "indexLabel": null,
+     "style": {
+      "fs": "40px",
+      "fw": "600",
+      "lh": "40px",
+      "ls": "-0.8px",
+      "ff": "BT Grotesk",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 848,
+      "y": 11894,
+      "w": 457,
+      "h": 120
+     }
+    }
+   ],
+   "counts": {
+    "text": 1,
+    "imgs": 8,
+    "svgs": 8
+   },
+   "children": [
+    {
+     "id": "section.home-usecase",
+     "x": 7,
+     "y": 11838,
+     "w": 1427,
+     "h": 887
+    }
+   ]
+  },
+  {
+   "order": 7,
+   "identity": "home-cta-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 12724,
+    "w": 1427,
+    "h": 698
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [],
+   "textEls": [],
+   "counts": {
+    "text": 0,
+    "imgs": 2,
+    "svgs": 3
+   },
+   "children": [
+    {
+     "id": "section.cta",
+     "x": 7,
+     "y": 12724,
+     "w": 1427,
+     "h": 698
+    }
+   ]
+  },
+  {
+   "order": 8,
+   "identity": "footer-wrap.web-component",
+   "rect": {
+    "x": 7,
+    "y": 13423,
+    "w": 1427,
+    "h": 711
+   },
+   "style": {
+    "bg": "rgba(0, 0, 0, 0)",
+    "pad": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "border": null,
+    "radius": "0px",
+    "display": "block",
+    "grid": null,
+    "pos": "static"
+   },
+   "headings": [],
+   "textEls": [
+    {
+     "role": "p",
+     "charCount": 64,
+     "lineCount": 1,
+     "indexLabel": null,
+     "style": {
+      "fs": "11.6667px",
+      "fw": "500",
+      "lh": "15.1667px",
+      "ls": "-0.266667px",
+      "ff": "Geistmono",
+      "color": "rgba(40, 40, 40, 0.72)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 33,
+      "y": 14106,
+      "w": 431,
+      "h": 15
+     }
+    },
+    {
+     "role": "link",
+     "charCount": 8,
+     "lineCount": 1,
+     "indexLabel": null,
+     "style": {
+      "fs": "11.6667px",
+      "fw": "500",
+      "lh": "15.1667px",
+      "ls": "-0.266667px",
+      "ff": "Geistmono",
+      "color": "rgb(40, 40, 40)",
+      "tt": "uppercase"
+     },
+     "rect": {
+      "x": 410,
+      "y": 14106,
+      "w": 54,
+      "h": 15
+     }
+    }
+   ],
+   "counts": {
+    "text": 2,
+    "imgs": 3,
+    "svgs": 7
+   },
+   "children": [
+    {
+     "id": "footer.footer",
+     "x": 7,
+     "y": 13423,
+     "w": 1427,
+     "h": 711
+    }
+   ]
+  }
+ ],
+ "rhythm": [
+  {
+   "order": 0,
+   "top": 7,
+   "h": 887,
+   "gapBefore": 0
+  },
+  {
+   "order": 1,
+   "top": 893,
+   "h": 723,
+   "gapBefore": -1
+  },
+  {
+   "order": 2,
+   "top": 1616,
+   "h": 743,
+   "gapBefore": 0
+  },
+  {
+   "order": 3,
+   "top": 2358,
+   "h": 6300,
+   "gapBefore": -1
+  },
+  {
+   "order": 4,
+   "top": 8658,
+   "h": 710,
+   "gapBefore": 0
+  },
+  {
+   "order": 5,
+   "top": 9368,
+   "h": 2469,
+   "gapBefore": 0
+  },
+  {
+   "order": 6,
+   "top": 11838,
+   "h": 887,
+   "gapBefore": 1
+  },
+  {
+   "order": 7,
+   "top": 12724,
+   "h": 698,
+   "gapBefore": -1
+  },
+  {
+   "order": 8,
+   "top": 13423,
+   "h": 711,
+   "gapBefore": 1
+  }
+ ],
+ "typeLadder": [
+  {
+   "px": 46.67,
+   "count": 1,
+   "roles": {
+    "h1": 1
+   },
+   "ffs": {
+    "BT Grotesk": 1
+   }
+  },
+  {
+   "px": 40,
+   "count": 4,
+   "roles": {
+    "h2": 4
+   },
+   "ffs": {
+    "BT Grotesk": 4
+   }
+  },
+  {
+   "px": 13.33,
+   "count": 1,
+   "roles": {
+    "link": 1
+   },
+   "ffs": {
+    "BT Grotesk": 1
+   }
+  },
+  {
+   "px": 11.67,
+   "count": 2,
+   "roles": {
+    "p": 1,
+    "link": 1
+   },
+   "ffs": {
+    "Geistmono": 2
+   }
+  }
+ ],
+ "headingLadder": [
+  {
+   "px": 46.67,
+   "count": 1,
+   "roles": {
+    "h1": 1
+   },
+   "ffs": {
+    "BT Grotesk": 1
+   }
+  },
+  {
+   "px": 40,
+   "count": 4,
+   "roles": {
+    "h2": 4
+   },
+   "ffs": {
+    "BT Grotesk": 4
+   }
+  }
+ ],
+ "fonts": {
+  "total": 10,
+  "families": [
+   {
+    "family": "webflow-icons",
+    "weight": "400",
+    "style": "normal",
+    "faces": 1,
+    "loaded": 0
+   },
+   {
+    "family": "Geistmono",
+    "weight": "500",
+    "style": "normal",
+    "faces": 1,
+    "loaded": 1
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "400",
+    "style": "normal",
+    "faces": 1,
+    "loaded": 1
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "700",
+    "style": "normal",
+    "faces": 1,
+    "loaded": 1
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "600",
+    "style": "normal",
+    "faces": 1,
+    "loaded": 1
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "500",
+    "style": "normal",
+    "faces": 1,
+    "loaded": 1
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "700",
+    "style": "italic",
+    "faces": 1,
+    "loaded": 0
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "500",
+    "style": "italic",
+    "faces": 1,
+    "loaded": 0
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "400",
+    "style": "italic",
+    "faces": 1,
+    "loaded": 0
+   },
+   {
+    "family": "BT Grotesk",
+    "weight": "600",
+    "style": "italic",
+    "faces": 1,
+    "loaded": 0
+   }
+  ]
+ },
+ "motion": {
+  "sheets": 8,
+  "blockedSheets": 0,
+  "transitions": [
+   {
+    "sel": ".w-webflow-badge, .w-webflow-badge > img",
+    "transition": "unset"
+   },
+   {
+    "sel": ".w-slider-dot",
+    "transition": "background-color 0.1s, color 0.1s"
+   },
+   {
+    "sel": ".w-lightbox-control",
+    "transition": "0.3s"
+   },
+   {
+    "sel": ".cursor-inner",
+    "transition": "0.4s"
+   },
+   {
+    "sel": ".header-inner",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".embed-ic.is-check",
+    "transition": "opacity 0.3s"
+   },
+   {
+    "sel": ".embed-ic.is-loading",
+    "transition": "opacity 0.3s"
+   },
+   {
+    "sel": ".line.line-dash.line-horizital.bot.left.right.home-usecase-faq-item-line-hover, .line.line",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".header-cta",
+    "transition": "color 0.4s, background-color 0.4s"
+   },
+   {
+    "sel": ".txt.txt-font-mono.txt-14.footer-link",
+    "transition": "color 0.3s"
+   },
+   {
+    "sel": ".txt.txt-font-mono.txt-12.policy-hero-table-item-number",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".header-menu-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".loading",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".header-menu-item-ic",
+    "transition": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "sel": ".header-menu-dropdown-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".home-hero-btn",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".line-anim",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".home-problem-item",
+    "transition": "opacity 0.2s"
+   },
+   {
+    "sel": ".home-platform-content-btn-wrap",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".home-problem-item-head-title",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".home-usecase-faq-item-numb",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".home-usecase-faq-item-ic",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".btn.btn-outline.pricing-hero-package-btn",
+    "transition": "border-color 0.4s cubic-bezier(0.23, 1, 0.32, 1), color 0.4s cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "sel": ".btn.btn-outline.notfound-hero-noti-btn",
+    "transition": "color 0.4s, border-color 0.4s"
+   },
+   {
+    "sel": ".btn.resource-hero-load",
+    "transition": "border-color 0.4s, color 0.4s"
+   },
+   {
+    "sel": ".btn-ic",
+    "transition": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "sel": ".footer-logo-inner",
+    "transition": "opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "sel": ".footer-menu-item-link",
+    "transition": "color 0.2s"
+   },
+   {
+    "sel": ".input",
+    "transition": "border-color 0.45s"
+   },
+   {
+    "sel": ".input-submit.footer-form-input-submit",
+    "transition": "border-color 0.2s, background-color 0.4s, color 0.4s"
+   },
+   {
+    "sel": ".footer-info-item-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".footer-policy-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".home-problem-pagi-item",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".home-why-pagi-item",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".home-hero-ruler-item",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-hero-img-deco-ic",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-hero-img-deco-bg",
+    "transition": "top 0.4s, right 0.4s, height 0.4s, width 0.4s"
+   },
+   {
+    "sel": ".home-map-content",
+    "transition": "width 0.4s"
+   },
+   {
+    "sel": ".home-map-main-img-sub-hover",
+    "transition": "width 0.4s, transform 0.4s, opacity 0.4s"
+   },
+   {
+    "sel": ".home-map-intro",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-map-intro-content",
+    "transition": "height 0.4s"
+   },
+   {
+    "sel": ".home-map-content-wrap",
+    "transition": "width 0.4s"
+   },
+   {
+    "sel": ".home-hero-intro",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".product-hero-btn",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-key-tab-wrap",
+    "transition": "top 0.4s"
+   },
+   {
+    "sel": ".product-key-tab-item",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".product-key-tab-item-label",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-key-tab-item-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-key-main-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-key-main-sub",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-how-item-label",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-faq-item",
+    "transition": "0.4s"
+   },
+   {
+    "sel": ".product-faq-item-ic",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-tab-item",
+    "transition": "background-color 0.4s, color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-package-item-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-package-item-ic",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-package-wrap.bg-global",
+    "transition": "top 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-pagi-item",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".contact-hero-info-item-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".contact-hero-form-label.item-transition",
+    "transition": "transform 0.2s, top 0.4s, color 0.4s"
+   },
+   {
+    "sel": ".contact-hero-form-input-submit.btn-bg-hover",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".contact-hero-form-error",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".about-intro-wrap",
+    "transition": "opacity 0.2s"
+   },
+   {
+    "sel": ".about-team-item-plus",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".about-team-item-info-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".about-team-item-info-sub",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".about-team-item-info-ic",
+    "transition": "background-color 0.4s, color 0.4s"
+   },
+   {
+    "sel": ".about-team-popup",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".about-team-popup-content.bg-global",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".about-team-popup-linkin",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".about-team-popup-close",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".about-job-navi-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".about-job-item-info-wrap",
+    "transition": "margin-bottom 0.4s"
+   },
+   {
+    "sel": ".about-job-pagi-line-item",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".about-hero-block",
+    "transition": "height 0.4s"
+   },
+   {
+    "sel": ".schedule-hero-email-title.hover-un",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".policy-hero-table-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".policy-hero-table-item.active",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".policy-hero-table-item-ic",
+    "transition": "transform 0.4s, opacity 0.4s"
+   },
+   {
+    "sel": ".policy-hero-table-inner",
+    "transition": "height 0.4s, top 0.4s"
+   },
+   {
+    "sel": ".resource-hero-search-ic",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".resource-hero-item-date",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".resource-hero-item-img",
+    "transition": "padding 0.4s"
+   },
+   {
+    "sel": ".resource-hero-item-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".resource-hero-item-sub",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".resource-hero-load",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".resource-hero-item-img-overlay",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-table-inner",
+    "transition": "top 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-table-item-ic",
+    "transition": "transform 0.4s, opacity 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-table-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-table-item.active",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-form-submit",
+    "transition": "0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-form-desc",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-btn.btn-bg-hover",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-item-date",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-item-img",
+    "transition": "padding 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-item-img-overlay",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-item-title",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-item-sub",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-share-item",
+    "transition": "color 0.2s, background-color 0.4s, border-color 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-pagi-item",
+    "transition": "background-color 0.4s"
+   },
+   {
+    "sel": ".contact-hero-form-success-btn.btn-bg-hover",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".home-hero-img-deco-numb",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-problem-item-dot",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-usecase-faq-item-ic-wrap",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-hero-logo-control",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-faq-item-num",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-package-btn",
+    "transition": "color 0.4s, border-color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-package-btn-ic",
+    "transition": "border-color 0.4s"
+   },
+   {
+    "sel": ".product-hero-chat-footer-txt",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".product-hero-chat-footer-ic-wrap",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".typing-indicator-item",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".loading-ruler",
+    "transition": "opacity 0.3s"
+   },
+   {
+    "sel": ".resource-hero-item-img-plus",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".resource-hero-item-img-plus-item",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-form-success-txt",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".header-logo-item.item-txt",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-table-item-tooltip",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".policy-hero-table-item-tooltip",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-intro-partner-ctrl",
+    "transition": "color 0.3s"
+   },
+   {
+    "sel": ".home-intro-control",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".home-why-item-img-deco-ic",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-why-item-img-deco-bg",
+    "transition": "top 0.4s, right 0.4s, height 0.4s, width 0.4s"
+   },
+   {
+    "sel": ".home-why-item-img-box-ic",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".resource-hero-filter-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".resource-hero-filter-item-val",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".btn-fill-label-inner",
+    "transition": "transform 0.48s cubic-bezier(0.625, 0.05, 0, 1)"
+   },
+   {
+    "sel": ".btn-fill",
+    "transition": "border-color 0.3s, color 0.3s cubic-bezier(0.625, 0.05, 0, 1)"
+   },
+   {
+    "sel": ".btn-fill:where(.w-variant-ca0053c9-fb13-e711-67d0-9a6538635190)",
+    "transition": "border-color 0.3s"
+   },
+   {
+    "sel": ".btn-fill-icon-inner",
+    "transition": "transform 0.48s cubic-bezier(0.625, 0.05, 0, 1)"
+   },
+   {
+    "sel": ".home-why-item-img-box-ic-bg",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".cookie-banner-reject",
+    "transition": "border-color 0.4s"
+   },
+   {
+    "sel": ".footer-copyright-txt-block a",
+    "transition": "color 0.3s"
+   },
+   {
+    "sel": ".policy-hero-table",
+    "transition": "top 0.4s"
+   },
+   {
+    "sel": ".tp-resource-hero-table",
+    "transition": "top 0.4s"
+   },
+   {
+    "sel": ".tp-resource-other-control-item",
+    "transition": "color 0.4s"
+   },
+   {
+    "sel": ".pricing-hero-tab-wrap.pricing-hero-grid",
+    "transition": "top 0.4s"
+   },
+   {
+    "sel": ".hover-un .line-anim-inner-hover",
+    "transition": "transform 0.6s"
+   },
+   {
+    "sel": ".path-vertical, .path-horizital",
+    "transition": "transform 0.4s"
+   },
+   {
+    "sel": ".btn-bg-hover::after, .btn-fill-hover .btn-fill-txt::after, .btn-fill-hover .btn-fill-ic::",
+    "transition": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.7s cubic-bezier(0.5, 0.5, 1, 1)"
+   },
+   {
+    "sel": ".btn-control-hover::after",
+    "transition": "transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.7s cubic-bezier(0.5, 0.5, 1, 1)"
+   },
+   {
+    "sel": ".header-menu-dropdown",
+    "transition": "opacity 0.4s, grid-template-rows 0.4s"
+   },
+   {
+    "sel": ".footer-logo-path",
+    "transition": "opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "sel": ".footer-logo-stroke",
+    "transition": "0.5s cubic-bezier(0.23, 1, 0.32, 1)"
+   },
+   {
+    "sel": ".btn-fill-icon::before",
+    "transition": "color 0.48s cubic-bezier(0.625, 0.05, 0, 1)"
+   },
+   {
+    "sel": ".btn-fill.is-fill-resetting .btn-fill-icon::before",
+    "transition": "color 0.25s cubic-bezier(0.625, 0.05, 0, 1)"
+   },
+   {
+    "sel": ".home-problem-item-title-wrap",
+    "transition": "grid-template-rows 0.4s"
+   },
+   {
+    "sel": ".home-problem-item-main::after",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-map-number",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-map-number-box",
+    "transition": "opacity 0.4s"
+   },
+   {
+    "sel": ".home-map-img-svg path",
+    "transition": "filter 0.4s"
+   }
+  ],
+  "animations": [
+   {
+    "sel": ".w-lightbox-spinner",
+    "animation": "0.8s linear 0s infinite normal none running spin"
+   },
+   {
+    "sel": ".marquee-left.anim",
+    "animation": "30s linear 0s infinite normal none running marqueeLeft"
+   },
+   {
+    "sel": ".marquee-right.anim",
+    "animation": "30s linear 0s infinite normal none running marqueeRight"
+   },
+   {
+    "sel": "[data-anim=\"fade-loop\"]",
+    "animation": "1.5s ease-out 0s infinite normal none running fadeLoop"
+   },
+   {
+    "sel": ".loading-more::after",
+    "animation": "0.6s steps(4) 0s infinite normal none running spin"
+   },
+   {
+    "sel": "[data-anim=\"plus\"]",
+    "animation": "0.8s steps(1) 0s infinite normal none running rotate-icon"
+   },
+   {
+    "sel": ".home-why-item-img-deco.active .home-why-item-img-deco-bg, .home-hero-img-deco.active .hom",
+    "animation": "unset"
+   },
+   {
+    "sel": ".home-map-number-wrap:hover, .home-map-number-wrap.active",
+    "animation": "unset"
+   },
+   {
+    "sel": ".home-problem-item .manual-draw, .home-problem-item .automation-draw, .home-problem-item .",
+    "animation": "auto ease 0s 1 normal none running none"
+   },
+   {
+    "sel": ".home-problem-item .manual-dash, .home-problem-item .automation-dash, .home-problem-item .",
+    "animation": "auto ease 0s 1 normal none running none"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"] .manual-mask-draw",
+    "animation": "auto ease 0s 1 normal none running none"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-database-top",
+    "animation": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-database-inner",
+    "animation": "homeProblemDraw 0.65s var(--draw-ease) 0.12s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-column-upper-left, .home-problem-i",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-top-left, .home-problem-it",
+    "animation": "homeProblemDraw 0.75s var(--draw-ease) 0.2s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-upper-left, .home-problem-",
+    "animation": "homeProblemDraw 0.7s var(--draw-ease) 0.4s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-left-side, .home-problem-i",
+    "animation": "homeProblemDraw 0.9s var(--draw-ease) 0.55s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-package-center",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.9s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-column-lower-left, .home-problem-i",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.95s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-database-bottom",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 1.15s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"]:hover .manual-dash",
+    "animation": "homeProblemDashAppear 0.35s ease-in var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) in"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-database-top",
+    "animation": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-database-inner",
+    "animation": "homeProblemDraw 0.65s var(--draw-ease) 0.12s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-column-upper-left, .",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-top-left, .h",
+    "animation": "homeProblemDraw 0.75s var(--draw-ease) 0.2s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-upper-left, ",
+    "animation": "homeProblemDraw 0.7s var(--draw-ease) 0.4s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-left-side, .",
+    "animation": "homeProblemDraw 0.9s var(--draw-ease) 0.55s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-package-center",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.9s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-column-lower-left, .",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.95s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-database-bottom",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 1.15s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"manual\"].swiper-slide-active .manual-dash",
+    "animation": "homeProblemDashAppear 0.35s ease-in var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) in"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"] .automation-mask-draw",
+    "animation": "auto ease 0s 1 normal none running none"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-circle",
+    "animation": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-left-top, .home-problem-it",
+    "animation": "homeProblemDraw 0.35s var(--draw-ease) 0.2s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-left-side, .home-problem-i",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.35s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-left-bottom, .home-problem",
+    "animation": "homeProblemDraw 0.6s var(--draw-ease) 0.45s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-box-top-left, .home-proble",
+    "animation": "homeProblemDraw 0.35s var(--draw-ease) 0.42s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-center-line",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.48s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"]:hover .automation-dash",
+    "animation": "homeProblemDashAppear 0.35s ease-in 0.65s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 0.65s infinite"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-circle",
+    "animation": "homeProblemDraw 0.8s var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-left-top, .h",
+    "animation": "homeProblemDraw 0.35s var(--draw-ease) 0.2s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-left-side, .",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.35s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-left-bottom,",
+    "animation": "homeProblemDraw 0.6s var(--draw-ease) 0.45s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-box-top-left",
+    "animation": "homeProblemDraw 0.35s var(--draw-ease) 0.42s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-center-line",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.48s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"disjointed\"].swiper-slide-active .automation-dash",
+    "animation": "homeProblemDashAppear 0.35s ease-in 0.65s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 0.65s infinite"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"blind\"]:hover .blind-circle",
+    "animation": "homeProblemDraw var(--blind-circle-duration) var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"blind\"]:hover .blind-dash",
+    "animation": "homeProblemDashAppear 0.35s ease var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) infin"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"blind\"].swiper-slide-active .blind-circle",
+    "animation": "homeProblemDraw var(--blind-circle-duration) var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"blind\"].swiper-slide-active .blind-dash",
+    "animation": "homeProblemDashAppear 0.35s ease var(--dash-delay) forwards,\n        homeProblemDashFlow var(--dash-duration) linear var(--dash-delay) infin"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-left, .home-problem-item[data-pr",
+    "animation": "homeProblemDraw 0.6s var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-left-side, .home-problem-item[da",
+    "animation": "homeProblemDraw 0.3s var(--draw-ease) 0.3s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-left-bottom, .home-problem-item[",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-center-left, .home-problem-item[",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-upper-center-line",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.45s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-left-top, .home-problem-item[dat",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-left-side, .home-problem-item[da",
+    "animation": "homeProblemDraw 0.35s var(--draw-ease) 0.6s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-left-diagonal, .home-problem-ite",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.65s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-lower-center-line",
+    "animation": "homeProblemDraw 0.425s var(--draw-ease) 0.9s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"]:hover .slow-dash",
+    "animation": "homeProblemDashAppear 0.5s ease 1s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 1s infinite"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-left, .home-proble",
+    "animation": "homeProblemDraw 0.6s var(--draw-ease) 0s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-left-side, .home-p",
+    "animation": "homeProblemDraw 0.3s var(--draw-ease) 0.3s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-left-bottom, .home",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.25s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-center-left, .home",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-upper-center-line",
+    "animation": "homeProblemDraw 0.4s var(--draw-ease) 0.45s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-left-top, .home-pr",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.5s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-left-side, .home-p",
+    "animation": "homeProblemDraw 0.35s var(--draw-ease) 0.6s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-left-diagonal, .ho",
+    "animation": "homeProblemDraw 0.45s var(--draw-ease) 0.65s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-lower-center-line",
+    "animation": "homeProblemDraw 0.425s var(--draw-ease) 0.9s both"
+   },
+   {
+    "sel": ".home-problem-item[data-problem=\"slow\"].swiper-slide-active .slow-dash",
+    "animation": "homeProblemDashAppear 0.5s ease 1s forwards,\n        homeProblemDashFlow var(--dash-duration) linear 1s infinite"
+   },
+   {
+    "sel": ".home-problem-item:hover .manual-draw, .home-problem-item:hover .manual-dash, .home-proble",
+    "animation": "auto ease 0s 1 normal none running none"
+   },
+   {
+    "sel": ".home-why-item-img-box-bg, .home-why-item-img-box-content",
+    "animation": "homeWhyBoxReveal var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+   },
+   {
+    "sel": ".home-why-item-img-box-ic-bg",
+    "animation": "homeWhyIconBgSwap var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+   },
+   {
+    "sel": ".home-why-item-img-box-ic",
+    "animation": "homeWhyIconReveal var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+   },
+   {
+    "sel": ".home-why-item-img-box-ic-boder",
+    "animation": "homeWhyIconBorderPulse var(--animation-duration) linear var(--box-delay, 0s) infinite both"
+   },
+   {
+    "sel": ".home-why-item-img-point",
+    "animation": "pointReveal var(--why-cycle, 5s) linear var(--delay, 0s) infinite"
+   },
+   {
+    "sel": ".home-why-item-img-line .line",
+    "animation": "homeWhyLineVisibility var(--why-cycle, 5s) linear var(--line-delay, 0s) infinite,\n      homeWhyDashMove 0.8s linear infinite"
+   },
+   {
+    "sel": ".is-loading svg",
+    "animation": "1s linear 0s infinite normal none running homeWhySpin"
+   },
+   {
+    "sel": ".home-why-item-img-child.active .is-loading",
+    "animation": "loadingActive var(--why-cycle, 5s) linear infinite"
+   },
+   {
+    "sel": ".home-why-item-img-child.active .is-check",
+    "animation": "checkActive var(--why-cycle, 5s) linear infinite"
+   },
+   {
+    "sel": ".home-why-item-card.card-2",
+    "animation": "homeWhyCard2Reveal var(--why-cycle, 5s) linear infinite"
+   },
+   {
+    "sel": ".home-why-item-card.card-2 .home-why-item-card-dot",
+    "animation": "homeWhyCardDotLoading 1.2s ease-in-out var(--dot-delay) infinite"
+   },
+   {
+    "sel": ".home-why-item-card.card-2 .home-why-item-card-dots",
+    "animation": "homeWhyCardDotsVisibility var(--why-cycle, 5s) linear infinite"
+   },
+   {
+    "sel": ".home-why-item-img-child.active::before",
+    "animation": "homeWhyBorderActive var(--why-cycle, 5s) linear infinite"
+   },
+   {
+    "sel": ".home-why-item-img-box-bg, .home-why-item-img-box-content, .home-why-item-img-box-ic-bg, .",
+    "animation": "auto ease 0s 1 normal none running none"
+   }
+  ],
+  "keyframesNames": [
+   "spin",
+   "marqueeLeft",
+   "marqueeRight",
+   "rotate",
+   "fadeLoop",
+   "rotate-icon",
+   "homeProblemDraw",
+   "homeProblemDashAppear",
+   "homeProblemDashFlow",
+   "homeProblemMaskDraw",
+   "homeWhyBoxReveal",
+   "homeWhyIconBgSwap",
+   "homeWhyIconReveal",
+   "homeWhyIconBorderPulse",
+   "pointReveal",
+   "homeWhyLineVisibility",
+   "homeWhyDashMove",
+   "homeWhySpin",
+   "loadingActive",
+   "checkActive",
+   "homeWhyCard2Reveal",
+   "homeWhyCardDotLoading",
+   "homeWhyCardDotsVisibility",
+   "homeWhyBorderActive"
+  ],
+  "lenis": {
+   "wrapperClass": true,
+   "windowLenis": false,
+   "windowUnderscoreLenis": false
+  },
+  "gsap": {
+   "present": true,
+   "scrollTrigger": true,
+   "scrollTriggerCount": 48
+  },
+  "reducedMotion": false,
+  "triggers": [
+   {
+    "triggerCls": "home-intro-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-intro-content-title",
+    "start": "center bottom+=10%",
+    "end": "center top+=40%",
+    "scrub": true,
+    "pin": false,
+    "animationDur": 4.28
+   },
+   {
+    "triggerCls": "home-intro-body",
+    "start": "top+=45% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.2
+   },
+   {
+    "triggerCls": "home-intro-partner-wrap",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.2
+   },
+   {
+    "triggerCls": "home-problem-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-problem-head",
+    "start": "top+=65% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.54
+   },
+   {
+    "triggerCls": "home-problem-content",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 2.5
+   },
+   {
+    "triggerCls": "home-map-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-platform-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-why-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-usecase-wrap",
+    "start": "clamp(top bottom+=50%)",
+    "end": "bottom top-=50%",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "cta-main.grid",
+    "start": "top+=40% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 2.05
+   },
+   {
+    "triggerCls": "cta-deco.grid",
+    "start": "top+=40% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.7
+   },
+   {
+    "triggerCls": "footer-title-wrap",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.06
+   },
+   {
+    "triggerCls": "footer-form-wrap",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.3
+   },
+   {
+    "triggerCls": "footer-menu",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.42
+   },
+   {
+    "triggerCls": "footer-info-wrap",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 2.2
+   },
+   {
+    "triggerCls": "footer-logo",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.7
+   },
+   {
+    "triggerCls": "footer-img-wrap",
+    "start": "top+=55% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer-copyright-wrap.grid",
+    "start": "top+=35% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.12
+   },
+   {
+    "triggerCls": "cta-wrap",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "cta-wrap",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "footer",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-map-wrap",
+    "start": "top bottom",
+    "end": "top top",
+    "scrub": true,
+    "pin": false,
+    "animationDur": 0.5
+   },
+   {
+    "triggerCls": "home-map-wrap",
+    "start": "top 50%",
+    "end": "bottom-=270 bottom",
+    "scrub": true,
+    "pin": false,
+    "animationDur": 5.52
+   },
+   {
+    "triggerCls": "home-platform-content",
+    "start": "top bottom",
+    "end": "bottom top",
+    "scrub": true,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-usecase-img-list.bg-global.w-dyn-items",
+    "start": "top+=35% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.7
+   },
+   {
+    "triggerCls": "home-usecase-faq-list.w-dyn-items",
+    "start": "top+=65% bottom",
+    "end": null,
+    "scrub": false,
+    "pin": false,
+    "animationDur": 1.98
+   },
+   {
+    "triggerCls": "home-usecase-wrap",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   },
+   {
+    "triggerCls": "home-usecase-wrap",
+    "start": "top bottom+=100vh",
+    "end": "bottom top",
+    "scrub": false,
+    "pin": false,
+    "animationDur": 0
+   }
+  ]
+ },
+ "scrollFeel": {
+  "wheelMode": "trusted",
+  "impulse": {
+   "dy": 800,
+   "mode": "trusted"
+  },
+  "fit": {
+   "tauMs": 151.8,
+   "lerpPerFrame": 0.104,
+   "r2": 0.994,
+   "moved": 799,
+   "nPts": 52
+  },
+  "samples": [
+   [
+    16.3,
+    0
+   ],
+   [
+    32.2,
+    0
+   ],
+   [
+    132.5,
+    371
+   ],
+   [
+    147.6,
+    418
+   ],
+   [
+    162.4,
+    418
+   ],
+   [
+    182.3,
+    418
+   ],
+   [
+    192.2,
+    418
+   ],
+   [
+    230.1,
+    553
+   ],
+   [
+    240.2,
+    553
+   ],
+   [
+    256.2,
+    553
+   ],
+   [
+    282.5,
+    553
+   ],
+   [
+    302.2,
+    642
+   ],
+   [
+    308.3,
+    642
+   ],
+   [
+    330.1,
+    669
+   ],
+   [
+    336.2,
+    669
+   ],
+   [
+    427.1,
+    716
+   ],
+   [
+    444,
+    733
+   ],
+   [
+    448.2,
+    733
+   ],
+   [
+    487.7,
+    751
+   ],
+   [
+    496.2,
+    751
+   ],
+   [
+    518.4,
+    759
+   ],
+   [
+    528.1,
+    759
+   ],
+   [
+    547.6,
+    766
+   ],
+   [
+    560.2,
+    766
+   ],
+   [
+    578.2,
+    772
+   ],
+   [
+    592.2,
+    772
+   ],
+   [
+    613.5,
+    777
+   ],
+   [
+    624.2,
+    777
+   ],
+   [
+    644.9,
+    781
+   ],
+   [
+    656.1,
+    781
+   ],
+   [
+    688.1,
+    784
+   ],
+   [
+    704.2,
+    784
+   ],
+   [
+    720.2,
+    787
+   ],
+   [
+    736.2,
+    787
+   ],
+   [
+    752.2,
+    789
+   ],
+   [
+    768.2,
+    789
+   ],
+   [
+    784.2,
+    791
+   ],
+   [
+    802.4,
+    791
+   ],
+   [
+    819.4,
+    793
+   ],
+   [
+    832.1,
+    793
+   ],
+   [
+    851.6,
+    794
+   ],
+   [
+    864.2,
+    794
+   ],
+   [
+    880.2,
+    795
+   ],
+   [
+    896.2,
+    795
+   ],
+   [
+    912.2,
+    796
+   ],
+   [
+    928.1,
+    796
+   ],
+   [
+    944.1,
+    797
+   ],
+   [
+    960.1,
+    797
+   ],
+   [
+    976.2,
+    797
+   ],
+   [
+    992.2,
+    797
+   ],
+   [
+    1008.2,
+    798
+   ],
+   [
+    1031.2,
+    798
+   ],
+   [
+    1040.2,
+    798
+   ],
+   [
+    1056.2,
+    798
+   ],
+   [
+    1075.6,
+    799
+   ],
+   [
+    1088.1,
+    799
+   ],
+   [
+    1104.2,
+    799
+   ],
+   [
+    1120.2,
+    799
+   ],
+   [
+    1142.5,
+    799
+   ],
+   [
+    1152.8,
+    799
+   ]
+  ]
+ }
+}

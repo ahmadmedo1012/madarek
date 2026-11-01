@@ -1,0 +1,475 @@
+{
+ "generatedAt": "2026-11-01T15:19:02.010Z",
+ "source": "https://heronaiapp.com",
+ "extractor": "scripts/fidelity/heron-extract.mjs",
+ "crawlRule": "load / at 1440×900, settle loader, collect same-origin <a href> from the rendered DOM (header/nav/footer/body), dedupe by pathname, crawl each with a fresh context per page×viewport",
+ "ipPolicy": "geometry + computed styles + motion facts only; text recorded as {role,charCount,lineCount,indexLabel} metadata; media = filename tail only; no content downloaded",
+ "viewports": [
+  {
+   "label": "1440",
+   "w": 1440,
+   "h": 900
+  },
+  {
+   "label": "1024",
+   "w": 1024,
+   "h": 768
+  },
+  {
+   "label": "768",
+   "w": 768,
+   "h": 1024
+  },
+  {
+   "label": "390",
+   "w": 390,
+   "h": 844
+  }
+ ],
+ "pages": [
+  {
+   "url": "https://heronaiapp.com/cookie-policy",
+   "slug": "cookie-policy"
+  },
+  {
+   "url": "https://heronaiapp.com/",
+   "slug": "home"
+  },
+  {
+   "url": "https://heronaiapp.com/heron-chat-widget",
+   "slug": "heron-chat-widget"
+  },
+  {
+   "url": "https://heronaiapp.com/heron-dashboard",
+   "slug": "heron-dashboard"
+  },
+  {
+   "url": "https://heronaiapp.com/pricing",
+   "slug": "pricing"
+  },
+  {
+   "url": "https://heronaiapp.com/resources",
+   "slug": "resources"
+  },
+  {
+   "url": "https://heronaiapp.com/about-us",
+   "slug": "about-us"
+  },
+  {
+   "url": "https://heronaiapp.com/contact-us",
+   "slug": "contact-us"
+  },
+  {
+   "url": "https://heronaiapp.com/privacy-policy",
+   "slug": "privacy-policy"
+  },
+  {
+   "url": "https://heronaiapp.com/terms-and-conditions",
+   "slug": "terms-and-conditions"
+  }
+ ],
+ "shotPolicy": "full-page PNG for the key design pages (home, pricing) at 1440/390 — the pixelmatch pairs; JPEG q80 for every other page/viewport (contact sheets); mode=key",
+ "scrollFeelRule": "trusted mouse.wheel(0,800) at viewport centre, 16ms samples of the Lenis scroller scrollTop for ~1.15s, least-squares exponential-decay fit → τ (ms) + Lenis-equivalent lerp/frame; synthetic WheelEvent fallback if the trusted wheel is swallowed",
+ "files": [
+  {
+   "page": "cookie-policy",
+   "viewport": "1440",
+   "json": "pages/cookie-policy-1440.json",
+   "shot": "shots/cookie-policy-1440.jpg",
+   "bytes": {
+    "json": 40541,
+    "shot": 191522
+   }
+  },
+  {
+   "page": "cookie-policy",
+   "viewport": "1024",
+   "json": "pages/cookie-policy-1024.json",
+   "shot": "shots/cookie-policy-1024.jpg",
+   "bytes": {
+    "json": 40827,
+    "shot": 128696
+   }
+  },
+  {
+   "page": "cookie-policy",
+   "viewport": "768",
+   "json": "pages/cookie-policy-768.json",
+   "shot": "shots/cookie-policy-768.jpg",
+   "bytes": {
+    "json": 40760,
+    "shot": 151611
+   }
+  },
+  {
+   "page": "cookie-policy",
+   "viewport": "390",
+   "json": "pages/cookie-policy-390.json",
+   "shot": "shots/cookie-policy-390.jpg",
+   "bytes": {
+    "json": 38752,
+    "shot": 73120
+   }
+  },
+  {
+   "page": "home",
+   "viewport": "1440",
+   "json": "pages/home-1440.json",
+   "shot": "shots/home-1440.png",
+   "bytes": {
+    "json": 51470,
+    "shot": 845997
+   }
+  },
+  {
+   "page": "home",
+   "viewport": "1024",
+   "json": "pages/home-1024.json",
+   "shot": "shots/home-1024.jpg",
+   "bytes": {
+    "json": 54182,
+    "shot": 115237
+   }
+  },
+  {
+   "page": "home",
+   "viewport": "768",
+   "json": "pages/home-768.json",
+   "shot": "shots/home-768.jpg",
+   "bytes": {
+    "json": 51807,
+    "shot": 109562
+   }
+  },
+  {
+   "page": "home",
+   "viewport": "390",
+   "json": "pages/home-390.json",
+   "shot": "shots/home-390.png",
+   "bytes": {
+    "json": 57342,
+    "shot": 223460
+   }
+  },
+  {
+   "page": "heron-chat-widget",
+   "viewport": "1440",
+   "json": "pages/heron-chat-widget-1440.json",
+   "shot": "shots/heron-chat-widget-1440.jpg",
+   "bytes": {
+    "json": 34761,
+    "shot": 189255
+   }
+  },
+  {
+   "page": "heron-chat-widget",
+   "viewport": "1024",
+   "json": "pages/heron-chat-widget-1024.json",
+   "shot": "shots/heron-chat-widget-1024.jpg",
+   "bytes": {
+    "json": 33495,
+    "shot": 117416
+   }
+  },
+  {
+   "page": "heron-chat-widget",
+   "viewport": "768",
+   "json": "pages/heron-chat-widget-768.json",
+   "shot": "shots/heron-chat-widget-768.jpg",
+   "bytes": {
+    "json": 33788,
+    "shot": 120101
+   }
+  },
+  {
+   "page": "heron-chat-widget",
+   "viewport": "390",
+   "json": "pages/heron-chat-widget-390.json",
+   "shot": "shots/heron-chat-widget-390.jpg",
+   "bytes": {
+    "json": 39116,
+    "shot": 69435
+   }
+  },
+  {
+   "page": "heron-dashboard",
+   "viewport": "1440",
+   "json": "pages/heron-dashboard-1440.json",
+   "shot": "shots/heron-dashboard-1440.jpg",
+   "bytes": {
+    "json": 35648,
+    "shot": 172769
+   }
+  },
+  {
+   "page": "heron-dashboard",
+   "viewport": "1024",
+   "json": "pages/heron-dashboard-1024.json",
+   "shot": "shots/heron-dashboard-1024.jpg",
+   "bytes": {
+    "json": 33161,
+    "shot": 105060
+   }
+  },
+  {
+   "page": "heron-dashboard",
+   "viewport": "768",
+   "json": "pages/heron-dashboard-768.json",
+   "shot": "shots/heron-dashboard-768.jpg",
+   "bytes": {
+    "json": 36001,
+    "shot": 125079
+   }
+  },
+  {
+   "page": "heron-dashboard",
+   "viewport": "390",
+   "json": "pages/heron-dashboard-390.json",
+   "shot": "shots/heron-dashboard-390.jpg",
+   "bytes": {
+    "json": 38506,
+    "shot": 57821
+   }
+  },
+  {
+   "page": "pricing",
+   "viewport": "1440",
+   "json": "pages/pricing-1440.json",
+   "shot": "shots/pricing-1440.png",
+   "bytes": {
+    "json": 26502,
+    "shot": 292020
+   }
+  },
+  {
+   "page": "pricing",
+   "viewport": "1024",
+   "json": "pages/pricing-1024.json",
+   "shot": "shots/pricing-1024.jpg",
+   "bytes": {
+    "json": 26564,
+    "shot": 94352
+   }
+  },
+  {
+   "page": "pricing",
+   "viewport": "768",
+   "json": "pages/pricing-768.json",
+   "shot": "shots/pricing-768.jpg",
+   "bytes": {
+    "json": 26552,
+    "shot": 106233
+   }
+  },
+  {
+   "page": "pricing",
+   "viewport": "390",
+   "json": "pages/pricing-390.json",
+   "shot": "shots/pricing-390.png",
+   "bytes": {
+    "json": 34141,
+    "shot": 178018
+   }
+  },
+  {
+   "page": "resources",
+   "viewport": "1440",
+   "json": "pages/resources-1440.json",
+   "shot": "shots/resources-1440.jpg",
+   "bytes": {
+    "json": 25859,
+    "shot": 177553
+   }
+  },
+  {
+   "page": "resources",
+   "viewport": "1024",
+   "json": "pages/resources-1024.json",
+   "shot": "shots/resources-1024.jpg",
+   "bytes": {
+    "json": 24530,
+    "shot": 126780
+   }
+  },
+  {
+   "page": "resources",
+   "viewport": "768",
+   "json": "pages/resources-768.json",
+   "shot": "shots/resources-768.jpg",
+   "bytes": {
+    "json": 24841,
+    "shot": 137368
+   }
+  },
+  {
+   "page": "resources",
+   "viewport": "390",
+   "json": "pages/resources-390.json",
+   "shot": "shots/resources-390.jpg",
+   "bytes": {
+    "json": 31016,
+    "shot": 54192
+   }
+  },
+  {
+   "page": "about-us",
+   "viewport": "1440",
+   "json": "pages/about-us-1440.json",
+   "shot": "shots/about-us-1440.jpg",
+   "bytes": {
+    "json": 34047,
+    "shot": 179178
+   }
+  },
+  {
+   "page": "about-us",
+   "viewport": "1024",
+   "json": "pages/about-us-1024.json",
+   "shot": "shots/about-us-1024.jpg",
+   "bytes": {
+    "json": 30596,
+    "shot": 127368
+   }
+  },
+  {
+   "page": "about-us",
+   "viewport": "768",
+   "json": "pages/about-us-768.json",
+   "shot": "shots/about-us-768.jpg",
+   "bytes": {
+    "json": 31530,
+    "shot": 145420
+   }
+  },
+  {
+   "page": "about-us",
+   "viewport": "390",
+   "json": "pages/about-us-390.json",
+   "shot": "shots/about-us-390.jpg",
+   "bytes": {
+    "json": 37253,
+    "shot": 50902
+   }
+  },
+  {
+   "page": "contact-us",
+   "viewport": "1440",
+   "json": "pages/contact-us-1440.json",
+   "shot": "shots/contact-us-1440.jpg",
+   "bytes": {
+    "json": 27199,
+    "shot": 166623
+   }
+  },
+  {
+   "page": "contact-us",
+   "viewport": "1024",
+   "json": "pages/contact-us-1024.json",
+   "shot": "shots/contact-us-1024.jpg",
+   "bytes": {
+    "json": 27229,
+    "shot": 115499
+   }
+  },
+  {
+   "page": "contact-us",
+   "viewport": "768",
+   "json": "pages/contact-us-768.json",
+   "shot": "shots/contact-us-768.jpg",
+   "bytes": {
+    "json": 24968,
+    "shot": 88697
+   }
+  },
+  {
+   "page": "contact-us",
+   "viewport": "390",
+   "json": "pages/contact-us-390.json",
+   "shot": "shots/contact-us-390.jpg",
+   "bytes": {
+    "json": 31018,
+    "shot": 47317
+   }
+  },
+  {
+   "page": "privacy-policy",
+   "viewport": "1440",
+   "json": "pages/privacy-policy-1440.json",
+   "shot": "shots/privacy-policy-1440.jpg",
+   "bytes": {
+    "json": 50570,
+    "shot": 177994
+   }
+  },
+  {
+   "page": "privacy-policy",
+   "viewport": "1024",
+   "json": "pages/privacy-policy-1024.json",
+   "shot": "shots/privacy-policy-1024.jpg",
+   "bytes": {
+    "json": 50898,
+    "shot": 115913
+   }
+  },
+  {
+   "page": "privacy-policy",
+   "viewport": "768",
+   "json": "pages/privacy-policy-768.json",
+   "shot": "shots/privacy-policy-768.jpg",
+   "bytes": {
+    "json": 50878,
+    "shot": 127490
+   }
+  },
+  {
+   "page": "privacy-policy",
+   "viewport": "390",
+   "json": "pages/privacy-policy-390.json",
+   "shot": "shots/privacy-policy-390.jpg",
+   "bytes": {
+    "json": 48497,
+    "shot": 65015
+   }
+  },
+  {
+   "page": "terms-and-conditions",
+   "viewport": "1440",
+   "json": "pages/terms-and-conditions-1440.json",
+   "shot": "shots/terms-and-conditions-1440.jpg",
+   "bytes": {
+    "json": 46673,
+    "shot": 198989
+   }
+  },
+  {
+   "page": "terms-and-conditions",
+   "viewport": "1024",
+   "json": "pages/terms-and-conditions-1024.json",
+   "shot": "shots/terms-and-conditions-1024.jpg",
+   "bytes": {
+    "json": 46407,
+    "shot": 131240
+   }
+  },
+  {
+   "page": "terms-and-conditions",
+   "viewport": "768",
+   "json": "pages/terms-and-conditions-768.json",
+   "shot": "shots/terms-and-conditions-768.jpg",
+   "bytes": {
+    "json": 46168,
+    "shot": 146663
+   }
+  },
+  {
+   "page": "terms-and-conditions",
+   "viewport": "390",
+   "json": "pages/terms-and-conditions-390.json",
+   "shot": "shots/terms-and-conditions-390.jpg",
+   "bytes": {
+    "json": 44647,
+    "shot": 72336
+   }
+  }
+ ]
+}
