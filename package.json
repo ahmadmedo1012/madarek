@@ -60,6 +60,8 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "harfbuzzjs": "^1.6.4",
     "opentype.js": "^2.0.0",
+    "pixelmatch": "^8.0.0",
+    "pngjs": "^7.0.0",
     "tsx": "^4.22.4",
     "typescript-eslint": "^8.71.1"
   },
