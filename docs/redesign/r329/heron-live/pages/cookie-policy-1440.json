@@ -50,6 +50,14 @@
    },
    "headings": [],
    "textEls": [],
+   "census": {
+    "els": 117,
+    "hairline1px": 0,
+    "borderedAny": 0,
+    "radius0": 117,
+    "radiusNon0": 0,
+    "borders": {}
+   },
    "counts": {
     "text": 0,
     "imgs": 0,
@@ -101,14 +109,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 130,
       "w": 909,
       "h": 60
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -122,14 +132,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 230,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -143,14 +155,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 388,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -164,14 +178,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 545,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -185,14 +201,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 679,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -206,14 +224,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 813,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -227,14 +247,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 986,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -248,14 +270,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1135,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -269,14 +293,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1252,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -290,14 +316,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1386,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -311,14 +339,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1502,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     }
    ],
    "textEls": [
@@ -334,14 +364,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 130,
       "w": 909,
       "h": 60
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -355,14 +387,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 230,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -376,14 +410,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 272,
       "w": 909,
       "h": 35
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -397,14 +433,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 313,
       "w": 909,
       "h": 35
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -418,14 +456,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 388,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -439,14 +479,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 430,
       "w": 909,
       "h": 35
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -460,14 +502,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 471,
       "w": 909,
       "h": 35
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -481,14 +525,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 545,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -502,14 +548,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 587,
       "w": 909,
       "h": 52
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -523,14 +571,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 679,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -544,14 +594,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 721,
       "w": 909,
       "h": 52
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -565,14 +617,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 813,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -586,14 +640,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 855,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "li",
@@ -607,14 +663,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 881,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "li",
@@ -628,14 +686,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 905,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "li",
@@ -649,14 +709,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 929,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -670,14 +732,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 986,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -691,14 +755,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1028,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "li",
@@ -712,14 +778,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1054,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "li",
@@ -733,14 +801,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1078,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -754,14 +824,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1135,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -775,14 +847,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1177,
       "w": 909,
       "h": 35
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -796,14 +870,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1252,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -817,14 +893,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1294,
       "w": 909,
       "h": 52
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -838,14 +916,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1386,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -859,14 +939,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1428,
       "w": 909,
       "h": 35
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "h2",
@@ -880,14 +962,16 @@
       "ls": "-0.4px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1502,
       "w": 909,
       "h": 22
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -901,14 +985,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1544,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "link",
@@ -922,14 +1008,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgb(250, 54, 0)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 944,
       "y": 1544,
       "w": 98,
       "h": 16
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -943,14 +1031,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1568,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -964,14 +1054,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1592,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -985,14 +1077,16 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1616,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "p",
@@ -1006,16 +1100,26 @@
       "ls": "-0.266667px",
       "ff": "BT Grotesk",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "none"
+      "tt": "none",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 498,
       "y": 1640,
       "w": 909,
       "h": 17
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     }
    ],
+   "census": {
+    "els": 66,
+    "hairline1px": 0,
+    "borderedAny": 0,
+    "radius0": 66,
+    "radiusNon0": 0,
+    "borders": {}
+   },
    "counts": {
     "text": 33,
     "imgs": 0,
@@ -2276,5 +2380,8 @@
     799
    ]
   ]
- }
+ },
+ "bodyBg": "rgba(0, 0, 0, 0)",
+ "htmlBg": "rgba(0, 0, 0, 0)",
+ "supplementedAt": "2026-11-01T16:04:34.149Z"
 }

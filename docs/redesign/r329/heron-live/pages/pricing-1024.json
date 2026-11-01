@@ -61,14 +61,16 @@
       "ls": "-0.663704px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 328,
       "y": 90,
       "w": 367,
       "h": 66
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     }
    ],
    "textEls": [
@@ -84,16 +86,26 @@
       "ls": "-0.663704px",
       "ff": "BT Grotesk",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 328,
       "y": 90,
       "w": 367,
       "h": 66
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     }
    ],
+   "census": {
+    "els": 1290,
+    "hairline1px": 0,
+    "borderedAny": 0,
+    "radius0": 1290,
+    "radiusNon0": 0,
+    "borders": {}
+   },
    "counts": {
     "text": 1,
     "imgs": 0,
@@ -134,6 +146,16 @@
    },
    "headings": [],
    "textEls": [],
+   "census": {
+    "els": 176,
+    "hairline1px": 6,
+    "borderedAny": 6,
+    "radius0": 176,
+    "radiusNon0": 0,
+    "borders": {
+     "1/1/1/1px": 6
+    }
+   },
    "counts": {
     "text": 0,
     "imgs": 0,
@@ -174,6 +196,14 @@
    },
    "headings": [],
    "textEls": [],
+   "census": {
+    "els": 103,
+    "hairline1px": 0,
+    "borderedAny": 0,
+    "radius0": 103,
+    "radiusNon0": 0,
+    "borders": {}
+   },
    "counts": {
     "text": 0,
     "imgs": 2,
@@ -226,14 +256,16 @@
       "ls": "-0.18963px",
       "ff": "Geistmono",
       "color": "rgba(40, 40, 40, 0.72)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 24,
       "y": 2227,
       "w": 306,
       "h": 11
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     },
     {
      "role": "link",
@@ -247,16 +279,29 @@
       "ls": "-0.18963px",
       "ff": "Geistmono",
       "color": "rgb(40, 40, 40)",
-      "tt": "uppercase"
+      "tt": "uppercase",
+      "bg": "rgba(0, 0, 0, 0)"
      },
      "rect": {
       "x": 291,
       "y": 2227,
       "w": 38,
       "h": 10
-     }
+     },
+     "bgEff": "rgb(255, 255, 255)"
     }
    ],
+   "census": {
+    "els": 341,
+    "hairline1px": 2,
+    "borderedAny": 2,
+    "radius0": 341,
+    "radiusNon0": 0,
+    "borders": {
+     "1/1/1px": 1,
+     "1px": 1
+    }
+   },
    "counts": {
     "text": 2,
     "imgs": 3,
@@ -1521,5 +1566,8 @@
     799
    ]
   ]
- }
+ },
+ "bodyBg": "rgba(0, 0, 0, 0)",
+ "htmlBg": "rgba(0, 0, 0, 0)",
+ "supplementedAt": "2026-11-01T16:07:20.668Z"
 }
