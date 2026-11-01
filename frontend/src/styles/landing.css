@@ -774,9 +774,6 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * home-hero-work inside the hero's sub cell). */
 .fo-hero {
   display: grid;
-  /* R328 (H2/H3) — three bands: the art (1fr), the content pair, and
-   * the work strip as its own closing row (moved out of the sub cell —
-   * the six subjects are an INDEX row, not sub-cell chrome). */
   grid-template-rows: minmax(0, 1fr) auto auto;
   /* the measured reference band (887 = 100svh − 13 @1440×900; the
    * ≥992 twin below re-pins the quartet's 1.6rem form). */
@@ -935,6 +932,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .fo-hero-content {
   display: grid;
   grid-template-columns: minmax(0, 99.07fr) minmax(0, 72.2fr);
+  /* R328 (H7 · R2) — the band rules END at the sheet frame (the
+     old full-bleed rules ran past the 7px margin to the exact viewport
+     edge — the reference keeps its rules inside the margin grid). */
+  margin-inline: 7px; /* spacing-gate: allow — the sheet frame's own inset (measured) */
   padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured), not a ladder rung */
   padding-inline-end: 2.88rem; /* R322 V7 — the edge-rail inset: the sub cell's inline-end content clears the .et-tab slim rail (the killed discover seat's own measured clearance) */
   border-block-start: 1px solid var(--rule);
@@ -1027,6 +1028,7 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .fo-hero-work {
   display: flex;
   overflow: hidden;                /* ≥1200: the row fits; <1200 flips to the snap scroller */
+  margin-inline: 7px; /* R328 (H7 · R2) — the closing rules END at the sheet frame, never full-bleed */ /* spacing-gate: allow — the sheet frame's own inset (measured) */
   border-block-start: 1px solid var(--rule);
   border-block-end: 1px solid var(--rule);
   padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured) */
@@ -3566,6 +3568,17 @@ html[data-theme='dark'] body.mdrk-grain::before {
     min-block-size: 0;
   }
 
+  /* R328 (H7 · R2 final) — the bands' opening rules END at the sheet
+     frame on phones too (the hero's rules were inset; the pm/pr/wy/rl
+     opening rules still ran edge-to-edge — the grammar inconsistency
+     R2 pixel-verified at m-075 y141/y799). */
+  .pm-section,
+  .pr-section,
+  .wy-section,
+  .rl-section {
+    margin-inline: 7px; /* spacing-gate: allow — the sheet frame's own inset (measured) */
+  }
+
   /* R325 Y3: the ≤767 .wy 1-col override retired — the ≤991 block
      above owns the fold now (one map, no drift). */
 
@@ -5992,10 +6005,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
   content: '';
   position: absolute;
   inset: -3rem;
+  /* R328 (H7 · R2) — the halo dissolves plan lines on EVERY edge of
+     the card (the old one-corner radial let a wall line strike the
+     card's edge and read as a crossing; a centered full halo means
+     any line approaching any edge fades into the card's own ground). */
   background: radial-gradient(
-    90% 90% at 78% 88%,
-    var(--bg) 52%,
-    transparent 78%
+    150% 150% at 50% 50%,
+    var(--bg) 58%,
+    transparent 82%
   );
   z-index: -1;
   pointer-events: none;
@@ -6697,6 +6714,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .fo-legal-row {
     order: 3;
     flex-basis: 100%;
+    /* R328 (H7 · R2 final) — the desktop CENTER cluster wraps to the
+       full bar on phones; a centered wrapped cluster reads un-anchored
+       against the sheet's right-start grammar. Stack at the reading
+       start on the band. */
+    justify-content: flex-start;
+    margin-inline: 0;
   }
   .fo-footer-bottom {
     row-gap: var(--sp-0-5); /* the two-row seat breathes tighter at this band */
@@ -7092,7 +7115,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
      wrapping rows (the 44px targets stack comfortably), same quiet
      inline inset as the copyright band. */
   .fo-legal-row {
-    justify-content: center;
+    /* R328 (H7 · R2 final) — the phone bar anchors at the READING
+       START (this later cascade seat is what actually rendered at
+       ≤767; the 1099-block fix alone lost to it — measured center
+       with pixel-symmetric gaps at m-100). */
+    justify-content: flex-start;
     padding-inline: var(--sp-3);
   }
 }

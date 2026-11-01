@@ -19,13 +19,13 @@ every addition ask «ماذا أحذف؟». R327's mobile/store threads stay unt
 | Phase | Scope (short) | Status | Evidence |
 |-------|---------------|--------|----------|
 | S | live diagnosis on `main` @ `0ac6a79` — re-shoot the landing myself, confirm the 8 reported defects, add mine | **done** | Full local stack (embedded PG :5433 · api :4000 · vite :3000) booted via `scripts/r319` pieces; 30 frames captured `docs/redesign/r328/shots/S/` (1440×900 + 390×844 × {0..100%} + dark pair) + DOM geometry. Findings ledger below — all 8 user defects CONFIRMED with geometry, +7 new ones (S-A…S-G). scrollHeight 12429 d / 11417 m matches the report. |
-| H1 | cookies as Heron language (corner card ≤360px, 240ms, never covers, excluded from evaluation shots) | **pending** | — |
-| H2 | hero desktop: whole fold (nav · title · lead · CTA · all six indicators un-faded) | **pending** | — |
-| H3 | hero phone: 100svh−bar, 4:3 art, one connected block, CTA above fold, snap indicator strip | **pending** | — |
-| H4 | pinned chapters sheet: title never over ink, two-step fade, `مقدمة` = label or gone, no pin jump | **pending** | — |
-| H5 | one vertical rhythm ladder between sections + `[nn]` indices | **pending** | — |
-| H6 | the hollow closing word + footer hairline cells | **pending** | — |
-| H7 | homepage acceptance: frames × widths × themes × {Chromium,WebKit}, 3 reviewers ≥ 9, CLS < 0.02 | **pending** | — |
+| H1 | cookies as Heron language (corner card ≤360px, never covers, excluded from evaluation shots) | **done** | `189c74ac` — the corner card: ≤360px inside the 7px frame, no shadow, hairline rules, LIVE never-hide reserve (var(--app-bottom-stack)+14 on .landing AND the hero), 200ms rise; clearances: CTA→card 127/137/109/77/61px @1440/390/1280/1024/768, strip→card ≥12px at 7 widths; loader-overlap phone pin PASSES |
+| H2 | hero desktop: whole fold (nav · title · lead · CTA · all six indicators un-faded) | **done** | `9e2ff818` — the stage cap 56svh: the art row's sizing had pushed the strip behind the card at 1280 (−55px)/1920 (−12px); all clearances positive at 7 widths; six indicators static space-between ≥1200, zero mask (the crawl + its duplicate track deleted) |
+| H3 | hero phone: 100svh−bar, proportionate art, one connected block, CTA above fold, snap strip | **done** | `189c74ac` — aspect 8:5 stage (376×235 @390), the 33rem dead mat dead; connected title·lead·CTA with gaps 24/32 exact; lead re-seats to txt-16 + flex 0 0 auto (the 24rem row-basis was sizing its HEIGHT in the column form — 238px around 2 lines); snap strip <1200; five stale .fo-hero overrides deleted (sp-5/8, 100svh−71, −1.62rem, 10.5rem, 8.5rem, sp-4, 26rem) |
+| H4 | pinned chapters: title never over ink, two-step fade, `مقدمة` = label, no pin jump | **done** | `5c89a361` — the plaques left the plan's surface: caption band ABOVE the drawing ≥992 / paper card BELOW ≤991 (one grid cell, crossfade); 0.2s dead gap between the fades (out 1.0–1.4, in 1.6–2.0); the dark chip → small mono label; svg caps stack-aware; height-gate PASS (≤0.017%); VLM: zero crossings, one statement at a time |
+| H5 | one vertical rhythm ladder + `[nn]` indices | **done** | `22a4aab2` — the pr/wy/rl trio 4rem→8rem (measured gaps 33/33/33→67/67/67 = the st/pm rung), the closer 12/8rem, contain-intrinsic re-fitted (the r325 seat ran +69 stale), [09]→[08]; height-gate back to green after the re-fit |
+| H6 | the hollow closing word + footer | **done** | `af7ab768` — verified COMPLETE at 1440/1920/768/390/320 (the S-era «cut» was the consent banner over the legal row — dead with the H1 reserve); images: square aspect-true windows, ONE unified line treatment |
+| H7 | homepage acceptance: 3 reviewers ≥ 9 + CLS < 0.02 | **round 1 done — 3/4 sets ≥ 9** | `0c166080`+this — R3 d-dark 9 · m-dark 9 (pixel-verified fixes D1 rules 2.20→2.92:1 via shared tokens, D2 zero raw-orange text, D3 doubled fold rule dead); R2 d-light 9 (halo + margin-rules fixes verified); R2 m-light 8→ the two named fixes landed LIVE + captured (byte-sizes changed — R2's own test) — **final 9 confirm = next pass's first action**. WebKit env-blocked (no system libs, no sudo) — CI owns it. CLS 0.0159 ✓. **FIRST CAPTURE ROUND WAS INVALID**: Lenis raced the probes (scrollTo(0) snaps back to ~1800px in 700ms) — fixed with the window.__mdrkLenis seam; all frames re-captured at target==settled |
 | T | one scroll contract (Lenis + GSAP once) + `motion.md` index + 60fps throttled | **pending** | — |
 | P | every page: critique → subtract → arrange → contrast/states → polish → panel | **pending** | — |
 | N | `gate:clean` to ZERO base (kill the 76/179 R326 overrides), dead assets, naming | **pending** | — |
@@ -111,15 +111,23 @@ Test logins `*@test.ly` / `12345678` (seeded locally). Never run root
 
 ## Exact next 3 actions
 
-1. **H1** — re-seat `.cb-banner` as a Heron-language corner card: ≤360px
-   desktop inside the sheet grid corner, phone = grid-width minus gutters above
-   the bottom tab rail with a dynamic `padding-bottom` reserve; 240ms rise;
-   stored decision never re-shows; the evaluation harness accepts/holds consent
-   BEFORE any graded shot.
-2. **H2** — desktop hero fold: art to ~62% band height with the title cell in
-   the grid, hint ≥12px @ ≥4.5:1, the six-indicator row static + un-faded and
-   fully clear of the banner band (measure at 1440×900 / 1280×720 / 1920×1080).
-3. **H3** — phone hero: container = `100svh − bar`, art ≈4:3 full-width without
-   the dead mat, title+lead+CTA one connected block (24/32 gaps), CTA fully
-   above the fold with the consent card present, indicators = horizontal snap
-   strip with zero mid-glyph crop.
+1. **H7 close-out** — R2's m-light final confirm (the two named fixes are
+   LIVE + captured with changed byte-sizes — one VLM pass on
+   shots/H7/m-light-{075,100}.png settles the 9); then the wordmark face
+   audit (R2 reads soft Tajawal-like terminals — check whether
+   `wordmark-art.generated.ts` still rides Alexandria instead of the Plex 600
+   the comments claim) and the m-025/m-050 near-blank statement-era frames
+   (the phone pin's dead runway — needs the T-phase scrub-timing work).
+2. **T — the scroll contract** — one Lenis+GSAP registration table
+   (scripts/gsap are NOT in package.json — decide: adopt or keep the
+   zero-dependency conductor), `docs/redesign/r328/motion.md` (name ·
+   trigger · duration · curve · scrub? · fallback for EVERY animation,
+   the 120/240/480/720 ladder decision incl. the consent card's 240ms),
+   60fps CPU×4 trace, and the five canonical scroll films (Heron|Madarek).
+3. **P — the page queue** (770-shot order): auth/register → student
+   dashboard → courses → lecture → AI → exams → teacher → registrar →
+   owner → settings → notifications → 404/500 → /app. Per page:
+   critique → subtract → arrange → states/contrast → polish → panel ≥ 9.
+   NOTE for every probe: use window.__mdrkLenis for offset shots; force
+   dark via the zustand JSON ({state:{mode:'dark'},version:2}); accept
+   `madarek.consent` before graded shots.
