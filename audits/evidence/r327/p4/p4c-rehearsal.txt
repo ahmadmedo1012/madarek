@@ -1,0 +1,13 @@
+# P4(c) dress rehearsal — 2026-11-01T00:46:43.473Z
+# 20 students · 1 registrar · 1 teacher · BASE=http://localhost:4000
+
+1) registrar + teacher logins → 200 ✓ (registrar = «المسجل العام», teacher = teacher@test.ly)
+2) POST /invites (STUDENT, offering scope, 7d, maxUses=20) → HTTP 201 · code ER9YS5SH
+3) 20/20 students registered with the code → ALL 201 ✓
+4) first-session minute × 20: /auth/me 20 · /enrollments/me 20 · /courses 20 · AI 20 · /notifications 20
+   student #1 AI → HTTP 200 · student #2 AI → HTTP 200
+5) re-login #1 + #20 → 200 ✓ both
+6) registrar GET /admin/users?role=STUDENT&search=p4c-2611010046 → HTTP 200 · 51 row(s)
+7) teacher GET /invites → usedCount 20/20
+
+VERDICT: registers 20/20 · walk ALL ✓ · re-login ✓ · invite usedCount 20/20
