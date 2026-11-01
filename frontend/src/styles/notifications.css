@@ -59,7 +59,9 @@
   border-radius: var(--r-sm);
   transition: background var(--t-fast) var(--ease);
 }
-.notif-panel-action:hover { background: var(--accent-soft); }
+@media (hover: hover) and (pointer: fine) {
+  .notif-panel-action:hover { background: var(--accent-soft); }
+}
 .notif-panel-close {
   /* S-1b: width/height → the logical twins (identical at horizontal-tb;
      polish never declares either on this control, so this rule is the
@@ -75,7 +77,9 @@
   cursor: pointer;
   transition: background var(--t-fast) var(--ease);
 }
-.notif-panel-close:hover { background: var(--surface-2); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .notif-panel-close:hover { background: var(--surface-2); color: var(--text); }
+}
 
 .notif-panel-list {
   /* S-1b: max-height → max-block-size (logical twin; horizontal-tb identical,
@@ -108,7 +112,8 @@
   border-radius: var(--r-full);
   background: var(--surface-2);
   color: var(--text-subtle);
-  display: flex;
+  /* R329 (gate:clean): display is polish.css's overrides seat
+     (inline-flex) — this pages-layer copy was inert. */
   align-items: center;
   justify-content: center;
 }
@@ -138,8 +143,12 @@
      overrides-layer .notif-item re-specifies both with the identical
      values; the r149 alignment note retired with them.) */
 }
-.notif-item:hover { background: var(--surface-2); }
-.notif-item.unread:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+@media (hover: hover) and (pointer: fine) {
+  .notif-item:hover { background: var(--surface-2); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .notif-item.unread:hover { background: color-mix(in srgb, var(--accent) 18%, transparent); }
+}
 
 .notif-item-icon {
   display: inline-flex;
@@ -188,22 +197,25 @@
   background: var(--surface-2);
 }
 .notif-panel-viewall {
-  display: flex;
   align-items: center;
   justify-content: center;
   /* (r157 dead-declaration sweep: gap 4px / font-size 13px /
      font-weight 600 deleted — polish.css's overrides-layer
      .notif-panel-viewall re-specifies all three (→ --sp-1/--fs-xs/
      --fw-semibold there, the live owner). justify-content/padding/
-     transition below are properties polish does NOT own — they stay.) */
+     transition below are properties polish does NOT own — they stay.
+     R329 gate:clean: display (inline-flex) + color (accent-strong)
+     join the sweep — polish's overrides twin owns both; these
+     pages-layer copies were inert.) */
   /* r155d: raw 12px/16px → --sp-3/--sp-4 (exact rungs). */
   padding: var(--sp-3) var(--sp-4);
-  color: var(--accent-ink, var(--accent));
   text-decoration: none;
   transition: background var(--t-fast) var(--ease);
 }
+@media (hover: hover) and (pointer: fine) {
 .notif-panel-viewall:hover {
   background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
 }
 
 /* RTL: chevron direction natural via inline-flex; the icon itself
@@ -324,7 +336,8 @@
   inset-block-start: 0;
   inset-inline: 0;
   block-size: 2px;
-  background: var(--accent);
+  /* R329 (gate:clean): the rule ground is r325-shell.css's unlayered
+     --app-signal seat — this pages-layer copy was inert. */
   animation: polish-bottomnav-rule var(--motion-duration-medium) var(--ease-out);
 }
 @keyframes polish-bottomnav-rule {
@@ -563,7 +576,9 @@
   display: inline-flex;
   align-items: center;
 }
-.toast-stack .toast-action:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+@media (hover: hover) and (pointer: fine) {
+  .toast-stack .toast-action:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+}
 .toast-stack .toast-action:focus-visible { outline: var(--state-focus-ring); outline-offset: -2px; }
 .toast-stack .toast-action:active { opacity: 0.7; }
 

@@ -61,9 +61,6 @@
     border-radius: var(--r-xl);
     padding: var(--card-padding);
     position: relative;
-    transition: border-color var(--t-base) var(--ease),
-                box-shadow var(--t-base) var(--ease),
-                transform var(--t-base) var(--ease);
     min-inline-size: 0;
     box-shadow: var(--shadow-card);
   }
@@ -93,7 +90,9 @@
     pointer-events: none;
     z-index: 0; /* paint-order baseline — local, not a --z-* layer */
   }
-  .card:not(.flush):hover::before { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .card:not(.flush):hover::before { opacity: 1; }
+  }
   .card > * { position: relative; z-index: 1; }
   .card.bordered { border-color: var(--rule); }
   .card.glass {
@@ -115,24 +114,20 @@
   .card.interactive,
   a > .card,
   button > .card { cursor: pointer; }
-  .card.interactive:hover,
-  a > .card:hover,
-  button > .card:hover,
-  .card.bordered:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h);
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    .card.interactive:hover,
+    a > .card:hover,
+    button > .card:hover,
+    .card.bordered:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-card-h);
+      transform: translateY(-1px);
+    }
   }
-  .card.interactive:active,
-  a > .card:active,
-  button > .card:active {
-    /* r130-W2-7: 0.995 hardcode → the card press token (0.99), the
-       value polish.css v9's overrides-layer rule already painted; the
-       registers are now single-token (cards 0.99 / controls 0.97 /
-       bottom-nav 0.93). */
-    transform: scale(var(--state-card-pressed-scale));
-    transition-duration: var(--t-micro);
-  }
+  /* R329 (gate:clean): the card press recipe lives in polish.css
+     alone (v9 @layer pages + the overrides-layer re-seat) — this
+     components-layer copy was inert (both declarations lost the
+     layer race) and is deleted so the selector has ONE home. */
 
   /* 13-17 dead-selector sweep (11-g P2-7): the SURFACE-CARD block
      (.surface-card + .surface-card-link + its .interactive/.compact/
@@ -219,7 +214,8 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: var(--sp-4);
-    overflow: clip;
+    /* R329 (gate:clean): overflow is polish.css's overrides seat
+       (hidden) — the clip copy here was inert. */
     /* r294 (polish v8+v13 fold): the OVERRIDES-layer v13 trio was
        the rendered truth (it beat the v8 pages-layer copy, which beat
        this base) — consolidated here, both polish copies deleted. */
@@ -236,15 +232,17 @@
      للنقر بينما 162 من 170 موقع استدعاء غير تفاعلية — إشارة كاذبة.
      النطاق الآن على الصنف الدلالي metric-link الذي يرسمه MetricCard
      عند وجود to/onClick فقط. */
-  .metric.metric-link:hover {
-    /* r294 (polish v8 fold): the TOUCH path — v8's un-gated pages-layer
-       hover (sticky-hover devices) that the v13 overrides copy never
-       matched. Off-token by design: accent-tinted hover glow. */
-    transform: translateY(-1px);
-    border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
-    box-shadow:
-      0 1px 2px color-mix(in srgb, var(--black) 3%, transparent),
-      0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
+  @media (hover: hover) and (pointer: fine) {
+    .metric.metric-link:hover {
+      /* r294 (polish v8 fold): the TOUCH path — v8's un-gated pages-layer
+         hover (sticky-hover devices) that the v13 overrides copy never
+         matched. Off-token by design: accent-tinted hover glow. */
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
+      box-shadow:
+        0 1px 2px color-mix(in srgb, var(--black) 3%, transparent),
+        0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
+    }
   }
   @media (hover: hover) {
     /* r294 (polish v13 fold): the POINTER path — the overrides-layer
@@ -260,7 +258,9 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .metric { transition: none; }
-    .metric.metric-link:hover { transform: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .metric.metric-link:hover { transform: none; }
+    }
   }
   /* r294 (polish v8 fold): reduce vertical noise on small screens. */
   @media (max-width: 640px) {
@@ -283,7 +283,8 @@
     font-weight: var(--type-metric-weight);
     color: var(--text);
     line-height: var(--type-metric-line-height);
-    letter-spacing: var(--type-metric-letter-spacing);
+    /* R329 (gate:clean): letter-spacing is polish.css's overrides
+       seat (--ls-tight) — the type-scale copy here was inert. */
     font-variant-numeric: tabular-nums;
     font-feature-settings: var(--type-metric-feature-settings);
   }
@@ -429,11 +430,6 @@
     user-select: none;
     white-space: nowrap;
     text-decoration: none;
-    transition: background var(--t-base) var(--ease),
-                border-color var(--t-base) var(--ease),
-                color var(--t-base) var(--ease),
-                box-shadow var(--t-base) var(--ease),
-                transform var(--t-fast) var(--ease);
     /* 5-C2 (A3 P1-3 / ruling #2): the old -0.005em tracking rendered
        -0.06px on every Arabic button label (all 15 surfaces). Sub-pixel
        at 12px, but em-scaled with font size and banned on cursive.
@@ -508,12 +504,14 @@
     pointer-events: auto;
     cursor: not-allowed;
   }
-  .btn:disabled:hover {
-    background: var(--_btn-bg);
-    border-color: var(--_btn-bd);
-    color: var(--_btn-fg);
-    box-shadow: var(--_btn-shadow);
-    transform: none;
+  @media (hover: hover) and (pointer: fine) {
+    .btn:disabled:hover {
+      background: var(--_btn-bg);
+      border-color: var(--_btn-bd);
+      color: var(--_btn-fg);
+      box-shadow: var(--_btn-shadow);
+      transform: none;
+    }
   }
   .btn[aria-disabled="true"]:not(:disabled) { opacity: var(--state-btn-disabled-opacity); pointer-events: none; }
 
@@ -577,9 +575,11 @@
      wipes/lifts under the cursor (the hover rules above are
      :not([data-loading])-gated; this re-assertion keeps motion.css's
      earlier contract winning inside this layer too). */
-  .btn[data-loading="true"]:hover {
-    transform: none;
-    box-shadow: var(--_btn-shadow);
+  @media (hover: hover) and (pointer: fine) {
+    .btn[data-loading="true"]:hover {
+      transform: none;
+      box-shadow: var(--_btn-shadow);
+    }
   }
 
   .btn.ghost {
@@ -650,12 +650,14 @@
     position: relative;
     transition: var(--t-clean);
   }
-  .icon-btn:hover {
-    /* R313 (D4): the icon seat joins the ink-wipe grammar — a plain
-       colour swap (no label to roll, no layer needed). */
-    background: var(--primary);
-    color: var(--primary-fg);
-    border-color: var(--primary);
+  @media (hover: hover) and (pointer: fine) {
+    .icon-btn:hover {
+      /* R313 (D4): the icon seat joins the ink-wipe grammar — a plain
+         colour swap (no label to roll, no layer needed). */
+      background: var(--primary);
+      color: var(--primary-fg);
+      border-color: var(--primary);
+    }
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .icon-btn.has-badge::after
      (danger dot on a notification bell) deleted — zero TSX consumers
@@ -702,8 +704,9 @@
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
     /* R313: the badge's 1px contact shadow is retired — paper +
-       hairlines only (the shadow ladder is none). */
-    transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
+       hairlines only (the shadow ladder is none). R329: the transition
+       seat is polish.css's overrides rule (transform-only spring) —
+       this copy was inert. */
   }
   /* r148 (AUDIT-2 L2): .badge:hover كان يرفع span غير تفاعلي (عرض خالص —
      primitives/index.tsx:217) — إشارة كاذبة. الحذف. */
@@ -753,18 +756,17 @@
     /* soft accent selection halo — interaction state, not elevation */
     box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
   }
-  .pill:hover { transform: translateY(var(--hover-lift)); }
+  @media (hover: hover) and (pointer: fine) {
+    .pill:hover { transform: translateY(var(--hover-lift)); }
+  }
   .pill:active:not(:disabled) { transform: scale(var(--press-scale)); }
   .pill:active:not(.on) {
     /* v6 press-snap: the press hop rides the micro duration */
     transition-duration: var(--motion-duration-micro);
   }
   .tab {
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
+    /* R329 (gate:clean): the transition seat is polish.css's .tab rule
+       (color+background) — this components-layer list was inert. */
   }
   /* R319 (C2-G2 · §C3): the .tab.on soft accent selection halo is
      RETIRED (the old `box-shadow: 0 0 0 4px accent 14%` wash) — the
@@ -774,7 +776,9 @@
   .tab:active {
     transform: scale(0.96);
   }
-  .pill:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .pill:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
+  }
   .pill.on {
     background: var(--neutral-900);
     color: var(--neutral-50);
@@ -818,7 +822,6 @@
     font-weight: var(--fw-semibold);
     cursor: pointer;
     position: relative;
-    transition: color var(--t-fast) var(--ease);
     white-space: nowrap;
   }
   .tab::after {
@@ -833,11 +836,19 @@
     border-radius: 2px 2px 0 0; /* radius-gate: allow — tab underline bar, block-axis, micro */
     transform: scaleX(0);
     transform-origin: 50% 50%;
-    transition: transform var(--t-base) var(--ease-out);
+    /* R329: the underline transition is polish.css's overrides rule —
+       this copy was inert. */
   }
-  .tab:hover { color: var(--text); }
-  .tab:hover::after { transform: scaleX(0.45); opacity: 0.4; }
-  .tab.on, .tab[aria-selected="true"] { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .tab:hover { color: var(--text); }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .tab:hover::after { transform: scaleX(0.45); opacity: 0.4; }
+  }
+  .tab.on { color: var(--text); }
+  /* R329 (gate:clean): the [aria-selected="true"] color seat is
+     polish.css's accent-ink rule — this components-layer copy was
+     inert; .tab.on keeps its ink here (no cross-file pair). */
   .tab.on::after,
   .tab[aria-selected="true"]::after {
     transform: scaleX(1);
@@ -954,14 +965,10 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .avatar {
     display: inline-flex; align-items: center; justify-content: center;
-    border-radius: 50%;
-    /* r306: the default avatar wash reaches the accent through the
-       semantic aliases (same seat the --c-copper-* family holds —
-       intent reads clearer than the legacy name). */
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-weight: var(--fw-bold);
-    font-family: var(--font-display);
+    /* R329 (gate:clean): the shared .avatar visual recipe (square
+       hairline, mono figures, surface ground) is polish.css's
+       overrides rule — the five components-layer declarations it
+       re-seated were inert and are deleted (one home per property). */
     letter-spacing: 0; /* r148 (AUDIT-3 M8): أحرف أولى عربية — لا تتبّع سالب */
     flex-shrink: 0;
   }
@@ -999,8 +1006,10 @@
     font-family: inherit;
   }
   textarea { padding-block: var(--sp-3); block-size: auto; min-block-size: 96px; resize: vertical; line-height: var(--lh-base); }
-  .input:hover,
-  input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .input:hover,
+    input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+  }
   /* R313 (D16): focus = the reference's #ED4C1F signal border (measured
      live on the footer-subscribe input; the token source is off-limits
      this round, so this is the one sanctioned literal — see the worklog
@@ -1054,7 +1063,8 @@
   .topbar-search input {
     flex: 1 1 auto;
     min-inline-size: 0;
-    block-size: 38px;
+    /* R329 (gate:clean): block-size is r325-shell.css's 44px seat —
+       the 38px here was inert (unlayered beats @layer components). */
     /* Start zone: icon at inset sp-2 (8px) + 14px glyph + breathing. */
     padding-inline: var(--sp-7) var(--sp-4);
     /* Same iOS 16px focus-zoom floor as the shared recipe (A10 P1-2):
@@ -1073,7 +1083,9 @@
      each get their own run-out. */
   .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-2)); }
   .topbar-search.has-shortcut input { padding-inline-end: calc(var(--sp-9) + var(--sp-4)); }
-  .topbar-search input:hover { border-color: var(--state-card-hover-border); }
+  @media (hover: hover) and (pointer: fine) {
+    .topbar-search input:hover { border-color: var(--state-card-hover-border); }
+  }
   /* No pill-specific :focus rule: the pill joins the app-wide input
      focus language — polish v15's accent border + soft halo (overrides
      layer beats anything here) and the v22 :focus-visible ring, which
@@ -1144,9 +1156,11 @@
   input[type="checkbox"] { border-radius: var(--r-xs); }
   input[type="radio"]    { border-radius: 50%; }
 
-  input[type="checkbox"]:hover,
-  input[type="radio"]:hover {
-    border-color: var(--accent);
+  @media (hover: hover) and (pointer: fine) {
+    input[type="checkbox"]:hover,
+    input[type="radio"]:hover {
+      border-color: var(--accent);
+    }
   }
 
   input[type="checkbox"]:checked,
@@ -1273,8 +1287,10 @@
     opacity: 0;
     transition: opacity var(--t-fast) var(--ease);
   }
-  .table tbody tr:hover .table-row-actions,
-  .table tbody tr:focus-within .table-row-actions { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .table tbody tr:hover .table-row-actions,
+    .table tbody tr:focus-within .table-row-actions { opacity: 1; }
+  }
   @media (hover: none) { .table-row-actions { opacity: 1; } }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -1311,7 +1327,9 @@
     }
     /* Cards don't zebra — parity with the old overrides-layer home
        (the wrap-scroller's hover never applied to stacked cards). */
-    .table.tbl-stack tbody tr:hover { background: var(--surface); }
+    @media (hover: hover) and (pointer: fine) {
+      .table.tbl-stack tbody tr:hover { background: var(--surface); }
+    }
     .tbl-stack td {
       display: flex;
       justify-content: space-between;
@@ -1374,10 +1392,12 @@
       border-color var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .table-pagination-actions button:hover:not(:disabled) {
-    background: var(--surface-2);
-    color: var(--text);
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .table-pagination-actions button:hover:not(:disabled) {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
   }
   .table-pagination-actions button.active,
   .table-pagination-actions button[aria-current="page"] {
@@ -1548,13 +1568,16 @@
     display: flex; align-items: center; gap: var(--sp-3);
     padding: var(--sp-3) var(--sp-4);
     border-block-end: 1px solid var(--rule);
-    transition: background var(--t-fast) var(--ease);
+    /* R329 (gate:clean): the row transition is polish.css's overrides
+       rule (background+transform) — this copy was inert. */
   }
   .list-row:last-child { border-block-end: 0; }
   /* r148 (AUDIT-2 L3): التمييز التفاعلي للصفوف القابلة للنقر فقط
      (label/button/a داخل ExamAuthorPages) — الصفوف الساكنة
      (TemplateRow/QuestionBankRow/المحاولات) لا تُضاء كاذبة. */
-  label.list-row:hover, button.list-row:hover, a.list-row:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    label.list-row:hover, button.list-row:hover, a.list-row:hover { background: var(--surface-2); }
+  }
   .list-row-body { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; }
   .list-row-title { font-weight: var(--fw-semibold); font-size: var(--type-label-size); color: var(--text); }
   .list-row-sub   { font-size: var(--type-label-size-sm); color: var(--text-muted); }
@@ -1725,8 +1748,10 @@
   .state-icon {
     transition: transform var(--motion-duration-reveal) var(--ease-out);
   }
-  .state:hover .state-icon {
-    transform: scale(1.05);
+  @media (hover: hover) and (pointer: fine) {
+    .state:hover .state-icon {
+      transform: scale(1.05);
+    }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2041,7 +2066,9 @@
     /* r149 (R3-A3 §3): لون التسطير كان يتبدل فوريًا (snap). */
     transition: text-decoration-color var(--t-fast) var(--ease);
   }
-  .text-link:hover { text-decoration-color: var(--accent-ink); }
+  @media (hover: hover) and (pointer: fine) {
+    .text-link:hover { text-decoration-color: var(--accent-ink); }
+  }
   /* r290: باب الخلية — رابط داخل خلية جدول يتمدّد على ارتفاع 44px+
      (أرضية اللمس) دون كسر إيقاع الصف: حشوة متماثلة مع هوامش سالبة
      مطابقة (صافي صفر)، وmin-block يضمن الأرضية في الوضع المكدّس.
@@ -2353,7 +2380,9 @@
     align-items: center;
     justify-content: center;
   }
-  .toast-close:hover { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .toast-close:hover { color: var(--text); }
+  }
   .toast-close:focus-visible {
     outline: var(--state-focus-ring);
   }
@@ -2421,9 +2450,11 @@
       background var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .dropdown-item:hover,
-  .dropdown-item[data-active="true"] {
-    background: var(--surface-2);
+  @media (hover: hover) and (pointer: fine) {
+    .dropdown-item:hover,
+    .dropdown-item[data-active="true"] {
+      background: var(--surface-2);
+    }
   }
   .dropdown-item:focus-visible {
     outline: var(--state-focus-ring);
@@ -2531,7 +2562,9 @@
     justify-content: center;
     transition: color var(--t-fast) var(--ease);
   }
-  .lightbox-close:hover { color: var(--text-on-dark); }
+  @media (hover: hover) and (pointer: fine) {
+    .lightbox-close:hover { color: var(--text-on-dark); }
+  }
   .lightbox-close:focus-visible {
     outline: 2px solid var(--text-on-dark);
     outline-offset: 2px;
@@ -2564,7 +2597,9 @@
     border-radius: var(--r-sm);
     transition: color var(--t-fast) var(--ease);
   }
-  .onboarding-flow-skip:hover { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .onboarding-flow-skip:hover { color: var(--text); }
+  }
   .onboarding-flow-skip:focus-visible {
     outline: var(--state-focus-ring);
   }
@@ -2668,9 +2703,8 @@
     cursor: pointer;
     font: inherit;
     text-align: start;
-    transition: background var(--t-fast) var(--ease),
-                color var(--t-fast) var(--ease),
-                border-color var(--t-fast) var(--ease);
+    /* R329 (gate:clean): the transition is r305-shell.css's unlayered
+       control recipe — this in-layer copy was inert. */
   }
   @media (hover: hover) and (pointer: fine) {
     /* R319 (c1-A · B1): guarded fine-pointer wash — the pair (surface
@@ -2728,10 +2762,9 @@
     z-index: var(--z-popover, 200);
     background: var(--surface);
     border: 1px solid var(--rule);
-    border-start-start-radius: var(--r-xl);
-    border-end-start-radius: var(--r-xl);
-    border-end-end-radius: var(--r-xl);
-    box-shadow: var(--elev-3, var(--shadow-card-h));
+    /* R329 (gate:clean): the corner radii + elevation are
+       notifications.css's unlayered seat (r-2xl + elev-2) — these
+       components-layer copies were inert. */
     inline-size: min(380px, calc(100vw - var(--sp-6) * 2));
     max-block-size: min(540px, 80dvh);
     overflow: clip;
@@ -2816,18 +2849,18 @@
     background: var(--surface);
     border: 1px solid var(--rule);
     border-radius: var(--r-xl);
-    overflow: clip;
+    /* R329 (gate:clean): overflow + transition are polish.css's
+       overrides seat — these copies were inert. */
     box-shadow: var(--shadow-card);
-    transition: border-color var(--t-base) var(--ease),
-                box-shadow var(--t-base) var(--ease),
-                transform var(--t-base) var(--ease);
     color: inherit;
     text-decoration: none;
     min-inline-size: 0;
   }
-  .thumb-card:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
+  @media (hover: hover) and (pointer: fine) {
+    .thumb-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-card-premium-h);
+    }
   }
   /* 5-C1 (A2 P2-8): the hover LIFT rides the hover-capable gate —
      with it ungated, iOS sticky-hover pinned the −2px lift on every
@@ -3095,7 +3128,9 @@
     transition: background var(--t-fast) var(--ease),
                 border-color var(--t-fast) var(--ease);
   }
-  .teacher-row:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .teacher-row:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  }
   .teacher-row:active { background: var(--surface-3); }
   .teacher-row:focus-visible { border-color: var(--accent); }
   .teacher-row.selected {
@@ -3222,7 +3257,9 @@
     cursor: pointer;
     transition: background var(--t-fast) var(--ease);
   }
-  .category-row-head:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .category-row-head:hover { background: var(--surface-2); }
+  }
   .category-row-head:active { background: var(--surface-3); }
   .category-row-body {
     display: flex;
@@ -3512,7 +3549,9 @@
                 border-color var(--t-fast) var(--ease),
                 box-shadow var(--t-fast) var(--ease);
   }
-  .exam-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .exam-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  }
   .exam-choice:active { background: var(--surface-3); }
   /* The selected answer — was completely invisible (audit 0-e P0).
      Accent border + soft accent wash + a 1px inset ring edge (a state
@@ -3542,9 +3581,11 @@
     cursor: default;
     opacity: 0.7;
   }
-  .exam-choice:has(input:disabled):hover {
-    background: var(--surface);
-    border-color: var(--border);
+  @media (hover: hover) and (pointer: fine) {
+    .exam-choice:has(input:disabled):hover {
+      background: var(--surface);
+      border-color: var(--border);
+    }
   }
 
   /* ── State icon variant — success (teacher feed empty state). The
@@ -3644,12 +3685,12 @@
     color: var(--text);
   }
 
-  /* End-aligned submit area under the question list (was inline). */
+  /* End-aligned submit area under the question list (was inline).
+     R329 (gate:clean): the row-wrap layout (flex-direction/align/gap)
+     is student.css's pages-layer rule — these components-layer copies
+     were inert. */
   .exam-submit-bar {
     display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--sp-2);
     margin-block-start: var(--sp-4);
   }
 
@@ -3881,17 +3922,19 @@
     border: 1px solid var(--border);
     border-radius: var(--r-lg);
     background: var(--surface-1);
-    box-shadow: var(--shadow-card);
+    /* R329 (gate:clean): admin.css retires the card shadow on this
+     surface (pages layer beats components) — the copy here was inert. */
     transition:
       transform var(--t-base) var(--ease),
       border-color var(--t-base) var(--ease),
       box-shadow var(--t-base) var(--ease);
   }
-  .admin-faculty-card:hover {
-    transform: translateY(-2px);
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-premium-h);
-  }
+  /* R329 (gate:clean): the faculty-card hover LIFT is retired on this
+     surface — admin.css's guarded rule (pages layer: transform none +
+     shadow none, "the card is paper, it does not bounce") owns the
+     hover state; this components-layer copy's transform/box-shadow
+     were inert and its border-color half is the identical twin.
+     Deleted whole (one seat per selector+context). */
   .admin-faculty-head {
     display: flex;
     align-items: flex-start;
@@ -4031,8 +4074,10 @@
     box-shadow: var(--shadow-card);
     transition: box-shadow var(--t-base) var(--ease);
   }
-  .gov-scope-card:hover {
-    box-shadow: var(--shadow-card-premium-h);
+  @media (hover: hover) and (pointer: fine) {
+    .gov-scope-card:hover {
+      box-shadow: var(--shadow-card-premium-h);
+    }
   }
   .gov-scope-head {
     display: flex;
@@ -4244,7 +4289,9 @@
       border-color var(--t-fast) var(--ease),
       color var(--t-fast) var(--ease);
   }
-  .att-toggle:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .att-toggle:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  }
   /* r132-G5: raw 0.97 (register-correct value, pre-token spelling — a 4th
      F6-class straggler the audit's oddball-value sweep didn't surface);
      controls press register via the token, r130-W2-7 ladder. */
@@ -4339,7 +4386,9 @@
   /* Lab cards are informational (no navigation) — the shared .track-card
      cursor promises a link that never happens. */
   .track-card.is-static { cursor: default; }
-  .track-card.is-static:hover { transform: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .track-card.is-static:hover { transform: none; }
+  }
   .track-card-actions {
     display: flex;
     flex-wrap: wrap;
@@ -4964,7 +5013,9 @@
   }
   .ledger-row:last-child { border-block-end: 0; }
   .ledger-row-link { cursor: pointer; }
-  .ledger-row-link:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .ledger-row-link:hover { background: var(--surface-2); }
+  }
   .ledger-row-link:active { background: var(--surface-3); }
   .ledger-lead {
     font-family: var(--font-mono);
@@ -5160,7 +5211,9 @@
     min-inline-size: 0;
   }
   .week-item + .week-item { border-block-start: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
-  .week-item:hover .week-item-title { color: var(--accent-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .week-item:hover .week-item-title { color: var(--accent-strong); }
+  }
   .week-item-title {
     font-size: var(--fs-sm);
     font-weight: var(--fw-medium);
@@ -5175,7 +5228,9 @@
   }
   .ledger-empty { padding: var(--sp-5); }
   .stat-cell-link { text-decoration: none; color: inherit; }
-  .stat-cell-link:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .stat-cell-link:hover { background: var(--surface-2); }
+  }
 
   /* ledger-row-flat — the honest zero-state row (one line, no well) */
   .ledger-row-flat { align-items: center; }
@@ -5260,10 +5315,16 @@
     opacity: 0;
     transition: opacity var(--t-fast) var(--ease);
   }
-  .ledger-row-link:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
-  .ledger-row-link:hover::before { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .ledger-row-link:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .ledger-row-link:hover::before { opacity: 1; }
+  }
   .ledger-row-link:active { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-  .stat-cell-link:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .stat-cell-link:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
+  }
 
   /* ── 4 · The momentum aura + orbit node on the masthead ───────── */
   .momentum-ring .ring-fill {
@@ -5293,15 +5354,19 @@
 
   /* ── 5 · Void buttons — the ghost that illuminates ────────────── */
   [data-theme="dark"] .btn { --_btn-shadow: none; }
-  [data-theme="dark"] .btn:hover {
-    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  @media (hover: hover) and (pointer: fine) {
+    [data-theme="dark"] .btn:hover {
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    }
   }
   [data-theme="dark"] .btn.primary {
     /* the white void CTA gains its halo on hover — aura, never text */
     box-shadow: var(--elev-2);
   }
-  [data-theme="dark"] .btn.primary:hover {
-    box-shadow: var(--elev-2); /* r197: the glow register is retired — quiet elevation only */
+  @media (hover: hover) and (pointer: fine) {
+    [data-theme="dark"] .btn.primary:hover {
+      box-shadow: var(--elev-2); /* r197: the glow register is retired — quiet elevation only */
+    }
   }
 
   /* ── 6 · Reduced motion — the aura and edges respect the switch ── */
@@ -5731,7 +5796,9 @@
     inset-block-end var(--t-fast) var(--ease),
     border-color var(--t-fast) var(--ease);
 }
-.fb-fab:hover { border-color: var(--border-strong, var(--border)); }
+@media (hover: hover) and (pointer: fine) {
+  .fb-fab:hover { border-color: var(--border-strong, var(--border)); }
+}
 @media (max-width: 640px) {
   /* Y6: the dock clearance (72px) keeps its safe-area growth and now
      rides on the bottom-stack offset (toasts lift the FAB higher). */

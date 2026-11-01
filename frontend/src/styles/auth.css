@@ -107,9 +107,11 @@
     text-decoration: none;
     cursor: pointer;
   }
-  .auth-back-home:hover {
-    background: var(--primary);   /* the charcoal ink fill */
-    color: var(--primary-fg);     /* inverted label */
+  @media (hover: hover) and (pointer: fine) {
+    .auth-back-home:hover {
+      background: var(--primary);   /* the charcoal ink fill */
+      color: var(--primary-fg);     /* inverted label */
+    }
   }
 
   /* Muted context chip in the top bar. When it is a Link (register's
@@ -128,9 +130,11 @@
       background var(--t-base) var(--ease),
       color var(--t-base) var(--ease);
   }
-  a.auth-context:hover {
-    background: var(--primary);
-    color: var(--primary-fg);
+  @media (hover: hover) and (pointer: fine) {
+    a.auth-context:hover {
+      background: var(--primary);
+      color: var(--primary-fg);
+    }
   }
 
   .auth-center {
@@ -568,7 +572,9 @@
     cursor: pointer;
     transition: color var(--t-fast) var(--ease);
   }
-  .auth-input-toggle:hover { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-input-toggle:hover { color: var(--text); }
+  }
   /* The controls register token (0.97) owns every control press. */
   .auth-input-toggle:active { transform: scale(var(--press-scale)); }
   /* Clears the toggle (4px inset + 44px wide + breathing) so text
@@ -677,7 +683,9 @@
     border-radius: var(--r-sm);
     transition: opacity var(--t-fast) var(--ease);
   }
-  .auth-retry-link:hover { opacity: 0.8; }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-retry-link:hover { opacity: 0.8; }
+  }
 
   /* r157 F5 (finding 2): the 409 «سجِّل الدخول» link inside the register
      error banner — inline with the server's own message, inherits the
@@ -695,7 +703,9 @@
     border-radius: var(--r-sm);
     transition: opacity var(--t-fast) var(--ease);
   }
-  .auth-error-link:hover { opacity: 0.8; }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-error-link:hover { opacity: 0.8; }
+  }
 
   /* ══ 5 · LOGIN EXTRAS ══════════════════════════════════════════════ */
 
@@ -778,10 +788,12 @@
     pointer-events: none;
     z-index: -1;
   }
-  .auth-submit:not(:disabled):hover,
-  .auth-submit:not(:disabled):focus-visible {
-    color: var(--accent-fg);
-    border-color: var(--accent);
+  @media (hover: hover) and (pointer: fine) {
+    .auth-submit:not(:disabled):hover,
+    .auth-submit:not(:disabled):focus-visible {
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
   }
   /* R323 A5 §2 (contrast-gate): the wipe's raw --accent ground fails AA
      under the white label in light (3.76:1) — the same documented R318
@@ -789,13 +801,17 @@
   [data-theme='light'] .auth-submit::before {
     background: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
   }
-  [data-theme='light'] .auth-submit:not(:disabled):hover,
-  [data-theme='light'] .auth-submit:not(:disabled):focus-visible {
-    border-color: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
+  @media (hover: hover) and (pointer: fine) {
+    [data-theme='light'] .auth-submit:not(:disabled):hover,
+    [data-theme='light'] .auth-submit:not(:disabled):focus-visible {
+      border-color: #DB3A00; /* color-gate: allow — R318 AA seat, documented */
+    }
   }
-  .auth-submit:not(:disabled):hover::before,
-  .auth-submit:not(:disabled):focus-visible::before {
-    transform: translateX(0); /* the wipe — in from the inline-start edge */
+  @media (hover: hover) and (pointer: fine) {
+    .auth-submit:not(:disabled):hover::before,
+    .auth-submit:not(:disabled):focus-visible::before {
+      transform: translateX(0); /* the wipe — in from the inline-start edge */
+    }
   }
   /* The platform's single press register — buttons scale (0.97). */
   .auth-submit:active { transform: scale(var(--press-scale)); }
@@ -836,7 +852,9 @@
     cursor: pointer;
     transition: color var(--t-fast) var(--ease);
   }
-  .auth-demo-hint-close:hover { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-demo-hint-close:hover { color: var(--text); }
+  }
   .auth-demo-hint-body {
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
@@ -964,7 +982,9 @@
     cursor: pointer;
     transition: color var(--t-fast) var(--ease);
   }
-  .auth-demo-hint-reopen:hover { color: var(--text-secondary); }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-demo-hint-reopen:hover { color: var(--text-secondary); }
+  }
 
   .auth-register-prompt {
     text-align: center;
@@ -983,7 +1003,9 @@
     padding-block: var(--sp-3);
     margin-block: calc(-1 * var(--sp-3));
   }
-  .auth-register-prompt a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+  @media (hover: hover) and (pointer: fine) {
+    .auth-register-prompt a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+  }
 
   /* ══ 5b · THE CONSENT LINE (R320 §D · c2-LEGAL) — the policy-consent
      micro-module's seat (components/ConsentLine.tsx): ONE quiet line
@@ -1234,13 +1256,17 @@
     pointer-events: none;
     z-index: -1;
   }
-  .role-card:hover,
-  .role-card:focus-visible {
-    color: var(--accent-fg);
+  @media (hover: hover) and (pointer: fine) {
+    .role-card:hover,
+    .role-card:focus-visible {
+      color: var(--accent-fg);
+    }
   }
-  .role-card:hover::before,
-  .role-card:focus-visible::before {
-    transform: translateY(0);
+  @media (hover: hover) and (pointer: fine) {
+    .role-card:hover::before,
+    .role-card:focus-visible::before {
+      transform: translateY(0);
+    }
   }
   .role-card:active { transform: scale(var(--press-scale)); }
   /* r313: focus-visible drives the hover recipe (the reference's
@@ -1257,9 +1283,11 @@
     flex: 0 0 auto;
     transition: color var(--t-base) var(--ease);
   }
-  .role-card:hover .role-card-index,
-  .role-card:focus-visible .role-card-index {
-    color: inherit;
+  @media (hover: hover) and (pointer: fine) {
+    .role-card:hover .role-card-index,
+    .role-card:focus-visible .role-card-index {
+      color: inherit;
+    }
   }
 
   .role-card-body {
@@ -1279,16 +1307,20 @@
     line-height: var(--lh-snug);
     color: var(--text-muted);
   }
-  .role-card:hover .role-card-sub,
-  .role-card:focus-visible .role-card-sub {
-    color: color-mix(in srgb, var(--accent-fg) 82%, transparent);
+  @media (hover: hover) and (pointer: fine) {
+    .role-card:hover .role-card-sub,
+    .role-card:focus-visible .role-card-sub {
+      color: color-mix(in srgb, var(--accent-fg) 82%, transparent);
+    }
   }
   .role-card-arrow {
     color: var(--text-faint);
     flex: 0 0 auto;
     transition: color var(--t-base) var(--ease);
   }
-  .role-card:hover .role-card-arrow { color: inherit; }
+  @media (hover: hover) and (pointer: fine) {
+    .role-card:hover .role-card-arrow { color: inherit; }
+  }
 
   /* the appointment note — a quiet ruled aside on the bare paper */
   .role-invitation-note {
@@ -1455,9 +1487,13 @@
 
   /* ══ Reduced motion — the R315 belt (every mover collapses) ═══════ */
   @media (prefers-reduced-motion: reduce) {
+    /* R329 (gate:clean): .auth-card rides polish.css's overrides-layer
+       reduced-motion belt (animation: none !important — same value,
+       stronger arm); it leaves this list so the selector pair stops
+       being a cross-file duplicate. .auth-step-panel/.nf-scene keep
+       their belt here. */
     .auth-step-panel,
-    .nf-scene,
-    .auth-card { animation: none; }
+    .nf-scene { animation: none; }
     .role-card,
     .role-card::before,
     .role-card-index,

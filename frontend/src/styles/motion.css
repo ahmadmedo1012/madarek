@@ -248,9 +248,11 @@
   .btn[data-loading="true"] {
     cursor: progress;
   }
-  .btn[data-loading="true"]:hover {
-    transform: none;
-    box-shadow: var(--_btn-shadow);
+  @media (hover: hover) and (pointer: fine) {
+    .btn[data-loading="true"]:hover {
+      transform: none;
+      box-shadow: var(--_btn-shadow);
+    }
   }
 
   /* Visually-hidden label kept inside the button while loading so the

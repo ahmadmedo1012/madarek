@@ -621,9 +621,11 @@ body:has(.r305ao) .owner-confirm-actions {
 body:has(.r305ao) .owner-confirm-actions .btn.danger {
   box-shadow: none;
 }
-body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
-  box-shadow: none;
-  transform: none;
+@media (hover: hover) and (pointer: fine) {
+  body:has(.r305ao) .owner-confirm-actions .btn.danger:hover:not(:disabled) {
+    box-shadow: none;
+    transform: none;
+  }
 }
 
 /* ════════════════════════════════════════════════════════════════

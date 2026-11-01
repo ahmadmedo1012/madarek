@@ -205,7 +205,9 @@
   cursor: pointer;
   font-family: inherit; font-size: inherit;
 }
-.r323d-stackdemo-fab:hover { border-color: var(--app-signal); }
+@media (hover: hover) and (pointer: fine) {
+  .r323d-stackdemo-fab:hover { border-color: var(--app-signal); }
+}
 
 /* ── the modal demo body heading ── */
 .r323d-modal-title { margin: 0 0 var(--sp-2-5); font-weight: 600; }

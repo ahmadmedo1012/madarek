@@ -47,11 +47,13 @@
       box-shadow var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  a:hover > .card:not(.flush),
-  button.card:hover {
-    transform: translateY(-1px);
-    border-color: var(--rule-strong, var(--rule));
-    box-shadow: var(--shadow-sm);
+  @media (hover: hover) and (pointer: fine) {
+    a:hover > .card:not(.flush),
+    button.card:hover {
+      transform: translateY(-1px);
+      border-color: var(--rule-strong, var(--rule));
+      box-shadow: var(--shadow-sm);
+    }
   }
   /* (Wave 1-a focus consolidation: `outline: none` + the 32%-alpha
      --focus-ring halo (≈1.5:1 on cream — WCAG fail) deleted. The accent
@@ -196,9 +198,11 @@
     .sidebar-backdrop.show {
       animation: none;
     }
-    a:hover > .card:not(.flush),
-    button.card:hover {
-      transform: none;
+    @media (hover: hover) and (pointer: fine) {
+      a:hover > .card:not(.flush),
+      button.card:hover {
+        transform: none;
+      }
     }
     .btn:active:not(:disabled) { transform: none; }
   }
@@ -288,7 +292,9 @@
 
   /* ── Tab items: pointer + hover underline ───────────────────── */
   .tab { cursor: pointer; }
-  .tab:hover { color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .tab:hover { color: var(--text); }
+  }
   /* 15-g P1-4 — selected-tab label is body-size text (.tab base is
      --type-label-size 13px/600), so 4.5:1 applies: light --accent
      #B57438 reads 3.52–3.80:1 on card surfaces. --accent-ink keeps
@@ -413,28 +419,32 @@
     .sidebar.collapsed .nav-item {
       position: relative;
     }
-    .sidebar.collapsed .nav-item:hover::after {
-      content: attr(title);
-      position: absolute;
-      inset-inline-start: calc(100% + 8px);
-      inset-block-start: 50%;
-      transform: translateY(-50%);
-      padding: var(--sp-1) var(--sp-2-5);
-      background: var(--text);
-      color: var(--bg);
-      font-size: var(--fs-xxs);
-      font-weight: var(--fw-medium);
-      border-radius: var(--r-sm);
-      white-space: nowrap;
-      /* 012 z-language: hover tooltip above sidebar content. */
-      z-index: var(--z-tooltip);
-      pointer-events: none;
-      opacity: 0;
-      animation: polish-tooltip-in var(--motion-duration-micro) var(--ease-out) 240ms forwards;
+    @media (hover: hover) and (pointer: fine) {
+      .sidebar.collapsed .nav-item:hover::after {
+        content: attr(title);
+        position: absolute;
+        inset-inline-start: calc(100% + 8px);
+        inset-block-start: 50%;
+        transform: translateY(-50%);
+        padding: var(--sp-1) var(--sp-2-5);
+        background: var(--text);
+        color: var(--bg);
+        font-size: var(--fs-xxs);
+        font-weight: var(--fw-medium);
+        border-radius: var(--r-sm);
+        white-space: nowrap;
+        /* 012 z-language: hover tooltip above sidebar content. */
+        z-index: var(--z-tooltip);
+        pointer-events: none;
+        opacity: 0;
+        animation: polish-tooltip-in var(--motion-duration-micro) var(--ease-out) 240ms forwards;
+      }
     }
-    [dir="rtl"] .sidebar.collapsed .nav-item:hover::after {
-      inset-inline-start: auto;
-      inset-inline-end: calc(100% + 8px);
+    @media (hover: hover) and (pointer: fine) {
+      [dir="rtl"] .sidebar.collapsed .nav-item:hover::after {
+        inset-inline-start: auto;
+        inset-inline-end: calc(100% + 8px);
+      }
     }
     @keyframes polish-tooltip-in {
       from { opacity: 0; transform: translateY(-50%) translateX(-4px); }
@@ -602,20 +612,20 @@
     justify-content: center;
     inline-size: 36px;
     block-size: 36px;
-    border-radius: var(--r-full);
     border: 1px solid transparent;
     background: transparent;
     color: var(--text-muted);
     cursor: pointer;
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
+    /* R329 (gate:clean): radius 0 is r319-shell.css's unlayered seat;
+       the transition is r305-shell.css's control recipe — both
+       overrides-layer copies here were inert (unlayered wins). */
   }
-  .topbar-notif:hover {
-    background: var(--surface-2);
-    color: var(--text);
-    border-color: var(--rule);
+  @media (hover: hover) and (pointer: fine) {
+    .topbar-notif:hover {
+      background: var(--surface-2);
+      color: var(--text);
+      border-color: var(--rule);
+    }
   }
   /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
      the bell button takes the single AA-safe ring from v22.) */
@@ -632,8 +642,9 @@
     block-size: 16px;
     padding: 0 var(--sp-1); /* r157: 4px → --sp-1 */
     border-radius: var(--r-full);
-    background: var(--danger);
-    color: var(--white);
+    /* R329 (gate:clean): the badge's danger ground + fg are
+       notifications.css's unlayered seats (danger-ink/danger-fg) —
+       these overrides-layer copies were inert. */
     font-size: var(--fs-xxs); /* r157: 10px → --fs-xxs (تقريب مقصود لأرقام الشارة) */
     font-weight: 700;
     line-height: 16px;
@@ -685,8 +696,10 @@
     transition: background var(--t-fast) var(--ease);
   }
   .notif-item:last-child { border-block-end: 0; }
-  .notif-item:hover .notif-item-icon {
-    transform: translateX(calc(2px * var(--motion-direction)));
+  @media (hover: hover) and (pointer: fine) {
+    .notif-item:hover .notif-item-icon {
+      transform: translateX(calc(2px * var(--motion-direction)));
+    }
   }
 
   .notif-item-icon {
@@ -785,8 +798,10 @@
   .notif-panel-viewall svg {
     transition: transform var(--t-fast) var(--ease);
   }
-  .notif-panel-viewall:hover svg {
-    transform: translateX(calc(4px * var(--motion-direction)));
+  @media (hover: hover) and (pointer: fine) {
+    .notif-panel-viewall:hover svg {
+      transform: translateX(calc(4px * var(--motion-direction)));
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -819,12 +834,14 @@
     transition: transform var(--t-fast) var(--ease),
                 box-shadow var(--t-fast) var(--ease);
   }
-  .post:hover,
-  .announcement-card:hover {
-    transform: translateY(-1px);
-    /* Off-token by design: soft diffuse hover shadow — composite sits
-       between --elev-2 and --elev-3 (16px blur exceeds the ±2px band). */
-    box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 3%, transparent), 0 4px 16px -4px color-mix(in srgb, var(--black) 6%, transparent);
+  @media (hover: hover) and (pointer: fine) {
+    .post:hover,
+    .announcement-card:hover {
+      transform: translateY(-1px);
+      /* Off-token by design: soft diffuse hover shadow — composite sits
+         between --elev-2 and --elev-3 (16px blur exceeds the ±2px band). */
+      box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 3%, transparent), 0 4px 16px -4px color-mix(in srgb, var(--black) 6%, transparent);
+    }
   }
 
   /* Tab counts get a calm pill style instead of inline numbers */
@@ -1068,10 +1085,12 @@
   }
   /* never lift-hover on touch — it lingers awkwardly after tap */
   @media (hover: none) {
-    .card.interactive:hover,
-    a > .card:hover,
-    button > .card:hover {
-      transform: none;
+    @media (hover: hover) and (pointer: fine) {
+      .card.interactive:hover,
+      a > .card:hover,
+      button > .card:hover {
+        transform: none;
+      }
     }
   }
 
@@ -1395,9 +1414,11 @@
     opacity: 0;
     transform: scaleY(0.4);
   }
-  .nav-item:hover::before {
-    opacity: 0.5;
-    transform: scaleY(0.7);
+  @media (hover: hover) and (pointer: fine) {
+    .nav-item:hover::before {
+      opacity: 0.5;
+      transform: scaleY(0.7);
+    }
   }
   .nav-item.on::before {
     opacity: 1;
@@ -1406,8 +1427,10 @@
   .nav-icon {
     transition: transform var(--t-fast) var(--ease);
   }
-  .nav-item:hover .nav-icon {
-    transform: scale(1.08);
+  @media (hover: hover) and (pointer: fine) {
+    .nav-item:hover .nav-icon {
+      transform: scale(1.08);
+    }
   }
 
 
@@ -1487,14 +1510,18 @@
        again by R313 to the .4s wipe register.) */
     transition: transform var(--t-base) var(--ease);
   }
-  .btn:hover .icon,
-  .btn:hover svg {
-    transform: translateX(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover .icon,
+    .btn:hover svg {
+      transform: translateX(-1px);
+    }
   }
   /* in RTL the visual "forward" direction flips */
-  [dir="rtl"] .btn:hover .icon,
-  [dir="rtl"] .btn:hover svg {
-    transform: translateX(1px);
+  @media (hover: hover) and (pointer: fine) {
+    [dir="rtl"] .btn:hover .icon,
+    [dir="rtl"] .btn:hover svg {
+      transform: translateX(1px);
+    }
   }
 
   /* r143 (T1-f F5): the Send paper-plane is the ONE directional glyph
@@ -1507,8 +1534,10 @@
   }
   /* the RTL button-hover nudge above re-declares `transform` on svg —
      compose it with the mirror so the flip survives the hover state. */
-  [dir="rtl"] .btn:hover svg.lucide-send {
-    transform: scaleX(-1) translateX(1px);
+  @media (hover: hover) and (pointer: fine) {
+    [dir="rtl"] .btn:hover svg.lucide-send {
+      transform: scaleX(-1) translateX(1px);
+    }
   }
 
 
@@ -1572,27 +1601,15 @@
        adoption — same values from the token source, so the cascade
        outcome is unchanged; the motion-gate debt entries are gone. */
 
-    /* (4-A11 P1-3 — `all` smuggled out of --t-clean.
-       tokens.css:118 ships `--t-clean: all var(--t-base) var(--ease)`,
-       so every one of its 22 consumers (components/layout/auth/landing
-       + this file) ran phantom transitions on scrollbar-color,
-       outline-* and every other changed property — live-measured:
-       .icon-btn fading scrollbar-color over 240ms on modal open, focus
-       rings fading in over 160–240ms instead of appearing instantly
-       (WCAG 2.4.7 smell). tokens.css is file-disjoint from the 20-c
-       motion batch, so the de-smuggled definition lives here for now —
-       the overrides layer wins the custom-property cascade over
-       @layer tokens — until tokens.css adopts the same list at :118
-       and drops `all`. Property list = exactly what the consumers
-       actually animate (hover/press/focus surfaces), plus opacity for
-       the disabled fades.) */
-    --t-clean:
-      background-color var(--t-base) var(--ease),
-      color var(--t-base) var(--ease),
-      border-color var(--t-base) var(--ease),
-      box-shadow var(--t-base) var(--ease),
-      transform var(--t-base) var(--ease),
-      opacity var(--t-base) var(--ease);
+    /* (4-A11 P1-3 — `all` smuggled out of --t-clean. RESOLVED R329
+       (gate:clean): tokens.css now ships the de-smuggled property
+       list itself (same six properties, adopted verbatim from here)
+       and this overrides-layer copy — the cross-file duplicate seat
+       the duplicate-selector gate flagged — is DELETED. The cascade
+       outcome is unchanged: the same value, now from @layer tokens,
+       the token's one canonical home. tokens.css is file-disjoint
+       from the 20-c motion batch, which is why the de-smuggled value
+       lived here between 4-A11 and now.) */
 
     /* Focus halo ring — RETIRED (premium-polish): the one focus language
        is --state-focus-ring (outline) + --state-input-focus-halo
@@ -1818,7 +1835,9 @@
   /* r149 (R3-A3 M2): ذيل r148 المتبقي — القضيب الرئيس كان يضيء على
      162 بلاطة KPI غير قابلة للنقر. الآن محصور على .metric-link
      مثل .metric:hover نفسه (حكم r148 H1). */
-  .metric.metric-link:hover::before { transform: scaleY(1); }
+  @media (hover: hover) and (pointer: fine) {
+    .metric.metric-link:hover::before { transform: scaleY(1); }
+  }
   /* Numeric values get tabular alignment globally */
   .metric-value {
     font-variant-numeric: tabular-nums;
@@ -1956,32 +1975,15 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SIDEBAR — desktop active rail + dot indicator                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  /* The existing .nav-item.on::before is the accent rail; we sweeten
-     it with a small dot that pops in when the item activates. */
+  /* R329 (gate:clean): the rail-dot block (.nav-item.on::after + its
+     RTL companions + @keyframes madarek-rail-dot-in) is DELETED —
+     r305-shell.css:151's unlayered `content: none` retired the dot
+     (it leaked v6's collapsed-rail tooltip attr()); every declaration
+     here was inert under it. The rail signal is the ::before bar
+     (layout.css), full stop. */
   .nav-item {
     position: relative;
   }
-  .nav-item.on::after {
-    content: '';
-    position: absolute;
-    inset-inline-start: 6px;
-    inset-block-start: 50%;
-    transform: translateY(-50%) scale(0);
-    inline-size: 5px;
-    block-size: 5px;
-    border-radius: 50%;
-    background: var(--accent);
-    /* accent halo ring around the active-rail dot — not elevation
-       (premium-polish: shared --state-input-focus-halo token) */
-    box-shadow: var(--state-input-focus-halo);
-    animation: madarek-rail-dot-in var(--motion-duration-page) var(--ease-spring-bounce) both 80ms;
-  }
-  @keyframes madarek-rail-dot-in {
-    from { transform: translateY(-50%) scale(0); opacity: 0; }
-    to   { transform: translateY(-50%) scale(1); opacity: 1; }
-  }
-  /* RTL flips */
-  [dir="ltr"] .nav-item.on::after { inset-inline-start: 6px; }
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2069,19 +2071,13 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TOPBAR USER TRIGGER — spring chevron on press                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .topbar-user-trigger {
-    transition:
-      background var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      box-shadow var(--motion-duration-medium) var(--ease),
-      transform var(--motion-duration-short) var(--ease);
-  }
-  .topbar-user-trigger:hover {
-    box-shadow: var(--elev-1);
-  }
+  /* R329 (gate:clean): this block's spring transition was inert —
+     r305-shell.css's unlayered control recipe owns the trigger's
+     transition, and its hover/expanded rules retire the elevation
+     (box-shadow: none) — the copies here lost the unlayered race and
+     are deleted (ONE seat per selector+context per sheet). */
   .topbar-user-trigger[aria-expanded="true"] {
     background: var(--surface-2);
-    box-shadow: var(--elev-2);
   }
   /* Chevron in user trigger flips when menu opens */
   /* (Wave 9-b dead-selector sweep: the chevron-flip rule deleted —
@@ -2576,12 +2572,16 @@
   [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card)::after {
     transform-origin: left;
   }
-  a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card):hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+  @media (hover: hover) and (pointer: fine) {
+    a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card):hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
   }
-  [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card):hover::after {
-    transform-origin: right;
+  @media (hover: hover) and (pointer: fine) {
+    [dir="rtl"] a:not(.btn):not(.nav-item):not(.bottom-nav-item):not(.thumb-card):not(.list-row):not(.landing-brand):not(.skip-link):not(.back-link):not(.track-card):hover::after {
+      transform-origin: right;
+    }
   }
 
 
@@ -2718,35 +2718,16 @@
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
-     ║  B1. Collapsed-rail topbar tint — valid, RTL-correct           ║
+     ║  B1. Collapsed-rail topbar tint — RETIRED (R329 gate:clean)   ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  /* RTL logic: the collapsed icon rail sits at the inline-start edge of
-     the viewport (right in RTL, left in LTR). The tint therefore anchors
-     the gradient's STARTING edge to the rail and fades toward the other
-     side: `to right` for LTR, `to left` for RTL. `to inline-end` was
-     never a valid gradient keyword, so this tint silently never rendered
-     until now. Both rules live here (overrides layer) so they beat v9's
-     solid topbar background. */
-  html[data-sidebar-collapsed] .topbar {
-    background: linear-gradient(to right,
-      color-mix(in srgb, var(--surface-2) 80%, transparent),
-      var(--surface) 80px);
-  }
-  html[dir="rtl"][data-sidebar-collapsed] .topbar {
-    background: linear-gradient(to left,
-      color-mix(in srgb, var(--surface-2) 80%, transparent),
-      var(--surface) 80px);
-  }
-  html[data-theme="dark"][data-sidebar-collapsed] .topbar {
-    background: linear-gradient(to right,
-      color-mix(in srgb, var(--surface-2) 60%, transparent),
-      var(--surface) 90px);
-  }
-  html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
-    background: linear-gradient(to left,
-      color-mix(in srgb, var(--surface-2) 60%, transparent),
-      var(--surface) 90px);
-  }
+  /* R329 (gate:clean): the four gradient rules that lived here are
+     DELETED. r305-shell.css §collapsed-topbar (unlayered) retired the
+     tint for every variant (`background: var(--topbar-bg)` — opaque
+     ground; its own comment documents beating this overrides-layer
+     guard), so each gradient was an inert duplicate seat. The RTL
+     logic note survives for history: the tint anchored the gradient's
+     starting edge to the inline-start rail (`to right` LTR / `to left`
+     RTL) — `to inline-end` was never a valid keyword. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2921,9 +2902,11 @@
     border: 2px solid transparent;
     background-clip: padding-box;
   }
-  *::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
-    background-clip: padding-box;
+  @media (hover: hover) and (pointer: fine) {
+    *::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-thumb-hover);
+      background-clip: padding-box;
+    }
   }
   /* Sidebar's own rail re-lands on top of the global block (0-a P2-14):
      4px wide and whisper-quiet inside the nav column. */
@@ -2932,8 +2915,10 @@
     background: color-mix(in srgb, var(--text) 8%, transparent);
     border-radius: var(--r-full);
   }
-  .sidebar::-webkit-scrollbar-thumb:hover {
-    background: color-mix(in srgb, var(--text) 18%, transparent);
+  @media (hover: hover) and (pointer: fine) {
+    .sidebar::-webkit-scrollbar-thumb:hover {
+      background: color-mix(in srgb, var(--text) 18%, transparent);
+    }
   }
   .sidebar::-webkit-scrollbar-track { background: transparent; }
   .sidebar { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--text) 8%, transparent) transparent; }
@@ -2956,8 +2941,10 @@
     /* R319 (c1-A · B1b): OPAQUE paper — the translucent --topbar-bg
        chrome glass let page text read through the dock (owner
        screenshot). alpha 1, no backdrop-filter: the bar is a solid
-       paper band on the 1px structural hairline. */
-    background: var(--bg);
+       paper band on the 1px structural hairline.
+       R329 (gate:clean): the dock ground is r325-shell.css's unlayered
+       --app-bg seat (and the hairline color its --app-line) — the
+       overrides-layer copies here were inert. */
     border-block-start: 1px solid var(--rule);
     z-index: var(--z-dropdown);
     /* r153h: 6px → --sp-1-5 (both slots). The bottom slot carries the
@@ -3060,8 +3047,10 @@
      pseudo-element and wins the cascade on .on/.active anyway) keeps
      rendering while the active item is hovered. */
   @media (min-width: 921px) {
-    .sidebar.collapsed .nav-item:not(.on):hover::after {
-      content: none;
+    @media (hover: hover) and (pointer: fine) {
+      .sidebar.collapsed .nav-item:not(.on):hover::after {
+        content: none;
+      }
     }
     /* The portaled tooltip supersedes the v8 pseudo entirely on
        focus-visible too (defense against attr(title) leftovers). */
@@ -3281,9 +3270,11 @@
       border-color: transparent;
       background: transparent;
     }
-    .topbar .topbar-user-trigger:hover {
-      background: var(--surface-3);
-      border-color: transparent;
+    @media (hover: hover) and (pointer: fine) {
+      .topbar .topbar-user-trigger:hover {
+        background: var(--surface-3);
+        border-color: transparent;
+      }
     }
   }
 
@@ -3318,10 +3309,12 @@
     background: linear-gradient(135deg, color-mix(in srgb, var(--white) 8%, transparent) 0%, transparent 60%);
     pointer-events: none;
   }
-  .card.glass-premium:hover,
-  .card-glass-premium:hover {
-    box-shadow: var(--shadow-card-glow);
-    border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
+  @media (hover: hover) and (pointer: fine) {
+    .card.glass-premium:hover,
+    .card-glass-premium:hover {
+      box-shadow: var(--shadow-card-glow);
+      border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
+    }
   }
 
   /* r297 hazard fix: a stray `/` preceded this media block — the

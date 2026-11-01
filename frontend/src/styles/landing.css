@@ -61,8 +61,19 @@
  * coordinates. Decorative only: aria-hidden in the markup,
  * pointer-transparent — and visible at EVERY breakpoint the reference
  * shows its frame (the 390×844 census keeps it: small screens get the
- * drafting chrome too — R313 supersedes the old desktop-only gate). */
-.sheet-frame {
+ * drafting chrome too — R313 supersedes the old desktop-only gate).
+ *
+ * R329 (gate:clean): scoped to `.landing .sheet-frame` — the frame
+ * grammar's twin lives in r319-shell.css (the shell's frame, z 150:
+ * above the topbar chrome rung, below every portaled overlay). Both
+ * sheets are unlayered, and the landing chunk loads AFTER the shell
+ * chunk, so the old unscoped landing rule clobbered the shell frame
+ * down to z 50 after any visit to the landing (the "broken edge"
+ * regression r319's comment warns about). The scope keeps the landing
+ * page rendering EXACTLY as authored (z 50, nothing between it and
+ * the landing's own overlays) while the shell's 150 wins on shell
+ * pages — and kills the cross-file duplicate the gate flagged. */
+.landing .sheet-frame {
   --frame-inset: 7px;
   position: fixed;
   inset: var(--frame-inset);

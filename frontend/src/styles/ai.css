@@ -227,10 +227,12 @@
     border-color var(--motion-duration-short) var(--motion-ease-standard),
     background var(--motion-duration-short) var(--motion-ease-standard);
 }
-.ai-msg-action:hover {
-  color: var(--text);
-  border-color: var(--rule);
-  background: var(--surface-2);
+@media (hover: hover) and (pointer: fine) {
+  .ai-msg-action:hover {
+    color: var(--text);
+    border-color: var(--rule);
+    background: var(--surface-2);
+  }
 }
 .ai-msg-action:disabled {
   opacity: var(--state-btn-disabled-opacity);

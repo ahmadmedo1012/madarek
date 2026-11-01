@@ -196,7 +196,9 @@
   min-block-size: 44px; /* the touch floor */
 }
 .tr-cue-text { font-size: 0.8125rem; /* type-gate: allow — the r321 player rungs (authored literals, reviewed) */ line-height: 1.7; color: var(--text); }
-.tr-cue:hover { background: var(--surface); }
+@media (hover: hover) and (pointer: fine) {
+  .tr-cue:hover { background: var(--surface); }
+}
 .tr-cue:focus-visible {
   outline: var(--state-focus-ring, 2px solid var(--accent));
   outline-offset: -2px;

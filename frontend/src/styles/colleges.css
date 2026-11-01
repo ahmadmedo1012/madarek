@@ -384,8 +384,8 @@
   inset-inline-start: 0;
   /* r313: the marker is a 1px accent HAIRLINE that draws in (the 4px
      gradient stripe retired with the gradient sweep; the scaleY draw
-     survives on the line). */
-  inline-size: 1px;
+     survives on the line). R329 (gate:clean): the 2px width re-seat
+     lives in polish.css's overrides rule — the 1px here was inert. */
   background: var(--accent);
   transform: scaleY(0);
   transform-origin: top;
@@ -720,10 +720,12 @@ a.comp-card {
     opacity var(--motion-duration-short) var(--motion-ease-standard),
     transform var(--motion-duration-short) var(--motion-ease-decelerate);
 }
-a.comp-card:hover .comp-go,
-a.comp-card:focus-visible .comp-go {
-  opacity: 1;
-  transform: translateX(0);
+@media (hover: hover) and (pointer: fine) {
+  a.comp-card:hover .comp-go,
+  a.comp-card:focus-visible .comp-go {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 @media (hover: none) {
   .comp-go { opacity: 1; transform: none; background: transparent; border-color: transparent; }
@@ -1050,7 +1052,9 @@ a.comp-card:focus-visible .comp-go {
   color: var(--accent-ink, var(--accent));
   text-decoration: none;
 }
-.comp-entry-file:hover { text-decoration: underline; }
+@media (hover: hover) and (pointer: fine) {
+  .comp-entry-file:hover { text-decoration: underline; }
+}
 
 /* (Wave 6-c dead-selector sweep: .comp-entry-rank deleted — zero TSX
    consumers (rg over frontend/src = 0 hits); 5-c moved JUDGED rows to
@@ -1143,7 +1147,9 @@ a.comp-card:focus-visible .comp-go {
   /* r149 (R3-A3 R2): var(--ease) — كان المنحنى الافتراضي. */
   transition: var(--t-fast) var(--ease);
 }
-.comp-icon-btn:hover { border-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .comp-icon-btn:hover { border-color: var(--accent); }
+}
 /* (r313: the r297 overlay micro-interactions — the close glyph's
    rotate(90deg) and the icon button's scale(1.1) hover breath — are
    RETIRED with the Heron re-key. The reference's hovers are colour /

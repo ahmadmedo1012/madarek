@@ -150,20 +150,24 @@ body:has(.cb-banner) .landing {
   text-underline-offset: 0.3rem;
   transition: color var(--t-fast) var(--ease);
 }
-.cb-more:hover,
-.cb-more:focus-visible {
-  text-decoration-line: underline;
-  /* R319 §D7 — the light-theme hover ink must clear AA on the card
-     paper: --accent-hover (#D92F00) measured 4.44:1. The deep copper
-     --accent-strong (#A32400) is 6.91:1 on #F6F6EE; the dark twin
-     below keeps the night sheet's own hover unchanged (it already
-     passes). */
-  color: var(--accent-strong);
+@media (hover: hover) and (pointer: fine) {
+  .cb-more:hover,
+  .cb-more:focus-visible {
+    text-decoration-line: underline;
+    /* R319 §D7 — the light-theme hover ink must clear AA on the card
+       paper: --accent-hover (#D92F00) measured 4.44:1. The deep copper
+       --accent-strong (#A32400) is 6.91:1 on #F6F6EE; the dark twin
+       below keeps the night sheet's own hover unchanged (it already
+       passes). */
+    color: var(--accent-strong);
+  }
 }
 
-html[data-theme='dark'] .cb-more:hover,
-html[data-theme='dark'] .cb-more:focus-visible {
-  color: var(--accent-hover);
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme='dark'] .cb-more:hover,
+  html[data-theme='dark'] .cb-more:focus-visible {
+    color: var(--accent-hover);
+  }
 }
 
 /* The actions row — the measured pair anchors the card's width edge
@@ -224,15 +228,19 @@ html[data-theme='dark'] .cb-more:focus-visible {
   transition: transform var(--t-base) var(--ease);
 }
 
-.cb-accept:hover,
-.cb-accept:focus-visible {
-  color: var(--accent-fg);
-  border-color: var(--accent-ink);
+@media (hover: hover) and (pointer: fine) {
+  .cb-accept:hover,
+  .cb-accept:focus-visible {
+    color: var(--accent-fg);
+    border-color: var(--accent-ink);
+  }
 }
 
-.cb-accept:hover::before,
-.cb-accept:focus-visible::before {
-  transform: translateY(0);
+@media (hover: hover) and (pointer: fine) {
+  .cb-accept:hover::before,
+  .cb-accept:focus-visible::before {
+    transform: translateY(0);
+  }
 }
 
 /* :active — the press INVERTS the pair (paper fill + ink label,
@@ -269,8 +277,10 @@ html[data-theme='dark'] .cb-more:focus-visible {
   transition: color var(--t-fast) var(--ease);
 }
 
-.cb-reject:hover {
-  color: var(--text-strong, var(--text));
+@media (hover: hover) and (pointer: fine) {
+  .cb-reject:hover {
+    color: var(--text-strong, var(--text));
+  }
 }
 
 /* ── R328 (H1) — the phone belt: the SAME corner card, with the
@@ -355,9 +365,11 @@ html[data-theme='dark'] .cb-more:focus-visible {
 /* Hover/focus: the rail nudges RIGHT (toward the content — the
    mirrored direction); the translateY(-50%) centring is preserved
    inside the same transform. */
-.et-tab:hover,
-.et-tab:focus-visible {
-  transform: translateY(-50%) translateX(4px);
+@media (hover: hover) and (pointer: fine) {
+  .et-tab:hover,
+  .et-tab:focus-visible {
+    transform: translateY(-50%) translateX(4px);
+  }
 }
 
 /* The visible rail body — the R322 V7 slim rail. IN FLOW (the button
@@ -454,9 +466,11 @@ html[data-theme='dark'] .cb-more:focus-visible {
   }
 
   /* no desktop nudge — the marker never leans into the content band. */
-  .et-tab:hover,
-  .et-tab:focus-visible {
-    transform: translateY(-50%);
+  @media (hover: hover) and (pointer: fine) {
+    .et-tab:hover,
+    .et-tab:focus-visible {
+      transform: translateY(-50%);
+    }
   }
 
   /* the visible body: the square, centred in the hit area, flush to
@@ -494,10 +508,12 @@ html[data-theme='dark'] .cb-more:focus-visible {
 /* ── Reduced motion — no nudge (the raw-ladder kill already zeroes
    --t-fast; pinned here as the belt). ─────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .et-tab,
-  .et-tab:hover,
-  .et-tab:focus-visible {
-    transition: none;
-    transform: translateY(-50%);
+  @media (hover: hover) and (pointer: fine) {
+    .et-tab,
+    .et-tab:hover,
+    .et-tab:focus-visible {
+      transition: none;
+      transform: translateY(-50%);
+    }
   }
 }

@@ -108,7 +108,9 @@
     transition: background var(--motion-duration-short) var(--motion-ease-standard);
   }
   .cp-row + .cp-row { border-block-start: 1px solid var(--surface-divider); }
-  .cp-row:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .cp-row:hover { background: var(--surface-2); }
+  }
   .cp-row:active { background: var(--surface-3); }
   .cp-row-q {
     flex: 1;
@@ -345,7 +347,9 @@
     );
   }
   .chapter-row + .chapter-row { border-block-start: 1px solid var(--surface-divider); }
-  .chapter-row:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .chapter-row:hover { background: var(--surface-2); }
+  }
   .chapter-row:active { background: var(--surface-3); }
   .chapter-time {
     flex-shrink: 0;
@@ -472,9 +476,11 @@
       border-color var(--motion-duration-short) var(--motion-ease-standard),
       opacity var(--motion-duration-short) var(--motion-ease-standard);
   }
-  .checkpoint-option:hover:not(:disabled) {
-    background: var(--surface-2);
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .checkpoint-option:hover:not(:disabled) {
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+    }
   }
   .checkpoint-option:active:not(:disabled) { transform: translateY(1px); }
   .checkpoint-option:disabled { cursor: default; opacity: 0.55; }
@@ -747,7 +753,9 @@
     color: var(--text-secondary);
     line-height: var(--lh-base);
   }
-  .dash-resume-progress { margin-block-start: var(--sp-2); max-inline-size: 360px; }
+  /* R329 (gate:clean): the resume progress bar's geometry is
+     r325-indicators.css's unlayered seat (sp-3 top + 420px cap) —
+     these pages-layer copies were inert. */
   .dash-resume-cta { flex-shrink: 0; }
   /* Desktop prominence (final VLM jury note): the resume CTA is the
      page's primary action — give it lg-button mass on wide screens so
@@ -866,7 +874,9 @@
     cursor: pointer;
     transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
   }
-  .cal-cell:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .cal-cell:hover { background: var(--surface-2); }
+  }
   /* r299 (final C): out-of-month days — the old opacity:0.35 dim put the
      13px numeral at 2.31:1 (light, axe color-contrast; opacity-as-
      secondary-text is the taste anti-pattern r283 already retired
@@ -925,13 +935,20 @@
     align-items: center;
     gap: var(--sp-3);
     padding: var(--sp-2) var(--sp-2);
-    border-radius: var(--r-lg);
+    /* R329 (gate:clean): radius 0 is r305-student-schedule.css's seat
+     (same pages layer, later chunk import — it renders only on the
+     schedule pages, the only pages that use this row) — the r-lg copy
+     here was inert. */
     text-decoration: none;
     color: var(--text);
     transition: background var(--t-fast) var(--ease);
   }
-  .cal-event-row:hover { background: var(--surface-2); }
-  .cal-event-row:hover .cal-event-chevron { color: var(--accent-ink, var(--accent)); }
+  @media (hover: hover) and (pointer: fine) {
+    .cal-event-row:hover { background: var(--surface-2); }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cal-event-row:hover .cal-event-chevron { color: var(--accent-ink, var(--accent)); }
+  }
   .cal-event-icon {
     display: grid;
     place-items: center;
@@ -1067,9 +1084,11 @@
       border-color var(--motion-duration-short) var(--motion-ease-standard),
       transform var(--motion-duration-micro) var(--motion-ease-standard);
   }
-  .ai-gap-card:hover:not(:disabled) {
-    background: var(--surface);
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .ai-gap-card:hover:not(:disabled) {
+      background: var(--surface);
+      border-color: var(--border-strong);
+    }
   }
   .ai-gap-card:active:not(:disabled) { transform: translateY(1px); }
   .ai-gap-card:disabled { cursor: default; }
@@ -1166,9 +1185,11 @@
       background var(--motion-duration-short) var(--motion-ease-standard),
       border-color var(--motion-duration-short) var(--motion-ease-standard);
   }
-  .chat-retry:hover {
-    background: color-mix(in srgb, var(--danger) 10%, var(--surface));
-    border-color: var(--danger);
+  @media (hover: hover) and (pointer: fine) {
+    .chat-retry:hover {
+      background: color-mix(in srgb, var(--danger) 10%, var(--surface));
+      border-color: var(--danger);
+    }
   }
   .chat-retry:active { transform: translateY(1px); }
   @keyframes ai-row-in {
@@ -1507,8 +1528,10 @@
     background: color-mix(in srgb, var(--course-tint, var(--accent)) 6%, var(--surface));
     border-inline-start: 3px solid color-mix(in srgb, var(--course-tint, var(--accent)) 45%, transparent);
   }
-  .course-lec-row.next:hover {
-    background: color-mix(in srgb, var(--course-tint, var(--accent)) 10%, var(--surface));
+  @media (hover: hover) and (pointer: fine) {
+    .course-lec-row.next:hover {
+      background: color-mix(in srgb, var(--course-tint, var(--accent)) 10%, var(--surface));
+    }
   }
   .course-lec-row.next .course-lec-well {
     background: color-mix(in srgb, var(--course-tint, var(--accent)) 14%, var(--surface));
@@ -1658,9 +1681,11 @@
      LIVE rows carry the join action (WebinarsPage.tsx); passive
      upcoming rows keep their quiet rest state (an affordance the row
      cannot deliver is a dead promise). */
-  .webinar-row.live:hover {
-    background: var(--surface-2);
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .webinar-row.live:hover {
+      background: var(--surface-2);
+      border-color: var(--border-strong);
+    }
   }
   .webinar-row.live {
     /* quiet broadcast-red wash — the same family as the LIVE badge */
@@ -2070,8 +2095,10 @@
        hairline step only. */
     transition: border-color var(--t-base) var(--ease);
   }
-  .process-step:hover {
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .process-step:hover {
+      border-color: var(--border-strong);
+    }
   }
   .process-step-head {
     display: flex;
@@ -2203,8 +2230,10 @@
       var(--motion-stagger-step) * min(var(--rs-i, 0), var(--motion-stagger-cap))
     );
   }
-  .research-card:hover {
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .research-card:hover {
+      border-color: var(--border-strong);
+    }
   }
   .research-card-head {
     display: flex;
@@ -2580,7 +2609,9 @@
     cursor: pointer;
     transition: background var(--motion-duration-short) var(--motion-ease-standard);
   }
-  .campus-city-row:hover { background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .campus-city-row:hover { background: var(--surface-2); }
+  }
   .campus-city-row:active { background: var(--surface-3); }
   /* selected city — accent-soft ground + accent-strong ink (the
      WCAG-pinned pair documented in tokens.css) */
@@ -2989,12 +3020,15 @@
     padding: var(--sp-5);
     background: var(--surface);
     border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    /* R313 (WP-E): flat paper tile — hairline hover only. */
-    transition: border-color var(--t-base) var(--ease);
+    /* R329 (gate:clean): radius + transition are polish.css's
+     overrides seat (.post group — r-lg + the transform/box-shadow
+     lift) — these pages-layer copies were inert. R313 (WP-E): flat
+     paper tile, hairline hover only. */
   }
-  .announcement-card:hover {
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .announcement-card:hover {
+      border-color: var(--border-strong);
+    }
   }
   /* Pinned — the platform's "on" grammar (tinted ground + accent-mixed
      border), scannable without the craft-floor-banned >1px side stripe. */
@@ -3161,10 +3195,12 @@
       color var(--t-fast) var(--ease),
       border-color var(--t-fast) var(--ease);
   }
-  .exam-qmap-dot:hover {
-    background: var(--surface-3);
-    color: var(--text);
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .exam-qmap-dot:hover {
+      background: var(--surface-3);
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
   }
   /* Answered — accent-soft ground + accent-strong ink (8.62:1, the
      WCAG math pinned in tokens.css; same pairing as .exam-choice.selected
@@ -3572,10 +3608,12 @@
     cursor: pointer;
     transition: var(--t-clean);
   }
-  .ai-quick-chip:hover {
-    border-color: var(--accent);
-    color: var(--accent-strong);
-    background: var(--accent-soft);
+  @media (hover: hover) and (pointer: fine) {
+    .ai-quick-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+    }
   }
 
   .chat-input-row {
@@ -3625,10 +3663,12 @@
     transition: var(--t-clean);
     flex-shrink: 0;
   }
-  .chat-send:hover:not(:disabled) {
-    /* R313 (WP-E): flat hover — the brightened accent tier, no scale,
-       no glow. */
-    background: var(--accent-hover);
+  @media (hover: hover) and (pointer: fine) {
+    .chat-send:hover:not(:disabled) {
+      /* R313 (WP-E): flat hover — the brightened accent tier, no scale,
+         no glow. */
+      background: var(--accent-hover);
+    }
   }
   .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
 
@@ -3738,11 +3778,13 @@
     gap: var(--sp-3);
     transition: var(--t-clean);
   }
-  .matrix-course:hover {
-    /* R313 (WP-E): data maps do not bounce — hairline step only (the
-     r305-student-schedule.css override already pinned this; the base
-     follows). */
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .matrix-course:hover {
+      /* R313 (WP-E): data maps do not bounce — hairline step only (the
+       r305-student-schedule.css override already pinned this; the base
+       follows). */
+      border-color: var(--border-strong);
+    }
   }
   .matrix-course-head {
     display: flex;
@@ -3769,7 +3811,10 @@
   .matrix-meta {
     display: flex;
     align-items: center;
-    gap: var(--sp-1);
+    /* R329 (gate:clean): gap is r305-student-schedule.css's seat
+     (same pages layer, later chunk import — .matrix-meta renders only
+     on MatrixPage, which imports that sheet) — the sp-1 copy here
+     was inert. */
     margin-block-start: var(--sp-0-5);
     font-size: var(--fs-xs);
     color: var(--text-muted);
@@ -3834,10 +3879,12 @@
   .matrix-cell.lvl-weak     { background: color-mix(in srgb, var(--warning) 14%, var(--surface)); border-color: color-mix(in srgb, var(--warning) 28%, transparent); color: var(--c-yellow-deep); }
   .matrix-cell.lvl-poor     { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 24%, transparent); color: var(--c-rose-deep); }
   .matrix-cell.lvl-untouched { color: var(--text-subtle); border-style: dashed; }
-  .matrix-cell:hover {
-    /* R313 (WP-E): flat tile — the hover reads through the level wash
-     itself; no lift, no elevation. */
-    border-color: var(--border-strong);
+  @media (hover: hover) and (pointer: fine) {
+    .matrix-cell:hover {
+      /* R313 (WP-E): flat tile — the hover reads through the level wash
+       itself; no lift, no elevation. */
+      border-color: var(--border-strong);
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -3892,7 +3939,9 @@
     cursor: pointer;
     transition: var(--t-clean);
   }
-  .post-action:hover { background: var(--surface-2); color: var(--text); }
+  @media (hover: hover) and (pointer: fine) {
+    .post-action:hover { background: var(--surface-2); color: var(--text); }
+  }
   .post-action.on {
     color: var(--accent-strong);
     background: var(--accent-soft);
@@ -3915,9 +3964,11 @@
     border: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
     transition: var(--t-fast) var(--ease);
   }
-  .faculty-chip-row:hover {
-    border-color: var(--accent);
-    background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  @media (hover: hover) and (pointer: fine) {
+    .faculty-chip-row:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════

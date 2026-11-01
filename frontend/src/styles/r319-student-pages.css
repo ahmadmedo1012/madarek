@@ -59,8 +59,10 @@
   .r319s-page .thumb-card {
     box-shadow: none;
   }
-  .r319s-page .thumb-card:hover {
-    box-shadow: none;
+  @media (hover: hover) and (pointer: fine) {
+    .r319s-page .thumb-card:hover {
+      box-shadow: none;
+    }
   }
   @media (hover: hover) and (pointer: fine) {
     .r319s-page .thumb-card:hover {

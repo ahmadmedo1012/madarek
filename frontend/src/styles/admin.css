@@ -374,7 +374,9 @@
   font-size: var(--fs-sm);
   transition: background var(--t-fast) var(--ease);
 }
-.settings-links a:hover { background: var(--surface-2); }
+@media (hover: hover) and (pointer: fine) {
+  .settings-links a:hover { background: var(--surface-2); }
+}
 
 /* ════════════════════════════════════════════════════════════════
    §5 · .spin — the sync in-flight motion (contract-pinned)

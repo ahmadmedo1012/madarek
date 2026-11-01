@@ -35,12 +35,16 @@
   padding: var(--sp-3) 0;
   position: relative;
   border-bottom: 1px solid var(--border);
-  transition: background var(--t-fast) var(--ease), border-radius var(--t-fast) var(--ease);
+  /* R329 (gate:clean): the row transition is polish.css's overrides
+     seat (.list-row/.feed-item/.owner-timeline-item — background+
+     transform) — this pages-layer copy was inert. */
 }
 
-.owner-timeline-item:hover {
-  background: var(--surface-2);
-  border-radius: var(--r-md);
+@media (hover: hover) and (pointer: fine) {
+  .owner-timeline-item:hover {
+    background: var(--surface-2);
+    border-radius: var(--r-md);
+  }
 }
 
 .owner-timeline-item:last-child {
@@ -154,12 +158,16 @@
   background: var(--accent);
 }
 
-.owner-toggle-track:not(.disabled):hover::before {
-  background: var(--neutral-300);
+@media (hover: hover) and (pointer: fine) {
+  .owner-toggle-track:not(.disabled):hover::before {
+    background: var(--neutral-300);
+  }
 }
 
-.owner-toggle-track.on:not(.disabled):hover::before {
-  background: var(--accent-hover);
+@media (hover: hover) and (pointer: fine) {
+  .owner-toggle-track.on:not(.disabled):hover::before {
+    background: var(--accent-hover);
+  }
 }
 
 .owner-toggle-track.disabled {
@@ -368,10 +376,12 @@
   transition: color var(--t-fast) var(--ease);
 }
 
-.owner-error-entry-head:hover .message {
-  color: var(--danger-ink, var(--danger));
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
+@media (hover: hover) and (pointer: fine) {
+  .owner-error-entry-head:hover .message {
+    color: var(--danger-ink, var(--danger));
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
 }
 
 .owner-error-entry-head:focus-visible {
@@ -487,8 +497,10 @@
   flex-shrink: 0;
   color: var(--text-muted);
 }
-.owner-empty-rollup-head:hover {
-  background: var(--surface-3);
+@media (hover: hover) and (pointer: fine) {
+  .owner-empty-rollup-head:hover {
+    background: var(--surface-3);
+  }
 }
 .owner-empty-rollup-body {
   display: flex;
@@ -719,8 +731,10 @@
   transition: border-color var(--t-fast) var(--ease);
 }
 
-.owner-alert-card:hover {
-  border-color: var(--border-strong);
+@media (hover: hover) and (pointer: fine) {
+  .owner-alert-card:hover {
+    border-color: var(--border-strong);
+  }
 }
 
 .owner-alert-card.critical {
@@ -1118,10 +1132,12 @@
   transition: color var(--t-fast) var(--ease);
 }
 
-.owner-detail-toggle:hover {
-  color: var(--accent-hover);
-  text-decoration: underline;
-  text-underline-offset: 0.18em;
+@media (hover: hover) and (pointer: fine) {
+  .owner-detail-toggle:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+    text-underline-offset: 0.18em;
+  }
 }
 
 .owner-detail-toggle:active {

@@ -92,7 +92,9 @@
   /* T3-F4 — link hover uses the text-safe accent ink: light --accent
      #B57438 is 3.65:1 on --bg (fails AA for body-size link text), while
      --accent-ink clears 10.29:1 light / 7.87:1 dark. */
-  a:hover { color: var(--accent-ink, var(--accent)); }
+  @media (hover: hover) and (pointer: fine) {
+    a:hover { color: var(--accent-ink, var(--accent)); }
+  }
 
   button {
     font: inherit;
@@ -104,7 +106,15 @@
   }
   button:disabled { cursor: not-allowed; opacity: var(--state-btn-disabled-opacity); }
 
-  input, textarea, select { font: inherit; color: inherit; }
+  /* R329 (gate:clean): `color` is split off the shared reset — the
+     text-like controls (textarea/select + the typed inputs) carry
+     `color: var(--text)` in components.css's Heron input recipe
+     (components layer beats base), while BARE inputs keep the
+     inherit here so check/radio/file controls never fall to the UA
+     default. One color seat per selector segment, no cross-file
+     pair. */
+  input, textarea, select { font: inherit; }
+  input { color: inherit; }
   ul, ol { list-style: none; }
   img, svg, video { display: block; max-width: 100%; }
 
@@ -272,7 +282,9 @@
     display: grid;
     grid-template-columns: var(--sidebar-w) 1fr;
     min-height: 100dvh;
-    transition: grid-template-columns var(--motion-duration-medium) var(--motion-ease-decelerate);
+    /* R329 (gate:clean): the rail resize transition is polish.css's
+       overrides seat (reveal + spring-soft) — this base-layer copy
+       was inert. */
   }
 
   /* Collapsed desktop state — narrow icon rail. The state is a global
@@ -315,11 +327,12 @@
     inset-block-start: 0;
     z-index: var(--z-dropdown);
     block-size: var(--topbar-h);
-    background: var(--topbar-bg);
     backdrop-filter: blur(var(--glass-blur)) saturate(140%);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
-    border-block-end: 1px solid transparent;
-    transition: border-color var(--t-base) var(--ease);
+    /* R329 (gate:clean): background + border-block-end + transition
+       are polish.css's overrides seats (surface + rule hairline + the
+       box-shadow/border-color transition) — these base-layer copies
+       were inert. */
   }
   .topbar.scrolled { border-block-end-color: var(--topbar-border); }
 
@@ -395,10 +408,11 @@
 
   .page-header {
     display: flex;
-    align-items: flex-end;
     justify-content: space-between;
     gap: var(--sp-4);
     flex-wrap: wrap;
+    /* R329 (gate:clean): align-items is polish.css's overrides seat
+       (flex-start) — this base-layer copy was inert. */
     /* r288 (anatomy fold): the r188 folio hairline + its padding/margin
        air retired for patterns parity — the contract header
        (CONTRACT.md PageHeader) opens the page as a clean column block;
@@ -631,10 +645,12 @@
   cursor: pointer;
   transition: background var(--t-fast) var(--ease-out);
 }
-.mdk-slow-server-retry:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--accent-fg);
+@media (hover: hover) and (pointer: fine) {
+  .mdk-slow-server-retry:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-fg);
+  }
 }
 .mdk-slow-server-retry:focus-visible {
   outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);

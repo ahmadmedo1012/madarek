@@ -161,9 +161,11 @@
    re-asserts v13's own :not(.on) resting state over its hover half;
    the .on state keeps the full bar.
    */
-.nav-item:not(.on):hover::before {
-  opacity: 0;
-  transform: scaleY(0.4);
+@media (hover: hover) and (pointer: fine) {
+  .nav-item:not(.on):hover::before {
+    opacity: 0;
+    transform: scaleY(0.4);
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -207,7 +209,9 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
    The box-shadow track left §1's transition shorthand on purpose:
    nothing here animates a shadow anymore.
    */
-.topbar-user-trigger:hover { box-shadow: none; }
+@media (hover: hover) and (pointer: fine) {
+  .topbar-user-trigger:hover { box-shadow: none; }
+}
 .topbar-user-trigger[aria-expanded="true"] { box-shadow: none; }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -228,7 +232,9 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
     background var(--t-fast) var(--ease),
     color var(--t-fast) var(--ease);
 }
-.has-shell .onboarding-flow-skip:hover { background: var(--surface-2); }
+@media (hover: hover) and (pointer: fine) {
+  .has-shell .onboarding-flow-skip:hover { background: var(--surface-2); }
+}
 
 /* R320 cycle-3 (production finding, admin dashboard @390): the generic
    40 % ink veil lets the page's display-size H1 poke through ABOVE the
@@ -330,8 +336,10 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
 [data-collapsible="true"] .nav-group-toggle {
   transition: transform var(--motion-duration-micro) var(--ease);
 }
-[data-collapsible="true"] .nav-group-toggle:hover > span {
-  color: var(--text);
+@media (hover: hover) and (pointer: fine) {
+  [data-collapsible="true"] .nav-group-toggle:hover > span {
+    color: var(--text);
+  }
 }
 [data-collapsible="true"] .nav-group-toggle:active {
   transform: scale(var(--press-scale));
@@ -427,8 +435,10 @@ html[dir="rtl"][data-theme="dark"][data-sidebar-collapsed] .topbar {
   background: var(--danger-soft);
   color: var(--danger-ink);
 }
-.topbar-inst-trigger[data-context-lost="true"]:hover {
-  background: color-mix(in srgb, var(--danger-soft) 72%, var(--danger));
+@media (hover: hover) and (pointer: fine) {
+  .topbar-inst-trigger[data-context-lost="true"]:hover {
+    background: color-mix(in srgb, var(--danger-soft) 72%, var(--danger));
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════

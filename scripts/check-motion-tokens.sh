@@ -27,9 +27,11 @@
 #   · `transition: var(--token)` values cannot be statically resolved;
 #     the property smuggled inside a token is checked at the token
 #     DEFINITION site instead (custom properties whose value starts
-#     with `all`). tokens.css still ships `--t-clean: all …` at :118 —
-#     neutralized app-wide by the overrides-layer redefinition in
-#     polish.css (4-A11 P1-3) until tokens.css drops the `all`.
+#     with `all`). RESOLVED R329 (gate:clean): tokens.css's --t-clean
+#     now ships the de-smuggled six-property list itself (adopted
+#     verbatim from polish.css's 4-A11 P1-3 redefinition — the
+#     overrides-layer copy is deleted), so the `all` smuggling route
+#     is closed at the definition site, not just neutralized.
 #
 # Wholesale-allowlisted files (foundations + safety belts — raw values
 # are their job):

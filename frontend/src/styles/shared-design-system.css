@@ -274,10 +274,12 @@
   .card.flush   { padding: 0; overflow: clip; }
 
   .card.interactive, a > .card, button > .card { cursor: pointer; }
-  .card.interactive:hover, a > .card:hover, button > .card:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h, 0 1px 2px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.06));
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    .card.interactive:hover, a > .card:hover, button > .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-card-h, 0 1px 2px rgba(0,0,0,0.04), 0 6px 18px rgba(0,0,0,0.06));
+      transform: translateY(-1px);
+    }
   }
   .card.interactive:active, a > .card:active { transform: scale(var(--state-card-pressed-scale, 0.99)); transition-duration: var(--t-micro); }
 
@@ -302,9 +304,13 @@
     transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
     box-shadow: var(--shadow-card, 0 1px 2px rgba(0,0,0,0.04));
   }
-  .btn:hover { background: var(--surface-3, var(--card-muted)); border-color: var(--border-strong); transform: translateY(-1px); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { background: var(--surface-3, var(--card-muted)); border-color: var(--border-strong); transform: translateY(-1px); }
+  }
   .btn.primary { background: var(--primary); color: var(--primary-fg, #fff); border-color: transparent; }
-  .btn.primary:hover { box-shadow: var(--shadow-pop, 0 4px 8px rgba(0,0,0,0.06)); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover { box-shadow: var(--shadow-pop, 0 4px 8px rgba(0,0,0,0.06)); }
+  }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
   /* ─── Badge / pill ─────────────────────────────────────────────── */
@@ -329,7 +335,9 @@
     transition: border-color var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
     box-shadow: var(--shadow-card);
   }
-  .metric:hover { border-color: var(--border-strong); box-shadow: var(--shadow-pop); transform: translateY(-2px); }
+  @media (hover: hover) and (pointer: fine) {
+    .metric:hover { border-color: var(--border-strong); box-shadow: var(--shadow-pop); transform: translateY(-2px); }
+  }
   .metric-label { font-size: var(--type-label-size-sm); color: var(--text-muted); font-weight: var(--fw-semibold); line-height: 1.3; }
   .metric-value { font-family: var(--font-display, var(--font-sans)); font-size: var(--type-metric-size-lg); font-weight: var(--type-metric-weight); color: var(--text); line-height: 1.10; letter-spacing: -0.022em; font-variant-numeric: tabular-nums; }
   .metric-icon { inline-size: 44px; block-size: 44px; border-radius: var(--r-lg); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--_metric-bg); color: var(--_metric-color); }
@@ -366,7 +374,9 @@
 
   /* ─── Button glow micro-interaction ────────────────────────────── */
   .btn-glow { box-shadow: var(--shadow-card, 0 1px 2px rgba(0,0,0,0.04)), 0 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent); transition: box-shadow var(--t-base) var(--ease), transform var(--t-fast) var(--ease); }
-  .btn-glow:hover { transform: translateY(-2px); box-shadow: var(--shadow-pop, 0 4px 8px rgba(0,0,0,0.06)), 0 0 20px color-mix(in srgb, var(--primary) 15%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-glow:hover { transform: translateY(-2px); box-shadow: var(--shadow-pop, 0 4px 8px rgba(0,0,0,0.06)), 0 0 20px color-mix(in srgb, var(--primary) 15%, transparent); }
+  }
 
   /* ─── Reveal animation ────────────────────────────────────────── */
   @keyframes reveal-rise { from { opacity: 0; transform: translateY(var(--reveal-distance, 16px)); } to { opacity: 1; transform: translateY(0); } }

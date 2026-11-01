@@ -852,13 +852,15 @@
   .card.interactive,
   a > .card,
   button > .card { cursor: pointer; }
-  .card.interactive:hover,
-  a > .card:hover,
-  button > .card:hover,
-  .card.bordered:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow-card-h);
-    transform: translateY(-1px);
+  @media (hover: hover) and (pointer: fine) {
+    .card.interactive:hover,
+    a > .card:hover,
+    button > .card:hover,
+    .card.bordered:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-card-h);
+      transform: translateY(-1px);
+    }
   }
   .card.interactive:active,
   a > .card:active,
@@ -939,8 +941,12 @@
                 transform var(--t-fast) var(--ease);
     box-shadow: var(--_btn-shadow);
   }
-  .btn:hover { background: var(--_btn-bg-hover); border-color: var(--_btn-bd-hover); color: var(--_btn-fg); }
-  .btn.primary:hover, .btn.accent:hover { box-shadow: var(--elev-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .btn:hover { background: var(--_btn-bg-hover); border-color: var(--_btn-bd-hover); color: var(--_btn-fg); }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover, .btn.accent:hover { box-shadow: var(--elev-2); }
+  }
   /* the −1px lift rides the hover-capable gate (iOS sticky-hover) */
   @media (hover: hover) and (pointer: fine) {
     .btn.primary:hover, .btn.accent:hover { transform: translateY(-1px); }
@@ -960,8 +966,10 @@
     box-shadow: var(--shadow-card-premium);
     transition: box-shadow var(--t-base) var(--ease), transform var(--t-base) var(--ease);
   }
-  .btn.primary:hover:not(:disabled) {
-    box-shadow: var(--shadow-card-premium-h);
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover:not(:disabled) {
+      box-shadow: var(--shadow-card-premium-h);
+    }
   }
   /* r133-F7: −2px lift rides the hover-capable gate (iOS sticky-hover);
      shadow stays ungated like .btn:hover. r157: gated on
@@ -985,7 +993,9 @@
     transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.primary:hover:not(:disabled)::before { background-position: -60% 0; }
+  @media (hover: hover) and (pointer: fine) {
+    .btn.primary:hover:not(:disabled)::before { background-position: -60% 0; }
+  }
   [data-theme="dark"] .btn.primary {
     /* night: the quiet elevated action — surface-3 ground #1E1E1E, ink
        text, hairline border — so the teal accent stays the one loud
@@ -1023,8 +1033,10 @@
     transition: background-position var(--motion-duration-stat) var(--motion-ease-decelerate);
     pointer-events: none;
   }
-  .btn.accent:hover:not(:disabled)::before,
-  .btn.gold:hover:not(:disabled)::before { background-position: -60% 0; }
+  @media (hover: hover) and (pointer: fine) {
+    .btn.accent:hover:not(:disabled)::before,
+    .btn.gold:hover:not(:disabled)::before { background-position: -60% 0; }
+  }
 
   /* night — the accent CTA becomes metal: the landing's exact treatment,
      token-driven (r195: the teal family rides var(--accent), mirroring
@@ -1035,9 +1047,11 @@
     --_btn-bg-hover: linear-gradient(145deg, var(--accent-hover) 0%, var(--accent) 100%);
     box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent), 0 6px 20px -8px color-mix(in srgb, var(--accent) 35%, transparent);
   }
-  [data-theme="dark"] .btn.accent:hover:not(:disabled),
-  [data-theme="dark"] .btn.gold:hover:not(:disabled) {
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
+  @media (hover: hover) and (pointer: fine) {
+    [data-theme="dark"] .btn.accent:hover:not(:disabled),
+    [data-theme="dark"] .btn.gold:hover:not(:disabled) {
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 45%, transparent), 0 8px 26px -8px color-mix(in srgb, var(--accent) 45%, transparent);
+    }
   }
 
   /* light hover BRIGHTENS the accent (the old darken-in-place hover
@@ -1051,9 +1065,11 @@
   /* in-flight freeze (r157): a busy button keeps its base shadow and
      never lifts under the cursor — same contract the canonical sheet
      asserts locally (components.css) on top of motion.css. */
-  .btn[data-loading="true"]:hover {
-    transform: none;
-    box-shadow: var(--_btn-shadow);
+  @media (hover: hover) and (pointer: fine) {
+    .btn[data-loading="true"]:hover {
+      transform: none;
+      box-shadow: var(--_btn-shadow);
+    }
   }
 
   .btn.ghost {
@@ -1109,7 +1125,9 @@
                 box-shadow var(--t-fast) var(--ease),
                 transform var(--t-fast) var(--ease);
   }
-  .icon-btn:hover { background: var(--surface-3); color: var(--text); border-color: var(--rule); }
+  @media (hover: hover) and (pointer: fine) {
+    .icon-btn:hover { background: var(--surface-3); color: var(--text); border-color: var(--rule); }
+  }
 
   /* ─── BADGE — 11px --fs-xxs, secondary text, tabular nums ─────── */
   .badge {
@@ -1129,8 +1147,10 @@
        grammar (owner decision — Heron parity, zero decorative shadows) */
     transition: color var(--t-base) var(--ease);
   }
-  .badge:hover {
-    color: var(--text);
+  @media (hover: hover) and (pointer: fine) {
+    .badge:hover {
+      color: var(--text);
+    }
   }
   .badge.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
   .badge.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
@@ -1163,8 +1183,10 @@
     font-family: inherit;
   }
   textarea { padding-block: var(--sp-3); block-size: auto; min-block-size: 96px; resize: vertical; line-height: var(--lh-base); }
-  .input:hover,
-  input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+  @media (hover: hover) and (pointer: fine) {
+    .input:hover,
+    input:hover, textarea:hover, select:hover { border-color: var(--border-strong); }
+  }
   .input:focus,
   input:focus, textarea:focus, select:focus {
     border-color: var(--state-input-focus-border);

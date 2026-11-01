@@ -134,20 +134,24 @@
       opacity var(--motion-duration-short) var(--motion-ease-standard),
       visibility 0s linear var(--motion-duration-medium);
   }
-  .vpc:hover .vpc-bar,
-  .vpc:focus-within .vpc-bar,
-  .vpc[data-paused="true"] .vpc-bar,
-  .vpc[data-scrubbing="true"] .vpc-bar {
-    transform: none;
-    opacity: 1;
-    visibility: visible;
-    transition-delay: 0s;
+  @media (hover: hover) and (pointer: fine) {
+    .vpc:hover .vpc-bar,
+    .vpc:focus-within .vpc-bar,
+    .vpc[data-paused="true"] .vpc-bar,
+    .vpc[data-scrubbing="true"] .vpc-bar {
+      transform: none;
+      opacity: 1;
+      visibility: visible;
+      transition-delay: 0s;
+    }
   }
-  .vpc:hover .vpc-scrim,
-  .vpc:focus-within .vpc-scrim,
-  .vpc[data-paused="true"] .vpc-scrim,
-  .vpc[data-scrubbing="true"] .vpc-scrim {
-    opacity: 1;
+  @media (hover: hover) and (pointer: fine) {
+    .vpc:hover .vpc-scrim,
+    .vpc:focus-within .vpc-scrim,
+    .vpc[data-paused="true"] .vpc-scrim,
+    .vpc[data-scrubbing="true"] .vpc-scrim {
+      opacity: 1;
+    }
   }
   /* Touch: no hover to reveal with — the chrome stays put. */
   @media (hover: none) and (pointer: coarse) {
@@ -209,9 +213,11 @@
     transform: translateY(-50%);
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
-  .vpc-track:hover .vpc-head,
-  .vpc-track:focus-visible .vpc-head {
-    transform: translateY(-50%) scale(1.3);
+  @media (hover: hover) and (pointer: fine) {
+    .vpc-track:hover .vpc-head,
+    .vpc-track:focus-visible .vpc-head {
+      transform: translateY(-50%) scale(1.3);
+    }
   }
   .vpc[data-scrubbing="true"] .vpc-head {
     transform: translateY(-50%) scale(1.3);
@@ -254,12 +260,16 @@
     cursor: pointer;
     transition: background var(--motion-duration-micro) var(--motion-ease-standard);
   }
-  .vpc-btn:hover { background: color-mix(in srgb, var(--vpc-mist) 16%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .vpc-btn:hover { background: color-mix(in srgb, var(--vpc-mist) 16%, transparent); }
+  }
   .vpc-btn:active { background: color-mix(in srgb, var(--vpc-mist) 26%, transparent); }
   /* The one accent action — play/pause (the signal is reserved for
      progress + the primary action). */
   .vpc-btn-play { color: var(--vpc-accent); }
-  .vpc-btn-play:hover { background: color-mix(in srgb, var(--vpc-accent) 14%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .vpc-btn-play:hover { background: color-mix(in srgb, var(--vpc-accent) 14%, transparent); }
+  }
 
   /* Time — mono, LTR run, current ink / total mist. */
   .vpc-time {
@@ -327,7 +337,9 @@
       color var(--t-fast) var(--ease),
       transform var(--t-fast) var(--ease);
   }
-  .vpc-menu-item:hover { background: color-mix(in srgb, var(--vpc-mist) 14%, transparent); }
+  @media (hover: hover) and (pointer: fine) {
+    .vpc-menu-item:hover { background: color-mix(in srgb, var(--vpc-mist) 14%, transparent); }
+  }
   .vpc-menu-item[aria-checked="true"] { color: var(--vpc-accent); }
 
   /* ── Poster / ended gates — the 64px accent play ────────────── */
@@ -354,7 +366,9 @@
     cursor: pointer;
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
-  .vpc-play-big:hover { transform: scale(1.06); }
+  @media (hover: hover) and (pointer: fine) {
+    .vpc-play-big:hover { transform: scale(1.06); }
+  }
   .vpc-play-big:active { transform: scale(var(--press-scale)); }
   .vpc-play-big:focus-visible {
     outline: 2px solid var(--vpc-accent-bright);
@@ -419,7 +433,9 @@
     cursor: pointer;
     transition: background var(--motion-duration-micro) var(--motion-ease-standard);
   }
-  .vpc-retry:hover { background: var(--vpc-accent-bright); }
+  @media (hover: hover) and (pointer: fine) {
+    .vpc-retry:hover { background: var(--vpc-accent-bright); }
+  }
 
   /* ── Phone tuning ────────────────────────────────────────────────
      The meta line under the player already carries the clock; drop

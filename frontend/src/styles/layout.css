@@ -151,20 +151,25 @@
        control recipe. */
     cursor: pointer;
     flex-shrink: 0;
-    transition: var(--t-clean);
+    /* R329 (gate:clean): the transition is r305-shell.css's unlayered
+       control recipe — this in-layer copy was inert. */
   }
+  @media (hover: hover) and (pointer: fine) {
+  /* R319 (c1-A · B1): the wash is guarded to fine pointers (hover
+     sticks after a tap on touch) — R329 gate:clean wraps it (it was
+     an unguarded tap-stick seat). */
   .sidebar-collapse-btn:hover {
     /* r305 (Heron conservation): hover is a SURFACE STEP — the copper
        border/ink here spent the signal on an uncommitted state (grammar
        §3: copper only at the active marker / focus / primary CTA /
        unread urgency / ⌘K chip). The ink steps with the surface; FOCUS
        keeps the accent (polish v22's :focus-visible border cue).
-       R319 (c1-A · B1): the wash is guarded to fine pointers (hover
-       sticks after a tap on touch) and the pair travels whole —
-       background + ink together (the paired-state lint's contract). */
+       The pair travels whole — background + ink together (the
+       paired-state lint's contract). */
     background: var(--surface-2);
     border-color: var(--border-strong);
     color: var(--text);
+  }
   }
   /* R319 (c1-A · B1): the press twin — same pair, always-on. */
   .sidebar-collapse-btn:active {
@@ -193,7 +198,8 @@
        the cursive joins never break). */
     font-family: var(--font-mono);
     text-transform: uppercase;
-    font-size: var(--fs-xxs);
+    /* R329 (gate:clean): font-size is r325-shell.css's mono-md seat —
+       this in-layer copy was inert. */
     color: var(--text-faint);
     font-weight: var(--fw-semibold);
     padding: var(--sp-2) var(--sp-3) var(--sp-1);
@@ -287,8 +293,8 @@
        keeps its ink label on the paper ground, and the polish.css
        accent-soft twin is deleted (ONE home for the state). */
     --_bg: transparent;
-    --_fg: var(--text);
-    --_icon-fg: var(--text);
+    /* R329 (gate:clean): --_fg/--_icon-fg are r325-shell.css's app-bg
+       seats (unlayered wins) — these in-layer twins were inert. */
     font-weight: var(--fw-semibold);
   }
   /* R319 (c1-A · B1): the PRESS twin — the same paired wash, always-on
@@ -299,7 +305,8 @@
     --_bg: var(--text);
     --_fg: var(--bg);
     --_icon-fg: var(--bg);
-    transition-duration: var(--motion-duration-micro);
+    /* R329 (gate:clean): transition-duration is polish.css's
+       pages-layer press rule — this in-layer copy was inert. */
   }
   /* r211: the dark-mode «orbit glow» halo is retired — R313 (WP-F):
      the active row is the 2px accent bar + the ink label, identically
@@ -313,7 +320,9 @@
     inset-inline-start: 0;
     inset-block: 9px;
     inline-size: 2px;
-    background: var(--accent);
+    /* R329 (gate:clean): the bar ground + animation duration are
+       r325-shell.css's app-signal seats (unlayered wins) — the
+       in-layer copies were inert. */
     animation: madarek-nav-pop var(--motion-duration-medium) var(--motion-ease-decelerate);
   }
   @keyframes madarek-nav-pop {
@@ -400,9 +409,8 @@
     border-radius: 0;
     cursor: pointer;
     flex-shrink: 0;
-    transition: background var(--t-fast) var(--ease),
-                color var(--t-fast) var(--ease),
-                border-color var(--t-fast) var(--ease);
+    /* R329 (gate:clean): the transition is r305-shell.css's unlayered
+       control recipe — this in-layer copy was inert. */
     -webkit-tap-highlight-color: transparent;
   }
   @media (hover: hover) and (pointer: fine) {
@@ -465,7 +473,8 @@
        equivalents. */
     background: rgba(40,40,40,0.58); /* color-gate: allow — R319 (c1-A · B1b): drawer scrim, light theme — ink #282828 (var(--text)) at 58% over paper, the precomputed rgb(from var(--text) r g b / 0.58) */
     opacity: 0; pointer-events: none;
-    transition: opacity var(--t-base) var(--ease);
+    /* R329 (gate:clean): the fade transition is polish.css's overrides
+       seat (motion-duration-medium) — this in-layer copy was inert. */
     /* Sits just under the mobile drawer (a --z-sheet surface). */
     z-index: calc(var(--z-sheet) - 1);
   }
@@ -540,17 +549,16 @@
          the unlayered block at the end of this file — the overrides
          layer redefines this whole transition shorthand for .sidebar
          in this band, so any transition entry written here would be
-         dead code; see that block's comment.) */
+         dead code; see that block's comment. R329 gate:clean: the
+         inert in-layer fallback shorthand is DELETED — the spring
+         shorthand in polish.css's overrides layer is the one live
+         seat (polish.css is a global import; it cannot not-load).) */
       visibility: hidden;
-      /* (original in-layer slide — the overrides layer's spring
-         shorthand wins this band today; this line is the fallback
-         that keeps the drawer animated if that override is ever
-         retired. The unlayered block at the end of the file widens
-         whichever wins to include visibility.) */
-      transition: transform var(--t-base) var(--ease-out);
       /* R313 (WP-F · D16): flat drawer — the hairline on the
-         content-facing edge carries the depth; no shadow paint. */
-      z-index: var(--z-sheet);
+         content-facing edge carries the depth; no shadow paint.
+         R329 gate:clean: the drawer's z rung is r325-shell.css's
+         unlayered --z-menu-drawer seat — the in-layer z-sheet copy
+         was inert. */
       padding-block: max(var(--sp-3), env(safe-area-inset-top))
                      max(var(--sp-3), env(safe-area-inset-bottom));
       will-change: transform;
@@ -584,7 +592,8 @@
        states come from the paired tokens on .nav-item (base block). */
     .sidebar .nav-item {
       border-radius: 0;
-      min-block-size: 48px;
+      /* R329 (gate:clean): the row height is polish.css's overrides
+      seat (44px) — the 48px here was inert. */
     }
     .nav-group .nav-item + .nav-item {
       /* quiet row hairline inside a group — the row-level --border
@@ -629,11 +638,10 @@
      ╚═══════════════════════════════════════════════════════════════╝ */
   .topbar {
     padding-inline: var(--page-gutter);
-    display: grid;
-    grid-template-columns: auto 1fr minmax(0, 320px) auto;
-    align-items: center;
-    gap: var(--sp-4);
-    transition: border-color var(--motion-duration-medium) var(--motion-ease-standard);
+    /* R329 (gate:clean): the topbar's flex grammar + transition are
+       polish.css's overrides seats (flex row, sp-3 gap, the
+       box-shadow/border-color transition) — the grid/align/gap/
+       transition copies here were inert (layout < overrides). */
   }
   /* R313 (WP-F · D16): the scrolled topbar is FLAT — the bottom hairline
      is always on (base.css owns the seam); scrolling only re-colors it.
@@ -648,11 +656,8 @@
     align-items: center; justify-content: center;
     color: var(--text-secondary);
     /* r149 (R3-A3 §3): الـhover كان يقفز بلا انتقال (snap) — زر
-       الهامبرغر الوحيد في الترويسة. */
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
+       الهامبرغر الوحيد في الترويسة. R329 gate:clean: the transition
+       is r305-shell.css's unlayered control recipe — inert here. */
   }
   @media (hover: hover) and (pointer: fine) {
     /* R319 (c1-A · B1): guarded — hover sticks after a tap on touch;
@@ -684,9 +689,10 @@
     justify-content: center;
     inline-size: 44px;
     block-size: 44px;
-    border-radius: var(--r-full);
+    /* R329 (gate:clean): radius 0 is r319-shell.css's unlayered seat
+       and the transition is r305-shell.css's control recipe — both
+       in-layer copies here were inert. */
     color: var(--text-secondary);
-    transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   }
   @media (hover: hover) and (pointer: fine) {
     /* R319 (c1-A · B1): guarded fine-pointer wash, pair whole. */
@@ -814,9 +820,12 @@
     border-radius: var(--r-xs);
     border: 1px solid var(--rule);
     background: var(--surface);
-    transition: var(--t-clean);
+    /* R329 (gate:clean): the transition is r305-shell.css's unlayered
+       control recipe — this in-layer copy was inert. */
   }
-  .topbar-user-trigger:hover { border-color: var(--border-strong); background: var(--surface-2); }
+  @media (hover: hover) and (pointer: fine) {
+    .topbar-user-trigger:hover { border-color: var(--border-strong); background: var(--surface-2); }
+  }
   .topbar-user-name {
     font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text);
     /* r155d: was 1 — the single-line box clipped Arabic descenders on the
@@ -1079,10 +1088,12 @@
     --_bg: var(--surface-2);
     --_fg: var(--text);
   }
-  .search-row:hover .search-row-icon,
-  .search-row.active .search-row-icon,
-  .search-row[aria-selected="true"] .search-row-icon {
-    transform: translateX(calc(2px * var(--motion-direction)));
+  @media (hover: hover) and (pointer: fine) {
+    .search-row:hover .search-row-icon,
+    .search-row.active .search-row-icon,
+    .search-row[aria-selected="true"] .search-row-icon {
+      transform: translateX(calc(2px * var(--motion-direction)));
+    }
   }
   .search-row.active::before,
   .search-row[aria-selected="true"]::before {
@@ -1128,14 +1139,18 @@
     opacity: 0.5;
     transition: transform var(--motion-duration-short) var(--ease), opacity var(--motion-duration-short) var(--ease);
   }
-  .search-row:hover .search-row-arrow,
-  .search-row.active .search-row-arrow {
-    opacity: 1;
-    transform: translateX(-2px);
+  @media (hover: hover) and (pointer: fine) {
+    .search-row:hover .search-row-arrow,
+    .search-row.active .search-row-arrow {
+      opacity: 1;
+      transform: translateX(-2px);
+    }
   }
-  [dir="rtl"] .search-row:hover .search-row-arrow,
-  [dir="rtl"] .search-row.active .search-row-arrow {
-    transform: translateX(2px) rotate(180deg);
+  @media (hover: hover) and (pointer: fine) {
+    [dir="rtl"] .search-row:hover .search-row-arrow,
+    [dir="rtl"] .search-row.active .search-row-arrow {
+      transform: translateX(2px) rotate(180deg);
+    }
   }
   /* If arrow has no rtl flip applied, we still want its base transform
      to point in the start direction in rtl */
@@ -1295,7 +1310,8 @@
     color: var(--_fg);
     /* R313 (WP-F · D16): square option on the square track. */
     border-radius: var(--r-xs);
-    transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+    /* R329 (gate:clean): the transition is r305-shell.css's unlayered
+       control recipe — this in-layer copy was inert. */
     cursor: pointer;
   }
   @media (hover: hover) and (pointer: fine) {

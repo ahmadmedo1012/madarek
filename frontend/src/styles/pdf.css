@@ -247,7 +247,9 @@
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
   text-decoration: none;
 }
-.pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
+@media (hover: hover) and (pointer: fine) {
+  .pdf-btn:hover:not(:disabled):not(:has(*[disabled])) { background: var(--surface-2); color: var(--text); }
+}
 .pdf-btn:active:not(:disabled) { background: var(--surface-3); }
 /* r313: the pressed-in toggle (thumbs/search ON) is the ink fill held
    — the reference's active-state grammar (dark rect + light glyph),
@@ -270,7 +272,9 @@
   font-variant-numeric: tabular-nums;
   transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease);
 }
-.pdf-scale-pill:hover { border-color: var(--accent-border); }
+@media (hover: hover) and (pointer: fine) {
+  .pdf-scale-pill:hover { border-color: var(--accent-border); }
+}
 .pdf-scale-pill:active { background: var(--surface-2); }
 
 .pdf-pageinfo {
@@ -597,7 +601,9 @@
   border: 1px solid var(--border-strong);
   transition: transform var(--t-fast) var(--ease);
 }
-.annotation-color:hover .annotation-color-dot { transform: scale(1.15); }
+@media (hover: hover) and (pointer: fine) {
+  .annotation-color:hover .annotation-color-dot { transform: scale(1.15); }
+}
 /* r132-F5: was a raw scale(0.95) — adjudicated to the controls register
    (--press-scale 0.97): the swatch is a tappable control, not a card or
    a bottom-nav thumb target (r130-W2-7 one-token-per-register ladder). */
@@ -665,7 +671,9 @@
   font-variant-numeric: tabular-nums;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.annotation-jump:hover { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+@media (hover: hover) and (pointer: fine) {
+  .annotation-jump:hover { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+}
 .annotation-jump:active { background: var(--accent-strong); color: var(--accent-fg); border-color: var(--accent-strong); }
 .annotation-comment {
   font-size: var(--fs-sm);
@@ -691,7 +699,9 @@
   justify-content: center;
   transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
 }
-.annotation-delete:hover { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
+@media (hover: hover) and (pointer: fine) {
+  .annotation-delete:hover { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
+}
 .annotation-delete:active { background: var(--danger-soft); color: var(--danger-ink, var(--danger)); }
 
 /* r155d: 800 → 920 — folds to the app's own mobile-shell rung (the
