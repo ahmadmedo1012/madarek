@@ -24,8 +24,13 @@ jobs:
   ledger:
     name: eas build:list (the recent cuts)
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 6
+    defaults:
+      run:
+        # the EAS CLI needs the project context (app.config.ts lives here)
+        working-directory: apps/mobile
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
