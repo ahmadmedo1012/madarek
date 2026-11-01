@@ -185,7 +185,7 @@ jobs:
             echo "native=false" >> "$GITHUB_OUTPUT"
             echo "JS-only change — OTA suffices, no build needed."
           fi
-      - name: Build (preview: internal APK + iOS sim · production: the store cut)
+      - name: "Build (preview = internal APK + iOS sim, production = the store cut)"
         if: github.event_name == 'workflow_dispatch' || steps.native.outputs.native == 'true'
         # R327 D2: the old `|| cat build-out.txt` swallowed EAS failures —
         # the job went green while NO build was queued (that is exactly how
