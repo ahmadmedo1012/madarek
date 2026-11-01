@@ -28,12 +28,20 @@ on:
   # R327 D2: the owner's manual build trigger — e.g. when the Android
   # free-plan quota is spent but iOS still has headroom, or to re-cut
   # preview builds after a quota reset without waiting for a push.
+  # R327 D2b: profile joins the trigger — preview (default: internal APK
+  # + iOS simulator) or production (the store cut: Android AAB via the
+  # EAS-managed upload key; iOS production needs the owner's Apple
+  # credentials and will refuse honestly without them).
   workflow_dispatch:
     inputs:
       platforms:
         description: 'EAS platforms (all | ios | android)'
         required: false
         default: 'all'
+      profile:
+        description: 'EAS build profile (preview | production)'
+        required: false
+        default: 'preview'
 
 permissions:
   contents: read
@@ -177,14 +185,17 @@ jobs:
             echo "native=false" >> "$GITHUB_OUTPUT"
             echo "JS-only change — OTA suffices, no build needed."
           fi
-      - name: Build preview (internal APK + iOS simulator, no wait)
+      - name: Build (preview: internal APK + iOS sim · production: the store cut)
         if: github.event_name == 'workflow_dispatch' || steps.native.outputs.native == 'true'
         # R327 D2: the old `|| cat build-out.txt` swallowed EAS failures —
         # the job went green while NO build was queued (that is exactly how
         # the missing-npm_ci gap hid). The step now fails loudly.
+        # R327 D2b: the profile rides the dispatch input (preview default);
+        # production = the AAB store cut with the EAS-managed upload key.
         run: |
           set +e
-          npx eas-cli@latest build --profile preview --platform "${{ github.event.inputs.platforms || 'all' }}" --non-interactive --no-wait > build-out.txt 2>&1
+          PROFILE="${{ github.event.inputs.profile || 'preview' }}"
+          npx eas-cli@latest build --profile "$PROFILE" --platform "${{ github.event.inputs.platforms || 'all' }}" --non-interactive --no-wait > build-out.txt 2>&1
           STATUS=$?
           set -e
           cat build-out.txt
@@ -193,6 +204,6 @@ jobs:
             exit "$STATUS"
           fi
           grep -oE 'https://expo\.dev/artifacts/[^ )]+' build-out.txt >> "$GITHUB_STEP_SUMMARY" || true
-          echo "## EAS preview builds queued" >> "$GITHUB_STEP_SUMMARY"
+          echo "## EAS $PROFILE builds queued" >> "$GITHUB_STEP_SUMMARY"
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
