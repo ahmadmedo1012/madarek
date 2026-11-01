@@ -2,9 +2,11 @@
 
 قائد الجولة يحدّث هذه اللوحة بعد كل push (وعلى الأقل كل ساعة). كل ادعاء بصري = لقطة مفتوحة بعين الوكيل.
 
-## الحالة الآن (S0 — فتح الجولة)
+## الحالة الآن (تحديث القائد №1)
 
-- main @ `1fce615` — CI **❌** في وظيفتين (انظر سجل CI). بقية الوظائف السبع ✅.
+- main @ `7b0db109` — CI **✅** وDeploy smoke **✅** (run 41321320210). الجذر أُصلح: parity + الـ 6 مواصفات e2e الحمراء (انظر §3 من السجل الأحمر).
+- المتبقي على G1: اجتثاث `gate:clean` (صفر الأساس + إزالة override R326) · بوابة r321 (69 فشلًا) · مسح bypass في workflows (§3.5) · `scripts/pre-push.mjs` (§3.8) — A-CI يعمل عليها الآن.
+- **main لا يستقبل أي تغيير بصري قبل اكتمال G1 وظهور خط الأساس (M1).**
 - CSS: **51,329 سطراً** في `frontend/src/styles/` (landing 8,787 · components 5,808 · student 4,106 · polish 3,419 · teacher-quality 2,654 · owner 1,688 …) → هدف الجولة **≤ 33k** (−35%).
 - `heron-fidelity`: لم يُبنَ بعد (M1). الخط الأساس يُنشر خلال أول ساعتين — الرقم يُطبع كما هو، بلا تجميل (تقدير المالك الحالي: 20–30%).
 - أهداف الجولة: الرئيسية ≥ 70% · كل صفحة داخلية ≥ 60% · لجنة 3 مستقلة ≥ 9 بأسباب · تمرير ≥ 55fps تحت CPU×4 · صفر إطارات pin فارغة.
@@ -14,8 +16,8 @@
 | المرحلة | الوكيل | worktree | الحالة |
 |---|---|---|---|
 | S0 تجهيز + هذه اللوحة | القائد | `/home/z/madarek` | ✅ |
-| G أخضر main (سجل الأحمر → إصلاح الجذر → pre-push) | **A-CI** | `/home/z/madarek` | 🔄 |
-| M مقياس heron-fidelity + الخط الأساس | **A-QA** | `/home/z/w-qa` | 🔄 |
+| G أخضر main (سجل الأحمر → إصلاح الجذر → pre-push) | **A-CI** | `/home/z/madarek` | 🔄 CI أخضر @ 7b0db109 · متبقٍ: clean/r321/bypass/pre-push |
+| M مقياس heron-fidelity + الخط الأساس | **A-QA** | `/home/z/w-qa` | 🔄 الاستخراج الحي جارٍ (about-us + contact-us على 4 عروض حتى الآن) |
 | C توحيد CSS (خريطة التراكم → اجتثاث الميت → @layer) | A-CSS | يُنشأ بعد G/M | ⏳ |
 | H الرئيسية = Heron (قسمًا قسمًا من الاستخراج الحي) | A-Home | يُنشأ بعد G/M | ⏳ |
 | T عقد التمرير (Lenis واحد · motion.md · pin الفارغ) | A-Scroll | يُنشأ بعد G/M | ⏳ |
@@ -28,6 +30,9 @@
 | sha | CI | ملاحظات |
 |---|---|---|
 | `1fce615` (رأس الجولة، run 41315560287) | ❌ | design-gates خطوة `verify-parity-export.mjs` · e2e خطوة `test:e2e` — البقية ✅ |
+| `6311d03e` (فتح الجولة، docs) | ❌ | نفس الأحمرين الموروثَين (run 41318657172) |
+| `567143b8` · `c9cd658d` | ⏭️ | دفعات متلاحقة — superseded قبل انطلاق run (concurrency) |
+| `7b0db109` | ✅ | **CI ✅ + Deploy smoke ✅** — parity + e2e أُصلحا من الجذر (run 41321320210) |
 | (يُحدَّث بعد كل push) | | |
 
 ## حقائق البيئة (موروثة من R328 ومُتحقَّق منها في S0)
@@ -51,10 +56,11 @@
 
 ## المهارات/الأدوات المستخدمة (تُحدَّث مع كل تقرير وكيل)
 
-- S0 (القائد): GitHub Actions API (curl) · git · Playwright متوفر.
+- S0 (القائد): GitHub Actions API (curl) · git.
+- G1 (A-CI): GitHub Actions API (runs/jobs/logs) · Playwright e2e · البوابات المحلية (node/bash scripts) — السجل الكامل في `docs/redesign/r329/ci-red-ledger.md`.
 
 ## الإجراءات الثلاثة التالية
 
-1. **G1** (A-CI في `/home/z/madarek`): بناء `docs/redesign/r329/ci-red-ledger.md` من آخر 50 run → إصلاح جذر parity (`verify-parity-export.mjs`) وe2e (toast) و`gate:clean` (صفر الأساس + إزالة override R326) وبوابة r321 (69 فشلًا) وإزالة كل `continue-on-error` → `scripts/pre-push.mjs` + `.githooks/pre-push`. أول أمر: `curl -s -H "Authorization: Bearer $GITHUB_TOKEN" ".../actions/runs?per_page=50"`.
-2. **M1** (A-QA في `/home/z/w-qa`): `npm install` ثم استخراج حي من https://heronaiapp.com (1440/1024/768/390) إلى `docs/redesign/r329/heron-live/` → سكربت `scripts/fidelity/` بخمسة محاور → `docs/redesign/r329/baseline.md` خلال أول ساعتين.
-3. بعد تسليم G1 + M1: إطلاق **C (A-CSS)** و**H (A-Home)** و**T (A-Scroll)** بالتوازي، بملكية ملفات صارمة.
+1. **G1 إكمال** (A-CI): `gate:clean` صفرًا (إزالة override R326) → بوابة r321 (69 فشلًا: إصلاح أو إحالة موثقة) → مسح `continue-on-error` (§3.5) → `scripts/pre-push.mjs` بقياس زمن فعلي ≤ 6 دقائق (§3.8) → تحديث §5/§6 من السجل → آخر push أخضر.
+2. **M1 إكمال** (A-QA): استخراج بقية صفحات Heron الحية → سكربت `scripts/fidelity/run.mjs` بخمسة محاور + `README.md` موثق → `docs/redesign/r329/baseline.md` بالأرقام الصادقة (الرئيسية + login/about/help/app × 4 عروض × ثيمين).
+3. بعد اكتمال G1: إطلاق **C (A-CSS)** و**H (A-Home)** و**T (A-Scroll)** بالتوازي فورًا (بملكية ملفات صارمة)، مع تسليم H مبنيًا على `heron-live` من M1.
