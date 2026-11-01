@@ -859,6 +859,17 @@ html[data-theme='dark'] body.mdrk-grain::before {
   max-block-size: 100%;
 }
 
+/* R328 (H2) — THE STAGE CAP: the ruled box never exceeds 56svh, so
+ * the ink stays ≈ half the viewport at EVERY desktop height and the
+ * content band + strip + the consent card's reserve ALWAYS fit inside
+ * the 100svh band. Without the cap the art row's own sizing mood
+ * pushed the strip behind the corner card at 1280×720 (−55px) and
+ * 1920×1080 (−12px) — measured. The title owns the hierarchy; the
+ * drawing owns the page, not the fold. */
+.fo-hero-art .bp-stage {
+  max-block-size: 56svh;
+}
+
 /* the line-art weight rides the vector gear — the strokes stay
  * drafting hairlines at every art scale (the tight viewBox renders
  * the ink at ~0.3× the sheet scale on phones; un-scaled strokes keep
