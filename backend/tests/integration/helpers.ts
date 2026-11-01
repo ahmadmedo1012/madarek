@@ -58,7 +58,14 @@ export async function truncateAll(client: PrismaClient): Promise<number> {
       .join(', ');
     await tx.$executeRawUnsafe(`TRUNCATE TABLE ${quoted} RESTART IDENTITY CASCADE`);
     return rows.length;
-  });
+    /* R329 (CI red ledger §2.6): the default 5000 ms interactive-transaction
+     * timeout is sized for warm local runs — under CI's 2-CPU load the
+     * 79-table CASCADE wipe measured 5061 ms once (run 499, P2028, a red
+     * db-integration job with zero code cause). 20 s is honest headroom for
+     * the same single statement on a cold, contended runner — the wipe is
+     * one TRUNCATE, it cannot silently hang the suite (vitest's own test
+     * timeout still bounds every test). */
+  }, { timeout: 20_000 });
 }
 
 export interface SeedUserOptions {

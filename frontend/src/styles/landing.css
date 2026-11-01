@@ -3510,6 +3510,19 @@ html[data-theme='dark'] body.mdrk-grain::before {
     aspect-ratio: 8 / 5;
   }
 
+  /* R329 (CI red, r309 mobile belt) — the 8:5 cap is the IDLE fold
+   * contract only. Once a station opens, the phone's flow rail (the
+   * in-flow presentation this block below seats INSIDE the stage)
+   * must be allowed to grow the box: under the hard cap the grid
+   * starved the drawing row — the ink collapsed to a sliver, the
+   * letterbox mapping piled every dot at one point, and the rail
+   * (pointer-events: auto ≤767) covered them, so the remaining
+   * stations could never be tapped. Interacting legitimately grows
+   * the page below the fold; the fold itself is pinned at rest. */
+  .fo-hero-art .bp-stage:has(.hi-flow[data-any-open='on']) {
+    aspect-ratio: auto;
+  }
+
   .fo-hero-content {
     grid-template-columns: minmax(0, 1fr);
     padding-inline-end: 7px; /* spacing-gate: allow — the landing sheet bespoke rung (authored literal, reviewed) */

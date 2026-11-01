@@ -225,8 +225,39 @@ test.describe('R325 Y1 — the map intro clip gate', () => {
     expect(opacities.length).toBeGreaterThanOrEqual(8);
     for (const o of opacities) expect(o).toBeGreaterThanOrEqual(0.14);
 
-    /* the unboxed headline: no border, no shadow, no own background —
-     * the paper feather lives on the masked ::before */
+    /* the unboxed headline: no border, no shadow, no own background.
+     * R329 (CI red): the R325 Y1 "feathered paper mask" ::before is
+     * RETIRED — R328 (H4) moved the two statement plaques OFF the
+     * plan's surface (the measured defect: titles crossed the wall
+     * lines mid-fade with no ground under them) into their own
+     * hairline-closed band INSIDE the window (.jt-cards: a caption
+     * strip above the drawing, order −1, border-block-end on the
+     * band — never on the plate). There is nothing to mask out any
+     * more; the plate is the glyphs' wrap guard only. This belt now
+     * pins the H4 seat: the band exists, closes with the rule
+     * hairline, and holds both plaques in ONE grid cell (the
+     * crossfade seat — never stacked side by side). */
+    const seat = await page.evaluate(() => {
+      const band = document.querySelector('.jt-cards') as HTMLElement | null;
+      if (!band) return null;
+      const cs = getComputedStyle(band);
+      const cards = Array.from(band.querySelectorAll(':scope > .jt-card'));
+      return {
+        order: parseInt(cs.order, 10),
+        borderBottom: cs.borderBottomStyle !== 'none' && parseFloat(cs.borderBottomWidth) > 0,
+        cellCount: cards.filter((c) => {
+          const ccs = getComputedStyle(c);
+          return ccs.gridRowStart === '1' && ccs.gridColumnStart === '1';
+        }).length,
+        plateCount: band.querySelectorAll('.jt-card-plate').length,
+      };
+    });
+    expect(seat).not.toBeNull();
+    expect(seat!.order).toBe(-1);
+    expect(seat!.borderBottom, 'the statement band closes with the rule hairline (H4)').toBe(true);
+    expect(seat!.cellCount, 'both plaques share the ONE crossfade grid cell (H4)').toBe(2);
+    expect(seat!.plateCount).toBe(2);
+
     const plates = await page.evaluate(() =>
       Array.from(document.querySelectorAll<HTMLElement>('.jt-card-plate')).map((el) => {
         const cs = getComputedStyle(el);
@@ -238,13 +269,7 @@ test.describe('R325 Y1 — the map intro clip gate', () => {
             const parts = ch.split(',');
             return parts.length > 3 ? parts[3]!.trim() : '1';
           })),
-          hasMaskedPaper: (() => {
-            const before = getComputedStyle(el, '::before');
-            return (
-              (before.maskImage ?? before.webkitMaskImage ?? '').includes('linear-gradient') &&
-              before.backgroundColor.replace(/\s/g, '').includes('246,246,238')
-            );
-          })(),
+          maskImage: cs.maskImage,
         };
       }),
     );
@@ -254,7 +279,7 @@ test.describe('R325 Y1 — the map intro clip gate', () => {
       expect(plate.borderWidth).toBe(0);
       expect(plate.boxShadow).toBe('none');
       expect(plate.bgAlpha).toBe(0);
-      expect(plate.hasMaskedPaper).toBe(true);
+      expect(plate.maskImage, 'the retired R325 feathered mask must not come back').toBe('none');
     }
   });
 });

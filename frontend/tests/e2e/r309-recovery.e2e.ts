@@ -37,6 +37,25 @@ async function waitForMapping(page: import('@playwright/test').Page) {
 
 interface Box { left: number; top: number; right: number; bottom: number }
 
+/** Live marker geometry — the centers of the three station dots in
+ *  absolute page coordinates. R329 (CI red): the R312 belt hardening
+ *  hard-coded the waypoint fractions it measured against the R322
+ *  uncapped stage; the R328 H2 stage cap (56svh) moved every dot's
+ *  fractional seat, so the frozen sweep stopped crossing the boxes
+ *  (2/3 stations). The crossing is now guaranteed by construction
+ *  AGAIN — measured live at every run, immune to any future honest
+ *  re-seat of the stage geometry. */
+async function markerCenters(page: import('@playwright/test').Page): Promise<Record<string, { x: number; y: number }>> {
+  return page.evaluate(() => {
+    const out: Record<string, { x: number; y: number }> = {};
+    document.querySelectorAll('.hi-marker').forEach((el) => {
+      const r = el.getBoundingClientRect();
+      out[el.getAttribute('data-marker') ?? '?'] = { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
+    return out;
+  });
+}
+
 async function boxesOf(page: import('@playwright/test').Page, sel: string): Promise<Record<string, Box>> {
   return page.evaluate((selector: string) => {
     const out: Record<string, Box> = {};
@@ -66,27 +85,25 @@ test.describe('R309 hero — drag-reveal geometry (the audit failures)', () => {
     expect(sb).not.toBeNull();
 
     /* the reproduced failing gesture: a wide drag across the drawing.
-     * R312 belt hardening (D4's sibling flake): the three station
-     * markers on the elevation are NOT collinear (cp 903,751 · rr
-     * 615,742 · mg 432,682 — measured) — a single-segment line at a
-     * fixed height passes mg by ~10px and opens only 2/3 stations
-     * under pointermove coalescing. The gesture now walks a WAYPOINT
-     * PER MARKER CENTRE (each crossing guaranteed by construction,
-     * ±22px of box margin on either side), still one continuous wide
-     * left sweep; the settle pause before release guarantees the
-     * conductor frame processed the final stretch. */
-    const wp = (fx: number, fy: number) => ({ x: sb!.x + sb!.width * fx, y: sb!.y + sb!.height * fy });
-    await page.mouse.move(wp(0.85, 0.72).x, wp(0.85, 0.72).y);
+     * R312 belt hardening (D4): the three station markers are not
+     * collinear, so the sweep walks a WAYPOINT PER MARKER CENTRE
+     * (each crossing guaranteed by construction — openMarkersInRect
+     * intersects the swept rect with the dot boxes), still one
+     * continuous wide left sweep; the settle pause before release
+     * guarantees the conductor frame processed the final stretch.
+     * R329: the waypoints are MEASURED live (see markerCenters) — the
+     * R312 fractions were frozen against the R322 stage and missed
+     * every dot under the R328 H2 56svh cap. */
+    await waitForMapping(page);
+    const centers = await markerCenters(page);
+    expect(Object.keys(centers).sort()).toEqual(['cp', 'mg', 'rr']);
+    const sweep = Object.values(centers).sort((a, b) => b.x - a.x); /* right → left */
+    await page.mouse.move(sweep[0]!.x + sb!.width * 0.2, sweep[0]!.y);
     await page.mouse.down();
-    for (const [fx, fy, steps] of [
-      [0.649, 0.696, 8], // through [CP]'s centre
-      [0.410, 0.678, 8], // through [RR]'s centre
-      [0.230, 0.561, 8], // through [MG]'s centre
-      [0.100, 0.520, 6], // the far end of the sweep
-    ] as const) {
-      const p = wp(fx, fy);
-      await page.mouse.move(p.x, p.y, { steps });
+    for (const c of sweep) {
+      await page.mouse.move(c.x, c.y, { steps: 8 });
     }
+    await page.mouse.move(sb!.x + sb!.width * 0.1, sweep[sweep.length - 1]!.y, { steps: 6 });
     await page.waitForTimeout(250);
     await page.mouse.up();
     await page.waitForTimeout(700);
@@ -310,11 +327,21 @@ test.describe('R309 hero — the reveal-state lifecycle (§6)', () => {
   test('cards persist after drag release (the reference semantics)', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    const sb = await page.locator('div.bp-stage').boundingBox();
+    const stage = page.locator('div.bp-stage');
+    await expect(stage).toBeVisible({ timeout: 30_000 });
+    const sb = await stage.boundingBox();
     expect(sb).not.toBeNull();
-    await page.mouse.move(sb!.x + sb!.width * 0.75, sb!.y + sb!.height * 0.66);
+    /* R329: the drag is measured against the LIVE dot seat (the R328
+     * H2 stage cap moved every fractional position — the old frozen
+     * 0.75→0.45 line at fy 0.66 crossed nothing, so nothing opened).
+     * One marker crossed by construction is enough for the persist
+     * contract; release, then the count must hold. */
+    await waitForMapping(page);
+    const centers = await markerCenters(page);
+    const first = Object.values(centers).sort((a, b) => b.x - a.x)[0]!;
+    await page.mouse.move(first.x + sb!.width * 0.25, first.y);
     await page.mouse.down();
-    await page.mouse.move(sb!.x + sb!.width * 0.45, sb!.y + sb!.height * 0.66, { steps: 8 });
+    await page.mouse.move(first.x - sb!.width * 0.1, first.y, { steps: 8 });
     await page.mouse.up();
     await page.waitForTimeout(600);
     const open = await page.locator('.hi-card[data-open="on"]').count();
