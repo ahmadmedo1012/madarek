@@ -1510,7 +1510,11 @@ export default function LandingPage() {
               campuses, the live-capability count) ride HERE, computed
               from the real config/data — never invented. */}
           <div className="cg-strip" id="colleges">
-            <span className="cg-strip-label fo-mono" dir="ltr">[09] · REGISTRY</span>
+            {/* R328 (H5): the index renumbers [09]→[08] — the footer's
+                old [08] drawn-mark cell retired in R323, so the sheet's
+                own ladder ran hero[01]…roles[07] then skipped to [09];
+                the registry strip IS the eighth band. */}
+            <span className="cg-strip-label fo-mono" dir="ltr">[08] · REGISTRY</span>
             <p className="cg-strip-text">
               <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
               <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —{' '}
