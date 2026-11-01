@@ -1,0 +1,369 @@
+
+         /\      Grafana   /‾‾/  
+    /\  /  \     |\  __   /  /   
+   /  \/    \    | |/ /  /   ‾‾\ 
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/ 
+
+
+     execution: local
+        script: scripts/load/k6.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 10 max VUs, 1m55s max duration (incl. graceful stop):
+              * classroom: Up to 10 looping VUs for 1m40s over 5 stages (gracefulRampDown: 15s, gracefulStop: 30s)
+
+time="2026-11-01T00:40:38Z" level=info msg="setup: 3/3 tokens acquired (1 login each — inside AUTH_RATE)" source=console
+
+running (0m01.0s), 00/10 VUs, 0 complete and 0 interrupted iterations
+classroom   [   1% ] 00/10 VUs  0m00.9s/1m40.0s
+
+running (0m02.0s), 00/10 VUs, 0 complete and 0 interrupted iterations
+classroom   [   2% ] 00/10 VUs  0m01.9s/1m40.0s
+
+running (0m03.0s), 01/10 VUs, 0 complete and 0 interrupted iterations
+classroom   [   3% ] 01/10 VUs  0m02.9s/1m40.0s
+
+running (0m04.0s), 01/10 VUs, 0 complete and 0 interrupted iterations
+classroom   [   4% ] 01/10 VUs  0m03.9s/1m40.0s
+
+running (0m05.0s), 02/10 VUs, 0 complete and 0 interrupted iterations
+classroom   [   5% ] 02/10 VUs  0m04.9s/1m40.0s
+
+running (0m06.0s), 02/10 VUs, 0 complete and 0 interrupted iterations
+classroom   [   6% ] 02/10 VUs  0m05.9s/1m40.0s
+
+running (0m07.0s), 03/10 VUs, 1 complete and 0 interrupted iterations
+classroom   [   7% ] 03/10 VUs  0m06.9s/1m40.0s
+
+running (0m08.0s), 03/10 VUs, 1 complete and 0 interrupted iterations
+classroom   [   8% ] 03/10 VUs  0m07.9s/1m40.0s
+
+running (0m09.0s), 04/10 VUs, 2 complete and 0 interrupted iterations
+classroom   [   9% ] 04/10 VUs  0m08.9s/1m40.0s
+
+running (0m10.0s), 04/10 VUs, 2 complete and 0 interrupted iterations
+classroom   [  10% ] 04/10 VUs  0m09.9s/1m40.0s
+
+running (0m11.0s), 05/10 VUs, 4 complete and 0 interrupted iterations
+classroom   [  11% ] 05/10 VUs  0m10.9s/1m40.0s
+
+running (0m12.0s), 05/10 VUs, 4 complete and 0 interrupted iterations
+classroom   [  12% ] 05/10 VUs  0m11.9s/1m40.0s
+
+running (0m13.0s), 06/10 VUs, 6 complete and 0 interrupted iterations
+classroom   [  13% ] 06/10 VUs  0m12.9s/1m40.0s
+
+running (0m14.0s), 06/10 VUs, 6 complete and 0 interrupted iterations
+classroom   [  14% ] 06/10 VUs  0m13.9s/1m40.0s
+
+running (0m15.0s), 07/10 VUs, 9 complete and 0 interrupted iterations
+classroom   [  15% ] 07/10 VUs  0m14.9s/1m40.0s
+
+running (0m16.0s), 07/10 VUs, 9 complete and 0 interrupted iterations
+classroom   [  16% ] 07/10 VUs  0m15.9s/1m40.0s
+
+running (0m17.0s), 08/10 VUs, 12 complete and 0 interrupted iterations
+classroom   [  17% ] 08/10 VUs  0m16.9s/1m40.0s
+
+running (0m18.0s), 08/10 VUs, 12 complete and 0 interrupted iterations
+classroom   [  18% ] 08/10 VUs  0m17.9s/1m40.0s
+
+running (0m19.0s), 09/10 VUs, 16 complete and 0 interrupted iterations
+classroom   [  19% ] 09/10 VUs  0m18.9s/1m40.0s
+
+running (0m20.0s), 09/10 VUs, 16 complete and 0 interrupted iterations
+classroom   [  20% ] 09/10 VUs  0m19.9s/1m40.0s
+
+running (0m21.0s), 10/10 VUs, 20 complete and 0 interrupted iterations
+classroom   [  21% ] 10/10 VUs  0m20.9s/1m40.0s
+
+running (0m22.0s), 10/10 VUs, 20 complete and 0 interrupted iterations
+classroom   [  22% ] 10/10 VUs  0m21.9s/1m40.0s
+
+running (0m23.0s), 10/10 VUs, 25 complete and 0 interrupted iterations
+classroom   [  23% ] 10/10 VUs  0m22.9s/1m40.0s
+
+running (0m24.0s), 10/10 VUs, 25 complete and 0 interrupted iterations
+classroom   [  24% ] 10/10 VUs  0m23.9s/1m40.0s
+
+running (0m25.0s), 10/10 VUs, 30 complete and 0 interrupted iterations
+classroom   [  25% ] 10/10 VUs  0m24.9s/1m40.0s
+
+running (0m26.0s), 10/10 VUs, 30 complete and 0 interrupted iterations
+classroom   [  26% ] 10/10 VUs  0m25.9s/1m40.0s
+
+running (0m27.0s), 10/10 VUs, 35 complete and 0 interrupted iterations
+classroom   [  27% ] 10/10 VUs  0m26.9s/1m40.0s
+
+running (0m28.0s), 10/10 VUs, 35 complete and 0 interrupted iterations
+classroom   [  28% ] 10/10 VUs  0m27.9s/1m40.0s
+
+running (0m29.0s), 10/10 VUs, 40 complete and 0 interrupted iterations
+classroom   [  29% ] 10/10 VUs  0m28.9s/1m40.0s
+
+running (0m30.0s), 10/10 VUs, 40 complete and 0 interrupted iterations
+classroom   [  30% ] 10/10 VUs  0m29.9s/1m40.0s
+
+running (0m31.0s), 10/10 VUs, 45 complete and 0 interrupted iterations
+classroom   [  31% ] 10/10 VUs  0m30.9s/1m40.0s
+
+running (0m32.0s), 10/10 VUs, 45 complete and 0 interrupted iterations
+classroom   [  32% ] 10/10 VUs  0m31.9s/1m40.0s
+
+running (0m33.0s), 10/10 VUs, 50 complete and 0 interrupted iterations
+classroom   [  33% ] 10/10 VUs  0m32.9s/1m40.0s
+
+running (0m34.0s), 10/10 VUs, 50 complete and 0 interrupted iterations
+classroom   [  34% ] 10/10 VUs  0m33.9s/1m40.0s
+
+running (0m35.0s), 10/10 VUs, 55 complete and 0 interrupted iterations
+classroom   [  35% ] 10/10 VUs  0m34.9s/1m40.0s
+
+running (0m36.0s), 10/10 VUs, 55 complete and 0 interrupted iterations
+classroom   [  36% ] 10/10 VUs  0m35.9s/1m40.0s
+
+running (0m37.0s), 10/10 VUs, 60 complete and 0 interrupted iterations
+classroom   [  37% ] 10/10 VUs  0m36.9s/1m40.0s
+
+running (0m38.0s), 10/10 VUs, 60 complete and 0 interrupted iterations
+classroom   [  38% ] 10/10 VUs  0m37.9s/1m40.0s
+
+running (0m39.0s), 10/10 VUs, 65 complete and 0 interrupted iterations
+classroom   [  39% ] 10/10 VUs  0m38.9s/1m40.0s
+
+running (0m40.0s), 10/10 VUs, 65 complete and 0 interrupted iterations
+classroom   [  40% ] 10/10 VUs  0m39.9s/1m40.0s
+
+running (0m41.0s), 10/10 VUs, 70 complete and 0 interrupted iterations
+classroom   [  41% ] 10/10 VUs  0m40.9s/1m40.0s
+
+running (0m42.0s), 10/10 VUs, 70 complete and 0 interrupted iterations
+classroom   [  42% ] 10/10 VUs  0m41.9s/1m40.0s
+
+running (0m43.0s), 10/10 VUs, 75 complete and 0 interrupted iterations
+classroom   [  43% ] 10/10 VUs  0m42.9s/1m40.0s
+
+running (0m44.0s), 10/10 VUs, 75 complete and 0 interrupted iterations
+classroom   [  44% ] 10/10 VUs  0m43.9s/1m40.0s
+
+running (0m45.0s), 10/10 VUs, 80 complete and 0 interrupted iterations
+classroom   [  45% ] 10/10 VUs  0m44.9s/1m40.0s
+
+running (0m46.0s), 10/10 VUs, 80 complete and 0 interrupted iterations
+classroom   [  46% ] 10/10 VUs  0m45.9s/1m40.0s
+
+running (0m47.0s), 10/10 VUs, 85 complete and 0 interrupted iterations
+classroom   [  47% ] 10/10 VUs  0m46.9s/1m40.0s
+
+running (0m48.0s), 10/10 VUs, 85 complete and 0 interrupted iterations
+classroom   [  48% ] 10/10 VUs  0m47.9s/1m40.0s
+
+running (0m49.0s), 10/10 VUs, 90 complete and 0 interrupted iterations
+classroom   [  49% ] 10/10 VUs  0m48.9s/1m40.0s
+
+running (0m50.0s), 10/10 VUs, 90 complete and 0 interrupted iterations
+classroom   [  50% ] 10/10 VUs  0m49.9s/1m40.0s
+
+running (0m51.0s), 10/10 VUs, 95 complete and 0 interrupted iterations
+classroom   [  51% ] 10/10 VUs  0m50.9s/1m40.0s
+
+running (0m52.0s), 10/10 VUs, 95 complete and 0 interrupted iterations
+classroom   [  52% ] 10/10 VUs  0m51.9s/1m40.0s
+
+running (0m53.0s), 10/10 VUs, 100 complete and 0 interrupted iterations
+classroom   [  53% ] 10/10 VUs  0m52.9s/1m40.0s
+
+running (0m54.0s), 10/10 VUs, 100 complete and 0 interrupted iterations
+classroom   [  54% ] 10/10 VUs  0m53.9s/1m40.0s
+
+running (0m55.0s), 10/10 VUs, 105 complete and 0 interrupted iterations
+classroom   [  55% ] 10/10 VUs  0m54.9s/1m40.0s
+
+running (0m56.0s), 10/10 VUs, 105 complete and 0 interrupted iterations
+classroom   [  56% ] 10/10 VUs  0m55.9s/1m40.0s
+
+running (0m57.0s), 10/10 VUs, 110 complete and 0 interrupted iterations
+classroom   [  57% ] 10/10 VUs  0m56.9s/1m40.0s
+
+running (0m58.0s), 10/10 VUs, 110 complete and 0 interrupted iterations
+classroom   [  58% ] 10/10 VUs  0m57.9s/1m40.0s
+
+running (0m59.0s), 10/10 VUs, 115 complete and 0 interrupted iterations
+classroom   [  59% ] 10/10 VUs  0m58.9s/1m40.0s
+
+running (1m00.0s), 10/10 VUs, 115 complete and 0 interrupted iterations
+classroom   [  60% ] 10/10 VUs  0m59.9s/1m40.0s
+
+running (1m01.0s), 10/10 VUs, 120 complete and 0 interrupted iterations
+classroom   [  61% ] 10/10 VUs  1m00.9s/1m40.0s
+
+running (1m02.0s), 10/10 VUs, 120 complete and 0 interrupted iterations
+classroom   [  62% ] 10/10 VUs  1m01.9s/1m40.0s
+
+running (1m03.0s), 10/10 VUs, 125 complete and 0 interrupted iterations
+classroom   [  63% ] 10/10 VUs  1m02.9s/1m40.0s
+
+running (1m04.0s), 10/10 VUs, 125 complete and 0 interrupted iterations
+classroom   [  64% ] 10/10 VUs  1m03.9s/1m40.0s
+
+running (1m05.0s), 10/10 VUs, 130 complete and 0 interrupted iterations
+classroom   [  65% ] 10/10 VUs  1m04.9s/1m40.0s
+
+running (1m06.0s), 10/10 VUs, 130 complete and 0 interrupted iterations
+classroom   [  66% ] 10/10 VUs  1m05.9s/1m40.0s
+
+running (1m07.0s), 10/10 VUs, 135 complete and 0 interrupted iterations
+classroom   [  67% ] 10/10 VUs  1m06.9s/1m40.0s
+
+running (1m08.0s), 10/10 VUs, 135 complete and 0 interrupted iterations
+classroom   [  68% ] 10/10 VUs  1m07.9s/1m40.0s
+
+running (1m09.0s), 10/10 VUs, 140 complete and 0 interrupted iterations
+classroom   [  69% ] 10/10 VUs  1m08.9s/1m40.0s
+
+running (1m10.0s), 10/10 VUs, 140 complete and 0 interrupted iterations
+classroom   [  70% ] 10/10 VUs  1m09.9s/1m40.0s
+
+running (1m11.0s), 10/10 VUs, 145 complete and 0 interrupted iterations
+classroom   [  71% ] 10/10 VUs  1m10.9s/1m40.0s
+
+running (1m12.0s), 10/10 VUs, 145 complete and 0 interrupted iterations
+classroom   [  72% ] 10/10 VUs  1m11.9s/1m40.0s
+
+running (1m13.0s), 10/10 VUs, 150 complete and 0 interrupted iterations
+classroom   [  73% ] 10/10 VUs  1m12.9s/1m40.0s
+
+running (1m14.0s), 10/10 VUs, 150 complete and 0 interrupted iterations
+classroom   [  74% ] 10/10 VUs  1m13.9s/1m40.0s
+
+running (1m15.0s), 10/10 VUs, 155 complete and 0 interrupted iterations
+classroom   [  75% ] 10/10 VUs  1m14.9s/1m40.0s
+
+running (1m16.0s), 10/10 VUs, 155 complete and 0 interrupted iterations
+classroom   [  76% ] 10/10 VUs  1m15.9s/1m40.0s
+
+running (1m17.0s), 10/10 VUs, 160 complete and 0 interrupted iterations
+classroom   [  77% ] 10/10 VUs  1m16.9s/1m40.0s
+
+running (1m18.0s), 10/10 VUs, 160 complete and 0 interrupted iterations
+classroom   [  78% ] 10/10 VUs  1m17.9s/1m40.0s
+
+running (1m19.0s), 10/10 VUs, 165 complete and 0 interrupted iterations
+classroom   [  79% ] 10/10 VUs  1m18.9s/1m40.0s
+
+running (1m20.0s), 10/10 VUs, 165 complete and 0 interrupted iterations
+classroom   [  80% ] 10/10 VUs  1m19.9s/1m40.0s
+
+running (1m21.0s), 10/10 VUs, 170 complete and 0 interrupted iterations
+classroom   [  81% ] 10/10 VUs  1m20.9s/1m40.0s
+
+running (1m22.0s), 10/10 VUs, 170 complete and 0 interrupted iterations
+classroom   [  82% ] 10/10 VUs  1m21.9s/1m40.0s
+
+running (1m23.0s), 10/10 VUs, 175 complete and 0 interrupted iterations
+classroom   [  83% ] 10/10 VUs  1m22.9s/1m40.0s
+
+running (1m24.0s), 10/10 VUs, 175 complete and 0 interrupted iterations
+classroom   [  84% ] 10/10 VUs  1m23.9s/1m40.0s
+
+running (1m25.0s), 09/10 VUs, 180 complete and 0 interrupted iterations
+classroom   [  85% ] 09/10 VUs  1m24.9s/1m40.0s
+
+running (1m26.0s), 09/10 VUs, 180 complete and 0 interrupted iterations
+classroom   [  86% ] 09/10 VUs  1m25.9s/1m40.0s
+
+running (1m27.0s), 08/10 VUs, 185 complete and 0 interrupted iterations
+classroom   [  87% ] 08/10 VUs  1m26.9s/1m40.0s
+
+running (1m28.0s), 08/10 VUs, 185 complete and 0 interrupted iterations
+classroom   [  88% ] 08/10 VUs  1m27.9s/1m40.0s
+
+running (1m29.0s), 07/10 VUs, 189 complete and 0 interrupted iterations
+classroom   [  89% ] 07/10 VUs  1m28.9s/1m40.0s
+
+running (1m30.0s), 07/10 VUs, 189 complete and 0 interrupted iterations
+classroom   [  90% ] 07/10 VUs  1m29.9s/1m40.0s
+
+running (1m31.0s), 06/10 VUs, 193 complete and 0 interrupted iterations
+classroom   [  91% ] 06/10 VUs  1m30.9s/1m40.0s
+
+running (1m32.0s), 06/10 VUs, 193 complete and 0 interrupted iterations
+classroom   [  92% ] 06/10 VUs  1m31.9s/1m40.0s
+
+running (1m33.0s), 05/10 VUs, 196 complete and 0 interrupted iterations
+classroom   [  93% ] 05/10 VUs  1m32.9s/1m40.0s
+
+running (1m34.0s), 05/10 VUs, 196 complete and 0 interrupted iterations
+classroom   [  94% ] 05/10 VUs  1m33.9s/1m40.0s
+
+running (1m35.0s), 04/10 VUs, 199 complete and 0 interrupted iterations
+classroom   [  95% ] 04/10 VUs  1m34.9s/1m40.0s
+
+running (1m36.0s), 04/10 VUs, 199 complete and 0 interrupted iterations
+classroom   [  96% ] 04/10 VUs  1m35.9s/1m40.0s
+
+running (1m37.0s), 03/10 VUs, 201 complete and 0 interrupted iterations
+classroom   [  97% ] 03/10 VUs  1m36.9s/1m40.0s
+
+running (1m38.0s), 03/10 VUs, 201 complete and 0 interrupted iterations
+classroom   [  98% ] 03/10 VUs  1m37.9s/1m40.0s
+
+running (1m39.0s), 02/10 VUs, 203 complete and 0 interrupted iterations
+classroom   [  99% ] 02/10 VUs  1m38.9s/1m40.0s
+
+running (1m40.0s), 02/10 VUs, 203 complete and 0 interrupted iterations
+classroom   [ 100% ] 02/10 VUs  1m39.9s/1m40.0s
+
+running (1m41.0s), 01/10 VUs, 204 complete and 0 interrupted iterations
+classroom ↓ [ 100% ] 02/10 VUs  1m40s
+
+running (1m42.0s), 01/10 VUs, 204 complete and 0 interrupted iterations
+classroom ↓ [ 100% ] 02/10 VUs  1m40s
+
+
+  █ THRESHOLDS 
+
+    checks
+    ✓ 'rate>0.99' rate=100.00%
+
+    http_req_duration{kind:api}
+    ✓ 'p(95)<800' p(95)=13.45ms
+
+    http_req_failed
+    ✓ 'rate<0.01' rate=0.00%
+
+
+  █ TOTAL RESULTS 
+
+    checks_total.......: 618     6.026798/s
+    checks_succeeded...: 100.00% 618 out of 618
+    checks_failed......: 0.00%   0 out of 618
+
+    ✓ login 200
+    ✓ me 200
+    ✓ courses 200
+    ✓ ai answered or honestly limited
+
+    HTTP
+    http_req_duration..............: avg=6.06ms min=1.1ms med=4.96ms max=35.32ms p(90)=10.92ms p(95)=13.45ms
+      { expected_response:true }...: avg=6.06ms min=1.1ms med=4.96ms max=35.32ms p(90)=10.92ms p(95)=13.45ms
+      { kind:api }.................: avg=6.06ms min=1.1ms med=4.96ms max=35.32ms p(90)=10.92ms p(95)=13.45ms
+    http_req_failed................: 0.00%  0 out of 618
+    http_reqs......................: 618    6.026798/s
+
+    EXECUTION
+    iteration_duration.............: avg=4.01s  min=4s    med=4.01s  max=4.04s   p(90)=4.03s   p(95)=4.03s  
+    iterations.....................: 205    1.999181/s
+    vus............................: 1      min=0        max=10
+    vus_max........................: 10     min=10       max=10
+
+    NETWORK
+    data_received..................: 2.4 MB 23 kB/s
+    data_sent......................: 271 kB 2.6 kB/s
+
+
+
+
+running (1m42.5s), 00/10 VUs, 205 complete and 0 interrupted iterations
+classroom ✓ [ 100% ] 00/10 VUs  1m40s
