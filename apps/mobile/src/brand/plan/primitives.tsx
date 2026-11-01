@@ -5,7 +5,7 @@
  * with its 45° hatch, and the dimension chain. Stroke discipline is
  * 1–1.5 everywhere; ink opacity carries the hierarchy.
  */
-import type { ComponentType, FunctionComponent, ReactNode } from "react";
+import type { FunctionComponent, ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
 import { Animated as RNAnimated } from "react-native";
 import {
@@ -26,26 +26,38 @@ type DrawValue = number | Interp;
 
 /**
  * react-native-svg's animated wrapper resolves DrawValue props at
- * runtime; its published prop types are narrower than that contract,
- * so each animated element is re-typed once, here, through the
- * library's own animated mapping — no `any`, one seam.
+ * runtime, but `createAnimatedComponent` collapses a class-element
+ * type (Rect/G/… extend Shape<P>) to `IntrinsicAttributes & {}`,
+ * which rejects every svg prop in JSX. So each animated element is
+ * re-typed once, here, against the library's own exported props
+ * widened by DrawValue — no `any`, one explicit seam.
  */
-type AnimatedPropsOf<C> = C extends ComponentType<infer P>
-  ? { [K in keyof P]: P[K] | DrawValue }
-  : never;
+import type {
+  CircleProps,
+  GProps,
+  LineProps,
+  PathProps,
+  RectProps,
+} from "react-native-svg";
 
-const animated = <C extends ComponentType<unknown>>(
-  component: C,
-): FunctionComponent<AnimatedPropsOf<C>> =>
-  SvgAnimated.createAnimatedComponent(component as never) as unknown as FunctionComponent<
-    AnimatedPropsOf<C>
-  >;
+/** The library's props with every value widened through Animated. */
+type Widen<P extends object> = { [K in keyof P]: P[K] | DrawValue };
 
-export const AnimRect = animated(Rect);
-export const AnimLine = animated(Line);
-export const AnimPath = animated(Path);
-export const AnimCircle = animated(Circle);
-export const AnimG = animated(G);
+export const AnimRect = SvgAnimated.createAnimatedComponent(
+  Rect as never,
+) as unknown as FunctionComponent<Widen<RectProps>>;
+export const AnimLine = SvgAnimated.createAnimatedComponent(
+  Line as never,
+) as unknown as FunctionComponent<Widen<LineProps>>;
+export const AnimPath = SvgAnimated.createAnimatedComponent(
+  Path as never,
+) as unknown as FunctionComponent<Widen<PathProps>>;
+export const AnimCircle = SvgAnimated.createAnimatedComponent(
+  Circle as never,
+) as unknown as FunctionComponent<Widen<CircleProps>>;
+export const AnimG = SvgAnimated.createAnimatedComponent(
+  G as never,
+) as unknown as FunctionComponent<Widen<GProps>>;
 
 // ---------- geometry ----------
 /** Perimeter of an axis-aligned rectangle (its drawable stroke length). */

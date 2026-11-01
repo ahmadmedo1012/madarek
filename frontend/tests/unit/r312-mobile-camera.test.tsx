@@ -421,37 +421,32 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     expect(camSheet()?.viewBox).toBe(`0 0 ${PLAN_VB.w} ${PLAN_VB.h}`);
     expect(document.querySelector<HTMLElement>('.jt')?.dataset.wash).toBe('none');
 
-    /* mid-story (p=0.5 ⇒ t≈3.11): the camera sits between the lecture
-     * and checkpoint nodes — the interpolated landscape crop, quantized
-     * whole units; stage 2 (the card era), finding 2, the LECTURE wash
-     * (the wash stays keyed to the findings era — it rotates the room
-     * highlights over the near-complete drawing);
-     * R325 (Y1): the layer windows ride the statement era, so by
-     * t≈3.11 layers 1–5 stand at full ink and layer 6 (the
-     * annotations) is mid-ramp — the plan is essentially drawn while
-     * the findings narrate. */
+    /* mid-story (p=0.5 ⇒ seqU≈0.563 ⇒ t≈4.03 under the R330 mobile
+     * clock t = 5.52·u^0.55 — the empty-pin fix): the camera rides the
+     * exam-hall crop (just past the 4.0 key, toward the library),
+     * quantized whole units; stage 3 (the findings era), finding 3,
+     * the EXAM wash (the wash windows: lecture <3.52 · checkpoint
+     * <4.02 · exam <4.52); every layer is fully inked (layer 6's
+     * annotation window 3.02–3.52 closed at this t). */
     setScrollY(GEO.top + 0.5 * (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
     await waitFor(
-      () => expect(camSheet()?.viewBox).toBe('640 226 560 355'),
+      () => expect(camSheet()?.viewBox).toBe('299 66 564 358'),
       { timeout: 2000 },
     );
     const track = document.querySelector<HTMLElement>('.jt');
-    /* R322 3-b-fix3 override (review-c3 R1-D3): the card era now spans
-     * t 2.5–3.0 (Heron's state-03 beat) — t=3.11 is the FINDINGS era
-     * (stage 3: layer 1 + the wash + the rotation on one beat). */
+    /* R330 mobile clock (the empty-pin fix): t≈4.03 is the FINDINGS
+     * era (stage 3) with finding 3 + the exam wash. */
     expect(track?.dataset.stage).toBe('3');
-    expect(track?.dataset.finding).toBe('2');
-    expect(track?.dataset.wash).toBe('lecture');
-    /* R325 (Y1): layers 1–5 complete by t 3.02; layer 6 (the
-     * annotations, window 3.02–3.52) is mid-ramp at t≈3.11
-     * (0.18 + 0.82·p2o(0.176) ≈ 0.44) */
+    expect(track?.dataset.finding).toBe('3');
+    expect(track?.dataset.wash).toBe('exam');
+    /* R330 mobile clock: layer 6's annotation window (3.02–3.52) is
+     * closed at t≈4.03 — every layer stands at full ink. */
     for (const xl of ['1', '2', '3', '4', '5']) {
       expect(parseFloat(document.querySelector<SVGGElement>(`.jt-plan [data-xl='${xl}']`)?.style.opacity ?? 'x')).toBeCloseTo(1, 2);
     }
     const layer6 = parseFloat(document.querySelector<SVGGElement>(".jt-plan [data-xl='6']")?.style.opacity ?? 'x');
-    expect(layer6).toBeGreaterThan(0.3);
-    expect(layer6).toBeLessThan(0.6);
+    expect(layer6).toBeCloseTo(1, 2);
 
     /* the release (p=1): the completed overview — the closing owns the
      * end of the track (the 809px map-end dead band is dead) */
@@ -500,11 +495,12 @@ describe('R312 mobile camera — the real landing in jsdom (R322 map override)',
     mountLanding();
     await waitFor(() => expect(document.querySelector('.jt')).not.toBeNull(), { timeout: 2000 });
 
-    /* a mobile frame at mid-story leaves the sheet CROPPED (the pan) */
+    /* a mobile frame at mid-story leaves the sheet CROPPED (the pan —
+     * the R330 mobile clock rides the exam-hall crop at this u) */
     setScrollY(GEO.top + 0.5 * (GEO.trackH - GEO.winH));
     fireEvent.scroll(window);
     await waitFor(
-      () => expect(camSheet()?.viewBox).toBe('640 226 560 355'),
+      () => expect(camSheet()?.viewBox).toBe('299 66 564 358'),
       { timeout: 2000 },
     );
 

@@ -104,7 +104,9 @@
  * @390). */
 @media (min-width: 992px) {
   .fo-hero .fo-hero-title {
-    font-size: clamp(44px, 4.3vw, 62px);
+    /* token-anchored display rungs (--fs-h1 46.7px / --fs-display-lg 60px @1440);
+     * the vw middle keeps Heron's fluid scale inside the sanctioned ladder */
+    font-size: clamp(var(--fs-h1), 4.3vw, var(--fs-display-lg));
     line-height: 1.05;
   }
 }
@@ -167,7 +169,8 @@
  * intro statement a rung under its section H2s — this IS that H2
  * scale for our band), keeping lh 1.1 headroom for the scrub spans. */
 .st-body-col .st-title {
-  font-size: clamp(26px, 3.05vw, 44px);
+  /* token-anchored statement rungs (--fs-h2 40px / --fs-h1 46.7px @1440) */
+  font-size: clamp(var(--fs-h2), 3.05vw, var(--fs-h1));
 }
 
 /* The partner strip — the label row tightens to the mono register
