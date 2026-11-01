@@ -55,7 +55,6 @@
      rides the foundation eyebrow above the legacy .page-title block. */
   .page-title-block .r305s-eyebrow { margin-block-end: var(--sp-1); }
   /* The technical rule that closes the header register. */
-  .r305c-header-rule { margin-block: 0; }
 
   /* The honest-door note (r180-F4): enrollment is admin-mediated. Same
      accent-soft grammar the SubmitAssignmentModal done-banner uses —
@@ -117,7 +116,6 @@
   /* Kicker rows that carry a counted note may wrap on phones — the note
      breaks to its own line instead of squeezing the hairline away
      (zero horizontal overflow at 320px). */
-  .r305c-kicker-wrap { flex-wrap: wrap; row-gap: var(--sp-1); }
 
   /* ── 4 · Lecture player (/student/lectures/:lectureId) ────────────
      4a · The now-playing block — the page's ONE --deep band (Heron's

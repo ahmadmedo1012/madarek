@@ -356,24 +356,9 @@
      KPI markups are TeacherDashboard's .compact-kpi* below and the
      landing page's own .landing-mockup-kpi-* (landing.css). */
   
-  .compact-kpi { display: flex; flex-direction: column; gap: var(--sp-0-5); padding: var(--sp-2); }
-  .compact-kpi-label { font-size: var(--type-label-size-sm); color: var(--text-muted); }
-  .compact-kpi-value { font-size: var(--type-headline-size-sm); font-weight: var(--fw-bold); color: var(--text); font-variant-numeric: tabular-nums; }
-  .compact-kpi-trend { font-size: var(--fs-xxs); color: var(--text-muted); }
 
   /* r152i: was @media (max-width: 640px) — the restyle now follows the
      strip's own width (phones AND narrow side-columns alike). */
-  @container kpis (max-width: 480px)  {
-    
-    .compact-kpi {
-      padding: var(--sp-3);
-      background: var(--surface);
-      border: 1px solid var(--rule);
-      border-radius: var(--r-md);
-      gap: var(--sp-1);
-    }
-    .compact-kpi-value { font-size: var(--type-metric-size); line-height: 1.1; }
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  BUTTONS — R313 (WP-D · D4): the Heron fill-wipe grammar.      ║
@@ -2051,7 +2036,6 @@
      any component — only the --text-secondary token is consumed. */
   .text-subtle { color: var(--text-subtle); }
   /* Status text colors — text-safe -ink tokens (guardrail #3). */
-  .text-green { color: var(--success-ink); }
   .text-red { color: var(--danger-ink); }
   /* Inline text link — used on bare <button>s that must read as links
      (e.g. the CollegesPopover retry). Native underline, not the v19
@@ -2988,37 +2972,6 @@
   .feed-item-avatar.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
   .feed-item-avatar.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
   .feed-item-avatar.gold   { background: var(--gold-soft);   color: var(--gold-ink); }
-  .feed-item-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .feed-item-head {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-2);
-  }
-  .feed-item-author {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .feed-item-meta { font-size: var(--fs-xs); color: var(--text-muted); }
-  .feed-item-time { margin-inline-start: auto; }
-  .feed-item-text {
-    font-size: var(--fs-body);
-    color: var(--text);
-    line-height: var(--lh-base);
-  }
-  .feed-item-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-1);
-  }
 
   /* ── Risk rows — at-risk students (TeacherIntelligence, 15 usages).
      The 3px leading stripe is still painted by TSX inline styles
@@ -3082,7 +3035,6 @@
     letter-spacing: var(--type-metric-letter-spacing);
     font-variant-numeric: tabular-nums;
   }
-  .risk-row-label { font-size: var(--fs-xxs); color: var(--text-muted); }
 
   /* ── Run rows — live sessions (TeacherLive) + sync history (AdminSync) ── */
   .run-row {
@@ -3145,11 +3097,6 @@
   .teacher-row-email { font-size: var(--fs-xxs); color: var(--text-muted); }
 
   /* ── Permissions grid — capability editor (AdminGovernance) ────── */
-  .permissions-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sp-3);
-  }
   .perm-row {
     display: flex;
     flex-direction: column;
@@ -3191,48 +3138,16 @@
   /* ── Scan bar — plagiarism/AI verdict cells. Shared by the teacher
      review modal (0-e) and the student research page (0-d); the
      .ok/.warn/.bad value states were undefined everywhere. ─────────── */
-  .scan-bar {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface-2);
-    border-radius: var(--r-lg);
-  }
   /* Bridge for audit 0-e P2-40: the grading form is (mis)nested inside
      .scan-bar by a misplaced closing div — full-span everything that is
      not a scan cell so today's markup lays out correctly. Remove this
      rule together with the TSX re-parent in waves 5-6. */
   .scan-bar > :not(.scan-cell) { grid-column: 1 / -1; }
-  .scan-cell {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-  }
-  .scan-cell-label {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-  }
-  .scan-cell-value {
-    font-family: var(--font-mono);
-    font-size: var(--type-metric-size);
-    font-weight: var(--type-metric-weight);
-    line-height: var(--type-metric-line-height);
-    font-variant-numeric: tabular-nums;
-  }
   /* text-safe status inks (guardrail #3): deep shades clear AA on the
      neutral cell ground in both themes */
   .scan-cell-value.ok   { color: var(--success-ink); }
   .scan-cell-value.warn { color: var(--warning-ink); }
   .scan-cell-value.bad  { color: var(--danger-ink); }
-  .scan-cell-meta { font-size: var(--fs-xxs); color: var(--text-faint); }
 
   /* ── Category + fact rows — sync data preview (AdminSync) ───────── */
   .category-row {
@@ -3458,53 +3373,16 @@
   }
 
   /* ── Moderation queue rows (quality exam review) ────────────────── */
-  .moderation-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2) var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
   .moderation-title {
     font-size: var(--fs-sm);
     font-weight: var(--fw-semibold);
     color: var(--text);
-  }
-  .moderation-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-2);
-    margin-block-start: var(--sp-1);
-    font-size: var(--fs-xxs);
-    color: var(--text-muted);
   }
 
   /* ── EXAM TAKER (OnlineExamsPages — audit 0-e P0: the entire chrome
      was unstyled and the selected answer was INVISIBLE). The bar sticks
      under the app topbar so the countdown stays visible while the
      student scrolls questions; question cards are .card (existing). ── */
-  .exam-bar {
-    position: sticky;
-    inset-block-start: 0;
-    /* local paint order above the question cards — overlays are portaled
-       to body far above this (not a --z-* layer). The sticky app topbar
-       (z-dropdown rung, a positioned sibling of the scrollport) still
-       paints above. */
-    z-index: 20;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--sp-2) var(--sp-4);
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-card);
-  }
   .exam-timer {
     display: inline-flex;
     align-items: center;
@@ -3697,64 +3575,16 @@
   /* Shape-matched loading tile for the exam card grid — icon well +
      title/meta lines, mirroring the .track-card anatomy (the real
      grid is track-grid/track-card from training.css). */
-  .exam-card-skel {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    box-shadow: var(--shadow-card);
-    /* r149 (R3-A3 M2): حُذف hover الظل وانتقاله — الهيكل العظمي ليس
-       هدفًا قابلًا للنقر (affordance كاذبة؛ ذيل r148 المتبقي). */
-  }
-  .exam-card-skel .exam-card-skel-icon {
-    flex-shrink: 0;
-    inline-size: 48px;
-    block-size: 48px;
-  }
-  .exam-card-skel .exam-card-skel-body {
-    flex: 1;
-    min-inline-size: 0;
-  }
 
   /* Autosave-failure notice inside the sticky .exam-bar — a quiet
      warning chip so a failed answer save can never be silent (answers
      autosave per question; the student believes they are stored). */
-  .exam-save-warn {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    padding: var(--sp-1) var(--sp-3);
-    border-radius: var(--r-full);
-    background: var(--warning-soft);
-    color: var(--warning-ink);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-  }
 
   /* ── Moderation queue (quality exam review; rows are the wave 3-c
      .moderation-row family) ────────────────────────────────────── */
 
   /* Expanded review panel under a queue row (was inline styles). */
-  .moderation-panel {
-    flex-basis: 100%;
-    margin-block-start: var(--sp-3);
-    padding: var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
-  .moderation-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-  }
   /* Main column of a queue row (title + meta badges). */
-  .moderation-row-main {
-    flex: 1 1 240px;
-    min-inline-size: 0;
-  }
 
   /* Competitions score-input row (number input + saved check) — the
      container family is colleges.css .comp-score-input; this row is

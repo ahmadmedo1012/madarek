@@ -96,9 +96,7 @@
   .r323b-specimen { display: flex; align-items: center; min-height: 40px; }
 
   /* tone grounds — tokens, not literals (dark-correct for free) */
-  .r323b-ground-paper { background: var(--bg); }
   .r323b-ground-ink { background: var(--text-strong); color: var(--bg); }
-  .r323b-ground-accent { background: var(--accent); color: var(--accent-fg); }
 
   /* ── 3 · clear-space box: the mark floats ½-height off the hairline ── */
   .r323b-clearspace {

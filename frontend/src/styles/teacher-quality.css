@@ -152,34 +152,10 @@ button.tq-row:focus-visible {
 
 /* ─── Fact ledger: label/value read-only rows (profile, meta panels) ── */
 
-.tq-facts {
-  display: flex;
-  flex-direction: column;
-}
 
-.tq-fact {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-3);
-  padding-block: var(--sp-2-5);
-}
 
-.tq-fact + .tq-fact {
-  border-block-start: 1px solid var(--border);
-}
 
-.tq-fact-label {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
 
-.tq-fact-value {
-  font-size: var(--fs-sm);
-  color: var(--text);
-  text-align: end;
-  overflow-wrap: anywhere;
-}
 
 /* Tabular metrics (counts, percentages) ride the mono metric voice. */
 .tq-num {
@@ -189,9 +165,6 @@ button.tq-row:focus-visible {
 
 /* ─── Section rhythm: 40/80 Superlist breathing on family surfaces ─── */
 
-.tq-section {
-  margin-block-start: var(--sp-9);
-}
 
 /* ─── Tap-target floor on the family's filter pills ─────────────────
    BLUEPRINT §7 (tap targets): chips ride 44px on the 4C surfaces. The
@@ -2323,37 +2296,6 @@ button.tq-row:focus-visible {
    step rail: done steps take the signal dot, the current step rings,
    a rejected review step turns danger. Presentation only — the wire
    status badge in the title row stays the source of truth. */
-.exa-lifecycle {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1-5) 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.exa-step {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-.exa-step + .exa-step::before {
-  content: ;
-  inline-size: var(--sp-5);
-  block-size: 1px;
-  background: var(--rule);
-  margin-inline-end: var(--sp-2);
-}
-.exa-step-dot {
-  inline-size: 8px;
-  block-size: 8px;
-  border-radius: var(--r-full);
-  background: var(--border-strong);
-  flex-shrink: 0;
-}
 .exa-step.is-done { color: var(--text-secondary); }
 .exa-step.is-done .exa-step-dot { background: var(--accent); }
 .exa-step.is-current {
@@ -2391,10 +2333,6 @@ button.tq-row:focus-visible {
   margin: 0;
   color: var(--danger-ink);
   font-size: var(--fs-sm);
-}
-.tq-area {
-  resize: vertical;
-  font-family: inherit;
 }
 .exa-cap-note {
   margin: var(--sp-2) 0 0;

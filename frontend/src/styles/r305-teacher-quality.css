@@ -145,10 +145,6 @@
   padding-block: var(--sp-2);
 }
 
-.hr-toolbar-spacer {
-  flex: 1 1 auto;
-  min-inline-size: var(--sp-4);
-}
 
 /* ─── Status chip: THE status vocabulary of the round ──────────────── */
 
@@ -213,14 +209,6 @@
 
 /* ─── Data table: dense-but-readable, hairline rows, tabular digits ── */
 
-.hr-table-wrap {
-  border: 1px solid var(--rule);
-  border-radius: var(--r-lg);
-  background: var(--surface);
-  overflow-x: auto;
-  /* the ≤640 rung in components.css owns horizontal scrolling; this
-     wrapper adds the Heron frame without stealing its behavior */
-}
 
 .hr-table {
   inline-size: 100%;
@@ -353,14 +341,6 @@
   border-color: var(--danger);
 }
 
-.hr-rail-link {
-  flex: none;
-  align-self: center;
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  /* the arrow glyph is aria-hidden in markup; direction flips via
-     [dir] in the consuming section if a directional arrow is used */
-}
 
 /* ─── KPI emphasis: the tabular metric voice with ember option ───── */
 

@@ -200,45 +200,10 @@
 }
 
 /* ─── 2b. Process explainer — a numbered flow line, not a card grid ── */
-.rs-explainer-steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--sp-4) var(--sp-5);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.rs-explainer-step {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2-5);
-  min-width: 0;
-}
-.rs-explainer-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: var(--sp-6);
-  height: var(--sp-6);
-  /* R313 (WP-E): square mono index tile (map-number grammar). */
-  border-radius: var(--r-sm);
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-}
 .rs-explainer-step-title {
   font-size: var(--fs-sm);
   font-weight: var(--fw-semibold);
   color: var(--text);
-}
-.rs-explainer-step-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
 }
 
 /* ─── 3. Scan results — the declared-simulation presentation ────────
@@ -371,16 +336,6 @@
    without flex-grow the containment collapses it to its padding. */
 .filter-bar.lib-filters { flex: 1 1 auto; }
 /* The quiet loans-empty note — one line, no empty-state wall. */
-.rs-loans-empty {
-  margin: 0;
-  padding: var(--sp-3) var(--sp-4);
-  background: var(--surface);
-  border: 1px dashed var(--border);
-  border-radius: var(--r-lg);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
-}
 
 /* The search field — first-class: the pill the page opens with. */
 .rs-search {
@@ -492,12 +447,6 @@
 }
 
 /* ─── 6. Review queue surfaces (teacher) ──────────────────────────── */
-.rs-review-actions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
 
 /* ─── 6b. Library toolbar — the search-first control zone ───────────
    One calm bar the page opens with: the search field owns the width,
@@ -550,13 +499,6 @@
   border: 1px solid var(--border-faint);
   border-radius: var(--r-lg);
   /* R313 (WP-E): flat paper panel — hairline carries the surface. */
-}
-.rs-loans-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
 }
 .rs-loan-due {
   display: flex;
@@ -633,39 +575,10 @@
 /* ─── 6e. Student research workflow — the visible sequence ────────── */
 /* The submission CTA — a compact panel, not a hero: one line of intent
    next to the primary action, so the page's first move is obvious. */
-.rs-upload-cta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-3) var(--sp-4);
-  padding: var(--sp-4) var(--sp-5);
-  background: var(--surface);
-  border: 1px solid var(--border-faint);
-  border-radius: var(--r-lg);
-  /* R313 (WP-E): flat paper panel — no elevation. */
-}
-.rs-upload-cta-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: var(--sp-9);
-  height: var(--sp-9);
-  /* R313 (WP-E): square icon well (the r-* ladder at 0). */
-  border-radius: var(--r-md);
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-}
-.rs-upload-cta-body { flex: 1 1 260px; min-width: 0; }
 .rs-upload-cta-title {
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
   color: var(--text);
-}
-.rs-upload-cta-desc {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
 }
 
 /* Pipeline step timestamps — the journey rail gains its WHEN: the
@@ -682,32 +595,6 @@
 
 /* The honest next action — one labelled chip + the row's own action
    riding the same line, so «what happens now» never needs inference. */
-.rs-next {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-2) var(--sp-3);
-  width: 100%;
-  padding: var(--sp-2-5) var(--sp-3);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-}
-.rs-next-label {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-}
-.rs-next-label .rs-next-k {
-  color: var(--accent-ink);
-}
-.rs-next-hint {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  min-width: 0;
-}
 .rs-next .rs-row-actions { width: auto; margin-inline-start: auto; }
 @media (max-width: 640px) {
   .rs-next .rs-row-actions { width: 100%; margin-inline-start: 0; }
@@ -747,11 +634,6 @@
   /* Room for the scrollbar so content never rides the edge. */
   scrollbar-gutter: stable;
 }
-.rs-review-work-head {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-3);
-}
 .rs-review-work-title {
   margin: 0;
   font-size: var(--fs-h3);
@@ -759,10 +641,6 @@
   color: var(--text);
   line-height: var(--lh-snug);
   overflow-wrap: anywhere;
-}
-.rs-review-work-sub {
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
 }
 /* Queue item — a button row (the whole surface is the selection
    target), state carried by the accent hairline + soft ground. */
@@ -792,7 +670,6 @@
   border-color: var(--accent);
   background: var(--accent-soft);
 }
-.rs-queue-item-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: var(--sp-1); }
 .rs-queue-item-title {
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
@@ -801,21 +678,6 @@
   overflow-wrap: anywhere;
 }
 .rs-queue-item.on .rs-queue-item-title { color: var(--accent-strong); }
-.rs-queue-item-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--sp-1-5);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-.rs-queue-item-tail {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--sp-1-5);
-  flex-shrink: 0;
-}
 .rs-wait {
   font-size: var(--fs-sm);
   color: var(--text-muted);

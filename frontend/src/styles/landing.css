@@ -8510,7 +8510,6 @@ html[data-theme='dark'] body.mdrk-grain::before {
 .st-shade-fill { fill: url(#st-shade-st); stroke: none; opacity: 0.92; }
 .st-fins-line { stroke: var(--text-secondary); stroke-width: 1.15; fill: none; }
 .st-fins-fill { fill: url(#st-fins-st); stroke: none; }
-.st-stipple-fill { fill: url(#st-stipple-st); stroke: none; opacity: 0.9; }
 .st-stipple-outline { fill: url(#st-stipple-st); opacity: 0.8; }
 .st-poché { fill: var(--text); stroke: none; } /* the solid black polygonal mass */
 .st-sun { fill: var(--accent); stroke: none; } /* the one orange signal */

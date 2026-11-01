@@ -1041,7 +1041,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   .r305ao .stat-cell:first-child { border-block-start: 0; }
 
   /* The bulkbar stacks: count line, then actions full-width. */
-  .r305ao-bulkbar-actions { margin-inline-start: 0; inline-size: 100%; }
   .r305ao-bulkbar-actions .btn { flex: 1 1 auto; }
 
   /* Pagination centers its 44px cluster; page-gap shrinks to the

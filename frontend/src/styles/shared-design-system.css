@@ -253,7 +253,6 @@
   .grid-2    { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-3    { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-4    { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); }
-  .grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: var(--sp-5); }
 
   @media (max-width: 640px) {
     .grid-4, .grid-3, .grid-2, .grid-auto { grid-template-columns: 1fr; gap: var(--sp-3); }
@@ -343,17 +342,7 @@
   .metric-icon { inline-size: 44px; block-size: 44px; border-radius: var(--r-lg); flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center; background: var(--_metric-bg); color: var(--_metric-color); }
 
   /* ─── Stagger grid (cascade reveal) ────────────────────────────── */
-  .stagger-grid { display: grid; gap: var(--sp-5); }
-  .stagger-grid > * { opacity: 0; transform: translateY(16px); transition: opacity var(--motion-duration-medium) var(--motion-ease-decelerate), transform var(--motion-duration-medium) var(--motion-ease-decelerate); }
-  @media (prefers-reduced-motion: reduce) { .stagger-grid > * { opacity: 1; transform: none; } }
   /* Stagger steps — 6-step cascade, 60ms→300ms (step token, cap 6) */
-  @keyframes stagger-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-  .stagger-grid > *:nth-child(1) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 0); }
-  .stagger-grid > *:nth-child(2) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 1); }
-  .stagger-grid > *:nth-child(3) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 2); }
-  .stagger-grid > *:nth-child(4) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 3); }
-  .stagger-grid > *:nth-child(5) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 4); }
-  .stagger-grid > *:nth-child(6) { animation: stagger-in var(--motion-duration-medium) var(--motion-ease-decelerate) both; animation-delay: calc(var(--motion-stagger-step, 60ms) * 5); }
 }
 
 @layer polish {
@@ -373,10 +362,6 @@
   }
 
   /* ─── Button glow micro-interaction ────────────────────────────── */
-  .btn-glow { box-shadow: var(--shadow-card, 0 1px 2px rgba(0,0,0,0.04)), 0 0 0 0 color-mix(in srgb, var(--primary) 0%, transparent); transition: box-shadow var(--t-base) var(--ease), transform var(--t-fast) var(--ease); }
-  @media (hover: hover) and (pointer: fine) {
-    .btn-glow:hover { transform: translateY(-2px); box-shadow: var(--shadow-pop, 0 4px 8px rgba(0,0,0,0.06)), 0 0 20px color-mix(in srgb, var(--primary) 15%, transparent); }
-  }
 
   /* ─── Reveal animation ────────────────────────────────────────── */
   @keyframes reveal-rise { from { opacity: 0; transform: translateY(var(--reveal-distance, 16px)); } to { opacity: 1; transform: translateY(0); } }
