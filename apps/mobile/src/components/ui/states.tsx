@@ -79,16 +79,23 @@ export function EmptyState({
   actionLabel,
   onAction,
   icon,
+  art,
 }: {
   title: string;
   message?: string;
   actionLabel?: string;
   onAction?: () => void;
   icon?: ReactNode;
+  /**
+   * R330: optional illustration slot (e.g. a brand/plan sheet) — seats
+   * above the title; screens that want signature art pass it here.
+   */
+  art?: ReactNode;
 }) {
   const p = usePalette();
   return (
     <View style={{ alignItems: "center", paddingVertical: sp[40], gap: sp[8], paddingHorizontal: sp[24] }}>
+      {art}
       {/* B4 re-review (R2+R3, three panels): the icon frame rendered even
           with NO icon — a blank 56×56 bordered square that every reviewer
           read as «a broken/unloaded component». The frame exists to seat

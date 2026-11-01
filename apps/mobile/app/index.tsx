@@ -1,28 +1,27 @@
-import { useEffect, type ReactNode } from "react";
-import { StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import Svg, { Line } from "react-native-svg";
 import { router, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import GraduationCap from "lucide-react-native/icons/graduation-cap";
-import Landmark from "lucide-react-native/icons/landmark";
-import Library from "lucide-react-native/icons/library";
-import PlayCircle from "lucide-react-native/icons/circle-play";
 import { useSession, ROLE_HOME } from "@/auth/session";
 import { get } from "@/api/client";
 import type { AuthUser } from "@/api/types";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { Screen } from "@/components/ui/screen";
-import { T, MonoLabel } from "@/components/ui/text";
+import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { BrandMark } from "@/components/ui/brand";
 import { Hairline } from "@/components/ui/surfaces";
 import { LoadingScreen } from "@/components/ui/states";
+import { PlanBuilding } from "@/brand/plan";
 
 /**
- * Welcome — the public native entry. Guests see a compact branded sheet
- * (not a miniature of the marketing page); authenticated users are routed
- * to their role home (web HomeRedirect parity). Supports ?continue= for
- * post-auth return.
+ * Welcome — the public native entry. Guests see the app's SIGNATURE:
+ * the drafted architectural plan of the website, drawing itself in on
+ * paper — one facade elevation, one type stack, ONE orange CTA.
+ * Authenticated users are routed to their role home (web HomeRedirect
+ * parity). Supports ?continue= for post-auth return.
  */
 export default function Welcome() {
   const { bg, text } = usePalette();
@@ -58,77 +57,72 @@ export default function Welcome() {
   }
 
   return (
-    <Screen scroll padded={false} style={{ backgroundColor: bg }}>
-      <View style={{ paddingHorizontal: sp[20], paddingTop: sp[48], gap: sp[16] }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
-          <BrandMark size={44} />
-          <View style={{ gap: 2 }}>
-            <T variant="h1" weight="bold">مدارك</T>
-            <MonoLabel>MADAREK · LIBYA</MonoLabel>
-          </View>
+    <Screen scroll padded={false} style={{ backgroundColor: bg }} contentContainerStyle={{ flexGrow: 1 }}>
+      {/* the drafting sheet: faint axis grid across the whole paper */}
+      <GridBackdrop color={text} />
+
+      <View style={{ paddingHorizontal: sp[24], paddingTop: sp[40], paddingBottom: sp[16], flexGrow: 1 }}>
+        {/* quiet mark row — the drawing carries the brand from here */}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+          <BrandMark size={20} />
+          <T variant="bodyLg" weight="bold">مدارك</T>
         </View>
-        <Hairline />
-        <T variant="h3" weight="bold">منصّة التعليم الذكي</T>
-        <T variant="bodyLg" color="secondary">
-          محاضرات تفاعلية بمحطات فحص، اختبارات إلكترونية، مصفوفة إتقان، بحوث بمراجعة أكاديمية، وتدريب ذاتي — عربية بالكامل.
-        </T>
-      </View>
 
-      <View style={{ paddingHorizontal: sp[20], gap: sp[12], paddingTop: sp[16] }}>
-        <Button
-          label="تسجيل الدخول"
-          kind="primary"
-          onPress={() => router.push({ pathname: "/auth", params: params.continue ? { continue: params.continue } : {} })}
-        />
-        <Button
-          label="إنشاء حساب جديد"
-          kind="ghost"
-          onPress={() => router.push({ pathname: "/auth/register", params: params.continue ? { continue: params.continue } : {} })}
-        />
-        <Button
-          label="تصفّح الكلّيات"
-          kind="ghost"
-          onPress={() => router.push("/colleges")}
-        />
-      </View>
+        {/* the signature: the facade draws itself in */}
+        <PlanBuilding autoplay width="78%" style={{ marginTop: sp[40] }} />
 
-      <View style={{ paddingHorizontal: sp[20], paddingTop: sp[24], gap: sp[8] }}>
-        <MonoLabel>[01] قدرات المنصّة</MonoLabel>
-        <FeatureRow icon={<PlayCircle size={20} color={text} />} title="محاضرات تفاعلية" sub="محطات فحص أثناء المشاهدة وحضور تلقائي" />
-        <FeatureRow icon={<GraduationCap size={20} color={text} />} title="اختبارات إلكترونية" sub="تصحيح فوري للأسئلة الموضوعية" />
-        <FeatureRow icon={<Library size={20} color={text} />} title="مكتبة وبحوث" sub="رفع PDF ومراجعة أستاذ المقرّر" />
-        <FeatureRow icon={<Landmark size={20} color={text} />} title="كلّيات معتمدة" sub="فهارس عامة للكلّيات والبرامج" />
-      </View>
+        {/* title stack */}
+        <View style={{ marginTop: sp[32], gap: sp[6] }}>
+          <T variant="display" weight="bold" style={{ lineHeight: 40 }}>رحلة تعلم واحدة</T>
+          <T variant="h4" weight="medium" color="secondary">من المحاضرة إلى الإتقان</T>
+        </View>
 
-      <View style={{ paddingHorizontal: sp[20], paddingVertical: sp[32] }}>
-        <Hairline style={{ marginBottom: sp[12] }} />
-        <T variant="xs" color="faint">
-          مدارك منصّة تعليمية مستقلّة عربية-أولًا من ليبيا — بيانات مؤسّسة العرض المرجعية بوضع الطيار الحالي.
-        </T>
+        {/* decisive actions — ONE orange CTA, one quiet link */}
+        <View style={{ marginTop: "auto", paddingTop: sp[40], gap: sp[4] }}>
+          <Button
+            label="تسجيل الدخول"
+            kind="accent"
+            onPress={() => router.push({ pathname: "/auth", params: params.continue ? { continue: params.continue } : {} })}
+          />
+          <Pressable
+            accessibilityRole="link"
+            hitSlop={8}
+            onPress={() => router.push({ pathname: "/auth/register", params: params.continue ? { continue: params.continue } : {} })}
+            style={({ pressed }) => ({ minHeight: 44, justifyContent: "center", opacity: pressed ? 0.6 : 1 })}
+          >
+            <T variant="body" weight="medium" color="secondary" style={{ textAlign: "center" }}>
+              إنشاء حساب جديد
+            </T>
+          </Pressable>
+        </View>
+
+        <View style={{ marginTop: sp[24], gap: sp[8] }}>
+          <Hairline />
+          <T variant="xs" color="faint">
+            مدارك منصّة تعليمية مستقلّة عربية-أولًا من ليبيا — بيانات مؤسّسة العرض المرجعية بوضع الطيار الحالي.
+          </T>
+        </View>
       </View>
     </Screen>
   );
 }
 
-function FeatureRow({ icon, title, sub }: { icon: ReactNode; title: string; sub: string }) {
-  const p = usePalette();
+/** Full-bleed hairline grid — the drafting paper under the whole sheet. */
+function GridBackdrop({ color }: { color: string }) {
+  const { width, height } = useWindowDimensions();
+  const step = 32;
+  const cols = Math.ceil(width / step);
+  const rows = Math.ceil(height / step);
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-        gap: sp[12],
-        backgroundColor: p.surface,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: p.border,
-        padding: sp[12],
-      }}
-    >
-      <View style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}>{icon}</View>
-      <View style={{ flex: 1, gap: 2 }}>
-        <T variant="body" weight="bold">{title}</T>
-        <T variant="sm" color="muted">{sub}</T>
-      </View>
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      <Svg width={width} height={height} style={{ opacity: 0.06 }}>
+        {Array.from({ length: cols + 1 }, (_, i) => (
+          <Line key={`v${i}`} x1={i * step} y1={0} x2={i * step} y2={height} stroke={color} strokeWidth={1} />
+        ))}
+        {Array.from({ length: rows + 1 }, (_, i) => (
+          <Line key={`h${i}`} x1={0} y1={i * step} x2={width} y2={i * step} stroke={color} strokeWidth={1} />
+        ))}
+      </Svg>
     </View>
   );
 }

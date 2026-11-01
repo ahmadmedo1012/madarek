@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { Children, type ReactNode } from "react";
 import {
   Modal,
   Pressable,
@@ -17,6 +17,28 @@ import { Button } from "./pressables";
 export function Hairline({ style }: { style?: StyleProp<ViewStyle> }) {
   const p = usePalette();
   return <View style={[{ height: StyleSheet.hairlineWidth, backgroundColor: p.border }, style]} />;
+}
+
+/**
+ * HairlineRows — R330 signature surface: ONE hairline-bordered
+ * container whose direct children are separated by shared hairline
+ * dividers — a drafted table, not a stack of boxed cards. Rows carry
+ * no borders, shadows, or radius of their own; the container is the
+ * single drawing. Pass plain <View> rows (fragments/arrays flatten).
+ */
+export function HairlineRows({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const p = usePalette();
+  const rows = Children.toArray(children).filter((child) => child !== null && child !== undefined);
+  return (
+    <View style={[{ borderWidth: StyleSheet.hairlineWidth, borderColor: p.border }, style]}>
+      {rows.map((row, i) => (
+        <View key={i}>
+          {i > 0 ? <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: p.border }} /> : null}
+          {row}
+        </View>
+      ))}
+    </View>
+  );
 }
 
 /** Card — surface + hairline border, radius 0 (Heron discipline). */

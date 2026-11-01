@@ -19,7 +19,7 @@
 import {
   heron as heronData,
   heronEase,
-  motion,
+  motion as motionData,
   radius,
   sp,
   statusTones as statusTonesData,
@@ -114,8 +114,30 @@ export const tierColors: Record<string, string> = tierColorsData;
 
 // ---------- Typographic scale (mobile-adapted from the fluid web ladder) ----------
 // Arabic 13px readability floor; hierarchy via weight + size, not tracking.
-export { typeScale as type };
+// R330 (signature): the plan-drawing type roles merge ADDITIVELY into the
+// generated ladder. `body` keeps its 13px floor (the app-wide variant in
+// ./text is built on it — a 13→15 bump would repaint every screen); the
+// 15px section body rides on bodyLg. New roles: screen headers, section
+// titles, hero numerals, and the 15/22 body rhythm for composed sheets.
+export const type = {
+  ...typeScale,
+  screenTitle: 28,
+  screenTitleLh: 32,
+  sectionTitle: 20,
+  statNumber: 44,
+  bodyLh: 22,
+} as const;
 
 export type Spacing = keyof typeof sp;
 
-export { sp, motion, heronEase, radius, touchFloor };
+// R330 (signature): motion roles merge into the generated durations —
+// the existing keys stay untouched, heronEase rides along for callers
+// that want the single easing curve object.
+export const motion = {
+  ...motionData,
+  heronEase,
+  durationPress: 120,
+  durationNav: 240,
+} as const;
+
+export { sp, heronEase, radius, touchFloor };
