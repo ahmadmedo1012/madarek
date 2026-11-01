@@ -774,12 +774,40 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * home-hero-work inside the hero's sub cell). */
 .fo-hero {
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  /* R328 (H2/H3) — three bands: the art (1fr), the content pair, and
+   * the work strip as its own closing row (moved out of the sub cell —
+   * the six subjects are an INDEX row, not sub-cell chrome). */
+  grid-template-rows: minmax(0, 1fr) auto auto;
   /* the measured reference band (887 = 100svh − 13 @1440×900; the
    * ≥992 twin below re-pins the quartet's 1.6rem form). */
   min-block-size: calc(100svh - 13px); /* spacing-gate: allow — the measured reference band (887 = 900 − 13), an external constant */
   align-content: stretch;
   padding-block: 0;
+  /* R328 (H1) — the consent card's seat reserve: while the gate is
+   * unanswered the hero's closing strip ends ABOVE the corner card
+   * (the bottomStack manager writes the pile's measured height), so
+   * no indicator ever rides under the card. Answered → the var drops
+   * → the art band breathes again. */
+  padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's measured pile + seam, not a rung */
+}
+
+/* R328 (H1/H3) — the hero's three bands are grid items of a 1-column
+ * grid: without a floor, an item's min-width:auto (the <1200 snap
+ * strip's max-content track, the aspect-ruled stage) inflates EVERY
+ * band's track past the viewport (measured 429px-wide bands on a
+ * 390px phone — the whole fold shifted −39px left). The floor pins
+ * each band to the sheet; the strip's own overflow scrolls inside. */
+.fo-hero-art,
+.fo-hero-content,
+.fo-hero-work {
+  min-inline-size: 0;
+}
+
+/* the aspect-ruled phone stage: same floor inside the art band's own
+ * grid (the aspect ratio derives min-content width from the content
+ * stack — 416px measured without it). */
+.fo-hero-art .bp-stage {
+  min-inline-size: 0;
 }
 
 /* ── the art band — the whole elevation on transparent paper ────────
@@ -899,7 +927,8 @@ html[data-theme='dark'] body.mdrk-grain::before {
   padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured), not a ladder rung */
   padding-inline-end: 2.88rem; /* R322 V7 — the edge-rail inset: the sub cell's inline-end content clears the .et-tab slim rail (the killed discover seat's own measured clearance) */
   border-block-start: 1px solid var(--rule);
-  border-block-end: 1px solid var(--rule);
+  /* R328 (H2): the band's closing hairline moved to the work strip —
+   * the strip is the hero's last row now. */
 }
 
 /* the H1 cell — cols 1–7 (inline-start in RTL: the reading start) */
@@ -933,14 +962,15 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* the sub cell — cols 8–12: the 1px divider at the seam, then the
- * paragraph + CTA row over the work marquee. */
+ * paragraph + CTA row (the work strip moved to the hero's own third
+ * band — R328 H2). */
 .fo-hero-sub-cell {
   border-inline-start: 1px solid var(--rule);
   padding-block: 2.4rem 0;
   padding-inline: 1.6rem 0;
   min-inline-size: 0;
   display: grid;
-  grid-template-rows: auto auto;
+  grid-template-rows: auto;
   align-content: start;
 }
 
@@ -973,54 +1003,33 @@ html[data-theme='dark'] body.mdrk-grain::before {
   flex: 0 0 auto;
 }
 
-/* ── the work marquee — the reference's home-hero-work strip ────────
- * 72.2×4.36rem @1440: hairline-topped, the honest live-capability
- * subjects crawling toward the reading direction (the same RTL loop
- * grammar the .fo-ticker family rides). */
+/* ── the work strip — the reference's home-hero-work band as the
+ * hero's own closing row (R328 H2/H3) ──────────────────────
+ * ≥1200px: ONE static row — the six honest subjects anchored edge to
+ * edge (space-between), ZERO mask, no crawl: an index row is read at
+ * a glance (the R322 loop + its duplicated track retire; the X13
+ * mid-glyph fade problem dies with the loop itself).
+ * <1200px: the strip scrolls horizontally with mandatory snap — whole
+ * items settle at the edges, nothing is ever cropped mid-glyph at
+ * rest. Hairlines close the band top and bottom (the hero's own
+ * closing rule moved here with the band). */
 .fo-hero-work {
   display: flex;
-  overflow: hidden;
+  overflow: hidden;                /* ≥1200: the row fits; <1200 flips to the snap scroller */
   border-block-start: 1px solid var(--rule);
-  margin-block-start: 1.6rem;
-}
-
-/* R323 (A3 · defect 5) — the SOFT EDGE MASKS: no word is ever cut
- * mid-glyph at the marquee/ticker row edges — a linear alpha fade on
- * both ends of the clipping box (symmetric, so the RTL loop direction
- * never matters). r324 X13: 16px could not dissolve a ~150px Arabic
- * word — it entered the viewport visibly chopped. The fade widens to
- * 64px @≥992 / 40px below (≈17% of a 390 edge), so a word fully
- * dissolves before the edge. Hover pauses the crawl; reduced motion
- * already kills the animation (the static row keeps the mask — the
- * first/last items still fade honestly at the box edges). */
-.fo-hero-work,
-.fo-ticker {
-  mask-image: linear-gradient(to left, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%); /* color-gate: allow — mask-space structural black (the luminance key), not a visual colour */
-  -webkit-mask-image: linear-gradient(to left, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%); /* color-gate: allow — mask-space structural black (the luminance key), not a visual colour */
-}
-
-@media (max-width: 991px) {
-  .fo-hero-work,
-  .fo-ticker {
-    mask-image: linear-gradient(to left, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%); /* color-gate: allow — mask-space structural black (the luminance key), not a visual colour */
-    -webkit-mask-image: linear-gradient(to left, transparent 0, #000 40px, #000 calc(100% - 40px), transparent 100%); /* color-gate: allow — mask-space structural black (the luminance key), not a visual colour */
-  }
-}
-
-@media (hover: hover) {
-  .fo-hero-work:hover .fo-hero-work-track {
-    animation-play-state: paused;
-  }
+  border-block-end: 1px solid var(--rule);
+  padding-inline: 7px; /* spacing-gate: allow — the sheet frame's own 7px inset (measured) */
 }
 
 .fo-hero-work-track {
   display: flex;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   min-inline-size: 100%;
   align-items: center;
+  justify-content: space-between;
   gap: var(--sp-6);
   padding-block: 0.9rem;
-  animation: fo-ticker-rtl 36s linear infinite;
+  padding-inline: 3.2rem; /* aligns the first subject to the title cell's own text edge */
 }
 
 .fo-hero-work-item {
@@ -1038,9 +1047,31 @@ html[data-theme='dark'] body.mdrk-grain::before {
   font-size: var(--fs-xxs);
 }
 
-@media (prefers-reduced-motion: reduce) {
+/* <1200px — the snap-scrolling strip (R328 H3): the six subjects
+ * overflow any narrower band honestly — a touch scroller with
+ * mandatory snap (whole items settle at the rest edges, zero
+ * mid-glyph crop), the wheel/trackpad rides the same row. The
+ * scrollbar stays hidden (the snap rhythm is the affordance; the
+ * items themselves signal continuation). */
+@media (max-width: 1199px) {
+  .fo-hero-work {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;                /* Firefox */
+    -webkit-overflow-scrolling: touch;
+  }
+  .fo-hero-work::-webkit-scrollbar {
+    display: none;                        /* Chromium/WebKit */
+  }
   .fo-hero-work-track {
-    animation: none;
+    flex: 0 0 auto;
+    min-inline-size: max-content;
+    justify-content: flex-start;
+    padding-inline: 1.8rem;               /* the phone cell's own gutter — items clear the frame at rest */
+    scroll-padding-inline: 1.8rem;
+  }
+  .fo-hero-work-item {
+    scroll-snap-align: start;
   }
 }
 
@@ -3315,8 +3346,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
    * the 1fr row exactly like the reference's contained illustration
    * in its 76.99×72.13rem img-inner box. */
   .fo-hero {
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr) auto auto;
     min-block-size: calc(100svh - 14px);
+    /* R328 (H1) — the consent card's seat reserve (the base rule's
+     * own comment; re-declared here because the phone belt re-pins
+     * the hero's rows below). */
+    padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's measured pile + seam */
   }
 
   .fo-hero-art {
@@ -3420,20 +3455,27 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 @media (max-width: 767px) {
-  /* R322 (2-b) — the PHONE transplant (hero-390.json): the 4-column
-   * stacked composition. The ART band owns the FULL viewport width
-   * (the V10 fix): the ink fills the frame edge to edge, seated on a
-   * paper mat inside the drafting frame (min-block-size ≈ the
-   * reference's 39.08rem img-inner proportion — the ink's own wide
-   * aspect leaves the reference's paper share as breathing); the
-   * ruler overlay retires with the reference (@390: no ruler). The
-   * CONTENT band stacks: H1 cell (hairline-closed like the
-   * reference's 12.8rem title cell) → sub cell (lead over the
-   * FULL-WIDTH CTA — the measured 37.71×6.4rem button) → the work
-   * marquee. The consent banner's measured seat stays reserved
-   * (the ≤479 block below carries the band's own reserve). */
+  /* R322 (2-b) → R328 (H3) — the PHONE fold. The container holds the
+   * measured viewport band (100svh − the 14px frame seam) and closes
+   * with the consent card's reserve. The ART band: the ink fills the
+   * frame width on a PROPORTIONATE mat (aspect 8:5 ≈ the brief's
+   * 4:3-ish seat — the R322 33rem min-stage retired: its 200px of
+   * unrul­ed paper under a 126px ink was the fold's dead space).
+   * The CONTENT block is ONE CONNECTED GROUP — title · lead · CTA —
+   * with the brief's ladder gaps (24 then 32): the R322 hairline
+   * between the title cell and the sub cell retires (a divided block
+   * pushed the CTA to the fold's floor). The lead re-seats to the
+   * reference's own txt-16 rung (--fs-body). The work strip rides
+   * the snap scroller (<1200 block above). */
   .fo-hero {
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto;
+    min-block-size: calc(100svh - 14px);
+    /* the slack between the three bands distributes as honest paper
+     * air (space-between) — never as a stretched content row (the
+     * connected title·lead·CTA block must not be pulled apart) or a
+     * faked taller art mat. */
+    align-content: space-between;
+    padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's measured pile + seam, not a rung */
   }
 
   .fo-hero-art {
@@ -3442,11 +3484,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   .fo-hero-art .bp-stage {
-    /* the paper mat around the full-width ink: the reference's phone
-     * art box is 34.51×39.08rem with the contained illustration
-     * centered on its paper — ours holds the same box proportion, the
-     * wide elevation riding centered on the mat. */
-    min-block-size: 33rem;
+    /* the proportionate mat: the ink's own wide aspect rides centered
+     * on paper inside a ruled 8:5 box (≈4:3 per the brief's seat) — no
+     * unrul­ed dead band under the drawing. */
+    min-block-size: 0;
+    aspect-ratio: 8 / 5;
   }
 
   .fo-hero-content {
@@ -3455,14 +3497,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   .fo-hero-title-cell {
-    padding-block: 1.6rem;
+    padding-block: 1.6rem 1.2rem;
     padding-inline: 1.8rem;
-    border-block-end: 1px solid var(--rule); /* the measured stacked title cell closes with its own hairline */
+    border-block-end: 0; /* R328 H3 — one connected block: the title cell's closing hairline retires */
   }
 
   .fo-hero-sub-cell {
     border-inline-start: 0;
-    padding-block: 1.6rem 0;
+    padding-block: 1.2rem 0;
     padding-inline: 1.8rem;
   }
 
@@ -3471,8 +3513,19 @@ html[data-theme='dark'] body.mdrk-grain::before {
     align-items: start;
   }
 
+  /* the lead rides the reference's phone txt-16 rung (15.88px @390)
+   * — 2px under the old body-lg seat, AA-clear. flex: 0 0 auto: the
+   * desktop basis (24rem) is a WIDTH seat in the row form; in this
+   * column form it would size the lead's HEIGHT (a 238px box around
+   * 2 lines of text — the measured defect). Auto = content height. */
+  .fo-hero-lead {
+    font-size: var(--fs-body);
+    flex: 0 0 auto;
+  }
+
   .fo-hero-actions {
     inline-size: 100%;
+    margin-block-start: var(--sp-7); /* the brief's 32px ladder gap: lead → CTA */
   }
 
   /* the measured full-width CTA (37.71×6.4rem @390) */
@@ -3709,11 +3762,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 @media (max-width: 640px) {
-  .fo-hero {
-    padding-block-start: var(--sp-5);
-    padding-block-end: var(--sp-8);
-    min-block-size: calc(100svh - 71px); /* spacing-gate: allow — the 57px header + the 14px frame (the small-viewport hero holds the dynamic viewport) */
-  }
+  /* R328 (H1/H3) — the R314-era .fo-hero override (padding sp-5/sp-8 +
+     the 100svh−71px min) is DELETED: it fought the R322 transplant
+     belt and killed the consent-card reserve at the smallest widths.
+     The ≤767 block above owns the phone hero. */
 
   .st-section,
   .chapters,
@@ -4887,8 +4939,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 .hi-hint-text {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
+  /* R328 (H2 · S-B) — the hint is real copy, not decoration: the old
+     --text-faint seat measured ~4.5:1 on paper (borderline at 13px).
+     --text-secondary clears AA on BOTH sheets with room. */
+  color: var(--text-secondary);
+  font-size: var(--fs-xxs); /* 13px @1440 — above the brief's 12px floor */
 }
 
 .hi-reset {
@@ -6812,11 +6867,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 @media (max-width: 640px) {
-  /* ── hero: 901 → 828 (the reference's own band) ── */
-  .fo-hero {
-    padding-block-start: var(--sp-5);
-    padding-block-end: var(--sp-6);
-  }
+  /* ── hero: 901 → 828 (the reference's own band) ──
+     R328 (H1/H3): this belt's .fo-hero padding line (sp-5/sp-6) is
+     DELETED — the ≤767 transplant belt + the consent reserve own the
+     hero now; a stale pad here zeroed the reserve at ≤640. */
 
   /* ── pm: 905 → 857 (target 869) — the sp-10 bands step to the
      reference's compact share; the grouped V13 rule above keeps
@@ -7492,21 +7546,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
   /* ── hero — the reference's phone band is 100svh − 1.62rem (measured
    * 785 = 800−15 @360 · 828 = 844−16 @390 · 898 = 915−17 @412 — the
    * subtrahend is the constant 1.62rem on the streaming root), not the
-   * ≤640 px pin. The window + strip paddings ride rem with it. ── */
-  .fo-hero {
-    min-block-size: calc(100svh - 1.62rem);
-    /* R318 §A9/C4 — the consent banner's phone seat, measured: the
-       strip (372–420px) ends at the band's floor and the fixed
-       banner (~92–97px) covers its last rows. The band now RESERVES
-       the banner band as bottom padding (10.5rem ≈ 96px @390 root)
-       — the 1fr window row absorbs it (the elevation is aspect-bound
-       and measured to keep ≥23px slack in its row at 360–430);
-       the strip compacts (row-gap 16→8, its own pb 11→4) so the pair
-       fits INSIDE the viewport-bound band without the floor growing
-       (the c1b padding-with-taller-svg experiment grew the band —
-       this one rides the measured aspect slack instead). */
-    padding-block: 2.02rem 11rem;
-  }
+   * ≤640 px pin.
+   *
+   * R328 (H1/H3) — this belt's .fo-hero rule (the 100svh−1.62rem min +
+   * the 10.5rem hard banner reserve) is DELETED: the ≤767 transplant
+   * belt owns the hero now with the LIVE measured reserve
+   * (var(--app-bottom-stack) + 14px) instead of this rem guess. */
 
   /* R318 §A9/C4 — the strip's phone compaction (measured 372→~350
      @360): the inter-row gap halves (the reveal wrappers ride their
@@ -7776,8 +7821,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
  * tier (W1) and the 768–991 tablet tier never hear a rule below. */
 @media (min-width: 480px) and (max-width: 767px) {
   /* 1 — the law floors (the guarantee; content compacts under them and
-   * the reference's own air fills the difference — the M3 pattern) */
-  .fo-hero { min-block-size: calc(100svh - 1.6rem); }
+   * the reference's own air fills the difference — the M3 pattern).
+   * R328 (H1/H3): the belt's own .fo-hero line (100svh − 1.6rem) is
+   * DELETED — the ≤767 transplant belt owns the hero now; a stale
+   * twin here re-pinned the min under the new reserve. */
   .st-section { min-block-size: 84.25rem; }
   .pm-section { min-block-size: 87.65rem; }
   .pr-section { min-block-size: 52.1rem; }
@@ -7824,7 +7871,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
    * 100svh − 1.6rem like the law */
   /* R318 note — as at ≤479, the 480–767 consent seat is owned by the
      C4 band ticket (strip compaction + measured reserve), not here. */
-  .fo-hero { padding-block-start: 4.4rem; padding-block-end: 0; }
+  /* R328 (H1/H3) — the belt's .fo-hero padding line (4.4rem / 0) is
+     DELETED: padding-block-end: 0 zeroed the consent-card reserve
+     across 480–767. The ≤767 transplant belt owns the hero. */
   .fo-hero-window { padding-block-start: 0; }
 
   /* R318 §A9/C4 — the strip's measured 2-col restructure (the stacked
@@ -7861,21 +7910,20 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   /* R318 §A9/C4 — the band reserves the banner's seat (measured):
-     8.5rem = 104px @480 · 130 @600 · 156 @720 (the compact column
-     banner 96–123px @480–599 · the desktop one-liner 70–84px @600+).
-     The window row absorbs the over-reserve (min 268–437px vs the
-     measured allocations 317–526px at every width) so the band stays
-     viewport-bound and the strip's bottom rides above the banner:
-     measured clearances 4px @480 · 91 @600 · 66 @720. */
-  .fo-hero {
-    padding-block-end: 8.5rem;
-  }
+     8.5rem = 104px @480 · 130 @600 · 156 @720 …
+     R328 (H1/H3): the 8.5rem hard reserve is RETIRED — the hero now
+     reserves the bottomStack pile's LIVE measured height
+     (var(--app-bottom-stack) + 14px, the ≤767 belt), which is honest
+     at every width instead of a rem guess per belt. */
 
   /* R318 §A9/C4 — the elevation yields 15% of the window's inline
      measure at 480–599 so the pair (window-min 268px + strip ~295px
      + reserve 104px) seats inside the viewport-bound band; at ≥600
      the cap ≈ the natural full width (measured svg 442px @600 vs the
-     444px cap) — no visual change there. */
+     444px cap) — no visual change there.
+     R328 (H1/H3): the .fo-hero-window cap below is DEAD WEIGHT (the
+     window class left the DOM with the R322 transplant) — left as-is
+     for N's dead-CSS sweep. */
   .fo-hero-window .bp-svg {
     max-inline-size: 85%;
   }
@@ -8570,17 +8618,13 @@ html[data-theme='dark'] body.mdrk-grain::before {
 /* the phone seats the reference runs shorter */
 @media (max-width: 767px) {
   /* the hero: the reference's phone band IS one viewport (828 @390×844)
-   * — ours ran 995: the 33rem stage mat + the sp-8 tail padding. The
-   * mat re-seats at 26rem (the 126px elevation letterboxes centered on
-   * its paper — contain, never crop) and the tail breathes at sp-4:
-   * the band lands ≈856 and docH @390 returns inside the contract. */
-  .fo-hero {
-    padding-block-end: var(--sp-4);
-  }
-
-  .fo-hero-art .bp-stage {
-    min-block-size: 26rem;
-  }
+   * — ours ran 995: the 33rem stage mat + the sp-8 tail padding.
+   *
+   * R328 (H1/H3) — this belt's .fo-hero tail pad (sp-4) and the
+   * 26rem stage floor are RETIRED: they were the LAST stale overrides
+   * on the hero (they zeroed the consent reserve and re-floored the
+   * aspect-ruled stage). The ≤767 transplant belt owns the whole
+   * hero now — aspect 8:5 stage, the reserve via --app-bottom-stack. */
 
   /* the platform showcase: the frame rides its natural content height
      (r325 Y2 — the fixed 30dvh window cropped its cells; the phone

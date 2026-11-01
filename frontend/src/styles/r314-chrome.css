@@ -47,53 +47,47 @@
    ═════════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
-   §1 — cb · the consent banner (V11)
+   §1 — cb · the consent card (V11 → R328 H1)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* The gate element. R315 (K-C): PHYSICAL bottom-LEFT — the MIRRORED
-   seat of the reference's measured bottom-right (E-crawl @1440×900:
-   601.25×38.33 at x=825 → mirrored x≈13.6): the RTL layout flow
-   mirrors, so the banner overlays the paragraph/link cell end of the
-   hero strip exactly where the reference overlays its own link end —
-   NEVER the H1 cell (the reference's banner never touches its H1).
-   Width 72.12rem = 601px @1440 (measured), clamped so narrow desktops
-   never clip it. Paper ground = --bg (#F6F6EE light · #282828 dark).
-   Radius 0 everywhere — the canon. */
+/* R328 (H1) — THE CORNER CARD. The R314–R323 one-line bottom band
+   (601px desktop / full-width phone bar) retires: it seated flush to
+   the viewport corner (left:0 — outside the sheet grid), ran under
+   the hero's indicator strip, and crowded the toast/FAB pile. The
+   gate is now a small drafting card SEATED IN THE SHEET GRID'S
+   CORNER — inside the 7px frame hairline, ≤360px wide on pointer
+   viewports, the phone grid's own content column on touch. Two rows
+   (the honest sentence, then the measured action pair), four
+   hairline rules like a drafting frame, radius 0, NO SHADOW (the
+   R328 «بلا ظلال» canon retires the R313 measured drop — the rules
+   carry the card on both sheets). Paper ground = --bg. */
 .cb-banner {
   position: fixed;
-  /* Y6 (R325) — the banner is the BASE layer of the bottom stack: it
-     OWNS the viewport's bottom seat (offset 0 — the one layer that
-     never moves) and registers its measured height with
-     lib/bottomStack.ts, so the toast stack and the FAB lift above its
-     real box (the phone bar's expand toggle included) instead of
-     covering it. The manager writes an inline --app-bottom-stack: 0px
-     here; the seat itself never shifts. */
-  inset-block-end: 0;
-  left: 0;                        /* physical — the mirrored seat */
+  /* Y6 (R325) holds: the card is the BASE layer of the bottom stack —
+     it owns the corner seat (the manager writes its inline
+     --app-bottom-stack: 0px) and registers its MEASURED height so
+     toasts + the FAB stack above its real box. */
+  inset-block-end: 7px;           /* inside the sheet frame's hairline — the grid corner */
+  left: 7px;                      /* physical — the mirrored RTL corner seat */
   z-index: 240;                   /* the ladder mapped in the header */
-  inline-size: min(72.12rem, calc(100vw - 2.4rem));  /* 601px @1440 — measured */
-  min-block-size: 4.56rem;        /* 38px @1440 — measured outer strip */
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding-block: var(--sp-1);     /* one line — the measured 38px band */
-  padding-inline: var(--sp-4);
+  /* ≤360px at every width; on phones this IS the grid's content
+     column (100vw − 2×25px = the frame inset + the cell gutter,
+     measured @390). */
+  inline-size: min(360px, calc(100vw - 50px)); /* spacing-gate: allow — the measured grid gutters (7px frame + 1.8rem cell), not a rung */
+  display: grid;
+  row-gap: var(--sp-1-5);
+  padding-block: var(--sp-2);
+  padding-inline: var(--sp-3);
   background: var(--bg);
-  /* THE ONLY SHADOW PERMITTED (R313 canon: one shadow in 2774 sampled
-     reference surfaces — the cookie banner's own drafting drop;
-     hard offset, zero blur, measured): */
-  box-shadow: rgb(0 0 0) 0 6.66667px 0 -1.66667px;  /* measured — no token exists */ /* color-gate: allow */
   /* Entrance: invisible until the loader's exit starts (the .landing
-     root flips intro-draw → intro-done at the reveal), then the rise
-     plays ~1.2s later — the reference's own post-loader entrance. */
+     root flips intro-draw → intro-done at the reveal), then a 200ms
+     clip-up ~600ms after the sheet reveal (--t-fast today; the
+     brief's 240ms rung lands with T's motion-ladder re-seat). */
   opacity: 0;
 }
 
 .landing.intro-done .cb-banner {
-  /* 1.2s delay — the measured post-loader entrance beat (landing.css
-     hand-tuned-chrome precedent: raw delays allowed, motion curves
-     still ride tokens). */
-  animation: cb-rise var(--t-slow) var(--ease-out) 1.2s both;
+  animation: cb-rise var(--t-fast) var(--ease-out) 600ms both;
 }
 
 @keyframes cb-rise {
@@ -105,6 +99,17 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* R328 (H1) — THE NEVER-HIDE RESERVE: while the gate is unanswered
+   the sheet pads its foot by the bottom pile's measured height (the
+   manager writes --app-bottom-stack on :root), so the footer's last
+   row — and nothing else — can never sit behind the card. Answering
+   unmounts the gate → the var drops → the reserve snaps away
+   (padding never transitions: the motion gate bans layout-property
+   animation). */
+body:has(.cb-banner) .landing {
+  padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's 7px seat + 7px seam, measured chrome */
 }
 
 /* The four separate 1px ink rules — the drafting frame, painted as
@@ -121,43 +126,15 @@
 .cb-rule-r { inset-inline-end: 3px; inset-block: 3px; inline-size: 1px; }
 .cb-rule-l { inset-inline-start: 3px; inset-block: 3px; inline-size: 1px; }
 
-/* The ONE honest line — 13.33px @1440 (--fs-body, the reference's
-   txt-16 rung), muted ink, NEVER wrapping on desktop (the measured
-   band is a single line: sentence + LEARN MORE + the two compact
-   actions inside 601px). */
+/* The ONE honest sentence — wraps to at most two short rows inside
+   the card (13.33px @1440 --fs-body, muted ink; the R315 K-C single
+   line retires with the one-line band). */
 .cb-text {
   margin: 0;                      /* reset the UA <p> margins */
-  flex: 1 1 auto;
-  min-inline-size: 0;
   font-size: var(--fs-body);
   line-height: var(--lh-snug);
   color: var(--text-muted);
-  white-space: nowrap;            /* the measured one-line band */
 }
-
-/* R323 (A3 · defect 3) — the brief/full pair: the DESKTOP band keeps
- * the full honest sentence (the brief chip is a phone concern). The
- * .cb-expand toggle and the brief/full swap only act ≤767px. */
-.cb-brief { display: none; }
-.cb-full { display: inline; }
-
-/* the expand toggle — hidden on desktop (the one-line band needs no
- * toggle); the ≤767 bar seats it as a 44-px tap at the inline end. */
-.cb-expand {
-  display: none;
-  flex: 0 0 auto;
-  background: none;
-  border: 0;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0;
-}
-.cb-expand:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.cb-expand-ic { display: block; transition: transform var(--t-fast) var(--ease); }
-.cb-banner[data-expanded='true'] .cb-expand-ic { transform: rotate(180deg); }
 
 /* «اعرف أكثر» — the mono-seat link: 11.67px @1440 (--fs-mono-md,
    the reference's LEARN MORE rung). Text rides --accent-ink
@@ -176,7 +153,7 @@
 .cb-more:hover,
 .cb-more:focus-visible {
   text-decoration-line: underline;
-  /* R319 §D7 — the light-theme hover ink must clear AA on the banner
+  /* R319 §D7 — the light-theme hover ink must clear AA on the card
      paper: --accent-hover (#D92F00) measured 4.44:1. The deep copper
      --accent-strong (#A32400) is 6.91:1 on #F6F6EE; the dark twin
      below keeps the night sheet's own hover unchanged (it already
@@ -189,27 +166,24 @@ html[data-theme='dark'] .cb-more:focus-visible {
   color: var(--accent-hover);
 }
 
-/* The actions row. */
+/* The actions row — the measured pair anchors the card's width edge
+   to edge («موافق» at the reading start, «أرفض» at the end). */
 .cb-actions {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: var(--sp-2);
-  flex: 0 0 auto;
 }
 
-/* «موافق» — R318 (§A9): the REAL primary. The r315 ghost seat (the
-   measured #EFEFEF ground + WHITE label — 1.15:1, read as disabled)
-   is retired: an INK slab with a PAPER label — the site's own primary
-   grammar (unified-parity --primary: charcoal slab CTA, 14.74:1) —
-   carried on the theme tokens so both sheets resolve with zero forks
-   (light #282828+#F6F6EE 12.44:1 · dark #F6F8FA+#282828 13.37:1).
-   The measured SEAT is kept: 78.63×27.98 @1440, radius 0, the 1px
-   ink border riding INSIDE the border-box so the outer geometry is
-   exact. Hover keeps the reference's accent fill-wipe (the .btn
-   grammar's wipe pair); :active inverts to the paper/ink pair. The
-   44px floor stays a touch-context concern — the desktop banner's
-   measured 28px buttons ride a pointer context (the ≤479 block below
-   lifts every action to 44px). */
+/* «موافق» — R318 (§A9): the REAL primary. An INK slab with a PAPER
+   label — the site's own primary grammar (unified-parity --primary:
+   charcoal slab CTA, 14.74:1) — carried on the theme tokens so both
+   sheets resolve with zero forks (light #282828+#F6F6EE 12.44:1 ·
+   dark #F6F8FA+#282828 13.37:1). The measured SEAT is kept:
+   78.63×27.98 @1440, radius 0, the 1px ink border riding INSIDE the
+   border-box so the outer geometry is exact. Hover keeps the
+   reference's accent fill-wipe (the .btn grammar's wipe pair);
+   :active inverts to the paper/ink pair. */
 .cb-accept {
   position: relative;
   z-index: 0;
@@ -236,8 +210,7 @@ html[data-theme='dark'] .cb-more:focus-visible {
 /* the fill-wipe slide (the site's .btn wipe grammar: label + border
    adopt the wipe pair in lockstep; the slab rises from the
    block-start edge). R318 §A9: the wipe ground is the TEXT-safe
-   accent rung — --accent-ink, the token contract's own
-   label-on-accent-safe seat — so the hovered pair also holds
+   accent rung — --accent-ink — so the hovered pair also holds
    ≥4.5:1 in BOTH themes (light #C72E00+#FFFFFF 5.48:1 ·
    dark #FF6B33+warm-ink 6.20:1), unlike the raw --accent slab
    (3.76:1 on the light sheet). */
@@ -275,14 +248,10 @@ html[data-theme='dark'] .cb-more:focus-visible {
   transform: translateY(-101%);
 }
 
-/* «أرفض» — R315 (K-C): the measured Reject seat — 80.63×28.33,
-   transparent ground, 1px ink outline (var(--text) = #282828 light /
-   #F6F8FA dark), label in the same ink. Radius 0. */
 /* «أرفض» — the measured Reject seat: 80.63×28.33, TRANSPARENT ground,
    NO border (r313 digest cookie-reject: border 0 none), INK label in
-   the BODY family at the 13.33px rung (the reference's reject is BT
-   Grotesk txt-16, not mono), label-roll-only hover (no fill, no
-   ground change — the reference's quiet secondary). */
+   the BODY family at the 13.33px rung, label-roll-only hover (no
+   fill, no ground change — the reference's quiet secondary). */
 .cb-reject {
   display: inline-flex;
   align-items: center;
@@ -304,69 +273,20 @@ html[data-theme='dark'] .cb-more:focus-visible {
   color: var(--text-strong, var(--text));
 }
 
-/* ── Mobile ≤479px — the reference's own collapse: the full-width
-   bottom panel, min(92vw, 374px) centred, the ONE line wrapping to at
-   most two short rows, the two actions SIDE-BY-SIDE (E-crawl:
-   374.13×93.45 measured — our 44px touch floor is the owner-mandated
-   a11y minimum over the measured seat, ≈100px total). ────────────── */
-/* ── R318 §A9 — the ≤479 floating-card phone grammar is RETIRED by
-   R323 (A3 · defect 3): the compact 44-px bottom bar below (≤767)
-   replaces it — the old 374-px card covered ~20% of an 844-px phone
-   viewport and struck the hero copy. ───────────────────────────── */
-
-/* ── R323 (A3 · defect 3) — the PHONE COMPACT BAR (≤767): the gate
-   seats as ONE full-width ≈44-px bottom bar — the old floating 374-px
-   card covered ~20% of an 844-px viewport and struck the hero copy.
-   Collapsed: the brief label truncates, both actions ride the row,
-   the expand toggle shows the full honest sentence + learn-more.
-   Expanded: the column returns with the FULL 44-px touch floors.
-   The bar sits at the viewport foot; the hero H1/CTA cell sits above
-   the fold clearance — the banner never covers it (the overlap e2e
-   pins the geometry). ────────────────────────────────────────── */
+/* ── R328 (H1) — the phone belt: the SAME corner card, with the
+   owner-mandated 44px touch floors on both actions (the measured
+   28px seats ride a pointer context; the a11y floor is not a design
+   value). The card keeps its grid-column width; the sentence wraps
+   honestly. The R323 compact-bar block (brief/full swap, expand
+   toggle, ellipsis truncation) is retired with the band it served. */
 @media only screen and (max-width: 767px) {
-  .cb-banner {
-    inline-size: 100%;
-    min-block-size: 44px;
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sp-2);
-    padding-block: var(--sp-0-5);
-    padding-inline: var(--sp-3);
-  }
-  .cb-banner[data-expanded='true'] {
-    flex-direction: column;
-    align-items: stretch;
-    padding-block: var(--sp-2);
-  }
-  .cb-text {
-    white-space: normal;
-    line-height: var(--lh-snug);
-  }
-  .cb-banner:not([data-expanded='true']) .cb-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .cb-brief { display: inline; }
-  .cb-banner:not([data-expanded='true']) .cb-full { display: none; }
-  .cb-banner[data-expanded='true'] .cb-brief { display: none; }
-  .cb-more { margin-inline-start: var(--sp-1-5); }
-  .cb-expand {
-    display: grid;
-    place-items: center;
-    inline-size: 44px;
-    block-size: 44px;
-  }
-  .cb-actions {
-    flex: 0 0 auto;
-    gap: var(--sp-2);
-  }
   .cb-accept,
   .cb-reject {
     flex: 0 0 auto;
     min-block-size: 44px;           /* the touch-target floor — an a11y
                                        minimum, not a design value */
     inline-size: auto;
+    padding-inline: var(--sp-4);
   }
 }
 

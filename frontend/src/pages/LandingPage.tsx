@@ -1106,30 +1106,25 @@ export default function LandingPage() {
                   </Link>
                 </RevealCssClass>
               </div>
+            </div>
+          </div>
 
-              {/* the work marquee — the reference's home-hero-work strip
-                  (72.2×4.36rem): the honest live-capability subjects
-                  crawl below the sub row. Duplicated aria-hidden track
-                  carries the seamless loop; reduced motion folds to the
-                  static row. */}
-              <div className="fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
-                <div className="fo-hero-work-track">
-                  {HERO_WORK_ITEMS.map((cap, i) => (
-                    <span key={cap} className="fo-hero-work-item">
-                      <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-                      {cap}
-                    </span>
-                  ))}
-                </div>
-                <div className="fo-hero-work-track" aria-hidden="true">
-                  {HERO_WORK_ITEMS.map((cap, i) => (
-                    <span key={cap} className="fo-hero-work-item">
-                      <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-                      {cap}
-                    </span>
-                  ))}
-                </div>
-              </div>
+          {/* ── the work strip — the reference's home-hero-work band as
+              its OWN closing row (R328 H2/H3): the six honest
+              live-capability subjects ride ONE static row ≥1200px
+              (space-between, zero mask — no item is ever faded or cut),
+              and a snap-scrolling strip below (no mid-glyph crop at
+              rest — scroll-snap settles whole items). The R322 crawl
+              loop + its duplicated aria-hidden track retire: an index
+              row must be readable at a glance, not chased. */}
+          <div className="fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
+            <div className="fo-hero-work-track">
+              {HERO_WORK_ITEMS.map((cap, i) => (
+                <span key={cap} className="fo-hero-work-item">
+                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
+                  {cap}
+                </span>
+              ))}
             </div>
           </div>
         </section>

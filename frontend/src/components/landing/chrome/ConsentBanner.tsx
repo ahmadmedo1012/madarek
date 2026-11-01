@@ -1,16 +1,20 @@
 /**
- * ConsentBanner — R314 (V11) — the landing's local-storage consent gate.
+ * ConsentBanner — R314 (V11) → R328 (H1) — the landing's local-storage
+ * consent gate.
  *
- * An ORIGINAL component in the reference's measured chrome geometry
- * (R315 K-C — E-crawl ground truth: desktop 601.25×38.33 bottom-right
- * on the LTR reference → mirrored bottom-LEFT on our RTL sheet; four
- * separate 1px ink rules like a drafting frame, the ONE hard-offset
- * shadow the reference ships; Accept 78.63×27.98 the REAL primary —
- * ink slab + paper label, ≥4.5:1 both themes (R318 §A9 — the pale
- * ghost seat was 1.15:1), Reject 80.63×28.33 ink-labelled; mobile
- * 374×~100 with the two actions side-by-side — our 44px a11y touch
- * floor over the measured 93.45) carrying Madarek's OWN honest
- * ONE-LINE sentence — never the reference's copy, logo, or awards.
+ * An ORIGINAL component in the reference's measured chrome grammar —
+ * now THE CORNER CARD (R328 H1): a small drafting card seated in the
+ * sheet grid's corner (inside the 7px frame hairline), ≤360px wide on
+ * pointer viewports / the phone grid's own column on touch, four
+ * separate 1px ink rules like a drafting frame, radius 0, NO shadow.
+ * Accept stays the REAL primary — ink slab + paper label, ≥4.5:1 both
+ * themes (R318 §A9); Reject ink-labelled with the owner-mandated 44px
+ * touch floor on phones. Madarek's OWN honest sentence — never the
+ * reference's copy, logo, or awards.
+ *
+ * The R323 phone compact bar (brief label + expand toggle) is RETIRED:
+ * the card carries the full honest sentence at every width, so the
+ * toggle, the brief/full pair, and their state are deleted.
  *
  * This is a REAL gate, not decoration:
  *  · «موافق»  → localStorage `madarek.consent = "accepted"` (+ a JSON
@@ -26,13 +30,11 @@
  * Landing-only by mount site (LandingPage, after the footer — R314 B10):
  * auth pages never see it. Entrance is deferred behind the loader
  * (`.landing.intro-draw` hides it; `.landing.intro-done` plays the
- * rise ~1.2s after the sheet reveal starts); reduced motion collapses
- * the rise to a plain opacity fade.
+ * 200ms clip-up ~600ms after the sheet reveal starts); reduced motion
+ * collapses the rise to a plain opacity fade.
  */
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronUp } from 'lucide-react';
-import { Icon } from '../../Icon';
 import { useBottomStackLayer } from '../../../hooks/useBottomStackLayer';
 
 /* ── The storage contract ────────────────────────────────────────────
@@ -173,20 +175,17 @@ export function ConsentBanner() {
   const [decision, setDecision] = useState<ConsentDecision | null>(() =>
     typeof window === 'undefined' ? null : readDecision(),
   );
-  /* R323 (A3 · defect 3) — the phone COMPACT BAR: ≤767px the gate seats
-   * as a 44-px bottom bar; tapping the toggle expands the full text
-   * (the same honest sentence + the learn-more link). Desktop keeps
-   * the one compact line — the expanded state is a phone concern and
-   * the button is hidden there. */
-  const [expanded, setExpanded] = useState(false);
 
   /* Y6 (R325) — the gate is the BASE layer of the bottom stack: it owns
-   * the viewport's bottom seat (inset-block-end: 0 — r314-chrome.css)
-   * and registers its MEASURED height with lib/bottomStack.ts, so the
-   * toast stack and the FAB lift above its real box (the phone bar's
-   * expand toggle included) instead of covering it. Answering the gate
-   * renders null → the callback ref fires with null → the layer
-   * deregisters and the layers above ease back down (200ms). */
+   * the viewport's bottom corner seat (r314-chrome.css) and registers
+   * its MEASURED height with lib/bottomStack.ts, so the toast stack
+   * and the FAB lift above its real box instead of covering it.
+   * Answering the gate renders null → the callback ref fires with null
+   * → the layer deregisters and the layers above ease back down
+   * (200ms). R328 (H1): the sheet itself also pads its foot by the
+   * pile's height while the gate is unanswered (the never-hide
+   * reserve — see r314-chrome.css), so the footer's last row can
+   * never sit behind the card. */
   const bannerRef = useBottomStackLayer('consent');
 
   /* The shared answer path — button clicks and the window API both
@@ -239,7 +238,6 @@ export function ConsentBanner() {
       className="cb-banner"
       role="region"
       aria-label="الموافقة على التخزين المحلي"
-      data-expanded={expanded ? 'true' : undefined}
     >
       {/* the four separate 1px ink rules — the drafting frame (the
           reference paints them as four lines, not a border box) */}
@@ -248,31 +246,21 @@ export function ConsentBanner() {
       <span className="cb-rule cb-rule-b" aria-hidden="true" />
       <span className="cb-rule cb-rule-l" aria-hidden="true" />
 
-      {/* R323 (A3 · defect 3): the compact phone bar shows the BRIEF
-          label; the FULL honest sentence + the learn-more link expand
-          on tap (aria-expanded on the toggle, the region label stays).
-          Desktop keeps the full line — the brief/full pair collapses
-          to one seat there. */}
+      {/* R328 (H1): the card carries the FULL honest sentence at every
+          width (the R323 brief/expand pair retired with the compact
+          bar). R320 §D (c2-LEGAL) keeps the learn-more target on
+          /legal/cookies — the honest substance of what this card
+          stores lives in the policy sheet's own ledger table. */}
       <p className="cb-text">
-        <span className="cb-brief">نستخدم التخزين المحلي.</span>
-        {/* R315 (K-C): ONE honest line — the reference's banner is a
-            single sentence + a LEARN MORE link (601×38, no paragraph
-            stack). R320 §D (c2-LEGAL): the learn-more target retargets
-            from /capabilities to /legal/cookies — a capability matrix
-            is not a storage policy (PAGES-GAP T-5); the honest
-            substance of what this banner stores now lives in the
-            policy sheet's own ledger table. */}
-        <span className="cb-full">
-          يستخدم هذا الموقع التخزين المحلي.
-          <Link to="/legal/cookies" className="cb-more">اعرف أكثر</Link>
-        </span>
+        يستخدم هذا الموقع التخزين المحلي.
+        <Link to="/legal/cookies" className="cb-more">اعرف أكثر</Link>
       </p>
 
+      {/* R318 §A9 (R315 K-C geometry kept): the measured seats —
+          «موافق» the real primary (ink slab + paper label,
+          r314-chrome.css — both themes ≥4.5:1), «أرفض» ink-labelled;
+          the pair anchors the card's width edge to edge. */}
       <div className="cb-actions">
-        {/* R318 §A9 (R315 K-C geometry kept): the measured seats —
-            «موافق» the real primary (ink slab + paper label,
-            r314-chrome.css — both themes ≥4.5:1), «أرفض» ink-labelled;
-            both side-by-side at every width. */}
         <button type="button" className="cb-accept" onClick={() => answer('accepted')}>
           موافق
         </button>
@@ -280,18 +268,6 @@ export function ConsentBanner() {
           أرفض
         </button>
       </div>
-
-      {/* the expand toggle — a 44-px tap seat at the bar's inline end;
-          hidden ≥768px (the one-line band needs no toggle). */}
-      <button
-        type="button"
-        className="cb-expand"
-        aria-expanded={expanded}
-        aria-label={expanded ? 'إخفاء تفاصيل التخزين المحلي' : 'إظهار تفاصيل التخزين المحلي'}
-        onClick={() => setExpanded((v) => !v)}
-      >
-        <Icon icon={ChevronUp} size={16} className="cb-expand-ic" />
-      </button>
     </div>
   );
 }
