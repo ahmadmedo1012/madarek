@@ -45,3 +45,34 @@ jobs:
           ' >> "$GITHUB_STEP_SUMMARY" || true
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+      # R327 D4: the OTA half of the ledger — the update branches with
+      # their runtimeVersions, so a build's runtimeVersion can be matched
+      # against the updates that build will fetch (the fingerprint policy).
+      - name: List update branches (channel · runtimeVersion · updates)
+        run: |
+          set -o pipefail
+          for BRANCH in production preview; do
+            echo "── branch: $BRANCH"
+            npx eas-cli@latest update:list --branch "$BRANCH" --limit 6 --json --non-interactive 2>&1 | tee "updates-$BRANCH.json" | tail -5
+          done
+          {
+            echo "## EAS Update branches"
+            for BRANCH in production preview; do
+              echo "### $BRANCH"
+              echo '| update id | runtimeVersion | message | createdAt |'
+              echo '|---|---|---|---|'
+              node -e '
+                const fs = require("fs");
+                const raw = fs.readFileSync(process.argv[1], "utf8");
+                const start = raw.indexOf("["); const end = raw.lastIndexOf("]");
+                if (start === -1 || end === -1) { console.log("| — | — | (no json parsed) | — |"); process.exit(0); }
+                const rows = JSON.parse(raw.slice(start, end + 1));
+                const flat = Array.isArray(rows) ? rows : (rows.updates ?? rows.channels ?? []);
+                for (const u of (flat.length ? flat : [rows])) {
+                  console.log(`| ${u.id ?? u.updateId ?? "—"} | ${u.runtimeVersion ?? u.runtimeVersionId ?? "—"} | ${String(u.message ?? "—").slice(0, 60)} | ${u.createdAt ?? "—"} |`);
+                }
+              ' "updates-$BRANCH.json" || echo "| — | — | parse failed | — |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
