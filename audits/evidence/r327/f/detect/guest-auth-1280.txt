@@ -1,0 +1,14 @@
+
+http://localhost:5173/auth
+  [cream-palette] cream/beige page background rgb(246, 246, 238)
+    → A warm cream or beige page background has become the default "tasteful" AI surface, reached for by reflex. Choose a background that comes from a deliberate palette, not the safe warm off-white.
+
+1 anti-pattern found.
+
+── Advisory (not counted as failures) ──
+
+http://localhost:5173/auth
+  [bounce-easing] cubic-bezier(0.34, 1.18, 0.64, 1)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+
+1 advisory note. Suppress with --no-advisory.

@@ -735,6 +735,17 @@
     padding: 3px var(--sp-2-5); /* spacing-gate: allow — topbar scope chip micro grade 3/10 vertical hairline */
     margin-inline-start: var(--sp-2);
     white-space: nowrap;
+    /* R327 F (red team, measured +20px spill): the scope chip never
+       truncates — a long offering/faculty name pushed it past the
+       topbar track. The title got real truncation in r304; the chip
+       now does the same (context, not signal — ellipsis is honest).
+       inline-block first: max-inline-size + ellipsis do nothing on an
+       inline span. */
+    display: inline-block;
+    vertical-align: middle;
+    max-inline-size: 24ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   @media (max-width: 920px) {
     .topbar { grid-template-columns: auto 1fr auto; }

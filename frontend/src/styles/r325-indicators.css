@@ -93,6 +93,19 @@
   color: var(--text-muted);
   white-space: nowrap;
 }
+/* R327 F (red team, measured): the indicator seats rode the PAGE ramp
+   (--text-muted) — on a deep band's INVERTED pole (the .r305s-band--deep
+   Heron inversion the dashboard's resume card rides) they wash out in
+   BOTH themes: 1.9:1 measured on ink/paper (audits/evidence/r327/f/
+   detect + the live hunt). The band-safe recipe is the band's own — the
+   eyebrow's 72/28 mix of the band fg toward the band ground
+   (theme-proof by construction, 5.32:1+ on both poles — the same math
+   as r325's ink-app README). */
+.r305s-band--deep .ind-microlabel,
+.r305s-band--deep .ind-ruler-num,
+.r305s-band--deep .dash-resume-segcount {
+  color: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+}
 
 /* ── 2 · SegmentedProgress — one square segment per week/lecture ──────
    full=ink · partial=mid (ink at 45%) · empty=hatch at the element's

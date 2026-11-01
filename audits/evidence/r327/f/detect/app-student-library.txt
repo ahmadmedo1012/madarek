@@ -1,0 +1,22 @@
+
+http://localhost:5173/student/library
+  [text-overflow] span.topbar-scope overflows its box by 82px
+    → Content renders wider than its container and the spill does harm: a clipping ancestor cuts it off, it runs into another box, or it reaches the viewport edge. Let text wrap, constrain widths, or give the region a deliberate scroll affordance.
+  [dark-glow] Colored box-shadow glow (#ff8e68) on dark background
+    → Colored glow shadows — a zero-offset chromatic halo (box- or text-shadow) on any background, or any colored blurred shadow on a dark background — are the default "cool" look of AI-generated UIs. Use neutral elevation shadows and subtle, purposeful lighting instead.
+  [undersized-ui-text] 6.01852px functional text "أبلغ عن مشكلة / اقتراح" (below 11px floor)
+    → Interactive and content-bearing UI text (links, buttons, nav items, labels, table cells, meta rows, timecodes) below 11px is a legibility failure, not a style choice. WCAG sets no absolute pixel floor, but functional text under 11px is a defensible quality bar: it fails on high-DPI and small viewports and it degrades tap and read targets. The 11px floor holds even inside a footer; only non-interactive legal smallprint gets the softer 10px floor. Being ON the DESIGN.md size ramp does not exempt a value here: adding 8px to the ramp launders the token but not the legibility problem, and that is exactly the escape hatch this rule closes. Exempts sup/sub, visually-hidden (sr-only) text, and code/terminal contexts. Decorative letterspaced micro-labels are still functional and stay in scope.
+
+3 anti-patterns found.
+
+── Advisory (not counted as failures) ──
+
+http://localhost:5173/student/library
+  [bounce-easing] cubic-bezier(0.34, 1.18, 0.64, 1)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+  [bounce-easing] animation: var(--ease-spring-bounce)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+
+2 advisory notes. Suppress with --no-advisory.
+
+Capture note: http://localhost:5173/student/library was hidden (minimized, or a background tab or window), so the pixel pass read nothing there. Bring it on screen, focused or not, and scan again for those contrast verdicts.

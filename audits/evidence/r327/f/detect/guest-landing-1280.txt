@@ -1,0 +1,26 @@
+
+http://localhost:5173/
+  [low-contrast] 1.0:1 (need 4.5:1) — text #282828 on #282828
+    → Text does not meet WCAG AA contrast requirements (4.5:1 for body, 3:1 for large text). Increase the contrast between text and background.
+  [low-contrast] 1.0:1 (need 4.5:1) — text #282828 on #282828
+    → Text does not meet WCAG AA contrast requirements (4.5:1 for body, 3:1 for large text). Increase the contrast between text and background.
+  [cramped-padding] <span> "et-rail": children flush against border-right/left on right/left (no inset)
+    → Text is too close to the edge of its container. Two shapes: (1) an element with its own text where the space between the rendered text and the border box is too small for the font size, and (2) a wrapper whose children's text lands flush against a visible boundary (border, outline, or non-transparent background) with nothing to inset it. Add at least 8px (ideally 12–16px) of space inside bordered, outlined, or colored containers.
+  [cream-palette] cream/beige page background rgb(246, 246, 238)
+    → A warm cream or beige page background has become the default "tasteful" AI surface, reached for by reflex. Choose a background that comes from a deliberate palette, not the safe warm off-white.
+  [marquee] .fo-hero-work-track — infinite horizontal loop animation "fo-ticker-rtl"
+    → Continuously auto-scrolling content demands attention it has not earned and hides half its content at any moment. Reserve motion for content that changes; let readers move at their own pace.
+  [marquee] .fo-ticker-track — infinite horizontal loop animation "fo-ticker-rtl"
+    → Continuously auto-scrolling content demands attention it has not earned and hides half its content at any moment. Reserve motion for content that changes; let readers move at their own pace.
+
+6 anti-patterns found.
+
+── Advisory (not counted as failures) ──
+
+http://localhost:5173/
+  [bounce-easing] cubic-bezier(0.34, 1.18, 0.64, 1)
+    → Bounce and elastic easing feel dated and tacky. Real objects decelerate smoothly — use exponential easing (ease-out-quart/quint/expo) instead.
+  [repeating-stripes-gradient] repeating-gradient decorative stripes
+    → Repeating-gradient stripes used as surface decoration are a recurring generated-UI signature. Reach for a deliberate texture or leave the surface plain.
+
+2 advisory notes. Suppress with --no-advisory.

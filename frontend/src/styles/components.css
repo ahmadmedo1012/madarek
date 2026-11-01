@@ -5714,7 +5714,11 @@
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  font-size: 0.8125rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */
+  /* R327 F (red team, measured 6.02px @1280): 0.8125rem rides the vw
+     root (0.5787vw — 7.4px at 1280), so the raw rem literal collapsed
+     under every floor. The ladder's own --fs-sm IS the 13px Arabic
+     floor for functional text — the same seat every small label rides. */
+  font-size: var(--fs-sm);
   font-weight: 600;
   /* --r-full: the pill token — raw 999px would break the WS-D2
      token-discipline snapshot (circular primitives only). */
