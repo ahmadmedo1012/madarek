@@ -1,0 +1,47 @@
+# R327 D2: the build ledger — records what EAS actually built.
+#
+# Manual-only (never triggers builds): dispatched after a Mobile run's
+# builds finish, it asks EAS for the account's recent builds and prints
+# the JSON (build IDs, profiles, platforms, statuses, artifact URLs) to
+# the job log — the durable record RELEASE.md and /app quote. No
+# checkout, no gates, no builds: a pure read.
+#
+#   gh workflow run mobile-builds-log.yml
+#   # or: POST /repos/…/actions/workflows/mobile-builds-log.yml/dispatches
+name: Mobile builds ledger
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-builds-ledger
+  cancel-in-progress: false
+
+jobs:
+  ledger:
+    name: eas build:list (the recent cuts)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: List recent builds (id · profile · platform · status · artifact)
+        run: |
+          set -o pipefail
+          npx eas-cli@latest build:list --limit 12 --json --non-interactive 2>&1 | tee build-list.json
+          # the durable one-line summary for RELEASE.md / the /app page
+          echo "## Recent EAS builds" >> "$GITHUB_STEP_SUMMARY"
+          node -e '
+            const fs = require("fs");
+            const raw = fs.readFileSync("build-list.json", "utf8");
+            const json = raw.slice(raw.indexOf("["), raw.lastIndexOf("]") + 1);
+            for (const b of JSON.parse(json)) {
+              console.log(`| ${b.id} | ${b.platform} | ${b.profile} | ${b.status} | ${b.artifacts?.buildUrl ?? "—"} |`);
+            }
+          ' >> "$GITHUB_STEP_SUMMARY" || true
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
