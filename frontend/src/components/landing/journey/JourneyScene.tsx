@@ -518,8 +518,23 @@ export function JourneyScene() {
         setSheetVar(winEl.style, 'transform', 'none');
       }
 
-      /* 2 · the sequence clock — Heron's 5.52s movie in seconds. */
-      const t = SEQ_DUR_S * clamp01((pRaw - SEQ_START_PIN) / SEQ_SPAN_PIN);
+      /* 2 · the sequence clock — Heron's 5.52s movie in seconds.
+       * R330 (A-Web-Home) — THE MOBILE PIN-TIMING FIX (r328 REPORT
+       * defect 1, «جوال فاتح — إطارات m-025/m-050 شبه فارغة»: the
+       * phone pin's dead runway). The linear clock strands the parked
+       * ≤991 window in its quietest windows exactly at the 25–50%
+       * probe frames: at 25% the linear t≈1.38 lands inside the
+       * plaque dead gap (card1 just out, card2 not in — both plaques
+       * hidden) over a 2-of-6-layer ghost plan, and at 50% t≈2.76
+       * rides the card-2 fade-out — the frame reads ~75–90% paper.
+       * The mobile clock front-loads the SAME movie (t = 5.52·u^0.55,
+       * monotonic, t lands exactly 5.52 at scrub end): the plaque
+       * crossfades compress into the first third of the scroll and
+       * the drawing era (layers + wash + findings + camera) owns the
+       * rest — every window plays, the order is unchanged. Desktop
+       * and the reduced-motion static end state are untouched. */
+      const seqU = clamp01((pRaw - SEQ_START_PIN) / SEQ_SPAN_PIN);
+      const t = mobile ? SEQ_DUR_S * Math.pow(seqU, 0.55) : SEQ_DUR_S * seqU;
 
       /* 3 · the six progressive layers — DIRECT opacity writes on the
        * ≤10 consuming group roots (the inherited-var walk is dead).

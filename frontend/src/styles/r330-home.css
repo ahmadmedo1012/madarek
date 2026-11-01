@@ -1,0 +1,292 @@
+/* ════════════════════════════════════════════════════════════════════
+   r330-home.css — R330 · A-Web-Home — the homepage's Heron-composition
+   pass (hero · statement · pains). Imported from LandingPage.tsx AFTER
+   landing.css, so these rules win by cascade order: same-or-higher
+   specificity, zero !important, zero edits to any other stylesheet
+   (the R330 file-ownership contract). Class names added here are
+   namespaced mrk330-*; everything else re-seats the sheet's own
+   selectors.
+
+   The owner's verdict: the homepage read 25% Heron despite a lenient
+   75% metric. The deltas are COMPOSITION deltas — visible from 1 metre
+   in 1 second, not 2px tweaks:
+
+   · HERO — the art band dominates: the R328 56svh stage cap lifts to
+     62svh (Heron's art band eats ~84% of its screen), the ink
+     thickens (non-scaling 2.4/3.2 strokes — the drawing carries the
+     section), the H1 takes the decisive clamp(44px → 62px) display
+     seat, the work strip drops to the 13px mono-label voice, and the
+     section keeps ONE orange accent (the register CTA).
+   · STATEMENT — the band loses its vertical padding (the cells ARE
+     the band — Heron's home-intro anatomy), the art cell goes SQUARE
+     (the measured 85.64×86.73rem cell) and drives the band height,
+     the scrub title lifts to the 44px display rung, the partner
+     strip tightens to the label register.
+   · PAINS — the 3rem-gap column row becomes Heron's ruled table:
+     zero gap, shared 1px hairlines between the columns, each column
+     with its own top rule, generous cell padding, the meta dot tied
+     to the reveal (the reference's opacity-0 dot), the H2's em
+     demoted from the accent — ONE accent per section (the dots +
+     the honest answer lines).
+   · MOTION — the shared RevealCssClass belt stays the ONE engine;
+     these sections' reveals deepen to the reference's 24px rise
+     (600–800ms register, once-only), with the reduced-motion guard.
+
+   Every color rides a token (dark-mode safe), every box uses logical
+   properties (RTL-safe), copy + CTA routes + section anchors stay
+   byte-identical.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ═══ [1] HERO — the art band dominates, the type decides ═══════════ */
+
+/* The R328 (H2) 56svh stage cap was a fold-arithmetic fix that shrank
+ * the drawing into a letterboxed sketch — the #1 reason the hero read
+ * "text page with a picture". 62svh keeps every fold symptom green
+ * (the content band + strip + the consent reserve still fit: at
+ * 1280×720 the stack is 446 + ~230 + 50 < 707) while the elevation
+ * regains the visual mass the reference gives its art band.
+ * Scoped ≥768: the ≤767 phone tier owns its own 8:5 stage contract,
+ * INCLUDING the :has(.hi-flow[data-any-open='on']) growth escape the
+ * R329 CI-red fix added — an unscoped cap here would re-clip the
+ * phone station rail exactly the way that fix removed. */
+@media (min-width: 768px) {
+  .fo-hero-art .bp-stage {
+    max-block-size: 62svh;
+  }
+}
+
+/* The ink carries the section — the non-scaling hairline strokes read
+ * faint from 1 metre at the restored band size. The weights ride the
+ * drawing gear: structure 2.4, primary structure 3.2, furniture hair
+ * stays 1 but darkens toward full ink. (Higher specificity than
+ * landing.css's own .fo-hero-art .bp-svg … block — no !important.) */
+.fo-hero .fo-hero-art .bp-svg .bp-ink,
+.fo-hero .fo-hero-art .bp-svg .bp-ink-fill {
+  stroke-width: 2.4;
+}
+.fo-hero .fo-hero-art .bp-svg .bp-ink-2 {
+  stroke-width: 3.2;
+}
+.fo-hero .fo-hero-art .bp-svg .bp-hair,
+.fo-hero .fo-hero-art .bp-svg .bp-gridline {
+  stroke-opacity: 0.92;
+}
+.fo-hero .fo-hero-art .bp-svg .bp-signal {
+  stroke-width: 2.4;
+}
+
+/* The content band — the measured 16.01rem strip: the title cell
+ * widens a step (the decisive H1 needs the measure) and the seam
+ * hairline stays the ONLY separator. Scoped ≥992 — the ≤991 tiers
+ * re-pin the band to their own 1fr/1fr and stacked forms. */
+@media (min-width: 992px) {
+  .fo-hero-content {
+    grid-template-columns: minmax(0, 104fr) minmax(0, 67fr);
+  }
+}
+
+/* the cell air re-pins ≥768 (the ≤767 phone block owns 1.6/1.2+1.8). */
+@media (min-width: 768px) {
+  .fo-hero-title-cell {
+    padding-block: 2.8rem;
+    padding-inline: 3.2rem 2.4rem;
+  }
+}
+
+/* The display seat — the R322 --fs-d1 rung (46.7px @1440) lifted to
+ * the mission's decisive ladder: clamp(44px → 62px) at lh 1.05. The
+ * 3.9:1 ratio against the 15px lead (and ~4.8:1 against the 13px
+ * mono labels) is the size contrast the reference reads at a glance.
+ * Weight stays 600 (the display canon), tracking stays 0 (Arabic
+ * joins), the two unvocalised lines hold. Scoped ≥992 (both measured
+ * lines hold the widened cell there); phones/tablets keep the
+ * band-independent D1 rung — Heron's own measured phone H1 (31.76px
+ * @390). */
+@media (min-width: 992px) {
+  .fo-hero .fo-hero-title {
+    font-size: clamp(44px, 4.3vw, 62px);
+    line-height: 1.05;
+  }
+}
+
+/* The register CTA — the band's single orange accent, given the
+ * reference's button mass (its hero CTA is the biggest block in the
+ * strip). */
+.fo-hero-actions .fo-hero-cta {
+  min-block-size: 4.6rem;
+  padding-inline: var(--space-2xl);
+  font-size: var(--fs-body-lg);
+}
+
+/* The work strip — the reference's home-hero-work voice: a 13px mono
+ * register row with ghost indexes (the strip had a SECOND orange
+ * accent in its [NN] chips — the CTA now owns the section's one
+ * signal). The tracking rides the LATIN mono chips only — Arabic
+ * items keep zero tracking (the cursive-join canon). */
+.fo-hero-work-track {
+  padding-block: 1.1rem;
+}
+.fo-hero-work-item {
+  font-size: var(--fs-xxs);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.fo-hero-work-item .fo-mono {
+  color: var(--text-faint);
+  letter-spacing: 0.12em;
+}
+
+/* ═══ [2] STATEMENT — the cells ARE the band; the square art rules ══ */
+
+/* Heron's home-intro has NO section padding — the 6+6 cells run
+ * edge-to-edge between the hero's closing strip and the pains' top
+ * rule (the r320 docH ratchet re-lands within its ±1.5% band: the
+ * removed padding returns as the square art cell's height below). */
+.st-section {
+  padding-block: 0;
+}
+
+/* The square art cell — the measured 85.64×86.73rem seat. The 59:50
+ * band-height compromise is retired: the square cell now DRIVES the
+ * band height (the drawing's own 59:50 ink centers on the square
+ * paper exactly like the reference's contained 1766×1766 render),
+ * and the ink thickens one step so the massing study carries the
+ * half from 1 metre. */
+.st-section .st-art-cell .st-art-svg {
+  aspect-ratio: 1 / 1;
+}
+.st-section .st-art-svg .bp-ink {
+  stroke-width: 3;
+}
+.st-section .st-art-svg .bp-ink-2 {
+  stroke-width: 4;
+}
+
+/* The statement title — the scrub manifesto lifts from the 33px
+ * statement seat to the 44px display rung (the reference sizes the
+ * intro statement a rung under its section H2s — this IS that H2
+ * scale for our band), keeping lh 1.1 headroom for the scrub spans. */
+.st-body-col .st-title {
+  font-size: clamp(26px, 3.05vw, 44px);
+}
+
+/* The partner strip — the label row tightens to the mono register
+ * (the desc stays the honest disclosure at its own rung). */
+.st-partner-label {
+  letter-spacing: 0.14em;
+}
+.st-partner .fo-ticker-item {
+  font-size: var(--fs-sm);
+}
+
+/* ═══ [3] PAINS — the ruled table: shared hairlines, open columns ═══ */
+
+/* Heron's home-problem is NOT a gapped card row — it is four open
+ * columns separated by the page's hairline grammar, each with its own
+ * 1px top rule. The 3rem gutters die; the hairlines take their place.
+ * ≥768 only (≤767 stays the snap carousel with the dot rail). */
+@media (min-width: 768px) {
+  .pm-cols {
+    gap: 0;
+  }
+
+  .pm-col {
+    padding-inline: var(--space-2xl);
+    padding-block-start: var(--space-xl);
+    padding-block-end: var(--space-2xl);
+    border-inline-start: 1px solid var(--rule);
+    border-block-start: 1px solid var(--rule);
+  }
+
+  .pm-col:first-child {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+}
+
+/* the 2×2 tablet wrap: the row's odd cells sit at the reading-start
+ * edge — their inline-start rule would face the page margin. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .pm-cols .pm-col:nth-child(odd) {
+    border-inline-start: 0;
+    padding-inline-start: 0;
+  }
+}
+
+/* The meta row — the keyword sits in the label voice; the reference's
+ * red dot is opacity-0 until reveal/hover (it lands with the
+ * column's own .in-view — the same one-shot belt the column rides). */
+.pm-keyword {
+  letter-spacing: 0.12em;
+}
+.pm-dot {
+  opacity: 0;
+  transition: opacity var(--t-base) var(--ease);
+}
+.pm-col.in-view .pm-dot,
+.pm-col:is(:hover, :focus-within) .pm-dot {
+  opacity: 1;
+}
+
+/* The art zone breathes one step taller so the 20rem drawing holds
+ * its zone the way the reference's 20×20rem sits in 36.01rem.
+ * Scoped ≥992 — the 768–991 and ≤767 tiers re-pin the zone to 0
+ * (their own slide/cell anatomy owns the air there). */
+@media (min-width: 992px) {
+  .pm-section .pm-artzone {
+    min-block-size: 26rem;
+  }
+}
+
+/* ONE orange accent per section: the H2's em keeps the emphasis, the
+ * section's signal stays with the meta dots + the honest answers. */
+.pm-section .pm-title em {
+  color: inherit;
+}
+
+/* The drawing's pop — the reference's signature reveal (item-img
+ * scale+autoAlpha, expo-out): the drawing arrives at 0.9 scale under
+ * its column's own reveal, riding the same belt/tokens (RM: the
+ * tokens collapse to 0ms and the static drawing stands). */
+.pm-col .pm-art {
+  opacity: 0;
+  transform: scale(0.9);
+  transition:
+    opacity var(--t-slower) var(--ease-out),
+    transform var(--t-slower) var(--ease-out);
+}
+.pm-col.in-view .pm-art {
+  opacity: 1;
+  transform: scale(1);
+}
+.pm-cols .pm-col:nth-child(2).in-view .pm-art { transition-delay: 80ms; }
+.pm-cols .pm-col:nth-child(3).in-view .pm-art { transition-delay: 160ms; }
+.pm-cols .pm-col:nth-child(4).in-view .pm-art { transition-delay: 240ms; }
+
+/* ═══ [4] MOTION — the shared belt, deepened for these three bands ══ */
+
+/* The RevealCssClass/.reveal-up engine stays the ONE reveal system
+ * (shared observer, fling-hardened, once-only). These sections'
+ * reveals rise the reference's full yPercent feel — 24px instead of
+ * the global 14px — on the same token register (--t-slower,
+ * --ease-out; the delays stay the existing reveal-d-* ladder). */
+.fo-hero .reveal-up,
+.st-section .reveal-up,
+.pm-section .reveal-up {
+  transform: translateY(24px);
+}
+
+/* the RM belt (landing.css neutralises .reveal-up globally; this
+ * deeper seat must die with it). */
+@media (prefers-reduced-motion: reduce) {
+  .fo-hero .reveal-up,
+  .st-section .reveal-up,
+  .pm-section .reveal-up {
+    transform: none;
+  }
+  .pm-col .pm-art {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

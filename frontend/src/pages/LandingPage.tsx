@@ -57,6 +57,12 @@ import '../styles/r314-chrome.css';
 // (landing-funnel 5+5, r168b, r170d, r177, r188, r306 — see the tests
 // pinned beside each surface).
 import '../styles/landing.css';
+// r330-home.css — R330 (A-Web-Home) — the homepage's Heron-composition
+// pass (hero/statement/pains: dominant ink bands, decisive display
+// scale, the ruled-table pains grid, deepened reveals). Loaded AFTER
+// landing.css so its namespaced rules win by cascade order — the ONLY
+// stylesheet this round may add (file-ownership contract).
+import '../styles/r330-home.css';
 
 /**
  * Landing — «لوحة مدارك» (r306 sheet → R313 Heron structure).
