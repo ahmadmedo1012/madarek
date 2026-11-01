@@ -5598,12 +5598,19 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
 /* the plan box — ONE box for the six progressive layers, the two
    statement plaques and the counter rows (Heron's home-map-main-inner
-   seat: everything rides the one-viewport entrance descent together). */
+   seat: everything rides the one-viewport entrance descent together).
+   R328 (H4): the box is a COLUMN — the statement band (order −1,
+   above the drawing ≥992) and the plan stack in flow; the plaques
+   never touch the ink again. */
 .jt-window {
   position: relative;
   inline-size: 100%;
   max-inline-size: min(100%, calc((100dvh - 32px) * 1.5789));
   margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  display: flex;
+  flex-direction: column;
   /* the will-change budget (perf-baseline §7): the drifting window +
    * the ≤10 layer roots + the two plaques — the whole scroll story is
    * a stable compositor set; nothing else on the sheet promotes. */
@@ -5891,73 +5898,52 @@ html[data-theme='dark'] body.mdrk-grain::before {
   opacity: 1;
 }
 
-/* ── the two statement plaques — Heron's home-intel cards ────────────
-   ONE statement per state, over the SETTLED paper (the V2 kill: no
-   duplicate headlines, no orphan paragraph — the plan's base layer
-   stands around them from frame one). Heron's in/out recipe, driven
-   by direct opacity+transform+visibility writes (autoAlpha parity:
-   the faded plaque leaves the a11y tree): fade + 24px rise in ·
-   fade + −2.5px rise + 4% shrink out. The D1 rung at w600 — Heron's
-   5.6rem w700 is NOT transplanted (the brief caps display at 600).
-   R322 3-b-fix (review-c3 R3#1): the ink is PINNED — the plaques sit
-   ON the plan's paper artifact (pinned #F6F6EE in BOTH themes), so
-   theme --text would render near-white-on-paper (1.02:1) in dark. */
+/* ── the two statement plaques — R328 (H4): THE STATEMENT SEAT ────
+   The plaques LEFT the plan's surface (the measured defect: the
+   titles crossed the wall lines mid-fade — text with no ground
+   striking black ink). They now ride their own hairline-closed band
+   INSIDE the window: ABOVE the drawing ≥992 (order −1 — a caption
+   strip on the sheet's own paper), a PAPER CARD under the drawing
+   ≤991 (the brief's phone seat — the ≤991 block below). One grid
+   cell: the two statements crossfade in the SAME seat (the band's
+   height is constant through the story — zero layout motion).
+   Heron's in/out recipe is kept: fade + 24px rise in · fade +
+   −2.5px rise + 4% shrink out (direct writes, cached). */
+.jt-cards {
+  order: -1;                      /* the caption strip sits ABOVE the drawing */
+  display: grid;
+  padding-block: var(--sp-2) var(--sp-4);
+  margin-block-end: var(--sp-4);
+  border-block-end: 1px solid var(--rule);
+  min-inline-size: 0;
+}
+
 .jt-card {
-  position: absolute;
-  inset: 0;
+  grid-area: 1 / 1;
   display: grid;
   place-items: center;
   margin: 0;
-  padding-inline: var(--sp-6);
+  padding-inline: var(--sp-2);
   text-align: center;
   font-family: var(--font-display);
   font-size: var(--fs-d1);
   font-weight: 600;
   line-height: 1.1;
   text-wrap: balance;
-  color: #282828; /* color-gate: allow — the pinned ink of the plan's paper artifact (both themes: the sheet is a pinned light drawing, the plaque rides ON it) */
+  color: var(--text);           /* on the SHEET now, not the pinned artifact — theme-aware */
   pointer-events: none;
-  z-index: 3;
   opacity: 0;
   visibility: hidden;
   will-change: opacity, transform;
 }
 
-/* R325 (Y1) — the plate is UNBOXED: no border, no solid paper slab,
- * no box-shadow halo (the old ghost box — a full-width hairline rect
- * with a hard 16px paper spread — was the owner's «visible box», and
- * its full-width box is what clipped the wrapped headline against the
- * window edge on phones). The clear zone is now a FEATHERED paper
- * mask behind the glyphs only: a ::before paper layer (the plan
- * artifact's pinned #F6F6EE, both themes) dissolved by two crossing
- * mask gradients — soft on every edge (alpha reaches 0 at the box
- * bounds), solid over the glyph zone (the text keeps its ≥16px clear
- * zone in every direction), never a readable rectangle. The plate
- * shrinks to its content (max-inline-size) and carries
- * overflow-wrap so a narrow viewport can never push a line past the
- * measured gutters. */
+/* the plate — the glyphs' own box. The R325 feathered paper mask
+   RETIRES (the plaque no longer rides over ink — there is nothing
+   to mask out); what stays is the wrap guard. */
 .jt-card-plate {
-  position: relative;
   display: inline-block;
   max-inline-size: 100%;
   overflow-wrap: break-word;
-  padding: var(--sp-4) var(--sp-5);
-}
-
-.jt-card-plate::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: #F6F6EE; /* color-gate: allow — the pinned paper of the plan artifact (both themes) */
-  /* the mask gradients carry ALPHA only (the pigment is the background
-   * above) — the #000 stops are the opaque mask shape, not a color. */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%), /* color-gate: allow — mask alpha shape, not a pigment */
-    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%); /* color-gate: allow — mask alpha shape, not a pigment */
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%), /* color-gate: allow — mask alpha shape, not a pigment */
-    linear-gradient(180deg, transparent 0%, #000 22%, #000 78%, transparent 100%); /* color-gate: allow — mask alpha shape, not a pigment */
-  mask-composite: intersect;
 }
 
 /* ── the INTRODUCTION card — Heron's home-map-intro, measured ───────
@@ -6012,13 +5998,15 @@ html[data-theme='dark'] body.mdrk-grain::before {
    (the r318 §A2 ruling, re-verified for the paper card). */
 .jt-intro-head {
   margin: 0;
-  padding: var(--sp-2) var(--sp-3);
-  background: var(--text);
-  color: var(--bg);
-  font-family: var(--font-display);
-  font-size: var(--fs-d3);
-  font-weight: 500;
-  line-height: 1.15;
+  padding: var(--sp-1) var(--sp-2) 0;
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-align: start;
   text-wrap: balance;
 }
 
@@ -6394,6 +6382,19 @@ html[data-theme='dark'] body.mdrk-grain::before {
 
   .jt-window .bp-svg {
     aspect-ratio: 1200 / 760;
+    /* R328 (H4) — the stack-aware cap: the sticky window now also
+       carries the statement card + the intro below the drawing, so
+       the plan box caps at (viewport − header − the two cards' real
+       seat ≈ 25rem). On tall phones the natural aspect still rules
+       (488px @390×844 vs the 539px seat — no cap, the drawing fills
+       more of the fold); on short viewports (320×640: natural 397
+       vs 335) the box scales down portrait instead of pushing the
+       cards past the fold. */
+    block-size: auto;
+    max-block-size: calc(100dvh - 57px - 25rem);
+    inline-size: auto;
+    max-inline-size: 100%;
+    margin-inline: auto;
   }
 
   /* the INTRODUCTION card in flow below the plan: full-width, the
@@ -6410,15 +6411,24 @@ html[data-theme='dark'] body.mdrk-grain::before {
     flex: none;
   }
 
-  /* the two statement plaques — the D1 rung's phone floor (31.74px,
-   * Heron's own 3.2rem→4rem phone card measure, 2 lines balanced).
-   * R325 (Y1): the card's own gutter bumps to the sp-4 rung — with the
-   * column's 8px inset the plate box sits ≥24px inside the viewport
-   * and the glyphs ≥40px (the measured ≥16px safe-area gutter), and
-   * the plate's max-inline-size + overflow-wrap (above) keep any wrap
-   * inside that box — no line can reach the window edge. */
+  /* R328 (H4) — the plaques' PHONE SEAT: the statement card rides
+   * BELOW the drawing (order 0 — the desktop caption strip's −1
+   * retires here), as the brief's own paper card: 1px hairline, the
+   * sheet's paper ground, the D1 phone floor (31.74px, Heron's own
+   * 3.2rem→4rem measure, 2 lines balanced). With the column's 8px
+   * inset the card sits ≥24px inside the viewport — no line can
+   * reach the window edge (the plate's wrap guard holds). */
+  .jt-cards {
+    order: 0;
+    border-block-end: 0;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    padding: var(--sp-3) var(--sp-4);
+    margin-block: var(--sp-4) 0;
+  }
+
   .jt-card {
-    padding-inline: var(--sp-4);
+    padding-inline: var(--sp-2);
   }
 
   /* R322 3-b-fix2 (review-c3 R1-N1): the phone's statement-era orange

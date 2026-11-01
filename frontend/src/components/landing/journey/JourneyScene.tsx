@@ -540,9 +540,15 @@ export function JourneyScene() {
         }
       }
 
-      /* 4 · the statement plaques (fade + rise + the 4% shrink out). */
-      writeCard(card1Ref.current, t, 0, 0.5, 1, 1.5);
-      writeCard(card2Ref.current, t, 1.5, 2, 2.5, 3);
+      /* 4 · the statement plaques (fade + rise + the 4% shrink out).
+       * R328 (H4) — THE TWO-STEP FADE: a 0.2s DEAD GAP now separates
+       * plaque 1's out (1.0–1.4) from plaque 2's in (1.6–2.0) — the
+       * old touching windows (out 1.0–1.5 · in 1.5–2.0) guaranteed
+       * mid-frames where BOTH statements read semi-visible (the
+       * «نص مزدوج شفاف» defect). The paper is deliberately statement-
+       * empty for those frames — one voice at a time, or none. */
+      writeCard(card1Ref.current, t, 0, 0.5, 1.0, 1.4);
+      writeCard(card2Ref.current, t, 1.6, 2.0, 2.5, 3.0);
 
       /* 5 · the discrete machine — data-stage (the 6 semantic states),
        * data-finding (the rotation + the counter chips), data-wash (the
@@ -659,22 +665,22 @@ export function JourneyScene() {
                 ))}
               </div>
 
-              {/* the two statement plaques — Heron's intel cards as
-                  content-sized title blocks ON the paper (the base
-                  layer stays visible around them — the V2 kill).
-                  R325 (Y1): the headline is UNBOXED — the old paper
-                  plate (solid chip + ink-alpha hairline + hard 16px
-                  halo, a visible ghost box that clipped the wrapped
-                  phone headline) retires for a FEATHERED paper mask
-                  behind the glyphs only (landing.css: a masked ::before,
-                  soft on every edge) — the words stay readable over the
-                  ghost line-work, no readable rectangle anywhere. */}
-              <p className="jt-card jt-card1" ref={card1Ref}>
-                <span className="jt-card-plate">{STATEMENT_1_AR}</span>
-              </p>
-              <p className="jt-card jt-card2" ref={card2Ref}>
-                <span className="jt-card-plate">{STATEMENT_2_AR}</span>
-              </p>
+              {/* R328 (H4) — THE STATEMENT SEAT: the two plaques left
+                  the plan's surface (the titles crossed the wall lines
+                  mid-fade — the «نص يتقاطع مع الرسم» defect) for their
+                  own hairline-closed band INSIDE the window: above the
+                  drawing ≥992 (a caption strip, order −1), a paper
+                  card UNDER the drawing ≤991 (the brief's own phone
+                  seat). One grid cell — the two statements crossfade
+                  in the same seat, never stacked side by side. */}
+              <div className="jt-cards">
+                <p className="jt-card jt-card1" ref={card1Ref}>
+                  <span className="jt-card-plate">{STATEMENT_1_AR}</span>
+                </p>
+                <p className="jt-card jt-card2" ref={card2Ref}>
+                  <span className="jt-card-plate">{STATEMENT_2_AR}</span>
+                </p>
+              </div>
             </div>
 
             {/* the INTRODUCTION card — Heron's home-map-intro: paper
