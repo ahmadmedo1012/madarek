@@ -32,8 +32,8 @@
         "50": "#282828",
         "100": "#353535",
         "150": "#3D3D3D",
-        "200": "#4A4A48",
-        "300": "#5C5C5A",
+        "200": "#6F6F6B",
+        "300": "#85857F",
         "400": "#8A8A86",
         "500": "#B4B4B0",
         "700": "#C9C9C5",
@@ -44,41 +44,113 @@
     "triad": {
       "$doc": "The 9 section families (r305 re-key, engine-verified contrasts): each a soft tinted ground (band fill), a saturated ink for fills/UI accents, a deep shade for text. Badge-rarity pins (yellow/grey/peach deep-vs-bg ≥4.5 both themes) and icon-well pins (light -deep on -bg ≥3:1) verified: mint 7.31 · yellow 7.85 · rose 7.22 · sky 7.74 · peach 6.29 · grey 12.55 · sand 7.62 · lavender 9.24 · copper 6.10. Dark = deep ember-tinted grounds + luminous inks (family ink-on-bg ≥6.5; the ember ink 4.73 AA-large/UI by design).",
       "peach": {
-        "light": { "bg": "#FCE5DE", "ink": "#F15534", "deep": "#9C2B0F" },
-        "dark": { "bg": "#43241C", "ink": "#FF8E68", "deep": "#FFC5AE" }
+        "light": {
+          "bg": "#FCE5DE",
+          "ink": "#F15534",
+          "deep": "#9C2B0F"
+        },
+        "dark": {
+          "bg": "#43241C",
+          "ink": "#FF8E68",
+          "deep": "#FFC5AE"
+        }
       },
       "mint": {
-        "light": { "bg": "#E3EBE1", "ink": "#3F8F5C", "deep": "#1B5430" },
-        "dark": { "bg": "#24372B", "ink": "#84D0A0", "deep": "#C4EBD2" }
+        "light": {
+          "bg": "#E3EBE1",
+          "ink": "#3F8F5C",
+          "deep": "#1B5430"
+        },
+        "dark": {
+          "bg": "#24372B",
+          "ink": "#84D0A0",
+          "deep": "#C4EBD2"
+        }
       },
       "lavender": {
-        "light": { "bg": "#ECE6FA", "ink": "#8A6FE0", "deep": "#3F2D7A" },
-        "dark": { "bg": "#2D2545", "ink": "#B7A0F4", "deep": "#DCD2F9" }
+        "light": {
+          "bg": "#ECE6FA",
+          "ink": "#8A6FE0",
+          "deep": "#3F2D7A"
+        },
+        "dark": {
+          "bg": "#2D2545",
+          "ink": "#B7A0F4",
+          "deep": "#DCD2F9"
+        }
       },
       "sky": {
-        "light": { "bg": "#E1E9F0", "ink": "#4A7FA8", "deep": "#1F4968" },
-        "dark": { "bg": "#23313F", "ink": "#93C2E9", "deep": "#C9E2F5" }
+        "light": {
+          "bg": "#E1E9F0",
+          "ink": "#4A7FA8",
+          "deep": "#1F4968"
+        },
+        "dark": {
+          "bg": "#23313F",
+          "ink": "#93C2E9",
+          "deep": "#C9E2F5"
+        }
       },
       "yellow": {
-        "light": { "bg": "#F5EBD6", "ink": "#A8750F", "deep": "#5E420C" },
-        "dark": { "bg": "#3B331F", "ink": "#EFC87B", "deep": "#F8E3B4" }
+        "light": {
+          "bg": "#F5EBD6",
+          "ink": "#A8750F",
+          "deep": "#5E420C"
+        },
+        "dark": {
+          "bg": "#3B331F",
+          "ink": "#EFC87B",
+          "deep": "#F8E3B4"
+        }
       },
       "rose": {
-        "light": { "bg": "#F9E3DC", "ink": "#F15534", "deep": "#8C230A" },
-        "dark": { "bg": "#43241C", "ink": "#FF8E68", "deep": "#FFC5AE" }
+        "light": {
+          "bg": "#F9E3DC",
+          "ink": "#F15534",
+          "deep": "#8C230A"
+        },
+        "dark": {
+          "bg": "#43241C",
+          "ink": "#FF8E68",
+          "deep": "#FFC5AE"
+        }
       },
       "sand": {
-        "light": { "bg": "#F1ECDF", "ink": "#B59868", "deep": "#5A4623" },
-        "dark": { "bg": "#2D2820", "ink": "#D9C18C", "deep": "#EFE2C5" }
+        "light": {
+          "bg": "#F1ECDF",
+          "ink": "#B59868",
+          "deep": "#5A4623"
+        },
+        "dark": {
+          "bg": "#2D2820",
+          "ink": "#D9C18C",
+          "deep": "#EFE2C5"
+        }
       },
       "grey": {
-        "light": { "bg": "#ECEDEB", "ink": "#626260", "deep": "#282828" },
-        "dark": { "bg": "#2A2A28", "ink": "#B7B2A6", "deep": "#DDD8CB" }
+        "light": {
+          "bg": "#ECEDEB",
+          "ink": "#626260",
+          "deep": "#282828"
+        },
+        "dark": {
+          "bg": "#2A2A28",
+          "ink": "#B7B2A6",
+          "deep": "#DDD8CB"
+        }
       },
       "copper": {
         "$doc": "The signal family — the ONE vivid orange #FA3600 (the reference's --content--brand). Raw orange is a LARGE-TEXT/UI tone on light (3.53:1); text routes through accentInk #C72E00 (AA). Dark ink is the luminous ember #FF5A1F (4.73:1 AA-large/UI).",
-        "light": { "bg": "#FCE3D9", "ink": "#FA3600", "deep": "#A32400" },
-        "dark": { "bg": "#432015", "ink": "#FF5A1F", "deep": "#FFC5AE" }
+        "light": {
+          "bg": "#FCE3D9",
+          "ink": "#FA3600",
+          "deep": "#A32400"
+        },
+        "dark": {
+          "bg": "#432015",
+          "ink": "#FF5A1F",
+          "deep": "#FFC5AE"
+        }
       }
     },
     "semantic": {
@@ -172,12 +244,26 @@
     },
     "mobile": {
       "$doc": "Mobile-only palette seats (no web var counterpart): the hover step and the sheet-overlay ground, expressed as refs so they track the ramps.",
-      "surfaceHover": { "light": "neutral.100", "dark": "neutral.100" },
-      "overlay": { "light": "neutral.0", "dark": "neutral.0" }
+      "surfaceHover": {
+        "light": "neutral.100",
+        "dark": "neutral.100"
+      },
+      "overlay": {
+        "light": "neutral.0",
+        "dark": "neutral.0"
+      }
     },
     "tones": {
       "$doc": "The status-tone families (mobile statusTones / notification & attendance kinds), in display order.",
-      "families": ["mint", "yellow", "rose", "sky", "lavender", "copper", "grey"]
+      "families": [
+        "mint",
+        "yellow",
+        "rose",
+        "sky",
+        "lavender",
+        "copper",
+        "grey"
+      ]
     },
     "tiers": {
       "$doc": "Gamification tier orbs (mobile).",
@@ -259,7 +345,12 @@
     "cinema": 900,
     "sheetExit": 835,
     "guestReveal": 700,
-    "ease": [0.23, 1, 0.32, 1]
+    "ease": [
+      0.23,
+      1,
+      0.32,
+      1
+    ]
   },
   "typography": {
     "$doc": "The mobile px ladder (Arabic 13px readability floor; hierarchy via weight + size, no tracking). The WEB type voice is the fluid-rem ladder + font stacks hand-written in tokens.css (R313) — platform-specific by design, not shared here.",

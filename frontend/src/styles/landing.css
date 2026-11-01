@@ -1488,9 +1488,12 @@ html[data-theme='dark'] body.mdrk-grain::before {
    .st-copy / .st-lines trio (statement 6.1: orphan text rows on no
    grid) retires with the transplant. Every spacing value rides the
    --space-* scale. ═══ */
+/* R328 (H7 · panel) — the doubled fold rule dies: the hero's work
+   strip already closes the band with its own border-block-end (the
+   measured pair: y887 + y892 on dark read as one accidental heavy
+   rule). The statement opens on the hero's closing hairline. */
 .st-section {
   padding-block: var(--space-8xl);
-  border-block-start: 1px solid var(--rule-strong);
 }
 
 .st-grid {
@@ -3275,7 +3278,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
   }
 
   html[data-theme='dark'] .fo-text-link:hover {
-    color: var(--accent);
+    /* R328 (H7 · panel D2) — raw --accent as text measured 3.93:1 on
+       the night sheet; the dark pair's own --accent-hover keeps the
+       transient state ≥4.5:1. */
+    color: var(--accent-hover);
     border-block-end-color: var(--accent);
   }
 
@@ -5302,12 +5308,14 @@ html[data-theme='dark'] body.mdrk-grain::before {
 }
 
 /* the counter — ON the band at the sheet's leading edge (the band
-   passes behind the glyphs, exactly like the reference's txt) */
+   passes behind the glyphs, exactly like the reference's txt).
+   R328 (H7 · panel D2): the TEXT-safe accent rung (raw --accent
+   measured 3.93:1 on dark — under AA for mono-sm text). */
 .sl-pct {
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: 0;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: var(--fs-mono-sm);
   line-height: 13px;
   letter-spacing: 0.04em;

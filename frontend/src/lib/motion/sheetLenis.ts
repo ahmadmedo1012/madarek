@@ -244,6 +244,16 @@ export function initGuestLenis(): boolean {
 
   lenis = new Lenis({ ...HERON_LENIS_PARAMS });
   document.documentElement.setAttribute('data-lenis-on', '');
+  /* R328 (H7) — the e2e/screenshot introspection seam: a read-only
+   * handle so probes can seat the scroll EXACTLY (lenis.scrollTo
+   * immediate) instead of racing the engine with native window.scrollTo
+   * (measured: a native instant jump to 0 snaps back to ~1800px within
+   * 700ms while the engine's target still holds the walk's last seat —
+   * every offset-shot a probe takes that way is mid-animation garbage).
+   * Same family as window.MadarekConsent: a test seam, never a UI
+   * dependency. No engine (RM/SSR) → the seat stays undefined and
+   * probes fall back to the native jump. */
+  (window as { __mdrkLenis?: Lenis }).__mdrkLenis = lenis;
   watchScrollLock();
   offLenisScroll = lenis.on('scroll', onLenisScroll) || null;
   window.addEventListener('wheel', onInput, { passive: true, capture: true });
