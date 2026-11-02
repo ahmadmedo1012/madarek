@@ -1859,17 +1859,21 @@
     .thumb-card .thumb-card-go { min-block-size: 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    /* same-or-higher specificity + !important — the entrances above are
-       !important, so the kill must be too (guardrail #6 belt-and-braces
-       over base.css's global 0.01ms safety belt, which already wins the
-       layer race for !important rules) */
+    /* R331 A-CSS pass 1 — bang retired. The comment below described a
+       war that ended at r151f: every entrance these selectors fight
+       (courses-card-in 1311/1618, mooc-cta-pulse 1655, webinar-live-
+       pulse 1701, lecture-next-pulse 320) lost its own !important then,
+       so a same-layer, later-source, equal-specificity kill wins
+       without one. base.css's canonical belt still wins the cross-layer
+       !important race for durations/delays — animation-name:none here
+       is what actually freezes the pieces. */
     .courses-grid > .thumb-card,
     .courses-grid[data-stagger] > .thumb-card,
     .mooc-grid > .thumb-card,
     .exam-grade,
     .lecture-nav-next.pulse,
     .mooc-cta.confirmed,
-    .webinar-live-dot { animation: none !important; }
+    .webinar-live-dot { animation: none; }
     .webinar-row { transition: none; }
     /* The agenda chevron nudge is a hover garnish, not information. */
     

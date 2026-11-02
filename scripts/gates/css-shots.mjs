@@ -81,6 +81,9 @@ const ROUTES = (opt('routes', [
 ].join(','))).split(',').map((s) => s.trim()).filter(Boolean);
 const VIEWPORTS = (opt('viewports', '390,768,1440')).split(',').map((s) => Number(s.trim())).filter(Boolean);
 const THEMES = (opt('themes', 'light')).split(',').map((s) => s.trim()).filter(Boolean);
+/** --rm — emulate prefers-reduced-motion: reduce (proves the RM belts'
+ * cascade after touching any !important in that family). */
+const RM = flag('rm');
 const SETTLE_MS = Number(opt('settle', '2500'));
 const FULLPAGE = flag('fullpage');
 const FORCE = flag('force');
@@ -118,6 +121,7 @@ try {
             baseURL: BASE,
             viewport: { width: vp, height: 844 },
             colorScheme: theme,
+            reducedMotion: RM ? 'reduce' : 'no-preference',
             locale: 'ar',
             deviceScaleFactor: 1,
           });
