@@ -1,0 +1,67 @@
+name: Size gate
+
+# R331 repo hygiene pass 1 — keeps the working tree lean on EVERY push
+# and PR, independently of the nine CI jobs (lint, typecheck, build,
+# unit x2, db-integration, e2e, ios-webkit, design-gates, surface-drift):
+#
+#   RULE 1  no tracked file >500KB outside .size-gate-allowlist
+#   RULE 2  docs/ tracked total ≤30MB
+#   RULE 3  a push/PR adds ≤5MB to docs/
+#
+# The gate is bash + git only (scripts/gates/size-gate.sh) — no install
+# step, runs in seconds. Hard gate: no continue-on-error anywhere.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  size-gate:
+    name: Size gate (file ≤500KB · docs ≤30MB · push adds ≤5MB to docs)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      # Resolve the comparison base for RULE 3 (docs push budget):
+      #   · push           → github.event.before (the previous tip)
+      #   · pull_request   → the base branch tip (fetched shallowly;
+      #                      a plain two-tree diff is used, so no
+      #                      merge-base ancestry is required — for an
+      #                      old PR this counts base-branch work too,
+      #                      which errs on the strict side)
+      #   · new branch     → before is all-zeros → base empty → RULE 3
+      #                      skips with a notice (RULE 1/2 still gate)
+      - name: Resolve the RULE 3 comparison base
+        id: base
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          base=""
+          if [ "$EVENT" = "pull_request" ] && [ -n "$BASE_REF" ]; then
+            if git fetch --no-tags --depth=1 origin "refs/heads/$BASE_REF"; then
+              base="refs/remotes/origin/$BASE_REF"
+            fi
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            if git fetch --no-tags --depth=1 origin "$BEFORE"; then
+              base="$BEFORE"
+            fi
+          fi
+          if [ -n "$base" ] && ! git rev-parse --verify -q "$base" >/dev/null; then
+            base=""
+          fi
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+      - name: Run the size gate
+        env:
+          SIZE_GATE_BASE: ${{ steps.base.outputs.base }}
+        run: bash scripts/gates/size-gate.sh
