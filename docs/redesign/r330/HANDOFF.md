@@ -42,7 +42,10 @@
 | sha | الحالة | ملاحظة |
 |---|---|---|
 | `7eeb2102` | ❌→🔧 | Lint ✅ · Design ❌ (TYPE×2) · Mobile ❌ (TS seam) · Test ❌ (r312×2) — شُخّصت عبر API وأُصلحت |
-| (الإصلاح) | ⏳ | أُدفع مباشرة بعد هذا الجدول — يُحدَّث |
+| `3d6b5b96` | ❌→🔧 | Design ❌ (rename-ledger: «الإدارة» في بذرة العرض) · Mobile ❌ (لا عضو Animated في أنواع الحزمة v15.16.0) — أُعيد بناء المحرك rAF |
+| `aefcc179` | ❌→🔧 | Mobile ❌ (TS2304: alias re-export لا يربط اسماً محلياً) |
+| `4d3dff09` | ❌→🔧 | E2E ❌ (عقود r312 الثلاثة — نفس تغيّر الساعة)؛ ما عداها أخضر بما فيه EAS preview build ✅ |
+| `ed42e3fd` | ✅ **كل البوابات الخضراء** | Design ✅ · Typecheck ✅ · Test web ✅ · E2E web ✅ · E2E iOS ✅ · Surface drift ✅ · Lint ✅ (Mobile/EAS خضراء على 4d3dff09) |
 
 ## 6) غير مُثبَت — يحتاج جهازاً
 
