@@ -9,7 +9,7 @@
  * same 320×220 drafting sheet and draws itself in progressively
  * (strokeDash reveal) through usePlanDraw.
  */
-import type { Animated, StyleProp, ViewStyle } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 
 /** The drafting sheet every plan drawing is drafted on. */
 export const PLAN_VIEWBOX = "0 0 320 220" as const;
@@ -18,15 +18,15 @@ export const PLAN_VIEWBOX = "0 0 320 220" as const;
 export const PLAN_ASPECT = 320 / 220;
 
 /**
- * A value that may resolve through the Animated system: a plain number
- * (static drawing) or an interpolation (progressive draw).
+ * A resolved draw value: a plain number (the rAF engine in usePlanDraw
+ * resolves every frame — no Animated interpolation nodes).
  */
-export type PlanProgress = number | Animated.AnimatedInterpolation<number>;
+export type PlanProgress = number;
 
 /** stroke-dash props that reveal a drawable of a known path length. */
 export interface PlanDash {
   strokeDasharray: number;
-  strokeDashoffset: PlanProgress;
+  strokeDashoffset: number;
 }
 
 /** The handle usePlanDraw hands to each drawing. */
@@ -40,8 +40,7 @@ export interface PlanDrawHandle {
   seg: (a: number, b: number) => PlanProgress;
   /**
    * Dash props revealing a drawable of `len` across `phase`
-   * (defaults to the full draw). Cached per (phase, len) pair so
-   * repeated elements (window grids, desk grids) share one node.
+   * (defaults to the full draw).
    */
   dash: (len: number, phase?: PlanProgress) => PlanDash;
 }

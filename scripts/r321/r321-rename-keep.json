@@ -105,6 +105,11 @@
       "file": "CHANGELOG.md",
       "phrase": "",
       "reason": "the immutable release history — 30 occurrences across past rounds"
+    },
+    {
+      "file": "backend/prisma/seed-demo-r330.ts",
+      "phrase": "الإدارة",
+      "reason": "R330 demo content data (the documented «course topics» keep category): the academic subject «مبادئ الإدارة» — course name, its lectures/exams, and the teacher's bio — a field of study, never the المسجل العام role label"
     }
   ]
 }

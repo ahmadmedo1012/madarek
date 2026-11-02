@@ -5,59 +5,19 @@
  * with its 45° hatch, and the dimension chain. Stroke discipline is
  * 1–1.5 everywhere; ink opacity carries the hierarchy.
  */
-import type { FunctionComponent, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { View, type StyleProp, type ViewStyle } from "react-native";
-import { Animated as RNAnimated } from "react-native";
-import {
-  Animated as SvgAnimated,
-  Circle,
-  G,
-  Line,
-  Path,
-  Rect,
-  Svg,
-  Text as SvgText,
-} from "react-native-svg";
+import { Circle, G, Line, Path, Rect, Svg, Text as SvgText } from "react-native-svg";
 import { PLAN_ASPECT, PLAN_VIEWBOX, type PlanDrawHandle, type PlanProgress } from "./types";
 
-type Interp = RNAnimated.AnimatedInterpolation<number>;
-/** A value that may resolve through the Animated system. */
-type DrawValue = number | Interp;
-
 /**
- * react-native-svg's animated wrapper resolves DrawValue props at
- * runtime, but `createAnimatedComponent` collapses a class-element
- * type (Rect/G/… extend Shape<P>) to `IntrinsicAttributes & {}`,
- * which rejects every svg prop in JSX. So each animated element is
- * re-typed once, here, against the library's own exported props
- * widened by DrawValue — no `any`, one explicit seam.
+ * The draw reveal is a plain-number progress resolved per frame by the
+ * rAF engine in usePlanDraw — there is no Animated seam to hold
+ * (react-native-svg's published types expose no Animated member), so
+ * these re-export the library's own elements under their historical
+ * draw names; every `draw.*` value they receive is a plain number.
  */
-import type {
-  CircleProps,
-  GProps,
-  LineProps,
-  PathProps,
-  RectProps,
-} from "react-native-svg";
-
-/** The library's props with every value widened through Animated. */
-type Widen<P extends object> = { [K in keyof P]: P[K] | DrawValue };
-
-export const AnimRect = SvgAnimated.createAnimatedComponent(
-  Rect as never,
-) as unknown as FunctionComponent<Widen<RectProps>>;
-export const AnimLine = SvgAnimated.createAnimatedComponent(
-  Line as never,
-) as unknown as FunctionComponent<Widen<LineProps>>;
-export const AnimPath = SvgAnimated.createAnimatedComponent(
-  Path as never,
-) as unknown as FunctionComponent<Widen<PathProps>>;
-export const AnimCircle = SvgAnimated.createAnimatedComponent(
-  Circle as never,
-) as unknown as FunctionComponent<Widen<CircleProps>>;
-export const AnimG = SvgAnimated.createAnimatedComponent(
-  G as never,
-) as unknown as FunctionComponent<Widen<GProps>>;
+export { Rect as AnimRect, Line as AnimLine, Path as AnimPath, Circle as AnimCircle, G as AnimG };
 
 // ---------- geometry ----------
 /** Perimeter of an axis-aligned rectangle (its drawable stroke length). */
