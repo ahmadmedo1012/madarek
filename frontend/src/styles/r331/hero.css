@@ -1,0 +1,862 @@
+/* ════════════════════════════════════════════════════════════════════
+   r331/hero.css — R331 · A-Web-Hero — the landing hero's Heron-mechanics
+   rebuild (imported ONLY by components/landing/hero/Hero.tsx).
+
+   Source of record: docs/redesign/r331/heron-program.md (§2 rem + type
+   ladder, §4 hero recipe, §7 motion values) and heron-program.json
+   (`imagery.hero`, `durations`, `staggers`). The old hero rules this
+   file replaces were deleted from landing.css / r330-home.css (the
+   R330 file-ownership contract, inverted: this file owns the hero now).
+
+   THE MOTION REGISTER — GSAP values → CSS translations. The Madarek
+   stack carries NO GSAP (Lenis 1.1.5 on window + the shared
+   sheetConductor rAF clock + CSS transitions are the landing's whole
+   engine), so the reference's eases ride their canonical cubic-bezier
+   equivalents:
+     power2.out  → cubic-bezier(0.215, 0.61, 0.355, 1)   (mask lines)
+     power3.out  → cubic-bezier(0.165, 0.84, 0.44, 1)    (fades, rises)
+     expo.out    → cubic-bezier(0.19, 1, 0.22, 1)        (img cards)
+     none        → linear                                (hairline wipes)
+   Durations/staggers are the spec's own numbers: mask line 0.8s ·
+   stagger 0.02s · hairline wipe 1.2s · fade 1s · rise 1s / 3.2rem ·
+   deco fadeLoop 1.5s.
+
+   THE GATE — the whole timeline hangs on the landing root's
+   `.intro-draw → .intro-done` flip (R308's once-per-session entrance
+   gate; the loader's exit slit starts the choreography, and a skipped
+   intro renders the settled sheet with zero transitions). Reduced
+   motion: the RM belt at the file's tail collapses every hidden state
+   to the settled sheet (and the intro gate never plays under RM).
+
+   THE ROOT — the fluid rem formula (0.5787037037vw ≥992 · 1.1990407674vw
+   ≤991 · 2.5445292621vw ≤767) already lives in tokens.css R313 and is
+   REUSED untouched; every rem below rides it exactly like the reference.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── the motion register (scoped to the hero, token-clean) ────────── */
+.hro {
+  --hro-p2-out: cubic-bezier(0.215, 0.61, 0.355, 1); /* GSAP power2.out */
+  --hro-p3-out: cubic-bezier(0.165, 0.84, 0.44, 1);  /* GSAP power3.out */
+  --hro-expo-out: cubic-bezier(0.19, 1, 0.22, 1);    /* GSAP expo.out   */
+  --hro-line-dur: 0.8s;      /* mask-line per line        */
+  --hro-line-stagger: 0.02s; /* per-line stagger          */
+  --hro-hair-dur: 1.2s;      /* hairline wipe (linear)    */
+  --hro-fade-dur: 1s;        /* img/frame/deco fades      */
+  --hro-rise: 3.2rem;        /* block/work-card rise      */
+  --hro-rise-dur: 1s;        /* rise duration             */
+}
+
+/* ══ [1] THE BAND — grid rows [art 1fr | content auto | work auto],
+   the measured 100svh-class fold (887px @1440×900) + the consent
+   card's bottom-stack reserve (R328 H1 — unchanged contract). ═════ */
+.fo-hero.hro {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  min-block-size: calc(100svh - 13px); /* the measured reference band (887 = 900 − 13) */
+  align-content: stretch;
+  padding-block: 0;
+  padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* the card's measured pile + seam */
+}
+
+/* the grid floor (R328 H1/H3 — min-width:auto would inflate every
+   band past the viewport on the snap strip / aspect-ruled stage) */
+.hro-art,
+.hro-content,
+.hro-work {
+  min-inline-size: 0;
+}
+
+/* ══ [2] THE ART BAND — the drafting stage: 63px header+frame seat,
+   7px sheet-frame inset, transparent paper (the §0-A.1 kill holds). */
+.hro-art {
+  display: grid;
+  padding-block-start: 63px; /* 56px header + 7px frame chrome (the measured seat) */
+  padding-block-end: var(--sp-2);
+  padding-inline: 7px; /* the sheet frame's own 7px inset */
+  align-items: stretch;
+}
+
+/* the stage — ONE physical frame (R309) for the ink, the inspection
+   instrument and the chrome. The old static border is REPLACED by the
+   four wiping edges below (the reference's bg-border strips). */
+.hro-stage {
+  inline-size: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: transparent; /* the paper shows through, never a white box */
+  padding: 12px; /* the window's own 12px mat seat (drafting chrome) */
+  min-inline-size: 0;
+}
+
+/* the R330 verdict holds: the ruled box never exceeds 62svh ≥768, so
+   the ink stays ≈ 62% of the viewport and the content band + strip +
+   the consent reserve ALWAYS fit inside the fold. */
+@media (min-width: 768px) {
+  .hro-stage {
+    max-block-size: 62svh;
+  }
+}
+
+/* the ink — fills the frame's content width (the measured img-inner
+   grammar); height from the viewBox's own aspect, capped honest. */
+.hro-art .bp-svg {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: 100%;
+}
+
+/* the line-art weight rides the vector gear (R330: the ink carries the
+   section — non-scaling strokes stay crisp at every art scale). */
+.hro-art .bp-svg .bp-hair,
+.hro-art .bp-svg .bp-dash,
+.hro-art .bp-svg .bp-gridline,
+.hro-art .bp-svg .bp-hatch-line,
+.hro-art .bp-svg .bp-ink,
+.hro-art .bp-svg .bp-ink-fill,
+.hro-art .bp-svg .bp-signal,
+.hro-art .bp-svg .bp-dash-2,
+.hro-art .bp-svg .bp-fill {
+  vector-effect: non-scaling-stroke;
+}
+
+/* the ink weights (R330's measured gear: structure 2.4 · primary 3.2) */
+.hro .hro-art .bp-svg .bp-ink,
+.hro .hro-art .bp-svg .bp-ink-fill {
+  stroke-width: 2.4;
+}
+.hro .hro-art .bp-svg .bp-ink-2 {
+  stroke-width: 3.2;
+}
+.hro .hro-art .bp-svg .bp-hair,
+.hro .hro-art .bp-svg .bp-gridline {
+  stroke-opacity: 0.92;
+}
+.hro .hro-art .bp-svg .bp-signal {
+  stroke-width: 2.4;
+}
+.hro .hro-art .bp-svg .bp-fill {
+  fill: none;
+}
+
+/* the proximity-revealed dashed inner frame (R315 B1 · A.3) */
+.hro-stage::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px dashed var(--rule);
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease);
+  pointer-events: none;
+  z-index: 2;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hro-stage:is(:hover, :focus-within)::before {
+    opacity: 0.75;
+  }
+}
+
+/* ══ [3] THE FRAME — the reference's bg-border strips: 4 edges that
+   WIPE in (scaleX/scaleY 0→1 · 1.2s · linear), origin mirrored for RTL
+   (the reference wipes from top-left in LTR; we wipe from the reading
+   start — top right in RTL). 1px hairlines on the page's own frame
+   grammar (the reference's strips are ~7px bars — deviation kept: the
+   sheet's whole chrome language is 1px). */
+.hro-edge {
+  position: absolute;
+  background: var(--rule);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.hro-edge-t,
+.hro-edge-b {
+  inset-inline: 0;
+  block-size: 1px;
+}
+
+.hro-edge-s,
+.hro-edge-e {
+  inset-block: 0;
+  inline-size: 1px;
+}
+
+.hro-edge-t { inset-block-start: 0; transform-origin: 100% 0; }
+.hro-edge-b { inset-block-end: 0; transform-origin: 100% 100%; }
+.hro-edge-s { inset-inline-start: 0; transform-origin: 100% 0; }
+.hro-edge-e { inset-inline-end: 0; transform-origin: 0 0; }
+
+/* the wipe — linear, 1.2s, from the intro gate */
+.landing.intro-draw .hro-edge-t,
+.landing.intro-draw .hro-edge-b {
+  transform: scaleX(0);
+}
+
+.landing.intro-draw .hro-edge-s,
+.landing.intro-draw .hro-edge-e {
+  transform: scaleY(0);
+}
+
+.landing.intro-done .hro-edge-t,
+.landing.intro-done .hro-edge-b {
+  transform: scaleX(1);
+  transition: transform var(--hro-hair-dur) linear;
+}
+
+.landing.intro-done .hro-edge-s,
+.landing.intro-done .hro-edge-e {
+  transform: scaleY(1);
+  transition: transform var(--hro-hair-dur) linear;
+}
+
+/* ══ [4] THE RULER CHROME — dashed ticks, corner plus marks,
+   registration marks, measure graticule (the reference's ruler layer,
+   visible at rest at op .64 — the R322 extraction's settled state). */
+.bp-rulers {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.64;
+  transition: opacity var(--t-slow) var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hro-stage:is(:hover, :focus-within) .bp-rulers {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 767px) {
+  .bp-rulers {
+    display: none; /* @390 the reference carries no ruler overlay — measured */
+  }
+}
+
+/* the dashed measure lines — two horizontal + two vertical dashed
+   rules (the 2×2 quadrant graticule) + two solid brand marker lines */
+.bp-measure {
+  position: absolute;
+}
+
+.bp-measure-h {
+  inset-inline: 0;
+  block-size: 0;
+  border-block-start: 1px dashed var(--rule);
+}
+
+.bp-measure-v {
+  inset-block: 0;
+  inline-size: 0;
+  border-inline-start: 1px dashed var(--rule);
+}
+
+.bp-measure-h1 { inset-block-start: 22%; }
+.bp-measure-h2 { inset-block-end: 18%; }
+.bp-measure-v1 { inset-inline-start: 12%; }
+.bp-measure-v2 { inset-inline-end: 12%; }
+
+.bp-measure-marker {
+  inset-block-start: 22%;
+  inset-inline: 0;
+  block-size: 0;
+  border-block-start: 1px solid var(--accent);
+  margin-inline: 18%;
+}
+
+.bp-measure-m2 {
+  inset-block-start: auto;
+  inset-block-end: 18%;
+  margin-inline: 26% 36%;
+}
+
+/* the ruler tick strips — 1px marks on an 8px pitch, 7px long */
+.bp-ruler {
+  position: absolute;
+  opacity: 0.9;
+}
+
+.bp-ruler-t,
+.bp-ruler-b {
+  inset-inline: 2px;
+  block-size: 7px;
+  background-image: repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 8px);
+}
+
+.bp-ruler-t { inset-block-start: 2px; }
+.bp-ruler-b { inset-block-end: 2px; }
+
+.bp-ruler-s,
+.bp-ruler-e {
+  inset-block: 2px;
+  inline-size: 7px;
+  background-image: repeating-linear-gradient(to bottom, var(--rule) 0 1px, transparent 1px 8px);
+}
+
+.bp-ruler-s { inset-inline-start: 2px; }
+.bp-ruler-e { inset-inline-end: 2px; }
+
+/* the corner plus marks — the reference's registration marks */
+.bp-plus {
+  position: absolute;
+  color: var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  line-height: 1;
+}
+
+.bp-plus::before { content: '+'; }
+
+.bp-plus-tl { inset-block-start: 6px; inset-inline-start: 3px; }
+.bp-plus-tr { inset-block-start: 6px; inset-inline-end: 3px; }
+.bp-plus-bl { inset-block-end: 6px; inset-inline-start: 3px; }
+.bp-plus-br { inset-block-end: 6px; inset-inline-end: 3px; }
+
+/* the ± registration marks at the dashed inner frame's corners */
+.bp-dmark {
+  position: absolute;
+  color: var(--rule);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-xs);
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.bp-dmark::before { content: '+'; }
+
+.bp-dmark-tl { inset-block-start: 11px; inset-inline-start: 11px; }
+.bp-dmark-tr { inset-block-start: 11px; inset-inline-end: 11px; }
+.bp-dmark-bl { inset-block-end: 11px; inset-inline-start: 11px; }
+.bp-dmark-br { inset-block-end: 11px; inset-inline-end: 11px; }
+
+/* ══ [5] THE DECO CARDS — the reference's mono micro-copy cards over
+   the drawing (item1/item2 grammar), each with the 1.6rem brand square
+   on the reference's fadeLoop (1.5s pulse). ≥992 only (the phone art
+   box carries no layer chrome). */
+.hro-deco {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  column-gap: 0.6rem;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  pointer-events: none;
+}
+
+/* the seats — the reference's item1/item2 mirrored for RTL (reading
+   start side, over the drawing's lower band) */
+.hro-deco-1 {
+  inset-block-end: 22%;
+  inset-inline-start: 10%;
+}
+
+.hro-deco-2 {
+  inset-block-end: 14%;
+  inset-inline-start: 44%;
+}
+
+.hro-deco-sq {
+  grid-row: 1 / 3;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  background: var(--accent-ink);
+  animation: hro-fade-loop 1.5s var(--ease) infinite;
+}
+
+@keyframes hro-fade-loop {
+  0%, 100% { opacity: 0.32; }
+  50% { opacity: 1; }
+}
+
+.hro-deco-label {
+  font-size: 1.4rem; /* the reference's mono label rung (11.67px @1440) */
+  color: var(--text-faint);
+  line-height: 1.1;
+}
+
+.hro-deco-text {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+@media (max-width: 991px) {
+  .hro-deco {
+    display: none;
+  }
+}
+
+/* ══ [6] THE CONTENT BAND — the measured 16.01rem strip: H1 cell ‖ 1px
+   divider ‖ sub cell (lead + CTA row). The band's opening rule ends at
+   the sheet frame (R328 H7 R2). */
+.hro-content {
+  display: grid;
+  grid-template-columns: minmax(0, 99.07fr) minmax(0, 72.2fr);
+  margin-inline: 7px;
+  padding-inline: 7px;
+  padding-inline-end: 2.88rem; /* the et-tab slim rail clearance (R322 V7) */
+  border-block-start: 1px solid var(--rule);
+}
+
+/* the H1 cell — cols 1–7 (inline-start in RTL: the reading start) */
+.hro-title-cell {
+  padding-block: 2.4rem;
+  padding-inline: 3.2rem;
+  min-inline-size: 0;
+}
+
+/* the display title — the spec's own h1 rung: 5.6rem / 700 / lh 1
+   (Arabic breathes at 1.12 inside the masks — unvocalised glyphs stay
+   clear of the mask edges; the reference's Latin -0.02em tracking is
+   dropped for the cursive-join canon). */
+.hro-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-d1); /* clamp(31.74px, 4.8vw, 5.6rem) — Heron's own ladder */
+  font-weight: 700;
+  line-height: 1.12;
+  color: var(--text);
+  margin: 0;
+  overflow-block: visible;
+}
+
+/* the mask-line reveal — every display line rides its own
+   overflow-hidden mask; the inner line translates 102%→0 (0.8s
+   power2.out, 0.02s stagger). yPercent is direction-neutral: no RTL
+   mirror. The 102% (vs the reference's 100) keeps descenders from
+   peeping under the mask at rest height. */
+.hro-lmask {
+  display: block;
+  overflow: hidden;
+}
+
+.hro-line {
+  display: block;
+  will-change: transform;
+}
+
+.landing.intro-draw .hro-line {
+  transform: translateY(102%);
+}
+
+.landing.intro-done .hro-line {
+  transform: translateY(0);
+  transition: transform var(--hro-line-dur) var(--hro-p2-out);
+}
+
+/* the stagger — 0.02s per line, the title first (t₀ + 0.05: the loader
+   slit needs one frame before the first line lifts) */
+.landing.intro-done .hro-title .hro-lmask:nth-child(1) .hro-line { transition-delay: 0.05s; }
+.landing.intro-done .hro-title .hro-lmask:nth-child(2) .hro-line { transition-delay: 0.07s; }
+.landing.intro-done .hro-title .hro-lmask:nth-child(3) .hro-line { transition-delay: 0.09s; }
+
+/* the sub cell — cols 8–12: the 1px divider at the seam, then the
+   measured row (paragraph + CTA flush inline-end, BESIDE the
+   headline's band — the R322 reviewer fix holds) widened with the
+   login secondary beside the primary */
+.hro-sub-cell {
+  border-inline-start: 1px solid var(--rule);
+  padding-block: 2.4rem 0;
+  padding-inline: 1.6rem 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--sp-6);
+  row-gap: var(--sp-4);
+}
+
+/* the lead — the spec's body rung (1.6rem / 500), masked line-for-line
+   exactly like the title (the reference's sub rides the same recipe) */
+.hro-lead {
+  font-size: var(--fs-body); /* max(13px, 1.6rem) — Heron txt-16 */
+  font-weight: 500;
+  line-height: 1.75; /* Arabic ascender/descender air (the -0.02em tracking drops for the joins) */
+  color: var(--text-secondary);
+  max-inline-size: 44ch;
+  margin: 0;
+  flex: 1 1 24rem;
+  min-inline-size: 0;
+}
+
+.landing.intro-done .hro-lead .hro-lmask:nth-child(1) .hro-line { transition-delay: 0.16s; }
+.landing.intro-done .hro-lead .hro-lmask:nth-child(2) .hro-line { transition-delay: 0.18s; }
+
+/* the CTA row — the block rise (opacity 0→1 · y 3.2rem→0 · 1s
+   power3.out): ONE primary (the funnel contract) + the login
+   secondary the reference's sub-wrap carries. */
+.hro-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-5);
+  flex: 0 0 auto;
+}
+
+.landing.intro-draw .hro-actions {
+  opacity: 0;
+  transform: translateY(var(--hro-rise));
+}
+
+.landing.intro-done .hro-actions {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--hro-rise-dur) var(--hro-p3-out) 0.3s,
+    transform var(--hro-rise-dur) var(--hro-p3-out) 0.3s;
+}
+
+/* the reference's hero button mass: its CTA is the biggest block in
+   the strip (17.1rem-class) */
+.hro-actions .hro-cta {
+  min-block-size: 4.6rem;
+  padding-inline: var(--space-2xl);
+  font-size: var(--fs-body-lg);
+}
+
+/* the secondary — the reference's plain link voice beside the CTA */
+.hro-alt {
+  font-size: var(--fs-body);
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-underline-offset: 0.35em;
+  text-decoration: underline transparent;
+  transition: color var(--t-fast) var(--ease), text-decoration-color var(--t-fast) var(--ease);
+}
+
+.hro-alt:hover {
+  color: var(--text);
+  text-decoration-color: var(--rule-strong);
+}
+
+.hro-alt:focus-visible {
+  outline: var(--state-focus-ring-width, 2px) solid var(--state-focus-ring-color, var(--accent));
+  outline-offset: var(--state-focus-ring-offset, 2px);
+  border-radius: 2px;
+}
+
+/* ══ [7] THE WORK STRIP — the six honest subjects: ONE static row
+   ≥1200 (space-between, zero mask), a snap scroller below; riding the
+   work-card rise (y 3.2rem · 1s power3.out). */
+.hro-work {
+  display: flex;
+  overflow: hidden;
+  margin-inline: 7px;
+  border-block-start: 1px solid var(--rule);
+  border-block-end: 1px solid var(--rule);
+  padding-inline: 7px;
+}
+
+.hro-work-track {
+  display: flex;
+  flex: 1 1 auto;
+  min-inline-size: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  padding-block: 1.1rem;
+  padding-inline: 3.2rem; /* aligns the first subject to the title cell's own text edge */
+}
+
+.hro-work-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  white-space: nowrap;
+  font-size: var(--fs-xxs);
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.hro-work-item .fo-mono {
+  color: var(--text-faint);
+  letter-spacing: 0.12em; /* the LATIN mono chips only — Arabic keeps zero tracking */
+}
+
+/* the rise */
+.landing.intro-draw .hro-work {
+  opacity: 0;
+  transform: translateY(var(--hro-rise));
+}
+
+.landing.intro-done .hro-work {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity var(--hro-rise-dur) var(--hro-p3-out) 1.05s,
+    transform var(--hro-rise-dur) var(--hro-p3-out) 1.05s;
+}
+
+/* <1200px — the snap-scrolling strip (R328 H3): whole items settle at
+   the rest edges, zero mid-glyph crop */
+@media (max-width: 1199px) {
+  .hro-work {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .hro-work::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hro-work-track {
+    flex: 0 0 auto;
+    min-inline-size: max-content;
+    justify-content: flex-start;
+    padding-inline: 1.8rem;
+    scroll-padding-inline: 1.8rem;
+  }
+
+  .hro-work-item {
+    scroll-snap-align: start;
+  }
+}
+
+/* ══ [8] THE IMG/FRAME FADE — the reference's img+deco+frame fades
+   (1s power3.out). OUR img is the ink drawing itself: the SVG fades on
+   the same 1s power3.out seat while the strokes draw (below) — the
+   drawing arrives as a drawing, not a photograph. */
+.landing.intro-draw .hro-art .bp-svg {
+  opacity: 0;
+}
+
+.landing.intro-done .hro-art .bp-svg {
+  opacity: 1;
+  transition: opacity var(--hro-fade-dur) var(--hro-p3-out) 0.25s;
+}
+
+.landing.intro-draw .hro-deco {
+  opacity: 0;
+}
+
+.landing.intro-done .hro-deco {
+  opacity: 1;
+  transition: opacity var(--hro-fade-dur) var(--hro-p3-out) 0.85s;
+}
+
+/* ══ [9] THE STAGED INK-IN — pathLength-normalized strokes draw
+   themselves in the DRAFTING ORDER (frame → grid → ground → masses →
+   secondary → openings → detail → dimensions → journey → labels),
+   declared by each layer group's data-ink index. The schedule rides
+   the reference's sequence position: the img layer begins as the
+   title's masks resolve (+250ms over the R322 belt) — the drawing
+   lands WHILE the frame wipes and the lines lift. Fills and labels
+   resolve with their layer. (Moved verbatim in mechanism from
+   landing.css; only the delays were re-seated.) */
+.landing.intro-draw .hro-stage .bp-drawable {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  fill-opacity: 0;
+}
+
+.landing.intro-draw .hro-stage text {
+  opacity: 0;
+}
+
+.landing.intro-done .hro-stage .bp-drawable {
+  transition:
+    stroke-dashoffset 650ms var(--ease),
+    fill-opacity 500ms var(--ease);
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+}
+
+.landing.intro-done .hro-stage text {
+  transition: opacity 500ms var(--ease);
+  opacity: 1;
+}
+
+/* the drafting-order schedule — each layer begins as its predecessor
+   is still resolving (the authored cascade, +250ms on the reference's
+   sequence) */
+.landing.intro-done .hro-stage [data-ink='1'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='1'] text { transition-delay: 250ms; }
+
+.landing.intro-done .hro-stage [data-ink='2'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='2'] text { transition-delay: 340ms; }
+
+.landing.intro-done .hro-stage [data-ink='3'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='3'] text { transition-delay: 440ms; }
+
+.landing.intro-done .hro-stage [data-ink='4'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='4'] text { transition-delay: 570ms; }
+
+.landing.intro-done .hro-stage [data-ink='5'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='5'] text { transition-delay: 710ms; }
+
+.landing.intro-done .hro-stage [data-ink='6'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='6'] text { transition-delay: 860ms; }
+
+.landing.intro-done .hro-stage [data-ink='7'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='7'] text { transition-delay: 1030ms; }
+
+.landing.intro-done .hro-stage [data-ink='8'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='8'] text { transition-delay: 1200ms; }
+
+.landing.intro-done .hro-stage [data-ink='9'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='9'] text { transition-delay: 1370ms; }
+
+.landing.intro-done .hro-stage [data-ink='10'] .bp-drawable,
+.landing.intro-done .hro-stage [data-ink='10'] text { transition-delay: 1550ms; }
+
+/* ══ [10] THE TIERS ════════════════════════════════════════════════ */
+
+/* ≤991 — the 6+6 split (the measured 768 band): equal cells, the sub
+   stacks (paragraph over the CTA), the et-tab gutter retires with the
+   slim rail's own tier */
+@media (max-width: 991px) {
+  .fo-hero.hro {
+    grid-template-rows: minmax(0, 1fr) auto auto;
+    min-block-size: calc(100svh - 14px);
+    padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px);
+  }
+
+  .hro-art {
+    padding-block-start: 63px;
+  }
+
+  .hro-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    padding-inline-end: 7px;
+  }
+
+  /* the measured 768 sub cell: paragraph over the CTA stack */
+  .hro-sub-cell {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .hro-actions {
+    margin-block-start: 1.6rem;
+  }
+}
+
+/* ≤767 — the phone fold: the proportionate 8:5 mat, ONE connected
+   title·lead·CTA block, the full-width CTA (the measured 37.71rem
+   seat), the R329 station-open growth escape */
+@media (max-width: 767px) {
+  .fo-hero.hro {
+    grid-template-rows: auto auto auto;
+    min-block-size: calc(100svh - 14px);
+    align-content: space-between;
+    padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px);
+  }
+
+  .hro-art {
+    padding-block-start: 6.35rem; /* the 63px header+frame seat, rem-pure */
+    padding-block-end: 0;
+  }
+
+  .hro-stage {
+    min-block-size: 0;
+    aspect-ratio: 8 / 5;
+  }
+
+  /* R329 (CI red) — once a station opens, the phone's flow rail must
+     be allowed to grow the box (the idle fold contract is at-rest only) */
+  .hro-stage:has(.hi-flow[data-any-open='on']) {
+    aspect-ratio: auto;
+  }
+
+  .hro-content {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline-end: 7px;
+  }
+
+  .hro-title-cell {
+    padding-block: 1.6rem 1.2rem;
+    padding-inline: 1.8rem;
+  }
+
+  .hro-sub-cell {
+    border-inline-start: 0;
+    padding-block: 1.2rem 0;
+    padding-inline: 1.8rem;
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .hro-lead {
+    font-size: var(--fs-body);
+    flex: 0 0 auto;
+  }
+
+  .hro-actions {
+    inline-size: 100%;
+    margin-block-start: var(--sp-7); /* the brief's 32px ladder gap */
+    row-gap: var(--sp-4);
+  }
+
+  .hro-actions .hro-cta {
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  .hro-work-track {
+    padding-inline: 1.8rem;
+  }
+}
+
+/* ══ [11] THE RM BELT — the whole choreography collapses to the
+   settled sheet (the intro gate never plays under RM; this belt also
+   covers a mid-flight RM flip) ═════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .hro-line,
+  .landing.intro-draw .hro-line,
+  .landing.intro-done .hro-line {
+    transform: none;
+    transition: none;
+  }
+
+  .hro-edge,
+  .landing.intro-draw .hro-edge-t,
+  .landing.intro-draw .hro-edge-b,
+  .landing.intro-draw .hro-edge-s,
+  .landing.intro-draw .hro-edge-e,
+  .landing.intro-done .hro-edge-t,
+  .landing.intro-done .hro-edge-b,
+  .landing.intro-done .hro-edge-s,
+  .landing.intro-done .hro-edge-e {
+    transform: none;
+    transition: none;
+  }
+
+  .hro-actions,
+  .hro-work,
+  .landing.intro-draw .hro-actions,
+  .landing.intro-draw .hro-work,
+  .landing.intro-done .hro-actions,
+  .landing.intro-done .hro-work {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .hro-art .bp-svg,
+  .landing.intro-draw .hro-art .bp-svg,
+  .landing.intro-done .hro-art .bp-svg {
+    opacity: 1;
+    transition: none;
+  }
+
+  .hro-deco,
+  .landing.intro-draw .hro-deco,
+  .landing.intro-done .hro-deco {
+    opacity: 1;
+    transition: none;
+  }
+
+  .hro-deco-sq {
+    animation: none;
+    opacity: 0.72;
+  }
+
+  .hro-alt {
+    transition: none;
+  }
+}

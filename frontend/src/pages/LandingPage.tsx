@@ -14,19 +14,23 @@ import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { colleges } from '../data/colleges.config';
 import { ROLE_SHOWCASES } from '../data/university-media';
-import { HERO_WORK_ITEMS, LIVE_COUNT } from '../data/landing-ledger';
+import { LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
 /* r325 Y2 — PlatformCanvas/PlatformPlanArt (the head-strip plan +
  * its over-art pin) retire with the Y2 rebuild: the plan's caption
  * lives under the ONE product frame now (see PlatformShowcase). */
-import { HeroInkWindow } from '../components/landing/HeroInkWindow';
+/* R331 (A-Web-Hero) — the hero JSX block moved into its own folder
+ * (components/landing/hero/Hero.tsx): the Heron-mechanics rebuild
+ * (mask-line title reveal · wiping frame edges · staged ink-in ·
+ * deco cards · work-card rise). HeroInkWindow/HeroInspect mount from
+ * there; the r331/hero.css import rides the component. */
+import { Hero } from '../components/landing/hero/Hero';
 import { StatementArt } from '../components/landing/StatementArt';
 import { WhyScene } from '../components/landing/WhyScene';
 import { PainArt } from '../components/landing/PainArt';
 import { SheetLoader } from '../components/landing/SheetLoader';
 import { SheetCursor } from '../components/landing/cursor/SheetCursor';
-import { HeroInspect } from '../components/landing/cursor/HeroInspect';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
 import { FooterLens } from '../components/landing/footer/FooterLens';
@@ -1025,115 +1029,17 @@ export default function LandingPage() {
 
       <main id="main" tabIndex={-1}>
 
-        {/* ═══ [1] HERO — R322 (2-b): the measured Heron transplant.
-            ONE art band (the whole elevation, ink filling the band
-            width on transparent paper inside the drafting frame —
-            the measured img-inner grammar) over ONE content band
-            (H1 cols 1–7 ‖ 1px divider ‖ sub + register CTA + the
-            work marquee cols 8–12 — the measured 16.01rem band, so
-            the CTA sits BESIDE the headline's optical center, no
-            leap across whitespace). The [LIVE] disclosure chip and
-            the discover link cell retire with the transplant (the
-            honest demo-data disclosure lives in the platform frames;
-            Heron's content band carries neither). Our own artwork,
-            our own copy — never Heron's. ═══ */}
-        <section className="fo-hero" aria-label="مدارك — منصّة التعليم الذكي">
-          {/* ── the art band — the elevation on transparent paper ── */}
-          <div className="fo-hero-art">
-            <RevealCssClass as="div" className="fo-hero-art-frame" delay={2}>
-              <div className="bp-stage" data-cursor="none">
-                {/* The ink rides the TIGHT viewBox frame (.bp-svg —
-                    HeroInkWindow) so the drawing owns the full band
-                    width; the HeroInspect instrument, its guides and
-                    its honest station markers keep ONE coordinate
-                    system through the same frame. */}
-                <HeroInkWindow />
-                <HeroInspect />
-                <div className="bp-rulers" aria-hidden="true">
-                  <span className="bp-ruler bp-ruler-t" />
-                  <span className="bp-ruler bp-ruler-b" />
-                  <span className="bp-ruler bp-ruler-s" />
-                  <span className="bp-ruler bp-ruler-e" />
-                  <span className="bp-plus bp-plus-tl" />
-                  <span className="bp-plus bp-plus-tr" />
-                  <span className="bp-plus bp-plus-bl" />
-                  <span className="bp-plus bp-plus-br" />
-                  {/* the dashed measure lines across the paper — the
-                      reference's own ruler overlay grammar (measured
-                      dashed grid + brand-red marker lines spanning
-                      the art box, op .64). */}
-                  <span className="bp-measure bp-measure-h bp-measure-h1" />
-                  <span className="bp-measure bp-measure-h bp-measure-h2" />
-                  <span className="bp-measure bp-measure-v bp-measure-v1" />
-                  <span className="bp-measure bp-measure-v bp-measure-v2" />
-                  <span className="bp-measure bp-measure-marker bp-measure-m1" />
-                  <span className="bp-measure bp-measure-marker bp-measure-m2" />
-                  {/* R315 (B1 · A.3): the small ± registration marks at
-                      the dashed inner frame's corners (the reference's
-                      inner drafting chrome). */}
-                  <span className="bp-dmark bp-dmark-tl" />
-                  <span className="bp-dmark bp-dmark-tr" />
-                  <span className="bp-dmark bp-dmark-bl" />
-                  <span className="bp-dmark bp-dmark-br" />
-                </div>
-              </div>
-            </RevealCssClass>
-          </div>
+        {/* ═══ [1] HERO — R331 (A-Web-Hero): the Heron-mechanics
+            rebuild. ONE art band (the drafting stage: ink + wiping
+            frame + ruler chrome + deco cards + the inspection
+            instrument) over ONE content band (masked-line H1 ‖ 1px
+            divider ‖ sub + the register CTA + the login secondary)
+            closed by the work strip — the reveal grammar, motion
+            values and layer stack of docs/redesign/r331/heron-program.md
+            §4, on Madarek's own artwork and copy. The component owns
+            the whole block (and imports styles/r331/hero.css). ═══ */}
+        <Hero />
 
-          {/* ── the content band — the measured 16.01rem strip:
-              H1 cell (cols 1–7) ‖ 1px divider ‖ sub cell (cols 8–12:
-              lead + the register CTA, then the work marquee). ── */}
-          <div className="fo-hero-content">
-            <div className="fo-hero-title-cell">
-              <RevealCssClass as="h1" className="fo-hero-title" delay={1}>
-                {/* the display canon holds (R315 B1 · A.2 / R322 1-d):
-                  UNVOCALISED Arabic (zero tashkeel), 2 lines, the D1
-                  rung (--fs-d1 — the Heron-measured h1 ladder), w600,
-                  lh 1.05, text-wrap balance. */}
-                رحلة تعلم واحدة
-                <br />
-                من المحاضرة إلى الإتقان
-              </RevealCssClass>
-            </div>
-
-            <div className="fo-hero-sub-cell">
-              <div className="fo-hero-sub-row">
-                <RevealCssClass as="p" className="fo-hero-lead" delay={3}>
-                  محاضرات تفاعلية، ومصفوفة إتقان، واختبارات، وبحوث، ورسائل —
-                  تجربة عربية واحدة لخمسة أدوار وثلاث شرائح.
-                </RevealCssClass>
-                {/* the funnel contract (r164b → r188, kept): the hero's
-                    register CTA — flush inline-end of the sub cell,
-                    beside the lead, in the headline's own band. */}
-                <RevealCssClass as="div" className="fo-hero-actions" delay={4}>
-                  <Link to="/auth/register" className="btn accent lg fo-hero-cta">
-                    أنشئ حسابك الجامعي
-                    <Icon icon={ArrowLeft} size={16} />
-                  </Link>
-                </RevealCssClass>
-              </div>
-            </div>
-          </div>
-
-          {/* ── the work strip — the reference's home-hero-work band as
-              its OWN closing row (R328 H2/H3): the six honest
-              live-capability subjects ride ONE static row ≥1200px
-              (space-between, zero mask — no item is ever faded or cut),
-              and a snap-scrolling strip below (no mid-glyph crop at
-              rest — scroll-snap settles whole items). The R322 crawl
-              loop + its duplicated aria-hidden track retire: an index
-              row must be readable at a glance, not chased. */}
-          <div className="fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
-            <div className="fo-hero-work-track">
-              {HERO_WORK_ITEMS.map((cap, i) => (
-                <span key={cap} className="fo-hero-work-item">
-                  <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
-                  {cap}
-                </span>
-              ))}
-            </div>
-          </div>
-        </section>
 
         {/* ═══ [2] البيان — the statement (the reference's home-intro):
             R322 (2-c) — the measured 6+6 split transplant. The square
