@@ -14,10 +14,14 @@ import { PLAN_ASPECT, PLAN_VIEWBOX, type PlanDrawHandle, type PlanProgress } fro
  * The draw reveal is a plain-number progress resolved per frame by the
  * rAF engine in usePlanDraw — there is no Animated seam to hold
  * (react-native-svg's published types expose no Animated member), so
- * these re-export the library's own elements under their historical
- * draw names; every `draw.*` value they receive is a plain number.
+ * these bind the library's own elements under their historical draw
+ * names; every `draw.*` value they receive is a plain number.
  */
-export { Rect as AnimRect, Line as AnimLine, Path as AnimPath, Circle as AnimCircle, G as AnimG };
+export const AnimRect = Rect;
+export const AnimLine = Line;
+export const AnimPath = Path;
+export const AnimCircle = Circle;
+export const AnimG = G;
 
 // ---------- geometry ----------
 /** Perimeter of an axis-aligned rectangle (its drawable stroke length). */
