@@ -13,7 +13,6 @@ import { ThemeProvider, useTheme } from "@/design/theme";
 import { heron } from "@/design/tokens";
 import { fontMap } from "@/design/fonts";
 import { ToastHost } from "@/components/ui/toast";
-import { FeedbackSheetHost } from "@/features/feedback/FeedbackFab";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { installGlobalErrorHandlers, crumb } from "@/lib/telemetry";
@@ -136,7 +135,9 @@ export default function RootLayout() {
             {/* R327 C3 — channels + tap→deep-link + silent registration. */}
             <PushRegistrar />
             <ToastHost />
-            <FeedbackSheetHost />
+            {/* R331 A-App-Shell — no floating FeedbackSheetHost FAB here anymore:
+                «الإبلاغ عن مشكلة» is a real route (/report) from the Profile
+                menu and /settings; nothing overlays screen content now. */}
           </SafeAreaProvider>
         </ThemeProvider>
       </QueryClientProvider>

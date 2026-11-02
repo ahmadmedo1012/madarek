@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
+import Flag from "lucide-react-native/icons/flag";
 import { router } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiWithCookieCapture, ApiError, put } from "@/api/client";
@@ -150,6 +151,29 @@ export default function Settings() {
           label="العضويات"
           value={(user?.memberships ?? []).map((m) => `${m.name} (${ROLE_LABELS[m.role] ?? m.role})`).join(" · ") || "—"}
         />
+      </Card>
+
+      {/* R331 A-App-Shell — the report loop entry for EVERY role (student &
+          teacher carry it in their Profile menus; admin/quality/owner reach
+          it here). Replaces the removed floating feedback FAB. */}
+      <Card>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="الإبلاغ عن مشكلة"
+          onPress={() => router.push("/report")}
+          style={({ pressed }) => ({
+            flexDirection: "row",
+            alignItems: "center",
+            gap: sp[10],
+            opacity: pressed ? 0.7 : 1,
+            minHeight: 44,
+          })}
+        >
+          <Flag size={20} color={p.textMuted} />
+          <T variant="body" weight="medium" style={{ flex: 1 }}>
+            الإبلاغ عن مشكلة
+          </T>
+        </Pressable>
       </Card>
 
       <SectionBar index={3} title="تغيير كلمة المرور" />

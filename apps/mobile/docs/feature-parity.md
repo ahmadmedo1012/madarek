@@ -35,7 +35,7 @@
 | Legal pages (6) | `app/legal/[doc].tsx` | — | ✅ |
 | About/Help/Contact | `app/about.tsx`, `app/help.tsx`, `app/contact.tsx` | — | ✅ |
 | Campus life | `app/campus.tsx` | — (documentary) | ✅ |
-| Feedback loop («أبلغ عن مشكلة») | `FeedbackSheetHost` (root) | `POST /feedback` | ✅ (no screenshot/console tape on mobile — disclosed) |
+| Feedback loop («أبلغ عن مشكلة») | `/report` route from Profile/`/settings` (R331: FAB removed) | `POST /feedback` | ✅ (no screenshot/console tape on mobile — disclosed) |
 | Theme sync (light/dark/system) | settings | `PUT /me/theme` | ✅ |
 | Onboarding/milestones | welcome + role home | `POST /me/onboarding/complete` fired on first role-home | ✅ (4-frame tour & milestone scenes are web instruments, not ported) |
 | Remote push notifications | — | backend has **no device-token model** | 🔗 additive backend proposal in `docs/push-backend-proposal.md`; `expo-notifications` dependency declared, client registration **not yet wired** (needs the backend contract first) |

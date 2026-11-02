@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, View , TextInput } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
 import Send from "lucide-react-native/icons/send";
 import ThumbsDown from "lucide-react-native/icons/thumbs-down";
 import ThumbsUp from "lucide-react-native/icons/thumbs-up";
 import Trash2 from "lucide-react-native/icons/trash";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { aiApi, AI_QUOTA_MARKER } from "@/api/ai";
 import { ApiError } from "@/api/client";
 import { usePalette, useStatusTones } from "@/design/theme";
@@ -20,9 +22,22 @@ import { BrandMark } from "@/components/ui/brand";
  * `local` provider = template composer (disclosed verbatim, as the web does).
  * Non-streaming JSON contract (the SSE stream remains a web instrument; the
  * reply semantics are identical).
+ *
+ * R331 A-App-Shell safe-area fix: the header pads the status-bar inset — the
+ * old per-screen tab frame never did, so the assistant tab clipped its top
+ * edge under the status bar. `stacked` marks a PUSHED instance (over the
+ * persistent tab shell): it owns the home-indicator inset below the composer
+ * and shows a back affordance (RTL: the arrow points right = back edge).
  */
-export function Assistant() {
+export function Assistant({
+  stacked = false,
+  onBack,
+}: {
+  stacked?: boolean;
+  onBack?: () => void;
+} = {}) {
   const p = usePalette();
+  const insets = useSafeAreaInsets();
   const warn = useStatusTones().yellow;
   const qc = useQueryClient();
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -93,12 +108,23 @@ export function Assistant() {
           alignItems: "center",
           gap: sp[8],
           paddingHorizontal: sp[16],
-          paddingVertical: sp[8],
+          paddingTop: Math.max(insets.top, sp[8]),
+          paddingBottom: sp[8],
           borderBottomWidth: StyleSheet.hairlineWidth,
           borderBottomColor: p.rule,
           backgroundColor: p.surface,
         }}
       >
+        {stacked && onBack ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="رجوع"
+            onPress={onBack}
+            style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
+          >
+            <ArrowRight size={22} color={p.text} />
+          </Pressable>
+        ) : null}
         <View style={{ flex: 1, gap: 0 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
             <T variant="h4" weight="bold">المساعد الأكاديمي</T>
@@ -182,7 +208,7 @@ export function Assistant() {
           borderTopColor: p.rule,
           backgroundColor: p.surface,
           padding: sp[12],
-          paddingBottom: sp[16],
+          paddingBottom: Math.max(sp[16], stacked ? insets.bottom : 0),
           gap: sp[8],
         }}
       >

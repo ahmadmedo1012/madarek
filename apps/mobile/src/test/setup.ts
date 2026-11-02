@@ -111,10 +111,13 @@ jest.mock("expo-local-authentication", () => ({
   cancelAuthenticate: jest.fn().mockResolvedValue(true),
 }));
 
-/* ── reanimated: GONE in R327 C4 — the three loader loops ride RN's
-      built-in Animated (native driver, zero marginal bundle bytes);
-      react-native-reanimated + worklets left the dependency tree. The
-      render nets exercise the real core-Animated components directly. ─ */
+/* ── reanimated: R327 C4 removed it; R331 A-App-Shell lays the foundation
+      back in (reanimated 4 + worklets — deps only, no consumer yet:
+      A-App-Motion owns the migration). The official mock keeps the render
+      net green the moment motion components start importing it. ─ */
+
+jest.mock("react-native-reanimated", () => require("react-native-reanimated/mock"));
+jest.mock("react-native-worklets", () => require("react-native-worklets/src/mock"));
 
 /* ── safe-area: the REAL provider only renders children after the native
       onInsetsChange event — which NEVER fires under jest, silently
