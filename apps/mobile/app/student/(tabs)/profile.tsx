@@ -6,8 +6,6 @@
  * the identity card never waits on the wire), then the mobile menu hub
  * (RowList) into every student surface.
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -17,6 +15,7 @@ import Briefcase from "lucide-react-native/icons/briefcase";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
 import CalendarDays from "lucide-react-native/icons/calendar-days";
 import CircleHelp from "lucide-react-native/icons/circle-question-mark";
+import Flag from "lucide-react-native/icons/flag";
 import ClipboardCheck from "lucide-react-native/icons/clipboard-check";
 import ClipboardList from "lucide-react-native/icons/clipboard-list";
 import CreditCard from "lucide-react-native/icons/credit-card";
@@ -80,11 +79,13 @@ const MENU: { icon: LucideIcon; label: string; to: string }[] = [
   { icon: Map, label: "خريطة الكليات", to: "/student/map" },
   { icon: CreditCard, label: "الشؤون المالية", to: "/student/payment" },
   { icon: Mail, label: "الرسائل", to: "/student/messages" },
+  // R331 A-App-Shell — the report loop entry (replaces the removed floating FAB).
+  { icon: Flag, label: "الإبلاغ عن مشكلة", to: "/report" },
   { icon: CircleHelp, label: "دليل الاستخدام", to: "/help" },
   { icon: Settings, label: "الإعدادات", to: "/settings" },
 ];
 
-function StudentProfile() {
+export default function StudentProfile() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
@@ -194,14 +195,5 @@ function StudentProfile() {
         </T>
       </ScrollBody>
     </Screen>
-  );
-}
-
-
-export default function StudentProfileTabbed() {
-  return (
-    <RoleTabFrame role="STUDENT">
-      <StudentProfile />
-    </RoleTabFrame>
   );
 }

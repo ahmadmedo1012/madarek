@@ -20,8 +20,11 @@ import { POISON, type PoisonKind } from "./poison";
 import { useSession } from "@/auth/session";
 import type { AppRole, AuthUser } from "@/api/types";
 
+// R331 A-App-Shell — the role homes moved INTO each role's `(tabs)` group
+// (the persistent bar); the URL space is unchanged (groups add no segment),
+// but the FILE path for the route module gained the group directory.
 const ROLES: { role: AppRole; home: string }[] = [
-  { role: "STUDENT", home: "student/dashboard" },
+  { role: "STUDENT", home: "student/(tabs)/dashboard" },
   { role: "TEACHER", home: "teacher/dashboard" },
   { role: "ADMIN", home: "admin/dashboard" },
   { role: "QUALITY", home: "quality/dashboard" },

@@ -5,8 +5,6 @@
  * the weekly schedule summary. Enrollment stays admin-mediated: the
  * empty state says so honestly.
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -24,7 +22,7 @@ import { AppTopBar } from "@/components/shell/AppTopBar";
 import { countAr } from "@/features/student/more";
 import { CourseWell, ScrollBody, courseProgressHint } from "@/features/student/components";
 
-function StudentCourses() {
+export default function StudentCourses() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const feed = useQuery({
@@ -126,14 +124,5 @@ function StudentCourses() {
         )}
       </ScrollBody>
     </Screen>
-  );
-}
-
-
-export default function StudentCoursesTabbed() {
-  return (
-    <RoleTabFrame role="STUDENT">
-      <StudentCourses />
-    </RoleTabFrame>
   );
 }

@@ -6,8 +6,6 @@
  * live / exams). Fires the idempotent POST /me/onboarding/complete once
  * per app run on the first role-home (web parity, errors ignored).
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useEffect, useRef } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -33,7 +31,7 @@ import { GapList, ScrollBody, classWhenLabel } from "@/features/student/componen
 /** Module-scoped: the idempotent onboarding POST fires once per app run. */
 let onboardingFired = false;
 
-function StudentDashboard() {
+export default function StudentDashboard() {
   const now = useNow();
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
@@ -319,14 +317,5 @@ function StudentDashboard() {
         ) : null}
       </ScrollBody>
     </Screen>
-  );
-}
-
-
-export default function StudentDashboardTabbed() {
-  return (
-    <RoleTabFrame role="STUDENT">
-      <StudentDashboard />
-    </RoleTabFrame>
   );
 }
