@@ -142,29 +142,65 @@ jobs:
           for d in ios/*.xcworkspace; do
             if [ -d "$d" ]; then WORKSPACE="$d"; break; fi
           done
-          if [ -z "$WORKSPACE" ]; then
-            echo "::error::No .xcworkspace found after pod install"
+          PROJECT=""
+          for d in ios/*.xcodeproj; do
+            if [ -d "$d" ]; then PROJECT="$d"; break; fi
+          done
+          if [ -z "$WORKSPACE" ] || [ -z "$PROJECT" ]; then
+            echo "::error::No .xcworkspace/.xcodeproj found after pod install"
             exit 1
           fi
 
           xcodebuild -list -workspace "$WORKSPACE" -json | tee build/xcode-list.json
-          SCHEME=$(jq -r '(.workspace // .project).schemes[]?' build/xcode-list.json \
-            | grep -v '^Pods' | head -n1)
-          if [ -z "$SCHEME" ]; then
-            echo "::error::No app scheme found in $WORKSPACE"
+          echo
+
+          bundle_id_for_scheme() {
+            # Some schemes (e.g. boost, ReactNativeDependencies) are CocoaPods
+            # library schemes and cannot resolve an app bundle id. Treat a
+            # failure as an empty result instead of aborting the scan.
+            xcodebuild -workspace "$WORKSPACE" -scheme "$1" \
+              -configuration Release -sdk iphoneos \
+              -showBuildSettings 2>/dev/null \
+              | awk -F' = ' '/^[[:space:]]*PRODUCT_BUNDLE_IDENTIFIER = /{print $2; exit}' \
+              || true
+          }
+
+          # Expo prebuild names the app scheme after the .xcodeproj. Never pick
+          # the first scheme blindly: CocoaPods exposes dozens of schemes, and
+          # the first one alphabetically is "boost", not the app.
+          PROJECT_SCHEME=$(basename "$PROJECT" .xcodeproj)
+          SCHEME="$PROJECT_SCHEME"
+          BID=$(bundle_id_for_scheme "$SCHEME")
+          echo "Project scheme: $PROJECT_SCHEME (bundle id: ${BID:-<none>})"
+
+          if [ "$BID" != "ly.madarek.mobile" ]; then
+            echo "Project scheme did not resolve the app bundle id; scanning schemes..."
+            SCHEME=""
+            while IFS= read -r candidate; do
+              [ -z "$candidate" ] && continue
+              CANDIDATE_BID=$(bundle_id_for_scheme "$candidate")
+              if [ "$CANDIDATE_BID" = "ly.madarek.mobile" ]; then
+                SCHEME="$candidate"
+                BID="$CANDIDATE_BID"
+                break
+              fi
+            done < <(jq -r '(.workspace // .project).schemes[]?' build/xcode-list.json | grep -v '^Pods' || true)
+          fi
+
+          if [ -z "$SCHEME" ] || [ "$BID" != "ly.madarek.mobile" ]; then
+            echo "::error::Could not find a scheme that builds ly.madarek.mobile"
             exit 1
           fi
 
           echo "workspace=$WORKSPACE" >> "$GITHUB_OUTPUT"
           echo "scheme=$SCHEME" >> "$GITHUB_OUTPUT"
           echo "Workspace: $WORKSPACE"
-          echo "Scheme: $SCHEME"
+          echo "Scheme: $SCHEME (bundle id: $BID)"
 
-          # Fail early if the scheme cannot resolve the expected app target.
           xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" \
             -configuration Release -sdk iphoneos \
             -showBuildSettings 2>/dev/null \
-            | grep -E '^[[:space:]]*(PRODUCT_BUNDLE_IDENTIFIER|PRODUCT_NAME|IPHONEOS_DEPLOYMENT_TARGET)[[:space:]]*=' \
+            | grep -E '^[[:space:]]*(PRODUCT_BUNDLE_IDENTIFIER|PRODUCT_NAME|PRODUCT_TYPE|IPHONEOS_DEPLOYMENT_TARGET)[[:space:]]*=' \
             | sort -u
 
       - name: Build Release for real iPhoneOS (unsigned)
