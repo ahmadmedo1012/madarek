@@ -28,7 +28,10 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 | d7fcac42 | (base, R330) | ✅ | starting point, verified via Actions API |
 | fdc8bb27 | baseline HANDOFF | ✅ | docs-only baseline |
 | 2faeeae8 | arsenal + repo hygiene pass 1 | ✅ | CI + Size gate both green (API-checked) |
-| 44b7cc60 | heron porting spec | (polling) | heron-program.json/md + thumbs |
+| 44b7cc60 | heron porting spec | ✅ | heron-program.json/md + thumbs |
+| 1641934d | app-shell (persistent tabs ×5, motion deps) | ✅ | CI+Mobile+Keep-warm green |
+| 4f85e953 | A-CSS pass 1 (@layer, stylelint, coverage) | ✅ | re-based over owner's a4b18484 (ios-sidestore wf) |
+| b31b38f4 | A-Web-Hero + A-Web-Nav rebuilds | (polling) | hero animation + nav behavior proven |
 
 ## Tools actually used (skill/MCP → date · commit · output)
 
@@ -51,8 +54,14 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
   zero GSAP pins — sticky journey, rem formula 0.5787vw/1.199vw/2.5445vw, header thresholds
   1×/5× height, full tween table in heron-program.json).
 - Repo hygiene pass 1: ✅ — tracked tree 324MB → 40.8MB; size gate active in CI.
-- In flight: A-CSS (layered cascade), A-App-Shell (Tabs restructure + native deps).
-- Next: web rebuild wave from heron-program.md; app motion/student/teacher/admin; QA panel.
+- Done: A-CSS pass 1 (@layer constitution — cascade-neutral PROVEN pixel-identical ×6;
+  !important 80→61 live; coverage harness: 5,061 selectors, 3,524 dead candidates;
+  stylelint baseline 82e/126w) · A-App-Shell (persistent (tabs) ×5 roles, reanimated 4.7.1
+  + worklets + keyboard-controller + bottom-sheet added, FABs removed, «الحوكمة» fixed,
+  762/762 tests, web export green) · A-Web-Hero (Heron construction, live animation proof
+  t=0.3s vs t=3s) · A-Web-Nav (56px/1×/5× thresholds, clip-path menu, lenis stop, CLS 0.0234).
+- In flight: A-Web-Journey (≤991 blank-pin defect), A-Web-Sections, A-App-Motion, A-App-Student.
+- Next: A-Web-Inner/Dash, A-App-Brand/Teacher/Admin, QA panel, EAS builds, evidence Release.
 
 ## Next actions
 
