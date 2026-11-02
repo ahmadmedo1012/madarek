@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -39,7 +37,7 @@ interface OwnerAlert {
 }
 
 /** (tabs) Owner dashboard — «لوحة التحكم الرئيسية» (web OwnerDashboardPage parity). */
-function OwnerDashboard() {
+export default function OwnerDashboard() {
   const p = usePalette();
   const stats = useQuery({ queryKey: ["owner", "stats"], queryFn: () => ownerApi.stats() });
   const alerts = useQuery({
@@ -285,19 +283,10 @@ function OwnerDashboard() {
             </LedgerRow>
           </RowList>
           <T variant="xs" color="faint">
-            المراقبة الحيّة والمستخدمون والحواكمة في تبويبات الشريط السفلي · صندوق التغذية الراجعة من صفحة «المحتوى».
+            المراقبة الحيّة والمستخدمون والحوكمة في تبويبات الشريط السفلي · صندوق التغذية الراجعة من صفحة «المحتوى».
           </T>
         </View>
       </View>
     </Screen>
-  );
-}
-
-
-export default function OwnerDashboardTabbed() {
-  return (
-    <RoleTabFrame role="OWNER">
-      <OwnerDashboard />
-    </RoleTabFrame>
   );
 }

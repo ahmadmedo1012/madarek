@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -36,7 +34,7 @@ function realtimeKeyLabel(key: string): string {
  * polled every 15s; every entry of the payload renders honestly (numbers
  * via latn), the band discloses the cadence and the last fresh reading.
  */
-function OwnerRealtime() {
+export default function OwnerRealtime() {
   const now = useNow();
   const rt = useQuery({
     queryKey: ["owner", "realtime"],
@@ -133,14 +131,5 @@ function OwnerRealtime() {
         )}
       </View>
     </Screen>
-  );
-}
-
-
-export default function OwnerRealtimeTabbed() {
-  return (
-    <RoleTabFrame role="OWNER">
-      <OwnerRealtime />
-    </RoleTabFrame>
   );
 }

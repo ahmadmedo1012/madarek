@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -54,7 +52,7 @@ function nameOf(u: OwnerUserRow): string {
  *  server-paginated search + role filter, identity rows with role/status
  *  chips, and the two governance actions (role change, status toggle)
  *  behind a per-user sheet — each behind its own confirm. */
-function OwnerUsers() {
+export default function OwnerUsers() {
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
   const [role, setRole] = useState("all");
@@ -335,14 +333,5 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
         onCancel={() => setStatusConfirm(false)}
       />
     </Sheet>
-  );
-}
-
-
-export default function OwnerUsersTabbed() {
-  return (
-    <RoleTabFrame role="OWNER">
-      <OwnerUsers />
-    </RoleTabFrame>
   );
 }

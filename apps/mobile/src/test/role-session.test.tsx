@@ -28,7 +28,7 @@ const ROLES: { role: AppRole; home: string }[] = [
   { role: "TEACHER", home: "teacher/(tabs)/dashboard" },
   { role: "ADMIN", home: "admin/(tabs)/dashboard" },
   { role: "QUALITY", home: "quality/(tabs)/dashboard" },
-  { role: "OWNER", home: "owner/dashboard" },
+  { role: "OWNER", home: "owner/(tabs)/dashboard" },
 ];
 
 const POISONS: PoisonKind[] = ["null-data", "missing-fields", "empty-list", "401", "500", "garbage"];

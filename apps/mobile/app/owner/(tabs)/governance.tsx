@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -22,7 +20,7 @@ import {
  * login-analytics read (success/failure, daily table, failure reasons) —
  * every figure an honest StatLine from the real payload.
  */
-function OwnerGovernance() {
+export default function OwnerGovernance() {
   const gov = useQuery({
     queryKey: ["owner", "governance"],
     queryFn: () => ownerApi.governance(),
@@ -181,14 +179,5 @@ function OwnerGovernance() {
         ) : null}
       </View>
     </Screen>
-  );
-}
-
-
-export default function OwnerGovernanceTabbed() {
-  return (
-    <RoleTabFrame role="OWNER">
-      <OwnerGovernance />
-    </RoleTabFrame>
   );
 }
