@@ -1,0 +1,331 @@
+{
+  "meta": {
+    "task": "3-b-resume (A-Heron-Synth) — machine-readable porting spec for https://heronaiapp.com/ home page",
+    "sources": [
+      "/home/z/heron-lab/data/program-1440.json",
+      "/home/z/heron-lab/data/program-390.json",
+      "/home/z/heron-lab/data/deep-probe.json",
+      "/home/z/heron-lab/data/cssdeep.json",
+      "/home/z/heron-lab/data/map-deep.json",
+      "/home/z/heron-lab/data/map-struct.json",
+      "/home/z/heron-lab/data/nav-1440.json",
+      "/home/z/heron-lab/data/nav-390.json",
+      "/home/z/heron-lab/data/journey-states.json",
+      "/home/z/heron-lab/data/rem-scale.json",
+      "/home/z/heron-lab/data/page-transition.json",
+      "/home/z/heron-lab/data/probe3.json",
+      "live fetches: heronai.webflow.shared.9f21166e0.min.css, heronaiapp.com/ HTML (inline style blocks), heronai-bp.netlify.app/main.js (deobfuscated hot-spots), unpkg lenis@1.1.5"
+    ],
+    "rounding": "px values rounded to 2 decimals; rem kept exact",
+    "viewportsCaptured": [1440, 390],
+    "note": "All selectors are from the live Webflow DOM; GSAP tween tables extracted from the running global timeline."
+  },
+
+  "stack": {
+    "gsap": "3.12.5",
+    "scrollTrigger": "3.12.5 (loaded, scrollerProxy active)",
+    "splitText": "3.13.0 (type: 'lines, words')",
+    "textPlugin": "3.13.0",
+    "lenis": "1.1.5",
+    "barba": "@barba/core + @barba/prefetch",
+    "swiper": "11 (problem list on mobile)",
+    "jquery": "3.5.1",
+    "webflow": "runtime (custom components: header-component, loading-wrap, home-hero-wrap, home-intro-wrap, home-problem-wrap, home-map-wrap, home-platform-wrap, home-why-wrap, home-usecase-wrap, home-cta-wrap, footer-wrap)",
+    "customBundle": "heronai-bp.netlify.app/main.js (obfuscated Vite bundle, contains Lenis + all site logic)"
+  },
+
+  "scrollEngine": {
+    "architecture": "window never scrolls — html/body overflow visible, .body-inner{overflow:hidden;height:100vh}, .main-inner{overflow:hidden} is the Lenis wrapper AND the ScrollTrigger scroller (scrollerProxy registered). html{overscroll-behavior:none}",
+    "lenisConfig": {
+      "wrapper": ".main-inner",
+      "content": ".main-content (querySelector inside wrapper)",
+      "syncTouch": true,
+      "smoothWheel": true,
+      "smoothTouch": false,
+      "infinite": false,
+      "lerp": 0.1,
+      "duration": "unset (lerp mode)",
+      "wheelMultiplier": 1,
+      "touchMultiplier": 1,
+      "defaultEasing": "t => Math.min(1, 1.001 - Math.pow(2, -10*t))",
+      "source": "new Lenis({...}) found in main.js; unlisted options = Lenis 1.1.5 defaults verified against unpkg bundle"
+    },
+    "rafWiring": "gsap.ticker.add(t => lenis.raf(t * 1000)); gsap.ticker.lagSmoothing(0) — Lenis is driven by the GSAP ticker (no autoRaf)",
+    "scrollBinding": "lenis.on('scroll', e => { ScrollTrigger.update(); scrollerState update; if (Math.abs(e.velocity) > 0.1) <container class toggle>; 150ms settle timeout re-adds class })",
+    "menuLock": "menu open -> lenis.stop() (.lenis.lenis-stopped{overflow:hidden}); close -> lenis.start()",
+    "measurements": {
+      "1440x900": { "scrollHeight": 12355, "clientHeight": 887, "maxScroll": 11468 },
+      "390x844": { "scrollHeight": 11441, "clientHeight": 828, "maxScroll": 10613 }
+    },
+    "scrollTriggerDefaults": { "scroller": ".main-inner", "anticipatePin": 0, "invalidateOnRefresh": true },
+    "motionProbeNote": "lenis-decay.json captured all-zero window scroll (probing window.scrollY while the real scroller is .main-inner) — no behavioral lerp/duration measurement; config taken from source instead"
+  },
+
+  "remBase": {
+    "formula": "html { font-size: <rate>vw } with 3 rates via media queries",
+    "rates": {
+      "desktop (default, >=992px)": "0.5787037037vw",
+      "tablet (max-width:991px)": "1.1990407674vw",
+      "mobile (max-width:767px)": "2.5445292621vw"
+    },
+    "samples": {
+      "320": "8.14px", "360": "9.16px", "390": "9.92px", "414": "10.53px", "480": "12.21px",
+      "640": "16.29px", "768": "9.21px", "900": "10.79px", "1024": "5.93px", "1100": "6.37px",
+      "1280": "7.41px", "1366": "7.91px", "1440": "8.33px", "1600": "9.26px", "1920": "11.11px", "2560": "14.81px"
+    },
+    "derived": "1rem = 8.33px @1440, 9.92px @390, 11.11px @1920 — everything in the CSS is rem-based so the whole page scales with viewport"
+  },
+
+  "typeLadder": [
+    { "level": "h1 (.heading.h1)", "size": "5.6rem", "weight": 700, "lineHeight": 1, "letterSpacing": "-0.02em", "transform": "uppercase", "px1440": "46.67px", "px390": "31.76px" },
+    { "level": "h2 (.heading.h2)", "size": "4.8rem", "weight": 600, "lineHeight": 1, "letterSpacing": "-0.02em", "transform": "uppercase", "px1440": "40.00px" },
+    { "level": "h3 (.heading.h3)", "size": "4rem", "weight": 600, "lineHeight": 1, "letterSpacing": "-0.02em", "transform": "uppercase", "px1440": "33.33px", "px390": "31.76px (3.2rem remapped by .h2->h3 mobile step)" },
+    { "level": "h4 (.heading.h4)", "size": "3.2rem", "weight": 600, "lineHeight": 1, "letterSpacing": "-0.02em", "transform": "uppercase", "px1440": "26.67px" },
+    { "level": "h5 (.heading.h5)", "size": "2.8rem", "weight": 600, "lineHeight": 1 },
+    { "level": "h6 (.heading.h6)", "size": "2.4rem", "weight": 600, "lineHeight": 1.1 },
+    { "level": "body (p, .body)", "size": "1.6rem", "weight": 500, "lineHeight": 1.3, "letterSpacing": "-0.02em", "px1440": "13.33px" },
+    { "level": ".txt.txt-16", "size": "1.6rem", "lineHeight": "1.3", "px1440": "13.33px" },
+    { "level": ".txt-14 / .txt-16.txt-mb-14", "size": "1.4rem", "lineHeight": 1.1, "px1440": "11.67px" },
+    { "level": ".txt-10", "size": "1rem", "lineHeight": "1.3em" },
+    { "level": "mono label (.txt.txt-font-mono)", "family": "Geistmono", "size": "1.4rem", "weight": 500, "lineHeight": 1.1, "letterSpacing": "normal", "transform": "uppercase", "px1440": "11.67px" }
+  ],
+
+  "fonts": {
+    "sans": { "family": "\"BT Grotesk\", Arial, sans-serif", "weights": [400, 500, 600, 700], "italic": [400, 500, 600, 700], "display": "swap" },
+    "mono": { "family": "Geistmono, Arial, sans-serif", "weight": 500, "display": "swap" },
+    "icons": { "family": "webflow-icons", "weight": 400 }
+  },
+
+  "colors": {
+    "--content--primary": "#282828",
+    "--content--secondary": "#414140",
+    "--content--terriary": "#282828b8 (72% alpha)",
+    "--content--border": "#b3b3af",
+    "--content--disable": "#b4b4b0",
+    "--content--surface": "#72726f",
+    "--content--granite-gray": "#626260",
+    "--content--brand": "#fa3600",
+    "--content--white": "#fff",
+    "selection": "#e15c46 bg / #fff text",
+    "heroCursorLine": "#e0e0da @ opacity 0.2, mix-blend-mode: difference",
+    "paper": "background-image var(--bg-img) (bg.svg tile, repeat) on .body/.bg-global; grid deco var(--bg-grid) 6.4rem tile on problem items"
+  },
+
+  "spacingAndLayoutTokens": {
+    "--size--border": "max(1px, 0.1rem) — hairline thickness everywhere",
+    "--size--padding-hero": "calc(2.4rem + 1rem*2) = 4.4rem resolved",
+    "--size--max-screen-height": "calc(100dvh - 1.6rem) — hero + journey viewport height",
+    "container": "w-layout-blockcontainer: max-width 940px base; 728px @<=991; none (full-bleed) @<=767; .full-h = 100% width",
+    "hairlines": ".line absolute, background var(--content--border); .line-vertical{width:var(--size--border);height:100%}; .line-horizital{height:var(--size--border)}",
+    "bgBorderFrame": "absolute inset 1.2rem (0.8rem @<=767); 4 edge items ~7px thick; 4 corner plus marks 1.2rem (0.8rem mobile)",
+    "gaps": "grid gap 0 (Webflow grid with explicit rows/cols); flex gaps 0.4/0.6/1.6/2.4rem scale; section inner paddings 1.6/2.4/3.2rem scale; intro content pad 6.4rem 15rem 3.2rem @1440"
+  },
+
+  "pageMap": [
+    { "order": 1, "section": "home-hero-wrap", "component": "home-hero-wrap", "triggerStartPx1440": 0, "triggerEndPx1440": 884, "height": "calc(100dvh - 1.6rem) + 4.4rem padding-top" },
+    { "order": 2, "section": "home-intro-wrap", "trigger": "clamp(top bottom+=50%) -> bottom top-=50%", "px1440": [0, 2053], "px390": [0, 2089], "height": "clamp(60.4rem, 100dvh-1.6rem, 86.7rem)" },
+    { "order": 3, "section": "home-problem-wrap", "trigger": "clamp(top bottom+=50%) -> bottom top-=50%", "px1440": [279, 2795], "px390": [433, 2959] },
+    { "order": 4, "section": "home-map-wrap (pinned journey)", "trigger": "clamp(top bottom+=50%) -> bottom top-=50%", "px1440": [1021, 9095], "px390": [1303, 7778], "height": "700dvh", "docTop1440": 2358.42, "pin": "CSS sticky (.home-map-inner{position:sticky;top:0;height:calc(100dvh - 1.6rem)}) — NO GSAP pin anywhere on the page" },
+    { "order": 5, "section": "home-platform-wrap", "trigger": "clamp(top bottom+=50%) -> bottom top-=50%", "px1440": [7321, 9805], "px390": [6122, 8336], "stickyInner": ".home-platform-content-inner{position:sticky; top:377.56px}" },
+    { "order": 6, "section": "home-why-wrap", "trigger": "clamp(top bottom+=50%) -> bottom top-=50%", "px1440": [8031, 10503], "px390": [6680, 9142] },
+    { "order": 7, "section": "home-usecase-wrap", "trigger": "clamp(top bottom+=50%) -> bottom top-=50%", "px1440": [8729, 11390], "px390": [7486, 10090] },
+    { "order": 8, "section": "home-cta-wrap (cta + footer)", "trigger": "top bottom+=100vh -> bottom top", "px1440": [9960, 11645], "px390": [9028, 10176] },
+    { "order": 9, "section": "footer", "trigger": "top bottom+=100vh -> bottom top", "px1440": [10658, 12355], "px390": [10456, 11441] }
+  ],
+
+  "scrollTriggers1440": [
+    { "idx": 0, "trigger": "div.home-intro-wrap", "start": "clamp(top bottom+=50%)", "end": "bottom top-=50%", "px": [0, 2053], "scrub": null, "pin": false, "toggleActions": "play", "onEnter/onEnterBack": true, "animation": "0s placeholder timeline (section reveal scheduler)" },
+    { "idx": 1, "trigger": "div.home-intro-content-title", "start": "center bottom+=10%", "end": "center top+=40%", "px": [98, 718], "scrub": true, "toggleActions": "play", "animation": "4.28s per-char color tween #b3b3af -> #282828, stagger 0.03, per-char duration 0.5, power1.out, 127 chars" },
+    { "idx": 2, "trigger": "#w-node-...f08 (intro img)", "start": "top+=45% bottom", "toggleActions": "play" },
+    { "idx": 3, "trigger": "#w-node-...44c (intro partner label)", "start": "top+=55% bottom", "toggleActions": "play" },
+    { "idx": 4, "trigger": "div.home-problem-wrap", "start": "clamp(top bottom+=50%)", "end": "bottom top-=50%", "px": [279, 2795] },
+    { "idx": 5, "trigger": "div.home-problem-head", "start": "top+=65% bottom", "px": [846, 1800] },
+    { "idx": 6, "trigger": "div.home-problem-content", "start": "top+=55% bottom", "px": [1217, 2352] },
+    { "idx": 7, "trigger": "div.home-map-wrap", "start": "clamp(top bottom+=50%)", "end": "bottom top-=50%", "px": [1021, 9095] },
+    { "idx": 8, "trigger": "div.home-platform-wrap", "start": "clamp(top bottom+=50%)", "end": "bottom top-=50%", "px": [7321, 9805] },
+    { "idx": 9, "trigger": "#w-node-...746 (platform item)", "start": "top+=40% bottom", "px": [8049, 9362], "animation": "1.64s, 3 children" },
+    { "idx": 10, "trigger": "div.home-platform-img-item:nth(1)", "start": "top+=45% bottom", "px": [7925, 9007] },
+    { "idx": 11, "trigger": "div.home-platform-img-item:nth(2)", "start": "top+=45% bottom", "px": [8279, 9362] },
+    { "idx": 12, "trigger": "div.home-why-wrap", "start": "clamp(top bottom+=50%)", "end": "bottom top-=50%", "px": [8031, 10503] },
+    { "idx": 13, "trigger": "div.home-why-head.grid", "start": "top+=65% bottom", "px": [8650, 9631], "animation": "1.76s, 4 children" },
+    { "idx": 14, "trigger": "#w-node-...75e (why img 1)", "start": "top+=45% bottom", "px": [8851, 9748], "animation": "1.7s expo.out scale/alpha" },
+    { "idx": 15, "trigger": "#w-node-...151 (why img 2)", "start": "top+=45% bottom", "px": [8922, 9819], "animation": "1.7s" },
+    { "idx": 16, "trigger": "#w-node-...102 (why img 3)", "start": "top+=45% bottom", "px": [8993, 9889], "animation": "1.7s" },
+    { "idx": 17, "trigger": "#w-node-...1df (why img 4)", "start": "top+=45% bottom", "px": [9063, 9960], "animation": "1.7s" },
+    { "idx": 18, "trigger": "div.home-usecase-wrap", "start": "clamp(top bottom+=50%)", "end": "bottom top-=50%", "px": [8729, 11390] },
+    { "idx": 19, "trigger": "div.cta-main.grid", "start": "top+=40% bottom", "px": [10232, 11257], "animation": "2.05s, 7 children" },
+    { "idx": 20, "trigger": "div.cta-deco.grid", "start": "top+=40% bottom", "px": [10525, 11645], "animation": "1.7s expo.out" },
+    { "idx": 21, "trigger": "#w-node-...190 (footer form btn)", "start": "top+=55% bottom", "px": [10869, 11847], "animation": "1.06s" },
+    { "idx": 22, "trigger": "div.footer-form-wrap", "start": "top+=55% bottom", "px": [11044, 11999], "animation": "1.3s, 3 children" },
+    { "idx": 23, "trigger": "#w-node-...1af (footer menu)", "start": "top+=55% bottom", "px": [10869, 11848], "animation": "1.42s, 12 children" },
+    { "idx": 24, "trigger": "#w-node-...1e4 (footer menu 2)", "start": "top+=55% bottom", "px": [11044, 11999], "animation": "2.2s, 14 children" },
+    { "idx": 25, "trigger": "#w-node-...20d (footer info)", "start": "top+=55% bottom", "px": [10953, 11999], "animation": "1.7s" },
+    { "idx": 26, "trigger": "div.footer-img-wrap", "start": "top+=55% bottom", "px": [11285, 12314] },
+    { "idx": 27, "trigger": "div.footer-copyright-wrap.grid", "start": "top+=35% bottom", "px": [11441, 12355], "animation": "1.12s" },
+    { "idx": 28, "trigger": "div.cta-wrap", "start": "top bottom+=100vh", "end": "bottom top", "px": [9960, 11645], "scrub": false },
+    { "idx": 29, "trigger": "div.cta-wrap", "start": "top bottom+=100vh", "end": "bottom top", "px": [9960, 11645], "scrub": false },
+    { "idx": 30, "trigger": "footer.footer", "start": "top bottom+=100vh", "end": "bottom top", "px": [10658, 12355], "scrub": false, "note": "x8 duplicated triggers (parallax/wordmark drivers, 0-duration placeholder timelines)" }
+  ],
+
+  "scrollTriggers390": {
+    "count": 26,
+    "deltas": [
+      "no footer.footer x8 triggers (no footer parallax set on mobile)",
+      "no home-platform-img-item triggers",
+      "why-img triggers collapse to 4 with near-identical ranges (7549-7574 -> 8569-8574)",
+      "intro title scrub identical (4.28s) but px range 420->1000",
+      "map wrap range 1303->7778 (shorter because 700dvh = 5796px at 828px viewport)"
+    ]
+  },
+
+  "tweenTable": [
+    { "recipe": "maskLineReveal (SplitText)", "structure": "h* > div.bp-mask-line-mask{overflow:hidden} > div.bp-line > div (per line/word)", "splitType": "lines, words", "vars": { "to": { "autoAlpha": 1, "yPercent": 0 }, "init": "gsap.set autoAlpha 0, yPercent 100 (inferred — from-state not in captured vars)", "duration": 0.8, "ease": "power2.out", "stagger": 0.02 }, "totals": "totalDur = 0.8 + (n-1)*0.02 (hero title 9 lines = 0.96s; hero sub 25 lines = 1.28s; why sub 34 = 1.46s)" },
+    { "recipe": "hairlineDraw", "targets": ".line-horizital / .line-vertical in hero title-wrap, sub-wrap, header-menu borders", "vars": { "from": { "scaleX|scaleY": 0, "transformOrigin": "top left (page) / bottom right (header menu)" }, "to": 1, "duration": 1.2, "ease": "none" } },
+    { "recipe": "blockRise", "targets": ".home-hero-work-wrap, .home-platform-content-left, .cta-head-items, .footer-form-inner", "vars": { "from": { "opacity": 0, "y": "3.2rem (26.67px @1440 / 31.76px @390)" }, "to": { "opacity": 1, "y": 0 }, "duration": 1, "ease": "power3.out", "clearProps": "all" } },
+    { "recipe": "fadeIn (frames/deco/img wraps)", "vars": { "from": { "opacity": 0 }, "to": 1, "duration": 1, "ease": "power3.out", "clearProps": "all" } },
+    { "recipe": "imgCardReveal", "targets": ".home-why-item-img, .cta-deco-item, .footer-logo-inner", "vars": { "to": { "scale": 1, "autoAlpha": 1 }, "duration": 1.6, "ease": "expo.out", "overwrite": true, "clearProps": "all", "initScale": "set by pre-tween (not captured; use 0.8 as port default)" } },
+    { "recipe": "introTitleScrub (per-char color)", "targets": ".home-intro-content-title split chars", "vars": { "from": "#b3b3af", "to": "#282828", "perCharDuration": 0.5, "stagger": 0.03, "ease": "power1.out", "scrubbedOver": "center bottom+=10% -> center top+=40% (620px @1440)" } },
+    { "recipe": "btnFillHover", "targets": ".btn-fill > .btn-fill-bg", "vars": { "maskPosition": "0% 0 -> 100% 0", "duration": 0.58, "ease": "steps(19)" } },
+    { "recipe": "btnFillLabelColor", "vars": { "color": "-> rgb(255,255,255)", "duration": 0.15, "ease": "circ.in" } },
+    { "recipe": "btnFillLabelSwap", "targets": ".btn-fill-label-inner (grid, .label-bot translateY(100%))", "vars": { "transform": "0.48s cubic-bezier(0.625,0.05,0,1)" } },
+    { "recipe": "headerMenuDrawIn", "targets": ".header-menu borders + items", "vars": { "scaleY": "0 -> 1, origin bottom right, 1.2s ease none", "opacity": "0 -> 1, 1s power3.out" } },
+    { "recipe": "menuReveal (mobile open)", "targets": ".header-menu.bg-global", "vars": { "clipPath": "inset(0 0 100%) -> inset(0)", "transition": "all 0.4s ease" }, "items": "SplitText reveals, delay 0.25 (menu items) / 0.2 (CTA + close row)" }
+  ],
+
+  "header": {
+    "selector": "header-component > header.header",
+    "geometry1440": { "position": "fixed", "top": 6.66, "height": 56.3, "width": "calc(100% - 1.6rem)", "zIndex": 10000000, "bg": "transparent (both states — no blur, no border at top)" },
+    "stateMachine": {
+      "on-scroll": "added when lenis scroll > 1 * header height (~56px); removed below",
+      "on-hide": "added when scrolling DOWN and scroll > 5 * header height (~280px); class sets .header-inner{transform:translateY(-101%)} with transition transform 0.4s; removed when scrolling UP past 5x (show again); guarded by header :hover and a 100ms setTimeout debounce; .header.on-hide{pointer-events:none}",
+      "observed": "on-scroll between 0-100px scroll; on-hide between 200-300px (matches 5x56=280)"
+    },
+    "navLinks": [
+      { "text": "HERON CHAT WIDGET", "href": "/heron-chat-widget" },
+      { "text": "HERON DASHBOARD", "href": "/heron-dashboard" },
+      { "text": "PRICING", "href": "/pricing" },
+      { "text": "INSIGHTS", "href": "/resources?sc=insights" },
+      { "text": "AI PRACTICES", "href": "/resources?sc=ai-practices" },
+      { "text": "DESIGN WORKFLOWS", "href": "/resources?sc=design-workflows" },
+      { "text": "ABOUT", "href": "/about-us" },
+      { "text": "CONTACT US", "href": "/contact-us" }
+    ],
+    "linkHover": { "color": "0.4s transition; tertiary -> white/primary", "current": "w--current gets 0.6rem square dot after the label" },
+    "dropdown": { "mechanism": "grid-template-rows 0fr -> 1fr + opacity, 0.4s ease", "itemIconSlide": "translate(calc(100% + 1.2rem)) swap top/bottom, 0.5s cubic-bezier(0.23,1,0.32,1)" },
+    "menu390": { "btn": "Menu text at top-right (x 288.5, y 32.7 @390)", "open": "clip-path inset(0 0 100%)->inset(0) 0.4s ease + lenis.stop(); borders L/R var(--size--border); item borders bottom", "close": "reverse + lenis.start()", "hamburger": "3 lines 1.5rem wide, var(--size--border) thick; on active first+last scale(0)", "note": "header-menu-btn display:none on desktop (>=992)" }
+  },
+
+  "imagery": {
+    "hero": {
+      "layers": [
+        "home-hero-img-interact-wrap: horizontal + vertical cursor lines (vertical = 1px x 700px, opacity 0.2, mix-blend difference, follows mouse), plus-cross (0.2rem strokes), mono coordinates readouts (data-control x/y), interact card (brand bg #d72201 block at 0.72 alpha)",
+        "bg-border frame: 4 edge strips (1373x7px horizontals, 7x833 verticals @1440) + 4 corner plus SVGs",
+        "home-hero-img-inner: single img.img-basic.img-abs, mix-blend-mode multiply, padding 3.2rem",
+        "ruler: inset 3.2rem, dashed tick lines (line-dash), items opacity 0 -> 1 on hover (0.4s), left/right halves clip-path var(--clip-half)",
+        "deco cards item1 (25.6rem wide, bottom 26%, left 14%) and item2 (bottom 22%, left 50%): mono label + text, brand bg square 1.6rem (data-anim fade-loop 1.5s), active state expands bg to full card (top/right/height/width 0.4s)"
+      ],
+      "drawOn": {
+        "hairlines": "scaleX/scaleY 0->1, 1.2s linear",
+        "titleLines": "mask reveal 0.8s power2.out stagger 0.02 (2 mask lines, 9 line divs)",
+        "subLines": "same recipe, 25 divs",
+        "imgWrap + deco + frame": "opacity 0->1, 1s power3.out",
+        "workCard": "rise 3.2rem, 1s power3.out",
+        "cursorLines": "live mouse tracking (canvas + data-control x/y text)"
+      }
+    },
+    "problemCards": {
+      "trigger": "hover @>=768 / swiper-slide-active @<768",
+      "recipes": {
+        "manual": { "dashDelay": 1.45, "dashStep": -15.88, "paths": { "database-top": 130, "database-inner": 80, "columns-upper": 82, "columns-lower": 28, "database-bottom": 75, "package-center": 34, "package-top": 100, "package-upper": 100, "package-sides": 190 }, "drawOrder": "top 0.8s@0 / inner 0.65s@0.12 / upper-cols 0.45s@0.25 / pkg-top 0.75s@0.2 / pkg-upper 0.7s@0.4 / pkg-sides 0.9s@0.55 / pkg-center 0.4s@0.9 / lower-cols 0.4s@0.95 / db-bottom 0.45s@1.15" },
+        "disjointed": { "dashDelay": 1.25, "strokeWidth": 1.5, "paths": { "circle": 180, "tops": 58, "sides/bottoms/boxes/center": 84, "maskLength": 430 }, "drawOrder": "circle 0.8s@0 / tops 0.35s@0.2 / sides 0.4s@0.35 / bottoms 0.6s@0.45 / boxes 0.35s@0.42 / center 0.4s@0.48; dash appear 0.35s ease-in @0.65 + infinite flow 1s linear" },
+        "blind": { "circleDuration": 1.25, "circlePath": 586, "dashDelays": { "outer": 0.6, "cube": 0.8 } },
+        "slow": { "dashDelay": 1.2, "dashStep": -13.27, "paths": { "uppers": 102, "upper-sides/center-lines": 36, "upper-bottoms/centers": 100, "lower-tops": 34, "lower-sides": 136, "lower-diagonals": 102 }, "drawOrder": "uppers 0.6s@0 / upper-sides 0.3s@0.3 / upper-bottoms 0.45s@0.25 / center-left/right 0.45s@0.5 / center-line 0.4s@0.45 / lower-tops 0.45s@0.5 / lower-sides 0.35s@0.6 / diagonals 0.45s@0.65 / lower-center 0.425s@0.9; dash 0.5s ease @1" }
+      },
+      "shared": { "drawEase": "cubic-bezier(0.22,1,0.36,1)", "keyframe": "homeProblemDraw: 0%{opacity:0; dashoffset:var(--path-length)} 1%{opacity:1} 100%{dashoffset:0}", "dashPattern": "0.93 2.8 9.35 2.8 (slow: 0.78 2.34 7.81 2.34)", "dashFlow": "homeProblemDashFlow dashoffset 0 -> var(--dash-step), 1s linear infinite", "hoverBgGrid": ".home-problem-item-main:after bg-grid 6.4rem tile, opacity 0.4s" }
+    },
+    "mapJourney": {
+      "pin": "section.home-map height 700dvh; .home-map-inner sticky top 0 height calc(100dvh - 1.6rem); NO ScrollTrigger pin",
+      "layers": "7 .home-map-main-img siblings all on grid-row 1/2 (same cell) — 6 cross-fade layers (initial opacity 0, .active -> 1) + 1 main; 2 .home-intel-inner ticker rows (574/589px wide); .home-map-intro card 28rem (bottom 3.2rem left 3.2rem, opacity 0, 5 content items cross-fade, 1 active); 3 .home-map-number-wrap markers (y 2651/2842/2925 @1440, hover/active -> number box opacity 1); right column .home-map-content-wrap width 0 -> 55.65rem (.expanded, transition width 0.4s)",
+      "svgAssembly": ".home-map-img-svg path:nth-child(1..13) each pre-transformed off-canvas: (1) translate(-100vw,-16rem) (2) translate(100vw,-26rem) (3) translate(100vw,26rem) (4) translate(-20rem,-100dvh) (5) translate(-22rem,-100dvh) (6) translate(-100vw,28rem) (7) translate(-100vw,48rem) (8) translate(-48rem,100dvh) (9) translate(-28rem,100dvh) (10) translate(9rem,100dvh) (11) translate(42rem,100dvh) (12) translate(100vw,26rem) (13) translate(-70rem,-100dvh) — driven to 0 by JS as journey progresses; mobile swaps vw->% and -130/-121/160dvh variants + url(#path-filter)",
+      "uncaptured": "stage boundaries/crossfade timing not sampled (journey-states.json stayed at defaults under instant scrollTo jumps — stage logic is not jump-driven)"
+    },
+    "whyIllustrations": {
+      "cycle": "5s infinite CSS loops (why-cycle), staggered by --box-delay 0/0.4/0.8s per box",
+      "eases": { "open": "cubic-bezier(0.16,1,0.3,1)", "smooth": "cubic-bezier(0.22,1,0.36,1)", "close": "cubic-bezier(0.64,0,0.78,0)" },
+      "boxes": "scale 0.001 -> 1 (12%->32% of cycle), hold to 62%, close by 70%",
+      "icons": "scale 0.75 -> 1.08 (17%) -> 1 (21%); border pulse scale 0.92 -> 1.35",
+      "points": "12 points scale 0.4 -> 1.15 -> 1, delay = index * 0.06s",
+      "lines": "16 dashed brand lines (#fa3600, dasharray 4 4), visibility windows 30%-87% of cycle, dashoffset 0 -> -8 (0.8s linear infinite), delay = index * 0.03s",
+      "loadingCard": "spinner 1s linear spin; dots 1.2s ease-in-out, delay = index * 0.2s; check pop at 80% scale 1.15; active border inset -0.2rem -> -0.4rem brand 0.4rem wide at 80-92%"
+    },
+    "footerWordmark": {
+      "element": ".footer-logo (min-height 42.4rem @1440, margin-left -1.55rem) with .ic-embed svg",
+      "reveal": "scale -> 1 + autoAlpha 1, 1.6s expo.out (imgCardReveal recipe)",
+      "color": "transition color 0.65s cubic-bezier(0.59,0.23,0.22,0.96) (darkens on scroll)",
+      "title": ".footer-title mask-line reveal 0.96s (9 line divs)"
+    }
+  },
+
+  "easingCurves": {
+    "gsap": {
+      "power1.out": [0, 0.19, 0.36, 0.51, 0.64, 0.75, 0.84, 0.91, 0.96, 0.99, 1],
+      "power2.out": [0, 0.27, 0.49, 0.66, 0.78, 0.88, 0.94, 0.97, 0.99, 1, 1],
+      "power3.out": [0, 0.34, 0.59, 0.76, 0.87, 0.94, 0.97, 0.99, 1, 1, 1],
+      "expo.out": [0, 0.5, 0.75, 0.88, 0.94, 0.97, 0.98, 0.99, 1, 1, 1],
+      "circ.in": [0, 0.01, 0.02, 0.05, 0.08, 0.13, 0.2, 0.29, 0.4, 0.56, 1],
+      "none": "linear"
+    },
+    "cssBeziers": {
+      "icon/btn standard": [0.23, 1, 0.32, 1],
+      "btn-fill family": [0.625, 0.05, 0, 1],
+      "btn-bg-hover wipe": [0.5, 0.5, 1, 1],
+      "footer-logo color": [0.59, 0.23, 0.22, 0.96],
+      "problemDraw (--draw-ease)": [0.22, 1, 0.36, 1],
+      "why-open": [0.16, 1, 0.3, 1],
+      "why-close": [0.64, 0, 0.78, 0]
+    }
+  },
+
+  "durations": {
+    "gsap": { "hairlineDraw": 1.2, "maskLinePerLine": 0.8, "blockRise": 1, "fadeIn": 1, "imgCard": 1.6, "introCharColor": 0.5, "btnFillWipe": 0.58, "btnLabelColor": 0.15, "btnLabelSwap": 0.48, "menuClip": 0.4, "pageTransitionPhase": 0.8 },
+    "css": { "standard": 0.4, "fast": 0.2, "gridRows": 0.4, "iconSlide": 0.5, "marquee": 30, "fadeLoop": 1.5, "whyCycle": 5, "dashFlow": 1, "spin": 0.8 },
+    "stagger": { "maskLines": 0.02, "introChars": 0.03, "menuItems": 0.25, "whyBoxes": [0, 0.4, 0.8], "whyPoints": "0.06 * i", "whyLines": "0.03 * i", "whyDots": "0.2 * i" }
+  },
+
+  "pageTransition": {
+    "lib": "@barba/core + prefetch",
+    "mechanism": "html carries --trans-percent / --mask-percent / --size--line custom props; .main{clip-path: inset(var(--mask-percent)) !important}; a hairline (driven by --size--line) sweeps the viewport center",
+    "timeline": [
+      "ink element fill/stroke -> solid, 0.5s, delay 0.2",
+      "deco fade autoAlpha 0.32 -> 0, 0.5s (parallel)",
+      "html --trans-percent 0% -> 50%, --mask-percent -> <half>, 0.8s (page clips away)",
+      "html --size--line 0 -> <measured px>, 0.8s (center line grows)",
+      "html --trans-percent 50% -> <end>, --mask-percent -> 0%, 0.8s power1.out, immediateRender:false (reveal next page)",
+      "html --size-line -> 0, 0.8s power1.out"
+    ],
+    "videoEvidence": "heron-home-to-about-1440.mp4 (13.56s): line-art of home morphs/dissolves into About page wireframe — vector-line continuity between pages, no color overlay",
+    "probeGap": "page-transition.json sampled 4 elements for 5.5s with zero changes (wrong selectors) — timings above are from main.js deobfuscation"
+  },
+
+  "cursor": {
+    "canvas": "#canvas-cursor, 2d context, full viewport (1440x900), fixed overlay",
+    "api": "window.__canvasCursor (custom class, init only when matchMedia('(hover:hover)') presumably), mouse distance threshold (reachedThreshold) gates interactions",
+    "markers": "data-cursor=\"hidden\" on hero img-wrap and ruler items"
+  },
+
+  "loading": {
+    "overlay": ".loading{opacity:1;pointer-events:all} -> .loaded{display:none}; logo svg stroke draw via --loading-logo-dasharray (path length 1443.42); .loading-bg img opacity 0.32; progress items; after load the hero timeline plays"
+  },
+
+  "couldNotBeExtracted": [
+    "Lenis behavioral decay (lerp feel) — decay probe read window.scrollY (all zeros); config recovered from source instead",
+    "journey (home-map) stage boundaries + crossfade cue points — journey-states.json stayed at defaults under instant jumps; stage logic is not jump-driven (likely rAF/velocity gated). svgAssembly end-state and per-stage opacity cues need a new smooth-scroll probe",
+    "initial states of to()-tweens (maskLine yPercent=100, imgCard scale) — set via gsap.set at init, not present in captured vars; values are inferred from the standard pattern",
+    "page-transition element identities (which svg fills, the --mask-percent half value) — obfuscated string table; timings recovered, selectors not",
+    "768/1920 ScrollTrigger px tables — only 1440/390 were captured (rem-scale covers all widths; trigger geometry at 768/1920 must be recomputed from the same start/end strings)",
+    "header hide/show exact show-on-scroll-up threshold behavior — direction logic decoded but one branch is control-flow-flattened; observed classes confirm on-scroll @1x and on-hide @5x",
+    "cursor canvas drawing details (shape, blend, scale) — only the canvas + threshold API were visible in the obfuscated bundle",
+    "Swiper config for mobile problem list (slidesPerView, spaceBetween) — not probed",
+    "theme toggle — none found (site is light-only with --cl-bg var; dark tokens exist in CSS but no toggle observed on home)"
+  ]
+}
