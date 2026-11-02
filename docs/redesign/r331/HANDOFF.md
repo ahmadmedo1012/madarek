@@ -38,6 +38,16 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 | c62c95b6 | docs HANDOFF | ❌ CI (E2E + Typecheck; downstream skipped) | hero accessible-text seam, typecheck leftovers, e2e watcher window |
 | 01300d68 | fix(r331-ci): seam+typecheck+watcher | ❌ CI (Surface drift only) | drift flagged 12 findings from the R331 landing rebuild |
 | 4aaad5e2 | fix(r331-drift): cinematic rungs folded + card sample re-seated | ✅ CI all 10 jobs + Size gate ✅ | API-checked: runs 41468527861 / 41468527964 — **main is GREEN** |
+| 386d06af | docs HANDOFF (red→green closed) | ✅ Size gate + CI ✅ | docs-only push, API-checked |
+| d8cb27a8 | fix(r331-journey): ≤991 blank-pin root-caused + repaired | ✅ Size gate ✅; CI ❌ E2E → **re-run ✅** | the one red E2E was a runner flake (r309 drag spec: renderer crash at 45.7s vs 2.8s local, "browser has been closed"; same code green on re-run 41513003603). Full API-checked |
+
+**A-Web-Journey closed.** The brief's hard defect (≤991 pinned journey blank — owner frames
+m-025/m-050) is root-caused: Chromium sticky-subtree paint-chunk merge/drop — the plan svg
+inside the 2nd-level sticky loses its raster when the in-flow sibling after it paints without
+its own layer. 13-probe forensic ladder (containment + c-v skirt exonerated, headed-Chromium
+proof) → one-rule repair (`.jt-intro, .jt-window .bp-svg { transform: translateZ(0) }` at
+≤991). Before ladders 0/5+0/5 painted → after 5/5+5/5; 10/10 journey e2e; 70/70 contract
+unit tests; stylelint delta 0. Report: `web-journey.md` + `thumbs/journey/`.
 
 **Red→green cycle closed.** Root causes of the three red pushes, in order: (1) 5cc53712 — the
 landing split (LandingPage.tsx / SheetNav.tsx / Hero.tsx) left 6 contract tests + the motion-token
@@ -73,8 +83,9 @@ folded, sample re-seated on `.hro-work-item`/`.rl-row`, baseline re-promoted (4a
   stylelint baseline 82e/126w) · A-App-Shell (persistent (tabs) ×5 roles, reanimated 4.7.1
   + worklets + keyboard-controller + bottom-sheet added, FABs removed, «الحوكمة» fixed,
   762/762 tests, web export green) · A-Web-Hero (Heron construction, live animation proof
-  t=0.3s vs t=3s) · A-Web-Nav (56px/1×/5× thresholds, clip-path menu, lenis stop, CLS 0.0234).
-- In flight: A-Web-Journey (≤991 blank-pin defect), A-Web-Sections, A-App-Motion, A-App-Student.
+  t=0.3s vs t=3s) · A-Web-Nav (56px/1×/5× thresholds, clip-path menu, lenis stop, CLS 0.0234) ·
+  A-Web-Journey (≤991 blank-pin ROOT-CAUSED + repaired — see the ledger row above).
+- In flight: A-Web-Sections (platform/why/faq/cta/footer per heron-program §4), A-App-Motion, A-App-Student.
 - Next: A-Web-Inner/Dash, A-App-Brand/Teacher/Admin, QA panel, EAS builds, evidence Release.
 
 ## Push blocker — RESOLVED
@@ -86,9 +97,10 @@ environment reset and are re-created as needed from remote main.
 
 ## Next actions
 
-1. A-Web-Journey: rebuild the ≤991px journey per heron-program.md (`section.home-map{height:700dvh}`
-   + sticky inner, zero GSAP pins) with before/after eye-proof of the blank-pin defect.
-2. A-Web-Sections + A-Web-Inner/Dash; A-App-Motion + A-App-Student (L3 screens).
+1. A-Web-Sections: the remaining bands per heron-program.md §4 (platform sticky-inner,
+   why 5s CSS loops + pulse points, FAQ 0fr→1fr accordion, CTA 7-child reveal, footer
+   wordmark 1.6s expo.out) — rebuild + behavior-prove each, same harness discipline.
+2. A-App-Motion + A-App-Student (L3 screens on the new tabs shell).
 3. QA panel (blind 3-reviewer ≥9/10, ≥55fps@4×, CLS<0.02), EAS builds, evidence Release.
 
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
