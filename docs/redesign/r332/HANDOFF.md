@@ -70,12 +70,26 @@ Loop: build → twin → fix → twin. **The Twin Report decides.**
 | sha | subject | CI | Size gate | note |
 |---|---|---|---|---|
 | 39e748fe | R331 final (baseline) | ✅ | ✅ | Actions API at R331 close |
+| 298dbb7e | r332 kickoff scaffold | ✅ 11/11 (lint·typecheck·build·unit×2·db·e2e·e2e-ios·design·surface·size) | ✅ | API-checked check-runs |
+| 8b624ad0 | arsenal delta + css baseline + twin harness v0 | (pending at push) | (pending) | polled next |
 
 ## Tools actually used (unproven claims are void)
 | tool | invoked | commit | artifact |
 |---|---|---|---|
-| Actions API CI check | kickoff | (this commit) | ledger row above |
-| (fill per use) | | | |
+| Actions API CI check | kickoff | 298dbb7e | ledger row 11/11 ✅ |
+| Python Playwright (chromium) twin harness | run-001 | 8b624ad0 | 9 sec × 51 fr × 2 sides @1440 + 3 sec @390 → report.json/md |
+| PIL (thumbnails + mean-diff) | run-001 | (this commit) | 8 thumbs ≤150KB in twin/thumbs/ |
+| eyes-on frame review (Read) | run-001 | (this commit) | hero inner-box + statement-390 confirmed |
+| npm registry + GitHub API currency scan | A-Scout | 8b624ad0 | arsenal-delta.md |
+| stylelint@16 -f json census | A-CSS | 8b624ad0 | css-baseline.md (78e/104w) |
+
+## Twin run-001 verdicts (judge — full numbers in `twin/run-001.md`)
+1440 PASS-side: heights hero/pains/roles/platform/journey/cta ≤0.45% Δ; hero fs identical.
+1440 FAIL: statement (h 5.33% · fs 24.1%) · journey fs 66.7% · platform fs 66.7% · why (h 10.18% ·
+rhythm 24px) · cta (rhythm 20px · trigger 58px) · footer h 24.14% · roles trigger 58px.
+390 FAIL: statement h +39.8%/fs 2× (1408 vs 847px) · pains 4-up squeezed to 74.5px cols ·
+journey fs 2× + 555px trigger cascade. Hero inner-box confirmed eyes-on.
+**Wave 1 = W1–W6 CSS-first against these targets (see run-001.md table).**
 
 ## Exit criteria tracker
 - [ ] Twin Report: every home section passes thresholds @1440/1024/768/390 · blind test pass
