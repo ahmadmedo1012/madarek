@@ -42,6 +42,7 @@
  *   .fo-hero-actions .fo-hero-cta (the ONE primary) ·
  *   .fo-hero-work (the strip). Everything else is namespaced hro-*.
  */
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../../Icon';
@@ -140,20 +141,31 @@ export function Hero() {
       <div className="hro-content">
         <div className="hro-title-cell">
           <h1 className="hro-title fo-hero-title">
-            {TITLE_LINES.map((line) => (
-              <span key={line} className="hro-lmask">
-                <span className="hro-line">{line}</span>
-              </span>
+            {TITLE_LINES.map((line, i) => (
+              <Fragment key={line}>
+                {/* the whitespace text node between mask lines is the
+                    accessible-text seam: display:block masks render no
+                    box for it (visually inert), but textContent keeps
+                    the natural sentence spacing — screen readers and
+                    text pins read «من المحاضرة إلى الإتقان», not glue */}
+                {i > 0 ? ' ' : null}
+                <span className="hro-lmask">
+                  <span className="hro-line">{line}</span>
+                </span>
+              </Fragment>
             ))}
           </h1>
         </div>
 
         <div className="hro-sub-cell">
           <p className="hro-lead">
-            {LEAD_LINES.map((line) => (
-              <span key={line} className="hro-lmask">
-                <span className="hro-line">{line}</span>
-              </span>
+            {LEAD_LINES.map((line, i) => (
+              <Fragment key={line}>
+                {i > 0 ? ' ' : null}
+                <span className="hro-lmask">
+                  <span className="hro-line">{line}</span>
+                </span>
+              </Fragment>
             ))}
           </p>
 

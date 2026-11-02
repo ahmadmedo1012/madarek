@@ -20,7 +20,7 @@
  *     button — same route, clearer affordance).
  *   · 404 way-back — home (primary) + colleges + login (r164b).
  */
-import { describe, expect, it, beforeAll, vi } from 'vitest';
+import { describe, expect, it, beforeAll } from 'vitest';
 import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';

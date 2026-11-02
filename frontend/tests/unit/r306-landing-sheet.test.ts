@@ -33,13 +33,11 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 /** Drop /* … *‌/ blocks so comments quoting old values can't satisfy pins. */
 const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 
-const css = read('src/styles/landing.css');
 const live = stripComments([
   'src/styles/landing.css',
   'src/styles/r331/nav.css',
   'src/styles/r331/hero.css',
 ].map(read).join('\n'));
-const tsx = read('src/pages/LandingPage.tsx');
 /* Strip BOTH comment forms: block comments AND line-start // prose —
  * tombstone narration quoting retired values must neither satisfy a
  * positive pin nor trip a not-contain pin (the landing-funnel

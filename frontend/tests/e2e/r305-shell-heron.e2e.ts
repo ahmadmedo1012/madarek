@@ -322,14 +322,16 @@ test.describe('المسار النشط واستعادة التمرير', () => {
 
     await page.goBack();
     await expect(page).toHaveURL(/\/student\/dashboard$/);
-    // المراقب المحدود يعيد التطبيق حتى ~60 إطارًا — امنحه نافذته.
+    // المراقب المحدود يعيد التطبيق حتى ~60 إطارًا — تحت حمل CI قد
+    // يتجاوز 60 إطار 2500ms (CI خضراء أثبتت 4.3s للمسار نفسه)، فالنافذة
+    // 4000ms تغطي الإطار الواحد البطيء دون إضعاف التثبيت (±60px كما هو).
     await page.waitForFunction(
       (expected) => {
         const el = document.querySelector<HTMLElement>('.content');
         return el != null && Math.abs(el.scrollTop - (expected as number)) < 60;
       },
       y,
-      { timeout: 2500 },
+      { timeout: 4000 },
     );
     const restored = await page.evaluate(() => document.querySelector<HTMLElement>('.content')?.scrollTop ?? -1);
     expect(Math.abs(restored - y), `التمرير استُعيد (${restored} ≈ ${y})`).toBeLessThanOrEqual(60);
