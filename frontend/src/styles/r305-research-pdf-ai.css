@@ -1067,12 +1067,17 @@
   }
 
   /* ── C8 · Print — hide the live chrome additions ─────────────────── */
+  /* R331 A-CSS pass 1 — bangs retired: the only competing rules for
+     these r305pdf-* selectors are this file's own screen rules
+     (same @layer pages, earlier source, equal specificity), which a
+     print-scoped block outranks in document order; no other sheet
+     touches the r305pdf- namespace. */
   @media print {
     .r305pdf-progress,
     .r305pdf-selbar,
     .r305pdf-hitmark {
-      display: none !important;
-      background: transparent !important;
+      display: none;
+      background: transparent;
     }
   }
 
