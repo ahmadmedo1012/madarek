@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -32,7 +30,7 @@ interface TopCourse {
  * through the honest unknown-JSON ledger (numbers via latn, arrays as
  * counted rows, labels from keys — nothing fabricated).
  */
-function AdminReports() {
+export default function AdminReports() {
   const scope = useInstitutionScope();
   const reports = useQuery({
     queryKey: ["admin", "reports", scope],
@@ -152,14 +150,5 @@ function AdminReports() {
         )}
       </View>
     </Screen>
-  );
-}
-
-
-export default function AdminReportsTabbed() {
-  return (
-    <RoleTabFrame role="ADMIN">
-      <AdminReports />
-    </RoleTabFrame>
   );
 }

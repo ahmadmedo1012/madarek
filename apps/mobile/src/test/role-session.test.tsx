@@ -26,7 +26,7 @@ import type { AppRole, AuthUser } from "@/api/types";
 const ROLES: { role: AppRole; home: string }[] = [
   { role: "STUDENT", home: "student/(tabs)/dashboard" },
   { role: "TEACHER", home: "teacher/(tabs)/dashboard" },
-  { role: "ADMIN", home: "admin/dashboard" },
+  { role: "ADMIN", home: "admin/(tabs)/dashboard" },
   { role: "QUALITY", home: "quality/dashboard" },
   { role: "OWNER", home: "owner/dashboard" },
 ];

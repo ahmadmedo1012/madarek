@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -28,7 +26,7 @@ import {
 } from "@/features/governance/components";
 
 /** (tabs) Admin dashboard — «لوحة المسجل العام» (web AdminDashboardPage parity). */
-function AdminDashboard() {
+export default function AdminDashboard() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
@@ -212,14 +210,5 @@ function AdminDashboard() {
         </T>
       </View>
     </Screen>
-  );
-}
-
-
-export default function AdminDashboardTabbed() {
-  return (
-    <RoleTabFrame role="ADMIN">
-      <AdminDashboard />
-    </RoleTabFrame>
   );
 }

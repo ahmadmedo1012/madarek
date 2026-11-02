@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -27,7 +25,7 @@ import {
 } from "@/features/governance/components";
 
 /** (tabs) Faculties & departments — «الكلّيّات والأقسام» (web AdminFacultiesPage parity). */
-function AdminFaculties() {
+export default function AdminFaculties() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
@@ -262,14 +260,5 @@ function AdminFaculties() {
         </View>
       </Sheet>
     </Screen>
-  );
-}
-
-
-export default function AdminFacultiesTabbed() {
-  return (
-    <RoleTabFrame role="ADMIN">
-      <AdminFaculties />
-    </RoleTabFrame>
   );
 }

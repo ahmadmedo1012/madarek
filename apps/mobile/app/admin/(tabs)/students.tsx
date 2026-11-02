@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -31,7 +29,7 @@ import {
 const PAGE_LIMIT = 20;
 
 /** (tabs) Students roster — «إدارة الطلاب» (web AdminStudentsPage parity). */
-function AdminStudents() {
+export default function AdminStudents() {
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
@@ -325,14 +323,5 @@ function EnrollmentManager({
         onCancel={() => setConfirming(null)}
       />
     </Sheet>
-  );
-}
-
-
-export default function AdminStudentsTabbed() {
-  return (
-    <RoleTabFrame role="ADMIN">
-      <AdminStudents />
-    </RoleTabFrame>
   );
 }

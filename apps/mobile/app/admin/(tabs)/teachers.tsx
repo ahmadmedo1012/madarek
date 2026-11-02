@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -42,7 +40,7 @@ const POSITION_OPTIONS: { id: PositionChoice; label: string }[] = [
 ];
 
 /** (tabs) Teachers roster — «إدارة الأساتذة» (web AdminTeachersPage parity). */
-function AdminTeachers() {
+export default function AdminTeachers() {
   const scope = useInstitutionScope();
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
@@ -361,14 +359,5 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
         onCancel={() => setUnverifyConfirm(false)}
       />
     </Sheet>
-  );
-}
-
-
-export default function AdminTeachersTabbed() {
-  return (
-    <RoleTabFrame role="ADMIN">
-      <AdminTeachers />
-    </RoleTabFrame>
   );
 }
