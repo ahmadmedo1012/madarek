@@ -1,0 +1,32 @@
+{
+  "comment": [
+    "R331 A-CSS pass 1 · stylelint baseline gate (frontend/.stylelintrc.json).",
+    "",
+    "ERROR-tier rules catch mechanical duplication bugs (round-patch fallout):",
+    "  · no-duplicate-selectors — the same selector twice in one sheet;",
+    "  · declaration-block-no-duplicate-properties — the brief's",
+    "    \"block-no-duplicate-properties\" — stylelint 16's core name;",
+    "  · declaration-block-no-shorthand-property-overrides.",
+    "",
+    "WARNING-tier is the pass-2 backlog tracked in css-pass1.md:",
+    "  · no-descending-specificity — the debt @layer absorbs.",
+    "",
+    "NOT CONFIGURED, deliberately:",
+    "  · no-important — not a stylelint-16 core rule, and no plugin exists",
+    "    on the npm registry (stylelint-no-important et al. → 404). The",
+    "    !important census is tracked by the grep gate instead (census",
+    "    table + counts in docs/redesign/r331/css-pass1.md).",
+    "",
+    "Baseline counts are recorded in docs/redesign/r331/css-pass1.md — the",
+    "gate fails only on errors GROWING above baseline; warnings are tracked,",
+    "not enforced yet. Runner is `npx -y stylelint@16` (pinned major, no",
+    "devDependency — keeps frontend install lean; the npm cache makes repeat",
+    "runs offline-fast)."
+  ],
+  "rules": {
+    "no-duplicate-selectors": true,
+    "declaration-block-no-duplicate-properties": true,
+    "declaration-block-no-shorthand-property-overrides": true,
+    "no-descending-specificity": [true, { "severity": "warning" }]
+  }
+}

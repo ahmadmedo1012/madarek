@@ -1,0 +1,60 @@
+/* layers.css — R331 A-CSS pass 1 · the @layer constitution.
+ *
+ * This file is imported FIRST in main.tsx (before fonts.css) so the
+ * layer order below is established before any rule is parsed. It is
+ * the single normative statement of the R331 cascade architecture.
+ *
+ * ── The constitution ────────────────────────────────────────────────
+ *
+ *   reset → tokens → base → layout → components → pages → utilities
+ *                                          … overrides (the capstone)
+ *
+ * `overrides` is not re-declared here on purpose: it already first
+ * appears in motion.css's own order statement (`@layer tokens, base,
+ * layout, components, pages, overrides;`) and re-declaring it here
+ * would move it BEFORE utilities. Left alone it lands AFTER utilities
+ * (layer names not in this statement keep their first-appearance
+ * order, appended after the declared ones), which preserves the
+ * exact relative order the sheets already ship:
+ *
+ *   tokens < base < layout < components < pages < overrides
+ *
+ * …with two new EMPTY slots (reset at the front, utilities between
+ * pages and overrides). Empty layers cannot change any computed
+ * value, so this declaration is cascade-neutral by construction —
+ * proven by the pass-1 BEFORE/AFTER screenshot pairs
+ * (docs/redesign/r331/css-pass1.md §5).
+ *
+ * ── Why declaration-only in pass 1 ──────────────────────────────────
+ *
+ * The 53 sheets are PARTIALLY layered, and the unlayered remainder is
+ * deliberate: base.css §loader ("appended OUTSIDE @layer base so the
+ * loader family is the one unlayered rung"), components.css ("38px
+ * was inert (unlayered beats @layer components)"), r321-player-page
+ * ("@layer pages can never beat an unlayered rule"). Unlayered rules
+ * out-rank every layer; wrapping whole files now would invert those
+ * documented escape hatches. Pass 2 migrates file-by-file, proving
+ * each move with the css-shots harness (scripts/gates/css-shots.mjs).
+ *
+ * ── The mapping (target homes; ★ = already seated today) ────────────
+ *
+ *   reset      (reserved — the future normalize/reset sheet)
+ *   tokens     tokens.css ★ · tokens.generated.css ★
+ *   base       base.css ★ (partial) · fonts.css (pass 2: @font-face
+ *              does not compete in the cascade, seat for tidiness)
+ *   layout     layout.css ★ (partial) · r305-shell.css · r319-shell.css
+ *              · r325-shell.css (pass 2: shell chrome families)
+ *   components components.css ★ (partial) · patterns.css · polish.css
+ *              §pages blocks (the §overrides blocks stay overrides)
+ *   pages      landing.css · auth.css · student.css · notifications.css
+ *              · admin/owner/teacher/training/research/campus/colleges
+ *              · legal/player/pdf/ai/vision · the r3xx round sheets
+ *              (many already declare @layer pages)
+ *   utilities  (reserved — the future atomic-utility sheet, if any)
+ *   overrides  polish.css §overrides ★ · motion.css §overrides ★
+ *              — the capstone: round-patches that must beat `pages`
+ *
+ * Contract: NO sheet may declare a layer not in this constitution
+ * (plus `overrides`). New sheets pick a home from the list above.
+ */
+@layer reset, tokens, base, layout, components, pages, utilities;

@@ -8,6 +8,8 @@
   },
   "scripts": {
     "dev": "vite",
+    "gate:css-coverage": "tsx ../scripts/gates/css-coverage.mjs",
+    "lint:css": "npx -y stylelint@16 \"src/styles/**/*.css\"",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",

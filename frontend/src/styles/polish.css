@@ -2742,23 +2742,15 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  C. REDUCED MOTION — the canonical belt                        ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  /* base.css already zeroes durations, but nothing reset DELAYS: the
-     v6/v13/v17 staggers use `animation … both` + delays up to ~420ms,
-     so under prefers-reduced-motion each grid item still held
-     opacity: 0 until its delay elapsed — content appeared sequentially
-     instead of all at once. This belt (overrides layer, so it beats the
-     deleted v11 one and base.css's) keeps the 0.01ms !important pattern
-     and zeroes both delay channels. */
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      animation-delay: 0s !important;
-      transition-duration: 0.01ms !important;
-      transition-delay: 0s !important;
-      scroll-behavior: auto !important;
-    }
-  }
+  /* R331 A-CSS pass 1 — this section's belt is DELETED. It was a
+     byte-identical duplicate of base.css's universal belt (same
+     `*, *::before, *::after` selector, same six 0.01ms/0s/auto
+     !important declarations, same media query): base.css zeroes
+     durations AND delays since its wave 2-a update ("mirrors polish
+     v22's belt"), so the overrides-layer copy won the !important
+     layer race only to set the exact same values. Deleting it costs
+     nothing and retires 6 !importants; base.css §Reduced motion is
+     the one canonical belt. */
 
 
   /* ╔═══════════════════════════════════════════════════════════════╗
