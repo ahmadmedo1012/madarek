@@ -11,9 +11,10 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 ## Environment facts (verified this round)
 
 - Repo base: `d7fcac42` (R330 final). CI at `d7fcac42` = ✅ success (checked via GitHub Actions API).
-- Tokens live in `/home/z/.madarek-env` (never committed): `GITHUB_TOKEN` (works; the literal in the
-  brief returned "Bad credentials" — the token embedded in the git remote is the working one),
-  `EXPO_TOKEN`. Source it: `. /home/z/.madarek-env`.
+- Tokens live in `/home/z/.madarek-env` (never committed): `GITHUB_TOKEN` (owner-supplied fine-grained
+  PAT, verified via `GET /user` → `ahmadmedo1012`), `EXPO_TOKEN` (owner-supplied). Source it: `. /home/z/.madarek-env`.
+- Remote: `github.com/ahmadmedo1012/madarek` (private→public history intact). Environment was reset
+  once more mid-round (local worktrees lost); remote main + this file are the source of truth.
 - `/dev/kvm` is **absent** → no local Android emulator. Per brief: noted once here; device-class
   evidence comes from RN-web + Playwright + EAS preview builds (iOS simulator + Android APK).
 - `apps/mobile/package.json` confirmed missing: `react-native-reanimated`, `react-native-worklets`,
@@ -29,11 +30,22 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 | fdc8bb27 | baseline HANDOFF | ✅ | docs-only baseline |
 | 2faeeae8 | arsenal + repo hygiene pass 1 | ✅ | CI + Size gate both green (API-checked) |
 | 44b7cc60 | heron porting spec | ✅ | heron-program.json/md + thumbs |
-| 5cc53712 | (owner ios-wf commits) | ❌ CI failure (E2E/design-gates/frontend-tests) | root causes fixed by A-CI-Repair below — PUSH PENDING |
-| 70175cf2 (local) | A-CI-Repair: pins re-seated + gate allowlist | ✅ locally (242 files / 3067 tests green, gate OK) | PUSH BLOCKED: GITHUB_TOKEN invalid |
+| 5cc53712 | (owner ios-wf commits) | ❌ CI failure (E2E/design-gates/frontend-tests) | root causes: component-split contract-test drift + motion-gate allowlist |
 | 1641934d | app-shell (persistent tabs ×5, motion deps) | ✅ | CI+Mobile+Keep-warm green |
 | 4f85e953 | A-CSS pass 1 (@layer, stylelint, coverage) | ✅ | re-based over owner's a4b18484 (ios-sidestore wf) |
-| b31b38f4 | A-Web-Hero + A-Web-Nav rebuilds | (polling) | hero animation + nav behavior proven |
+| b31b38f4 | A-Web-Hero + A-Web-Nav rebuilds | CI cancelled | superseded by batch push; hero+nav behavior proven locally |
+| 70175cf2 | A-CI-Repair: pins re-seated + gate allowlist | (batch push) | merged+pushed together with c62c95b6; GitHub ran CI on batch head only |
+| c62c95b6 | docs HANDOFF | ❌ CI (E2E + Typecheck; downstream skipped) | hero accessible-text seam, typecheck leftovers, e2e watcher window |
+| 01300d68 | fix(r331-ci): seam+typecheck+watcher | ❌ CI (Surface drift only) | drift flagged 12 findings from the R331 landing rebuild |
+| 4aaad5e2 | fix(r331-drift): cinematic rungs folded + card sample re-seated | ✅ CI all 10 jobs + Size gate ✅ | API-checked: runs 41468527861 / 41468527964 — **main is GREEN** |
+
+**Red→green cycle closed.** Root causes of the three red pushes, in order: (1) 5cc53712 — the
+landing split (LandingPage.tsx / SheetNav.tsx / Hero.tsx) left 6 contract tests + the motion-token
+allowlist reading the old single-file anatomy → pins re-seated onto the new surface truth
+(70175cf2). (2) c62c95b6 — hero accessible-text seam + typecheck leftovers + e2e watcher window
+(01300d68). (3) 01300d68 — Surface drift: r331/hero.css cinematic durations (800/1000ms) not in
+KNOWN_DURATIONS_MS, and the drift card sample pinned to the retired `.card` anatomy → durations
+folded, sample re-seated on `.hro-work-item`/`.rl-row`, baseline re-promoted (4aaad5e2).
 
 ## Tools actually used (skill/MCP → date · commit · output)
 
@@ -65,19 +77,18 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 - In flight: A-Web-Journey (≤991 blank-pin defect), A-Web-Sections, A-App-Motion, A-App-Student.
 - Next: A-Web-Inner/Dash, A-App-Brand/Teacher/Admin, QA panel, EAS builds, evidence Release.
 
-## ⚠️ PUSH BLOCKER (owner action needed)
+## Push blocker — RESOLVED
 
-The GITHUB_TOKEN in the R331 brief is 92 chars (fine-grained PATs are 93) and is rejected by
-both the API ("Bad credentials") and git push ("Invalid username or token"). Reads work
-anonymously (public repo) — pushes do not. All R331 work through A-CI-Repair is committed
-locally on `main` (merge 70175cf2) and will be pushed the moment a valid token arrives.
-The CI ledger above cannot be API-verified until then (local verification substituted:
-242 files / 3067 tests green; motion-token gate OK; vite build OK).
+The brief's literal GITHUB_TOKEN was truncated/invalid; the owner supplied a fresh fine-grained
+PAT (verified `GET /user` → `ahmadmedo1012`). Batch push `70175cf2…c62c95b6` landed; the red→green
+cycle above closed at `4aaad5e2` (CI 10/10 + Size gate, API-checked). Worktrees were lost to an
+environment reset and are re-created as needed from remote main.
 
 ## Next actions
 
-1. Relaunch A-CSS + A-App-Shell (failed mid-run; worktree state preserved — continue, don't restart).
-2. Launch A-Web-Hero + A-Web-Nav from heron-program.md (worktrees /home/z/wt/hero, /home/z/wt/nav).
-3. Poll CI on 44b7cc60; upload /home/z/evidence-r331/ (284.7MB) to Release evidence-r331.
+1. A-Web-Journey: rebuild the ≤991px journey per heron-program.md (`section.home-map{height:700dvh}`
+   + sticky inner, zero GSAP pins) with before/after eye-proof of the blank-pin defect.
+2. A-Web-Sections + A-Web-Inner/Dash; A-App-Motion + A-App-Student (L3 screens).
+3. QA panel (blind 3-reviewer ≥9/10, ≥55fps@4×, CLS<0.02), EAS builds, evidence Release.
 
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
