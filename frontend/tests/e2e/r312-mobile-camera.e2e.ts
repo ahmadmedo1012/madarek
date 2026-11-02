@@ -181,33 +181,34 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
       { timeout: 5000 },
     );
 
-    /* mid-story (p=0.5 ⇒ t≈3.11s): the camera holds the lecture-hall
-     * PORTRAIT crop — the 460×600 phone family (R322 3-b round1:
-     * portrait crops + the full-height sticky window killed the
-     * mid-map dead band) — with y interpolating toward the checkpoint
-     * band; stage 3 (the findings era — R322 3-b-fix3 D3 moved the
-     * card→findings hand-off to t 3.0), finding 2 rotating, and the
-     * LECTURE wash (R322 3-b-fix2: the wash rides ONE finding step
-     * later — the layer-1 build lands at t≈3.0, never under the
-     * INTRODUCTION card's own beat). */
+    /* mid-story (p=0.5 ⇒ seqU≈0.563 ⇒ t≈4.03 under the R330 mobile
+     * clock t = 5.52·u^0.55 — the empty-pin fix): the camera holds the
+     * exam-hall PORTRAIT crop — the 460×600 phone family (R322 3-b
+     * round1: portrait crops + the full-height sticky window killed
+     * the mid-map dead band) — just past the 4.0 key toward the
+     * library; stage 3 (the findings era), finding 3, and the EXAM
+     * wash (the wash windows: lecture <3.52 · checkpoint <4.02 ·
+     * exam <4.52). */
     await scrollToPin(page, 0.5, true);
     const mid = await sheetState(page);
     expect(mid.stage).toBe('3');
-    expect(mid.finding).toBe('2');
-    expect(mid.wash).toBe('lecture');
+    expect(mid.finding).toBe('3');
+    expect(mid.wash).toBe('exam');
     const mvb = (mid.viewBox ?? '').split(' ').map(Number);
     expect(mvb.length).toBe(4);
-    expect(mvb[0]!).toBe(713);
+    expect(mvb[0]!).toBe(356);
     expect(mvb[2]!).toBe(460);
     expect(mvb[3]!).toBe(600);
     /* the ±16 window absorbs the scroll-convergence residue on the
-     * interpolated y beat (both bracketing keys share x/w/h — only y
-     * pans between 0 and 160 across the 2.8→3.4s span). */
-    expect(Math.abs(mvb[1]! - 82)).toBeLessThanOrEqual(16);
+     * interpolated y beat (both bracketing keys share w/h — the pan
+     * runs x 358→298 / y 0→160 across the 4.0→4.6s span). */
+    expect(Math.abs(mvb[1]! - 7)).toBeLessThanOrEqual(16);
 
-    /* the statement era (p=0.25 ⇒ t≈1.5s): the full overview holds
-     * through the plaque beats — nothing cropped yet */
-    await scrollToPin(page, 0.25, true);
+    /* the plaque era (p=0.08 ⇒ seqU≈0.150 ⇒ t≈1.94): the full overview
+     * holds through the plaque beats — nothing cropped yet. (The R330
+     * clock compresses the plaque era into the first third of the
+     * scroll — by p=0.25 the card era is already cropping.) */
+    await scrollToPin(page, 0.08, true);
     const early = await sheetState(page);
     expect(early.stage).toBe('1');
     expect(early.viewBox).toBe('0 0 1200 760');
@@ -249,11 +250,24 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
       const colTop = cRect.top + window.scrollY;
       const bad: string[] = [];
       const seen: number[] = [];
-      const steps = 28;
+      /* The R330 mobile clock front-loads the movie (t = 5.52·u^0.55):
+       * the plaque era (stage 0) now spans only the first ~2% of the
+       * track, so the sweep samples that era finely before settling
+       * into a uniform ladder — the invariant under test (all six
+       * states visited, in order) is unchanged. */
+      const ps: number[] = [];
+      for (let i = 0; i <= 8; i += 1) ps.push(i * 0.004);
+      for (let i = 1; i <= 24; i += 1) ps.push(0.06 + (i / 24) * 0.94);
+      const steps = ps.length - 1;
+      /* warm-up: land on the pin's start ONCE and let the driver
+       * converge before the recorded ladder — re-scrolling to the same
+       * target fires no event, so sample 0 reads the settled state */
+      window.scrollTo({ top: colTop, behavior: 'instant' });
+      await new Promise((r) => setTimeout(r, 250));
       for (let i = 0; i <= steps; i += 1) {
-        const p = i / steps;
+        const p = ps[i]!;
         window.scrollTo({ top: colTop + p * cRect.height, behavior: 'instant' });
-        await new Promise((r) => setTimeout(r, 90));
+        await new Promise((r) => setTimeout(r, 140));
         const track = document.querySelector('.jt') as HTMLElement;
         const stage = Number(track.dataset.stage ?? -1);
         if (!seen.includes(stage)) seen.push(stage);
@@ -292,13 +306,14 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
     );
 
     /* a mobile frame at mid-story leaves the sheet CROPPED (the pan —
-     * the 460×600 portrait family, R322 3-b round1) */
+     * the 460×600 portrait family, R322 3-b round1; the R330 clock
+     * rides the exam-hall crop at this u) */
     await scrollToPin(page, 0.5, true);
     const cropped = await sheetState(page);
     expect(cropped.viewBox).not.toBe('0 0 1200 760');
     const cvb = (cropped.viewBox ?? '').split(' ').map(Number);
     expect(cvb.length).toBe(4);
-    expect(cvb[0]!).toBe(713);
+    expect(cvb[0]!).toBe(356);
     expect(cvb[2]!).toBe(460);
 
     /* up to desktop: restored exactly (the camDirty flag consumes) */
