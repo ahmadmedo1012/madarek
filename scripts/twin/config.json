@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "round": "r332",
+    "name": "Heron Twin harness v0",
+    "specOfRecord": "docs/redesign/r331/heron-program.json",
+    "scrollEngine": {
+      "heron": "window never scrolls; .body-inner overflow:hidden height:100vh; .main-inner is the Lenis wrapper AND ScrollTrigger scroller (scrollerProxy); lenis 1.1.5 lerp 0.1",
+      "madarek": "window scroller + window.__mdrkLenis (Lenis 1.1.5, HERON_LENIS_PARAMS); seek via lenis.scrollTo(y,{immediate:true}); fallback native window.scrollTo"
+    },
+    "notes": [
+      "Heron section selectors verified live 2026-02 (probe-1440.json): the <home-*-wrap> custom elements are zero-height hosts; the rendered blocks are div.home-*-wrap / div.cta-wrap / div.footer-wrap.",
+      "Madarek selectors verified in frontend/src/pages/LandingPage.tsx + probe-1440.json.",
+      "Madarek is RTL; heron is LTR — horizontal geometry is mirrored by design, so this harness compares VERTICAL geometry (heights, gaps, type scale) and per-step visual diffs."
+    ]
+  },
+  "paths": {
+    "evidenceRoot": "/home/z/evidence-r332/twin",
+    "defaultRun": "/home/z/evidence-r332/twin/run-001"
+  },
+  "urls": {
+    "heron": "https://heronaiapp.com/",
+    "madarek": "http://localhost:5173/"
+  },
+  "viewports": [
+    { "name": "1920", "width": 1920, "height": 1080 },
+    { "name": "1440", "width": 1440, "height": 900 },
+    { "name": "1024", "width": 1024, "height": 768 },
+    { "name": "768", "width": 768, "height": 900 },
+    { "name": "390", "width": 390, "height": 844 }
+  ],
+  "capture": {
+    "progressStartPct": 0,
+    "progressEndPct": 100,
+    "progressStepPct": 2,
+    "settleMs": 400,
+    "seekTolerancePx": 2,
+    "seekRetries": 8,
+    "screenshotFormat": "png",
+    "waitForFonts": true
+  },
+  "sectionMap": [
+    { "section": "hero",      "heron": ".home-hero-wrap",     "madarek": "section.fo-hero.hro",  "note": "Madarek top of page, .hro- classes, section before #statement" },
+    { "section": "statement", "heron": ".home-intro-wrap",    "madarek": "#statement" },
+    { "section": "pains",     "heron": ".home-problem-wrap",  "madarek": "#live" },
+    { "section": "journey",   "heron": ".home-map-wrap",      "madarek": "#chapters", "pinned": true },
+    { "section": "platform",  "heron": ".home-platform-wrap", "madarek": "#product" },
+    { "section": "why",       "heron": ".home-why-wrap",      "madarek": ".wy-section", "note": "verified: .wy-section band sits inside the #product region" },
+    { "section": "roles",     "heron": ".home-usecase-wrap",  "madarek": "#roles" },
+    { "section": "cta",       "heron": ".cta-wrap",           "madarek": "#vision", "note": "heron cta is div.cta-wrap (the <home-cta-wrap> host is zero-height)" },
+    { "section": "footer",    "heron": ".footer-wrap",        "madarek": "footer.fo-footer" }
+  ],
+  "thresholds": {
+    "sectionHeightDeltaPct": 3,
+    "headingFontSizeDeltaPct": 4,
+    "rhythmMedianGapDeltaPx": 8,
+    "triggerStartDeltaPx": 40
+  },
+  "verdictRule": "PASS = all four metrics within thresholds; FAIL = any metric beyond 2x its threshold; PARTIAL = anything between",
+  "blind": {
+    "blurCss": "h1,h2,h3,h4,h5,h6,p,a,span,li,button,strong,time { filter: blur(10px) !important; } svg text { filter: blur(10px) !important; } [class*=logo] , [class*=brand] { filter: blur(10px) !important; }"
+  }
+}
