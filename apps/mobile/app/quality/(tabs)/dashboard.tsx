@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import Eye from "lucide-react-native/icons/eye";
@@ -34,7 +32,7 @@ const ATTENDANCE_KEY_LABEL: Record<string, string> = {
 };
 
 /** (tabs) Quality dashboard — «لوحة الجودة» (web QualityDashboardPage parity, honest rendering). */
-function QualityDashboard() {
+export default function QualityDashboard() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const overview = useQuery({
@@ -166,14 +164,5 @@ function QualityDashboard() {
         )}
       </View>
     </Screen>
-  );
-}
-
-
-export default function QualityDashboardTabbed() {
-  return (
-    <RoleTabFrame role="QUALITY">
-      <QualityDashboard />
-    </RoleTabFrame>
   );
 }

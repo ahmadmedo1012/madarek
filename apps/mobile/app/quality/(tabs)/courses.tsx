@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -22,7 +20,7 @@ const ROSTER_CAP = 50;
  * roster is fetched bare (server caps at take:50; the cap is disclosed
  * honestly below when hit).
  */
-function QualityCourses() {
+export default function QualityCourses() {
   const scope = useInstitutionScope();
   const courses = useQuery({
     queryKey: ["quality", "courses", scope],
@@ -115,14 +113,5 @@ function QualityCourses() {
         )}
       </View>
     </Screen>
-  );
-}
-
-
-export default function QualityCoursesTabbed() {
-  return (
-    <RoleTabFrame role="QUALITY">
-      <QualityCourses />
-    </RoleTabFrame>
   );
 }

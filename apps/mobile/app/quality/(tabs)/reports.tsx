@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -22,7 +20,7 @@ import {
 } from "@/features/governance/components";
 
 /** (tabs) Quality reports — composite (web QualityReportsPage + dashboard sections). */
-function QualityReports() {
+export default function QualityReports() {
   const scope = useInstitutionScope();
   const overview = useQuery({
     queryKey: ["quality", "overview", scope],
@@ -181,14 +179,5 @@ function QualityReports() {
         </T>
       </View>
     </Screen>
-  );
-}
-
-
-export default function QualityReportsTabbed() {
-  return (
-    <RoleTabFrame role="QUALITY">
-      <QualityReports />
-    </RoleTabFrame>
   );
 }

@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -24,7 +22,7 @@ interface EngagementPayload {
 }
 
 /** (tabs) Engagement — «الانخراط والحضور» (web QualityEngagementPage parity, honest rendering). */
-function QualityEngagement() {
+export default function QualityEngagement() {
   const scope = useInstitutionScope();
   const engagement = useQuery({
     queryKey: ["quality", "engagement", scope],
@@ -158,14 +156,5 @@ function QualityEngagement() {
         )}
       </View>
     </Screen>
-  );
-}
-
-
-export default function QualityEngagementTabbed() {
-  return (
-    <RoleTabFrame role="QUALITY">
-      <QualityEngagement />
-    </RoleTabFrame>
   );
 }

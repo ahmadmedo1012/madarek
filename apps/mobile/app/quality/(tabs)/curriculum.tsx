@@ -1,5 +1,3 @@
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -38,7 +36,7 @@ function courseCompletion(co: {
 }
 
 /** (tabs) Curriculum review — «مراجعة المناهج» (web QualityCurriculumPage parity). */
-function QualityCurriculum() {
+export default function QualityCurriculum() {
   const scope = useInstitutionScope();
   const tree = useQuery({
     queryKey: ["quality", "curriculum", scope],
@@ -174,14 +172,5 @@ function QualityCurriculum() {
         )}
       </View>
     </Screen>
-  );
-}
-
-
-export default function QualityCurriculumTabbed() {
-  return (
-    <RoleTabFrame role="QUALITY">
-      <QualityCurriculum />
-    </RoleTabFrame>
   );
 }
