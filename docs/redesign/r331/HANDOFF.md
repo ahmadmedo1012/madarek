@@ -29,6 +29,8 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 | fdc8bb27 | baseline HANDOFF | ✅ | docs-only baseline |
 | 2faeeae8 | arsenal + repo hygiene pass 1 | ✅ | CI + Size gate both green (API-checked) |
 | 44b7cc60 | heron porting spec | ✅ | heron-program.json/md + thumbs |
+| 5cc53712 | (owner ios-wf commits) | ❌ CI failure (E2E/design-gates/frontend-tests) | root causes fixed by A-CI-Repair below — PUSH PENDING |
+| 70175cf2 (local) | A-CI-Repair: pins re-seated + gate allowlist | ✅ locally (242 files / 3067 tests green, gate OK) | PUSH BLOCKED: GITHUB_TOKEN invalid |
 | 1641934d | app-shell (persistent tabs ×5, motion deps) | ✅ | CI+Mobile+Keep-warm green |
 | 4f85e953 | A-CSS pass 1 (@layer, stylelint, coverage) | ✅ | re-based over owner's a4b18484 (ios-sidestore wf) |
 | b31b38f4 | A-Web-Hero + A-Web-Nav rebuilds | (polling) | hero animation + nav behavior proven |
@@ -62,6 +64,15 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
   t=0.3s vs t=3s) · A-Web-Nav (56px/1×/5× thresholds, clip-path menu, lenis stop, CLS 0.0234).
 - In flight: A-Web-Journey (≤991 blank-pin defect), A-Web-Sections, A-App-Motion, A-App-Student.
 - Next: A-Web-Inner/Dash, A-App-Brand/Teacher/Admin, QA panel, EAS builds, evidence Release.
+
+## ⚠️ PUSH BLOCKER (owner action needed)
+
+The GITHUB_TOKEN in the R331 brief is 92 chars (fine-grained PATs are 93) and is rejected by
+both the API ("Bad credentials") and git push ("Invalid username or token"). Reads work
+anonymously (public repo) — pushes do not. All R331 work through A-CI-Repair is committed
+locally on `main` (merge 70175cf2) and will be pushed the moment a valid token arrives.
+The CI ledger above cannot be API-verified until then (local verification substituted:
+242 files / 3067 tests green; motion-token gate OK; vite build OK).
 
 ## Next actions
 
