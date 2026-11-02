@@ -315,7 +315,7 @@ const COLOR_SAMPLES: ReadonlyArray<[string, string, boolean]> = [
   ['page-subtitle', '.pf-page-desc, .page-subtitle', true],
   ['metric-value', '.pf-stat-value, .metric-value', true],
   ['metric-label', '.pf-stat-label, .metric-label', true],
-  ['card', '.card', false],
+  ['card', '.card, .hro-work-item, .rl-row', false],
   ['sidebar-item', '.nav-item.on, .sidebar .nav-item', true],
   ['text-subtle', '.text-subtle', true],
 ];

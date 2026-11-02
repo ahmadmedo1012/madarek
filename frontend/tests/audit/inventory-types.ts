@@ -210,4 +210,14 @@ export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
   // orbital draw; consumers reference the token, never a re-spelled
   // value).
   1_600, 2_400, 3_600, 6_000, 22_000, 2_200,
+  // r331 integration: the authored cinematic sheet values (r331/hero.css
+  // — the Heron port's reveal grammar; the design-gate motion check
+  // already whitelists these sheets as the authored cinematic contract,
+  // this list is its runtime counterpart): --hro-line-dur 0.8s (the
+  // mask-line reveal) and --hro-fade-dur / --hro-rise-dur 1s (img/frame
+  // fades + block rise — the 1s fade is what the ink SVG's computed
+  // transition carries, tripping the drift audit on `/` × 6 viewports
+  // after the R331 hero rebuild). Consumers reference the vars, never
+  // re-spelled values — same convention as the r190 scene entry above.
+  800, 1_000,
 ];
