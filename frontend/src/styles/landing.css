@@ -5772,6 +5772,31 @@ html[data-theme='dark'] body.mdrk-grain::before {
     flex: none;
   }
 
+  /* R331 (A-Web-Journey) — THE ≤991 BLANK-PIN REPAIR (root-caused,
+   * headed+headless proven). Defect: through the whole pinned track at
+   * ≤991 the plan painted EMPTY paper (owner's m-025/m-050 frames;
+   * reproduced at 768×1024 + 390×844 in headless AND headed Xvfb
+   * Chromium). Forensics: layout + hit-testing + computed styles were
+   * all correct (fill #282828, opacity 1, no dash), yet even
+   * `background:red` on the svg refused to paint; cloning/moving the
+   * node OUT of `.jt-map-in` painted instantly; every containment
+   * toggle (.chapters c-v/contain, .jt-map-col contain) was
+   * exonerated; the desktop pin shape reproduced it at 768 too. The
+   * gate is the sticky window's PAINT-CHUNK partition: with the intro
+   * card painting as a plain in-flow sibling after the svg inside the
+   * 2nd-level sticky, Chromium merges/drops the svg's raster (the
+   * classic sticky-subtree stale-raster class). Remedy — the standard
+   * one: give the sticky window's heavy children their own composited
+   * layers (`translateZ(0)`), which forces per-element raster tasks
+   * that follow the sticky offset. Proven: 5/5 tablet beats + 5/5
+   * phone beats paint the correct camera-cropped plan (before/after
+   * ladders in docs/redesign/r331/web-journey.md); ≥992 untouched
+   * (the desktop pin has always painted). */
+  .jt-intro,
+  .jt-window .bp-svg {
+    transform: translateZ(0);
+  }
+
   /* R328 (H4) — the plaques' PHONE SEAT: the statement card rides
    * BELOW the drawing (order 0 — the desktop caption strip's −1
    * retires here), as the brief's own paper card: 1px hairline, the

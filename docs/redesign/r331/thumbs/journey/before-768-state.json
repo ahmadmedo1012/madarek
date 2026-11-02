@@ -1,0 +1,281 @@
+[
+ {
+  "name": "tablet768-step0-y3133",
+  "y": 3133,
+  "scrollY": 3133,
+  "docH": 12928,
+  "jt": {
+   "top": 512,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": 512,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 512,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 713,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 70,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step1-y3830",
+  "y": 3830,
+  "scrollY": 3830,
+  "docH": 12928,
+  "jt": {
+   "top": -185,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -185,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 57,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 258,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 100,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step2-y4527",
+  "y": 4527,
+  "scrollY": 4527,
+  "docH": 12928,
+  "jt": {
+   "top": -882,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -882,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 57,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 235,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 100,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step3-y5224",
+  "y": 5224,
+  "scrollY": 5224,
+  "docH": 12928,
+  "jt": {
+   "top": -1579,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -1579,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 57,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 235,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 100,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step4-y5921",
+  "y": 5921,
+  "scrollY": 5921,
+  "docH": 12928,
+  "jt": {
+   "top": -2276,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -2276,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 57,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 235,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 100,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step5-y6618",
+  "y": 6618,
+  "scrollY": 6618,
+  "docH": 12928,
+  "jt": {
+   "top": -2973,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -2973,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 57,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 235,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 100,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step6-y7315",
+  "y": 7315,
+  "scrollY": 7315,
+  "docH": 12928,
+  "jt": {
+   "top": -3670,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -3670,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": 57,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": 258,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 100,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step7-y8012",
+  "y": 8012,
+  "scrollY": 8012,
+  "docH": 12928,
+  "jt": {
+   "top": -4367,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -4367,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": -563,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": -361,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 19,
+  "vh": 1024,
+  "vw": 768
+ },
+ {
+  "name": "tablet768-step8-y8709",
+  "y": 8709,
+  "scrollY": 8709,
+  "docH": 12928,
+  "jt": {
+   "top": -5064,
+   "h": 5064,
+   "w": 720
+  },
+  "jtDocTop": 3645,
+  "pin": {
+   "top": -5064,
+   "h": 5064,
+   "w": 720
+  },
+  "mapIn": {
+   "top": -1260,
+   "h": 967,
+   "w": 704
+  },
+  "mapInPos": "sticky",
+  "svg": {
+   "top": -1058,
+   "h": 446,
+   "w": 704
+  },
+  "svgVisPct": 0,
+  "vh": 1024,
+  "vw": 768
+ }
+]
