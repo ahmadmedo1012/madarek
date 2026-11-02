@@ -254,9 +254,10 @@ describe('r313 4-b — App wiring + the prevent vocabulary', () => {
   });
 
   it('the landing mobile menu carries data-lenis-prevent', () => {
-    const tsx = read('src/pages/LandingPage.tsx');
-    expect(tsx).toContain('data-lenis-prevent');
-    const css = stripComments(read('src/styles/landing.css'));
+    /* R331: the mobile menu lives in chrome/SheetNav.tsx. */
+    const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
+    expect(navTsx).toContain('data-lenis-prevent');
+    const css = stripComments(read('src/styles/r331/nav.css')) + stripComments(read('src/styles/landing.css'));
     expect(css).toMatch(/\.fo-mobile-menu[^{]*{\s*[^}]*overflow-y:\s*auto/); // it IS an inner scroller
   });
 });

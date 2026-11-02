@@ -183,7 +183,8 @@ describe('r170d → r188 — landing burger keyboard contract (Escape + aria-exp
     // R313 override (WP-A1 · D7): the nav re-composed with the 9-section
     // structure — «الفصول» is now «الرحلة» (the pinned map section), and
     // «ما يعمل اليوم» routes to /capabilities (the ledger sub-page).
-    for (const name of ['الرحلة', 'ما يعمل اليوم', 'الأدوار', 'الكليات']) {
+    // R331 register: the flat real-route seat register + the ledger row.
+    for (const name of ['الرئيسية', 'المقررات', 'الكليات', 'الحرم الجامعي', 'المسابقات', 'التطبيق', 'ما يعمل اليوم']) {
       expect(items.some((a) => (a.textContent || '').includes(name))).toBe(true);
     }
 

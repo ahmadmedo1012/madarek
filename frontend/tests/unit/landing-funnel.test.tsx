@@ -20,8 +20,8 @@
  *     button — same route, clearer affordance).
  *   · 404 way-back — home (primary) + colleges + login (r164b).
  */
-import { describe, expect, it, beforeAll } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { describe, expect, it, beforeAll, vi } from 'vitest';
+import { render, screen, fireEvent, within, act } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { readFileSync } from 'node:fs';
@@ -78,9 +78,19 @@ function renderLanding() {
 
 /* ── source contract ─────────────────────────────────────────────── */
 
-describe('landing funnel — source contract (r164b → r188)', () => {
+describe('landing funnel — source contract (r164b → r331)', () => {
+  /* R331 component split: the landing surface is LandingPage (statement,
+   * pains, journey mount, roles, FAQ, finale, footer) + chrome/SheetNav
+   * (the header pair + the mobile menu) + hero/Hero (the hero cell).
+   * The funnel counts are computed over the WHOLE guest surface — the
+   * contract is about the page, not the file layout. */
+  const surface = [
+    'src/pages/LandingPage.tsx',
+    'src/components/landing/chrome/SheetNav.tsx',
+    'src/components/landing/hero/Hero.tsx',
+  ].map(read).join('\n');
   const tsx = read('src/pages/LandingPage.tsx');
-  const live = stripComments(tsx);
+  const live = stripComments(surface);
 
   it('the FIVE primary CTAs all route to /auth/register (header, mobile menu, hero, finale, footer)', () => {
     expect((live.match(/to="\/auth\/register"/g) ?? []).length).toBe(5);
@@ -88,9 +98,14 @@ describe('landing funnel — source contract (r164b → r188)', () => {
     expect(live).not.toMatch(/to="\/auth"\s+className="(?:btn primary|btn accent)/);
   });
 
-  it('login affordances route to /auth exactly five times (header, mobile, hero, finale, footer ghosts)', () => {
-    // 5 register CTAs + 5 login surfaces = the whole funnel wiring.
-    expect((live.match(/to="\/auth"/g) ?? []).length).toBe(5);
+  it('login affordances ride the R331 register: six surfaces (header, mobile, hero secondary, finale ghost, colleges strip, footer)', () => {
+    /* R331 delta (documented): the rebuilt hero carries its own login
+     * secondary (the Heron pattern: ONE orange primary + one quiet alt),
+     * joining the previous five (header, mobile, finale ghost, colleges
+     * strip, footer). The register primary count stays 5; login grows
+     * 5→6 by product decision — the hero alt is a ghost, never a second
+     * primary. */
+    expect((live.match(/to="\/auth"/g) ?? []).length).toBe(6);
   });
 
   it('the finale never shows login copy under a create-account button (label ↔ copy ↔ destination tell one story)', () => {
@@ -123,11 +138,14 @@ describe('landing funnel — source contract (r164b → r188)', () => {
   });
 
   it('the mobile menu carries a login affordance (≤1080px hides the header pair)', () => {
-    const menuAt = tsx.indexOf('fo-mobile-menu');
+    /* R331: the mobile menu lives in chrome/SheetNav.tsx (the R331
+     * header split). Same contract: login ghost + register primary. */
+    const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
+    const menuAt = navTsx.indexOf('fo-mobile-menu');
     expect(menuAt).toBeGreaterThanOrEqual(0);
-    const menu = tsx.slice(menuAt, tsx.indexOf('</header>', menuAt));
+    const menu = navTsx.slice(menuAt, navTsx.indexOf('fo-mb-cta', menuAt));
     expect(menu).toContain('تسجيل الدخول');
-    expect(menu).toContain('to="/auth/register"');
+    expect(navTsx.slice(menuAt)).toContain('to="/auth/register"');
   });
 });
 
@@ -185,7 +203,7 @@ describe('landing funnel — rendered guest DOM (r164b → r188)', () => {
     expect(container.querySelectorAll('.fo-cta-actions .btn.accent')).toHaveLength(1);
   });
 
-  it('the mobile menu is a both-way funnel: ONE register primary + a login ghost', () => {
+  it('the mobile menu is a both-way funnel: ONE register primary + a login ghost', async () => {
     const { container } = renderLanding();
 
     // Burger contract (F2-5): the label flips with the state.
@@ -202,9 +220,16 @@ describe('landing funnel — rendered guest DOM (r164b → r188)', () => {
     const login = within(menu as HTMLElement).getByRole('link', { name: 'تسجيل الدخول' });
     expect(login.getAttribute('href')).toBe('/auth');
     // And it closes again (the menu's own click-to-close contract).
+    /* R331: the close is ANIMATED — the panel lingers through the 0.4s
+     * exit clip before unmounting (the r309 e2e pin reads the unmount
+     * with its retry clock); this pin advances the same clock. */
     fireEvent.click(screen.getByRole('button', { name: 'إغلاق القائمة' }));
+    expect(container.querySelector('.fo-mobile-menu')).not.toBeNull(); // exit clip playing
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 430));
+    });
     expect(container.querySelector('.fo-mobile-menu')).toBeNull();
-  });
+  }, 8000);
 });
 
 /* ── 404 way-back ─────────────────────────────────────────────────── */

@@ -36,7 +36,13 @@ const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 const stripLineComments = (src: string) => src.replace(/^\s*\/\/.*$/gm, '');
 
 const tsx = read('src/pages/LandingPage.tsx');
-const liveTsx = stripLineComments(stripComments(tsx));
+/* R331 split: the guest surface = LandingPage + chrome/SheetNav + hero/Hero. */
+const surfaceTsx = [
+  'src/pages/LandingPage.tsx',
+  'src/components/landing/chrome/SheetNav.tsx',
+  'src/components/landing/hero/Hero.tsx',
+].map(read).join('\n');
+const liveTsx = stripLineComments(stripComments(surfaceTsx));
 const manifest = JSON.parse(read('public/media/manifest.json')) as {
   photos: Array<{ id: string; derivativeWidths: number[]; source: { license: string; licenseUrl: string | null; author: string } }>;
   products: Array<{ id: string; derivativeWidths: number[] }>;
@@ -145,9 +151,9 @@ describe('r307 — the CSP admits exactly the two embed hosts', () => {
 });
 
 describe('r307 — the media layer added ZERO new funnel links', () => {
-  it('the 5+5 register/login counts survive untouched', () => {
+  it('the 5+5 register/login counts survive untouched (R331: login 6 — the hero secondary joined the register)', () => {
     expect((liveTsx.match(/to="\/auth\/register"/g) ?? []).length).toBe(5);
-    expect((liveTsx.match(/to="\/auth"/g) ?? []).length).toBe(5);
+    expect((liveTsx.match(/to="\/auth"/g) ?? []).length).toBe(6);
   });
 
   it('the new sections route to anchors and app routes only', () => {

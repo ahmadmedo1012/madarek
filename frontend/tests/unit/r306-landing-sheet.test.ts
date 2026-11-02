@@ -34,7 +34,11 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 
 const css = read('src/styles/landing.css');
-const live = stripComments(css);
+const live = stripComments([
+  'src/styles/landing.css',
+  'src/styles/r331/nav.css',
+  'src/styles/r331/hero.css',
+].map(read).join('\n'));
 const tsx = read('src/pages/LandingPage.tsx');
 /* Strip BOTH comment forms: block comments AND line-start // prose —
  * tombstone narration quoting retired values must neither satisfy a
@@ -43,7 +47,12 @@ const tsx = read('src/pages/LandingPage.tsx');
  * literals mid-line, never at line start, so the anchored pattern
  * is safe). */
 const stripLineComments = (src: string) => src.replace(/^\s*\/\/.*$/gm, '');
-const liveTsx = stripLineComments(stripComments(tsx));
+/* R331 split: the guest surface = LandingPage + chrome/SheetNav + hero/Hero. */
+const liveTsx = stripLineComments(stripComments([
+  'src/pages/LandingPage.tsx',
+  'src/components/landing/chrome/SheetNav.tsx',
+  'src/components/landing/hero/Hero.tsx',
+].map(read).join('\n')));
 
 describe('r306 — the poster world is retired', () => {
   it('no --poster-* consumer remains anywhere in the landing sheet or page', () => {
@@ -117,9 +126,11 @@ describe('r306 — the drawing sheet ships', () => {
     expect(hoverBlock).toMatch(/\.fo-nav-link:hover::before\s*\{[^}]*transform:\s*translateY\(0\)/);
     // the wipe slab itself is the charcoal token
     expect(live).toMatch(/\.fo-nav-link::before\s*\{[^}]*background:\s*var\(--text\)/);
-    // the dropdown panel: the reference's fold — grid-rows + opacity, no shadow
-    expect(live).toMatch(/\.fo-drop\s*\{[^}]*grid-template-rows:\s*0fr/s);
-    expect(live).toMatch(/\.fo-nav-item\[data-open='true'\]\s*\.fo-drop\s*\{[^}]*grid-template-rows:\s*1fr/s);
+    // R331: the dropdown panel is RETIRED — the nav rides the flat
+    // real-route seat register (no fold, no data-open state machine).
+    expect(liveTsx).not.toContain('fo-drop');
+    expect(live).not.toMatch(/\.fo-drop\s*\{/);
+    expect(live).not.toContain("data-open='true'");
   });
 
   it('the mono bracketed indices carry the drafting voice (Latin, dir=ltr, tabular)', () => {
@@ -369,6 +380,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       'fo-ticker-rtl', // the capabilities crawl
       'sl-scan', // the loader's scan sweep
       'wy-snap', // R313: the why-stage verb snap (the 74%-hold plateau — supersedes vs-tag-snap, which moved to campus.css with the status rows)
+      'hro-fade-loop', // R331: the hero deco ledger cards' idle fade (the reference's own deco loop, 1.5s, ≥992 only) — collapsed by the hero RM belt
     ]);
     for (const n of names) {
       expect(ALLOWED.has(n ?? ''), `unexpected @keyframes ${n}`).toBe(true);
@@ -385,6 +397,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       '.pm-art .pm-draw', // R313: the pain cards' draw-in collapses to the complete drawing
       '.wy-capture', // R313: the why cross-fade collapses to the fully readable stack
       '.wy[data-wy-stage=\'0\'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb', // R313: the wy-snap
+      '.hro-deco', // R331: the hero deco fade-loop collapses to the static ledger card
     ];
     for (const sel of RM_COLLAPSED) {
       expect(rmBelt, `RM belt must collapse ${sel}`).toContain(sel);

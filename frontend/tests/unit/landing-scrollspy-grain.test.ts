@@ -70,6 +70,9 @@ describe('r188 — the folio chrome that ships', () => {
   const css = read('src/styles/landing.css');
   const live = stripComments(css);
   const tsx = read('src/pages/LandingPage.tsx');
+  /* R331 split: the masthead lives in chrome/SheetNav.tsx + r331/nav.css. */
+  const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
+  const navCss = stripComments(read('src/styles/r331/nav.css'));
 
   it('R315 override: the top progress ribbon is RETIRED (the reference has nothing at the frame top edge)', () => {
     // R315 override (K-A5): the owner's §0-A.5 verdict + E-crawl ground
@@ -82,36 +85,35 @@ describe('r188 — the folio chrome that ships', () => {
     expect(live).toContain('background: var(--accent)');
   });
 
-  it('the fixed masthead rides the reference class vocabulary imperatively (on-scroll / on-hide)', () => {
-    /* R313 override (WP-B2 · D8): `.scrolled` is retired for the
-     * reference's own class system (telemetry/header-states.json):
-     * top = `header` → scrolled = `header on-scroll on-hide` →
-     * back-to-top = `header on-hide` (the LATCH — on-scroll drops,
-     * on-hide stays once the visitor has scrolled down). `on-scroll`
-     * toggles at y>6 (the old .scrolled seat); `on-hide` is added,
-     * never removed. The visual lift itself is an imperative
-     * style.transform written from the same rAF (the reference drives
-     * its bar from GSAP — the classes alone carry no transform, and
-     * neither do ours). The --p progress ribbon contract is
-     * unchanged. */
-    expect(tsx).toMatch(/classList\.toggle\('on-scroll'/);
-    expect(tsx).toMatch(/classList\.add\('on-hide'/);
-    expect(tsx).toMatch(/header\.style\.transform/);
-    expect(tsx).not.toMatch(/classList\.toggle\('scrolled'/);
-    expect(live).toContain('.fo-header.on-scroll');
-    expect(live).not.toContain('.fo-header.scrolled');
+  it('the fixed masthead rides the reference class vocabulary (on-scroll / on-hide)', () => {
+    /* R313 override (WP-B2 · D8) → R331 rebuild: the same class system,
+     * thresholds re-measured against the reference (on-scroll at >1×bar,
+     * on-hide at >5×bar scrolling DOWN, 100ms debounce, hover/menu
+     * guards). The paint moved from an imperative style.transform to
+     * pure CSS on the INNER bar (.fo-header.on-hide .fo-header-inner —
+     * translateY(-101%)), the reference's own seat. on-scroll itself
+     * carries NO paint (the reference's computed probe is identical in
+     * both states — a state marker gating the hide branch). */
+    expect(navTsx).toMatch(/classList\.toggle\('on-scroll'/);
+    expect(navTsx).toMatch(/classList\.add\('on-hide'/);
+    expect(navTsx).not.toMatch(/classList\.toggle\('scrolled'/);
+    expect(navCss).toContain('.fo-header.on-hide .fo-header-inner');
+    expect(navCss).not.toMatch(/\.fo-header\.on-scroll[^ ]*\s*\{/); // no paint — state marker only
+    expect(tsx).not.toContain('fo-progress-bar');
+    expect(live).not.toContain('transform: scaleX(var(--p, 0))');
   });
 
-  it('chapter anchors: the nav links resolve to real section ids (r198 poster chapters)', () => {
-    /* R313 override (WP-B2 · D8): the four-seat nav is registry-driven
-     * (NAV_SEATS — the reference's PRODUCT▾/PRICING/RESOURCES▾/ABOUT
-     * shape), so the anchors render as `href={seat.href}` from the
-     * object literals, not as literal JSX attributes. The pin follows
-     * the registry: every section id exists AND is carried by a seat
-     * (a top-level link or a dropdown child). */
-    for (const s of ['chapters', 'live', 'roles', 'colleges']) {
-      expect(tsx).toContain(`id="${s}"`);
-      expect(tsx).toContain(`href: '#${s}'`);
+  it('chapter anchors: the R331 register resolves to real destinations', () => {
+    /* R313 override (WP-B2 · D8) → R331 register: every landing section
+     * id still exists; the on-page chapter seat stays an ANCHOR
+     * (#chapters), and the chrome seats resolve to the site's REAL
+     * public routes (stronger than in-page anchors). */
+    for (const s2 of ['chapters', 'live', 'roles', 'colleges']) {
+      expect(tsx).toContain(`id="${s2}"`);
+    }
+    expect(navTsx).toContain("href: '#chapters'");
+    for (const r of ['/colleges', '/campus', '/competitions', '/app']) {
+      expect(navTsx).toContain(`href: '${r}'`);
     }
   });
 });

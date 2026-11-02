@@ -92,7 +92,11 @@ describe('r188 brand reset — campus photography retired (no real-university im
   });
 
   it('R315 override — the hero seat is the whole drafted ELEVATION on transparent paper (A.1)', () => {
-    const src = read('src/pages/LandingPage.tsx');
+    /* R331: the hero seat lives in components/landing/hero/Hero.tsx. */
+    const src = read('src/components/landing/hero/Hero.tsx');
+    const page = read('src/pages/LandingPage.tsx');
+    expect(page).not.toContain('<picture>');
+    expect(page).not.toContain('main_photo');
     expect(src).not.toContain('<picture>');
     expect(src).not.toContain('main_photo');
     // R315 (owner §0-A.1, supersedes the R314 raster sanction): the
