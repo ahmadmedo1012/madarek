@@ -1,0 +1,625 @@
+/* ════════════════════════════════════════════════════════════════════
+   r331/nav.css — R331 · A-Web-Nav — the landing masthead's whole
+   stylesheet, rebuilt to the Heron header's MEASURED mechanics
+   (docs/redesign/r331/heron-program.md §6 + heron-program.json
+   `header`; probes /home/z/heron-lab/data/nav-{1440,390}.json).
+
+   Imported by components/landing/chrome/SheetNav.tsx — the block ships
+   with its component; landing.css keeps NOTHING header-shaped after
+   this round (the R331 file-ownership contract: this file owns the
+   header/nav surface, r314-chrome.css and r305-shell.css carry no
+   landing-header rules at all — verified by grep before the cut).
+
+   The measured reference grammar (heronaiapp.com, computed + CSS):
+     · fixed bar at the sheet frame's inset, ~56px tall, TRANSPARENT
+       paper in every state — no blur, no shadow, no on-scroll wash
+       (verified at scrollY 0…900; the task brief's "ink paper tone"
+       reading is superseded by the spec's computed evidence — the
+       scrolled reference header is the same transparent bar, per the
+       committed thumbs/header-scrolled-1440.png description);
+     · the only chrome is the CELL grammar: 1px hairline separators
+       between the bar's cells + the bottom rule (the R315 E-crawl
+       measurement, present in ALL states);
+     · state machine: `on-scroll` > 1×bar (state marker — the reference
+       carries no paint for it), `on-hide` > 5×bar scrolling DOWN →
+       the INNER bar translateY(-101%) on transform .4s ease +
+       pointer-events:none; scrolling UP shows it again; guarded by
+       pointer-over / open menu; 100ms debounce before the latch;
+     · the bar itself is pointer-transparent — only the real cells take
+       the pointer (the reference's pointer-events:none seat), so the
+       empty paper over scrolled content stays clickable;
+     · ≤991: [«القائمة» + 3-line burger] and the menu panel below on
+       the reference's clip-path wipe — inset(0 0 100%) → inset(0),
+       0.4s ease, hairline L/R rules — the row labels mask-revealing at
+       delay 0.25 (+0.02 stagger; CTA row 0.2) on the 0.8s
+       easeOutCubic mask-line register, the burger's outer line pair
+       scaling to 0 on active.
+
+   Discipline (gates, the sheet's own): zero raw colors · logical
+   properties only (RTL-safe) · literals carry a documented allow ·
+   zero :focus-visible rules (base.css owns the ring) · hovers guarded
+   behind (hover:hover) and (pointer:fine) · the RM belt covers every
+   mover · zero @keyframes · no !important.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── The bar — fixed at the sheet frame's 7px inset (the site's own
+ * frame rung; the reference's .8rem = 6.66px @1440 sits 0.34px inside
+ * it — sub-hairline, and the frame's rules carry the edges either
+ * way), the measured 56px height, the local chrome rung z 60 (the
+ * reference's 1e7 maps to the sheet's own ladder: et-tab 55 < header
+ * 60 < skip-link 100 < cb-banner 240).
+ *
+ * R331: the on-scroll BACKGROUND WASH IS RETIRED — the reference is
+ * transparent at every scroll depth (computed bg rgba(0,0,0,0),
+ * borderBottom none, no shadow — nav-1440.json `top`…`scrolled-900`).
+ * The bar carries no transition of its own anymore: the hide/show
+ * paint moved to .fo-header-inner (the reference's own seat), and the
+ * background never changes. */
+.fo-header {
+  position: fixed;
+  inset-block-start: 7px;   /* the frame inset (D9) — the bar's top edge rides the frame's top rule */
+  inset-inline: 7px;
+  block-size: 56px;         /* the measured bar height (56.3 @1440) */
+  z-index: 60;
+  background: transparent;
+  border-block-end: 1px solid var(--grid-line);
+  /* the reference's pointer seat: the bar is pointer-TRANSPARENT — the
+   * empty paper over scrolled content stays clickable; the cells below
+   * re-enable the pointer. */
+  pointer-events: none;
+}
+
+/* on-scroll — the >1×bar state marker, exactly the reference's class
+ * vocabulary. The reference carries NO paint for it (its stylesheet
+ * has no .header.on-scroll rule; the computed probe is identical in
+ * both states) — the class exists to gate the hide branch and to keep
+ * the measured vocabulary legible to telemetry. */
+
+/* on-hide — the lift: the INNER bar translates -101% (one full height
+ * plus the hairline — the reference's exact value, not our old
+ * -100%-8px overshoot), transform .4s on the default ease, and the
+ * cells lose the pointer while lifted. Scrolling up (any amount)
+ * removes it — the driver lives in SheetNav. */
+.fo-header-inner {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  min-block-size: 56px;
+  /* the reference's measured seat padding: logo at x=33 = 26px inside
+   * the frame edge; the far end rides the frame edge itself. */
+  padding-inline: 26px; /* spacing-gate: allow — the measured reference seat (33px − 7px inset), not a ladder rung */
+  padding-inline-end: 0;
+  max-inline-size: none;
+  transition: transform 0.4s ease; /* the reference: .header-inner{transition:transform .4s} */
+}
+
+.fo-header.on-hide .fo-header-inner {
+  transform: translateY(-101%);
+}
+
+.fo-header.on-hide {
+  pointer-events: none;
+}
+
+/* the interactive cells — the reference re-enables the pointer per
+ * cell (logo/nav/cta); ordered AFTER the on-hide kill so the lifted
+ * bar's cells stay dead (equal specificity, cascade order decides). */
+.fo-header-inner > :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
+  pointer-events: auto;
+}
+
+/* the LOGO CELL — grows to fill (~705px @1440 = the measured logo
+ * cell): mark + compact wordmark. Shared with the footer identity
+ * cell (the .fo-footer-scoped twins stay in landing.css). */
+.fo-brand {
+  flex: 1 1 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  min-block-size: 44px;
+  text-decoration: none;
+  color: var(--text);
+}
+
+/* the compact logotype beside the mark (the reference wordmark is
+ * 102×15 beside its 32×36 mark; «مدارك» holds the same seat at the
+ * Arabic display weight). */
+.fo-brand-name {
+  font-family: var(--font-display);
+  font-size: 2.4rem;   /* ≈20px @1440 — the measured logo-cell scale */
+  font-weight: 600;
+  line-height: 1;
+}
+
+.fo-brand-sub {
+  font-size: var(--fs-xs);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ── The nav — the R331 seat register over ruled cells: each seat the
+ * measured 136.67px (16.4rem on the shared fluid root), the row
+ * opened by its own 1px separator. The current page carries the
+ * reference's 0.6rem signal square after its label + the primary ink
+ * and drops out of pointer reach (a link to where you are). */
+.fo-nav {
+  display: flex;
+  align-items: stretch;
+  margin-inline-start: auto;
+  border-inline-start: 1px solid var(--grid-line);
+}
+
+.fo-nav > .fo-nav-link,
+.fo-nav > a {
+  border-inline-start: 1px solid var(--grid-line);
+}
+
+.fo-nav > :first-child {
+  border-inline-start: 0; /* the row's own rule already drew it */
+}
+
+.fo-nav-link {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1-5);
+  inline-size: 16.4rem;   /* 136.67px @1440 — the measured cell */
+  padding-inline: var(--sp-2);
+  min-block-size: 44px;
+  block-size: 100%;
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  overflow: clip;
+  /* the reference's link hover: label colour 0.4s (tertiary → ink) */
+  transition: color 0.4s var(--ease);
+}
+
+/* the current page — the reference's w--current: primary ink, out of
+ * pointer reach, the 0.6rem signal square after the label. */
+.fo-nav-link.is-current {
+  color: var(--text);
+  pointer-events: none;
+}
+
+.fo-nav-link.is-current::after {
+  content: '';
+  inline-size: 0.6rem;    /* the reference's measured current-dot */
+  block-size: 0.6rem;
+  flex: none;
+  background: var(--accent);
+}
+
+/* the fill-wipe slab (the reference's .btn-bg-hover ::after grammar:
+ * the slab rises from the block-start edge, transform 0.5s
+ * cubic-bezier(.23,1,.32,1) — measured on the live nav) */
+.fo-nav-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  transform: translateY(-101%);
+  transition: transform 0.5s var(--ease); /* cb(.23,1,.32,1) — the measured wipe */
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* the dual-label roll (the reference's .btn-fill-label swap: 0.48s
+ * cubic-bezier(.625,.05,0,1) — measured): the track slides exactly
+ * one row; the dup is out of flow so the window height IS the live
+ * row. */
+.fo-roll {
+  display: inline-flex;
+  overflow: hidden;
+  max-inline-size: 100%;
+}
+
+.fo-roll-track {
+  position: relative;
+  display: block;
+  transition: transform 0.48s var(--ease-in); /* cb(.625,.05,0,1) — the measured swap */
+}
+
+.fo-roll-txt {
+  display: block;
+  white-space: nowrap;
+}
+
+.fo-roll-dup {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+}
+
+/* ── The far-end ACTION CELLS — the row's own 1px rule opens the zone:
+ * the theme seats + «تسجيل الدخول» + the CTA cell, every boundary
+ * ruled, no boxes, no gaps — the same cell language as the nav. */
+.fo-header-actions {
+  display: flex;
+  align-items: stretch;
+  border-inline-start: 1px solid var(--grid-line);
+}
+
+/* the theme seats — UNBOXED in the header: bare icon cells at the 44px
+ * a11y floor, the seat boundaries painted by hairlines. */
+.fo-header-actions .theme-toggle {
+  border: 0;
+  background: none;
+  gap: 0;
+  padding: 0;
+  align-self: stretch;
+}
+
+.fo-header-actions .theme-toggle-option {
+  min-inline-size: 3.5rem;  /* 29px @1440 — a compact icon seat */
+  min-block-size: 44px;
+  border-inline-end: 1px solid var(--grid-line);
+  border-radius: 0;
+}
+
+.fo-header-actions .theme-toggle-option:last-child {
+  border-inline-end: 0;
+}
+
+/* «تسجيل الدخول» — a plain ruled cell in the row's register. */
+.fo-actions-login {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--sp-4);
+  min-block-size: 44px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-inline-start: 1px solid var(--grid-line);
+  transition: color 0.4s var(--ease);
+}
+
+/* the CTA CELL — the reference's 166.66px (20rem) seat closing the
+ * row: TRANSPARENT at rest with the orange read, dual-label roll +
+ * the fill-wipe on hover/focus, flush to the frame edge. */
+.fo-actions-cta {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1-5);
+  inline-size: 20rem;       /* 166.66px @1440 — the measured CTA cell */
+  min-block-size: 44px;
+  block-size: 100%;
+  padding-inline: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: max(13px, var(--fs-mono-md));
+  font-weight: var(--fw-medium);
+  color: var(--accent-ink);
+  text-decoration: none;
+  overflow: clip;
+  transition: color 0.4s var(--ease);
+}
+
+.fo-actions-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: translateY(-101%);
+  transition: transform 0.5s var(--ease); /* the measured bg-hover wipe */
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── <992px: the bar collapses to [logo | «القائمة» + the burger] —
+ * the reference's own breakpoint. The button carries the VISIBLE
+ * label (the reference's anatomy: text + the 3-line instrument at the
+ * inline-end); the r324 X8 icon-only seat retires with it. */
+.fo-burger {
+  display: none;              /* ≥992 has the full seat register */
+  align-items: center;
+  gap: var(--sp-2-5);
+  min-block-size: 44px;
+  padding: 1.2rem; /* spacing-gate: allow — the reference's own menu-btn padding, rem on the fluid root */
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fo-burger-txt {
+  white-space: nowrap;
+}
+
+/* the reference's instrument: three 1.5rem hair lines, the outer pair
+ * scaling to 0 on active (transform .4s ease) — the single centre
+ * hair is the reference's own close affordance. */
+.fo-burger-ic {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem; /* spacing-gate: allow — the reference's own line gap, rem on the fluid root */
+  inline-size: 1.5rem; /* the reference's measured line width */
+  flex: none;
+}
+
+.fo-burger-line {
+  display: block;
+  block-size: max(1px, 0.1rem); /* the reference's --size--border */
+  background: currentColor;
+  transform-origin: 50% 50%;
+  transition: transform 0.4s ease;
+}
+
+.fo-burger[aria-expanded='true'] .fo-burger-line:first-child,
+.fo-burger[aria-expanded='true'] .fo-burger-line:last-child {
+  transform: scale(0);
+}
+
+/* ── The mobile menu — the reference's panel below the bar, opened on
+ * the clip-path wipe: inset(0 0 100%) → inset(0), 0.4s ease, the
+ * hairline L/R rules the reference draws, each row's own bottom rule.
+ * The panel mounts closed (visibility holds the tab stops out until
+ * the wipe starts), lingers 420ms on close so the reverse clip
+ * resolves, then leaves the DOM (the r309 unmount pin). Its own
+ * overflow owns the wheel (r309 §3.2); the page behind is locked by
+ * the ref-counted body lock while open. */
+.fo-mobile-menu {
+  position: absolute;
+  inset-block-start: 100%;
+  inset-inline: 0;
+  z-index: 70;
+  display: grid;
+  align-content: start;
+  background: var(--bg);
+  border-inline: 1px solid var(--grid-line); /* the reference's L/R menu rules */
+  border-block-end: 1px solid var(--border-strong);
+  max-block-size: calc(100dvh - 100%);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  /* the reference's open mechanic: the wipe engages on the first paint
+   * after mount (SheetNav flips .is-open two frames in) and reverses
+   * on close; visibility follows the clip so the lingering exit mount
+   * keeps no tab stops. */
+  clip-path: inset(0 0 100%);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    clip-path 0.4s ease,
+    visibility 0s 0.4s;
+}
+
+.fo-mobile-menu.is-open {
+  clip-path: inset(0);
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    clip-path 0.4s ease,
+    visibility 0s 0s;
+}
+
+/* the rows — the reference's ruled register (40px measured; our 44px
+ * target floor), each row its own overflow mask so the label can
+ * reveal as a mask-line (the SplitText grammar retold in CSS). */
+.fo-mb-row {
+  display: flex;
+  align-items: center;
+  min-block-size: max(44px, 4rem); /* the reference's 40px rows, lifted to the 44px target floor */
+  padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure (33px − 7px inset) */
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  border-block-end: 1px solid var(--rule);
+  overflow: clip;
+}
+
+/* the label line — parked one row below (yPercent 100 in the
+ * reference's init set), revealing on the mask-line register: 0.8s
+ * easeOutCubic (power2.out), delay 0.25 + i×0.02 (the reference's
+ * menu-item delay + its own line stagger; the CTA row's 0.2 rides its
+ * own rule below). The transition exists ONLY on the open state, so
+ * closing re-arms the mask instantly instead of animating back. */
+.fo-mb-txt {
+  display: block;
+  transform: translateY(110%);
+}
+
+.fo-mobile-menu.is-open .fo-mb-txt {
+  transform: translateY(0);
+  transition: transform 0.8s cubic-bezier(0.215, 0.61, 0.355, 1); /* power2.out — the measured mask-line ease */
+  transition-delay: calc(0.25s + var(--i, 0) * 0.02s);
+}
+
+/* the CTA row — the reference's own early seat: delay 0.2, BEFORE the
+ * link rows (measured). */
+.fo-mobile-menu.is-open .fo-mb-cta .fo-mb-txt {
+  transition-delay: 0.2s;
+}
+
+.fo-mb-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: max(44px, 5.15rem); /* the reference's .header-cta.only-mb — 51px measured @390 */
+  margin-block-start: var(--sp-2);
+}
+
+.fo-mb-cta .fo-mb-txt {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+}
+
+/* the login row — the .btn ghost recipe joined to the reveal ladder. */
+.fo-mb-login {
+  min-block-size: max(44px, 4rem);
+  margin-inline: 26px; /* spacing-gate: allow — the header's own seat measure, the .btn recipe keeps its frame */
+  margin-block-start: var(--sp-2);
+  border-block-end: 1px solid var(--rule);
+}
+
+/* the sub-index — the mono register under the seat rows. */
+.fo-mb-sub {
+  border-block-end: 1px solid var(--rule);
+}
+
+.fo-mb-sub-row {
+  min-block-size: max(44px, 3.4rem);
+  padding-inline-start: calc(26px + var(--sp-5)); /* spacing-gate: allow — the sub-index indents one seat from the row padding */
+  font-family: var(--font-mono);
+  font-size: max(13px, var(--fs-mono-md));
+  font-weight: 400;
+  color: var(--text-secondary);
+  border-block-end: 0;
+}
+
+.fo-mb-sub .fo-mb-sub-row + .fo-mb-sub-row {
+  border-block-start: 1px solid var(--rule);
+}
+
+.fo-mobile-theme {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-2) 26px; /* spacing-gate: allow — the shared 26px header seat padding */
+  border-block-end: 1px solid var(--rule);
+}
+
+.fo-mobile-theme-label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* ═══ The ≤991 belt — the reference's own breakpoint: the seat
+ * register + action cells fold away, the burger takes the far end,
+ * the bar steps to the reference's measured 5rem mobile height
+ * (49.6px @390 — the logo cell's own padding + 3rem mark row). ═══ */
+@media (max-width: 991px) {
+  .fo-nav { display: none; }
+  .fo-header-actions { display: none; }
+
+  .fo-burger {
+    display: flex;
+    margin-inline-start: auto;
+  }
+
+  .fo-header {
+    block-size: 5rem;
+  }
+
+  .fo-header-inner {
+    min-block-size: 5rem;
+    padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure, not a rung */
+    padding-inline-end: 0;
+  }
+}
+
+/* the menu markup only ever mounts behind the burger (≥992 keeps the
+ * seat register) — the belt is defence, not the contract. */
+@media (min-width: 992px) {
+  .fo-mobile-menu { display: none; }
+}
+
+/* ═══ Hover washes — guarded to real pointers (the r283 convention) ═ */
+
+@media (hover: hover) and (pointer: fine) {
+  .fo-nav-link:hover {
+    color: var(--bg);
+  }
+
+  .fo-nav-link:hover::before {
+    transform: translateY(0);
+  }
+
+  .fo-nav-link:hover .fo-roll-track {
+    transform: translateY(-100%);
+  }
+
+  .fo-actions-login:hover {
+    color: var(--text);
+  }
+
+  .fo-actions-cta:hover {
+    color: var(--accent-fg);
+  }
+
+  /* R319 §D7 — the hovered wipe darkens one step in LIGHT theme (the
+   * #FA3600 slab under the white label measured 3.76:1; #DB3A00 is the
+   * r318 AA signal ground, white 4.55:1). Dark keeps its own pair. */
+  .fo-actions-cta:hover::before {
+    transform: translateY(0);
+    background: #DB3A00; /* color-gate: allow — the r318 AA signal ground (white label 4.55:1), light theme only; dark twin below */
+  }
+
+  html[data-theme='dark'] .fo-actions-cta:hover::before {
+    background: var(--accent);
+  }
+
+  .fo-actions-cta:hover .fo-roll-track {
+    transform: translateY(-100%);
+  }
+
+  .fo-mb-row:hover {
+    color: var(--accent-ink);
+  }
+}
+
+/* ═══ The RM belt — state, not motion (the sheet's canon): the class
+ * vocabulary still flips (telemetry reads it), but nothing moves —
+ * the bar stays pinned (the reference's own GSAP collapse), the menu
+ * opens without the wipe, the labels stand in place. ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .fo-header-inner {
+    transition: none;
+  }
+
+  .fo-header.on-hide .fo-header-inner {
+    transform: none; /* the bar stays seated — state, not motion */
+  }
+
+  /* the visible bar keeps working while the class is set */
+  .fo-header.on-hide :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
+    pointer-events: auto;
+  }
+
+  .fo-nav-link,
+  .fo-nav-link::before,
+  .fo-roll-track,
+  .fo-actions-login,
+  .fo-actions-cta,
+  .fo-actions-cta::before {
+    transition: none;
+  }
+
+  .fo-burger-line {
+    transition: none;
+  }
+
+  .fo-mobile-menu,
+  .fo-mobile-menu.is-open {
+    transition: none;
+  }
+
+  .fo-mobile-menu.is-open {
+    clip-path: inset(0);
+  }
+
+  .fo-mb-txt,
+  .fo-mobile-menu.is-open .fo-mb-txt {
+    transform: none;
+    transition: none;
+  }
+}

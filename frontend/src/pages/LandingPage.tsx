@@ -1,7 +1,7 @@
 import { Link, Navigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import {
-  ArrowLeft, Check, Menu, X,
+  ArrowLeft, Check,
 } from 'lucide-react';
 import { Icon } from '../components/Icon';
 // R323 (A3 · defect 1) — the ONE brand system: the retired StarMark/
@@ -10,7 +10,7 @@ import { Icon } from '../components/Icon';
 // wordmark, the loader's mark). The «مدارك» wordmark beside the header
 // mark stays HTML text — the guest-landing contract renders it.
 import { Logo } from '../brand';
-import { ThemeToggle, useThemeSync } from '../components/layout/ThemeToggle';
+import { useThemeSync } from '../components/layout/ThemeToggle';
 import { useAuthStore } from '../stores/auth.store';
 import { colleges } from '../data/colleges.config';
 import { ROLE_SHOWCASES } from '../data/university-media';
@@ -38,7 +38,6 @@ import { EdgeTab } from '../components/landing/chrome/EdgeTab';
 import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
-import { acquireScrollLock, releaseScrollLock } from '../lib/scrollLock';
 // r314-chrome.css — R314 B10 — the consent banner (V11) + the right-edge
 // vertical tab (V12): the landing chrome pair, Heron geometry with
 // Madarek's own honest content. R323 (A3 · defect 3): imported BEFORE
@@ -63,6 +62,14 @@ import '../styles/landing.css';
 // landing.css so its namespaced rules win by cascade order — the ONLY
 // stylesheet this round may add (file-ownership contract).
 import '../styles/r330-home.css';
+/* R331 (A-Web-Nav) — the masthead owns its own file now: the header
+ * state machine, the seat register, the menu choreography and
+ * r331/nav.css all live in the chrome component
+ * (components/landing/chrome/SheetNav.tsx — the file-ownership
+ * contract: this page keeps the SHEET, not the bar). Imported AFTER
+ * landing.css + r330-home.css so nav.css's header rules win by
+ * cascade order over any same-specificity sheet rule. */
+import { SheetNav } from '../components/landing/chrome/SheetNav';
 
 /**
  * Landing — «لوحة مدارك» (r306 sheet → R313 Heron structure).
@@ -97,10 +104,6 @@ import '../styles/r330-home.css';
  * instruments (statement words, journey plan, why cross-fade) — all on
  * the shared sheet clock, all collapsed under reduced motion.
  */
-
-/* ── r309 (§3): the mobile menu's scroll-lock holder key — the open menu
- * owns the viewport via the ref-counted body lock (lib/scrollLock). */
-const MENU_SCROLL_LOCK_KEY = 'landing-mobile-menu';
 
 /* ── Computed truths (BLUEPRINT §6 sources): 25 colleges in 3 campuses
  * from the real registry. R315 (K-E): the training-track, quality-board
@@ -299,149 +302,6 @@ function PlatformShowcase() {
   );
 }
 
-/* ── R313 (D8 · the header nav) — the reference's four-seat register:
- * two plain links + two dropdown parents (Heron: PRODUCT ▾ / PRICING /
- * RESOURCES ▾ / ABOUT), mapped onto the sheet's own sections. The
- * children mirror the desktop dropdowns and flatten into the mobile
- * menu's sub-index — every pinned anchor (#statement #chapters #live
- * #roles #colleges #vision) stays reachable from the bar. */
-type NavSeat = { label: string; href: string; children?: readonly { label: string; href: string }[] };
-
-const NAV_SEATS: readonly NavSeat[] = [
-  {
-    label: 'الرحلة', href: '#chapters',
-    children: [
-      { label: 'البيان', href: '#statement' },
-      { label: 'المبدأ والرؤية', href: '#vision' },
-    ],
-  },
-  { label: 'المنصّة', href: '#product' },
-  {
-    label: 'المجتمع', href: '#roles',
-    children: [
-      { label: 'التحديات', href: '#live' },
-      { label: 'الأدوار والشرائح', href: '#roles' },
-      { label: 'الكليات التجريبية', href: '#colleges' },
-    ],
-  },
-  { label: 'الجامعات', href: '/campus' },
-] as const;
-
-/* R313-int (5-int · failure 7): «الفصول» dropped — it duplicated its
- * own seat's #chapters target (two menu links to one anchor → the
- * strict-mode pin in r309 'navigates-and-closes-the-menu'). «ما يعمل
- * اليوم» moved out of the DROPDOWN (its always-rendered hidden text
- * was the first DOM-order match for the honesty-ledger locator, so
- * the visible-at-top contract in guest-landing could never resolve);
- * the ledger link now lives in the hero value row (the disclosure
- * chip), in the footer, in the #live foot — and in the MOBILE menu's
- * sub-index below (r170d pins it there). */
-const MOBILE_LEDGER_ROW = { label: 'ما يعمل اليوم', href: '/capabilities' } as const;
-
-/* The dual-label roll (the reference's .btn-fill-label label-top/bot
- * pair — WP-D's .btn-motion-label grammar, retold for nav cells): the
- * live row in flow + an aria-hidden duplicate parked one row below;
- * the track's -100% slide travels exactly one row. The dup is out of
- * flow, so wrapping (≤420px) never desynchronises the two rows. */
-function RollLabel({ text }: { text: string }) {
-  return (
-    <span className="fo-roll">
-      <span className="fo-roll-track">
-        <span className="fo-roll-txt">{text}</span>
-        <span className="fo-roll-txt fo-roll-dup" aria-hidden="true">{text}</span>
-      </span>
-    </span>
-  );
-}
-
-/* The 5×5 mark pair on dropdown parents (the reference's
- * .header-menu-item-ic top/bot): a hairline chevron at rest, rolling
- * to the solid signal square on hover — transform-only, on the
- * reference's own register (0.5s · cb(.23,1,.32,1)). CSS-drawn (the
- * reference uses divs too) — no icon-gate surface. In RTL the chevron
- * points inline-forward (left), mirroring Heron's `>`. */
-function NavMark() {
-  return (
-    <span className="fo-nav-ic" aria-hidden="true">
-      <span className="fo-nav-ic-layer"><span className="fo-nav-ic-chev" /></span>
-      <span className="fo-nav-ic-layer fo-nav-ic-b"><span className="fo-nav-ic-sq" /></span>
-    </span>
-  );
-}
-
-/* One dropdown parent: a real button (aria-expanded) whose panel is
- * the reference's grid-rows + opacity fold (transition "opacity .4s,
- * grid-template-rows .4s" — measured). One state drives hover, focus
- * and click: pointerenter opens only for real mice (touch taps go to
- * the click toggle), focus walking into the cell opens the panel, and
- * Escape closes + refocuses the trigger. */
-function HeaderNavDropdown({ seat }: { seat: (typeof NAV_SEATS)[number] }) {
-  const [open, setOpen] = useState(false);
-  const cellRef = useRef<HTMLDivElement>(null);
-
-  return (
-    <div
-      className="fo-nav-item"
-      ref={cellRef}
-      data-open={open ? 'true' : undefined}
-      onPointerEnter={(e) => { if (e.pointerType === 'mouse') setOpen(true); }}
-      onPointerLeave={(e) => { if (e.pointerType === 'mouse') setOpen(false); }}
-      onFocus={() => setOpen(true)}
-      onBlur={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setOpen(false);
-      }}
-      onKeyDown={(e) => {
-        if (e.key === 'Escape') {
-          setOpen(false);
-          cellRef.current?.querySelector('button')?.focus();
-        }
-      }}
-    >
-      <button
-        type="button"
-        className="fo-nav-link"
-        aria-expanded={open}
-        aria-haspopup="true"
-        onClick={() => setOpen((v) => !v)}
-      >
-        <RollLabel text={seat.label} />
-        <NavMark />
-      </button>
-      <div className="fo-drop">
-        <div className="fo-drop-inner">
-          {(seat.children ?? []).map((c) => (
-            <a key={c.href} href={c.href} className="fo-drop-link" onClick={() => setOpen(false)}>
-              <RollLabel text={c.label} />
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* The desktop nav — four seats over the bar's full height. Plain
- * seats are plain links (router-internal for routes, anchors for the
- * sheet's sections). */
-function HeaderNav() {
-  return (
-    <nav className="fo-nav" aria-label="التنقل الرئيسي">
-      {NAV_SEATS.map((seat) => {
-        if (seat.children) return <HeaderNavDropdown key={seat.label} seat={seat} />;
-        return seat.href.startsWith('#') ? (
-          <a key={seat.href} href={seat.href} className="fo-nav-link">
-            <RollLabel text={seat.label} />
-          </a>
-        ) : (
-          <Link key={seat.href} to={seat.href} className="fo-nav-link">
-            <RollLabel text={seat.label} />
-          </Link>
-        );
-      })}
-    </nav>
-  );
-}
-
 /* ── R314 (V1/V2): the STAGES hotspot row + details panel retired with
  * the thin-line elevation — the reference hero carries the ink rendering
  * + the inspection instrument's own markers, no stage panel. The stage
@@ -490,8 +350,6 @@ export default function LandingPage() {
     }
   });
   const [introDone, setIntroDone] = useState(!introPlaying);
-
-  const [menuOpen, setMenuOpen] = useState(false);
 
   /* R318 (C2) — the grain's body seat: mounted class in, unmounted out
    * (the pseudo-element film is landing-only, exactly like the old
@@ -612,16 +470,9 @@ export default function LandingPage() {
   /* R308's corner-coordinate writer (the [0,…] [0,0] debug readout) is
    * retired with the R322 V1 kill — revision tags and coordinates are
    * not content; no element reads this section's geometry anymore. */
-  // F2-5 (r157): mobile-menu contract — Escape closes + refocuses the
-  // burger (its aria-label flips with the state). r307: an open menu
-  // also closes on an outside tap (touch users get no blur event from
-  // a tap on the page behind the card).
-  const burgerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLElement>(null);
-  // Scroll chrome on refs, written imperatively — no React re-render
-  // per scroll event (the r172 pattern, kept).
-  const headerRef = useRef<HTMLElement>(null);
   // R318 (C2) — the auth-warm intent listener's anchor (the root).
+  // (The header's own refs + the scroll state machine moved to
+  // SheetNav with R331 — the page keeps the SHEET, not the bar.)
   const rootRef = useRef<HTMLDivElement>(null);
 
   /* r162 (R2) → r164b: warm the AUTH BOUNDARIES while the visitor reads
@@ -665,147 +516,6 @@ export default function LandingPage() {
       else window.clearTimeout(idleId as number);
     };
   }, [redirectHome]);
-
-  // Scroll-driven chrome with ZERO setState: coalesced to one rAF per
-  // frame, written straight to the DOM. r307 (1-C H-2): the apply()
-  // is ALSO reconciled on load / resize / fonts-ready — late media
-  // (photos) reflows document height and the ribbon must not drift
-  // while the visitor sits still.
-  //
-  // R313 (D8) — the header rides the REFERENCE's class vocabulary
-  // (telemetry/header-states.json, direct scrollTop sets):
-  //   top           → `header`            (clean)
-  //   scrolled      → `header on-scroll on-hide`
-  //   back to top   → `header on-hide`    (on-scroll drops, on-hide
-  //                                       LATCHES — never removed)
-  // `on-scroll` (the old `.scrolled`) flips at y>6 and also takes the
-  // solid-paper background. `on-hide` latches on the first
-  // scroll-down past the floor. The VISUAL hide/show itself is an
-  // imperative transform written from this same rAF (the reference
-  // drives its bar from GSAP; a style write is our equivalent — the
-  // class list stays exactly the measured vocabulary): down past the
-  // floor lifts the bar clear of the frame, up — or near the top —
-  // seats it back. An open dropdown holds the bar; reduced motion
-  // keeps it pinned (the classes still flip — state, not motion).
-  useEffect(() => {
-    const header = headerRef.current;
-    const reduced =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    /* R318 (C2) — the scroll read rides the EVENT, not the frame: a
-     * scrollY read inside rAF lands AFTER the sheet driver's style
-     * writes and forces a synchronous full-document layout every
-     * frame (639ms self @1440 in the CDP profile). The handler
-     * (passive, fires before rAF callbacks) snapshots the seat once
-     * per event; apply() only WRITES — and the transform write is
-     * idempotent (same-string assignments still invalidate style). */
-    let pendingY = window.scrollY;
-    let lastY = pendingY;
-    let lastTf: string | null = null;
-    let lifted = false;
-    let raf = 0;
-    const apply = () => {
-      raf = 0;
-      const y = pendingY;
-      if (header) {
-        header.classList.toggle('on-scroll', y > 6);
-        const delta = y - lastY;
-        lastY = y;
-        const holds = header.querySelector('[aria-expanded="true"]') !== null;
-        if (!holds) {
-          if (y < 40) lifted = false;
-          else if (delta > 8) {
-            lifted = true;
-            header.classList.add('on-hide');
-          } else if (delta < -8) {
-            lifted = false;
-          }
-        }
-        const tf = lifted && !reduced
-          ? 'translateY(calc(-100% - 8px))'
-          : '';
-        if (tf !== lastTf) {
-          header.style.transform = tf;
-          lastTf = tf;
-        }
-      }
-    };
-    const onScroll = () => {
-      pendingY = window.scrollY;
-      if (!raf) raf = requestAnimationFrame(apply);
-    };
-
-    apply();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    window.addEventListener('load', onScroll);
-    document.fonts?.ready?.then?.(onScroll).catch(() => undefined);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      window.removeEventListener('load', onScroll);
-      // r307 (1-C M-1): cancel the pending frame by its id — the old
-      // form passed the handler (coerced to NaN) and one stray frame
-      // fired after unmount.
-      if (raf) cancelAnimationFrame(raf);
-    };
-  }, []);
-
-  // r307 (1-C M-5): the mobile menu closes on an outside tap — touch
-  // taps on the page behind the card never blur the menu, so an
-  // explicit pointerdown guard fences the open state.
-  //
-  // r309 (§3): the open menu OWNS the viewport — the ref-counted body
-  // scroll lock (lib/scrollLock, the app's own overlay contract) stops
-  // the background document from scrolling behind the fixed panel
-  // (the production audit measured scrollY 0→500 through an open
-  // menu). Idempotent per holder: repeated open/close cycles and
-  // StrictMode's mount→cleanup→mount cycle net out cleanly, and the
-  // class-based lock never touches anyone's inline overflow style.
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-    acquireScrollLock(MENU_SCROLL_LOCK_KEY);
-    return () => releaseScrollLock(MENU_SCROLL_LOCK_KEY);
-  }, [menuOpen]);
-  // r309 (§3.3): Escape closes the open menu FROM ANYWHERE — the old
-  // handler sat on the nav's own onKeyDown and only fired while focus
-  // was inside the menu; with focus still on the trigger (the common
-  // open-by-tap state) Escape did nothing. The document-level guard
-  // is installed only while the menu is open and refocuses the
-  // trigger on close (the F2-5 contract).
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return;
-      setMenuOpen(false);
-      burgerRef.current?.focus();
-    };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, [menuOpen]);
-
-  useEffect(() => {
-    if (!menuOpen) return undefined;
-    const onPointerDown = (e: PointerEvent) => {
-      const menu = menuRef.current;
-      const t = e.target as Node | null;
-      if (!t) return;
-      /* inside the panel — the panel owns the tap (link rows close on
-       * their own click; the theme row stops propagation). */
-      if (menu?.contains(t)) return;
-      /* R313-int (5-int · failure 4 — REAL BUG): an outside tap on the
-       * BURGER itself must be left to the burger's own toggle. The old
-       * guard closed the menu on pointerdown, then the burger's click
-       * toggled false→true and the menu re-mounted within the same
-       * interaction — the overlay could never be closed by its own
-       * trigger (the r309 'closing-restores-the-position' pin). */
-      if (burgerRef.current?.contains(t)) return;
-      setMenuOpen(false);
-    };
-    document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
-  }, [menuOpen]);
 
   if (redirectHome) return <Navigate to={redirectHome} replace />;
 
@@ -873,155 +583,13 @@ export default function LandingPage() {
           landmarks; the imperative scroll rAF keeps only the header
           hide/show latch. */}
 
-      {/* ── Masthead (R313 · D8) — the reference's fixed 56px bar at
-          the 7px frame inset: transparent at rest (the frame's top
-          rule shows through), solid paper when scrolled (.on-scroll),
-          lifting away on scroll-down via the imperative transform
-          (the .on-hide class latches — the measured vocabulary).
-          RTL-mirrored seating: brand inline-start (right), the
-          four-seat nav, the actions at the far end behind a vertical
-          hairline (the reference's line before its CTA). ── */}
-      <header className="fo-header" ref={headerRef}>
-        {/* R315 (K-B) — the reference's measured cell grammar (E-crawl
-            heron-dom @1440×900): one 56.3px row of CELLS separated by
-            1px #B3B3AF rules — [logo cell 705 | nav cells 4×136.67 |
-            actions cells | CTA cell 166.66] with a bottom hairline,
-            nothing else. RTL-mirrored: the logo cell seats inline-start
-            (right), the CTA cell ends the row (left). The tagline stack
-            is retired (the reference's logo cell = mark + wordmark);
-            «تسجيل الدخول» + the theme seats ride as their own cells —
-            honest function the reference doesn't need, in the same
-            cell language. */}
-        <div className="fo-header-inner">
-          {/* R323 (A3 · defect 1): the brand cell draws the NEW <Logo>
-              mark (the 32-grid khatam) — the retired StarMark is gone.
-              «مدارك» stays HTML text (the display-voice wordmark the
-              guest-landing e2e reads). */}
-          <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
-            <Logo variant="mark" size={26} className="fo-brand-mark" />
-            <span className="fo-brand-name">مدارك</span>
-          </Link>
-
-          <HeaderNav />
-
-          <div className="fo-header-actions">
-            <ThemeToggle />
-            <Link to="/auth" className="fo-actions-login">تسجيل الدخول</Link>
-            <Link to="/auth/register" className="fo-actions-cta">
-              <RollLabel text="ابدأ الآن" />
-              <Icon icon={ArrowLeft} size={14} className="fo-actions-cta-arrow" aria-hidden />
-            </Link>
-          </div>
-
-          {/* <992px — R323 (A3 · defect 2): the phone row collapses to
-              [Logo lockup | menu button]: ONE real 44×44 menu button —
-              a Lucide glyph + the visually-hidden «القائمة» label (the
-              old 187×50 wide seat with its clipped label and stray
-              1-px rule is retired; the aria-label flip and the
-              Escape/focus/scroll-lock contracts are untouched). */}
-          <button
-            type="button"
-            className="fo-burger"
-            ref={burgerRef}
-            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            <span className="fo-burger-label">القائمة</span>
-            <Icon icon={menuOpen ? X : Menu} size={20} className="fo-burger-ic" />
-          </button>
-        </div>
-
-        {menuOpen && (
-          <nav
-            className="fo-mobile-menu"
-            /* R313 (4-b · D6): while the Lenis engine is live on '/', a
-               wheel/touch inside this panel must scroll the PANEL (its
-               own overflow-y), never the page behind it — the engine's
-               own vocabulary for exactly this (checked in composedPath
-               before any preventDefault). */
-            data-lenis-prevent=""
-            ref={menuRef}
-            aria-label="قائمة الجوال"
-            onClick={(e) => {
-              // Link taps close the menu; taps on non-link chrome must
-              // not (the theme row stops propagation for its toggle).
-              if ((e.target as HTMLElement).closest('a')) setMenuOpen(false);
-            }}
-            onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-                setMenuOpen(false);
-              }
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Escape') {
-                setMenuOpen(false);
-                burgerRef.current?.focus();
-                return;
-              }
-              /* the open overlay is a focus trap: Tab cycles inside it
-                 (the burger re-takes focus itself on close). */
-              if (e.key === 'Tab') {
-                const items = menuRef.current?.querySelectorAll<HTMLElement>(
-                  'a[href], button:not([disabled])',
-                );
-                if (!items || items.length === 0) return;
-                const first: HTMLElement | undefined = items[0];
-                const last: HTMLElement | undefined = items[items.length - 1];
-                if (!first || !last) return;
-                if (e.shiftKey && document.activeElement === first) {
-                  e.preventDefault();
-                  last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                  e.preventDefault();
-                  first.focus();
-                }
-              }
-            }}
-          >
-            {/* r324 X8 — the visible «القائمة» label lives HERE, inside
-                the overlay (the bar's seat is icon-only now): a quiet
-                mono head row above the link rows. */}
-            <p className="fo-mb-head" aria-hidden="true">القائمة</p>
-            {/* the four seats as flat 40px rows (the reference's own
-                mobile register), then the dropdown children as the
-                mono sub-index — every section reachable without an
-                expand/collapse dance, every row a real link. */}
-            {NAV_SEATS.map((seat) => (
-              seat.href.startsWith('#') ? (
-                <a key={seat.href} href={seat.href} className="fo-mb-row">{seat.label}</a>
-              ) : (
-                <Link key={seat.href} to={seat.href} className="fo-mb-row">{seat.label}</Link>
-              )
-            ))}
-            <div className="fo-mb-sub" aria-label="أقسام الصفحة">
-              {NAV_SEATS.flatMap((seat) => seat.children ?? []).map((c) => (
-                <a key={c.href} href={c.href} className="fo-mb-row fo-mb-sub-row">{c.label}</a>
-              ))}
-              {/* R313-int (5-int · failure 1): the honest-ledger row keeps
-                  «ما يعمل اليوم» reachable from the mobile bar (the r170d
-                  pin) after it left the desktop dropdown. */}
-              <Link to={MOBILE_LEDGER_ROW.href} className="fo-mb-row fo-mb-sub-row">
-                {MOBILE_LEDGER_ROW.label}
-              </Link>
-            </div>
-            <div
-              className="fo-mobile-theme"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <span className="fo-mobile-theme-label">المظهر</span>
-              <ThemeToggle />
-            </div>
-            <Link to="/auth" className="btn ghost">تسجيل الدخول</Link>
-            {/* the reference's .header-cta.only-mb — the 51px register
-                seat INSIDE the overlay (the desktop CTA is hidden). */}
-            <Link to="/auth/register" className="btn primary fo-mb-cta">
-              ابدأ الآن
-              <Icon icon={ArrowLeft} size={14} />
-            </Link>
-          </nav>
-        )}
-      </header>
+      {/* ── The masthead — R331 (A-Web-Nav): the Heron-measured bar
+          (transparent paper in every state, the on-scroll/on-hide
+          state machine, the clip-path menu) lives in its own chrome
+          component with its own stylesheet — see
+          components/landing/chrome/SheetNav.tsx + styles/r331/nav.css
+          and docs/redesign/r331/web-nav.md. ── */}
+      <SheetNav />
 
       <main id="main" tabIndex={-1}>
 
