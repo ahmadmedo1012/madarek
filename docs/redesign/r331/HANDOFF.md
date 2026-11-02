@@ -40,6 +40,30 @@ Only the lead merges to `main` and pushes. CI runs on every branch push — do n
 | 4aaad5e2 | fix(r331-drift): cinematic rungs folded + card sample re-seated | ✅ CI all 10 jobs + Size gate ✅ | API-checked: runs 41468527861 / 41468527964 — **main is GREEN** |
 | 386d06af | docs HANDOFF (red→green closed) | ✅ Size gate + CI ✅ | docs-only push, API-checked |
 | d8cb27a8 | fix(r331-journey): ≤991 blank-pin root-caused + repaired | ✅ Size gate ✅; CI ❌ E2E → **re-run ✅** | the one red E2E was a runner flake (r309 drag spec: renderer crash at 45.7s vs 2.8s local, "browser has been closed"; same code green on re-run 41513003603). Full API-checked |
+| 33a48526 | feat(r331-app-motion): keyboard-controller wired (provider+KAV×2+toolbar) | ✅ | Mobile workflow green; 762/762 jest; tsc; expo export |
+| 9ed641a3 | fix(r331-mobile): sharp was killing EAS iOS npm ci — optional + lockfile regenerated | ✅ Size gate + Mobile ✅; CI ❌ E2E → **re-run ✅** | E2E flake pair re-confirmed (r309 renderer crash ×2 + r305 timing, both pass local/re-run). EAS dual build **DELIVERED** |
+
+**EAS DUAL BUILD DELIVERED (Part B close-out evidence).**
+- iOS (preview · simulator .tar.gz): build `4b8ddf5e`, artifact
+  `https://expo.dev/artifacts/eas/hU4GfqFLkxbTn4IDLjAXB-48seTMpio5tiaxl4tkAdA.tar.gz`
+- Android (preview · internal APK): build `b6ea8ecb`, artifact
+  `https://expo.dev/artifacts/eas/bUGgTTqITzcGngNpHG8iIpgwMAkQZqUyqHidwdJM9xs.apk`
+Both cut from main `9ed641a3` (the sharp-unblock commit); the three prior iOS failures are
+root-caused and dead (see the sharp entry above).
+
+**A-App-Motion closed.** The A-App-Shell deps are now live: KeyboardProvider at the root
+layout, the two legacy RN KeyboardAvoidingView seats (FormScreen + messages composer)
+swapped to the controller's drop-in (per-pixel UI-thread tracking), the reply composer
+gains a KeyboardToolbar. Jest nets stub the native module (762/762 green).
+
+**EAS iOS build UNBLOCKED.** Three consecutive iOS ERRORED builds (Install dependencies);
+Android always passed. Fresh log forensics: `npm ci` ran sharp's install/check.js, found no
+darwin binary (the lockfile's sharp entry carried NO optionalDependencies map — orphaned
+@img/* entries npm ci prunes), fell to a node-gyp source build and died. Repair: sharp →
+optionalDependencies (npm tolerates its install failure; EAS never invokes it — only the
+owner's icon pipeline does) + regenerated lockfile (full @img map, macOS gets prebuilts).
+Build 4b8ddf5e FINISHED: simulator artifact
+`https://expo.dev/artifacts/eas/hU4GfqFLkxbTn4IDLjAXB-48seTMpio5tiaxl4tkAdA.tar.gz`.
 
 **A-Web-Journey closed.** The brief's hard defect (≤991 pinned journey blank — owner frames
 m-025/m-050) is root-caused: Chromium sticky-subtree paint-chunk merge/drop — the plan svg
@@ -85,8 +109,8 @@ folded, sample re-seated on `.hro-work-item`/`.rl-row`, baseline re-promoted (4a
   762/762 tests, web export green) · A-Web-Hero (Heron construction, live animation proof
   t=0.3s vs t=3s) · A-Web-Nav (56px/1×/5× thresholds, clip-path menu, lenis stop, CLS 0.0234) ·
   A-Web-Journey (≤991 blank-pin ROOT-CAUSED + repaired — see the ledger row above).
-- In flight: A-Web-Sections (platform/why/faq/cta/footer per heron-program §4), A-App-Motion, A-App-Student.
-- Next: A-Web-Inner/Dash, A-App-Brand/Teacher/Admin, QA panel, EAS builds, evidence Release.
+- In flight: A-App-Student (L3 screens), A-Web-Sections polish (§4 mechanics recorded as deliberate deltas — why band runs scroll cross-fades on REAL captures, not invented illustrations).
+- Next: A-Web-Inner/Dash, A-App-Brand/Teacher/Admin, QA panel, evidence Release.
 
 ## Push blocker — RESOLVED
 
