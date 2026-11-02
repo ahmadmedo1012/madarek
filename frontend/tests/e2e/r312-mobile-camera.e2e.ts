@@ -251,11 +251,14 @@ test.describe('R312 — the mobile map (§R R1, R322 override)', () => {
       const bad: string[] = [];
       const seen: number[] = [];
       /* The R330 mobile clock front-loads the movie (t = 5.52·u^0.55):
-       * the plaque era (stage 0) now spans only the first ~2% of the
-       * track, so the sweep samples that era finely before settling
-       * into a uniform ladder — the invariant under test (all six
-       * states visited, in order) is unchanged. */
+       * stage 0 lives in the PRE-PIN runway (the sequence starts at
+       * SEQ_START_PIN = −0.082 — before the column top the sweep
+       * anchors on) and the plaque era compresses to ~2% after it, so
+       * the sweep samples the runway, then that era finely, then a
+       * uniform ladder — the invariant under test (all six states
+       * visited, in order) is unchanged. */
       const ps: number[] = [];
+      for (let i = 10; i >= 1; i -= 1) ps.push(-0.008 * i);
       for (let i = 0; i <= 8; i += 1) ps.push(i * 0.004);
       for (let i = 1; i <= 24; i += 1) ps.push(0.06 + (i / 24) * 0.94);
       const steps = ps.length - 1;
