@@ -5,9 +5,12 @@ import {
   View,
   type StyleProp,
   type ViewStyle,
-  KeyboardAvoidingView,
   Platform,
 } from "react-native";
+// R331 A-App-Motion — the controller's KeyboardAvoidingView replaces RN's:
+// same behavior prop, but the offset is tracked per-pixel on the UI thread
+// (KeyboardProvider at the root drives it) — no layout-thrash frame lag.
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";

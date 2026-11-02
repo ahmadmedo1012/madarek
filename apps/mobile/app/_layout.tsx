@@ -6,6 +6,12 @@ import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+// R331 A-App-Motion — the keyboard now rides react-native-keyboard-controller:
+// per-pixel tracking driven on the UI thread (reanimated worklets), RTL-safe,
+// both platforms. The two legacy RN KeyboardAvoidingView seats (FormScreen,
+// the messages composer) swap to the controller's drop-in view; the provider
+// must sit above every screen, so the root layout mounts it.
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import * as SplashScreen from "expo-splash-screen";
 import { useFonts } from "expo-font";
 import { queryClient } from "@/lib/queryClient";
@@ -121,6 +127,9 @@ export default function RootLayout() {
   return (
     <ErrorBoundary scope="root">
       <QueryClientProvider client={queryClient}>
+        {/* R331 A-App-Motion — the keyboard's animated root (see the import
+            note): every KeyboardAvoidingView/KeyboardToolbar below rides it. */}
+        <KeyboardProvider>
         <ThemeProvider>
           <SafeAreaProvider>
             {/* R327 C3 — the optional cold-start biometric lock. Off by
@@ -140,6 +149,7 @@ export default function RootLayout() {
                 menu and /settings; nothing overlays screen content now. */}
           </SafeAreaProvider>
         </ThemeProvider>
+        </KeyboardProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

@@ -10,7 +10,10 @@
  * (studentApi.messages / sendMessage / readAllMessages).
  */
 import { useMemo, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
+// R331 A-App-Motion — the controller's KAV (per-pixel UI-thread tracking)
+// + the accessory KeyboardToolbar over the reply composer.
+import { KeyboardAvoidingView, KeyboardToolbar } from "react-native-keyboard-controller";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import { ApiError } from "@/api/client";
@@ -278,6 +281,9 @@ export function MessagesUI() {
             />
           </View>
         ) : null}
+        {/* R331 A-App-Motion — the keyboard accessory bar (prev/next/done):
+            rides the root KeyboardProvider, styled by the theme. */}
+        <KeyboardToolbar />
       </Sheet>
     </KeyboardAvoidingView>
   );

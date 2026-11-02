@@ -234,3 +234,19 @@ jest.mock("lucide-react-native", () => {
     },
   });
 });
+
+/* ── R331 A-App-Motion: react-native-keyboard-controller mounts native
+      modules at import (the "not linked" crash under jest). The render
+      nets prove screens don't crash, not that pixels track — stub the
+      provider/KAV/toolbar as pass-through components ────────────────── */
+jest.mock("react-native-keyboard-controller", () => {
+  const React = require("react");
+  return {
+    KeyboardProvider: ({ children }: { children: React.ReactNode }) => children,
+    KeyboardAvoidingView: ({ children }: { children?: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children ?? null),
+    KeyboardToolbar: () => null,
+    useKeyboardAnimation: () => ({ height: { value: 0 }, progress: { value: 0 } }),
+    useKeyboardState: () => ({ isVisible: false, height: 0 }),
+  };
+});
