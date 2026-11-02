@@ -3,8 +3,6 @@
  * offering picker header + the roster table). The roster card itself is
  * the shared OfferingRoster (also used by students/[offeringId]).
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useState } from "react";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, PageHeader } from "@/components/ui/screen";
@@ -12,7 +10,7 @@ import { T } from "@/components/ui/text";
 import { Card } from "@/components/ui/surfaces";
 import { arCount, OfferingPicker, OfferingRoster, useTeacherOfferings } from "@/features/teacher/components";
 
-function TeacherStudents() {
+export default function TeacherStudents() {
   const offs = useTeacherOfferings();
   const offerings = offs.data ?? [];
   const [offeringId, setOfferingId] = useState<string>("");
@@ -64,14 +62,5 @@ function TeacherStudents() {
         </>
       )}
     </Screen>
-  );
-}
-
-
-export default function TeacherStudentsTabbed() {
-  return (
-    <RoleTabFrame role="TEACHER">
-      <TeacherStudents />
-    </RoleTabFrame>
   );
 }

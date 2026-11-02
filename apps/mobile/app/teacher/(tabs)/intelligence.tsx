@@ -3,8 +3,6 @@
  * TeacherIntelligencePage (global at-risk panel + per-offering analytics
  * + the template-simulated curriculum suggestion with its honest badge).
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -134,7 +132,7 @@ function OutlineText({ outline }: { outline: unknown }) {
   );
 }
 
-function TeacherIntelligence() {
+export default function TeacherIntelligence() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const offs = useTeacherOfferings();
@@ -323,14 +321,5 @@ function TeacherIntelligence() {
         </>
       )}
     </Screen>
-  );
-}
-
-
-export default function TeacherIntelligenceTabbed() {
-  return (
-    <RoleTabFrame role="TEACHER">
-      <TeacherIntelligence />
-    </RoleTabFrame>
   );
 }

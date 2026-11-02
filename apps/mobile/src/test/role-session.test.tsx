@@ -25,7 +25,7 @@ import type { AppRole, AuthUser } from "@/api/types";
 // but the FILE path for the route module gained the group directory.
 const ROLES: { role: AppRole; home: string }[] = [
   { role: "STUDENT", home: "student/(tabs)/dashboard" },
-  { role: "TEACHER", home: "teacher/dashboard" },
+  { role: "TEACHER", home: "teacher/(tabs)/dashboard" },
   { role: "ADMIN", home: "admin/dashboard" },
   { role: "QUALITY", home: "quality/dashboard" },
   { role: "OWNER", home: "owner/dashboard" },

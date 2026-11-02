@@ -3,8 +3,10 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import ArrowRight from "lucide-react-native/icons/arrow-right";
 import CheckCheck from "lucide-react-native/icons/check-check";
 import Dot from "lucide-react-native/icons/dot";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp , toneForNotificationType } from "@/design/tokens";
 import { Badge } from "@/components/ui/surfaces";
@@ -24,9 +26,26 @@ import type { AppNotification } from "@/api/types";
 /**
  * NotificationsScreen — the shared role inbox (personal feed).
  * Paginated infinite list + mark-read + deep links into safe in-app paths.
+ *
+ * R331 A-App-Shell safe-area fix: the header now pads the status-bar inset
+ * (the old per-screen tab frame never did — the inbox clipped its top edge
+ * as a tab). `stacked` marks a PUSHED instance (over the persistent tab
+ * shell): it owns the home-indicator inset at the bottom and shows a back
+ * affordance (RTL: arrow points right = the physical back edge).
  */
-export function NotificationsScreen({ title, kicker }: { title?: string; kicker?: string }) {
+export function NotificationsScreen({
+  title,
+  kicker,
+  stacked = false,
+  onBack,
+}: {
+  title?: string;
+  kicker?: string;
+  stacked?: boolean;
+  onBack?: () => void;
+}) {
   const p = usePalette();
+  const insets = useSafeAreaInsets();
   const [page, setPage] = useState(1);
   const feed = useNotifications(page);
   const markRead = useMarkRead();
@@ -41,11 +60,18 @@ export function NotificationsScreen({ title, kicker }: { title?: string; kicker?
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: p.bg, gap: 0 }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: p.bg,
+        gap: 0,
+        paddingBottom: stacked ? Math.max(insets.bottom, 0) : 0,
+      }}
+    >
       <View
         style={{
           paddingHorizontal: sp[16],
-          paddingTop: sp[8],
+          paddingTop: Math.max(insets.top, sp[8]),
           paddingBottom: sp[8],
           gap: sp[8],
           borderBottomWidth: StyleSheet.hairlineWidth,
@@ -54,6 +80,16 @@ export function NotificationsScreen({ title, kicker }: { title?: string; kicker?
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+          {stacked && onBack ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="رجوع"
+              onPress={onBack}
+              style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
+            >
+              <ArrowRight size={22} color={p.text} />
+            </Pressable>
+          ) : null}
           <View style={{ flex: 1 }}>
             {kicker ? <MonoLabel>{kicker}</MonoLabel> : null}
             <T variant="h3" weight="bold">

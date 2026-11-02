@@ -4,8 +4,6 @@
  * the four-field self edit) + the mobile menu hub (RowList) into every
  * teacher surface.
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -73,10 +71,12 @@ const MENU: { label: string; to: string }[] = [
   { label: "الرسائل", to: "/teacher/messages" },
   { label: "المساعد", to: "/teacher/ai" },
   { label: "الإشعارات", to: "/teacher/alerts" },
+  // R331 A-App-Shell — the report loop entry (replaces the removed floating FAB).
+  { label: "الإبلاغ عن مشكلة", to: "/report" },
   { label: "الإعدادات", to: "/settings" },
 ];
 
-function TeacherProfile() {
+export default function TeacherProfile() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
@@ -321,14 +321,5 @@ function TeacherProfile() {
         <Button label="حفظ" loading={save.isPending} onPress={() => save.mutate()} />
       </Sheet>
     </Screen>
-  );
-}
-
-
-export default function TeacherProfileTabbed() {
-  return (
-    <RoleTabFrame role="TEACHER">
-      <TeacherProfile />
-    </RoleTabFrame>
   );
 }

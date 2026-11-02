@@ -2,8 +2,6 @@
  * (tabs)/schedule — جدول المحاضرات. Web parity: TeacherSchedulePage
  * (dayName sections + «اليوم» marker + slot rows with time/room/code).
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useMemo } from "react";
 import { View } from "react-native";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -25,7 +23,7 @@ type Slot = {
   enrolled?: number;
 };
 
-function TeacherSchedule() {
+export default function TeacherSchedule() {
   const offs = useTeacherOfferings();
 
   const days = useMemo(() => {
@@ -108,14 +106,5 @@ function TeacherSchedule() {
         ))
       )}
     </Screen>
-  );
-}
-
-
-export default function TeacherScheduleTabbed() {
-  return (
-    <RoleTabFrame role="TEACHER">
-      <TeacherSchedule />
-    </RoleTabFrame>
   );
 }

@@ -3,8 +3,6 @@
  * (KPI strip · pending-grading queue · today's classes · trend · feed),
  * mobile-composed with the mobile dashboard wire shape read honestly.
  */
-import { RoleTabFrame } from "@/components/shell/TabFrame";
-
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -92,7 +90,7 @@ function slotPhase(start: string, end: string, now: Date): "done" | "ongoing" | 
   return "upcoming";
 }
 
-function TeacherDashboard() {
+export default function TeacherDashboard() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const [filter, setFilter] = useState<FeedFilter>("all");
@@ -434,14 +432,5 @@ function TrendBar({ label, value, color }: { label: string; value: number | null
         {value === null ? "—" : pct(value)}
       </T>
     </View>
-  );
-}
-
-
-export default function TeacherDashboardTabbed() {
-  return (
-    <RoleTabFrame role="TEACHER">
-      <TeacherDashboard />
-    </RoleTabFrame>
   );
 }
