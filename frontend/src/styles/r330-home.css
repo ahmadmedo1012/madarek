@@ -125,8 +125,13 @@
   transition: opacity var(--t-base) var(--ease);
 }
 .pm-col.in-view .pm-dot,
-.pm-col:is(:hover, :focus-within) .pm-dot {
+.pm-col:focus-within .pm-dot {
   opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .pm-col:hover .pm-dot {
+    opacity: 1;
+  }
 }
 
 /* The art zone breathes one step taller so the 20rem drawing holds

@@ -26,6 +26,14 @@ import { useEffect, useRef } from 'react';
 interface ProgressTarget {
   el: HTMLElement;
   varName: string;
+  /** R332 W9 — last value string actually written to the DOM. The
+   *  scrub range clamps: any section fully below/above the viewport
+   *  computes the same quantized string every frame, and a redundant
+   *  `setProperty` still dirties style for its whole subtree. The
+   *  skip-unchanged cache (the sheetConductor `setSheetVar` contract,
+   *  R318 C2-S1) keeps pinned sections from re-dirtying style 60×/s
+   *  during a Lenis glide — only real progress changes touch the DOM. */
+  last: string;
 }
 
 const targets = new Set<ProgressTarget>();
@@ -40,7 +48,8 @@ const progressOf = (el: HTMLElement, vh: number) => {
 };
 
 /** Read every rect first, then write every variable — no interleaved
- *  read/write cycles inside a frame. */
+ *  read/write cycles inside a frame. Unchanged values are skipped (see
+ *  ProgressTarget.last). */
 const flush = () => {
   raf = 0;
   if (targets.size === 0) return;
@@ -50,6 +59,8 @@ const flush = () => {
     writes.push([target, progressOf(target.el, vh)]);
   }
   for (const [target, value] of writes) {
+    if (target.last === value) continue;
+    target.last = value;
     target.el.style.setProperty(target.varName, value);
   }
 };
@@ -92,11 +103,14 @@ export function useSectionProgress<T extends HTMLElement = HTMLElement>(
       return;
     }
 
-    const target: ProgressTarget = { el, varName };
+    const target: ProgressTarget = { el, varName, last: '' };
     // Synchronous first sample — the CSS var must exist before the
     // first styled frame (identical initial paint to the per-instance
-    // listener version).
-    el.style.setProperty(varName, progressOf(el, window.innerHeight || 1));
+    // listener version). The cache seeds with the same value so the
+    // first belt flush cannot double-write it.
+    const first = progressOf(el, window.innerHeight || 1);
+    target.last = first;
+    el.style.setProperty(varName, first);
     targets.add(target);
     ensureListeners();
 

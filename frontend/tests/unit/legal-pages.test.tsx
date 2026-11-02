@@ -509,8 +509,8 @@ describe('R320 §D — every wiring point', () => {
     expect(bottomClose).toBeGreaterThan(rowIdx);
   });
 
-  it('the landing.css footer language owns the legal row (.fo-legal-row/.fo-legal-link/.fo-legal-sep)', () => {
-    const css = stripComments(read('src/styles/landing.css'));
+  it('the landing footer language owns the legal row (.fo-legal-row/.fo-legal-link/.fo-legal-sep) — R332: the sheet is styles/landing/footer.css', () => {
+    const css = stripComments(read('src/styles/landing/footer.css'));
     for (const cls of ['.fo-legal-row {', '.fo-legal-link {', '.fo-legal-sep {']) {
       expect(css, cls).toContain(cls);
     }

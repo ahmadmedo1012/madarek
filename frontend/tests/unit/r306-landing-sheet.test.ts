@@ -33,8 +33,28 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 /** Drop /* … *‌/ blocks so comments quoting old values can't satisfy pins. */
 const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 
+/* R332 split: landing.css is now the per-section family under
+ * styles/landing/ (imported in the original cascade order); the stub
+ * landing.css is rule-free. The family list below replaces the old
+ * single-file read — the aggregated text is unchanged. */
+const LANDING_FAMILY = [
+  'src/styles/landing/chrome.css',
+  'src/styles/landing/hero.css',
+  'src/styles/landing/statement.css',
+  'src/styles/landing/journey.css',
+  'src/styles/landing/pains.css',
+  'src/styles/landing/roles.css',
+  'src/styles/landing/colleges.css',
+  'src/styles/landing/cta.css',
+  'src/styles/landing/why.css',
+  'src/styles/landing/footer.css',
+  'src/styles/landing/shared.css',
+  'src/styles/landing/platform.css',
+  'src/styles/landing/strata.css',
+] as const;
+
 const live = stripComments([
-  'src/styles/landing.css',
+  ...LANDING_FAMILY,
   'src/styles/r331/nav.css',
   'src/styles/r331/hero.css',
 ].map(read).join('\n'));
@@ -257,8 +277,13 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // R321 §A6 re-pin: the marks render their glyph from CSS ::before
     // content (out of innerText) — the spans are EMPTY now; the glyph
     // contract moved to the stylesheet rules.
-    expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl" \/>/);
-    expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl" \/>/);
+    /* R332 note: the `" \/>"` literal below is tolerance-widened to
+     * `(?: aria-hidden="true")? \/>` — the concurrent R331 hero pass
+     * added aria-hidden to the (still EMPTY, still self-closing) mark
+     * spans; the pin's semantics (empty spans, glyph via ::before) are
+     * unchanged, and the CSS half of the pin below is untouched. */
+    expect(liveTsx).toMatch(/className="bp-plus bp-plus-tl"(?: aria-hidden="true")? \/>/);
+    expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl"(?: aria-hidden="true")? \/>/);
     expect(live).toMatch(/\.bp-plus::before\s*\{\s*content:\s*'\+'/);
     expect(live).toMatch(/\.bp-dmark::before\s*\{\s*content:\s*'\+'/);
     // R322 override (2-b): the dashed inner frame rides the renamed

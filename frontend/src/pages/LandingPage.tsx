@@ -59,7 +59,27 @@ import '../styles/r314-chrome.css';
 // WITH its content. Every funnel/a11y/truth contract carries forward
 // (landing-funnel 5+5, r168b, r170d, r177, r188, r306 — see the tests
 // pinned beside each surface).
-import '../styles/landing.css';
+// landing/ — R332 (A-CSS-Exec): the 7,920-line landing.css monolith was
+// split VERBATIM into the per-section sheets below. The import order IS
+// the original rule order (the region map + the five proven-safe
+// moves live in docs/redesign/r332/css-split-landing.md) — the family
+// still loads AFTER r314-chrome.css and BEFORE r330-home.css exactly
+// as the single landing.css import did, so every cascade contract
+// (r323 chrome last-word, r330 override, r331 nav last-word) holds.
+// The old landing.css path survives as an EMPTY stub (gates enumerate it).
+import '../styles/landing/chrome.css';
+import '../styles/landing/hero.css';
+import '../styles/landing/statement.css';
+import '../styles/landing/journey.css';
+import '../styles/landing/pains.css';
+import '../styles/landing/roles.css';
+import '../styles/landing/colleges.css';
+import '../styles/landing/cta.css';
+import '../styles/landing/why.css';
+import '../styles/landing/footer.css';
+import '../styles/landing/shared.css';
+import '../styles/landing/platform.css';
+import '../styles/landing/strata.css';
 // r330-home.css — R330 (A-Web-Home) — the homepage's Heron-composition
 // pass (hero/statement/pains: dominant ink bands, decisive display
 // scale, the ruled-table pains grid, deepened reveals). Loaded AFTER

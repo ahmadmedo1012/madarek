@@ -1,0 +1,143 @@
+/* R332 — split VERBATIM from src/styles/landing.css · cta = R313 D7 cta band (1762-1901)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ الخاتمة (R313 · D7 §8) — the coordinates row + the title block
+   + the sketch panel + the resolve + the colleges strip. The band
+   holds ~77vh (the reference's 698px / 5.6%). The honest status pairs
+   (إلى أين) moved to /capabilities with the capability matrix. ═══ */
+.fo-cta {
+  padding-block: var(--sp-10);
+  border-block-start: 1px solid var(--rule-strong);
+  min-block-size: 77vh;
+}
+
+/* R314 (cycle-2 §7 heights): the cta band tightens to the reference's
+ * 698px (from 755) — the title block's margins and the registry strip
+ * give back the ~57px (R322 V1: the coords row is deleted). The floor
+ * rides the same share (77.5vh = 698 @900); desktop-scoped. */
+@media (min-width: 992px) {
+  .fo-cta {
+    padding-block: var(--sp-8) var(--sp-7);
+    /* R315 cycle-3 (W3 — the desktop law): the floor rides the root as a
+     * CONSTANT REM height — 83.75rem = 496 @1024 · 621 @1280 · 698 @1440 ·
+     * 931 @1920 (the fresh manifest's own quartet, ±0.1rem). The old
+     * 77.5vh share was exact at 900px height only: −47 @1080, +30 @768 —
+     * the reference's band is width-driven, not height-driven. */
+    min-block-size: 83.75rem;
+  }
+
+  .fo-cta .fo-hero-meta {
+    margin-block-start: var(--sp-5);
+  }
+
+  .cg-strip {
+    margin-block-start: var(--sp-5);
+    padding-block-start: var(--sp-4);
+  }
+}
+
+/* R322 V1 kill: .fo-cta-coords (the [R313] revision row) and
+ * .fo-cta-corners (the r308 [0,…] corner readout) are deleted with
+ * their markup — revision tags and coordinates are not content. */
+
+/* the resolve + the sketch panel read side by side (the reference's
+   cta composition: copy + sketch image) */
+.fo-cta-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-8);
+  align-items: stretch;
+}
+
+.fo-cta-inner {
+  display: grid;
+  gap: var(--sp-4);
+  justify-items: start;
+}
+
+.fo-cta-title {
+  font-family: var(--font-display);
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance —
+     the ad-hoc 1.15 literal retires with the 60px seat). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.fo-cta-lede {
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 52ch;
+}
+
+.fo-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.fo-cta-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+/* ── the sketch panel (R313 · D7 §8) — the reference's cta sketch
+   image: the drafting-sheet sketch state as pure line work (the
+   6.4rem grid + registration marks + the mono coordinate), a quiet
+   decorative anchor beside the resolve. ── */
+.fo-cta-sketch {
+  position: relative;
+  display: block;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  min-block-size: 22rem;
+  overflow: clip;
+}
+
+.fo-cta-sketch-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 6.4rem 6.4rem;
+  opacity: 0.55;
+}
+
+.fo-cta-sketch-mark {
+  position: absolute;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+   note in auth.css owns the reasoning). */
+.fo-cta-sketch-mark::before { content: '+'; }
+
+.fo-cta-sketch-tl { inset-block-start: 6px; inset-inline-start: 8px; }
+.fo-cta-sketch-tr { inset-block-start: 6px; inset-inline-end: 8px; }
+.fo-cta-sketch-bl { inset-block-end: 6px; inset-inline-start: 8px; }
+.fo-cta-sketch-br { inset-block-end: 6px; inset-inline-end: 8px; }
+
+/* R322 V1 tail: .fo-cta-sketch-coord ([CTA · RESOLVE]) is deleted
+   with its markup — a coordinate tag is not content. */
+
+/* the title block reads as a two-column ruled table inside the
+   closing section (the hero's ex-metadata grid, compact) */
+.fo-cta .fo-hero-meta {
+  margin-block-start: var(--sp-6);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fo-cta .fo-meta-row:nth-last-child(-n + 2) {
+  border-block-end: 0;
+}
+

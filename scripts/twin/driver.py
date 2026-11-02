@@ -257,7 +257,7 @@ def geometry_record(page, side: str, section_sel: str, vp: Dict[str, int]) -> Di
                }
                frontier = next;
              }
-             const heads = [...el.querySelectorAll('h1,h2,h3,h4,[class*="title"]')].slice(0, 6).map(h => {
+             const heads = [...el.querySelectorAll('h1,h2,h3,h4,[class*="title"],[class*="heading"]')].slice(0, 6).map(h => {
                const cs = getComputedStyle(h);
                const hr = h.getBoundingClientRect();
                return { tag: h.tagName.toLowerCase(), cls: String(h.className).slice(0, 60),

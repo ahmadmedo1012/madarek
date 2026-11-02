@@ -25,26 +25,6 @@
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .auth-submit:not(:disabled):hover,\n  .auth-submit:not(:disabled):focus-visible",
-      "reason": "AUTH CTA — the fill layer is the gradient ::before system (auth.css); this rule flips the label ink to --accent-fg in lockstep; pseudo fill + label are the pair"
-    },
-    {
-      "key": "auth.css :: .role-card:hover .role-card-arrow",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "auth.css :: .role-card:hover .role-card-index,\n  .role-card:focus-visible .role-card-index",
-      "reason": "ROLE CARD child — inherits the parent hover pair (ground via ::before, ink flipped on the parent); this only re-tints the index glyph"
-    },
-    {
-      "key": "auth.css :: .role-card:hover .role-card-sub,\n  .role-card:focus-visible .role-card-sub",
-      "reason": "ROLE CARD child — inherits the parent hover pair (ground via ::before, ink flipped on the parent); this only softens the sub line"
-    },
-    {
-      "key": "auth.css :: .role-card:hover,\n  .role-card:focus-visible",
-      "reason": "ROLE CARD — the accent ground is painted by the ::before wash (auth.css); the rule flips the card ink to the accent pair; pseudo ground + ink are the pair"
-    },
-    {
       "key": "base.css :: a:hover",
       "reason": "GLOBAL link ink-step — plain text links never paint a background in any state (base.css:95); the ground is the surrounding surface and never moves"
     },
@@ -103,10 +83,6 @@
     {
       "key": "components.css :: .category-row-head:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .dropdown-item:hover,\n  .dropdown-item[data-active=\"true\"]",
-      "reason": "DROPDOWN ROW — surface-step-only (pages tier); the row ink is the constant var(--text) tier and clears AA on surface-2 in both themes"
     },
     {
       "key": "components.css :: .exam-choice:active",
@@ -169,35 +145,35 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "landing.css :: .bp-hotspot:hover .bp-hotspot-num",
+      "key": "landing/footer.css :: .bp-hotspot:hover .bp-hotspot-num",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .fo-actions-cta:hover",
+      "key": "r331/nav.css :: .fo-actions-cta:hover",
       "reason": "LANDING CTA — the fill is painted by the ::before wipe (landing.css), the rule flips the label ink in lockstep; landing.css is R319-frozen (C1-A must not touch it)"
     },
     {
-      "key": "landing.css :: .fo-actions-login:hover",
+      "key": "r331/nav.css :: .fo-actions-login:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .fo-footer-link:hover",
+      "key": "landing/footer.css :: .fo-footer-link:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .fo-nav-link:hover",
+      "key": "r331/nav.css :: .fo-nav-link:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .fo-text-link:hover",
+      "key": "landing/footer.css :: .fo-text-link:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .hi-reset:hover",
+      "key": "landing/hero.css :: .hi-reset:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: .sl-skip:hover",
+      "key": "landing/chrome.css :: .sl-skip:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
@@ -401,14 +377,6 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r314-chrome.css :: .cb-accept:hover,\n.cb-accept:focus-visible",
-      "reason": "COOKIE BANNER action — ink-only on a constant outlined ground; no background is declared in any state of this control"
-    },
-    {
-      "key": "r314-chrome.css :: html[data-theme='dark'] .cb-more:hover,\nhtml[data-theme='dark'] .cb-more:focus-visible",
-      "reason": "COOKIE BANNER link — ink-only on a constant ground; no background exists in any state"
-    },
-    {
       "key": "r314-chrome.css :: .cb-reject:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
@@ -537,24 +505,16 @@
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "landing.css :: html[data-theme='dark'] .fo-text-link:hover",
+      "key": "landing/footer.css :: html[data-theme='dark'] .fo-text-link:hover",
       "reason": "INK-ONLY link emphasis — no background in any state of this selector: the ground is the inherited paper and never moves; --accent on the dark paper is the passing night pair (c2-L2 D7)"
     },
     {
-      "key": "r314-chrome.css :: html[data-theme='dark'] .cb-more:hover,\nhtml[data-theme='dark'] .cb-more:focus-visible",
-      "reason": "INK-ONLY link emphasis — no background in any state; the dark twin of the light .cb-more hover whose --accent-strong pair was measured 6.91:1 (c2-L2 D7)"
-    },
-    {
-      "key": "landing.css :: .fo-actions-cta:hover::before",
+      "key": "r331/nav.css :: .fo-actions-cta:hover::before",
       "reason": "WIPE-LAYER fill — same layered-button pattern as .fo-hero-discover:hover::before: the ::before carries no text, the element's own hover rule pairs the label; #DB3A00 = the r318 AA signal ground (c2-L2 D7)"
     },
     {
-      "key": "landing.css :: html[data-theme='dark'] .fo-actions-cta:hover::before",
+      "key": "r331/nav.css :: html[data-theme='dark'] .fo-actions-cta:hover::before",
       "reason": "WIPE-LAYER fill — dark twin of .fo-actions-cta:hover::before; no text in the layer"
-    },
-    {
-      "key": "r314-chrome.css :: .cb-more:hover,\n.cb-more:focus-visible",
-      "reason": "INK-ONLY link emphasis — no background in any state of this selector; --accent-strong on paper measured 6.91:1 (c2-L2 D7)"
     }
   ]
 }

@@ -110,6 +110,7 @@ const buckets = new Map<string, ObserverBucket>();
 let beltAttached = false;
 let beltRaf = 0;
 let fontsHooked = false;
+let themeObs: MutationObserver | null = null;
 
 /* ── R318 C2-S1 — the layout epoch ─────────────────────────────
  * A monotone counter bumped whenever document geometry may have
@@ -237,6 +238,16 @@ const onFontsSettled = () => {
   bumpLayoutEpoch();
   scheduleReconcile();
 };
+/* R332 W9 — the ScrollTrigger.refresh-on-theme-change seat. A theme
+ * flip rewrites <html data-theme>; if any theme arm swaps metrics
+ * (font stack, borders, scrollbars) every cached docTop is stale. One
+ * attribute-scoped MutationObserver per belt lifetime bumps the epoch
+ * + schedules ONE debounced reconcile — zero layout reads at flip
+ * time (identical shape to the fonts.ready seat below). */
+const onThemeSettled = () => {
+  bumpLayoutEpoch();
+  scheduleReconcile();
+};
 /* capture-phase resource loads — lazy <img>/late media reflow the
  * document as they decode. `load` never bubbles, but it PASSES
  * through window on the capture path, so one listener sees them all. */
@@ -284,6 +295,13 @@ const attachBelt = () => {
       /* fonts API rejected — the load/scrollend belts still cover */
     });
   }
+  if (!themeObs && typeof MutationObserver !== 'undefined') {
+    themeObs = new MutationObserver(onThemeSettled);
+    themeObs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  }
 };
 
 const detachBelt = () => {
@@ -301,6 +319,8 @@ const detachBelt = () => {
   window.removeEventListener('load', onAssetLoad, { capture: true });
   window.removeEventListener('transitionend', onAnimGeom, { capture: true });
   window.removeEventListener('animationend', onAnimGeom, { capture: true });
+  themeObs?.disconnect();
+  themeObs = null;
   if (beltRaf) {
     cancelAnimationFrame(beltRaf);
     beltRaf = 0;
@@ -435,6 +455,33 @@ export function useReveal<T extends HTMLElement = HTMLElement>(options?: {
   }, [options?.threshold, options?.rootMargin, options?.once, reducedMotion]);
 
   return ref;
+}
+
+/* ── R332 W9 — the dev-only introspection seam ──────────────────────
+ * The belt had no runtime seat: probes could not assert that a
+ * layout event (theme flip, resize, late media) actually invalidated
+ * cached geometry (r332 twin gap: "no introspection seam"). Read-only
+ * getters, DEV builds only — production ships nothing. Same family as
+ * window.__sheetConductor / window.__mdrkLenis. */
+if (import.meta.env.DEV && typeof window !== 'undefined') {
+  const w = window as unknown as {
+    __mdrkRevealBelt?: {
+      readonly epoch: number;
+      readonly registry: number;
+      readonly observers: number;
+    };
+  };
+  w.__mdrkRevealBelt = {
+    get epoch() {
+      return layoutEpoch;
+    },
+    get registry() {
+      return registry.size;
+    },
+    get observers() {
+      return buckets.size;
+    },
+  };
 }
 
 /**

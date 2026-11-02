@@ -1,0 +1,1208 @@
+/* R332 — split VERBATIM from src/styles/landing.css · journey = chapters band (1227-1276) + R308/R322 jt scroll story + wr reveals (4855-6009)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ الفصول — the pinned map band (R315 K-E: the 05–06 ledger rows
+   and their Mini demo frames are RETIRED — the reference's map band
+   is the pinned walkthrough alone; the honest capability ledger lives
+   on /capabilities). The band's height arithmetic: head + the 649dvh
+   track + the section rhythm ≈ the reference's 6300px @1440×900 and
+   5376px @1024×768 (the track alone carries the traversal — the R314
+   PROPORTIONAL ruling holds: the station bands + stage flips are pin
+   units, untouched). ═══ */
+.chapters {
+  padding-block: var(--sp-12);
+}
+
+.chapters-head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-8);
+  align-items: end;
+  margin-block-end: var(--sp-8);
+  border-block-start: 1px solid var(--rule-strong);
+  padding-block-start: var(--sp-8);
+}
+
+.chapters-head-copy {
+  display: grid;
+  gap: var(--sp-3);
+}
+
+.chapters-title {
+  font-family: var(--font-display);
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance).
+     This seat ESCAPED the ≤767 re-pin list and rendered 71.45px
+     @390 / 140.5px @767 (the census + the root probe — the V5
+     «one-word lines» headline, verbatim); the band-independent rung
+     fixes every belt at once — no mobile re-pin needed ever again. */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.chapters-lede {
+  /* R322 (1-d): the reading ledes join the body band's --fs-body-lg
+     rung (15px @1440 — the brief §4 15–17px body band; landing-local,
+     --fs-body itself keeps its app consumers). */
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   R308 — THE SCROLL STORY (jt / wr)
+   The pinned «رحلة التعلّم» walkthrough and the Arabic-safe word
+   reveals. (R313: the ink-mask reveal moved to /campus with the
+   documentary mosaic — campus.css.)
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── jt — the journey map (R322 3-b — Heron's home-map transplanted) ─
+   ONE sticky frame owns the whole story: the plan column (the drawing
+   that draws itself in) + the reserved closing column; the statement
+   plaques over the paper; the INTRODUCTION card in the free
+   bottom-inline-end margin; the [nn/05] counter rows. Zero pins, zero
+   fixed elements, zero stage-keyed draw-ins: the six progressive
+   layers crossfade by DIRECT opacity writes on their group roots
+   (perf-baseline §7-1 — the 756-element inherited --jt-p walk is
+   dead), the plaques take opacity+transform, everything else is a
+   discrete data-* flip with a t-fast transition (≤700ms — the one
+   allowed class of stage motion). */
+.jt {
+  position: relative;
+  /* the scroll timeline (R315 · K-D/K-E geometry, re-verified R322
+     3-b against the map extraction): the track is 649dvh tall — with
+     the section head (≈228px) + the band rhythm (≈232px) it lands the
+     chapters band at ≈6301px @1440×900 (Heron 6300, 51% of the
+     document) and ≈5400px @1024×768. The sticky frame (first flow
+     child, 100dvh) sticks for (649 − 100)dvh of scroll and releases
+     exactly at the track's end — the closing state IS the end of the
+     track: the old 809px map-end dead band is dead by construction
+     (the revealed column rides the release up). */
+  block-size: 658dvh;
+  margin-block-start: var(--sp-6);
+}
+
+.jt-pin {
+  position: sticky;
+  top: 0;
+  block-size: 100dvh;
+  display: flex;
+  align-items: stretch;
+  gap: var(--sp-6);
+  padding-inline: var(--page-gutter);
+  z-index: 1;
+}
+
+/* R322 3-b-fix (review-c3 R1 minor): the persistent orange FURNITURE
+   spot on the frame's rail — Heron's own right-rail marker mirrored
+   to our inline-end rail (physical left in RTL). 10px square, block
+   centre, ≈0.01% of frame: the statement era keeps its furniture-
+   scale orange accent (Heron measured furniture-scale accents through
+   states 1–2 where we measured none). Decorative: aria-hidden by
+   pseudo-element construction (never in innerText). */
+.jt-pin::after {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(50% - 5px);
+  inset-inline-end: calc((var(--page-gutter) - 10px) / 2);
+  block-size: 10px;
+  inline-size: 10px;
+  background: var(--accent);
+  z-index: 5;
+}
+
+/* R322 3-b-fix2 (review-c3 R1-N1): the rail spot is DESKTOP-ONLY —
+   at ≤991 the pin is a stacked static block, so the spot would ride
+   the scroll and drift through the viewport mid-story. The phone's
+   statement-era furniture accent moves to the sticky window's own
+   corner (`.jt-map-in::after` in the ≤991 block below). */
+@media (max-width: 991px) {
+  .jt-pin::after {
+    display: none;
+  }
+}
+
+/* the PLAN COLUMN — flex:1 of the frame @≥992, held at its FINAL box
+   from stage 0 (the closing column's 464px is reserved beside it —
+   geometry NEVER animates, the perf-baseline §7-3 pin-end 0.187 CLS
+   dies by construction); the scroll track @≤991 (the sticky moves one
+   level deeper — Heron's own mobile architecture). contain: layout
+   paint bounds the plan subtree's invalidations to the column and
+   clips the entrance descent (Heron's overpaint is not transplanted). */
+.jt-map-col {
+  position: relative;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  contain: layout paint;
+}
+
+/* the stack seat @≥992 (the entrance drift's anchor — the window
+   inside carries the transform); STATIC so the INTRODUCTION card's
+   containing block is the plan COLUMN itself (the card anchors to
+   the frame's corner — review-c3 R1#4/R2#3: 3.2rem from the column's
+   block-end + inline-START edge, i.e. Heron's bottom-left mirrored to
+   bottom-right, OPPOSITE the closing column — the two never share a
+   corner). The STICKY WINDOW @≤991. */
+.jt-map-in {
+  inline-size: 100%;
+}
+
+/* the plan box — ONE box for the six progressive layers, the two
+   statement plaques and the counter rows (Heron's home-map-main-inner
+   seat: everything rides the one-viewport entrance descent together).
+   R328 (H4): the box is a COLUMN — the statement band (order −1,
+   above the drawing ≥992) and the plan stack in flow; the plaques
+   never touch the ink again. */
+.jt-window {
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: min(100%, calc((100dvh - 32px) * 1.5789));
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  /* the will-change budget (perf-baseline §7): the drifting window +
+   * the ≤10 layer roots + the two plaques — the whole scroll story is
+   * a stable compositor set; nothing else on the sheet promotes. */
+  will-change: transform;
+}
+
+/* the corner plus marks — the drawing-frame registration grammar
+   (kept from the R310 window) */
+.jt-window::before,
+.jt-window::after {
+  content: '+';
+  position: absolute;
+  color: var(--grid-line);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+  z-index: 1;
+}
+
+.jt-window::before {
+  inset-block-start: 4px;
+  inset-inline-start: 6px;
+}
+
+.jt-window::after {
+  inset-block-end: 4px;
+  inset-inline-end: 6px;
+}
+
+.jt-window .bp-svg {
+  min-block-size: 0;
+}
+
+/* ═══ R322 (3-b) — the six progressive layers (the crossfade stack) ═══
+   The plan builds exactly as Heron's does: the BASE (frame + envelope)
+   is visible from frame one (the V2 kill — never an empty grid, never
+   an orphan paragraph), then six layer groups crossfade in — 0.5s per
+   layer, 0.5s stagger, power2.out, ≈506px of scroll per layer @1440 —
+   driven by DIRECT style.opacity writes on the ≤10 group roots
+   (opacity does not inherit, so descendants never recalc: the R310
+   stage-keyed stroke-dashoffset draw-in AND the inherited --jt-p var
+   walk are both retired here — perf-baseline §3's 756-family and §7's
+   fix menu, items 1–2).
+   R325 (Y1) — the GHOST base: the groups rest at 18%, not 0. The
+   WHOLE plan's line-work (walls, rooms, annotations) stands as faint
+   ghost line-work from the very first frame — scroll progress 0, both
+   breakpoints, pre-driver and no-JS alike — and each group's build
+   ramps CONTINUOUSLY from this floor to 1 (the driver's own floor:
+   JourneyScene XL_GHOST). The old 0 base is what rendered the owner's
+   «empty grid / nearly empty paper with a lone dot» intro frames: the
+   frame layer was alone for ≈3 screens @1440. The RM belt below still
+   stands every group at 1. */
+.jt .jt-plan [data-xl] {
+  opacity: 0.18;
+  will-change: opacity;
+}
+
+/* the frame — the quiet window's own chrome: the paper sheet + its
+ * hairline rect, drawn from the start (unconditional — the frame
+ * precedes the stage machine; everything else waits for its layer) */
+.jt .jt-plan .pl-l-frame .bp-drawable {
+  stroke-dashoffset: 0;
+  fill-opacity: 1;
+}
+
+/* C4-A — the door markers + their violation chips resolve with the
+ * annotation layer and STAY; R322 (3-b): the chips now key on
+ * [data-wash] — the ACTIVE room's callout, rotating with the layer
+ * builds (the [04] library door finally owns a beat: its wing builds
+ * with layer 4 and its chip warms with the library wash).
+ * R322 3-b-fix (review-c3 R1#3): the unconditional `opacity: 1`
+ * override is DELETED — the stations ride their own [data-xl='6']
+ * layer window (the annot layer draws with the findings era, never
+ * under the statement plaques — Heron's statement era measured 0.00%
+ * ink; ours measured 8.12% with the override in place). */
+
+.jt .jt-plan .pl-chip {
+  opacity: 0;
+  /* R319 §D4 — the chip SNAPS with the wash flip (no t-fast fade):
+     a half-faded #FA3600 chip under its white mono station text is
+     the white-on-salmon mid-state (≈2.2:1) — the same unreadable
+     mid-transition the state-safe ink labels retire. The wash
+     machine is discrete; the callout is a crisp signal seat. */
+  transition: none;
+}
+
+.jt[data-wash='lecture'] .jt-plan .pl-chip[data-station='0'],
+.jt[data-wash='checkpoint'] .jt-plan .pl-chip[data-station='1'],
+.jt[data-wash='exam'] .jt-plan .pl-chip[data-station='2'],
+.jt[data-wash='library'] .jt-plan .pl-chip[data-station='3'],
+.jt[data-wash='mastery'] .jt-plan .pl-chip[data-station='4'] {
+  opacity: 1;
+}
+
+/* ── pl — the journey's plan drawing (R310 Artwork B) ──────────────
+   The learning-floor plan builds its geometry through the six
+   progressive opacity layers (the [data-xl] group roots above): the
+   base frame+envelope stands, then the rooms crossfade in with the
+   narrated findings. The ACTIVE room (the bounded wash — Heron's
+   room highlight, one bounded room at a time, NEVER a full-bleed
+   phase) carries the solid signal fill; its label warms to state-safe
+   ink. Every drawn element carries .bp-drawable (the invalidation-bug
+   lesson — never [pathLength] selectors for post-load restyles). */
+.pl-name {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  fill: var(--text-secondary);
+}
+
+/* R318 §A4 → R319 §D3 — the plan labels' paper halo, re-ruled: a
+   WHISPER stroke (1.4 units ≈1.48px on the 1267px @1440 window,
+   ≈1.1px on the 390 camera crop) behind DARK-INK-ON-PAPER labels
+   only, keeping names legible where they cross dimension lines,
+   window mullions and door arcs (paint-order: stroke first) without
+   the R318 3px double-strike — that halo was THICKER than the glyph
+   (3.17px @1440 around ~2px strokes), so «قاعة الاختبار» read bold
+   double-struck at 1440 and mush at 390. Heron's own register: no
+   halo on its labels at all (heron-map.json); ours keeps the
+   thinnest possible legibility stroke on the quiet ink labels. */
+.jt .jt-plan .pl-name,
+.jt .jt-plan .bp-micro,
+.jt .jt-plan .pl-station {
+  paint-order: stroke fill;
+  stroke: var(--bg);
+  stroke-width: 1.4px;
+  stroke-linejoin: round;
+}
+
+/* R319 §D3 — NO halo on the lit rooms: the washed zone's label/micro
+   and the washed door station ride solid signal grounds (the #FA3600
+   wash / the chip block), where a paper stroke behind the glyph is
+   the smear itself. The active fills are state-safe ink (D4 —
+   PLAN_INK_CSS), so nothing on a signal ground needs a halo. */
+.jt[data-wash='lecture'] .jt-plan .pl-l-lecture .pl-name,
+.jt[data-wash='lecture'] .jt-plan .pl-l-lecture .bp-micro,
+.jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .pl-name,
+.jt[data-wash='checkpoint'] .jt-plan .pl-l-checkpoint .bp-micro,
+.jt[data-wash='exam'] .jt-plan .pl-l-exam .pl-name,
+.jt[data-wash='exam'] .jt-plan .pl-l-exam .bp-micro,
+.jt[data-wash='library'] .jt-plan .pl-l-library .pl-name,
+.jt[data-wash='library'] .jt-plan .pl-l-library .bp-micro,
+.jt[data-wash='mastery'] .jt-plan .pl-l-mastery .pl-name,
+.jt[data-wash='mastery'] .jt-plan .pl-l-mastery .bp-micro,
+.jt[data-wash='lecture'] .jt-plan .pl-station[data-station='0'],
+.jt[data-wash='checkpoint'] .jt-plan .pl-station[data-station='1'],
+.jt[data-wash='exam'] .jt-plan .pl-station[data-station='2'],
+.jt[data-wash='library'] .jt-plan .pl-station[data-station='3'],
+.jt[data-wash='mastery'] .jt-plan .pl-station[data-station='4'] {
+  stroke: none;
+}
+
+.pl-station {
+  fill: var(--accent-ink);
+  font-weight: 500;
+}
+
+/* the zone wash — the bounded room highlight. R322 3-b-fix
+ * (review-c3 R1#1/R2#1: the solid whole-room fill measured 3.5–20%
+ * of the viewport vs Heron's 0.3–0.5% cap — the orange was 7–40× the
+ * reference): the ACTIVE room now reads as a WHISPER TINT + a crisp
+ * 1.5-unit accent OUTLINE (the room's boundary) — the signal is the
+ * outline + the warmed chip + the station marker, never a slab.
+ * Measured share @1440 ≈ 0.5% of frame (tint 0.035 × the zone area +
+ * the outline), back inside Heron's register. */
+.pl-zone {
+  fill: var(--accent);
+  fill-opacity: 0;
+  stroke: var(--accent);
+  stroke-width: 0;
+  /* R318 §A3 — the wash lands at t-fast: a t-slow dissolve held a
+     half-faded pink room through the mid-band captures (the washed
+     look). The wash flip is discrete — a crisp signal seat. */
+  transition:
+    fill-opacity var(--t-fast) var(--ease),
+    stroke-width var(--t-fast) var(--ease);
+}
+
+.jt[data-wash='lecture'] .pl-zone[data-zone='lecture'],
+.jt[data-wash='checkpoint'] .pl-zone[data-zone='checkpoint'],
+.jt[data-wash='exam'] .pl-zone[data-zone='exam'],
+.jt[data-wash='library'] .pl-zone[data-zone='library'],
+.jt[data-wash='mastery'] .pl-zone[data-zone='mastery'] {
+  fill-opacity: 0.035;
+  stroke-width: 1.5;
+}
+
+/* R322 3-b-fix2 (review-c3 R1-N2): the CLOSING carries its orange
+   back — Heron's finished plan shows one clearly-visible bounded
+   orange room at the close (measured 1.7% of frame). Ours went
+   ink-only at the close (0.03%). The mastery room — the story's
+   terminus — takes a strong furniture-scale tint at stage 5
+   (0.15 × its zone area ≈ 1.4% of frame, inside Heron's register)
+   and KEEPS the outline; every other room stays ink. */
+.jt[data-stage='5'] .pl-zone[data-zone='mastery'] {
+  fill-opacity: 0.15;
+  stroke-width: 1.5;
+}
+
+/* R322 3-b-fix3 (review-c3 R1-D1): @≥992 the closing OVERLAY covers
+   the mastery wing entirely (the tint above renders occluded — the
+   terminal state read accent-less at 0.03% vs Heron's 1.67%). The
+   LECTURE hall — the story's origin, fully clear of the overlay, and
+   the very room the closing copy points to («ابدأ من أول محاضرة») —
+   takes the terminal tint on desktop instead (0.12 × its zone area
+   ≈ 1.2% of frame, inside the register; the mastery tint keeps
+   serving the stacked closing @≤991 where nothing is covered). */
+@media (min-width: 992px) {
+  .jt[data-stage='5'] .pl-zone[data-zone='lecture'] {
+    fill-opacity: 0.12;
+    stroke-width: 1.5;
+  }
+}
+
+/* the washed zone's label + station marker warm to the signal */
+.jt[data-wash='lecture'] .pl-l-lecture .pl-name,
+.jt[data-wash='checkpoint'] .pl-l-checkpoint .pl-name,
+.jt[data-wash='exam'] .pl-l-exam .pl-name,
+.jt[data-wash='library'] .pl-l-library .pl-name,
+.jt[data-wash='mastery'] .pl-l-mastery .pl-name {
+  fill: var(--accent-ink);
+}
+
+/* the door markers warm with the wash: [01] lecture · [02]
+   checkpoint · [03] exam · [04] library · [05] mastery — the R322
+   re-key gives the LIBRARY door its beat. The ACTIVE glyph ink lives
+   in PLAN_INK_CSS (the SVG's own sheet, #1A1A1A on the #FA3600 chip =
+   4.63:1 — R322 3-b-fix4, review-c3 R3#4/ND1: this landing.css twin
+   was dead code at (0,4,0) vs the (0,5,0) chain; deleted). */
+
+/* R322 (3-b) — the R310 stage-keyed dash draw-in RETIRES wholesale:
+   the staged geometry build (stroke-dasharray prelude + per-stage
+   dashoffset flips + text opacity gates) is deleted — the plan's
+   build is the six-layer opacity crossfade above (perf-baseline
+   §7-2: NO per-element dashoffset transitions during scroll; the
+   old family `line.pl-hatch × 756 × 3` measured 3,885ms of
+   UpdateLayoutTree in the map band). The reduced-motion static
+   sheet (all six layers ON) is driven by the driver's idempotent
+   writes + the global RM belt at the sheet's foot. */
+
+
+/* ── the [nn/05] counter rows — Heron's own mono furniture ──────────
+   Static Latin text, opacity-only progression, one chip per finding,
+   complete and never truncated: the rows never change copy during the
+   story (the r319 D6 bracket-index grammar, now keyed to the finding
+   rotation — [01/05]..[05/05], all FIVE door stations counted; the
+   library's [04] finally owns its row with the R322 wash re-key).
+   Seated at the window's top inline-start corner on a paper ground —
+   the reference's own chip seat, riding the entrance drift with the
+   plan (aria-hidden in the markup: chrome, not content). */
+.jt-idx {
+  position: absolute;
+  inset-block-start: 12px;
+  inset-inline-start: 12px;
+  display: grid;
+  overflow: hidden;
+  background: var(--bg);
+  padding: 3px 10px; /* spacing-gate: allow — the reference's own chip seat */
+  z-index: 2;
+}
+
+.jt-idx > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+
+.jt[data-finding='1'] .jt-idx > span:nth-child(1),
+.jt[data-finding='2'] .jt-idx > span:nth-child(2),
+.jt[data-finding='3'] .jt-idx > span:nth-child(3),
+.jt[data-finding='4'] .jt-idx > span:nth-child(4),
+.jt[data-finding='5'] .jt-idx > span:nth-child(5),
+.jt[data-finding='done'] .jt-idx > span:nth-child(5) {
+  opacity: 1;
+}
+
+/* the reduced-motion static page: every row stands at once (the
+   complete sheet contract — nothing hides content under RM). */
+.jt[data-finding='all'] .jt-idx > span {
+  grid-area: auto;
+  opacity: 1;
+}
+
+/* ── the two statement plaques — R328 (H4): THE STATEMENT SEAT ────
+   The plaques LEFT the plan's surface (the measured defect: the
+   titles crossed the wall lines mid-fade — text with no ground
+   striking black ink). They now ride their own hairline-closed band
+   INSIDE the window: ABOVE the drawing ≥992 (order −1 — a caption
+   strip on the sheet's own paper), a PAPER CARD under the drawing
+   ≤991 (the brief's phone seat — the ≤991 block below). One grid
+   cell: the two statements crossfade in the SAME seat (the band's
+   height is constant through the story — zero layout motion).
+   Heron's in/out recipe is kept: fade + 24px rise in · fade +
+   −2.5px rise + 4% shrink out (direct writes, cached). */
+.jt-cards {
+  order: -1;                      /* the caption strip sits ABOVE the drawing */
+  display: grid;
+  padding-block: var(--sp-2) var(--sp-4);
+  margin-block-end: var(--sp-4);
+  border-block-end: 1px solid var(--rule);
+  min-inline-size: 0;
+}
+
+.jt-card {
+  grid-area: 1 / 1;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding-inline: var(--sp-2);
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: var(--fs-d1);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);           /* on the SHEET now, not the pinned artifact — theme-aware */
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  will-change: opacity, transform;
+}
+
+/* the plate — the glyphs' own box. The R325 feathered paper mask
+   RETIRES (the plaque no longer rides over ink — there is nothing
+   to mask out); what stays is the wrap guard. */
+.jt-card-plate {
+  display: inline-block;
+  max-inline-size: 100%;
+  overflow-wrap: break-word;
+}
+
+/* ── the INTRODUCTION card — Heron's home-map-intro, measured ───────
+   Compact, content-sized, in the frame's free bottom corner —
+   28.01rem wide, 3.2rem insets, 1px hairline on paper, the DARK head
+   chip with the «مقدمة» label, five findings at the body rung — ONE
+   visible at a time (the stacked crossfade), the card collapsed to
+   its head before the findings era and again at the close. R322
+   3-b-fix (review-c3 R1#4/R2#3): the card anchors to the PLAN
+   COLUMN (the full-height frame child) at its measured corner —
+   inset-inline-START + inset-block-END (Heron's bottom-LEFT mirrored
+   to bottom-right in RTL, OPPOSITE the closing overlay — Heron's own
+   opposition of card vs closing column), 3.2rem from the column's
+   edges exactly. Absolute + block-end-anchored: the "grows upward"
+   behavior is layout-free by construction (the V3 kill: text visible
+   at every progress, never a dark slab with a void). */
+.jt-intro {
+  position: absolute;
+  inset-block-end: 3.2rem;   /* Heron's measured card inset @1440 */
+  inset-inline-start: 3.2rem; /* bottom-right physical in RTL — the mirrored corner, opposite the closing overlay */
+  inline-size: 28.01rem;     /* Heron's measured card width — 233px @1440 */
+  margin: 0;
+  border: 1px solid var(--rule-strong);
+  background: var(--bg);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* R323 (A3 · defect 5) — the card's paper MASK: the corner card sits
+ * over the drawing's bottom dim chain («11.6M · 11.3M · 12.3M») and
+ * the north arrow, and its hard edge used to CUT a label mid-glyph.
+ * A radial paper fade extends past the card's exposed edges (top +
+ * inline-start): any dimension work near the seat now dissolves into
+ * the card's ground instead of striking a hard edge — the brief's
+ * «labels hide under it with a mask» option. var(--bg) keeps the
+ * fade married to the card's own ground in both themes. */
+.jt-intro::before {
+  content: '';
+  position: absolute;
+  inset: -3rem;
+  /* R328 (H7 · R2) — the halo dissolves plan lines on EVERY edge of
+     the card (the old one-corner radial let a wall line strike the
+     card's edge and read as a crossing; a centered full halo means
+     any line approaching any edge fades into the card's own ground). */
+  background: radial-gradient(
+    150% 150% at 50% 50%,
+    var(--bg) 58%,
+    transparent 82%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* the dark head chip — Heron's rgb(40,40,40) INTRODUCTION head; the
+   token pair swaps with the theme and keeps ≥4.5:1 on both grounds
+   (the r318 §A2 ruling, re-verified for the paper card). */
+.jt-intro-head {
+  margin: 0;
+  padding: var(--sp-1) var(--sp-2) 0;
+  background: none;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-align: start;
+  text-wrap: balance;
+}
+
+/* the findings — ONE at a time in a stacked crossfade (grid-area 1/1:
+   the card's height is CONSTANT through the rotation — pure opacity
+   flips, the perf mandate's discrete-motion class). R322 3-b-fix
+   (review-c3 R3#2): the collapsed eras use the VISUALLY-HIDDEN
+   pattern (absolute + clip-path inset(50%)) instead of display:none
+   — the findings (the sole landing carriers of the r168b pins) stay
+   IN THE A11Y TREE at every stage; a screen-reader user reading from
+   the top meets them, sighted users see exactly Heron's collapsed
+   head-only card. Open: static in flow (grows the card upward). */
+.jt-intro-body {
+  display: grid;
+  position: absolute;
+  inset: 0;
+  clip-path: inset(50%);
+}
+
+.jt[data-stage='2'] .jt-intro-body,
+.jt[data-stage='3'] .jt-intro-body,
+.jt[data-stage='4'] .jt-intro-body {
+  position: static;
+  inset: auto;
+  clip-path: none;
+  padding: var(--sp-3);
+}
+
+.jt-intro-finding {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--ease);
+}
+
+.jt[data-finding='1'] .jt-intro-finding:nth-child(1),
+.jt[data-finding='2'] .jt-intro-finding:nth-child(2),
+.jt[data-finding='3'] .jt-intro-finding:nth-child(3),
+.jt[data-finding='4'] .jt-intro-finding:nth-child(4),
+.jt[data-finding='5'] .jt-intro-finding:nth-child(5) {
+  opacity: 1;
+}
+
+/* the reduced-motion static page: the card stands OPEN with every
+   finding readable in flow (the complete-sheet contract). */
+.jt[data-finding='all'] .jt-intro-body,
+.jt[data-rm='on'] .jt-intro-body {
+  position: static;
+  inset: auto;
+  clip-path: none;
+  display: block;
+  padding: var(--sp-3);
+}
+
+.jt[data-finding='all'] .jt-intro-finding {
+  grid-area: auto;
+  opacity: 1;
+  margin-block-end: var(--sp-2);
+}
+
+/* ── the CLOSING COLUMN — Heron's home-map-content as an OVERLAY ────
+   Heron flips 0→464px of plan width for this column at scrub end (a
+   WIDTH animation). R322 3-b reserved the column as a flex sibling —
+   review-c3 R1#2/R2#2 measured the cost: the plan lost its monument
+   (49% of Heron's stack area — the reserved column starves the one
+   hero of the section for 5 of 6 states). The fix keeps the CLS
+   guarantee AND restores the monument: the column becomes an
+   ABSOLUTE OVERLAY over the plan's inline-end 464px, revealed at the
+   scrub end by opacity + a small rise (transform+opacity only — no
+   layout animation, the pin-end 0.187 CLS stays dead), while the
+   plan column runs FULL FRAME WIDTH through the whole story
+   (Heron's own full-bleed plan through states 1–5). Paper ground +
+   hairline so it reads as a panel of the sheet, never a hole.
+   Pre-flip it is fully hidden (Heron's 0-width content-wrap); the
+   RM/static belts open it. */
+.jt-close {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: var(--page-gutter);
+  inline-size: clamp(280px, 32.3vw, 464px); /* Heron's exact 464px @1440 (55.7rem) — 32.3vw clears the cap at 1436+ */
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-3);
+  border: 1px solid var(--rule-strong);
+  background: var(--bg);
+  contain: layout paint;
+  z-index: 4;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition:
+    opacity var(--t-slow) var(--ease),
+    transform var(--t-slow) var(--ease),
+    visibility 0s linear var(--t-slow);
+}
+
+.jt-close[data-open='on'] {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition:
+    opacity var(--t-slow) var(--ease),
+    transform var(--t-slow) var(--ease);
+}
+
+.jt-close-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.jt-close-chip {
+  margin: 0;
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--rule-strong);
+  font-family: var(--font-display);
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--text);
+  align-self: inline-start;
+}
+
+/* the statement — Heron's own seat: 3 lines at the D2 rung, pushed
+   down the column by the measured 39.84rem offset (the one big
+   spacing note in the reference's histogram — the statement sits
+   low, against the plan's foot). */
+.jt-close-title {
+  margin: 39.84rem 0 0; /* spacing-gate: allow — Heron's own measured h2 offset (map.md), rem on the shared fluid root */
+  font-family: var(--font-display);
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease);
+}
+
+.jt-close-copy {
+  margin: var(--sp-4) 0 0;
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease);
+}
+
+/* R322 3-b-fix2 (review-c3 R1#7): the column composes to its FOOT —
+   Heron's closing column runs label → title → copy → a cms block at
+   the foot (464×612 + 464×213 of an 887-tall column); ours ended at
+   y583/900 leaving a quiet bottom third. The foot row anchors to the
+   column's end: a hairline + the mono completion counter (the
+   [nn/05] family's own terminus) + the honest scope note. */
+.jt-close-foot {
+  margin-block-start: auto;
+  border-block-start: 1px solid var(--rule);
+  padding-block-start: var(--sp-3);
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease);
+}
+
+.jt-close-foot-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.jt-close-foot-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.jt-close-foot-note {
+  margin: var(--sp-2) 0 0;
+  font-size: var(--fs-sm);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.jt-close[data-open='on'] .jt-close-title,
+.jt-close[data-open='on'] .jt-close-copy,
+.jt-close[data-open='on'] .jt-close-foot {
+  opacity: 1;
+}
+
+/* the reduced-motion static page: the overlay stands open with its
+   content visible (the driver's idempotent writes hold it; the belt
+   covers the no-JS RM case). */
+.jt[data-finding='all'] .jt-close,
+.jt[data-rm='on'] .jt-close {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+}
+
+.jt[data-finding='all'] .jt-close-title,
+.jt[data-finding='all'] .jt-close-copy,
+.jt[data-finding='all'] .jt-close-foot,
+.jt[data-rm='on'] .jt-close-title,
+.jt[data-rm='on'] .jt-close-copy,
+.jt[data-rm='on'] .jt-close-foot {
+  opacity: 1;
+  transition: none;
+}
+
+/* ── wr — the Arabic-safe word reveals ───────────────────────────────
+   Words split on spaces only (joining is intra-word — shaping is
+   intact; the DESIGN.md §4 amendment). Two modes: the IO-belt reveal
+   (once-only, staggered, capped) and the scrub variant (progress var
+   --wr-p maps onto the words; reversible).
+   R318 §A1 — the inter-word gap is a REAL ' ' text node emitted by
+   WordReveal.tsx between the mask spans. It inherits this font, so it
+   renders at the words' own space advance (~0.25em) and keeps
+   textContent/copy/AT correct. .wr-w stays inline-block; NOTHING here
+   may collapse the node (no font-size:0 tricks, no negative margins,
+   no letter-spacing — Arabic display keeps its natural metrics, per
+   the site rule: no tracking on Arabic). */
+.wr {
+  display: inline;
+}
+
+.wr-w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.wr-i {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 480ms var(--ease);
+  transition-delay: calc(var(--wr-i, 0) * 40ms);
+}
+
+.wr.in-view .wr-i,
+.wr.is-in .wr-i {
+  transform: translateY(0);
+}
+
+.wr-scrub .wr-w {
+  /* r324 X7 — the mask retires for the scrub: the reference's OWN
+     statement scrub is a per-char COLOR scrub (r322 scroll-spec.md:
+     «per-char color scrub of the 127-char statement, initial ghost
+     rgb(179,179,175)» — nothing ever translates, nothing ever
+     hides). Our mask-slide clipped the tail words half-buried at
+     every mid-scrub position (the reading position included). The
+     per-WORD split stays (the Arabic joining law — the reference
+     splits chars because its statement is uppercase Latin). */
+  overflow: visible;
+}
+
+.wr-scrub .wr-i {
+  --wr-k: clamp(0, (var(--wr-p, 0) * var(--wr-n, 1)) - var(--wr-i, 0), 1);
+  transform: none;
+  transition: none;
+  /* the color scrub — ghost → ink, word by word. The ghost seat is
+     --text-secondary (9.41:1 on the paper), NOT the reference's
+     1.9:1 ghost: a visitor may rest mid-scrub, and the brief's
+     contrast floor binds every readable state. */
+  color: color-mix(in srgb, var(--text) calc(var(--wr-k) * 100%), var(--text-secondary));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* RM: the statement stands complete — no scrub state at all */
+  .wr-scrub .wr-i {
+    color: var(--text);
+  }
+}
+
+/* ═══ R322 (3-b) — the ≤991 architecture: the sticky moves INSIDE the
+   plan column (Heron's own mobile architecture, map.md §mechanics) ═══
+   The frame (.jt-pin) becomes a plain stacked block; the PLAN COLUMN
+   becomes the scroll track; the STICKY WINDOW is .jt-map-in (top: below
+   the fixed header), holding the plan box + the INTRODUCTION card in
+   FLOW below it (our plan is landscape-short at phone width — a
+   below-the-plan card beats Heron's over-the-plan overlay, which would
+   cover ~80% of a 237px-tall drawing; the V10 «شاهد»-clip class of
+   defect is dead by construction: the card never overlaps the plan or
+   any heading). The camera crops ride the same finding timeline (the
+   R312 camera, evolved); the CLOSING COLUMN stacks BELOW the track,
+   full width, always open — it scrolls into view naturally (Heron's
+   own mobile closing: stacked, not flipped).
+   THE TRACK LADDER (the docH ladder, re-derived): Heron's own mobile
+   track is 500dvh (5120 @768×1024 · 4220 @390×844) — but its page is
+   ~330px SHORTER than ours below the map at every phone width (the
+   non-map bands), so a literal 500dvh pushed docH +5.7% @390 / +7%
+   @360 / +3.2% @768 over the r321 band and re-raised the 320/430/480/
+   600/820 never-raise pins. The ladder re-derives the track per rung
+   from the measured slack (non-map + fixed parts subtracted from each
+   band/pin ceiling — the same arithmetic the R315 --jt-row-h ladder
+   used, now on the Heron column architecture):
+     · 768–991  450dvh — the tablet-portrait band (12461 @768, −0.9%;
+       the 820 pin holds with 102px margin)
+     · 400–767  380dvh — the tall-phone pins (480/600 both hold; the
+       430 pin holds with >500px margin)
+     · ≤399     425dvh — the BAND phones: 390 lands 11378 (−0.5%), 360
+       lands 10775 (+0.85%), the 320 pin holds
+   The movie is pin-proportional (the sequence clock is pin units), so
+   the shorter track compresses the story proportionally — same states,
+   same order, ~300px of scroll per layer @390. Verified against the
+   r321 docH ladder after every structural commit (the _wp3b-ladder
+   probe). */
+@media (max-width: 991px) {
+  .jt {
+    block-size: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .jt-pin {
+    position: static;
+    block-size: auto;
+    flex-direction: column;
+    align-items: stretch;
+    padding-inline: 0;
+    gap: 0;
+  }
+
+  /* the plan column = the scroll track, full content width at the
+   * sheet frame's own 8px inset — Heron's mobile plan container is
+   * 374px = 95.9% of 390 (never past the 7px page frame, never
+   * viewport-edge clipping; the A8 frame-inset seat, kept). The
+   * 450dvh tablet rung is the ladder base; the phone rungs below. */
+  .jt-map-col {
+    flex: none;
+    display: block;
+    /* R324/X14: 450→466dvh — measured post-render at the REAL 768×1024
+     * pair the Heron ledger uses (the pre-X14 probe read the stale
+     * contain-intrinsic-size guess): 466dvh lands the section at
+     * 5455 vs Heron 5454 (+0.02%). */
+    block-size: 466dvh;
+    padding-inline: 8px; /* spacing-gate: allow — the A8 sheet-frame inset seat (Heron's own mobile plan inset) */
+  }
+
+  /* the sticky window — FULL VIEWPORT HEIGHT below the fixed header
+   * (R322 3-b-fix, review-c3 R1#5/R2#4: the 40–50% mid-map dead band
+   * below a content-sized window dies by construction — the window is
+   * exactly the viewport, whatever the era shows inside it). The plan
+   * + the intro card stack centred inside; 57px = the header's 56px
+   * inner + 1px hairline. */
+  .jt-map-in {
+    position: sticky;
+    inset-block-start: calc(57px + env(safe-area-inset-top, 0px));
+    block-size: calc(100dvh - 57px - env(safe-area-inset-top, 0px));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--sp-3);
+  }
+
+  /* the plan box fills the track width; the SVG's box is pinned to
+   * the crop family's aspect (CSS aspect-ratio wins over the viewBox's
+   * own — the camera's viewBox pans then NEVER resize the element:
+   * zero layout work per crop frame).
+   * R322 3-b-fix: TWO aspect families — tablets (768–991) keep the
+   * sheet's landscape 1200/760; phones (≤767) pin the PORTRAIT crop
+   * aspect 460/600 so the plan element fills ~75% of the full-height
+   * window (the 26%-area plan dies with it). */
+  .jt-window {
+    max-inline-size: none;
+    will-change: auto;
+    flex: none;
+  }
+
+  .jt-window .bp-svg {
+    aspect-ratio: 1200 / 760;
+    /* R328 (H4) — the stack-aware cap: the sticky window now also
+       carries the statement card + the intro below the drawing, so
+       the plan box caps at (viewport − header − the two cards' real
+       seat ≈ 25rem). On tall phones the natural aspect still rules
+       (488px @390×844 vs the 539px seat — no cap, the drawing fills
+       more of the fold); on short viewports (320×640: natural 397
+       vs 335) the box scales down portrait instead of pushing the
+       cards past the fold. */
+    block-size: auto;
+    max-block-size: calc(100dvh - 57px - 25rem);
+    inline-size: auto;
+    max-inline-size: 100%;
+    margin-inline: auto;
+  }
+
+  /* the INTRODUCTION card in flow below the plan: full-width, the
+   * stacked-readable contract (one finding visible at a time through
+   * the same data-finding crossfade; under RM the static list stands).
+   * The desktop's absolute seat retires here — the card is the sticky
+   * window's second row, never over the drawing. */
+  .jt-intro {
+    position: static;
+    inset: auto;
+    inline-size: auto;
+    margin-block-start: 0;
+    pointer-events: none;
+    flex: none;
+  }
+
+  /* R331 (A-Web-Journey) — THE ≤991 BLANK-PIN REPAIR (root-caused,
+   * headed+headless proven). Defect: through the whole pinned track at
+   * ≤991 the plan painted EMPTY paper (owner's m-025/m-050 frames;
+   * reproduced at 768×1024 + 390×844 in headless AND headed Xvfb
+   * Chromium). Forensics: layout + hit-testing + computed styles were
+   * all correct (fill #282828, opacity 1, no dash), yet even
+   * `background:red` on the svg refused to paint; cloning/moving the
+   * node OUT of `.jt-map-in` painted instantly; every containment
+   * toggle (.chapters c-v/contain, .jt-map-col contain) was
+   * exonerated; the desktop pin shape reproduced it at 768 too. The
+   * gate is the sticky window's PAINT-CHUNK partition: with the intro
+   * card painting as a plain in-flow sibling after the svg inside the
+   * 2nd-level sticky, Chromium merges/drops the svg's raster (the
+   * classic sticky-subtree stale-raster class). Remedy — the standard
+   * one: give the sticky window's heavy children their own composited
+   * layers (`translateZ(0)`), which forces per-element raster tasks
+   * that follow the sticky offset. Proven: 5/5 tablet beats + 5/5
+   * phone beats paint the correct camera-cropped plan (before/after
+   * ladders in docs/redesign/r331/web-journey.md); ≥992 untouched
+   * (the desktop pin has always painted). */
+  .jt-intro,
+  .jt-window .bp-svg {
+    transform: translateZ(0);
+  }
+
+  /* R328 (H4) — the plaques' PHONE SEAT: the statement card rides
+   * BELOW the drawing (order 0 — the desktop caption strip's −1
+   * retires here), as the brief's own paper card: 1px hairline, the
+   * sheet's paper ground, the D1 phone floor (31.74px, Heron's own
+   * 3.2rem→4rem measure, 2 lines balanced). With the column's 8px
+   * inset the card sits ≥24px inside the viewport — no line can
+   * reach the window edge (the plate's wrap guard holds). */
+  .jt-cards {
+    order: 0;
+    border-block-end: 0;
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    padding: var(--sp-3) var(--sp-4);
+    margin-block: var(--sp-4) 0;
+  }
+
+  .jt-card {
+    padding-inline: var(--sp-2);
+  }
+
+  /* R322 3-b-fix2 (review-c3 R1-N1): the phone's statement-era orange
+   * furniture — an 8px square at the sticky window's top inline-start
+   * corner (Heron's own phone furniture spots, ≈0.02% of viewport;
+   * pseudo-element: never in innerText). Desktop's rail spot retired
+   * above — the stacked pin has no fixed rail to sit on. */
+  .jt-map-in::after {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    block-size: 8px;
+    inline-size: 8px;
+    background: var(--accent);
+  }
+
+  /* the closing column — stacked BELOW the track, full width, always
+   * open (the desktop overlay seat retires): it scrolls into view
+   * naturally as the sticky window rides up off the track's end (the
+   * 809px dead band class of composition is dead here too — the
+   * column IS the end of the band). */
+  .jt-close {
+    position: static;
+    inset: auto;
+    inline-size: auto;
+    align-self: auto;
+    margin-block-start: var(--sp-5);
+    border-inline: 0;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    transition: none;
+    background: transparent;
+  }
+
+  .jt-close-title {
+    /* the D2 phone floor (31.74px) — the 39.84rem desktop offset
+     * retires with the reserved seat; the stacked column reads top-
+     * down (chip → statement → copy) like Heron's own mobile closing. */
+    margin-block-start: var(--sp-4);
+  }
+
+  .jt-close[data-open='off'] .jt-close-title,
+  .jt-close[data-open='off'] .jt-close-copy {
+    /* the stacked column reveals when it scrolls into view — the pin
+     * driver's data-open flip is desktop-only business; on phones the
+     * content stands visible in flow from the start (Heron's stacked
+     * mobile closing reads immediately). */
+    opacity: 1;
+  }
+}
+
+/* the ladder's phone rungs (the derivation in the ≤991 block comment
+   above): 380dvh @400–767, 425dvh @≤399 — top-level siblings in source
+   order, so the LAST matching rung wins over the 450dvh tablet base. */
+@media (max-width: 767px) {
+  .jt-map-col {
+    block-size: 380dvh;
+  }
+
+  /* the phone plan element — the PORTRAIT crop aspect (460×600):
+   * fills ~75% of the full-height sticky window; the camera's phone
+   * family (CAM_KEYS_PHONE) pans portrait slices at a readable zoom. */
+  .jt-window .bp-svg {
+    aspect-ratio: 460 / 600;
+  }
+}
+
+@media (max-width: 399px) {
+  .jt-map-col {
+    /* R322 3-b-fix3 → R324/X14 re-pin: 415→473dvh — measured post-render
+     * at the REAL 390×844 pair (the old probe read the stale
+     * intrinsic guess): 473dvh lands the section at 4821 vs Heron
+     * 4819 (+0.04%). (History: R322 pinned 425→415 for the 320
+     * never-raise pin; X14's ±2 % docH contract re-pins the rung.) */
+    block-size: 473dvh;
+  }
+}
+
+/* the short-landscape guard (≤991 ∧ ≤500px height): the sticky window
+   must fit the squat viewport — the plan box caps to the height budget
+   (per band: the phone portrait aspect, the tablet sheet aspect), the
+   track keeps the ladder clock (the docH ladder never samples this
+   sliver; the gates' phone widths are portrait). */
+@media (max-width: 991px) and (max-height: 500px) {
+  .jt-map-in {
+    inset-block-start: calc(57px + env(safe-area-inset-top, 0px));
+    block-size: calc(100dvh - 57px - env(safe-area-inset-top, 0px));
+    gap: var(--sp-2);
+  }
+
+  .jt-window {
+    max-inline-size: min(100%, calc((100dvh - 250px) * 0.767));
+    margin-inline: auto;
+    overflow: hidden;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) and (max-height: 500px) {
+  .jt-window {
+    max-inline-size: min(100%, calc((100dvh - 250px) * 1.5789));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wr-i,
+  .wr-scrub .wr-i {
+    transform: none;
+    transition: none;
+  }
+
+  /* R313 (D7 §3) — the pains' draw-in collapses to the complete drawing */
+  .pm-art .pm-draw {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  /* R313 (D7 §6) — the why cross-fade collapses to the fully readable
+     stack: every capture in flow, no snap on the verbs */
+  .wy-capture {
+    grid-area: auto;
+    opacity: 1;
+    transition: none;
+  }
+
+  .wy-stack {
+    gap: var(--sp-4);
+  }
+
+  .wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
+  .wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
+  .wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-verb,
+  .wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
+    animation: none;
+  }
+
+  .jt-plan .bp-drawable {
+    transition: none;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    fill-opacity: 1;
+  }
+
+  .jt-plan text {
+    transition: none;
+    opacity: 1;
+  }
+
+  .pl-zone {
+    transition: none;
+  }
+
+  /* R322 (3-b) — the map's RM belt: the complete static sheet. Every
+     layer stands (the six crossfade groups resolve — no-JS RM never
+     sees an empty grid), the entrance drift is pinned at its seat,
+     the counter rows and the intro findings stand complete, the
+     closing column's content is visible. The driver's idempotent
+     writes carry the same state when JS runs; this belt covers the
+     no-JS case (the r306 RM contract). */
+  .jt .jt-plan [data-xl] {
+    opacity: 1;
+  }
+
+  .jt-window {
+    transform: none;
+  }
+
+  .jt-idx > span,
+  .jt-intro-finding {
+    transition: none;
+  }
+
+  .jt-intro-body {
+    display: block;
+    padding: var(--sp-3);
+  }
+
+  .jt-intro-finding {
+    grid-area: auto;
+    opacity: 1;
+    margin-block-end: var(--sp-2);
+  }
+
+  .jt-close-title,
+  .jt-close-copy {
+    opacity: 1;
+    transition: none;
+  }
+}
+

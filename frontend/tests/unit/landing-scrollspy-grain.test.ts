@@ -29,9 +29,28 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 /** Drop /* … *‌/ blocks so tombstone prose can't satisfy a selector pin. */
 const stripComments = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '');
 
+/* R332 split: landing.css is now the per-section family under
+ * styles/landing/ (imported in the original cascade order); the stub
+ * landing.css is rule-free. The aggregated family text is unchanged. */
+const LANDING_FAMILY = [
+  'src/styles/landing/chrome.css',
+  'src/styles/landing/hero.css',
+  'src/styles/landing/statement.css',
+  'src/styles/landing/journey.css',
+  'src/styles/landing/pains.css',
+  'src/styles/landing/roles.css',
+  'src/styles/landing/colleges.css',
+  'src/styles/landing/cta.css',
+  'src/styles/landing/why.css',
+  'src/styles/landing/footer.css',
+  'src/styles/landing/shared.css',
+  'src/styles/landing/platform.css',
+  'src/styles/landing/strata.css',
+] as const;
+const readLanding = () => stripComments(LANDING_FAMILY.map(read).join('\n'));
+
 describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', () => {
-  const css = read('src/styles/landing.css');
-  const live = stripComments(css);
+  const live = readLanding();
   const tsx = read('src/pages/LandingPage.tsx');
 
   it('no data-active-section consumer exists in CSS or TSX', () => {
@@ -67,8 +86,7 @@ describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', (
 });
 
 describe('r188 — the folio chrome that ships', () => {
-  const css = read('src/styles/landing.css');
-  const live = stripComments(css);
+  const live = readLanding();
   const tsx = read('src/pages/LandingPage.tsx');
   /* R331 split: the masthead lives in chrome/SheetNav.tsx + r331/nav.css. */
   const navTsx = read('src/components/landing/chrome/SheetNav.tsx');

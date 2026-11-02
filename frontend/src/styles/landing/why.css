@@ -1,0 +1,258 @@
+/* R332 — split VERBATIM from src/styles/landing.css · why = R313 D7 why-stage band (1902-2156)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ لماذا مدارك (R313 · D7 §6) — the Watch/Check/Test/Master stage
+   strip: the stage rail (always-readable verb cards) beside the
+   capture stack (the four real student surfaces, cross-fading on the
+   scroll). R325 Y3: the band is CONTENT-SIZED — the old 77vh /
+   81.65rem floors outlived the head they were measured against (the
+   R322 compact head cut ~175px) and stranded a ~120–150px void under
+   the capture; V4's own law: no forced voids. ═══ */
+.wy-section {
+  padding-block: var(--sp-7);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.wy-head {
+  display: grid;
+  gap: var(--sp-3);
+  /* R325 Y3: the head spans the section grid at every belt — the old
+     64ch cap constricted the 768–991 band off the .wy grid's edges
+     (the head floated while the rail/stack below ran full width). */
+  max-inline-size: none;
+  margin-block-end: var(--sp-6);
+}
+
+.wy-title {
+  font-family: var(--font-display);
+  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.wy-title em,
+.wy-verb em {
+  font-style: normal;
+  color: var(--accent-ink);
+}
+
+.wy-lede {
+  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.wy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 58rem);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+/* the stage rail — four verb cards, always readable (the non-active
+   states stay visible; the ACTIVE stage warms + its verb snaps with
+   the reference's hold-plateau shape). R314 cycle-2: the ae70a16
+   compaction accidentally orphaned this list's margin/padding/
+   list-style resets inside the ≥992 media block below (declarations
+   at media-block level are invalid and silently dropped); restored. */
+.wy-rail {
+  display: grid;
+  gap: var(--sp-1-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* R314 desktop: the section heads share the reference's compact head
+ * band (label + title + one intro line ≈ 160px, not 220–320) */
+@media (min-width: 992px) {
+  .pm-head,
+  .wy-head,
+  .pr-head,
+  .rl-head {
+    gap: var(--sp-3);
+  }
+
+  /* R322 (2-d): .pm-head p retires from this shared rule — the new
+     .pm-sub carries the transplant's own measure (no max-ch island). */
+  .wy-head p,
+  .pr-head p,
+  .rl-head p {
+    max-inline-size: 44ch;
+    font-size: var(--fs-body);
+    line-height: 1.55;
+  }
+}
+
+/* ── R314 (cycle-2 §7 heights) — the exact section-height compaction.
+ * Measured deltas vs the Heron reference @1440×900 (capture.mjs
+ * meta.json): pm 878→743 · wy 980→681 · cta 755→698. The lede rides
+ * BESIDE the display title (the reference's head band: title-wrap +
+ * sub-wrap side by side, VLM-confirmed on p-s02-0), not under it —
+ * the stacked head was the single tallest offender. Named areas pin
+ * every child (bare auto-placement put the TITLE in the narrow lede
+ * track and wrapped it to 460px — the 1087px regression). The why
+ * rail folds to 2×2 (four cards beside the capture stack).
+ * Desktop-scoped: the V13 mobile bands keep their own rules below. ── */
+@media (min-width: 992px) {
+  /* R322 (2-d) — the R314 head-areas grid (label/lede lanes) and the
+     R315 89.15rem min-block-size BOTH RETIRE: the new .pm-head
+     (title-wrap 7fr | sub 5fr, bottoms aligned, base-level) is the
+     measured head; the section is content-sized (V4: no forced voids).
+     The .pm-section min-block-size and the pm-head area pins die with
+     this comment — the base block owns the whole seat now. */
+
+  /* R325 Y3 — ONE grid for the whole strip: the head's lede column is
+   * THE CAPTURE COLUMN (the same minmax(0,58rem) track + the same
+   * sp-6 gutter the .wy grid below runs), so the description paragraph
+   * sits exactly over the frame it describes instead of floating on
+   * its own 26rem island (the reference's sub-wrap rides the main
+   * grid's own edge: 464px over the 1427px head @1440 · 377 over the
+   * 753px cell @768 — mirrored RTL). */
+  .wy-head {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 58rem);
+    grid-template-areas:
+      'label lede'
+      'title lede';
+    align-items: end;
+    column-gap: var(--sp-6);
+    max-inline-size: none;
+  }
+
+  .wy-head > .fo-label { grid-area: label; }
+  .wy-head > .wy-title { grid-area: title; }
+  .wy-head > .wy-lede { grid-area: lede; }
+
+  /* R315 cycle-3 (W3) min-block-size: 81.65rem RETIRES (R325 Y3) —
+   * the floor was measured against the pre-R322 head band; with the
+   * compact head the content tops out ~560px and the floor stranded
+   * a ~120–150px void under the capture (V4: no forced voids). The
+   * section is content-sized; the void ≤ 1.5× section padding. */
+
+  .wy-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.wy-stage {
+  display: grid;
+  gap: var(--sp-0-5);
+  padding: var(--sp-1-5) var(--sp-3);
+  border: 1px solid var(--rule);
+  border-inline-start: 2px solid transparent;
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  transition: border-color var(--t-base) var(--ease);
+}
+
+.wy-stage-num {
+  color: var(--text-faint);
+  font-size: var(--fs-xs);
+}
+
+.wy-stage-verb {
+  font-family: var(--font-display);
+  /* R322 (1-d): the why-stage verb joins the D3 rung (weight 500 ·
+     lh 1.15 · balance); the per-belt re-pins below retire. */
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.wy-stage-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.wy-stage-text {
+  font-size: var(--fs-sm);
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* R322 V1 kill: .wy-stage-meta (the English jargon 'live · …' row)
+ * is deleted with its markup. */
+
+/* the capture stack — one frame per stage, cross-fading (opacity
+   only; never layout). The stack keeps ONE frame's height. */
+.wy-stack {
+  display: grid;
+}
+
+.wy-capture {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity var(--t-slower) var(--ease);
+}
+
+.wy[data-wy-stage='0'] .wy-capture[data-i='0'],
+.wy[data-wy-stage='1'] .wy-capture[data-i='1'],
+.wy[data-wy-stage='2'] .wy-capture[data-i='2'],
+.wy[data-wy-stage='3'] .wy-capture[data-i='3'] {
+  opacity: 1;
+}
+
+/* the active stage: the rail card warms (border + number), the verb
+   snaps with the 74%-hold plateau (0%→74% held, then resolves —
+   the reference's homeWhy/vs-tag grammar) */
+.wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1),
+.wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2),
+.wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3),
+.wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) {
+  border-inline-start-color: var(--accent);
+}
+
+.wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-num,
+.wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-num,
+.wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-num,
+.wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-num {
+  color: var(--accent-ink);
+}
+
+.wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
+.wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
+.wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-verb,
+.wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
+  animation: wy-snap var(--t-cinema) var(--ease) both;
+}
+
+@keyframes wy-snap {
+  0%,
+  74% {
+    opacity: 0.45;
+    scale: 0.85;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* R325 Y3 — the why frames carry NO overlay chrome: the mock-UI
+   collage (the «مساعد الفهم / عرض توضيحي» fragment) rode the capture's
+   bottom corner like a tooltip pasted over the art; the caption BELOW
+   the frame is this strip's only labeling. Scoped to .wy — the
+   platform band's collage (§05) is untouched. */
+.wy .prf-cards {
+  display: none;
+}
+
+/* R325 Y3 — ONE disclosure line per strip: the per-frame «بيانات العرض
+   التجريبية» caption demo duplicates the section's own .wy-note four
+   times over; the note below the strip carries the confession once. */
+.wy .prf-caption-demo {
+  display: none;
+}
+
+.wy-note {
+  margin-block-start: var(--sp-5);
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+

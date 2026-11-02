@@ -125,6 +125,23 @@ WHOLESALE = {
     'frontend/src/styles/motion.css',
     'frontend/src/styles/base.css',
     'frontend/src/styles/landing.css',
+    # R332 — landing.css was split into per-section sheets (A-CSS-Exec;
+    # pixel-identical A/B proof). The stub stays above only for path
+    # stability. Same contract as landing.css: authored landing motion,
+    # reduced-motion-bounded; raw-css gate still enforces tokens there.
+    'frontend/src/styles/landing/chrome.css',
+    'frontend/src/styles/landing/hero.css',
+    'frontend/src/styles/landing/statement.css',
+    'frontend/src/styles/landing/journey.css',
+    'frontend/src/styles/landing/pains.css',
+    'frontend/src/styles/landing/roles.css',
+    'frontend/src/styles/landing/colleges.css',
+    'frontend/src/styles/landing/cta.css',
+    'frontend/src/styles/landing/why.css',
+    'frontend/src/styles/landing/footer.css',
+    'frontend/src/styles/landing/shared.css',
+    'frontend/src/styles/landing/platform.css',
+    'frontend/src/styles/landing/strata.css',
     # R331 — the per-section landing sheets (see the header note):
     # component-imported, section-scoped, reduced-motion-bounded.
     'frontend/src/styles/r331/hero.css',

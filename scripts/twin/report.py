@@ -52,8 +52,16 @@ def section_metrics(recs: dict):
 
     Primary heading = per-step LARGEST font-size among recorded
     h1–h4/[class*=title] elements (the band's display type), then median
-    across steps."""
-    heads, guts, heights, tops = [], [], [], []
+    across steps.
+
+    Rhythm = median of NON-NEGATIVE inter-child gaps, and ONLY when the band
+    is a plain stack: if ANY negative gap exists (layered/sticky composition,
+    boxes overlapping), the side's rhythm is n/a — a positive gap inside a
+    layered band is leftover structure, not rhythm. Fully-composed bands
+    (no ≥2 major boxes) are also n/a.
+    """
+    heads, guts, tops = [], [], []
+    heights, nneg, npos = [], 0, 0
     for p in sorted(recs):
         g = recs[p].get("geometry") or {}
         if not g.get("found"):
@@ -61,15 +69,23 @@ def section_metrics(recs: dict):
         hs = g.get("headings") or []
         if hs:
             heads.append(max(h["fontSizePx"] for h in hs if h.get("fontSizePx")))
-        gg = [x for x in (g.get("gutters") or [])]
-        guts.extend(gg)
+        for x in (g.get("gutters") or []):
+            if x >= 0:
+                guts.append(x)
+                npos += 1
+            else:
+                nneg += 1
         heights.append(recs[p]["range"]["height"])
         tops.append(recs[p]["range"]["top"])
+    layered = nneg > 0
     return {
         "headingFontSize": median(heads),
-        "rhythmGap": median(guts),
+        "rhythmGap": None if (layered or not guts) else median(guts),
         "height": median(heights),
         "top": median(tops),
+        "rhythmGapsPositive": npos,
+        "rhythmGapsNegative": nneg,
+        "rhythmLayered": layered,
     }
 
 
@@ -239,6 +255,7 @@ def process_vp(run: Path, vp: str) -> dict:
         tsm = (ts_m - vph) if ts_m is not None else None
         deltas["triggerStartPx"] = px_delta(tsh, tsm, TH["triggerStartDeltaPx"])
         v, over = verdict(deltas)
+        missing = [k for k, dv in deltas.items() if dv is None]
         vis = strip_and_heat(vdir, repdir, sec, {"heron": recs_h.get(sec, {}),
                                                  "madarek": recs_m.get(sec, {})},
                              {"width": 0, "height": vph})
@@ -248,6 +265,7 @@ def process_vp(run: Path, vp: str) -> dict:
             "triggerStart": {"heronPx": round(tsh, 1) if tsh is not None else None,
                              "madarekPx": round(tsm, 1) if tsm is not None else None},
             "deltas": deltas, "verdict": v, "overThreshold": over,
+            "missingMetrics": missing,
             "frames": {"heron": len(recs_h.get(sec, {})), "madarek": len(recs_m.get(sec, {}))},
             "visual": vis,
         }
@@ -256,7 +274,8 @@ def process_vp(run: Path, vp: str) -> dict:
               f"rhythmΔ={deltas['rhythmGapPx'] and deltas['rhythmGapPx']['delta']}px "
               f"trigΔ={deltas['triggerStartPx'] and deltas['triggerStartPx']['delta']}px "
               f"frames H:{out['sections'][sec]['frames']['heron']} "
-              f"M:{out['sections'][sec]['frames']['madarek']}", flush=True)
+              f"M:{out['sections'][sec]['frames']['madarek']}"
+              + (f" n/a:{','.join(missing)}" if missing else ""), flush=True)
     return out
 
 
@@ -281,14 +300,16 @@ def write_markdown(run: Path, report: dict):
             md.append(f"| {sec} | **{s['verdict']}** | {cell(d['sectionHeightPct'])} "
                       f"| {cell(d['headingFontSizePct'])} | {cell(d['rhythmGapPx'])} "
                       f"| {cell(d['triggerStartPx'])} | {s['frames']['heron']}/{s['frames']['madarek']} "
-                      f"| {p50 and p50['meanDiff']} |")
+                      f"| {'—' if p50 is None else p50['meanDiff']} |")
         md.append("")
         for sec, s in vpdata["sections"].items():
             md.append(f"### {sec} — {s['verdict']}")
             md.append(f"- heron: height={s['heron']['height']} heading={s['heron']['headingFontSize']} "
-                      f"rhythm={s['heron']['rhythmGap']} top={s['heron']['top']}")
+                      f"rhythm={s['heron']['rhythmGap']} (gaps +{s['heron'].get('rhythmGapsPositive', 0)}/-{s['heron'].get('rhythmGapsNegative', 0)}) "
+                      f"top={s['heron']['top']}")
             md.append(f"- madarek: height={s['madarek']['height']} heading={s['madarek']['headingFontSize']} "
-                      f"rhythm={s['madarek']['rhythmGap']} top={s['madarek']['top']}")
+                      f"rhythm={s['madarek']['rhythmGap']} (gaps +{s['madarek'].get('rhythmGapsPositive', 0)}/-{s['madarek'].get('rhythmGapsNegative', 0)}) "
+                      f"top={s['madarek']['top']}")
             md.append(f"- triggerStart: heron={s['triggerStart']['heronPx']}px "
                       f"madarek={s['triggerStart']['madarekPx']}px  "
                       f"(geometric top−vh both sides; madarek exposes no ST handle)")
@@ -296,6 +317,9 @@ def write_markdown(run: Path, report: dict):
                 hw = s["heronWrapTrigger"]
                 md.append(f"- heron own ScrollTrigger for wrap: start={hw['start']} "
                           f"end={hw['end']} pin={hw['pin']}")
+            if s.get("missingMetrics"):
+                md.append(f"- n/a metrics (no comparable signal on one/both sides): "
+                          f"{', '.join(s['missingMetrics'])}")
             if s["overThreshold"]:
                 md.append(f"- OVER: {json.dumps(s['overThreshold'])}")
             md.append("")

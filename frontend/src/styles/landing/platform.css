@@ -1,0 +1,524 @@
+/* R332 — split VERBATIM from src/styles/landing.css · platform = r325 Y2 pr band + prf frames (3412-3932)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ── pr — المنصّة فعليًا (r325 Y2 rebuild): ONE product frame + a
+   hairline step list beside it + the inline-end surface cells — the
+   extracted 3/5/4 twelve-col seat (full-<bp>.json, home-platform
+   361/601/464 @1440). Hairline figures, mono index chrome, the ONE
+   accent orange, radius 0. The band holds ~79vh (the reference's
+   710px / 5.7%). ── */
+.pr-section {
+  padding-block: var(--sp-7);
+  border-block-start: 1px solid var(--rule-strong);
+  min-block-size: 79vh;
+}
+
+.pr-head {
+  display: grid;
+  gap: var(--sp-3);
+  margin-block-end: var(--sp-8);
+}
+
+/* ═══ r325 Y2 — the showcase frame family (the X3 family re-drawn) ═══
+ * PlatformShowcase renders ONE figure: the drawn lecture-player
+ * (bar · slide screen · checkpoint card) + the CAPTION below the art
+ * (the former plan pin, re-seated — nothing floats over the drawing).
+ * The r323 frame-head chrome retired with Y2 (the «[05] · MADAREK ·
+ * UI GRAMMAR» label carried no information). The family rides the
+ * section's own grammar: hairline frames, mono chrome bars, square
+ * corners, the ONE accent orange, tokens only (dark rides the same
+ * tokens). Mobile-first: the base stack serves ≤767; ≥992 the stage
+ * seats the centre 5 cols of the 12-col grid (the extracted img-wrap
+ * seat) with the steps in the head column and the surfaces at the
+ * inline end. ═══ */
+.pr-stage {
+  min-inline-size: 0;
+}
+
+.pr-frame {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+  border: 1px solid var(--rule);
+}
+
+/* the frame's drawing body — the player chrome + the checkpoint card
+   (aria-hidden; the honest read is the caption below) */
+.pr-frame-art {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.pr-frame-cap {
+  display: grid;
+  gap: 0.2rem;
+  padding: var(--sp-2) var(--sp-3);
+  border-block-start: 1px solid var(--rule);
+}
+
+.pr-cap-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.pr-cap-line {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+/* the player screen — the slide's drafted plate on the sheet's own
+ * grid paper (the air reads as drawing paper, never a dead void), the
+ * concept chain with the ONE accent checkpoint node, over the playhead
+ * track */
+.pr-screen {
+  position: relative;
+  flex: 1;
+  min-block-size: 8.75rem;
+  display: flex;
+  flex-direction: column;
+  margin: var(--sp-2) var(--sp-3) 0;
+  border: 1px solid var(--rule);
+  background-image:
+    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
+    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 2.4rem);
+}
+
+/* the slide position readout — the player's own counter (the
+   checkpoint is the second of the four concepts) */
+.pr-slide-kicker {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-start: var(--sp-2);
+  color: var(--text-muted);
+}
+
+.pr-slide {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-3);
+}
+
+/* the slide's heading mass — the drafted title bar + its sub-rule */
+.pr-slide-rule {
+  inline-size: 46%;
+  block-size: 10px;
+  background: var(--text);
+}
+
+.pr-slide-rule.is-sub {
+  inline-size: 30%;
+  block-size: 4px;
+  background: var(--rule-strong);
+}
+
+.pr-chain {
+  display: flex;
+  align-items: center;
+}
+
+/* the concept node — a hairline plate with its own drafted label
+   rules; the accent node carries the checkpoint dot (the frame's
+   single orange signal) */
+.pr-node {
+  inline-size: 6rem;
+  block-size: 4.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px; /* spacing-gate: allow — the drafted plate's inner label rhythm (matches the mastery-row rung family), an external constant */
+  border: 1px solid var(--rule-strong);
+  background: var(--bg);
+}
+
+.pr-node.is-acc { border-color: var(--accent); }
+
+.pr-node-dot {
+  inline-size: 10px;
+  block-size: 10px;
+  background: var(--accent);
+}
+
+.pr-node-line {
+  inline-size: 60%;
+  block-size: 3px;
+  background: var(--rule-strong);
+}
+
+.pr-node-line.is-short { inline-size: 40%; }
+
+.pr-chain-link {
+  inline-size: 2.4rem;
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.pr-slide-line {
+  inline-size: 52%;
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.pr-slide-line.is-short { inline-size: 34%; }
+
+/* the playhead track — accent elapsed + chapter ticks + the head */
+.pr-track {
+  position: relative;
+  block-size: 3px;
+  margin: 0 var(--sp-3) var(--sp-2);
+  background: var(--rule);
+}
+
+.pr-track-fill {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 38%;
+  background: var(--accent);
+}
+
+.pr-track-head {
+  position: absolute;
+  inset-block-start: -3px;
+  inset-inline-start: 38%;
+  inline-size: 2px;
+  block-size: 9px;
+  background: var(--text);
+}
+
+.pr-tick {
+  position: absolute;
+  inset-block-start: -2px;
+  inline-size: 1px;
+  block-size: 7px;
+  background: var(--rule-strong);
+}
+
+.pr-tick:nth-of-type(1) { inset-inline-start: 25%; }
+.pr-tick:nth-of-type(2) { inset-inline-start: 50%; }
+.pr-tick:nth-of-type(3) { inset-inline-start: 75%; }
+
+.pr-cell {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.pr-cell-bar {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.44rem 0.8rem;
+  border-block-end: 1px solid var(--rule);
+}
+
+.pr-cell-idx {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+.pr-cell-title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--text);
+  /* the bidi-safe end-edge push: the auto margin lives on the RTL
+     title (inline-end = physical left), never on the dir=ltr note
+     (whose inline-start is its physical LEFT — the auto margin there
+     opened the space on the wrong side and the time stamp hugged the
+     title). The note lands at the bar's far end at every dir. */
+  margin-inline-end: auto;
+}
+
+.pr-cell-note {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+/* the concept step list — the player's index (the head column's
+   hairline rows: mono index ≥ the 11px floor · concept name · the
+   orange «now» square) */
+.pr-chapters {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  min-inline-size: 0;
+}
+
+.pr-ch {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding-block: var(--sp-1-5);
+  border-block-start: 1px solid var(--rule);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.pr-ch .fo-mono {
+  font-size: var(--fs-mono-xs);
+  color: var(--text-muted);
+}
+
+.pr-ch.is-done { color: var(--text-muted); }
+
+.pr-ch.is-now {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pr-ch-play {
+  margin-inline-start: auto;
+  inline-size: 8px;
+  block-size: 8px;
+  background: var(--accent);
+  align-self: center;
+}
+
+/* the checkpoint card — the one orange-adjacent honest surface */
+.pr-check {
+  margin: var(--sp-2) var(--sp-3) var(--sp-3);
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+}
+
+.pr-check-k {
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+  font-weight: 500;
+}
+
+.pr-check-q {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.pr-check-btn {
+  justify-self: start;
+  padding: 0.22rem 0.72rem;
+  border: 1px solid var(--rule-strong);
+  font-size: var(--fs-sm);
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* the mastery matrix — 4×2 hairline cells, the solid accent fills as
+   the single signal, the warm cells keep the outline voice.
+   r325 Y2: the plate centres in the side cell's stretched tail —
+   the cell's air reads around the diagram, never as a dead strip. */
+.pr-matrix {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* r324 spacing-gate: the 6px cell gap rides the exact --sp-1-5 rung */
+  gap: var(--sp-1-5);
+  padding: 0.8rem 0.8rem 0.6rem;
+  margin-block-start: auto;
+}
+
+.pr-mc {
+  aspect-ratio: 1;
+  border: 1px solid var(--rule);
+}
+
+.pr-mc.is-hot {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.pr-mc.is-warm { border-color: var(--accent); }
+
+/* the mastery rows — ink progress lines on hairline tracks */
+.pr-mrows {
+  display: grid;
+  gap: 7px; /* spacing-gate: allow — the Heron-extracted mastery-row rhythm (the reference's own 7px track gap; no ladder rung sits between 6 and 8) */
+  padding: 0 0.8rem 0.8rem;
+  margin-block-end: auto;
+}
+
+.pr-mrow {
+  block-size: 4px;
+  background: var(--rule);
+}
+
+.pr-mfill {
+  display: block;
+  block-size: 100%;
+  background: var(--text);
+}
+
+/* the assistant bubble cell */
+.pr-ai-q {
+  margin: 0;
+  padding: 0.6rem 0.8rem 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.pr-ai-a {
+  margin: 0;
+  padding: 0.2rem 0.8rem 0.8rem;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.pr-frame-cta {
+  font-size: var(--fs-sm);
+  white-space: nowrap;
+}
+
+.pr-frame-demo {
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+}
+
+/* the row-2 inspector line — the ONE demo disclosure + the CTA. The
+   ≥992 seat (cols 9–12, row 2) is the reference's own note position;
+   the base line rides under the frame at ≤767. Hidden with the head
+   at the strips-only 768–1024 bands. */
+.pr-note {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-2);
+}
+
+/* the inline-end surface column — the drawn matrix + assistant cells
+   (the extracted content-right seat; hairline cells on the section
+   grid; hidden with the head at the strips-only ≤1024 bands) */
+.pr-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-inline-size: 0;
+}
+
+.pr-side .pr-cell {
+  border: 1px solid var(--rule);
+}
+
+.pr-cell-matrix {
+  flex: 1;
+}
+
+/* the assistant cell rides the side column's tail (r325 Y2) */
+.pr-cell-ai {
+  flex: 0 0 auto;
+}
+
+.pr-title {
+  font-family: var(--font-display);
+  /* R322 (1-d FINAL): the product H2 joins the D2 rung like every
+     section statement (weight 600 · lh 1.10 · balance). The interim
+     R318 §A5 h4 sheet-title seat (3.2rem/26.67px @1440) is re-pinned
+     by this scale migration: the census-after caught this seat OFF
+     the rungs at 28.86px @390 (its ≤767 px clamp) — the only
+     display-size survivor at phone widths; the rung lands it at
+     31.74px like every H2. The ≤767 clamp and the ≥992 sheet-title
+     literal retire below. */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.pr-lede {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+  max-inline-size: 64ch;
+}
+
+/* r324 X3/r325 Y2: the R313-era .pr-grid pair and the .pr-note text
+   seat retire — the note is the showcase's CTA line, the band is the
+   3/5/4 seat drawn above. */
+
+/* ── prf — ProductFrame: the real-capture figure ────────────────────
+   Flat frame + the three-part caption: the mono «real-ui» tag, the
+   title/line body, the demo disclosure. The CTA is a text link — it
+   scrolls to the conversion row (never an extra funnel link). ── */
+.prf {
+  display: grid;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.prf-photo {
+  overflow: clip;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+  background: var(--surface);
+}
+
+.prf-photo img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.prf-caption {
+  display: grid;
+  /* r324 X4 — the tag column retired with the «real-ui» chip:
+     body first, the demo disclosure at the far edge. */
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--sp-3);
+  padding-inline: var(--sp-0-5);
+}
+
+/* r324 X4 — .prf-caption-tag retires with the chip. */
+
+.prf-caption-body {
+  display: grid;
+  gap: var(--sp-0-5);
+  min-inline-size: 0;
+}
+
+.prf-caption-title {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.prf-caption-line {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.prf-caption-demo {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+.prf-cta {
+  white-space: nowrap;
+}
+
+/* ── Responsive re-composition (never a naive scale-down) ─────────── */
+/* R313 (D7): the fluid root already scales the sheet at tablet widths
+   (the media families moved to /campus — their responsive rules moved
+   with them into campus.css); the pr-grid keeps its two-block shape
+   until the phone band. */
+

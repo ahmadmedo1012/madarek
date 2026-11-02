@@ -49,7 +49,25 @@ import { PLAN_VB } from '../../src/components/landing/LearningPlanDrawing';
 /* ── the sources under pin ──────────────────────────────────────── */
 const HERE = dirname(new URL(import.meta.url).pathname);
 const JOURNEY_SRC = readFileSync(join(HERE, '../../src/components/landing/journey/JourneyScene.tsx'), 'utf8');
-const LANDING_CSS = readFileSync(join(HERE, '../../src/styles/landing.css'), 'utf8');
+/* R332 split: landing.css is now the per-section family under
+ * styles/landing/ (imported in the original cascade order); the stub
+ * landing.css is rule-free. The aggregated family text is unchanged. */
+const LANDING_FAMILY = [
+  'src/styles/landing/chrome.css',
+  'src/styles/landing/hero.css',
+  'src/styles/landing/statement.css',
+  'src/styles/landing/journey.css',
+  'src/styles/landing/pains.css',
+  'src/styles/landing/roles.css',
+  'src/styles/landing/colleges.css',
+  'src/styles/landing/cta.css',
+  'src/styles/landing/why.css',
+  'src/styles/landing/footer.css',
+  'src/styles/landing/shared.css',
+  'src/styles/landing/platform.css',
+  'src/styles/landing/strata.css',
+] as const;
+const LANDING_CSS = LANDING_FAMILY.map((f) => readFileSync(join(HERE, '../..', f), 'utf8')).join('\n');
 const PLAN_SRC = readFileSync(join(HERE, '../../src/components/landing/LearningPlanDrawing.tsx'), 'utf8');
 /* comments stripped so tombstone prose quoting retired seats can
  * never satisfy a pin (the r306 convention). */

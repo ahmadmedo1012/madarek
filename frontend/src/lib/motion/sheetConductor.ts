@@ -72,10 +72,34 @@ function frameLoop(now: number): void {
  */
 export function subscribeSheetFrame(fn: SheetFrameFn): () => void {
   subscribers.add(fn);
+  installVisibilityWake();
   wakeSheet();
   return () => {
     subscribers.delete(fn);
   };
+}
+
+/* ── the visibility wake ──────────────────────────────────────────
+ * `wakeSheet()` refuses to start the loop while the tab is hidden
+ * (invisible tabs must not spin). But a subscriber that MOUNTS while
+ * hidden would otherwise stay asleep forever — nothing re-wakes it on
+ * visibility, since wake points are input/subscription events. One
+ * document-level listener (installed lazily on first subscription,
+ * never removed — the conductor is a module singleton) closes that
+ * gap: on visible, any sleeping-but-populated clock restarts. A loop
+ * that was already mid-chain when the tab hid needs no help — its
+ * pending rAF callback fires on visibility on its own. */
+let visWakeInstalled = false;
+
+function installVisibilityWake(): void {
+  if (visWakeInstalled) return;
+  if (typeof document === 'undefined' || typeof document.addEventListener !== 'function') {
+    return;
+  }
+  visWakeInstalled = true;
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) wakeSheet();
+  });
 }
 
 /* ── R318 C2-S1 — the frame-scoped geometry batch ────────────────────

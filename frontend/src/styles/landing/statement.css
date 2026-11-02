@@ -1,0 +1,134 @@
+/* R332 — split VERBATIM from src/styles/landing.css · statement = R322 2-c statement band (1096-1226)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ البيان — the statement (the reference's intro band): the
+            scrub-revealed declaration + the universities ticker. r308:
+            the title unmasks word-by-word, scrub-linked + reversible
+            to the scroll. R313 (D7 §2): the band holds ~80vh (the
+            reference's 723px / 5.9%). ═══ */
+/* ═══ [2] البيان — R322 (2-c): the measured 6+6 split transplant.
+   The square ink art cell rides inline-start (the reading start in
+   RTL — the reference's LEFT cell mirrored); the body column rides
+   inline-end behind a 1px strong hairline on its inline-start edge,
+   holding ONLY the scrub title + one CTA (content pad 6.4/15/3.2/15rem
+   — the reference's own cell, the 15rem side gutter is the band's
+   personality), closed by the partner strip. The old .st-spread /
+   .st-copy / .st-lines trio (statement 6.1: orphan text rows on no
+   grid) retires with the transplant. Every spacing value rides the
+   --space-* scale. ═══ */
+/* R328 (H7 · panel) — the doubled fold rule dies: the hero's work
+   strip already closes the band with its own border-block-end (the
+   measured pair: y887 + y892 on dark read as one accidental heavy
+   rule). The statement opens on the hero's closing hairline. */
+.st-section {
+  padding-block: var(--space-8xl);
+}
+
+.st-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  align-items: stretch;
+}
+
+.st-art-cell {
+  min-inline-size: 0;
+  display: grid;
+}
+
+/* the square massing study fills its 6-col cell edge to edge at
+   every breakpoint — the artwork's own aspect drives the band
+   (the reference's 1766×1766 contain equivalent), dark twin included.
+   R324/X14: the band ran +101/+84/+90/+109px over the Heron intro at
+   1440/1024/768/390 — the square 1:1 art owned the band at every
+   breakpoint. The Heron-matched cut is 59:50 (art 590px on the 690px
+   cell @1440 → band 723 = Heron exact; 520/533 ≈ 514/527 at the
+   tablet pairs): the drawing letterboxes inside the wider cell (the
+   svg's own xMidYMid meet centers it on transparent paper). */
+.st-art-cell .st-art-svg {
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 59 / 50;
+}
+
+.st-body-col {
+  min-inline-size: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  border-inline-start: 1px solid var(--rule-strong);
+  padding: var(--space-8xl) var(--space-12xl) var(--space-4xl) var(--space-12xl);
+}
+
+.st-body {
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4xl);
+}
+
+.st-title {
+  font-family: var(--font-display);
+  /* R322 (1-d FINAL): the statement band's scrub title takes the
+     SPECIAL statement seat — --fs-st (Heron's own per-char color-
+     scrub title: 4rem/33.33px w600 @1440 → 2.4rem/22.1px @768 →
+     2.4rem/23.8px @390, band-independent), weight 600, lh 1.10 (the
+     scrub spans' overflow wrappers need the headroom), balance. NOT
+     the D2 rung — Heron sizes the scrub title a rung under its
+     section H2s. */
+  font-size: var(--fs-st);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+  margin: 0;
+}
+
+/* the reference's statement CTA (16.34×5rem — the measured button
+   mass, one per band): rides the .btn grammar with the fill-wipe
+   hover; the st-cta seat only pins the measured size. */
+.st-cta {
+  padding-inline: var(--space-4xl);
+  min-block-size: 5rem;
+  font-size: var(--fs-body-lg);
+}
+
+/* the partner strip — the reference's label-row + logo-track + desc
+   anatomy riding the documented-universities crawl (honest: توثيق
+   وسائط لا شراكة — the desc carries the media-disclosure line). */
+.st-partner {
+  display: grid;
+  gap: var(--space-sm);
+  padding-block-start: var(--space-lg);
+  border-block-start: 1px solid var(--rule);
+}
+
+.st-partner-row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+}
+
+.st-partner-label {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+.st-partner .fo-ticker {
+  inline-size: 100%;
+}
+
+.st-partner .fo-ticker-item {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.st-partner-desc {
+  margin: 0;
+  font-size: var(--fs-xs);
+  line-height: 1.7;
+  color: var(--text-muted);
+}
+
+.st-partner-desc .fo-text-link {
+  color: var(--text-secondary);
+}
+

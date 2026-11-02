@@ -71,7 +71,26 @@ describe('R321 §A6 — decorative marks never carry DOM text (the innerText lea
   });
 
   it('the mark CSS actually paints the glyph (every family has a ::before/::after content rule)', () => {
-    const styles = ['auth.css', 'landing.css', 'campus.css', 'r319-shell.css']
+    /* R332 split: landing.css is now the per-section family under
+     * styles/landing/ (the stub landing.css is rule-free). */
+    const styles = [
+      'auth.css',
+      'landing/chrome.css',
+      'landing/hero.css',
+      'landing/statement.css',
+      'landing/journey.css',
+      'landing/pains.css',
+      'landing/roles.css',
+      'landing/colleges.css',
+      'landing/cta.css',
+      'landing/why.css',
+      'landing/footer.css',
+      'landing/shared.css',
+      'landing/platform.css',
+      'landing/strata.css',
+      'campus.css',
+      'r319-shell.css',
+    ]
       .map((f) => readFileSync(path.join(SRC, 'styles', f), 'utf8'))
       .join('\n');
     for (const fam of DECOR_FAMILIES) {

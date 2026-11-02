@@ -1,0 +1,314 @@
+/* R332 — split VERBATIM from src/styles/landing.css · pains = R322 2-d pains band (1277-1587)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ التحديات (R322 · 2-d) — the four pains on Heron's OPEN
+   COLUMN grammar: a head row (kicker + H2 at the reading-start
+   content line, sub note at the far column's edge, bottoms aligned)
+   over four UNBOXED columns — mono keyword + ghost 2-digit index
+   meta row, dashed rule, the drawing in its centered art zone,
+   title + body + the honest live-capability answer. V8 closed: the
+   head and the columns share ONE grid (the old boxed .pm-cards and
+   the 217px orphan lede die). @768 wraps 2×2; ≤767 becomes the snap
+   carousel with the reference's dot rail. ═══ */
+.pm-section {
+  padding-block: var(--space-8xl);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.pm-frame {
+  display: grid;
+  gap: var(--space-6xl);
+}
+
+/* the head — title-wrap at the reading start (7 cols), sub at the
+   far edge (5 cols), BOTTOMS aligned like the reference's head row. */
+.pm-head {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  align-items: end;
+  gap: var(--space-4xl);
+  margin: 0;
+}
+
+.pm-title-wrap {
+  min-inline-size: 0;
+  display: grid;
+  gap: var(--space-lg);
+  justify-items: start;
+}
+
+.pm-title {
+  margin: 0;
+  font-family: var(--font-display);
+  /* R322 (1-d): joins the D2 rung (the problem/pains H2 — Heron's
+     own 4.8rem h2 @1440; weight 600, lh 1.10, balance). */
+  font-size: var(--fs-d2);
+  font-weight: 600;
+  line-height: 1.1;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.pm-title em {
+  font-style: normal;
+  color: var(--accent-ink);
+}
+
+.pm-sub {
+  /* the far-edge note — the body band's --fs-body-lg rung, natural
+     width, no max-ch box (the reference's sub sits on the column's
+     own measure, not a reading-measure island). */
+  margin: 0;
+  font-size: var(--fs-body-lg);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* the four open columns — one 4-up hairline grammar, no boxes. */
+.pm-cols {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3xl);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pm-col {
+  min-inline-size: 0;
+  display: grid;
+  align-content: start;
+}
+
+/* the meta row — mono keyword + ghost index + the orange dot, closed
+   by the dashed rule (the reference's own meta grammar). */
+.pm-meta {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-sm);
+  padding-block-end: var(--space-md);
+  border-block-end: 1px dashed var(--rule-strong);
+}
+
+.pm-keyword {
+  color: var(--text-secondary);
+  font-size: var(--fs-xxs);
+}
+
+.pm-index {
+  margin-inline-start: auto;
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+.pm-dot {
+  inline-size: 6px;
+  block-size: 6px;
+  background: var(--accent);
+  flex: none;
+  translate: 0 -1px;
+}
+
+/* the drawing zone — the reference's 36rem art cell holding the
+   centered 20×20rem drawing (PainArt's own 200×200 viewBox). */
+.pm-artzone {
+  display: grid;
+  place-items: center;
+  min-block-size: 24rem;
+  padding-block: var(--space-xl) 0;
+}
+
+.pm-art {
+  display: block;
+  inline-size: 20rem;
+  block-size: 20rem;
+}
+
+/* the draw-in: pathLength-normalized strokes resolve with the
+   column's reveal (staggered per column); RM collapses to the
+   complete drawing (the RM belt below). */
+.pm-art .pm-draw {
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--t-cinema) var(--ease);
+}
+
+.pm-col.in-view .pm-art .pm-draw {
+  stroke-dashoffset: 0;
+}
+
+.pm-cols .pm-col:nth-child(2).in-view .pm-art .pm-draw { transition-delay: var(--t-micro); }
+.pm-cols .pm-col:nth-child(3).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 2); }
+.pm-cols .pm-col:nth-child(4).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 3); }
+
+.pm-content {
+  display: grid;
+  gap: var(--space-md);
+}
+
+.pm-item-title {
+  margin: 0;
+  font-family: var(--font-display);
+  /* R322 (1-d): the item title joins the D3 rung — Heron's own
+     item-title 2.8rem (23.33px @1440), weight 500, lh 1.15, balance. */
+  font-size: var(--fs-d3);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+.pm-item-sub {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* the honest answer — the live-capability line every pain keeps
+   (non-negotiable): the dashed top rule mirrors the meta row. */
+.pm-item-answer {
+  margin: 0;
+  /* the VLM review's one spacing note: a full --space-lg of air
+     before the answer rule (the head's generous rhythm carries down
+     the column — the answer is the column's terminal anchor). */
+  padding-block-start: var(--space-lg);
+  border-block-start: 1px dashed var(--rule-strong);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--accent-ink);
+}
+
+/* ≤767 — the reference's swiper: the columns become the snap
+   carousel, the dot rail follows the snap position (the JS above
+   drives .is-active; a tap centers its column). Dots 2.02×0.2rem. */
+.pm-dots {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .pm-head {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .pm-cols {
+    grid-auto-flow: column;
+    grid-auto-columns: 82%;
+    gap: var(--space-lg);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--space-lg);
+    padding-block-end: var(--space-md);
+    scrollbar-width: thin;
+  }
+
+  .pm-col {
+    scroll-snap-align: center;
+  }
+
+  .pm-artzone {
+    min-block-size: 0;
+    padding-block: var(--space-lg) 0;
+  }
+
+  .pm-art {
+    inline-size: 16rem;
+    block-size: 16rem;
+  }
+
+  .pm-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-sm);
+  }
+
+  .pm-dot-btn {
+    appearance: none;
+    border: 0;
+    background: transparent;
+    padding: var(--space-sm);
+    cursor: pointer;
+    /* ≥44px touch floor via the padding belt (the rail is decorative
+       navigation — the columns themselves scroll). */
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    display: grid;
+    place-items: center;
+  }
+
+  .pm-dot-bar {
+    display: block;
+    inline-size: 2.02rem;
+    block-size: 0.2rem;
+    background: var(--rule-strong);
+    transition: background var(--t-fast) var(--ease);
+  }
+
+  .pm-dot-btn.is-active .pm-dot-bar {
+    background: var(--accent);
+  }
+}
+
+/* R322 (2-d) — the ≤479 pocket (the 360 belt rides +2.6% over
+   Heron without it): the phone item-title takes Heron's own 390 rung
+   (2rem — the d3 floor's 23.33px is the 390+ belt), and the section
+   bands/artzone step one rung down the scale. All values measured
+   from problem-390.md: item-title 2rem lh1.2 · art 16.5rem ·
+   slide 31.45rem wide. */
+@media (max-width: 479px) {
+  .pm-section {
+    padding-block: var(--space-6xl);
+  }
+
+  .pm-frame {
+    gap: var(--space-3xl);
+  }
+
+  .pm-head {
+    gap: var(--space-3xl);
+  }
+
+  .pm-item-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .pm-artzone {
+    padding-block: 0;
+  }
+
+  .pm-content {
+    gap: var(--space-sm);
+  }
+
+  .pm-cols {
+    grid-auto-columns: 88%;
+  }
+
+  .st-section {
+    padding-block: var(--space-6xl);
+  }
+
+  .st-body-col {
+    padding-block-start: var(--space-3xl);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .pm-cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-4xl) var(--space-3xl);
+  }
+
+  .pm-artzone {
+    min-block-size: 0;
+  }
+
+  .pm-art {
+    inline-size: 16rem;
+    block-size: 16rem;
+  }
+}
+
+

@@ -1,0 +1,53 @@
+/* R332 — split VERBATIM from src/styles/landing.css · colleges = R313 D7 colleges registry strip (1712-1761)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ شريط الكليات (R313 · D7 §9) — the colleges registry strip: the
+   ruled hairline row that carries the #colleges anchor OFF the page —
+   the 25-college count + the demo-data disclosure + the public
+   registry link (the interactive detail lives on /colleges). ═══ */
+.cg-strip {
+  display: grid;
+  gap: var(--sp-2-5);
+  margin-block-start: var(--sp-8);
+  padding-block-start: var(--sp-6);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.cg-strip-label {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.04em;
+}
+
+.cg-strip-text {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.cg-strip-text strong {
+  color: var(--text);
+}
+
+.cg-strip-text .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
+}
+
+.cg-strip-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+}
+
+.fo-text-link {
+  color: var(--accent-ink);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  text-decoration: none;
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  padding-block-end: var(--sp-0-5);
+}
+

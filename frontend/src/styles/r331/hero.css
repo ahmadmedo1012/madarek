@@ -48,8 +48,12 @@
 
 /* ══ [1] THE BAND — grid rows [art 1fr | content auto | work auto],
    the measured 100svh-class fold (887px @1440×900) + the consent
-   card's bottom-stack reserve (R328 H1 — unchanged contract). ═════ */
+   card's bottom-stack reserve (R328 H1 — unchanged contract).
+   R332 W1: position:relative — the band is the bg-border frame's
+   containing block (Heron's bgBorderFrame is inset 1.2rem of the hero
+   wrap, over the full-bleed drawing — never around an inner box). ═════ */
 .fo-hero.hro {
+  position: relative;
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto auto;
   min-block-size: calc(100svh - 13px); /* the measured reference band (887 = 900 − 13) */
@@ -66,26 +70,36 @@
   min-inline-size: 0;
 }
 
-/* ══ [2] THE ART BAND — the drafting stage: 63px header+frame seat,
-   7px sheet-frame inset, transparent paper (the §0-A.1 kill holds). */
+/* ══ [2] THE ART BAND — the drafting stage, FULL-BLEED (R332 W1 —
+   the run-001 «window inside a window» kill): the paper is the page's
+   own and runs edge-to-edge; the only vertical seat is the 63px header
+   chrome + the sheet-frame breathing room below. ═════ */
 .hro-art {
   display: grid;
   padding-block-start: 63px; /* 56px header + 7px frame chrome (the measured seat) */
   padding-block-end: var(--sp-2);
-  padding-inline: 7px; /* the sheet frame's own 7px inset */
+  padding-inline: 0; /* R332 W1: the old 7px sheet inset trapped the ink inside an inner window — the paper has no side inset */
   align-items: stretch;
 }
 
 /* the stage — ONE physical frame (R309) for the ink, the inspection
    instrument and the chrome. The old static border is REPLACED by the
-   four wiping edges below (the reference's bg-border strips). */
-.hro-stage {
+   four wiping edges (now on the SECTION — the viewport frame).
+   R332 W1: specificity raised (.hro .hro-stage) to defeat the shared
+   .bp-stage window rule in landing.css (border + var(--surface) white
+   box + min(100%,108rem) + auto margins — the documented root cause;
+   the exact landing.css edit is recorded in r332/sections/hero.md §5).
+   The stage is transparent paper, full width, ink edge-to-edge. */
+.hro .hro-stage {
   inline-size: 100%;
   display: grid;
   place-items: center;
   position: relative;
   background: transparent; /* the paper shows through, never a white box */
-  padding: 12px; /* the window's own 12px mat seat (drafting chrome) */
+  border: 0; /* R332 W1: kills landing.css .bp-stage's 1px box — the frame is the section's 4 wiping edges */
+  margin-inline: 0; /* kills .bp-stage's auto centering (the dead paper margins) */
+  padding-block: 12px; /* the window's own 12px mat seat (drafting chrome) */
+  padding-inline: 0; /* R332 W1: full-bleed — the ink runs to the viewport edges (Heron's tree breaks the edge) */
   min-inline-size: 0;
 }
 
@@ -100,7 +114,7 @@
 
 /* the ink — fills the frame's content width (the measured img-inner
    grammar); height from the viewBox's own aspect, capped honest. */
-.hro-art .bp-svg {
+.hro .hro-art .bp-svg {
   inline-size: 100%;
   block-size: auto;
   max-block-size: 100%;
@@ -160,9 +174,11 @@
 /* ══ [3] THE FRAME — the reference's bg-border strips: 4 edges that
    WIPE in (scaleX/scaleY 0→1 · 1.2s · linear), origin mirrored for RTL
    (the reference wipes from top-left in LTR; we wipe from the reading
-   start — top right in RTL). 1px hairlines on the page's own frame
-   grammar (the reference's strips are ~7px bars — deviation kept: the
-   sheet's whole chrome language is 1px). */
+   start — top right in RTL). R332 W1: seated on the SECTION, inset
+   1.2rem from the viewport edges (Heron's bgBorderFrame: "absolute
+   inset 1.2rem; 4 edge items ~7px thick" — the 1px hairline is the
+   sheet's documented chrome deviation). 1px hairlines on the page's
+   own frame grammar. */
 .hro-edge {
   position: absolute;
   background: var(--rule);
@@ -172,20 +188,38 @@
 
 .hro-edge-t,
 .hro-edge-b {
-  inset-inline: 0;
+  inset-inline: 1.2rem;
   block-size: 1px;
 }
 
 .hro-edge-s,
 .hro-edge-e {
-  inset-block: 0;
+  inset-block: 1.2rem;
   inline-size: 1px;
 }
 
-.hro-edge-t { inset-block-start: 0; transform-origin: 100% 0; }
-.hro-edge-b { inset-block-end: 0; transform-origin: 100% 100%; }
-.hro-edge-s { inset-inline-start: 0; transform-origin: 100% 0; }
-.hro-edge-e { inset-inline-end: 0; transform-origin: 0 0; }
+.hro-edge-t { inset-block-start: 1.2rem; transform-origin: 100% 0; }
+.hro-edge-b { inset-block-end: 1.2rem; transform-origin: 100% 100%; }
+.hro-edge-s { inset-inline-start: 1.2rem; transform-origin: 100% 0; }
+.hro-edge-e { inset-inline-end: 1.2rem; transform-origin: 0 0; }
+
+/* ≤767 — Heron's own mobile frame inset (0.8rem) */
+@media (max-width: 767px) {
+  .hro-edge-t,
+  .hro-edge-b {
+    inset-inline: 0.8rem;
+  }
+
+  .hro-edge-s,
+  .hro-edge-e {
+    inset-block: 0.8rem;
+  }
+
+  .hro-edge-t { inset-block-start: 0.8rem; }
+  .hro-edge-b { inset-block-end: 0.8rem; }
+  .hro-edge-s { inset-inline-start: 0.8rem; }
+  .hro-edge-e { inset-inline-end: 0.8rem; }
+}
 
 /* the wipe — linear, 1.2s, from the intro gate */
 .landing.intro-draw .hro-edge-t,
@@ -210,12 +244,14 @@
   transition: transform var(--hro-hair-dur) linear;
 }
 
-/* ══ [4] THE RULER CHROME — dashed ticks, corner plus marks,
-   registration marks, measure graticule (the reference's ruler layer,
-   visible at rest at op .64 — the R322 extraction's settled state). */
-.bp-rulers {
+/* ══ [4] THE RULER CHROME — dashed ticks, corner registration marks,
+   measure graticule (the reference's ruler layer, visible at rest at
+   op .64 — the R322 extraction's settled state). R332 W1: inset 3.2rem
+   (Heron's ruler: "inset 3.2rem, dashed tick lines") — the chrome sits
+   INBOARD of the now full-bleed paper, never on the viewport edge. */
+.hro .bp-rulers {
   position: absolute;
-  inset: 0;
+  inset: 3.2rem;
   pointer-events: none;
   z-index: 1;
   opacity: 0.64;
@@ -297,7 +333,9 @@
 .bp-ruler-s { inset-inline-start: 2px; }
 .bp-ruler-e { inset-inline-end: 2px; }
 
-/* the corner plus marks — the reference's registration marks */
+/* the corner plus marks — the reference's registration marks, now the
+   SECTION frame's corner chrome (R332 W1: they ride the bg-border
+   frame, centred on its 1.2rem corners — Heron's corner plus marks). */
 .bp-plus {
   position: absolute;
   color: var(--rule);
@@ -308,19 +346,21 @@
 
 .bp-plus::before { content: '+'; }
 
-.bp-plus-tl { inset-block-start: 6px; inset-inline-start: 3px; }
-.bp-plus-tr { inset-block-start: 6px; inset-inline-end: 3px; }
-.bp-plus-bl { inset-block-end: 6px; inset-inline-start: 3px; }
-.bp-plus-br { inset-block-end: 6px; inset-inline-end: 3px; }
+.hro .bp-plus-tl { inset-block-start: calc(1.2rem - 0.7rem); inset-inline-start: calc(1.2rem - 0.7rem); }
+.hro .bp-plus-tr { inset-block-start: calc(1.2rem - 0.7rem); inset-inline-end: calc(1.2rem - 0.7rem); }
+.hro .bp-plus-bl { inset-block-end: calc(1.2rem - 0.7rem); inset-inline-start: calc(1.2rem - 0.7rem); }
+.hro .bp-plus-br { inset-block-end: calc(1.2rem - 0.7rem); inset-inline-end: calc(1.2rem - 0.7rem); }
 
-/* the ± registration marks at the dashed inner frame's corners */
+/* the ± registration marks at the dashed inner frame's corners.
+   R332 W1: they belong to the hover-revealed dashed inner frame —
+   gated with it (at rest the hero's corners carry ONLY the viewport
+   frame's plus marks — no stray chrome). */
 .bp-dmark {
   position: absolute;
   color: var(--rule);
   font-family: var(--font-mono);
   font-size: var(--fs-mono-xs);
   line-height: 1;
-  opacity: 0.9;
 }
 
 .bp-dmark::before { content: '+'; }
@@ -329,6 +369,17 @@
 .bp-dmark-tr { inset-block-start: 11px; inset-inline-end: 11px; }
 .bp-dmark-bl { inset-block-end: 11px; inset-inline-start: 11px; }
 .bp-dmark-br { inset-block-end: 11px; inset-inline-end: 11px; }
+
+.hro .bp-dmark {
+  opacity: 0;
+  transition: opacity var(--t-slow) var(--ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hro-stage:is(:hover, :focus-within) .bp-dmark {
+    opacity: 0.9;
+  }
+}
 
 /* ══ [5] THE DECO CARDS — the reference's mono micro-copy cards over
    the drawing (item1/item2 grammar), each with the 1.6rem brand square
@@ -527,9 +578,11 @@
   transition: color var(--t-fast) var(--ease), text-decoration-color var(--t-fast) var(--ease);
 }
 
-.hro-alt:hover {
-  color: var(--text);
-  text-decoration-color: var(--rule-strong);
+@media (hover: hover) and (pointer: fine) {
+  .hro-alt:hover {
+    color: var(--text);
+    text-decoration-color: var(--rule-strong);
+  }
 }
 
 .hro-alt:focus-visible {

@@ -73,6 +73,26 @@ const existsSyncP = (p: string) => existsSyncRaw(path.join(root, p));
 /** Drop /* … *‌/ blocks so tombstone prose can't satisfy a selector pin. */
 const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 
+/* R332 split: landing.css is now the per-section family under
+ * styles/landing/ (imported in the original cascade order); the stub
+ * landing.css is rule-free. The aggregated family text is unchanged. */
+const LANDING_FAMILY = [
+  'src/styles/landing/chrome.css',
+  'src/styles/landing/hero.css',
+  'src/styles/landing/statement.css',
+  'src/styles/landing/journey.css',
+  'src/styles/landing/pains.css',
+  'src/styles/landing/roles.css',
+  'src/styles/landing/colleges.css',
+  'src/styles/landing/cta.css',
+  'src/styles/landing/why.css',
+  'src/styles/landing/footer.css',
+  'src/styles/landing/shared.css',
+  'src/styles/landing/platform.css',
+  'src/styles/landing/strata.css',
+] as const;
+const readLandingCss = () => stripComments(LANDING_FAMILY.map(read).join('\n'));
+
 /* ═══ Part A — rendered contracts (jsdom) ═══════════════════════════ */
 
 /* ── r172a §8 — ThemeToggle presence: header + labeled mobile row ── */
@@ -274,7 +294,7 @@ describe('r197 — the landing scene family is retired from tokens.css', () => {
 /* ── r172a §2 — canonical-accent CTA + skip-link (landing.css) ───── */
 
 describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair', () => {
-  const css = stripComments(read('src/styles/landing.css'));
+  const css = readLandingCss();
 
   it('the folio landing declares NO landing-private CTA colors — .btn.accent/.btn.primary ARE the recipes', () => {
     // r188: the hero/finale primary is the app's own .btn.accent and the
@@ -336,7 +356,7 @@ describe('r172a §2 → r188 — the landing CTA rides the canonical accent pair
 /* ── r172a §3 — one focus language (the private ring is gone) ─────── */
 
 describe('r172a §3 — the landing\'s private :focus-visible sub-language is deleted', () => {
-  const css = stripComments(read('src/styles/landing.css'));
+  const css = readLandingCss();
 
   it('no :focus-visible rule in landing.css writes an outline', () => {
     const rules = css.match(/[^{}]*:focus-visible[^{}]*\{[^}]*\}/g) ?? [];
@@ -365,7 +385,7 @@ describe('r172a §3 — the landing\'s private :focus-visible sub-language is de
 /* ── r172a §4 — grain polarity follows the theme ──────────────────── */
 
 describe('r172a §4 → r188 — the grain veil is retired with the Orbit-Ink world', () => {
-  const css = stripComments(read('src/styles/landing.css'));
+  const css = readLandingCss();
 
   it('no grain layer exists in the folio sheet (clean paper world)', () => {
     expect(css).not.toContain('.ln-grain');

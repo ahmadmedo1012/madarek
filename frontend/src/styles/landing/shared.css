@@ -1,0 +1,495 @@
+/* R332 — split VERBATIM from src/styles/landing.css · shared = flow-mode responsive (2920-3332) + dark/RM/reveal belts (3333-3385) + anchor offsets (3386-3411)
+   full map + proof: docs/redesign/r332/css-split-landing.md */
+
+/* ═══ Responsive — flow mode (the sheet stacks, nothing pins) ═══════ */
+/* R331 (A-Web-Nav): the bar's ≤991 collapse rules moved to
+   styles/r331/nav.css with the rest of the masthead. */
+
+/* R315 cycle-2 (M2): the boundary rides the reference's own rung — the
+ * tablet composition must NOT fire at 992–1024. Measured live (fresh
+ * manifest): Heron @1024×768 keeps the DESKTOP composition on the 5.93px
+ * desktop root (docH 9926, hero = 100svh − 13) while this block's max-1024
+ * seat restacked ours to 12209 (+23%: pm +695 · cta +335 · ft +590 — the
+ * top root cause of the DOM judge's ranked list). The 1024px gate was an
+ * r155d-era rung, not the reference's: Heron's live inline CSS carries
+ * exactly three composition boundaries — 991 / 767 / 479 (census on the
+ * live stylesheet). Tablet rules now seat ≤991 where the 1.199vw root
+ * actually runs; ≥992 keeps desktop (the min-992 twins above). */
+@media (max-width: 991px) {
+  /* R322 (2-c) re-pin: Heron KEEPS the 6+6 split @768 (section
+     57.22rem — the square shrinks to its cell, ~40.9rem); the stack
+     is the ≤767 phone form alone. The side gutters step 12xl→4xl on
+     the belt (the 15rem isolation pads are the desktop's own). */
+  .st-body-col {
+    padding: var(--space-4xl) var(--space-4xl) var(--space-3xl);
+  }
+
+  .st-grid {
+    grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
+  }
+
+  .chapters-head {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-4);
+    align-items: start;
+  }
+
+  /* R322 (2-d): the pains' 2-up wrap rides the new
+     (768–991) .pm-cols block in the transplant section. */
+
+  .rl-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* R325 Y3 — the why strip folds to ONE column ≤991: the two-track
+     base template squeezed the rail to its 152px min-content sliver
+     at 768–991 (four step cards strangled beside a 534px frame); the
+     reference's own tablet band runs the CMS list full-width with a
+     center divider. The rail keeps the 2×2 card grid (≥768), the
+     capture follows below. */
+  .wy {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .wy-rail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fo-cta-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* R315 (B9 · K-F) — the sub-992 cell grid, recut coherently: the
+   old cascade (a two-track template with NO area map at 769–1024,
+   a max-760 area map, a max-640 single-column map, plus a
+   grid-column:span-2 longhand fighting the named areas) left the
+   tablet band placing cells into two IMPLICIT tracks and the phone
+   grid squeezing the tagline to a ~112px sliver while the account
+   column overlapped the address cell. The areas now resolve inside
+   the two-column band at every sub-992 width — one map for the
+   tablet band (addr pair, the measured V13 pairing), one for the
+   phone band below (full-width address rows: the honest address
+   lines + the repo URL wrap on real width, headings on their own
+   row, block flow, no overlaps). */
+  .fo-fgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-b'
+      'mark mark';
+  }
+
+  .fo-fcell {
+    min-inline-size: 0; /* grid items wrap instead of overflowing the track */
+  }
+
+  .fo-fcell-strip {
+    block-size: 160px;
+  }
+}
+
+@media (max-width: 767px) {
+  /* R322 (2-d): the R313 pains flow rules retire — the transplant's
+     own ≤767 carousel + 768–991 2-up blocks own the whole seat. */
+
+  .rl-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rl-card {
+    min-block-size: 0;
+  }
+
+  /* R328 (H7 · R2 final) — the bands' opening rules END at the sheet
+     frame on phones too (the hero's rules were inset; the pm/pr/wy/rl
+     opening rules still ran edge-to-edge — the grammar inconsistency
+     R2 pixel-verified at m-075 y141/y799). */
+  .pm-section,
+  .pr-section,
+  .wy-section,
+  .rl-section {
+    margin-inline: 7px; /* spacing-gate: allow — the sheet frame's own inset (measured) */
+  }
+
+  /* R325 Y3: the ≤767 .wy 1-col override retired — the ≤991 block
+     above owns the fold now (one map, no drift). */
+
+  .fo-cta .fo-hero-meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fo-cta .fo-meta-row:nth-last-child(-n + 2) {
+    border-block-end: 1px solid var(--rule);
+  }
+
+  .fo-cta .fo-meta-row:last-child {
+    border-block-end: 0;
+  }
+
+  /* R322 (2-c): .st-spread pads retire with the class. */
+
+  .fo-cta {
+    padding-block: var(--sp-10);
+  }
+
+  /* ═══ R314 (V13) — the mobile compaction pass. Measured @390×844 vs
+     the reference (11 441px total): Madarek was 15 868 — every content
+     section carried a 77–98vh min-block-size + sp-10/12 bands. The
+     reference's mobile sections are CONTENT-sized (517–950px): the
+     min-block-sizes retire on mobile, paddings step to the reference's
+     compact rhythm, cards/meta tighten — copy stays whole, geometry
+     adapts (the owner's order: no «content-driven» exceptions). ═══ */
+  .st-section,
+  .pm-section,
+  .pr-section,
+  .wy-section,
+  .rl-section,
+  .fo-cta {
+    min-block-size: 0;
+  }
+
+  .st-section { padding-block: var(--sp-8) var(--sp-7); }
+  .pm-section { padding-block: var(--sp-8) var(--sp-7); }
+  .pr-section { padding-block: var(--sp-6) var(--sp-5); }
+  .wy-section { padding-block: var(--sp-6) var(--sp-5); }
+  .rl-section { padding-block: var(--sp-6) var(--sp-5); }
+  .fo-cta { padding-block: var(--sp-8) var(--sp-7); }
+  .fo-footer-inner { padding-block: var(--sp-5) var(--sp-4); }
+
+  /* R322 (1-d) — the rung seats (pm/wy/rl/cta titles) resolve the
+   * band-independent --fs-d2 at this belt too: the V13 px re-pin
+   * retires (31.74px floor @390 — no rem spike, no one-word lines).
+   * .st-title rides the --fs-st statement seat and .pr-title joined
+   * the D2 rung in the FINAL re-pin — its ≤767 clamp retires in the
+   * R314 cycle-2 block below. */
+
+  /* R322 (2-d): the V13 pm-card compaction retires — the ≤767
+     carousel block in the transplant section owns the pains now
+     (the honest answer line NEVER folds away again — it is the
+     pains' non-negotiable). */
+
+  /* R322 (1-d) — the .pm-card-title mobile body-scale re-pin retires:
+   * the D3 rung governs (18.6px @390 — Heron's own mobile item-title
+   * is 2rem/19.8px @390, so the rung lands IN the reference's league,
+   * not below it). */
+
+  /* the why machine: the stacked captures under each item fold; the
+     item = number + title + one line (~180px) */
+  .wy-item-body-captures {
+    display: none;
+  }
+
+  .wy-item {
+    gap: var(--sp-1-5);
+  }
+
+  /* R322 (1-d) — the .rl-card-title mobile body-scale re-pin retires
+   * (the D3 rung governs, as .pm-card-title above). */
+
+  .rl-card-num {
+    font-size: var(--fs-xxs);
+  }
+
+  /* the platform head: title + one line (the reference's mobile
+     platform band is 517px total) */
+  .pr-head {
+    gap: var(--sp-3);
+  }
+
+  .pr-head .pm-title,
+  .pr-head p {
+    max-inline-size: 100%;
+  }
+
+  /* the platform band's caption fold — r324 X4: the whole block is
+     DEAD (the R323 platform rewrite rendered no .prf-caption, and
+     the «real-ui» tag it folded to retired with X4) — retired. */
+
+  /* the why stack (the 2×2 capture grid) folds on mobile — the rail
+     carries the section; the reference's mobile why = state list */
+  .wy-stack {
+    display: none;
+  }
+
+  /* the CTA closing strip folds (the reference's mobile CTA = slab +
+     title + button) */
+  .fo-cta .cg-strip {
+    display: none;
+  }
+
+  /* R322 (2-c): the .st-line mobile pads retire with the class. */
+
+  /* the why rail + stacked captures tighten */
+  .wy {
+    gap: var(--sp-4);
+  }
+
+  /* R325 Y3 — the phone rail folds BACK to the ONE-column state list:
+     the 2×2 above is the ≥768 tablet form (the reference's tablet band
+     runs the list two-up over its center divider); the reference's own
+     mobile why is the full-width state list (cms 374px single column
+     @390), so the ≤991 2×2 must not cascade past the tablet belt. */
+  .wy-rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* the roles grid: compact cells (the reference's 8 use-case tiles
+     are ~200px rows at 390 — title + one muted line) */
+  .rl-card {
+    padding: var(--sp-3);
+    gap: var(--sp-1-5);
+  }
+
+  .rl-card-line {
+    display: none; /* the tertiary line folds — parity over verbosity */
+  }
+
+  /* the CTA slab: the meta rows collapse to a compact 2-col readout */
+  .fo-cta .fo-meta-row {
+    padding-block: var(--sp-2);
+  }
+
+  .fo-cta .fo-hero-meta {
+    gap: var(--sp-2);
+  }
+
+  /* the footer: the strip thins, the wordmark caps, cells pad down.
+   * R315 (K-F · B9): the tablet mark rides the reference's own
+   * proportional ladder — 166px (Heron 165.75 @768, seated in the
+   * ≤991 block above) with the cell's breathing room, not the
+   * desktop's 215. */
+  .fo-fcell {
+    padding: var(--sp-3);
+    min-block-size: 0;
+  }
+
+  .fo-fcell-strip {
+    block-size: 110px;
+  }
+
+  .fo-fcell-mark {
+    min-block-size: 0;
+    padding-block: var(--sp-3);
+  }
+
+  .fo-wordmark {
+    padding-block: var(--sp-4) var(--sp-3);
+  }
+
+  /* the CTA slab: the sketch + the tertiary meta rows fold on mobile
+     (the reference's 500px @390 CTA = coords + title + line + button) */
+  .fo-cta-sketch {
+    display: none;
+  }
+
+  .fo-cta .fo-meta-row:nth-last-child(-n + 2) {
+    display: none;
+  }
+
+  /* the platform band keeps ONE capture on mobile (the lead — the
+     reference's mobile platform cell is a single composition; the
+     teacher capture stays on ≥761px) */
+  /* r325 Y2: the retired .prf--std fold retires with the class — the
+     band's surfaces live in .pr-side now (hidden ≤767 there). */
+
+  /* the why cards compact to title+line rows */
+  .wy-item {
+    padding: var(--sp-2-5) var(--sp-3);
+  }
+
+  /* the footer cells pair up on small screens (1-col stack was the
+     +55% height offender). R315 (B9 · K-F): the area map below 760
+     is the SAME two-column map as the tablet band (no second
+     template to drift against); the phone band's own map (the
+     full-width address rows) lives in the ≤640 block with the last
+     word in the cascade. The old grid-column:span-2 longhand on the
+     account column is RETIRED — it fought the named area and was
+     the overlap source (the account cell spanned into the address
+     column, «العنوان» under the account links). */
+  .fo-fgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-b'
+      'mark mark';
+  }
+
+  .fo-footer-about {
+    font-size: var(--fs-sm);
+    line-height: 1.55;
+  }
+}
+
+@media (max-width: 640px) {
+  /* R328 (H1/H3) — the R314-era .fo-hero override (padding sp-5/sp-8 +
+     the 100svh−71px min) is DELETED: it fought the R322 transplant
+     belt and killed the consent-card reserve at the smallest widths.
+     The ≤767 block above owns the phone hero. */
+
+  .st-section,
+  .chapters,
+  .pm-section,
+  .rl-section {
+    padding-block: var(--sp-10);
+    min-block-size: 0;
+  }
+
+  /* R314 (V13): the statement band breathes at the reference's own
+     share (837/11441 @390) — the extra block padding seats the ticker
+     + declaration as a full mobile band, not a squeezed row */
+  .st-section {
+    padding-block: var(--sp-12) var(--sp-11);
+  }
+
+  .pr-section,
+  .wy-section,
+  .fo-cta {
+    padding-block: var(--sp-10);
+    min-block-size: 0;
+  }
+
+
+  /* R322 (2-d): the pains' phone art-drop retires — the carousel
+     keeps the drawings (Heron's own mobile problem swiper shows the
+     art; the art stays decorative aria-hidden). */
+
+  .rl-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* r325 Y2: the retired .pr-grid pair's mobile fold retires with it
+     (the band is .pr-head + .pr-stage + .pr-side now). */
+
+  /* R314 (V9): the cell grid keeps TWO columns on phones. R315
+     (B9 · K-F): the address + contact cells take FULL rows — the
+     honest address line and the repo URL wrap on the full band width
+     (the paired 112px tracks broke their wrapping and collided);
+     every named placement resolves inside the two-column band, no
+     span/auto longhands fighting the map. */
+  .fo-fgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      'strip strip'
+      'tagline tagline'
+      'links-a links-b'
+      'links-c links-c'
+      'addr-a addr-a'
+      'addr-b addr-b'
+      'mark mark';
+  }
+
+  .fo-fcell-strip {
+    block-size: 74px; /* spacing-gate: allow — the phone band's own horizon sliver (the reference has no strip-image cell @390; its grid budget is 1006.36 measured) */
+  }
+
+  .fo-fcell-mark {
+    /* R315 (K-F · B9): the reference's mobile logo ROW breathes — its
+       wrapper is 182.58 tall around the 119.08 mark @390; the mark
+       cell centres the same 119 drawing in the same breathing room
+       (the old 96px twin sat in a 120px floor, 62px short of the
+       measured row). */
+    min-block-size: 0;
+    padding-block: 32px; /* spacing-gate: allow — the measured breathing room (182.58 − 119.08)/2 @390, an external constant */
+  }
+
+  .fo-footer-mark-svg {
+    inline-size: 119px; /* spacing-gate: allow — the reference's phone line-logo measure (119.08 @390), an external constant */
+    block-size: 119px;
+  }
+
+  .fo-cta-actions .btn {
+    inline-size: 100%;
+    justify-content: center;
+  }
+
+  .cg-strip-links {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
+/* ═══ Dark theme — the complementary sheet ══════════════════════════
+ * One block, the whole re-point: the paper becomes the charcoal
+ * ground, the raised surface steps cool, and the signal warms to the
+ * night accent. The accent-ink tier keeps every text seat AA on both
+ * grounds; fills stay on the app recipes (the r197/r305 contracts). */
+[data-theme="dark"] .landing {
+  background: var(--bg);
+  color: var(--text);
+}
+
+[data-theme="dark"] .bp-fill {
+  fill: var(--surface);
+}
+
+/* ═══ Reduced motion: the complete static sheet ═════════════════════
+ * The global belt (motion.css token collapse + base.css universal
+ * clamp) already freezes every transition; this belt guarantees the
+ * authored outcome: reveals resolve to their settled state, nothing
+ * waits on a frame. */
+@media (prefers-reduced-motion: reduce) {
+  .landing .reveal-up {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Reveal-up — the landing choreography class contract ────────────
+   The ONLY consumers are RevealCssClass call sites on this page (see
+   hooks/useReveal.ts); nothing else in any sheet targets .reveal-up /
+   .reveal-d-*. The base.css universal reduced-motion !important
+   already owned the RM behaviour; this copy (opacity/transform only)
+   keeps the authored static sheet outcome. */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity var(--t-slower) var(--ease-out),
+    transform var(--t-slower) var(--ease-out);
+}
+.reveal-up.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-d-1.in-view { transition-delay: 80ms; }
+.reveal-d-2.in-view { transition-delay: 160ms; }
+.reveal-d-3.in-view { transition-delay: 240ms; }
+.reveal-d-4.in-view { transition-delay: 320ms; }
+.reveal-d-5.in-view { transition-delay: 400ms; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up { opacity: 1; transform: none; }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   r307 — THE MEDIA LAYER (DESIGN.md §6a-6c)
+   Documentary university photography + real product captures + the
+   click-to-load video facades. Every seat is FLAT: hairline frames,
+   radius 0→2, zero elevation, zero chrome — the drawing-sheet grammar
+   applied to raster. Colors ride the canonical tokens (no raw values);
+   spacing rides --sp-*; motion rides the token ladder (transitions
+   only — zero keyframes holds).
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ── Section anchors clear the 56px hairline header + breathing room.
+   The landing owns its offset (r307, audit 1-C L-2): the app shell's
+   :target rule stays for authenticated surfaces; the sheet's anchors
+   resolve against the landing header, not the shell topbar. ── */
+#statement,
+#chapters,
+#product,
+#live,
+#roles,
+#colleges,
+#vision,
+#cta {
+  scroll-margin-block-start: calc(56px + var(--sp-4)); /* spacing-gate: allow — the 56px literal is the landing header's own height (.fo-header-inner min-block-size), not a spacing rung; coupling it to --sp-10 would drift silently if the bar changes height while the token stays 56px */
+}
+
+

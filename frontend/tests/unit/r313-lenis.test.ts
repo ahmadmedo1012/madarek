@@ -257,7 +257,9 @@ describe('r313 4-b — App wiring + the prevent vocabulary', () => {
     /* R331: the mobile menu lives in chrome/SheetNav.tsx. */
     const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
     expect(navTsx).toContain('data-lenis-prevent');
-    const css = stripComments(read('src/styles/r331/nav.css')) + stripComments(read('src/styles/landing.css'));
+    /* R332 split: the mobile-menu rules moved to styles/landing/chrome.css
+     * (the stub landing.css is rule-free). */
+    const css = stripComments(read('src/styles/r331/nav.css')) + stripComments(read('src/styles/landing/chrome.css'));
     expect(css).toMatch(/\.fo-mobile-menu[^{]*{\s*[^}]*overflow-y:\s*auto/); // it IS an inner scroller
   });
 });

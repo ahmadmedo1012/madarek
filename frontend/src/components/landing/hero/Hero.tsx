@@ -8,10 +8,16 @@
  *
  *   .home-hero (full-bleed band, 100svh-class height)
  *   ├─ the art layer stack — interact (cursor crosshair — Madarek's
- *   │  own HeroInspect instrument) → bg-border frame (4 edge strips +
- *   │  corner plus marks) → the img (OUR ink elevation, HeroInkWindow)
- *   │  → ruler (dashed ticks + measure graticule) → deco cards ×2
- *   └─ the content grid (title-wrap ‖ sub-wrap) + the work strip
+ *   │  own HeroInspect instrument) → the img (OUR ink elevation,
+ *   │  HeroInkWindow, FULL-BLEED — R332 W1: the paper runs edge-to-edge
+ *   │  and the ink breaks the viewport edge) → ruler (dashed ticks +
+ *   │  measure graticule, inset 3.2rem) → deco cards ×2
+ *   ├─ the content grid (title-wrap ‖ sub-wrap) + the work strip
+ *   └─ the bg-border FRAME on the section itself — 4 edge strips +
+ *      4 corner plus marks, inset 1.2rem from the viewport edges
+ *      (R332 W1: the run-001 «window inside a window» kill — one
+ *      viewport frame over the full-bleed drawing, never a box
+ *      hugging an inner window)
  *
  * Mechanics (the reveal grammar, exact Heron values):
  *   · hairline wipes — the frame's 4 edges scaleX/scaleY 0→1,
@@ -98,21 +104,22 @@ export function Hero() {
             <span className="bp-ruler bp-ruler-b" />
             <span className="bp-ruler bp-ruler-s" />
             <span className="bp-ruler bp-ruler-e" />
-            <span className="bp-plus bp-plus-tl" />
-            <span className="bp-plus bp-plus-tr" />
-            <span className="bp-plus bp-plus-bl" />
-            <span className="bp-plus bp-plus-br" />
             <span className="bp-measure bp-measure-h bp-measure-h1" />
             <span className="bp-measure bp-measure-h bp-measure-h2" />
             <span className="bp-measure bp-measure-v bp-measure-v1" />
             <span className="bp-measure bp-measure-v bp-measure-v2" />
             <span className="bp-measure bp-measure-marker bp-measure-m1" />
             <span className="bp-measure bp-measure-marker bp-measure-m2" />
-            <span className="bp-dmark bp-dmark-tl" />
-            <span className="bp-dmark bp-dmark-tr" />
-            <span className="bp-dmark bp-dmark-bl" />
-            <span className="bp-dmark bp-dmark-br" />
           </div>
+
+          {/* the ± registration marks — the dashed inner frame's corner
+              chrome (R315 B1 · A.3); direct stage children so their 11px
+              seats track the frame's own 16px inset. Hover-revealed with
+              the frame they annotate (R332 W1 — clean corners at rest). */}
+          <span className="bp-dmark bp-dmark-tl" aria-hidden="true" />
+          <span className="bp-dmark bp-dmark-tr" aria-hidden="true" />
+          <span className="bp-dmark bp-dmark-bl" aria-hidden="true" />
+          <span className="bp-dmark bp-dmark-br" aria-hidden="true" />
 
           {/* the deco cards — mono micro-copy + the brand square's
               1.5s fade-loop pulse (decorative repetition of the
@@ -125,13 +132,6 @@ export function Hero() {
             </div>
           ))}
 
-          {/* the frame — 4 wiping edges (the reference's bg-border
-              strips, 1.2s linear; origin mirrored for RTL) replace
-              the old static border. */}
-          <span className="hro-edge hro-edge-t" aria-hidden="true" />
-          <span className="hro-edge hro-edge-b" aria-hidden="true" />
-          <span className="hro-edge hro-edge-s" aria-hidden="true" />
-          <span className="hro-edge hro-edge-e" aria-hidden="true" />
         </div>
       </div>
 
@@ -198,6 +198,20 @@ export function Hero() {
           ))}
         </div>
       </div>
+
+      {/* ══ [4] THE FRAME — the reference's bg-border frame (R332 W1):
+          4 wiping edge strips (1.2s linear; origin mirrored for RTL)
+          + 4 corner plus marks, seated on the SECTION — inset 1.2rem
+          from the viewport edges over the full-bleed drawing, never
+          hugging an inner window (the run-001 kill). ══ */}
+      <span className="hro-edge hro-edge-t" aria-hidden="true" />
+      <span className="hro-edge hro-edge-b" aria-hidden="true" />
+      <span className="hro-edge hro-edge-s" aria-hidden="true" />
+      <span className="hro-edge hro-edge-e" aria-hidden="true" />
+      <span className="bp-plus bp-plus-tl" aria-hidden="true" />
+      <span className="bp-plus bp-plus-tr" aria-hidden="true" />
+      <span className="bp-plus bp-plus-bl" aria-hidden="true" />
+      <span className="bp-plus bp-plus-br" aria-hidden="true" />
     </section>
   );
 }

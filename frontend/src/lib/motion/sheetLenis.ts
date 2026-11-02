@@ -163,6 +163,28 @@ function onLenisScroll(): void {
   bumpIdle();
 }
 
+/* ── the stale-clock guard (hidden tabs) ──────────────────────────── */
+
+/**
+ * A hidden tab receives no rAF frames, so a mid-glide Lenis driven by
+ * the conductor would — on the tab's return — hand `raf()` a deltaTime
+ * spanning the whole hidden gap (Lenis 1.1.5 does NOT clamp: `deltaTime
+ * = time - (this.time || time)`, dist/lenis.js raf()). One `damp` step
+ * across minutes = the snap the header warns about, not a glide. The
+ * conductor's rAF chain itself survives hide/show (the pending callback
+ * fires on visibility), but its clock is stale; detaching on hide and
+ * re-attaching on visible re-runs attachFrame()'s clock stamp — the
+ * exact re-attach discipline the driver already uses after every sleep.
+ */
+function onVisibilityChange(): void {
+  if (!lenis) return;
+  if (document.hidden) {
+    detachFrame();
+  } else {
+    attachFrame();
+  }
+}
+
 /** 150ms of scroll-quiet → the idle FLAG; any activity clears it and
  * restarts the timer. R321 §A1 — JS-side seat: the R313 attribute
  * seat (html[data-lenis-idle]) mutated <html> per idle↔active flip,
@@ -256,6 +278,7 @@ export function initGuestLenis(): boolean {
   (window as { __mdrkLenis?: Lenis }).__mdrkLenis = lenis;
   watchScrollLock();
   offLenisScroll = lenis.on('scroll', onLenisScroll) || null;
+  document.addEventListener('visibilitychange', onVisibilityChange);
   window.addEventListener('wheel', onInput, { passive: true, capture: true });
   window.addEventListener('touchstart', onInput, { passive: true, capture: true });
   window.addEventListener('touchmove', onInput, { passive: true, capture: true });
@@ -288,6 +311,9 @@ export function destroyGuestLenis(): void {
   if (offLenisScroll) {
     offLenisScroll();
     offLenisScroll = null;
+  }
+  if (typeof document !== 'undefined') {
+    document.removeEventListener('visibilitychange', onVisibilityChange);
   }
   lenis?.destroy();
   lenis = null;
