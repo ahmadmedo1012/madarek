@@ -5,6 +5,13 @@ import { createRoot } from 'react-dom/client';
 // rejection from here on lands in the ring the feedback widget ships.
 import { installConsoleTape } from './lib/consoleTape';
 
+// R331 A-CSS pass 1 — the @layer constitution, FIRST in the chain so
+// the layer order (reset → tokens → base → layout → components →
+// pages → utilities, overrides appending as the capstone) is fixed
+// before any rule parses. Cascade-neutral by construction: the six
+// pre-existing layer names keep their exact relative order, and the
+// two new slots are empty. Mapping + contract: styles/layers.css.
+import './styles/layers.css';
 // Self-hosted @font-face rules must come first so the families are
 // registered before tokens.css/base.css reference them.
 //
