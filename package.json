@@ -49,7 +49,8 @@
     "gate:perf": "node scripts/r323/perf-gate.mjs",
     "gate:clean": "node scripts/r323/clean-gate.mjs",
     "gate:contrast": "node scripts/r323/contrast-gate.mjs",
-    "gate:height": "node scripts/r324/height-gate.mjs"
+    "gate:height": "node scripts/r324/height-gate.mjs",
+    "gate:size": "bash scripts/gates/size-gate.sh"
   },
   "prepare": "git config core.hooksPath .githooks",
   "devDependencies": {

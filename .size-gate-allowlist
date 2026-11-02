@@ -1,0 +1,24 @@
+# .size-gate-allowlist — R331 repo hygiene pass 1.
+# Tracked files allowed to exceed the 500KB per-file ceiling of
+# scripts/gates/size-gate.sh (RULE 1). One repo-relative path per line;
+# a trailing "/" covers everything under that directory. Comments (#)
+# and blank lines are ignored. Every entry needs a reason — if the
+# reason expires, delete the entry.
+
+# Seed fixture for the papers storage feature — .gitignore pins exactly
+# this one file ("sample.pdf stays tracked (seed fixture)").
+backend/storage/papers/sample.pdf
+
+# The generated API contract — the source of truth the frontend +
+# mobile clients are generated from (api:openapi regenerates it).
+docs/api/openapi.json
+
+# Course lecture videos (public content, not evidence).
+frontend/public/lectures/se301-01-intro.mp4
+frontend/public/lectures/se301-02-requirements.mp4
+frontend/public/lectures/se301-03-design.mp4
+
+# Lockfiles and generated API clients — size is a function of the
+# dependency graph, not evidence bloat.
+apps/mobile/package-lock.json
+apps/mobile/src/api/schema.generated.ts

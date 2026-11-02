@@ -308,7 +308,10 @@ R305 copy), `CHANGELOG.md`, the release reports in `docs/releases/`.
 ## R322 — design director edition (tokens + scale)
 
 > Round R322's additive system layer (owner brief:
-> `docs/redesign/r322/BRIEF.md` §4). Nothing above is rewritten — this section
+> `docs/redesign/r322/BRIEF.md` §4 — round docs r312–r330 are archived in
+> `docs/history/redesign-rounds.tar.gz` and their evidence binaries in the
+> `evidence-r331` GitHub Release since the R331 hygiene pass). Nothing above
+> is rewritten — this section
 > documents OVERRIDES that later packages apply: the grid, the spacing scale,
 > the ONE display type scale, and the confirmed material. The tokens land
 > ADDITIVELY in `tokens.css` (`--fs-d1/d2/d3` + `--fs-st` · `--space-*` ·

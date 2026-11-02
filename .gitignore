@@ -151,3 +151,20 @@ apps/mobile/web-output/
 apps/mobile/ios/
 apps/mobile/android/
 apps/mobile/*.orig
+
+# ── R331 repo hygiene — evidence binaries live in the GitHub Release ────
+# audits/evidence/ (271MB, rounds r304–r327) was moved OUT of the tree in
+# R331 pass 1 to /evidence staging → Release `evidence-r331`; recoverable
+# from git history or the Release. These patterns keep re-adds out.
+# Round harnesses (scripts/r3xx) still WRITE here when re-run locally —
+# output stays local-only now.
+/audits/
+# Screenshot/shot dirs under any redesign round (r323/evidence precedent)
+# — current-round evidence goes to the Release, never the tree.
+docs/redesign/**/screens/
+docs/redesign/**/shots/
+docs/redesign/**/evidence/
+# Network captures + reference-site live pulls (scripts/fidelity writes
+# docs/redesign/r3xx/heron-live/) — local-only.
+*.har
+**/heron-live/
