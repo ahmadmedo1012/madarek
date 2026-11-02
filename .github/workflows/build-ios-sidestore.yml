@@ -338,7 +338,7 @@ jobs:
 
           SIZE_BYTES=$(stat -f%z "$IPA_PATH")
           SHA256=$(shasum -a 256 "$IPA_PATH" | awk '{print $1}')
-          XCODE_VERSION=$(xcodebuild -version | head -n1 | awk '{print $2}')
+          XCODE_VERSION=$(xcodebuild -version | awk 'NR == 1 { print $2 }')
           SDK_VERSION=$(xcrun --sdk iphoneos --show-sdk-version)
 
           echo "IPA size: $SIZE_BYTES bytes"
