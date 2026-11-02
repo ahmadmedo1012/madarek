@@ -7,10 +7,14 @@
  */
 module.exports = {
   preset: "jest-expo",
+  // R331 A-App-Shell — reanimated 4 + worklets jest support: their resolver
+  // rewrites web-only-in-jest paths (see ./jest.resolver.js); the RN preset
+  // resolver stays as fallback.
+  resolver: "<rootDir>/jest.resolver.js",
   roots: ["<rootDir>/src", "<rootDir>/app"],
   setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
   transformIgnorePatterns: [
-    "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/.*|native-base|react-native-svg|zustand.*|@tanstack/.*|lucide-react-native|@shopify/.*))",
+    "node_modules/(?!((jest-)?react-native|@react-native(-community)?|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@sentry/.*|native-base|react-native-svg|zustand.*|@tanstack/.*|lucide-react-native|@shopify/.*|@gorhom/.*))",
   ],
   // R327 C4 — the app imports icons via the ./icons/* subpath (Metro rides
   // the ESM "react-native" condition); jest resolves the same subpath to
