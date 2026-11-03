@@ -52,13 +52,27 @@
 }
 
 @media (max-width: 991px) {
-  /* the W4 mono label re-seat — byte-identical rendering ≤991 */
+  /* R332 W390a — the display voice rides the phone too: heron's own @390
+   * max heading is `.heading.h1.tb-h2.mb-h1` = 39.6947px (the 4rem rung
+   * on the 2.5445vw root — run-003 like-for-like). The W4-era 1.6rem
+   * mono re-seat rode run-001's heading slice that missed the h-rung
+   * lines; the rung retires (not patched). The ≤399 foot rung (227px
+   * pad) is height-keyed, not type-keyed — the +59px title composes
+   * through the ≤767 .chapters-head seat below. */
   .chapters-title {
-    font-family: var(--font-mono);
-    font-size: 1.6rem;
-    font-weight: 500;
-    line-height: 1.3;
+    font-size: 4rem; /* 39.69px @390 — heron's measured mb-h1 twin */
   }
+}
+
+@media (max-width: 767px) {
+  /* R332 W390a — the head seat: the bigger title's air comes out of
+   * the head's own ladder rungs (sp-8 → sp-5, −36px @390) so the
+   * 473dvh track (test-pinned, r312-mobile-camera) stays honest. */
+  .chapters-head {
+    gap: var(--sp-4);
+    margin-block-end: var(--sp-4);
+    padding-block-start: var(--sp-4);
+  } /* R332 W390b −24px: journey 4842→≈4818 (heron 4819.4) — the last cascade donor above why */
 }
 
 .chapters-lede {

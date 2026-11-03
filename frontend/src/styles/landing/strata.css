@@ -291,18 +291,27 @@
      RETIRES (the D3 rung governs — 18.6px flat on phones, Heron's
      own mobile item-title league); the rail tightens one rung ── */
   .wy-section {
-    padding-block: var(--sp-6) var(--sp-5);
+    padding-block: 0; /* R332 W390b — heron's phone band carries NO section pad (0/0 probed); the air moves INSIDE the blocks so the direct children butt (rhythm 0) */
   }
 
   .wy-head {
+    padding-block: var(--sp-9) var(--sp-5); /* heron title-wrap 47.63/19.85 @390 */
     gap: var(--sp-2);
+    margin-block-end: 0;
+  }
+
+  .wy-title {
+    margin-block-end: var(--sp-5); /* internal air — free of the rhythm walker */
+  }
+
+  .wy-lede {
     margin-block-end: var(--sp-4);
   }
 
   /* R322 (1-d) — the ≤640 .wy-stage-verb clamp retires (D3 rung). */
 
   .wy-stage {
-    padding-block: var(--sp-1);
+    padding-block: var(--sp-2);
   }
 
   .wy-rail {
@@ -310,7 +319,8 @@
   }
 
   .wy-note {
-    margin-block-start: var(--sp-3);
+    margin-block-start: 0;
+    padding-block: var(--sp-5) var(--sp-6); /* R332 W390b −16: 817→≈801 (heron 805.6, −0.6%) — pulls the roles/cta/footer triggers back under 40 */
   }
 
   /* ── rl: 1290 → 982 (target 948) — the honest 8-card ledger keeps
@@ -322,7 +332,8 @@
 
   .rl-head {
     gap: var(--sp-2);
-    margin-block-end: var(--sp-3);
+    margin-block-end: 0; /* R332 W390b — children butt (heron rhythm 0); the air moves inside */
+    padding-block-end: var(--sp-3);
   }
 
   .rl-card {
@@ -340,7 +351,8 @@
   }
 
   .rl-more {
-    margin-block-start: var(--sp-2);
+    margin-block-start: 0; /* R332 W390b — the ledger's last child butts (rhythm 0); air inside */
+    padding-block-start: var(--sp-2);
   }
 
   /* ── cta: 669 → 512 (target 500) — the title/resolve rows tighten
@@ -499,7 +511,7 @@
   .st-section, .pm-section, .pr-section {
     min-block-size: 0;
   }
-  .st-section { padding-block: var(--sp-8) var(--sp-7); }
+  .st-section { padding-block: var(--sp-6) var(--sp-5); } /* R332 W390b −28px: the +13.1 statement overhang fed the whole downstream trigger cascade (heron 847.2, floor 821.8) */
   .pm-section { padding-block: var(--sp-8) var(--sp-7); }
   .pr-section { padding-block: var(--sp-5) var(--sp-4); }
 
@@ -943,7 +955,7 @@
   /* ── THE LAW — every band pins the reference's constant-rem height ── */
   .st-section { min-block-size: 84.25rem; }
   .pm-section { min-block-size: 87.65rem; padding-block: 4.03rem 3.22rem; }
-  .pr-section { min-block-size: 52.1rem; padding-block: 2.02rem 1.61rem; }
+  .pr-section { min-block-size: 52.1rem; padding-block: 0.81rem 0.61rem; } /* R332 W390b −12px → ≈560 (heron 557.8) */
   /* R325 Y3: the wy 81.2rem floor RETIRES — the phone band folds the
      captures away (the rail carries the strip), so the floor pinned
      Heron's capture-list height onto a band with no captures: ~270px
@@ -990,22 +1002,11 @@
   .pr-section .prf { gap: 0.4rem; }
   .pr-section .prf-caption { padding-block: 0.4rem; }
 
-  /* ── why — the stage rows ride the reference's compact phone rhythm;
-   * the verb drops its 28px px cap for the root (2.82rem = 28 @390,
-   * 25.8 @360, 29.6 @412) ── */
-  .wy-section { padding-block: 2.42rem 2.02rem; }
-
-  .wy-head {
-    gap: 0.81rem;
-    margin-block-end: 1.61rem;
-  }
-
+  /* ── why — R332 W390b: the ≤479 layout tiers RETIRE — the ≤767 seats
+   * (pad-inside, children butt — heron's probed 0/0 section pad and
+   * 47.63/19.85 title-wrap rhythm) own the band at every phone width;
+   * only the type line-height re-pins stay (the D3/D2 rungs). ── */
   .wy-lede { line-height: 1.5; }
-
-  .wy-stage {
-    padding-block: 0.4rem;
-    row-gap: 0.2rem;
-  }
 
   /* R322 (1-d) — the ≤479 .wy-stage-verb rem re-pin (2.82rem = 28px
      @390 on the spiked root) RETIRES: the D3 rung governs (18.6px
@@ -1018,9 +1019,6 @@
 
   .wy-stage-title { line-height: 1.2; }
   .wy-stage-text { line-height: 1.35; }
-
-  .wy-rail { gap: 0.4rem; }
-  .wy-note { margin-block-start: 1.21rem; }
 
   /* ── roles — the ledger rows tighten to the reference's tile rhythm;
    * the numeral row joins the mono rem ladder (padding rides the §LAW
@@ -1774,9 +1772,9 @@
 @media (max-width: 479px) {
   .st-section { contain-intrinsic-size: auto 820px; }
   .pm-section { contain-intrinsic-size: auto 797px; }
-  .chapters   { contain-intrinsic-size: auto 4536px; }
-  .pr-section { contain-intrinsic-size: auto 617px; }   /* r325 merged re-measure (617 @390) */
-  .wy-section { contain-intrinsic-size: auto 613px; } /* R325 Y3 re-measure — the ONE-column state list */
+  .chapters   { contain-intrinsic-size: auto 4559px; }   /* R332 W390a re-measure: the 4rem phone title + sp-5 head seat (was 4536 pre-title-rung) */
+  .pr-section { contain-intrinsic-size: auto 551px; }   /* R332 W390a re-measure (654→572 rendered; the 617 guess ran +65 stale) */
+  .wy-section { contain-intrinsic-size: auto 817px; } /* R332 W390b re-measure — the pad-inside composition (head 251 + list 463 + note 103) renders 817; the 613 guess ran −204 stale */
   .rl-section { contain-intrinsic-size: auto 915px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
 }
@@ -1922,6 +1920,31 @@
 
   .fo-cta {
     padding-block: 12rem 8rem; /* spacing-gate: allow — the closer opens at the scene's rung, closes at the quiet rung */
+  }
+}
+
+/* R332 W390b — the ≤767 display rungs: heron's own phone register is
+   2.4rem on the 2.5445vw root = 23.8168px @390 (its cta h2 `.heading.h2
+   .tb-h4.mb-h3` and footer h4 `.heading.h4.tb-h5.mb-h3` — run-003
+   like-for-like). Madarek's base --fs-d2 rung (31.74px @390) governs ≥768
+   only; these owner seats take the phone band. ONE definition per belt —
+   the ≥992 3.2rem rungs (W5c/W6c) are untouched. */
+@media (max-width: 767px) {
+  .fo-cta-title {
+    font-size: 2.4rem;
+  }
+
+  .fo-footer-heading {
+    font-size: 2.4rem;
+    line-height: 1.2;
+  }
+
+  /* R332 W390b — the registry strip sits FLUSH under the resolve on
+     phones too (heron's rhythm-0 children; the ≥1025 flush seat's
+     mobile twin) — the 12px gutter rode the base 2.4rem margin. */
+  .cg-strip {
+    margin-block-start: 0;
+    padding-block-start: var(--sp-5);
   }
 }
 
