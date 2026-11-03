@@ -101,7 +101,7 @@ _Continues: §5 student, §6 teacher, §7 admin/quality/owner, §8 summary._
 | /student/alerts | `(tabs)/alerts.tsx` | «الإشعارات» inbox tab (badge target) | L2* | QS | delegate (NotificationsScreen) not audited | P0 |
 | /student/profile | `(tabs)/profile.tsx` | «حسابي» — identity card (session-first merge), academic facts, 30-link menu hub incl. «الإبلاغ عن مشكلة» | L3 | DEEP | menu hub is a long non-grouped flat list (30 LedgerRows, no section grouping/virtualization) | P0 |
 | /student/courses/[offeringId] | `courses/[offeringId].tsx` | «تفاصيل المقرّر» — overview, weekly schedule, lectures w/ progress, materials, assignments + «تسليم» sheet | L3 | DEEP | sections render muted text instead of EmptyState for schedule/lectures/materials (inconsistent grammar); materials list unpaginated | P0 |
-| /student/lectures/[lectureId] | `lectures/[lectureId].tsx`` | «مشغّل المحاضرة» — pinned expo-video, resume-seek, 10s watch reporting, checkpoint sheet (أ ب ج د هـ و), chapters, searchable VTT transcript, prev/next | L3 | DEEP | transcript renders up to 200 cues as .map in ScrollView (no virtualization → scroll jank risk on long lectures); no pull-to-refresh; no haptic on checkpoint reveal; hardcoded 16:9 (portrait letterbox ok) | P0 |
+| /student/lectures/[lectureId] | `lectures/[lectureId].tsx` | «مشغّل المحاضرة» — pinned expo-video, resume-seek, 10s watch reporting, checkpoint sheet (أ ب ج د هـ و), chapters, searchable VTT transcript, prev/next | L3 | DEEP | transcript renders up to 200 cues as .map in ScrollView (no virtualization → scroll jank risk on long lectures); no pull-to-refresh; no haptic on checkpoint reveal; hardcoded 16:9 (portrait letterbox ok) | P0 |
 | /student/online-exams | `online-exams.tsx` | «الاختبارات الإلكترونية» — segmented filter (الكل/متاحة/منجزة), window rules, attempt chips | L3 | DEEP | none material (full triad + placeholderData) | P0 |
 | /student/online-exams/[templateId] | `online-exams/[templateId].tsx` | Exam runner: questions, timing, submission, attempts | L2 | QS | 832 ln — likely L3 (timer/sheets per docblock) but NOT deep-read; audit in Round-2 fix plan | P0 |
 | /student/results | `results.tsx` | «النتائج» — weighted per-course rollup + breakdown + teacher feedback | L3 | DEEP | breakdown rows lack per-row skeleton (single SkeletonList ok); fine | P0 |
@@ -127,7 +127,7 @@ _Continues: §5 student, §6 teacher, §7 admin/quality/owner, §8 summary._
 | /student/webinars | `webinars.tsx` | «الندوات» | L2 | QS | not deep-read | P2 |
 | /student/ar | `ar.tsx` | «واقع افتراضي ومعزز» — read-only index, no launch | L1 | PART | operator not built — browsing stub with full triad; dead-end rows | P2 |
 
-## 6 — Inventory: teacher (22 files)
+## 6 — Inventory: teacher (21 files)
 
 | Route path | File | Purpose | Tier | Read | Issues | Pri |
 |---|---|---|---|---|---|---|
@@ -153,7 +153,7 @@ _Continues: §5 student, §6 teacher, §7 admin/quality/owner, §8 summary._
 | /teacher/research-review | `research-review.tsx` | «البحث العلمي» — triage queue + review sheet | L2 | QS | not deep-read | P1 |
 | /teacher/students/[offeringId] | `students/[offeringId].tsx` | Deep-linked roster (shared OfferingRoster) | L2 | QS | 53 ln wrapper around shared component | P1 |
 
-## 7 — Inventory: admin (17), quality (11), owner (21)
+## 7 — Inventory: admin (14), quality (10), owner (16)
 
 ### ADMIN («المسجل العام»)
 
@@ -212,9 +212,9 @@ _Continues: §5 student, §6 teacher, §7 admin/quality/owner, §8 summary._
 
 ## 8 — Summary
 
-**Totals: 125 route files.** Deep-read (full render tree): 24 · Partial-deep: 6 · Quick-scanned: 95. Honesty: QS verdicts rely on docblocks + imports + kit-usage greps; every QS row says "not deep-read".
+**Totals: 125 route files** (root+auth 31 · student 33 · teacher 21 · admin 14 · quality 10 · owner 16). Deep-read (full render tree, incl. 5 thin wrappers): 28 · Partial-deep: 7 (campus, ar, teacher dashboard, grades, admin/quality/owner dashboards) · Quick-scanned: 90. Honesty: QS verdicts rely on docblocks + imports + kit-usage greps; every QS row says "not deep-read".
 
-**Tier counts (routes incl. shells): L1 = 2 · L2 = 97 (of which 12 are thin feature-wrappers `*`) · L3 = 26.**
+**Tier counts (routes incl. shells): L1 = 3 · L2 = 96 (of which 12 are thin feature-wrappers `*`) · L3 = 26.**
 Non-shell L3 screens: welcome, auth/index, student dashboard/courses/profile/course-detail/lecture-player/online-exams/results/schedule, teacher dashboard/grades, admin dashboard. All 12 shell/layout files are L3-grade.
 
 **The 10 worst screens (Round-2 fix-plan candidates)**
