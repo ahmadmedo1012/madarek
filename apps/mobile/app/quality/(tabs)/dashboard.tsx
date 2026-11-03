@@ -23,12 +23,6 @@ import {
   numOf,
 } from "@/features/governance/components";
 
-const ROLE_KEY_LABEL: Record<string, string> = {
-  STUDENT: "الطلاب النشطون",
-  TEACHER: "هيئة التدريس",
-  ADMIN: "المسجلون العامّون",
-  QUALITY: "فريق الجودة",
-};
 const ATTENDANCE_KEY_LABEL: Record<string, string> = {
   PRESENT: "سجلّات حضور",
   LATE: "سجلّات تأخر",

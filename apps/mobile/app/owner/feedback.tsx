@@ -19,6 +19,7 @@ import {
   UNIT,
   feedbackKindLabel,
   feedbackKindTone,
+  feedbackStatusLabel,
   pageOf,
 } from "@/features/governance/components";
 
@@ -126,9 +127,8 @@ export default function OwnerFeedback() {
                   <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     <Badge label={feedbackKindLabel(f.kind)} tone={feedbackKindTone(f.kind)} />
                     <Badge
-                      label={FEEDBACK_STATUS_LABEL[f.status] ?? f.status}
+                      label={feedbackStatusLabel(f.status)}
                       tone={statusBadgeTone(f.status)}
-                      mono={!(f.status in FEEDBACK_STATUS_LABEL)}
                     />
                     <T variant="xs" color="faint">
                       {fromNow(f.createdAt)}
@@ -171,9 +171,8 @@ export default function OwnerFeedback() {
             <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
               <Badge label={feedbackKindLabel(selected.kind)} tone={feedbackKindTone(selected.kind)} />
               <Badge
-                label={FEEDBACK_STATUS_LABEL[selected.status] ?? selected.status}
+                label={feedbackStatusLabel(selected.status)}
                 tone={statusBadgeTone(selected.status)}
-                mono={!(selected.status in FEEDBACK_STATUS_LABEL)}
               />
             </View>
             <T variant="body" color="secondary">

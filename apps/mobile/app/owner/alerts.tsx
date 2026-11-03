@@ -15,7 +15,7 @@ import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
 import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
-import { alertCategoryLabel } from "@/features/governance/components";
+import { SeverityChip, alertCategoryLabel } from "@/features/governance/components";
 
 interface OwnerAlertRow {
   id: string;
@@ -98,7 +98,7 @@ export default function OwnerAlerts() {
                 {rows.map((a, i) => (
                   <LedgerRow key={a.id} last={i === rows.length - 1}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <SeverityBadge severity={a.severity} />
+                      <SeverityChip severity={a.severity} />
                       {a.category ? <Badge label={alertCategoryLabel(a.category)} tone="grey" /> : null}
                       <T variant="xs" color="faint">
                         {dateTime(a.createdAt)}
@@ -155,30 +155,5 @@ export default function OwnerAlerts() {
   );
 }
 
-/** Severity chip — the console's one vocabulary (حرج/تحذير/معلومة). */
-function SeverityBadge({ severity }: { severity?: string }) {
-  const key = severity ?? "";
-  const known =
-    key === "critical" || key === "CRITICAL" || key === "error" ||
-    key === "warning" || key === "WARNING" ||
-    key === "info" || key === "INFO";
-  const label =
-    key === "critical" || key === "CRITICAL" || key === "error"
-      ? "حرج"
-      : key === "warning" || key === "WARNING"
-        ? "تحذير"
-        : key === "info" || key === "INFO"
-          ? "معلومة"
-          : key || "—";
-  const tone =
-    key === "critical" || key === "CRITICAL" || key === "error"
-      ? "rose"
-      : key === "warning" || key === "WARNING"
-        ? "yellow"
-        : key === "info" || key === "INFO"
-          ? "sky"
-          : "grey";
-  return <Badge label={label} tone={tone} mono={!known && !!key} />;
-}
 
 

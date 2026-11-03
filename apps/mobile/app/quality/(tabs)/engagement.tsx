@@ -10,7 +10,7 @@ import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { AR_DAYS, latn, num } from "@/lib/format";
-import { HonestLedger, PAPER_STATUS_LABEL, countAr, numOf } from "@/features/governance/components";
+import { HonestLedger, PAPER_STATUS_LABEL, UNKNOWN_LABEL, countAr, numOf } from "@/features/governance/components";
 
 interface EngagementPayload {
   attendance?: { presentRate?: number; lateRate?: number; absentRate?: number; total?: number };
@@ -133,9 +133,8 @@ export default function QualityEngagement() {
                     Object.entries(papers).map(([key, value]) => (
                       <StatLine
                         key={key}
-                        label={PAPER_STATUS_LABEL[key] ?? key}
+                        label={PAPER_STATUS_LABEL[key] ?? UNKNOWN_LABEL}
                         value={num(numOf(value))}
-                        hint={key in PAPER_STATUS_LABEL ? undefined : key}
                       />
                     ))
                   )}
