@@ -282,7 +282,7 @@ export default function TeacherIntelligence() {
                 .map(([key, v]) => (
                   <StatLine
                     key={key}
-                    label={ANALYTICS_LABELS[key] ?? key}
+                    label={ANALYTICS_LABELS[key] ?? "مؤشّر"}
                     value={typeof v === "number" || typeof v === "string" ? analyticsValue(key, v) : "—"}
                   />
                 ))}

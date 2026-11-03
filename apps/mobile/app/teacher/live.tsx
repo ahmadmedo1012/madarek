@@ -33,6 +33,7 @@ import {
   OfferingPicker,
   StatusBadge,
   arCount,
+  useSheetMounted,
   useTeacherOfferings,
 } from "@/features/teacher/components";
 
@@ -109,6 +110,12 @@ export default function TeacherLive() {
   const [createError, setCreateError] = useState<string | null>(null);
 
   const [confirmAction, setConfirmAction] = useState<{ id: string; action: "START" | "END" | "CANCEL"; title: string } | null>(null);
+
+  /* Net-safe sheet mounts: the native sheet graph (bottom-sheet → RNGH v3)
+   * loads on the first sheet RENDER — gates keep signed-out render nets
+   * (which never open a sheet) from ever mounting it. See useSheetMounted. */
+  const createSheetMounted = useSheetMounted(creating);
+  const confirmSheetMounted = useSheetMounted(confirmAction !== null);
 
   const create = useMutation({
     mutationFn: async () => {
@@ -310,6 +317,7 @@ export default function TeacherLive() {
       )}
 
       {/* جلسة جديدة — AppSheet (keyboard-aware SheetTextInput fields). */}
+      {createSheetMounted ? (
       <AppSheet
         open={creating}
         onClose={() => setCreating(false)}
@@ -393,8 +401,10 @@ export default function TeacherLive() {
           ) : null}
         </View>
       </AppSheet>
+      ) : null}
 
       {/* Lifecycle confirms — END and CANCEL are destructive (ConfirmSheet). */}
+      {confirmSheetMounted ? (
       <ConfirmSheet
         open={confirmAction !== null}
         onClose={() => setConfirmAction(null)}
@@ -409,6 +419,7 @@ export default function TeacherLive() {
         loading={lifecycle.isPending}
         onConfirm={() => confirmAction && lifecycle.mutate(confirmAction)}
       />
+      ) : null}
     </Screen>
   );
 }

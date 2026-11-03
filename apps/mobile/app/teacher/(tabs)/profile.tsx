@@ -160,7 +160,7 @@ export default function TeacherProfile() {
                 </View>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
                   <Badge label={user ? ROLE_LABELS[user.role] ?? "أستاذ" : "أستاذ"} tone="grey" />
-                  {rank ? <Badge label={RANK_LABELS[rank] ?? rank} tone="lavender" /> : null}
+                  {rank ? <Badge label={RANK_LABELS[rank] ?? "غير محدَّدة"} tone="lavender" /> : null}
                   {positionLabel ? <Badge label={positionLabel} tone="copper" /> : null}
                 </View>
                 <T variant="xs" color="muted">

@@ -206,7 +206,7 @@ export default function Exams() {
                           {t.openAt ? ` · يفتح ${dateTime(t.openAt)}` : ""}
                         </T>
                       </View>
-                      <Badge label={EXAM_KIND_LABEL[t.kind] ?? t.kind} tone="lavender" />
+                      <Badge label={EXAM_KIND_LABEL[t.kind] ?? "تقييم"} tone="lavender" />
                       <StatusBadge status={t.status} map={EXAM_STATUS_MAP} />
                     </View>
                     <View style={{ flexDirection: "row", gap: sp[6], flexWrap: "wrap" }}>
@@ -277,9 +277,9 @@ export default function Exams() {
                     {question.prompt}
                   </T>
                   <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6], alignItems: "center" }}>
-                    <Badge label={QUESTION_TYPE_LABEL[question.type] ?? question.type} tone="grey" />
+                    <Badge label={QUESTION_TYPE_LABEL[question.type] ?? "سؤال"} tone="grey" />
                     <Badge
-                      label={DIFFICULTY_LABEL[question.difficulty] ?? question.difficulty}
+                      label={DIFFICULTY_LABEL[question.difficulty] ?? "غير محدَّد"}
                       tone={question.difficulty === "EASY" ? "mint" : question.difficulty === "HARD" ? "rose" : "yellow"}
                     />
                     <Badge
@@ -428,7 +428,7 @@ export default function Exams() {
           ) : null}
           <SelectField
             label="الصعوبة"
-            value={{ id: difficulty, label: DIFFICULTY_LABEL[difficulty] ?? difficulty }}
+            value={{ id: difficulty, label: DIFFICULTY_LABEL[difficulty] ?? "غير محدَّد" }}
             options={Object.keys(DIFFICULTY_LABEL).map((d) => ({ id: d, label: DIFFICULTY_LABEL[d] }))}
             onSelect={(d) => setDifficulty(d)}
             sheetTitle="الصعوبة"

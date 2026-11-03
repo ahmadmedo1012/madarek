@@ -259,7 +259,7 @@ export default function Assignments() {
             return (
               <LedgerRow key={a.id} last={i === assignmentRows.length - 1} accessibilityLabel={`واجب ${a.title}`}>
                 <T variant="body" weight="medium" numberOfLines={2}>
-                  {ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}: {a.title}
+                  {ASSIGNMENT_KIND_LABEL[a.type] ?? "تكليف"}: {a.title}
                 </T>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6], alignItems: "center" }}>
                   {a.course?.name ? (
@@ -374,7 +374,7 @@ export default function Assignments() {
           />
           <SelectField
             label="النوع"
-            value={{ id: type, label: ASSIGNMENT_KIND_LABEL[type] ?? type }}
+            value={{ id: type, label: ASSIGNMENT_KIND_LABEL[type] ?? "تكليف" }}
             options={Object.keys(ASSIGNMENT_KIND_LABEL).map((k) => ({
               id: k,
               label: ASSIGNMENT_KIND_LABEL[k],
