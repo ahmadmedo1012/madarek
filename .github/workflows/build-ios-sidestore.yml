@@ -10,6 +10,13 @@
 name: Build unsigned iOS IPA (SideStore)
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/mobile/**"
+      - "shared/**"
+      - ".github/workflows/build-ios-sidestore.yml"
   workflow_dispatch:
     inputs:
       ref:
@@ -21,12 +28,16 @@ on:
         required: false
         default: "Madarek"
 
+# The rolling "latest" release is created/updated from the workflow, so the
+# default GITHUB_TOKEN needs write access to release assets. No PAT is used.
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: sidestore-ipa-${{ github.ref }}
-  cancel-in-progress: false
+  # A newer push to main supersedes an older in-flight build of the same ref.
+  # Manual runs do not cancel an in-flight build.
+  cancel-in-progress: ${{ github.event_name == 'push' }}
 
 env:
   CI: "1"
@@ -402,6 +413,76 @@ jobs:
             apps/mobile/build/build-info.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish/update the latest SideStore release
+        if: success() && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event.inputs.ref == 'main' || github.event.inputs.ref == '')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="sidestore-latest"
+          TITLE="Madarek.ipa — latest unsigned SideStore build"
+          NOTES="$RUNNER_TEMP/sidestore-latest-notes.md"
+          BUILD_INFO="apps/mobile/build/build-info.json"
+
+          VERSION=$(jq -r '.version' "$BUILD_INFO")
+          BUILD_NUMBER=$(jq -r '.build_number' "$BUILD_INFO")
+          MIN_OS=$(jq -r '.minimum_os' "$BUILD_INFO")
+          ARCH=$(jq -r '.architectures' "$BUILD_INFO")
+          PLATFORM=$(jq -r '.platform' "$BUILD_INFO")
+          COMMIT=$(jq -r '.commit' "$BUILD_INFO")
+          SHA256=$(jq -r '.sha256' "$BUILD_INFO")
+          SIZE_BYTES=$(jq -r '.size_bytes' "$BUILD_INFO")
+          SIZE_MIB=$(awk -v bytes="$SIZE_BYTES" 'BEGIN { printf "%.2f", bytes / 1048576 }')
+          RUN_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          DOWNLOAD_URL="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/releases/download/$TAG/$IPA_NAME.ipa"
+
+          {
+            echo "# Madarek.ipa — latest unsigned SideStore build"
+            echo ""
+            echo "This release is updated automatically from the latest push to main that touches the mobile app."
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| IPA | $IPA_NAME.ipa |"
+            echo "| Bundle ID | ly.madarek.mobile |"
+            echo "| Version | $VERSION ($BUILD_NUMBER) |"
+            echo "| Minimum iOS | $MIN_OS |"
+            echo "| Architecture | $ARCH — $PLATFORM |"
+            echo "| Size | $SIZE_BYTES bytes ($SIZE_MIB MiB) |"
+            echo "| SHA-256 | $SHA256 |"
+            echo "| Commit | $COMMIT |"
+            echo "| Workflow run | $RUN_URL |"
+            echo "| Signed | No — SideStore re-signs it |"
+            echo ""
+            echo "## Direct download"
+            echo ""
+            echo "$DOWNLOAD_URL"
+            echo ""
+            echo "## Install with SideStore"
+            echo ""
+            echo "1. Download the IPA on the iPhone (Safari) or transfer it to Files."
+            echo "2. Open SideStore → My Apps → + → choose the IPA."
+            echo "3. Sign with your Apple ID, then tap Install."
+            echo "4. If iOS asks, trust the developer in Settings → General → VPN & Device Management."
+            echo ""
+            echo "The IPA is intentionally unsigned; SideStore performs the signing."
+          } > "$NOTES"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TITLE" --notes-file "$NOTES"
+          else
+            gh release create "$TAG"               --target "$COMMIT"               --title "$TITLE"               --notes-file "$NOTES"               --prerelease
+          fi
+
+          gh release upload "$TAG"             "apps/mobile/build/${IPA_NAME}.ipa"             apps/mobile/build/SHA256SUMS.txt             apps/mobile/build/build-info.json             --clobber
+
+          {
+            echo ""
+            echo "### Stable download link"
+            echo ""
+            echo "$DOWNLOAD_URL"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload build logs on failure
         if: failure()
