@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
@@ -53,7 +54,7 @@ export default function OwnerGovernance() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : gov.isError ? (
             <ErrorState
-              message={(gov.error as Error | null)?.message}
+              message={humanizeError(gov.error)}
               onRetry={() => gov.refetch()}
               compact
             />
@@ -107,7 +108,7 @@ export default function OwnerGovernance() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : logins.isError ? (
             <ErrorState
-              message={(logins.error as Error | null)?.message}
+              message={humanizeError(logins.error)}
               onRetry={() => logins.refetch()}
               compact
             />

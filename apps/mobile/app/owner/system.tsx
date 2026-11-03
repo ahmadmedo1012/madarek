@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
 import HardDrive from "lucide-react-native/icons/hard-drive";
 import Settings from "lucide-react-native/icons/settings";
@@ -13,7 +14,6 @@ import { Field } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { usePalette } from "@/design/theme";
 import { fromNow } from "@/lib/format";
 import {
@@ -72,7 +72,7 @@ export default function OwnerSystem() {
       qc.invalidateQueries({ queryKey: ["owner", "settings"] });
       toast.success(`حُفظ الإعداد «${payload.key}».`, "تمّ الحفظ");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ الإعداد"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الإعداد"),
   });
 
   const setFlag = useMutation({
@@ -87,7 +87,7 @@ export default function OwnerSystem() {
         "أعلام الميزات",
       );
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث العلم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث العلم"),
   });
 
   const s = sys.data;
@@ -129,7 +129,7 @@ export default function OwnerSystem() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : sys.isError ? (
             <ErrorState
-              message={(sys.error as Error | null)?.message}
+              message={humanizeError(sys.error)}
               onRetry={() => sys.refetch()}
               compact
             />
@@ -227,7 +227,7 @@ export default function OwnerSystem() {
             <SkeletonList rows={3} rowHeight={48} />
           ) : settings.isError ? (
             <ErrorState
-              message={(settings.error as Error | null)?.message}
+              message={humanizeError(settings.error)}
               onRetry={() => settings.refetch()}
               compact
             />
@@ -272,7 +272,7 @@ export default function OwnerSystem() {
             <SkeletonList rows={3} rowHeight={56} />
           ) : flags.isError ? (
             <ErrorState
-              message={(flags.error as Error | null)?.message}
+              message={humanizeError(flags.error)}
               onRetry={() => flags.refetch()}
               compact
             />
@@ -414,7 +414,7 @@ function SettingEditSheet({
         />
         {setSetting.isError ? (
           <T variant="sm" color="danger">
-            {(setSetting.error as ApiError)?.message ?? "تعذّر حفظ الإعداد — حاول مجدداً."}
+            {humanizeError(setSetting.error)}
           </T>
         ) : null}
       </View>

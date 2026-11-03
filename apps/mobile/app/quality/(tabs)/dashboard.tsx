@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import Eye from "lucide-react-native/icons/eye";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -70,7 +71,7 @@ export default function QualityDashboard() {
           <SkeletonList rows={6} />
         ) : overview.isError ? (
           <ErrorState
-            message={(overview.error as Error | null)?.message}
+            message={humanizeError(overview.error)}
             onRetry={() => overview.refetch()}
           />
         ) : !data ? null : (

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Crown from "lucide-react-native/icons/crown";
@@ -15,7 +16,6 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { POSITION_LABELS, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
@@ -104,7 +104,7 @@ export default function AdminTeachers() {
         {roster.isLoading ? (
           <SkeletonList rows={6} />
         ) : roster.isError ? (
-          <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />
+          <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا نتائج مطابقة" : "لم يتم تسجيل أساتذة بعد"}
@@ -202,7 +202,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
       toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي توثيق الأستاذ.");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث التوثيق"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث التوثيق"),
   });
 
   const [position, setPosition] = useState<PositionChoice>(
@@ -227,7 +227,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       toast.success("تمّ حفظ التعيين.", "المنصب القياديّ");
       onClose();
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ التعيين"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ التعيين"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name, sub: f.city ?? null }));

@@ -31,6 +31,9 @@ import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { StatLine } from "@/components/ui/data";
+import { CountUp, RingProgress } from "@/motion";
+import { fonts } from "@/design/fonts";
+import { type as typeScale } from "@/design/tokens";
 import { latn } from "@/lib/format";
 
 /* ══════════════════════ Counted Arabic plurals ═══════════════════ */
@@ -382,11 +385,16 @@ export const PAPER_STATUS_TONE: Record<string, StatusToneName> = {
   PUBLISHED: "mint",
 };
 
+/** R334 strings rule: an UNKNOWN enum never renders raw to the user —
+ *  the honest Arabic fallback is «غير معروف» (we disclose the gap, not
+ *  the internal code). Known values keep their web-parity labels. */
+export const UNKNOWN_LABEL = "غير معروف";
+
 export function PaperStatusChip({ status }: { status?: string | null }) {
   const key = status ?? "";
   const known = key in PAPER_STATUS_LABEL;
   return (
-    <Badge label={known ? PAPER_STATUS_LABEL[key] : key || "—"} tone={PAPER_STATUS_TONE[key] ?? "grey"} mono={!known} />
+    <Badge label={known ? PAPER_STATUS_LABEL[key] : key ? UNKNOWN_LABEL : "—"} tone={PAPER_STATUS_TONE[key] ?? "grey"} />
   );
 }
 
@@ -423,9 +431,8 @@ export function SeverityChip({ severity }: { severity?: string | null }) {
   const known = key in SEVERITY_LABEL;
   return (
     <Badge
-      label={known ? SEVERITY_LABEL[key] : key || "—"}
+      label={known ? SEVERITY_LABEL[key] : key ? UNKNOWN_LABEL : "—"}
       tone={SEVERITY_TONE[key] ?? "grey"}
-      mono={!known}
     />
   );
 }
@@ -449,7 +456,7 @@ export const ALERT_CATEGORY_LABEL: Record<string, string> = {
 
 export function alertCategoryLabel(category?: string | null): string {
   if (!category) return "—";
-  return ALERT_CATEGORY_LABEL[category] ?? category;
+  return ALERT_CATEGORY_LABEL[category] ?? "أخرى";
 }
 
 /** Roles — labels from the shared session map, tones per web ROLE_COLORS. */
@@ -461,10 +468,7 @@ export const ROLE_TONE: Record<string, StatusToneName> = {
   OWNER: "yellow",
 };
 export function RoleChip({ role, label }: { role?: string | null; label: string }) {
-  const known = role ? role in ROLE_TONE : false;
-  return (
-    <Badge label={label} tone={role ? (ROLE_TONE[role] ?? "grey") : "grey"} mono={!known && !!role} />
-  );
+  return <Badge label={label} tone={role ? (ROLE_TONE[role] ?? "grey") : "grey"} />;
 }
 
 /** Audit-log actions (OwnerActivityPage ACTION_LABEL parity). */
@@ -506,7 +510,13 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
 };
 
 export function auditActionLabel(action: string): string {
-  return AUDIT_ACTION_LABEL[action] ?? action;
+  return AUDIT_ACTION_LABEL[action] ?? "عمليّة إداريّة";
+}
+
+/** Resource-type label with the same no-raw-enum rule. */
+export function resourceLabel(resourceType?: string | null): string {
+  if (!resourceType) return "";
+  return RESOURCE_LABEL[resourceType] ?? "مورد";
 }
 
 /** Audit resource types (Prisma models) → Arabic. */
@@ -540,7 +550,26 @@ export function feedbackKindTone(kind?: string | null): StatusToneName {
   return kind === "BUG" ? "rose" : kind === "IDEA" ? "sky" : "grey";
 }
 export function feedbackKindLabel(kind?: string | null): string {
-  return kind === "BUG" ? "مشكلة" : kind === "IDEA" ? "اقتراح" : kind || "—";
+  return kind === "BUG" ? "مشكلة" : kind === "IDEA" ? "اقتراح" : kind ? UNKNOWN_LABEL : "—";
+}
+
+/** Login-failure reasons (owner login-analytics `topReasons`) — the raw
+ *  backend codes (INVALID_CREDENTIALS, …) must never render raw. */
+export const LOGIN_REASON_LABEL: Record<string, string> = {
+  INVALID_CREDENTIALS: "بيانات دخول غير صحيحة",
+  USER_NOT_FOUND: "حساب غير موجود",
+  INVALID_PASSWORD: "كلمة مرور غير صحيحة",
+  ACCOUNT_SUSPENDED: "الحساب معلَّق",
+  USER_INACTIVE: "حساب غير مفعَّل",
+  RATE_LIMITED: "محاولات كثيرة",
+  TOKEN_EXPIRED: "انتهت الجلسة",
+  MISSING_CREDENTIALS: "بيانات ناقصة",
+  VALIDATION_ERROR: "بيانات غير صالحة",
+  UNKNOWN: "سبب غير محدَّد",
+};
+export function loginReasonLabel(reason?: string | null): string {
+  if (!reason) return "—";
+  return LOGIN_REASON_LABEL[reason] ?? "سبب آخر";
 }
 
 /** Sync run statuses (AdminSyncPage parity). */
@@ -550,6 +579,22 @@ export const SYNC_STATUS_LABEL: Record<string, string> = {
   PARTIAL: "جزئية",
   FAILED: "فاشلة",
 };
+/** Semantic tone per sync status (ok/warn/error → mint/yellow/rose). */
+export const SYNC_STATUS_TONE: Record<string, StatusToneName> = {
+  RUNNING: "yellow",
+  SUCCESS: "mint",
+  PARTIAL: "yellow",
+  FAILED: "rose",
+};
+/** The one sync-status renderer — unknown enums render «غير معروفة»,
+ *  never the raw `SYNC_*`-style code (R334 audit P0 strings fix). */
+export function syncStatusLabel(status?: string | null): string {
+  if (!status) return "—";
+  return SYNC_STATUS_LABEL[status] ?? "غير معروفة";
+}
+export function SyncStatusChip({ status }: { status?: string | null }) {
+  return <Badge label={syncStatusLabel(status)} tone={SYNC_STATUS_TONE[status ?? ""] ?? "grey"} />;
+}
 export const SYNC_CATEGORY_LABEL: Record<string, string> = {
   identity: "هوية الجامعة",
   contact: "بيانات التواصل",
@@ -653,6 +698,188 @@ export function useExpanded(initial: string[] = []) {
       return next;
     });
   return { expanded, toggle };
+}
+
+/* ══════════════════════ Dashboard metric hierarchy ═══════════════ */
+
+/**
+ * MetricHero — the ONE hero number of a governance dashboard: a large
+ * CountUp with an optional determinate RingProgress (rates only). One
+ * accent (paper/ink) — no decorative color stacking (Heron rule).
+ */
+export function MetricHero({
+  label,
+  value,
+  hint,
+  suffix,
+  progress,
+}: {
+  label: string;
+  value: number | null;
+  hint?: string;
+  suffix?: string;
+  /** 0..1 — renders the ring around the number when present. */
+  progress?: number | null;
+}) {
+  const p = usePalette();
+  const hasProgress = typeof progress === "number" && Number.isFinite(progress) && progress > 0;
+  const body = (
+    <View style={{ flex: 1, justifyContent: "center", gap: sp[4] }}>
+      <T variant="sm" color="muted">
+        {label}
+      </T>
+      {value === null ? (
+        <T variant="h1" weight="bold">
+          —
+        </T>
+      ) : (
+        <View style={{ flexDirection: "row", alignItems: "baseline", gap: sp[4] }}>
+          {/* CountUp renders an animated TextInput — a View sibling, never a
+           *  child of <T> (RN forbids nesting inputs inside Text). */}
+          <CountUp
+            value={value}
+            testID="metric-hero-value"
+            style={{
+              fontSize: typeScale.h1,
+              lineHeight: typeScale.h1 + 4,
+              fontFamily: fonts.bodyBold,
+              color: p.text,
+            }}
+          />
+          {suffix ? (
+            <T variant="h4" color="muted">
+              {suffix}
+            </T>
+          ) : null}
+        </View>
+      )}
+      {hint ? (
+        <T variant="xs" color="faint">
+          {hint}
+        </T>
+      ) : null}
+    </View>
+  );
+  return (
+    <View
+      accessibilityLabel={`${label}: ${value === null ? "غير متوفّر" : latn(value)}${hint ? `، ${hint}` : ""}`}
+      style={{
+        backgroundColor: p.surface,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: p.border,
+        padding: sp[16],
+        minHeight: 132,
+        flexDirection: "row",
+        alignItems: "center",
+        gap: sp[12],
+      }}
+    >
+      {body}
+      {hasProgress ? (
+        <RingProgress progress={Math.min(1, Math.max(0, progress as number))} size={64} thickness={5} color={p.accent}>
+          <T variant="xs" weight="bold">
+            {latn(Math.round((progress as number) * 100))}%
+          </T>
+        </RingProgress>
+      ) : null}
+    </View>
+  );
+}
+
+/** MetricTile — a supporting tile under the hero (CountUp, hairline slab). */
+export function MetricTile({
+  label,
+  value,
+  suffix,
+  style,
+}: {
+  label: string;
+  value: number | null;
+  suffix?: string;
+  style?: import("react-native").StyleProp<import("react-native").ViewStyle>;
+}) {
+  const p = usePalette();
+  return (
+    <View
+      accessibilityLabel={`${label}: ${value === null ? "غير متوفّر" : latn(value)}`}
+      style={[
+        {
+          backgroundColor: p.surface,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: p.border,
+          padding: sp[12],
+          flex: 1,
+        },
+        style,
+      ]}
+    >
+      <T variant="sm" color="muted" numberOfLines={1}>
+        {label}
+      </T>
+      <View style={{ flexDirection: "row", alignItems: "baseline", gap: 2 }}>
+        {value === null ? (
+          <T variant="h3" weight="bold">
+            —
+          </T>
+        ) : (
+          <CountUp
+            value={value}
+            style={{
+              fontSize: typeScale.h3,
+              lineHeight: typeScale.h3 + 4,
+              fontFamily: fonts.bodyBold,
+              color: p.text,
+            }}
+          />
+        )}
+        {suffix ? (
+          <T variant="sm" color="muted">
+            {suffix}
+          </T>
+        ) : null}
+      </View>
+    </View>
+  );
+}
+
+/* ══════════════════════ Audit-day grouping (pure) ═════════════════ */
+
+/** Day bucket for an ISO timestamp — «اليوم» / «أمس» / an Arabic date. */
+export function auditDayLabel(iso?: string | null, now?: Date): string {
+  if (!iso) return "بدون تاريخ";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "بدون تاريخ";
+  const ref = now ?? new Date();
+  const startOf = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((startOf(ref) - startOf(d)) / 86_400_000);
+  if (days === 0) return "اليوم";
+  if (days === 1) return "أمس";
+  return d.toLocaleDateString("ar-LY", { day: "numeric", month: "long", year: "numeric" });
+}
+
+/** Groups audit rows into day sections (newest first), preserving order. */
+export interface AuditSection<T> {
+  day: string;
+  rows: T[];
+}
+export function groupByDay<T>(
+  rows: readonly T[],
+  dateOf: (row: T) => string | null | undefined,
+  now?: Date,
+): AuditSection<T>[] {
+  const sections: AuditSection<T>[] = [];
+  const index = new Map<string, AuditSection<T>>();
+  for (const row of rows) {
+    const day = auditDayLabel(dateOf(row), now);
+    let section = index.get(day);
+    if (!section) {
+      section = { day, rows: [] };
+      index.set(day, section);
+      sections.push(section);
+    }
+    section.rows.push(row);
+  }
+  return sections;
 }
 
 /* ══════════════════════ Local row types ═══════════════════════════ */

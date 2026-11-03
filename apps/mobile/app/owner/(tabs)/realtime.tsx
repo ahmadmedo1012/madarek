@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
@@ -76,7 +77,7 @@ export default function OwnerRealtime() {
         {rt.isLoading ? (
           <SkeletonList rows={4} />
         ) : !rt.data ? (
-          <ErrorState message={(rt.error as Error)?.message} onRetry={() => rt.refetch()} />
+          <ErrorState message={humanizeError(rt.error)} onRetry={() => rt.refetch()} />
         ) : (
           <View style={{ gap: 16 }}>
             {refreshFailed ? (

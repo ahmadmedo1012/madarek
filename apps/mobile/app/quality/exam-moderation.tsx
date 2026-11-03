@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CheckCircle2 from "lucide-react-native/icons/circle-check";
 import ClipboardCheck from "lucide-react-native/icons/clipboard-check";
@@ -15,7 +16,6 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { examsApi } from "@/api/exams";
 import type { ExamQuestionRow, ExamTemplateRow } from "@/api/exams";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { fromNow, latn, num } from "@/lib/format";
@@ -56,7 +56,7 @@ export default function QualityExamModeration() {
       setTarget(null);
       setNote("");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تنفيذ القرار"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تنفيذ القرار"),
   });
 
   const moderateQuestion = useMutation({
@@ -68,7 +68,7 @@ export default function QualityExamModeration() {
       setTarget(null);
       setNote("");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تنفيذ القرار"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تنفيذ القرار"),
   });
 
   const runModeration = (t: ModerationTarget, approve: boolean) => {
@@ -119,7 +119,7 @@ export default function QualityExamModeration() {
           {queue.isLoading ? (
             <SkeletonList rows={4} />
           ) : queue.isError ? (
-            <ErrorState message={(queue.error as Error | null)?.message} onRetry={() => queue.refetch()} />
+            <ErrorState message={humanizeError(queue.error)} onRetry={() => queue.refetch()} />
           ) : templates.length === 0 ? (
             <EmptyState
               icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
@@ -179,7 +179,7 @@ export default function QualityExamModeration() {
             <SkeletonList rows={2} />
           ) : questionBank.isError ? (
             <ErrorState
-              message={(questionBank.error as Error | null)?.message}
+              message={humanizeError(questionBank.error)}
               onRetry={() => questionBank.refetch()}
               compact
             />

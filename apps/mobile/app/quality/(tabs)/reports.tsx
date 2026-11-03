@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -74,7 +75,7 @@ export default function QualityReports() {
           {overview.isLoading ? (
             <SkeletonList rows={3} />
           ) : overview.isError ? (
-            <ErrorState message={(overview.error as Error | null)?.message} onRetry={() => overview.refetch()} compact />
+            <ErrorState message={humanizeError(overview.error)} onRetry={() => overview.refetch()} compact />
           ) : (
             <RowList>
               <LedgerRow last>
@@ -92,7 +93,7 @@ export default function QualityReports() {
           {engagement.isLoading ? (
             <SkeletonList rows={3} />
           ) : engagement.isError ? (
-            <ErrorState message={(engagement.error as Error | null)?.message} onRetry={() => engagement.refetch()} compact />
+            <ErrorState message={humanizeError(engagement.error)} onRetry={() => engagement.refetch()} compact />
           ) : (
             <RowList>
               <LedgerRow last>
@@ -122,7 +123,7 @@ export default function QualityReports() {
               <Skeleton h={44} />
             </View>
           ) : alerts.isError ? (
-            <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} compact />
+            <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} compact />
           ) : alertRows.length === 0 ? (
             <T variant="body" color="muted">
               لا توجد تنبيهات — كل المؤشرات ضمن النطاق الطبيعي حالياً.

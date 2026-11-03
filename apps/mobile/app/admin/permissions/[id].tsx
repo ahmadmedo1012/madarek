@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import ShieldCheck from "lucide-react-native/icons/shield-check";
@@ -13,7 +14,6 @@ import { Segmented, SelectField } from "@/components/ui/fields";
 import { SkeletonList, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useSession, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
@@ -61,7 +61,7 @@ export default function AdminPermissions() {
           : `سُحبت صلاحية «${CAPABILITY_LABEL[payload.capability] ?? payload.capability}».`,
       );
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث الصلاحية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث الصلاحية"),
   });
 
   const currentScopeFaculty = target?.scopeFaculty ?? null;
@@ -76,7 +76,7 @@ export default function AdminPermissions() {
       qc.invalidateQueries({ queryKey: ["admin", "users"] });
       toast.success("تمّ حفظ النطاق.", "نطاق العمل");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ النطاق"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ النطاق"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name }));
@@ -99,7 +99,7 @@ export default function AdminPermissions() {
         {permissions.isLoading ? (
           <SkeletonList rows={6} />
         ) : permissions.isError ? (
-          <ErrorState message={(permissions.error as Error | null)?.message} onRetry={() => permissions.refetch()} />
+          <ErrorState message={humanizeError(permissions.error)} onRetry={() => permissions.refetch()} />
         ) : (
           <>
             <StatLine

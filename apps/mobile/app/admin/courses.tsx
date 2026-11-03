@@ -1,6 +1,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
 import Trash2 from "lucide-react-native/icons/trash";
@@ -15,7 +16,6 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { latn, num } from "@/lib/format";
@@ -107,7 +107,7 @@ export default function AdminCourses() {
       setDraft(null);
       setEditingId(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ المقرّر"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ المقرّر"),
   });
 
   const updateCourse = useMutation({
@@ -128,7 +128,7 @@ export default function AdminCourses() {
       setDraft(null);
       setEditingId(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ المقرّر"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ المقرّر"),
   });
 
   const deleteCourse = useMutation({
@@ -140,7 +140,7 @@ export default function AdminCourses() {
     },
     onError: (e) =>
       toast.error(
-        (e as ApiError).message || "تعذّر حذف المقرّر — قد تكون له شُعب أو مفاهيم مرتبطة.",
+        humanizeError(e) || "تعذّر حذف المقرّر — قد تكون له شُعب أو مفاهيم مرتبطة.",
         "فشل الحذف",
       ),
   });
@@ -184,7 +184,7 @@ export default function AdminCourses() {
         {courses.isLoading ? (
           <SkeletonList rows={5} />
         ) : courses.isError ? (
-          <ErrorState message={(courses.error as Error | null)?.message} onRetry={() => courses.refetch()} />
+          <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا توجد نتائج" : "لا توجد مقرّرات بعد"}
@@ -408,7 +408,7 @@ function OfferingSheet({
       );
       onClose();
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر فتح الشعبة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر فتح الشعبة"),
   });
 
   const teacherOptions = (teachers.data?.rows ?? []).map((t) => ({

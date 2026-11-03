@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import Star from "lucide-react-native/icons/star";
 import { Screen } from "@/components/ui";
@@ -56,7 +57,7 @@ export default function QualityProfessors() {
           <SkeletonList rows={5} />
         ) : professors.isError ? (
           <ErrorState
-            message={(professors.error as Error | null)?.message}
+            message={humanizeError(professors.error)}
             onRetry={() => professors.refetch()}
           />
         ) : rows.length === 0 ? (
