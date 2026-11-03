@@ -152,3 +152,90 @@ _Continues: §5 student, §6 teacher, §7 admin/quality/owner, §8 summary._
 | /teacher/messages | `messages.tsx` | DM inbox → MessagesUI | L2* | DEEP (wrapper) | delegate not audited | P1 |
 | /teacher/research-review | `research-review.tsx` | «البحث العلمي» — triage queue + review sheet | L2 | QS | not deep-read | P1 |
 | /teacher/students/[offeringId] | `students/[offeringId].tsx` | Deep-linked roster (shared OfferingRoster) | L2 | QS | 53 ln wrapper around shared component | P1 |
+
+## 7 — Inventory: admin (17), quality (11), owner (21)
+
+### ADMIN («المسجل العام»)
+
+| Route path | File | Purpose | Tier | Read | Issues | Pri |
+|---|---|---|---|---|---|---|
+| /admin (shell) | `admin/_layout.tsx` | SHELL: RoleGate ADMIN + Stack | L3 | QS (21 ln, pattern-identical) | none | P0 |
+| /admin/(tabs) (shell) | `admin/(tabs)/_layout.tsx` | SHELL: persistent RoleTabBar (ADMIN) | L3 | QS (30 ln, pattern-identical) | none | P0 |
+| /admin/dashboard | `(tabs)/dashboard.tsx` | «لوحة المسجل العام» — stats, papers preview | L3 | PART (60/214) | papers preview pinned to page 1 (`useState(1)`, no pagination UI); not fully deep-read | P0 |
+| /admin/faculties | `(tabs)/faculties.tsx` | «الكلّيات» tab | L2 | QS | not deep-read | P0 |
+| /admin/students | `(tabs)/students.tsx` | «الطلاب» — student registry (327 ln) | L2 | QS | not deep-read | P0 |
+| /admin/teachers | `(tabs)/teachers.tsx` | «الأساتذة» (363 ln) | L2 | QS | not deep-read | P0 |
+| /admin/reports | `(tabs)/reports.tsx` | «التقارير» tab | L2 | QS | not deep-read | P1 |
+| /admin/alerts | `alerts.tsx` | Personal inbox → NotificationsScreen | L2* | DEEP (wrapper) | delegate not audited | P1 |
+| /admin/courses | `courses.tsx` | Course mgmt (467 ln, create/delete) | L2 | QS | not deep-read | P1 |
+| /admin/digital | `digital.tsx` | «التحوّل الرقميّ» + real /health probe | L2 | QS | health probe = technical surface (admin-only, acceptable); not deep-read | P2 |
+| /admin/feedback | `feedback.tsx` | Feedback inbox → FeedbackInbox | L2* | DEEP (wrapper) | delegate not audited | P1 |
+| /admin/invites | `invites.tsx` | Invitation mgmt (289 ln) | L2 | QS | not deep-read | P1 |
+| /admin/permissions/[id] | `permissions/[id].tsx` | Per-user permission matrix | L2 | QS | not deep-read | P1 |
+| /admin/sync | `sync.tsx` | «المزامنة» — sync runs + trigger | L2 | QS | `SYNC_STATUS_LABEL[status] ?? status` raw fallback renders mono — unknown enum values leak as technical strings; not deep-read | P1 |
+
+### QUALITY («مكتب الجودة»)
+
+| Route path | File | Purpose | Tier | Read | Issues | Pri |
+|---|---|---|---|---|---|---|
+| /quality (shell) | `quality/_layout.tsx` | SHELL: RoleGate QUALITY + Stack | L3 | QS (pattern-identical) | none | P0 |
+| /quality/(tabs) (shell) | `quality/(tabs)/_layout.tsx` | SHELL: persistent RoleTabBar (QUALITY) | L3 | QS (pattern-identical) | none | P0 |
+| /quality/dashboard | `(tabs)/dashboard.tsx` | «لوحة الجودة» — overview (users/attendance/papers) | L2 | PART (60/168) | payload parsed as `Record<string, unknown>` with key filtering — brittle untyped wire, generic dashboard feel; no EmptyState import (ErrorState only) | P0 |
+| /quality/courses | `(tabs)/courses.tsx` | «المقررات» tab | L2 | QS | not deep-read | P1 |
+| /quality/curriculum | `(tabs)/curriculum.tsx` | «المناهج» tab | L2 | QS | not deep-read | P1 |
+| /quality/engagement | `(tabs)/engagement.tsx` | «التفاعل» tab | L2 | QS | not deep-read | P1 |
+| /quality/reports | `(tabs)/reports.tsx` | «التقارير» tab | L2 | QS | not deep-read | P1 |
+| /quality/alerts | `alerts.tsx` | Quality alerts inbox | L2 | QS | not deep-read | P1 |
+| /quality/exam-moderation | `exam-moderation.tsx` | «إشراف الاختبارات» — moderation queue (273 ln) | L2 | QS | not deep-read | P1 |
+| /quality/professors | `professors.tsx` | «الأساتذة» quality view | L2 | QS | not deep-read | P2 |
+
+### OWNER («المالك»)
+
+| Route path | File | Purpose | Tier | Read | Issues | Pri |
+|---|---|---|---|---|---|---|
+| /owner (shell) | `owner/_layout.tsx` | SHELL: RoleGate OWNER + Stack | L3 | QS (pattern-identical) | none | P0 |
+| /owner/(tabs) (shell) | `owner/(tabs)/_layout.tsx` | SHELL: persistent RoleTabBar (OWNER) | L3 | QS (pattern-identical) | none | P0 |
+| /owner/dashboard | `(tabs)/dashboard.tsx` | «لوحة التحكم الرئيسية» — stats, alerts, activity | L2 | PART (70/292) | `OwnerStatsRow` untyped casts; alerts list manual (no EmptyState grammar in read half); Skeleton present | P0 |
+| /owner/users | `(tabs)/users.tsx` | «المستخدمون» (337 ln) | L2 | QS | not deep-read | P0 |
+| /owner/realtime | `(tabs)/realtime.tsx` | «الحيّ» realtime view | L2 | QS | not deep-read | P1 |
+| /owner/notifications | `(tabs)/notifications.tsx` | «الإشعارات» inbox tab (badge) | L2* | DEEP (wrapper) | delegate not audited | P0 |
+| /owner/governance | `(tabs)/governance.tsx` | «الحوكمة» tab | L2 | QS | not deep-read | P1 |
+| /owner/activity | `activity.tsx` | Audit log | L2 | QS | not deep-read | P1 |
+| /owner/ai | `ai.tsx` | AI ops view | L2 | QS | not deep-read | P1 |
+| /owner/alerts | `alerts.tsx` | Alert mgmt (resolve/dismiss) | L2 | QS | not deep-read | P1 |
+| /owner/content | `content.tsx` | «المحتوى والعلامة التجاريّة» — honest asset register | L2 | DEEP | static brochure w/ «قيد التطوير» disclosure; asset rows not pressable (no preview) | P2 |
+| /owner/education | `education.tsx` | Education stats | L2 | QS | not deep-read | P1 |
+| /owner/feedback | `feedback.tsx` | Feedback inbox | L2 | QS | not deep-read | P1 |
+| /owner/institutions | `institutions.tsx` | Institution CRUD (283 ln) | L2 | QS | not deep-read | P1 |
+| /owner/institutions/[slug] | `institutions/[slug].tsx` | Institution editor (472 ln) | L2 | QS | not deep-read | P1 |
+| /owner/system | `system.tsx` | System/feature flags (423 ln) | L2 | QS | not deep-read | P1 |
+
+## 8 — Summary
+
+**Totals: 125 route files.** Deep-read (full render tree): 24 · Partial-deep: 6 · Quick-scanned: 95. Honesty: QS verdicts rely on docblocks + imports + kit-usage greps; every QS row says "not deep-read".
+
+**Tier counts (routes incl. shells): L1 = 2 · L2 = 97 (of which 12 are thin feature-wrappers `*`) · L3 = 26.**
+Non-shell L3 screens: welcome, auth/index, student dashboard/courses/profile/course-detail/lecture-player/online-exams/results/schedule, teacher dashboard/grades, admin dashboard. All 12 shell/layout files are L3-grade.
+
+**The 10 worst screens (Round-2 fix-plan candidates)**
+1. `/student/payment` — L1 honest stub; dead-end (no data model).
+2. `/campus` — L1 text-only media rail (no images by honesty choice — needs real treatment or removal).
+3. `/student/ar` — L1 browsing-only index, operator unbuilt.
+4. `/quality/dashboard` — untyped `Record<string, unknown>` parsing; no EmptyState; generic feel.
+5. `/owner/dashboard` — untyped `OwnerStatsRow` casts; manual alert list.
+6. `/admin/sync` — raw enum fallback leaks technical strings when label map misses.
+7. `/community` — 706-line monolith; ScrollView + .map feed (no virtualization).
+8. `/student/social` — image feed via .map in ScrollView (memory).
+9. `/teacher/curriculum` — 627-line authoring monolith; dense web-panel feel (worst UX-per-line in teacher core).
+10. `/student/lectures/[lectureId]` transcript — 200 mapped cues in a ScrollView (flagship screen, one perf wart).
+
+**Cross-cutting issues (drive the Round-2 plan)**
+1. **No motion anywhere in screens**: reanimated 4.7.1 installed but zero consumers ("no consumer yet", app-shell.md); no screen transitions, no press/entry animations, no sheet spring physics beyond static Sheet.
+2. **Haptics only in the tab bar** (TabBar.tsx): 0 of 113 screen files fire Haptics — no feedback on submit/complete/reveal moments (checkpoint correct/wrong, exam submit, grade save).
+3. **Zero virtualized lists**: only 4 files use FlatList (matrix, lecture player's outer scroll, schedule, exam runner); everything else maps rows into ScrollView — fine for ledgers ≤10, risky for community/social/library/rosters/transcript.
+4. **Wrapper routes delegate quality to `src/features/**`** (messages, ai, alerts, feedback inboxes — 12 routes): route-file audit can't see those screens; the Assistant/MessagesUI/NotificationsScreen/FeedbackInbox delegates are unaudited and top-30 critical.
+5. **Untyped wire-shape casting in governance dashboards** (quality/owner/teacher trend): `as Record<string, unknown>` / ad-hoc `Wire*` types with `?? raw` fallbacks — brittle + a technical-string leakage path (`SYNC_STATUS_LABEL ?? raw` mono).
+6. **State-grammar inconsistency**: most screens use the kit triad (Skeleton/Error/Empty), but teacher `(tabs)/students`, course-detail sections and quality dashboard fall back to muted `<T>` text or bare Cards — the "honest ledger" reads as missing states.
+7. **Static honest stubs** (payment, campus, ar, content): correct disclosure discipline, but all are motionless dead-ends — candidates for either real treatment or removal from menus.
+
+**What is already excellent (keep)**: shell architecture (persistent bar, state-preserving tabs); RTL discipline (latn numerals, countAr plurals, Arabic-first copy everywhere); zero hardcoded colors in routes; full state triad on student core; a11y labels on nearly every LedgerRow/Pressable; welcome screen signature.
