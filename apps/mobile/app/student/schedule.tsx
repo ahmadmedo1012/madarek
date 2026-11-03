@@ -1,25 +1,39 @@
 /**
  * /student/schedule — الجدول الأسبوعي (web SchedulePage parity,
  * mobile-recomposed): every enrollment's schedule slots flattened and
- * grouped by day; a day filter (Segmented, today first) narrows the
- * ledger. Rows carry the course code+name, the time range and the room.
+ * grouped by day. R334 Round 2 (3-h Comms):
+ *
+ *   · a TODAY week strip (day chips, today outlined in the one accent —
+ *     replaces the Segmented-in-nested-horizontal-ScrollView smell);
+ *   · the body is a DataList (FlashList v2) — «الكل» renders day sections
+ *     with STICKY headers, a single day renders its slots flat;
+ *   · today's slots carry a status chip — «مباشرة الآن» (live, accent
+ *     fill) / «التالية» (next, accentSoft) / «انتهت» (done, grey) — from
+ *     the Tripoli clock (useNow ticks every minute, render stays pure);
+ *   · EmptyState rooms: building when there is no schedule at all,
+ *     lecture-hall «لا توجد محاضرات اليوم» for an empty day;
+ *   · errors through humanizeError (never raw error.message).
  */
 
 import { useMemo, useState } from "react";
-import { ScrollView, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { learningApi } from "@/api/learning";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { useNow } from "@/hooks/useNow";
+import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
-import { SectionBar } from "@/components/ui/screen";
-import { Segmented } from "@/components/ui/fields";
-import { LedgerRow, RowList } from "@/components/ui/data";
-import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
-import { AR_DAYS, dayName } from "@/lib/format";
+import { Screen } from "@/components/ui/screen";
+import { StackHeader } from "@/components/shell/AppTopBar";
+import { DataList, makeRow } from "@/components/ui/data";
+import { EmptyState } from "@/components/ui/states";
+import { AR_DAYS, dayName, latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
-import { PushFrame, tripoliDow } from "@/features/student/components";
+import { tripoliDow } from "@/features/student/components";
 
 interface DaySlot {
   dow: number;
@@ -31,8 +45,75 @@ interface DaySlot {
   offeringId: string;
 }
 
+const TZ = "Africa/Tripoli";
+
+/* ══ Pure status model (exported for colocated tests — see
+      src/features/messages/agenda-logic.test.ts for WHY the tests live
+      there: app/ cannot host test files without breaking the render-net
+      route walk). ═══════════════════════════════════════════════════ */
+
+export type SlotStatus = "live" | "next" | "done";
+
+/** "09:30" → 570 minutes; unparsable → -1 (never throws). */
+export function minutesOf(hhmm: string): number {
+  const m = /^(\d{1,2}):(\d{2})/.exec(hhmm ?? "");
+  if (!m) return -1;
+  return Number(m[1]) * 60 + Number(m[2]);
+}
+
+/**
+ * Status per slot key for ONE day: `done` when it ended, `live` while
+ * running, `next` for the FIRST slot yet to start (ties → earliest start).
+ * Pure function of (slots, nowMinutes) — the clock is injected.
+ */
+export function slotStatusesForDay(
+  slots: { key: string; startTime: string; endTime: string }[],
+  nowMinutes: number,
+): Map<string, SlotStatus> {
+  const out = new Map<string, SlotStatus>();
+  let nextAssigned = false;
+  const ordered = [...slots].sort((a, b) => minutesOf(a.startTime) - minutesOf(b.startTime));
+  for (const s of ordered) {
+    const start = minutesOf(s.startTime);
+    const end = minutesOf(s.endTime);
+    if (start < 0) continue;
+    if (end >= 0 && end <= nowMinutes) {
+      out.set(s.key, "done");
+    } else if (start <= nowMinutes && (end < 0 || end > nowMinutes)) {
+      out.set(s.key, "live");
+    } else if (!nextAssigned) {
+      out.set(s.key, "next");
+      nextAssigned = true;
+    }
+  }
+  return out;
+}
+
+/** Minutes since midnight on the Tripoli clock (guarded Intl; never throws). */
+export function tripoliMinutes(now: Date): number {
+  try {
+    const parts = new Intl.DateTimeFormat("en-u-nu-latn", {
+      timeZone: TZ,
+      hour: "numeric",
+      minute: "numeric",
+      hour12: false,
+    }).formatToParts(now);
+    const get = (t: string) => Number(parts.find((x) => x.type === t)?.value ?? "0");
+    return get("hour") * 60 + get("minute");
+  } catch {
+    return now.getHours() * 60 + now.getMinutes();
+  }
+}
+
+/* ══ Screen ═════════════════════════════════════════════════════════ */
+
+type SectionItem =
+  | { kind: "header"; key: string; dow: number }
+  | { kind: "slot"; key: string; slot: DaySlot };
+
 export default function ScheduleScreen() {
   const scope = useInstitutionScope();
+  const now = useNow(60_000);
   const feed = useQuery({
     queryKey: ["enrollments", "me", scope],
     queryFn: () => learningApi.enrollments(),
@@ -60,117 +141,252 @@ export default function ScheduleScreen() {
     return map;
   }, [feed.data]);
 
-  const daysWithItems = useMemo(
-    () => [...byDay.keys()].sort((a, b) => a - b),
-    [byDay],
-  );
+  const daysWithItems = useMemo(() => [...byDay.keys()].sort((a, b) => a - b), [byDay]);
   const todayDow = tripoliDow();
   const defaultDay = daysWithItems.includes(todayDow) ? String(todayDow) : "all";
   const [selected, setSelected] = useState(defaultDay);
 
   const totalSlots = daysWithItems.reduce((sum, d) => sum + (byDay.get(d)?.length ?? 0), 0);
-  const visible =
-    selected === "all"
-      ? daysWithItems.flatMap((d) => byDay.get(d) ?? [])
-      : byDay.get(Number(selected)) ?? [];
 
-  const filterOptions = [
-    { id: "all", label: "الكل" },
-    ...daysWithItems.map((d) => ({ id: String(d), label: dayName(d) })),
-  ];
+  /** Day status chips — keyed by slot key for TODAY's rows (both «الكل» and
+   *  single-day views share the same per-day enumeration → identical keys). */
+  const statuses = useMemo(() => {
+    const slots = (byDay.get(todayDow) ?? []).map((s, i) => ({
+      key: slotKey(s, i),
+      startTime: s.startTime,
+      endTime: s.endTime,
+    }));
+    return slotStatusesForDay(slots, tripoliMinutes(new Date(now)));
+  }, [todayDow, byDay, now]);
+
+  /** DataList sections: «الكل» → day sections w/ sticky headers; else flat. */
+  const sections = useMemo<SectionItem[]>(() => {
+    if (selected !== "all") {
+      return (byDay.get(Number(selected)) ?? []).map((slot, i) => ({
+        kind: "slot" as const,
+        key: slotKey(slot, i),
+        slot,
+      }));
+    }
+    const items: SectionItem[] = [];
+    const stickyOrder = [...daysWithItems];
+    for (const dow of stickyOrder) {
+      items.push({ kind: "header", key: `h-${dow}`, dow });
+      for (const [i, slot] of (byDay.get(dow) ?? []).entries()) {
+        items.push({ kind: "slot", key: slotKey(slot, i), slot });
+      }
+    }
+    return items;
+  }, [selected, byDay, daysWithItems]);
+
+  const stickyIndices = useMemo(
+    () => sections.flatMap((item, i) => (item.kind === "header" ? [i] : [])),
+    [sections],
+  );
+
+  const selectDay = (id: string) => {
+    if (id !== selected) haptics.selection();
+    setSelected(id);
+  };
+
+  const nothingAtAll = !feed.isLoading && !feed.isError && daysWithItems.length === 0;
 
   return (
-    <PushFrame
-      title="الجدول الأسبوعي"
-      kicker={`${countAr(totalSlots, ["حصة أسبوعياً واحدة", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}`}
-      refreshing={feed.isFetching && !feed.isLoading}
-      onRefresh={() => feed.refetch()}
-    >
-      {feed.isLoading ? (
-        <SkeletonList rows={6} rowHeight={64} />
-      ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
-      ) : daysWithItems.length === 0 ? (
-        <EmptyState
-          title="لا يوجد جدول مسجّل"
-          message="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول لمقرّراتك."
-        />
-      ) : (
-        <>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ minHeight: 44 }}>
-            <Segmented
-              options={filterOptions}
-              selectedId={selected}
-              onSelect={setSelected}
-              style={{ minWidth: Math.max(320, filterOptions.length * 92) }}
-            />
-          </ScrollView>
+    <Screen scroll={false} padded={false}>
+      <StackHeader
+        title="الجدول الأسبوعي"
+        kicker={countAr(totalSlots, ["حصة أسبوعياً واحدة", "حصتان أسبوعياً", "حصص أسبوعياً", "حصة أسبوعياً"])}
+      />
+      {/* The week strip — day chips, today outlined in the one accent. */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: sp[16], paddingVertical: sp[10], gap: sp[8] }}
+      >
+        <DayChip id="all" label="الكل" count={totalSlots} selected={selected === "all"} onSelect={selectDay} isToday={false} />
+        {daysWithItems.map((d) => (
+          <DayChip
+            key={d}
+            id={String(d)}
+            label={dayName(d)}
+            count={byDay.get(d)?.length ?? 0}
+            selected={selected === String(d)}
+            onSelect={selectDay}
+            isToday={d === todayDow}
+          />
+        ))}
+      </ScrollView>
 
-          {selected === "all" ? (
-            <View style={{ gap: sp[16] }}>
-              {daysWithItems.map((d) => (
-                <DaySection key={d} dow={d} slots={byDay.get(d) ?? []} todayDow={todayDow} />
-              ))}
-            </View>
+      <DataList
+        data={feed.isLoading || feed.isError || nothingAtAll ? [] : sections}
+        renderItem={(info) =>
+          info.item.kind === "header" ? (
+            <DaySectionHeader dow={info.item.dow} todayDow={todayDow} />
           ) : (
-            <View style={{ gap: sp[8] }}>
-              <SectionBar index={1} title={dayName(Number(selected))} />
-              <SlotList slots={visible} />
-            </View>
-          )}
-
-          <T variant="xs" color="faint">
-            {`أيام الدراسة: ${daysWithItems.map((d) => AR_DAYS[d]).join(" · ")}`}
-          </T>
-        </>
-      )}
-    </PushFrame>
+            <SlotRow item={info.item.slot} status={statuses.get(info.item.key) ?? null} />
+          )
+        }
+        keyExtractor={(item: SectionItem) => item.key}
+        stickyHeaderIndices={stickyIndices}
+        isLoading={feed.isLoading}
+        isError={feed.isError}
+        errorMessage={feed.isError ? humanizeError(feed.error) : null}
+        onRetry={() => feed.refetch()}
+        refetch={feed.refetch}
+        isRefetching={feed.isRefetching}
+        emptySlot={
+          nothingAtAll ? (
+            <EmptyState
+              room="building"
+              title="لا يوجد جدول مسجّل"
+              message="ستظهر محاضراتك هنا فور أن يُسجَّل الجدول لمقرّراتك."
+            />
+          ) : (
+            <EmptyState
+              room="lecture-hall"
+              title={Number(selected) === todayDow ? "لا توجد محاضرات اليوم" : "لا حصص في هذا اليوم"}
+              message="اختر يوماً آخر من الشريط أعلاه أو راجع مقرّراتك."
+            />
+          )
+        }
+        contentPadding={{ horizontal: 16, top: 8, bottom: 24 }}
+        contentStyle={{ gap: 0 }}
+      />
+    </Screen>
   );
 }
 
-function DaySection({ dow, slots, todayDow }: { dow: number; slots: DaySlot[]; todayDow: number }) {
+function slotKey(s: DaySlot, i: number): string {
+  return `${s.offeringId}-${s.startTime}-${i}`;
+}
+
+/* ── the week strip chip ─────────────────────────────────────────────── */
+
+function DayChip({
+  id,
+  label,
+  count,
+  selected,
+  onSelect,
+  isToday,
+}: {
+  id: string;
+  label: string;
+  count: number;
+  selected: boolean;
+  onSelect: (id: string) => void;
+  isToday: boolean;
+}) {
+  const p = usePalette();
   return (
-    <View style={{ gap: sp[8] }}>
-      <SectionBar
-        index={dow + 1}
-        title={dayName(dow)}
-        action={dow === todayDow ? <T variant="xs" color="accentInk">اليوم</T> : undefined}
-      />
-      <SlotList slots={slots} />
+    <Pressable
+      accessibilityRole="tab"
+      accessibilityLabel={isToday ? `${label} — اليوم` : label}
+      accessibilityState={{ selected }}
+      onPress={() => onSelect(id)}
+      style={{
+        minHeight: 44,
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: sp[12],
+        borderWidth: 1,
+        borderColor: selected ? p.accent : p.border,
+        backgroundColor: selected ? p.accentSoft : p.surface,
+        gap: 0,
+      }}
+    >
+      <T variant="sm" weight={selected || isToday ? "bold" : "medium"} color={selected ? "accentInk" : "text"}>
+        {label}
+      </T>
+      <T variant="xs" color="faint">
+        {isToday ? `اليوم · ${latn(count)}` : latn(count)}
+      </T>
+    </Pressable>
+  );
+}
+
+/** Sticky day header inside the «الكل» list — solid ground while pinned. */
+function DaySectionHeader({ dow, todayDow }: { dow: number; todayDow: number }) {
+  const p = usePalette();
+  return (
+    <View
+      accessibilityRole="header"
+      style={{
+        backgroundColor: p.surface,
+        paddingVertical: sp[6],
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: p.rule,
+      }}
+    >
+      <T variant="sm" weight="bold" color={dow === todayDow ? "accentInk" : "muted"}>
+        {`${AR_DAYS[dow] ?? ""}${dow === todayDow ? " · اليوم" : ""}`}
+      </T>
     </View>
   );
 }
 
-function SlotList({ slots }: { slots: DaySlot[] }) {
-  if (slots.length === 0) {
-    return (
-      <T variant="sm" color="muted">
-        لا حصص في هذا اليوم.
-      </T>
-    );
-  }
+/* ── one class row ───────────────────────────────────────────────────── */
+
+const STATUS_META: Record<SlotStatus, { label: string }> = {
+  live: { label: "مباشرة الآن" },
+  next: { label: "التالية" },
+  done: { label: "انتهت" },
+};
+
+const SlotRow = makeRow<DaySlot, { status: SlotStatus | null }>(({ item: s, status }) => {
+  const p = usePalette();
+  const meta = status ? STATUS_META[status] : null;
   return (
-    <RowList>
-      {slots.map((s, i) => (
-        <LedgerRow
-          key={`${s.offeringId}-${s.startTime}-${i}`}
-          last={i === slots.length - 1}
-          accessibilityLabel={`حصة ${s.courseName}`}
-          onPress={() => router.push(`/student/courses/${s.offeringId}` as never)}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-            <MonoLabel>{`${s.startTime}–${s.endTime}`}</MonoLabel>
-            <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1}>
-              {`${s.courseCode} — ${s.courseName}`}
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={`حصة ${s.courseName}${meta ? `، ${meta.label}` : ""}`}
+      onPress={() => router.push(`/student/courses/${s.offeringId}` as never)}
+      style={({ pressed }) => ({
+        minHeight: 64,
+        justifyContent: "center",
+        paddingHorizontal: sp[4],
+        paddingVertical: sp[10],
+        backgroundColor: pressed ? p.surfaceHover : "transparent",
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: p.rule,
+        gap: 2,
+      })}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+        <MonoLabel>{`${s.startTime}–${s.endTime}`}</MonoLabel>
+        <View style={{ flex: 1 }}>
+          <T variant="body" weight="bold" numberOfLines={1}>
+            {`${s.courseCode} — ${s.courseName}`}
+          </T>
+        </View>
+        {/* ONE accent: live = accent fill, next = accentSoft, done = grey. */}
+        {meta && status ? (
+          <View
+            accessibilityLabel={meta.label}
+            style={{
+              paddingHorizontal: sp[8],
+              minHeight: 24,
+              justifyContent: "center",
+              backgroundColor:
+                status === "live" ? p.accent : status === "next" ? p.accentSoft : p.surfaceHover,
+            }}
+          >
+            <T
+              variant="xs"
+              weight="bold"
+              style={{
+                color:
+                  status === "live" ? p.accentFg : status === "next" ? p.accentInk : p.textMuted,
+              }}
+            >
+              {meta.label}
             </T>
           </View>
-          <T variant="sm" color="muted">
-            {s.room ?? "قاعة تُحدَّد لاحقاً"}
-          </T>
-        </LedgerRow>
-      ))}
-    </RowList>
+        ) : null}
+      </View>
+      <T variant="sm" color="muted">
+        {s.room ?? "قاعة تُحدَّد لاحقاً"}
+      </T>
+    </Pressable>
   );
-}
-
-
+});
