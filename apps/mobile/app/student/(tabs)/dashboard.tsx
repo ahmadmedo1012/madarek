@@ -324,7 +324,9 @@ export default function StudentDashboard() {
                   }}
                 >
                   <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
-                    <T variant="xs" weight="bold" color={c.when === "today" ? "accentInk" : "muted"}>
+                    {/* One-accent discipline: the hero owns the screen's orange —
+                        «اليوم» stays bold ink, not a second accent moment. */}
+                    <T variant="xs" weight={c.when === "today" ? "bold" : undefined} color={c.when === "today" ? "text" : "muted"}>
                       {classWhenLabel(c.when)}
                     </T>
                     <T variant="xs" color="muted">
@@ -387,6 +389,15 @@ export default function StudentDashboard() {
               <SkeletonText lines={2} />
               <SkeletonText lines={2} />
             </Card>
+          ) : dash.isError ? (
+            /* Honesty: a failed agenda must not masquerade as «استرح» —
+               the empty note only renders for a REAL empty agenda. */
+            <ErrorState
+              message={humanizeError(dash.error)}
+              onRetry={() => dash.refetch()}
+              onReport={() => router.push("/report" as never)}
+              compact
+            />
           ) : !agenda ||
             (agenda.assignments.length === 0 && agenda.exams.length === 0 && agenda.live.length === 0) ? (
             <SectionNote>لا تكليفات ولا اختبارات في النافذة القريبة — استرح أو راجع محاضراتك.</SectionNote>

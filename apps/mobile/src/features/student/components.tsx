@@ -485,7 +485,9 @@ const GRADE_KIND_LABEL: Record<string, string> = {
 };
 
 export function gradeKindLabel(kind: string): string {
-  return GRADE_KIND_LABEL[kind] ?? kind;
+  // Unknown kinds must never leak the raw enum to a reader (R334
+  // technical-string guard) — fall back to the generic Arabic noun.
+  return GRADE_KIND_LABEL[kind] ?? "تقييم";
 }
 
 /* ══ Mastery language (matrix 5-level, spec tone mapping) ══════════ */
