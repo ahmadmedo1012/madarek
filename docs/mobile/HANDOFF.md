@@ -22,8 +22,11 @@ Owner-facing handoff for the mobile-pro branch. Kept current as work lands.
 - Deps confirmed installed: reanimated 4.7.1 · gesture-handler 3.3.0 · @gorhom/bottom-sheet 5.2.14 · flash-list 2.3.2 · expo-haptics/image/video 58.x · keyboard-controller 1.22.7 · react-native-svg 15.16 · worklets 0.13 → **Round 1 adds NO new native modules** (fingerprint unchanged for JS-only work).
 
 ## EAS builds
-- Baseline Android preview from branch head: _pending_
-- Final iOS-simulator + Android APK from final head: _pending_
+- Baseline iOS-simulator preview (branch bootstrap head `d610a62`): **submitted — ID `1cd3219d-e8a3-4510-a6b5-67783802cdcd`** · logs: https://expo.dev/accounts/rh2011/projects/madarek-mobile/builds/1cd3219d-e8a3-4510-a6b5-67783802cdcd · status tracked below.
+- Baseline Android preview: **BLOCKED — Free-plan Android quota exhausted this month (resets in 27 days, ~Dec 1 2026)**. Retry command for the owner/lead:
+  `cd apps/mobile && EXPO_TOKEN=… npx eas-cli@latest build --platform android --profile preview --no-wait --non-interactive`
+  (or upgrade: `eas billing:subscribe starter --account rh2011`).
+- Final iOS-simulator + Android APK from final head: pending (iOS subject to remaining quota).
 
 ## Worktree / agent map (Round 1)
 | Task ID | Agent | Worktree | Branch | Owns |
