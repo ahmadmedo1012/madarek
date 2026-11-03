@@ -13,6 +13,7 @@ import { ownerApi } from "@/api/owner";
 import { get } from "@/api/client";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { numOf, type AiMetricsRow } from "@/features/governance/components";
 
 /** AI feature keys → Arabic labels (web OwnerAiPage FEATURE_LABELS parity). */
@@ -77,7 +78,7 @@ export default function OwnerAi() {
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />
         ) : metrics.isError ? (
-          <ErrorState message={(metrics.error as Error | null)?.message} onRetry={() => metrics.refetch()} />
+          <ErrorState message={humanizeError(metrics.error)} onRetry={() => metrics.refetch()} />
         ) : (
           <View style={{ gap: 16 }}>
             {/* [01] الحقائق الأساسية */}
