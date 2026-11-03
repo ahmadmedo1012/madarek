@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Pressable, StyleSheet, View , TextInput } from "react-native";
+import { Pressable, View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Sharing from "expo-sharing";
@@ -8,26 +8,49 @@ import ExternalLink from "lucide-react-native/icons/external-link";
 import Plus from "lucide-react-native/icons/plus";
 import Share2 from "lucide-react-native/icons/share-2";
 import Trash2 from "lucide-react-native/icons/trash";
-import { ApiError, absoluteUrl } from "@/api/client";
+import { absoluteUrl } from "@/api/client";
 import { downloadAuthenticated } from "@/api/pdf";
 import { researchApi } from "@/api/research";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
+import { AppStatusBar } from "@/design/statusbar";
 import { Screen } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { Card, Hairline, Sheet, Badge } from "@/components/ui/surfaces";
+import { Card, Hairline, Badge } from "@/components/ui/surfaces";
 import { ErrorState } from "@/components/ui/states";
+import { ActionSheet, AppSheet, SheetTextInput } from "@/components/ui/sheet";
+import { toast } from "@/components/ui/toast";
+import { RingProgress, Skeleton, SkeletonText } from "@/motion";
+import { haptics } from "@/haptics";
+import { humanizeError } from "@/lib/errors";
 import { dateTime, latn } from "@/lib/format";
 import type { PaperAnnotation } from "@/api/types";
 
-import { InlineBusy } from "@/components/ui/boot";
+/** Mount-on-first-open gate for the AppSheet family (RNGH v3 cannot boot
+ * under jest — arming at first open keeps the render-net green; on device
+ * the sheet behaves normally, close animation included). */
+function useArmOnOpen(open: boolean): boolean {
+  const [armed, setArmed] = useState(false);
+  useEffect(() => {
+    if (open) setArmed(true);
+  }, [open]);
+  return armed || open;
+}
 /**
  * /document/[filename] — authenticated PDF surface (papers / materials).
  * Native: downloads with Bearer auth to the app cache, then opens the real
  * system viewer (File.preview / share). When a paper id is supplied, the
  * native annotations panel provides page+comment CRUD (the web reader's
  * annotation sidebar equivalent). Web: opens the blob in a new tab.
+ *
+ * R334 Phase D: motion skeleton + indeterminate ring while downloading,
+ * honest error state with RETRY («تعذّر فتح الملف» — humanized, never raw
+ * English), share/save via ActionSheet, AppSheet + SheetTextInput for the
+ * annotations panel. Byte-level download progress is NOT available —
+ * downloadAuthenticated fetches a buffer (no progress events); the ring is
+ * honestly indeterminate (changing that means touching src/api/pdf.ts,
+ * owned elsewhere — flagged in docs/mobile/screens/lecture-library.md).
  */
 export default function DocumentViewer() {
   const params = useLocalSearchParams<{
@@ -44,7 +67,9 @@ export default function DocumentViewer() {
   /* One attempt per path: every setState happens after an await (the
    * sync resets at effect-start were the set-state-in-effect class —
    * the states below are DERIVED from the attempt + the path it belongs
-   * to, so a new file derives a fresh "downloading" for free). */
+   * to, so a new file derives a fresh "downloading" for free).
+   * `retryKey` re-arms the effect for the explicit «إعادة المحاولة». */
+  const [retryKey, setRetryKey] = useState(0);
   const [attempt, setAttempt] = useState<{
     path: string;
     file: File | null;
@@ -62,18 +87,24 @@ export default function DocumentViewer() {
           setAttempt({
             path: remotePath,
             file: null,
-            error: (err as ApiError).message ?? "تعذّر تنزيل المستند.",
+            error: humanizeError(err),
           });
       }
     })();
     return () => {
       alive = false;
     };
-  }, [remotePath, params.filename]);
+  }, [remotePath, params.filename, retryKey]);
 
   const file = attempt?.path === remotePath ? attempt.file : null;
   const downloadError = attempt?.path === remotePath ? attempt.error : null;
   const downloading = attempt?.path !== remotePath || attempt.file === null && attempt.error === null;
+
+  const retry = () => {
+    haptics.impact("light");
+    setAttempt(null);
+    setRetryKey((k) => k + 1);
+  };
 
   const paperId = typeof params.paper === "string" ? params.paper : null;
   const annotations = useQuery({
@@ -92,9 +123,14 @@ export default function DocumentViewer() {
         comment: newComment.trim(),
       }),
     onSuccess: () => {
+      haptics.notify("success");
       setNewComment("");
       setNewPage("");
       qc.invalidateQueries({ queryKey: ["research", "annotations", paperId] });
+    },
+    onError: (e) => {
+      haptics.notify("error");
+      toast.error(humanizeError(e), "تعذّر إضافة التعليق");
     },
   });
   const delAnn = useMutation({
@@ -111,7 +147,11 @@ export default function DocumentViewer() {
       try {
         await Sharing.shareAsync(file.uri, { mimeType: "application/pdf", dialogTitle: title });
       } catch {
-        setAttempt({ path: remotePath, file, error: "لا يوجد عارض PDF على هذا الجهاز — جرّب مشاركة الملف." });
+        setAttempt({
+          path: remotePath,
+          file,
+          error: "لا يوجد عارض PDF على هذا الجهاز — جرّب مشاركة الملف.",
+        });
       }
     }
   };
@@ -121,8 +161,24 @@ export default function DocumentViewer() {
     if (abs) globalThis.window?.open(abs, "_blank");
   };
 
+  const shareFile = async () => {
+    if (!file) return;
+    try {
+      await Sharing.shareAsync(file.uri, { mimeType: "application/pdf", dialogTitle: title });
+    } catch {
+      toast.error("تعذّرت المشاركة — أعد المحاولة.");
+    }
+  };
+
+  /* Share/save actions — ActionSheet (armed on first open: the sheet
+   * engine cannot boot under jest; on device it behaves normally). */
+  const [shareOpen, setShareOpen] = useState(false);
+  const shareArmed = useArmOnOpen(shareOpen);
+  const annArmed = useArmOnOpen(annOpen);
+
   return (
     <Screen scroll>
+      <AppStatusBar />
       <View style={{ gap: sp[12] }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           <View style={{ flex: 1, gap: 0 }}>
@@ -142,12 +198,17 @@ export default function DocumentViewer() {
             يُنزَّل المستند إلى مساحة التطبيق المؤقتة عبر جلسة موثّقة، ثم يُفتح في العارض الأصلي لجهازك — دعم كامل للبحث والتكبير والصفحات.
           </T>
           {downloading ? (
-            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-              <InlineBusy size={12} color={p.accent} />
-              <T variant="body" color="muted">جارٍ التنزيل…</T>
+            /* Honest indeterminate progress — byte-level progress is not
+             * available through downloadAuthenticated (see the header). */
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
+              <RingProgress size={28} thickness={3} progress={0} indeterminate color={p.accent} accessibilityLabel="جارٍ التنزيل" />
+              <View style={{ gap: sp[6], flex: 1 }}>
+                <T variant="body" color="muted">جارٍ التنزيل…</T>
+                <SkeletonText lines={1} lastLineRatio={0.6} />
+              </View>
             </View>
           ) : downloadError ? (
-            <ErrorState message={downloadError} compact />
+            <ErrorState message={downloadError} compact onRetry={retry} />
           ) : (
             <View style={{ flexDirection: "row", gap: sp[8], alignSelf: "stretch" }}>
               <View style={{ flex: 1 }}>
@@ -156,8 +217,9 @@ export default function DocumentViewer() {
               <Button
                 label="مشاركة"
                 kind="ghost"
-                onPress={async () => {
-                  if (file) await Sharing.shareAsync(file.uri, { mimeType: "application/pdf", dialogTitle: title });
+                onPress={() => {
+                  haptics.impact("light");
+                  setShareOpen(true);
                 }}
                 icon={<Share2 size={16} color={p.text} />}
                 small
@@ -165,7 +227,7 @@ export default function DocumentViewer() {
             </View>
           )}
           {typeof globalThis.window !== "undefined" ? (
-            <Pressable accessibilityRole="button" onPress={openWeb}>
+            <Pressable accessibilityRole="button" accessibilityLabel="فتح في المتصفح" onPress={openWeb}>
               <T variant="sm" color="accentInk">فتح في المتصفح</T>
             </Pressable>
           ) : null}
@@ -183,6 +245,9 @@ export default function DocumentViewer() {
               <Button label="إدارة" kind="ghost" small onPress={() => setAnnOpen(true)} />
             </View>
             <Hairline />
+            {annotations.isLoading ? (
+              <Skeleton width="100%" height={56} />
+            ) : null}
             {(annotations.data ?? []).slice(0, 4).map((a) => (
               <AnnotationRow key={a.id} a={a} onDelete={() => delAnn.mutate(a.id)} />
             ))}
@@ -193,52 +258,78 @@ export default function DocumentViewer() {
         ) : null}
       </View>
 
-      <Sheet
-        open={annOpen}
-        onClose={() => setAnnOpen(false)}
-        title="تعليقات على الصفحات"
-      >
-        <View style={{ gap: sp[12] }}>
-          <View style={{ flexDirection: "row", gap: sp[8] }}>
-            <View style={{ width: 100 }}>
-              <TextInput
-                accessibilityLabel="رقم الصفحة"
-                value={newPage}
-                onChangeText={setNewPage}
-                keyboardType="number-pad"
-                placeholder="صفحة"
-                placeholderTextColor={p.textFaint}
-                style={{ borderWidth: StyleSheet.hairlineWidth, borderColor: p.rule, backgroundColor: p.bg, color: p.text, padding: sp[12], minHeight: 48, textAlign: "center" }}
-              />
+      {shareArmed ? (
+        <ActionSheet
+          open={shareOpen}
+          onClose={() => setShareOpen(false)}
+          title={title}
+          actions={[
+            {
+              label: "مشاركة أو حفظ الملف",
+              onPress: () => {
+                void shareFile();
+              },
+              icon: <Share2 size={18} color={p.text} />,
+            },
+            {
+              label: "فتح في العارض",
+              onPress: () => {
+                void openViewer();
+              },
+              icon: <ExternalLink size={18} color={p.text} />,
+            },
+          ]}
+        />
+      ) : null}
+
+      {annArmed ? (
+        <AppSheet
+          open={annOpen}
+          onClose={() => setAnnOpen(false)}
+          title="تعليقات على الصفحات"
+          snap="lg"
+        >
+          <View style={{ gap: sp[12] }}>
+            <View style={{ flexDirection: "row", gap: sp[8] }}>
+              <View style={{ width: 120 }}>
+                <SheetTextInput
+                  accessibilityLabel="رقم الصفحة"
+                  value={newPage}
+                  onChangeText={setNewPage}
+                  keyboardType="number-pad"
+                  placeholder="صفحة"
+                  textAlign="center"
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <SheetTextInput
+                  accessibilityLabel="نص التعليق"
+                  value={newComment}
+                  onChangeText={setNewComment}
+                  placeholder="اكتب تعليق المراجعة…"
+                />
+              </View>
             </View>
-            <View style={{ flex: 1 }}>
-              <TextInput
-                accessibilityLabel="نص التعليق"
-                value={newComment}
-                onChangeText={setNewComment}
-                placeholder="اكتب تعليق المراجعة…"
-                placeholderTextColor={p.textFaint}
-                style={{ borderWidth: StyleSheet.hairlineWidth, borderColor: p.rule, backgroundColor: p.bg, color: p.text, padding: sp[12], minHeight: 48, textAlign: "right" }}
-              />
-            </View>
+            <Button
+              label="إضافة تعليق"
+              kind="accent"
+              small
+              disabled={newComment.trim().length === 0 || addAnn.isPending}
+              loading={addAnn.isPending}
+              onPress={() => addAnn.mutate()}
+              icon={<Plus size={16} color={p.accentFg} />}
+            />
+            {addAnn.isError ? (
+              <T variant="sm" color="danger">{humanizeError(addAnn.error)}</T>
+            ) : null}
+            <Hairline />
+            {(annotations.data ?? []).map((a) => (
+              <AnnotationRow key={a.id} a={a} onDelete={() => delAnn.mutate(a.id)} />
+            ))}
+            {(annotations.data ?? []).length === 0 ? <T variant="sm" color="faint">لا تعليقات بعد.</T> : null}
           </View>
-          <Button
-            label="إضافة تعليق"
-            kind="accent"
-            small
-            disabled={newComment.trim().length === 0 || addAnn.isPending}
-            loading={addAnn.isPending}
-            onPress={() => addAnn.mutate()}
-            icon={<Plus size={16} color={p.accentFg} />}
-          />
-          {addAnn.isError ? <T variant="sm" color="danger">{(addAnn.error as ApiError).message}</T> : null}
-          <Hairline />
-          {(annotations.data ?? []).map((a) => (
-            <AnnotationRow key={a.id} a={a} onDelete={() => delAnn.mutate(a.id)} />
-          ))}
-          {(annotations.data ?? []).length === 0 ? <T variant="sm" color="faint">لا تعليقات بعد.</T> : null}
-        </View>
-      </Sheet>
+        </AppSheet>
+      ) : null}
     </Screen>
   );
 }
@@ -253,7 +344,7 @@ function AnnotationRow({ a, onDelete }: { a: PaperAnnotation; onDelete: () => vo
           {a.author ? `${a.author.firstName} ${a.author.lastName}` : ""} {a.createdAt ? `· ${dateTime(a.createdAt)}` : ""}
         </T>
         <View style={{ flex: 1 }} />
-        <Pressable accessibilityRole="button" accessibilityLabel="حذف التعليق" onPress={onDelete}>
+        <Pressable accessibilityRole="button" accessibilityLabel="حذف التعليق" onPress={onDelete} hitSlop={10}>
           <Trash2 size={16} color={p.accentInk} />
         </Pressable>
       </View>
