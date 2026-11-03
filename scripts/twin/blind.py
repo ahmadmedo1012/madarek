@@ -104,11 +104,11 @@ def main():
                         page.goto(CFG["urls"][side], wait_until="networkidle",
                                   timeout=60000)
                         driver.ready(page, extra_ms=2000)
-                        page.wait_for_timeout(800)
+                        page.wait_for_timeout(1800)  # R332: entrance-fade guard — the first panel run caught mid-reveal frames (QA-1/QA-3 both flagged the wash-out asymmetry)
                         driver.seek(page, side, rec2["targetY"])
-                        driver.settle(page, 600)
+                        driver.settle(page, 1400)
                         page.add_style_tag(content=CFG["blind"]["blurCss"])
-                        page.wait_for_timeout(350)
+                        page.wait_for_timeout(900)
                         fp = bdir / f"{sec}-{assignment[side]}.png"
                         page.screenshot(path=str(fp))
                         imgs[assignment[side]] = fp.name
