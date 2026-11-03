@@ -1,12 +1,14 @@
 /**
  * /student/results — النتائج (web ResultsPage parity): per-course weighted
- * grade rollup — the big gradePct, the canonical kind labels
- * (واجب / اختبار قصير 1 / اختبار قصير 2 / نصفي / مشروع / نهائي), each
- * breakdown row as score/maxScore, and the teacher's feedback. The
- * headline (highest / average / lowest) rides the payload when present.
+ * grade rollup. R334: animated score hero (RingProgress + UI-thread
+ * CountUp), share/export of the Arabic summary, humanized errors, and the
+ * honest states (skeleton / empty / error) — trends are skipped until the
+ * payload carries a time series (it doesn't: one snapshot per offering).
  */
-import { View } from "react-native";
+import { useCallback, useState } from "react";
+import { Share, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
+import ShareIcon from "lucide-react-native/icons/share-2";
 import { studentApi } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
@@ -14,16 +16,36 @@ import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { SectionBar } from "@/components/ui/screen";
 import { Badge, Card } from "@/components/ui/surfaces";
+import { Button } from "@/components/ui/pressables";
 import { KpiCard, LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { CountUp, RingProgress } from "@/motion";
+import { humanizeError } from "@/lib/errors";
 import { latn, num, pct } from "@/lib/format";
 import { countAr } from "@/features/student/more";
 import { PushFrame, gradeKindLabel, normalizeResults } from "@/features/student/components";
+
+/** «%» with Latin digits — the CountUp face for percentages. */
+const pctFace = (n: number): string => `${latn(Math.round(n))}%`;
+
+/** The Arabic share/export summary (text-only, no PII beyond grades). */
+export function resultsShareText(data: {
+  avgGradePct: number | null;
+  courses: { courseName: string; gradePct: number | null }[];
+}): string {
+  const lines = ["ملخص نتائجي — منصة مدرَك"];
+  if (data.avgGradePct !== null) lines.push(`المتوسط العام: ${pct(data.avgGradePct)}`);
+  const graded = data.courses.filter((c) => c.gradePct !== null);
+  for (const c of graded.slice(0, 5)) lines.push(`• ${c.courseName}: ${pct(c.gradePct)}`);
+  if (graded.length > 5) lines.push(`… و${countAr(graded.length - 5, ["مقرّر آخر", "مقرّران آخران", "مقرّرات أخرى", "مقرراً آخر"])}`);
+  return lines.join("\n");
+}
 
 export default function ResultsScreen() {
   const scope = useInstitutionScope();
   const p = usePalette();
   const tones = useStatusTones();
+  const [shareError, setShareError] = useState<string | null>(null);
   const gradeInk = (gradePct: number | null): string => {
     if (gradePct === null) return p.textMuted;
     if (gradePct >= 65) return tones.mint.ink;
@@ -38,17 +60,29 @@ export default function ResultsScreen() {
   const { headline, courses } = feed.data ?? { headline: null, courses: [] };
   const hasGrades = courses.some((c) => c.gradePct !== null);
 
+  const onShare = useCallback(async () => {
+    if (!headline) return;
+    try {
+      setShareError(null);
+      await Share.share({
+        message: resultsShareText({ avgGradePct: headline.avgGradePct, courses }),
+      });
+    } catch {
+      setShareError("تعذّرت المشاركة — حاول مرة أخرى.");
+    }
+  }, [courses, headline]);
+
   return (
     <PushFrame
       title="النتائج"
       kicker="تفاصيل درجاتك وتحليل أدائك بناءً على بياناتك الفعليّة"
       refreshing={feed.isFetching && !feed.isLoading}
-      onRefresh={() => feed.refetch()}
+      onRefresh={() => void feed.refetch()}
     >
       {feed.isLoading ? (
         <SkeletonList rows={6} rowHeight={72} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
+        <ErrorState message={humanizeError(feed.error)} onRetry={() => void feed.refetch()} />
       ) : !hasGrades ? (
         <EmptyState
           title="لم تُسجَّل أي درجات بعد"
@@ -58,32 +92,49 @@ export default function ResultsScreen() {
         <>
           {headline ? (
             <View style={{ gap: sp[8] }}>
+              {headline.avgGradePct !== null ? (
+                <Card style={{ alignItems: "center", gap: sp[12] }}>
+                  <RingProgress
+                    progress={Math.min(1, Math.max(0, headline.avgGradePct / 100))}
+                    size={120}
+                    thickness={8}
+                    color={gradeInk(headline.avgGradePct)}
+                    accessibilityLabel={`المتوسط العام ${pct(headline.avgGradePct)}`}
+                  >
+                    <CountUp value={headline.avgGradePct} formatter={pctFace} />
+                  </RingProgress>
+                  <View style={{ alignItems: "center", gap: 2 }}>
+                    <T variant="h4" weight="bold">
+                      المتوسط العام
+                    </T>
+                    <T variant="xs" color="muted">
+                      {`عبر ${countAr(headline.courseCount, ["مقرّر واحد", "مقرّرين", "مقرّرات", "مقرّراً"])} مُقيَّم`}
+                    </T>
+                  </View>
+                  <Button
+                    label="مشاركة الملخص"
+                    kind="ghost"
+                    small
+                    icon={<ShareIcon size={16} color={p.text} />}
+                    onPress={() => void onShare()}
+                  />
+                  {shareError ? (
+                    <T variant="xs" style={{ color: tones.rose.deep }}>
+                      {shareError}
+                    </T>
+                  ) : null}
+                </Card>
+              ) : null}
               <View style={{ flexDirection: "row", gap: sp[8] }}>
                 <KpiCard
                   label="أعلى درجة"
                   value={headline.highest ? pct(headline.highest.gradePct) : "—"}
-                  tone="accent"
                 />
-                <KpiCard
-                  label="المتوسط"
-                  value={headline.avgGradePct !== null ? pct(headline.avgGradePct) : "—"}
-                />
-              </View>
-              <View style={{ flexDirection: "row", gap: sp[8] }}>
                 <KpiCard
                   label="أدنى درجة"
                   value={headline.lowest ? pct(headline.lowest.gradePct) : "—"}
                 />
-                <KpiCard
-                  label="مقرّرات مُقيَّمة"
-                  value={headline.courseCount}
-                />
               </View>
-              {headline.avgGradePct !== null ? (
-                <T variant="xs" color="muted">
-                  {`المتوسط عبر ${countAr(headline.courseCount, ["مقرّر واحد", "مقرّرين", "مقرّرات", "مقرّراً"])}`}
-                </T>
-              ) : null}
             </View>
           ) : null}
 

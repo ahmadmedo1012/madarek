@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -8,32 +8,193 @@ import Clock from "lucide-react-native/icons/clock";
 import { examsApi, type ExamTemplateRow } from "@/api/exams";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
+import { type StatusToneName } from "@/design/tokens";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui/screen";
 import { Badge } from "@/components/ui/surfaces";
 import { Segmented } from "@/components/ui/fields";
-import { LedgerRow, RowList } from "@/components/ui/data";
-import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { DataList, LedgerRow, makeRow } from "@/components/ui/data";
+import { EmptyState } from "@/components/ui/states";
+import { humanizeError } from "@/lib/errors";
 import { dateTime, latn, num, shortDate } from "@/lib/format";
 import {
   KIND_LABEL,
-  KIND_TONE,
   attemptVerdict,
   countAr,
   examStartable,
   examWindowState,
 } from "@/features/student/more";
 
+/* ── pure helpers (unit-pinned in src/test/exam-runner.test.tsx) ─────── */
+
+/** The accent is reserved for THE actionable state — everything else is semantic. */
+export type ExamStatusTone = "accent" | StatusToneName;
+
+/** «يفتح بعد ساعتين» — accusative duals so «بعد …» reads grammatically. */
+export function fmtUntilAr(msLeft: number): string {
+  const mins = Math.floor(Math.max(0, msLeft) / 60_000);
+  if (mins < 1) return "أقل من دقيقة";
+  if (mins < 60) return countAr(mins, ["دقيقة واحدة", "دقيقتين", "دقائق", "دقيقة"]);
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return countAr(hours, ["ساعة واحدة", "ساعتين", "ساعات", "ساعة"]);
+  return countAr(Math.floor(hours / 24), ["يوم واحد", "يومين", "أيام", "يوماً"]);
+}
+
+/**
+ * The ONE status chip per row: upcoming / live / missed / graded (+
+ * pending-manual and resumable), semantic colors, accent only when the
+ * student can act NOW.
+ */
+export function examStatusChip(exam: ExamTemplateRow, now = Date.now()): {
+  label: string;
+  tone: ExamStatusTone;
+} {
+  const a = exam.myAttempt;
+  const ws = examWindowState(exam, now);
+  if (ws === "upcoming" && exam.openAt && a?.status !== "IN_PROGRESS") {
+    return { label: `يفتح بعد ${fmtUntilAr(new Date(exam.openAt).getTime() - now)}`, tone: "sky" };
+  }
+  // Practice retake: a finished attempt while the window is still open —
+  // the RETAKE is the story, not the old score (accent stays reserved:
+  // a retake has no deadline urgency). Closed windows fall through to the
+  // graded verdict below.
+  if (ws === "open" && a && a.status !== "IN_PROGRESS" && exam.kind === "PRACTICE") {
+    return { label: "تدريبي — إعادة متاحة", tone: "grey" };
+  }
+  const verdict = attemptVerdict(exam);
+  if (a?.status === "GRADED" && !verdict) return { label: "مُصحَّح", tone: "mint" };
+  if (verdict && (a?.status === "GRADED" || a?.status === "SUBMITTED" || a?.status === "EXPIRED")) {
+    return {
+      label: verdict.score
+        ? `${verdict.label} · ${latn(verdict.score.value)}/${latn(verdict.score.max)}`
+        : verdict.label,
+      tone: verdict.tone,
+    };
+  }
+  if (a?.status === "IN_PROGRESS") {
+    return { label: ws === "open" ? "متابعة المحاولة" : "لم يكتمل", tone: ws === "open" ? "accent" : "grey" };
+  }
+  if (ws === "open") {
+    return { label: "متاح الآن", tone: "accent" };
+  }
+  return { label: "أغلق باب التسليم", tone: "grey" };
+}
+
+/* ── the row ──────────────────────────────────────────────────────────── */
+
+function StatusChip({ tone, label }: { tone: ExamStatusTone; label: string }) {
+  const p = usePalette();
+  if (tone !== "accent") return <Badge label={label} tone={tone} />;
+  return (
+    <View
+      accessibilityRole="text"
+      accessibilityLabel={label}
+      style={{
+        borderWidth: 1,
+        borderColor: p.accentInk,
+        backgroundColor: p.accentSoft,
+        paddingHorizontal: 8,
+        paddingVertical: 2,
+      }}
+    >
+      <T variant="xs" weight="bold" style={{ color: p.accentInk }}>
+        {label}
+      </T>
+    </View>
+  );
+}
+
+type ExamRowProps = { item: ExamTemplateRow; last: boolean; now: number };
+
+function ExamRowInner({ item: exam, last, now }: ExamRowProps) {
+  const ws = examWindowState(exam, now);
+  const status = examStatusChip(exam, now);
+
+  const windowText = exam.openAt
+    ? exam.closeAt
+      ? `من ${shortDate(exam.openAt)} · حتى ${dateTime(exam.closeAt)}`
+      : `يفتح ${dateTime(exam.openAt)}`
+    : exam.closeAt
+      ? `يغلق ${dateTime(exam.closeAt)}`
+      : "بلا نافذة زمنية";
+
+  const cta =
+    exam.myAttempt?.status === "IN_PROGRESS"
+      ? "متابعة"
+      : examStartable(exam) && ws === "open"
+        ? exam.myAttempt && exam.kind === "PRACTICE"
+          ? "إعادة المحاولة"
+          : "ابدأ"
+        : "عرض التفاصيل";
+
+  return (
+    <LedgerRow
+      last={last}
+      onPress={() => router.push(`/student/online-exams/${exam.id}` as never)}
+      accessibilityLabel={`${exam.title} — ${KIND_LABEL[exam.kind] ?? "اختبار"} — ${status.label}`}
+    >
+      <View style={{ flexDirection: "row", alignItems: "flex-start", gap: sp[8] }}>
+        <View style={{ flex: 1, gap: 2 }}>
+          <T variant="bodyLg" weight="bold">
+            {exam.title}
+          </T>
+          <T variant="sm" color="muted">
+            {`${exam.courseName ?? exam.facultyName ?? "موحد"} · ${KIND_LABEL[exam.kind] ?? "اختبار"}`}
+          </T>
+        </View>
+        <StatusChip tone={status.tone} label={status.label} />
+      </View>
+      <T variant="xs" color="muted">
+        {windowText}
+      </T>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: sp[12] }}>
+        <MetaBit icon="clock" text={`${num(exam.durationMin)} دقيقة`} />
+        <MetaBit icon="check" text={countAr(exam.questionCount ?? 0, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} />
+        <MetaBit icon="cal" text={`النجاح ≥ ${exam.passingScore != null ? latn(exam.passingScore) : "—"}%`} />
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[4] }}>
+        <T variant="sm" weight="bold" color={status.tone === "accent" ? "accentInk" : "secondary"}>
+          {cta}
+        </T>
+      </View>
+    </LedgerRow>
+  );
+}
+
+/** Module-scope memoized row — DataList recycling discipline (lists.md). */
+const ExamRow = makeRow<ExamTemplateRow, Omit<ExamRowProps, "item">>(ExamRowInner);
+
+function MetaBit({ icon, text }: { icon: "clock" | "check" | "cal"; text: string }) {
+  const p = usePalette();
+  const color = p.textMuted;
+  return (
+    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+      {icon === "clock" ? <Clock size={12} color={color} /> : null}
+      {icon === "check" ? <ClipboardCheck size={12} color={color} /> : null}
+      {icon === "cal" ? <CalendarClock size={12} color={color} /> : null}
+      <T variant="xs" color="muted">
+        {text}
+      </T>
+    </View>
+  );
+}
+
+/** Refresh cadence for «يفتح بعد …» chips — a calm 30s, only while needed. */
+const UPGRADE_TICK_MS = 30_000;
+
 /**
  * /student/online-exams — student exam list (web OnlineExamsPage parity):
- * startable window rule (openAt ≤ now ≤ closeAt), attempt chips per the
- * r164-e wire contract, segmented filter الكل/متاحة/منجزة.
+ * startable window rule, ONE status chip per row (semantic tones, accent
+ * reserved for act-now), DataList (FlashList v2) with tri-state defaults,
+ * exam-hall empty state, and a 30s refresh tick that only runs while an
+ * upcoming exam is listed (timer-to-start).
  */
 export default function OnlineExamsScreen() {
   const scope = useInstitutionScope();
   const [filter, setFilter] = useState("all");
+  const [nowTick, setNowTick] = useState(() => Date.now());
   const feed = useQuery({
     queryKey: ["exams", "me", scope],
     queryFn: () => examsApi.myExams(),
@@ -51,139 +212,65 @@ export default function OnlineExamsScreen() {
   );
   const visible = filter === "available" ? available : filter === "taken" ? taken : exams;
 
+  const hasUpcoming = exams.some((e) => examWindowState(e) === "upcoming" && e.openAt);
+  useEffect(() => {
+    if (!hasUpcoming) return;
+    const id = setInterval(() => setNowTick(Date.now()), UPGRADE_TICK_MS);
+    return () => clearInterval(id);
+  }, [hasUpcoming]);
+
   return (
-    <Screen scroll>
+    <Screen scroll={false} padded={false}>
       <StackHeader title="الاختبارات الإلكترونية" kicker="مركز الاختبارات" />
-      <Segmented
-        options={[
-          { id: "all", label: "الكل" },
-          { id: "available", label: "متاحة" },
-          { id: "taken", label: "منجزة" },
-        ]}
-        selectedId={filter}
-        onSelect={setFilter}
-      />
-      <T variant="sm" color="muted">
-        اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات — لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية.
-      </T>
-
-      {feed.isLoading ? (
-        <SkeletonList rows={5} />
-      ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
-      ) : visible.length === 0 ? (
-        <EmptyState
-          title="لا توجد اختبارات هنا"
-          message={
-            filter === "available"
-              ? "لا توجد اختبارات متاحة حالياً — ستظهر فور اعتماد مكتب الجودة ومقرريك الاختبارات."
-              : "ستظهر اختباراتك المجدولة والمنجزة في هذه القائمة."
-          }
+      <View style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
+        <Segmented
+          options={[
+            { id: "all", label: "الكل" },
+            { id: "available", label: "متاحة" },
+            { id: "taken", label: "منجزة" },
+          ]}
+          selectedId={filter}
+          onSelect={setFilter}
         />
-      ) : (
-        <RowList>
-          {visible.map((e, i) => (
-            <ExamRow key={e.id} exam={e} last={i === visible.length - 1} />
-          ))}
-        </RowList>
-      )}
-      {visible.length > 0 ? (
-        <T variant="xs" color="faint">
-          {countAr(visible.length, ["اختبار واحد", "اختباران", "اختبارات", "اختباراً"])}
+        <T variant="sm" color="muted">
+          اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات — لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية.
         </T>
-      ) : null}
+        {visible.length > 0 ? (
+          <T variant="xs" color="faint">
+            {countAr(visible.length, ["اختبار واحد", "اختباران", "اختبارات", "اختباراً"])}
+          </T>
+        ) : null}
+      </View>
+      <View style={{ flex: 1 }}>
+        <DataList
+          data={visible}
+          renderItem={({ item, index }) => (
+            <ExamRow item={item} last={index === visible.length - 1} now={nowTick} />
+          )}
+          keyExtractor={(e) => e.id}
+          extraData={nowTick}
+          isLoading={feed.isLoading}
+          isError={feed.isError}
+          errorMessage={humanizeError(feed.error)}
+          onRetry={() => void feed.refetch()}
+          refetch={() => void feed.refetch()}
+          isRefetching={feed.isRefetching}
+          emptySlot={
+            <EmptyState
+              room="exam-hall"
+              title={filter === "all" ? undefined : "لا توجد اختبارات هنا"}
+              message={
+                filter === "available"
+                  ? "لا توجد اختبارات متاحة حالياً — ستظهر فور اعتماد مكتب الجودة ومقرريك الاختبارات."
+                  : filter === "taken"
+                    ? "ستظهر اختباراتك المنجزة في هذه القائمة."
+                    : undefined
+              }
+            />
+          }
+          contentPadding={{ horizontal: 20, bottom: 24 }}
+        />
+      </View>
     </Screen>
-  );
-}
-
-function ExamRow({ exam, last }: { exam: ExamTemplateRow; last: boolean }) {
-  const ws = examWindowState(exam);
-  const verdict = attemptVerdict(exam);
-
-  const windowText = exam.openAt
-    ? exam.closeAt
-      ? `من ${shortDate(exam.openAt)} · حتى ${dateTime(exam.closeAt)}`
-      : `يفتح ${dateTime(exam.openAt)}`
-    : exam.closeAt
-      ? `يغلق ${dateTime(exam.closeAt)}`
-      : "بلا نافذة زمنية";
-
-  const attemptChip = (() => {
-    const a = exam.myAttempt;
-    if (!a) return null;
-    if (a.status === "GRADED" && a.score !== null && a.score !== undefined) {
-      return (
-        <Badge label={`مُصحَّح · ${latn(Number(a.score))}/${latn(Number(a.maxScore))}`} tone="mint" />
-      );
-    }
-    if (a.status === "GRADED") return <Badge label="مُصحَّح" tone="mint" />;
-    if (a.status === "SUBMITTED") return <Badge label="بانتظار التصحيح اليدوي" tone="yellow" />;
-    if (a.status === "IN_PROGRESS") {
-      return <Badge label={ws === "open" ? "لم يكتمل — متابعة" : "لم يكتمل"} tone="copper" />;
-    }
-    return <Badge label="أُنجز" tone="grey" />;
-  })();
-
-  return (
-    <LedgerRow
-      last={last}
-      onPress={() => router.push(`/student/online-exams/${exam.id}` as never)}
-      accessibilityLabel={`${exam.title} — ${KIND_LABEL[exam.kind] ?? "اختبار"}`}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-        <Badge label={KIND_LABEL[exam.kind] ?? String(exam.kind)} tone={KIND_TONE[exam.kind] ?? "grey"} />
-        <View style={{ flex: 1 }} />
-        {exam.myAttempt?.status === "IN_PROGRESS" ? null : verdict ? (
-          <Badge
-            label={verdict.score ? `${verdict.label} · ${latn(verdict.score.value)}/${latn(verdict.score.max)}` : verdict.label}
-            tone={verdict.tone}
-          />
-        ) : null}
-      </View>
-      <T variant="bodyLg" weight="bold">
-        {exam.title}
-      </T>
-      <T variant="sm" color="secondary">
-        {exam.courseName ?? exam.facultyName ?? "موحد"}
-      </T>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: sp[8] }}>
-        <T variant="xs" color="muted">
-          {windowText}
-        </T>
-      </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: sp[12] }}>
-        <MetaBit icon="clock" text={`${num(exam.durationMin)} دقيقة`} />
-        <MetaBit icon="check" text={countAr(exam.questionCount ?? 0, ["سؤال", "سؤالان", "أسئلة", "سؤالاً"])} />
-        <MetaBit icon="cal" text={`النجاح ≥ ${exam.passingScore != null ? latn(exam.passingScore) : "—"}%`} />
-      </View>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: sp[6] }}>
-        {attemptChip}
-        {exam.kind === "PRACTICE" && ws === "open" && exam.myAttempt && exam.myAttempt.status !== "IN_PROGRESS" ? (
-          <Badge label="تدريبي — إعادة المحاولة متاحة" tone="sky" />
-        ) : null}
-        {ws === "upcoming" && exam.openAt ? <Badge label={`يفتح ${dateTime(exam.openAt)}`} tone="sky" /> : null}
-        {ws === "closed" ? <Badge label="أغلق باب التسليم" tone="grey" /> : null}
-      </View>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[4] }}>
-        <T variant="sm" weight="bold" color="accentInk">
-          {exam.myAttempt?.status === "IN_PROGRESS" ? "متابعة" : examStartable(exam) && ws === "open" ? "ابدأ" : "عرض النتيجة"}
-        </T>
-      </View>
-    </LedgerRow>
-  );
-}
-
-function MetaBit({ icon, text }: { icon: "clock" | "check" | "cal"; text: string }) {
-  const p = usePalette();
-  const color = p.textMuted;
-  return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-      {icon === "clock" ? <Clock size={12} color={color} /> : null}
-      {icon === "check" ? <ClipboardCheck size={12} color={color} /> : null}
-      {icon === "cal" ? <CalendarClock size={12} color={color} /> : null}
-      <T variant="xs" color="muted">
-        {text}
-      </T>
-    </View>
   );
 }
