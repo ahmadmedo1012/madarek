@@ -1,16 +1,31 @@
 /**
- * ConsentBanner — R314 (V11) → R328 (H1) — the landing's local-storage
- * consent gate.
+ * ConsentBanner — R314 (V11) → R328 (H1) → R332 (W8) — the landing's
+ * local-storage consent gate.
  *
  * An ORIGINAL component in the reference's measured chrome grammar —
- * now THE CORNER CARD (R328 H1): a small drafting card seated in the
- * sheet grid's corner (inside the 7px frame hairline), ≤360px wide on
- * pointer viewports / the phone grid's own column on touch, four
- * separate 1px ink rules like a drafting frame, radius 0, NO shadow.
- * Accept stays the REAL primary — ink slab + paper label, ≥4.5:1 both
- * themes (R318 §A9); Reject ink-labelled with the owner-mandated 44px
- * touch floor on phones. Madarek's OWN honest sentence — never the
- * reference's copy, logo, or awards.
+ * now THE HAIRLINE CORNER CELL (R332 W8): a small drafting cell seated
+ * in the sheet grid's corner (inside the 7px frame hairline), ≤320px
+ * wide, ONE 1px var(--rule) hairline box — the R328 four-rule drafting
+ * frame is retired (the spans are gone; the cell carries itself) —
+ * radius 0, NO shadow, paper ground, 12–13px type pinned in px at
+ * every viewport. Brand accent lives ONLY on the accept action. The
+ * cell's own sheet is styles/landing/consent.css (imported below;
+ * it overrides r314-chrome.css on SPECIFICITY — that sheet, which owns
+ * the fixed mirrored seat (bottom/left 7px · z 240) and the entrance,
+ * is untouched). Accept stays the REAL primary — ink slab + paper
+ * label, ≥4.5:1 both themes (R318 §A9); Reject ink-labelled with the
+ * owner-mandated 44px touch floor on phones. Madarek's OWN honest
+ * sentence — never the reference's copy, logo, or awards.
+ *
+ * THE CONDITIONAL YIELD (R332 W8): the never-hide end-reserve keeps
+ * the RESTING seat honest, but transient frames slide footer/CTA links
+ * behind the fixed cell. While the unanswered cell would intersect any
+ * visible link/button, the watcher below stamps `data-cb-yield` and
+ * the cell RECEDES (consent.css → visibility:hidden — the fixed box
+ * stays measured: zero layout shift, zero CLS) and returns 600ms after
+ * the corner clears (hysteresis, no flicker). Focus inside the cell
+ * when it yields falls to <body> — a transient scroll-driven state,
+ * documented at the watcher.
  *
  * The R323 phone compact bar (brief label + expand toggle) is RETIRED:
  * the card carries the full honest sentence at every width, so the
@@ -33,9 +48,15 @@
  * 200ms clip-up ~600ms after the sheet reveal starts); reduced motion
  * collapses the rise to a plain opacity fade.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useBottomStackLayer } from '../../../hooks/useBottomStackLayer';
+/* R332 (W8) — the cell's own sheet. Imported BY the component, so it
+ * injects BEFORE r314-chrome.css in the module graph (LandingPage's
+ * component imports precede the page's sheet imports) and every
+ * override there wins on SPECIFICITY ((0,2,0)–(0,4,1) vs r314's bare
+ * (0,1,0) `.cb-*`) — no !important, no ID selectors. */
+import '../../../styles/landing/consent.css';
 
 /* ── The storage contract ────────────────────────────────────────────
  * `madarek.consent` holds the plain decision ("accepted"/"rejected") —
@@ -185,8 +206,116 @@ export function ConsentBanner() {
    * (200ms). R328 (H1): the sheet itself also pads its foot by the
    * pile's height while the gate is unanswered (the never-hide
    * reserve — see r314-chrome.css), so the footer's last row can
-   * never sit behind the card. */
+   * never sit behind the card. The same node also carries the W8
+   * yield watcher (rootRef below), hence the one combined ref. */
   const bannerRef = useBottomStackLayer('consent');
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const setRoot = useCallback(
+    (node: HTMLDivElement | null) => {
+      rootRef.current = node;
+      bannerRef(node);
+    },
+    [bannerRef],
+  );
+
+  /* ── R332 (W8) — THE CONDITIONAL YIELD watcher ──────────────────
+   * While the unanswered cell would intersect any VISIBLE link/button
+   * outside itself, it recedes: `data-cb-yield` → consent.css
+   * visibility:hidden. The fixed box keeps its geometry while hidden,
+   * so the bottom-stack measurement and the page never shift (zero
+   * CLS); the cell returns 600ms after the corner clears — hysteresis,
+   * so a boundary-straddling frame cannot flicker.
+   *
+   * Cost discipline: rAF-throttled on scroll/resize + one mount pass;
+   * each pass is ONE querySelectorAll + rect/style reads with an early
+   * break on the first covered element (≤1ms on the probed page).
+   * Pre-reveal content (opacity 0 until its reveal fires) and the
+   * pre-entrance cell itself count as CLEAR — neither can cover or be
+   * covered while invisible. Focus inside the cell when it yields
+   * falls to <body>: inherent to a scroll-driven transient state (the
+   * cell is gone, so its tab stops are gone with it) — the next pass
+   * that clears the corner returns the cell and its focus targets. */
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const node = rootRef.current;
+    if (!node) return undefined;
+
+    const INTERACTIVE =
+      'a[href], button, [role="button"], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])';
+    const RETURN_DELAY_MS = 600;
+
+    let raf = 0;
+    let releaseAt = 0;
+
+    const evaluate = () => {
+      raf = 0;
+      let covered = false;
+      const box = node.getBoundingClientRect();
+      /* the pre-entrance cell (opacity 0) covers nothing visually */
+      if (
+        box.width > 0 &&
+        box.height > 0 &&
+        getComputedStyle(node).opacity !== '0'
+      ) {
+        const others = document.querySelectorAll(INTERACTIVE);
+        for (const el of others) {
+          if (node.contains(el)) continue;
+          const cs = getComputedStyle(el);
+          if (
+            cs.visibility === 'hidden' ||
+            cs.display === 'none' ||
+            cs.opacity === '0' /* pre-reveal = clear */
+          ) {
+            continue;
+          }
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 && r.height === 0) continue;
+          if (
+            r.right > box.left &&
+            r.left < box.right &&
+            r.bottom > box.top &&
+            r.top < box.bottom
+          ) {
+            covered = true;
+            break;
+          }
+        }
+      }
+      if (covered) {
+        window.clearTimeout(releaseAt);
+        releaseAt = 0;
+        node.setAttribute('data-cb-yield', '');
+      } else if (
+        node.hasAttribute('data-cb-yield') &&
+        releaseAt === 0
+      ) {
+        /* hysteresis: return only 600ms after the corner cleared */
+        releaseAt = window.setTimeout(() => {
+          releaseAt = 0;
+          node.removeAttribute('data-cb-yield');
+        }, RETURN_DELAY_MS);
+      }
+    };
+
+    const schedule = () => {
+      if (!raf) raf = window.requestAnimationFrame(evaluate);
+    };
+
+    schedule(); /* the one mount pass */
+    /* capture: the landing's scrollers (incl. any inner panes) report
+     * through the window's capture phase — scroll does not bubble. */
+    window.addEventListener('scroll', schedule, {
+      passive: true,
+      capture: true,
+    });
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('scroll', schedule, { capture: true });
+      window.removeEventListener('resize', schedule);
+      if (raf) window.cancelAnimationFrame(raf);
+      if (releaseAt) window.clearTimeout(releaseAt);
+    };
+  }, []);
 
   /* The shared answer path — button clicks and the window API both
    * land here, so the two writers can never diverge. */
@@ -232,20 +361,15 @@ export function ConsentBanner() {
 
   return (
     /* role="region" + label: announced as a landmark, not a modal —
-     * the visitor's flow is never hijacked, keyboard or pointer. */
+     * the visitor's flow is never hijacked, keyboard or pointer. The
+     * R332 W8 cell: ONE 1px var(--rule) hairline box (the four
+     * .cb-rule spans retired — consent.css draws the single border). */
     <div
-      ref={bannerRef}
+      ref={setRoot}
       className="cb-banner"
       role="region"
       aria-label="الموافقة على التخزين المحلي"
     >
-      {/* the four separate 1px ink rules — the drafting frame (the
-          reference paints them as four lines, not a border box) */}
-      <span className="cb-rule cb-rule-t" aria-hidden="true" />
-      <span className="cb-rule cb-rule-r" aria-hidden="true" />
-      <span className="cb-rule cb-rule-b" aria-hidden="true" />
-      <span className="cb-rule cb-rule-l" aria-hidden="true" />
-
       {/* R328 (H1): the card carries the FULL honest sentence at every
           width (the R323 brief/expand pair retired with the compact
           bar). R320 §D (c2-LEGAL) keeps the learn-more target on

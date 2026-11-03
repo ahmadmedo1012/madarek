@@ -748,6 +748,7 @@
   position: absolute;
   background: var(--border);
   opacity: 0;
+  mix-blend-mode: difference; /* the reference's cursor line (heron-program colors.heroCursorLine) */
   transition: opacity var(--t-base) var(--ease);
 }
 
@@ -768,7 +769,7 @@
 }
 
 .hi-layer[data-point='on'] .hi-guide {
-  opacity: 1;
+  opacity: 0.2; /* the reference's 0.2 line opacity inside the difference blend */
 }
 
 .hi-plus {

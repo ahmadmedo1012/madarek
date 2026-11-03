@@ -386,6 +386,15 @@ export function AppRoutes() {
         </Route>
         {/* /auth is the canonical login route; /login is a legacy alias. */}
         <Route path="/login" element={<Navigate to="/auth" replace />} />
+        {/* R332 W10a — the three stale typed URLs (supervisor §W10: dead
+            links → 404 today) get real seats instead: /register mounts at
+            /auth/register (the alias rides the canonical page), the
+            universities surface IS the public colleges gallery, and the
+            feature-claims ledger «ما يعمل اليوم» is the /capabilities
+            route. Decisions: docs/redesign/r332/qa/w10a-routes.md. */}
+        <Route path="/register" element={<Navigate to="/auth/register" replace />} />
+        <Route path="/universities" element={<Navigate to="/colleges" replace />} />
+        <Route path="/features" element={<Navigate to="/capabilities" replace />} />
         {/* R323 §A1 — brand specimen sheet (dev + review evidence). */}
         <Route path="/__brand" element={<BrandPage />} />
         {/* R323 §A5 — the component-system specimen sheet + the

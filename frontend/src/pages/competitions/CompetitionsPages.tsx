@@ -29,6 +29,10 @@ import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .leaderboard-list/-points families (D11 css split, 12-15)
 import '../../styles/colleges.css'; // .comp-* index/hero/entry/modal families (D14 css split, 13-17)
+// R332 W10b — the inner-public sheet bridge: .inx-head opening hairline +
+// the d2 display title + the [01] gutter index (after colleges.css so the
+// bridge's unlayered rules land last in the chunk-shared CSS).
+import '../../styles/landing/inner.css';
 import { formatDate, formatNum } from '../../utils/numbers';
 
 /* Payload document title (A12 P3-6): the h1 carries the competition's
@@ -151,18 +155,23 @@ export function CompetitionsIndexPage() {
 
   return (
     <PageFrame>
-      <PageHeader
-        title="المسابقات الأكاديمية"
-        description="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
-        actions={
-          canRun ? (
-            <button type="button" className="btn primary" onClick={() => setCreating(true)}>
-              <Icon icon={Plus} size={14} />
-              مسابقة جديدة
-            </button>
-          ) : undefined
-        }
-      />
+      {/* R332 W10b — .inx-head: the page-opening hairline + d2 display
+          title + [01] gutter index (the inner-public sheet bridge). */}
+      <div className="inx-head">
+        <PageHeader
+          title="المسابقات الأكاديمية"
+          description="شارك في تحديات المعرفة والابتكار، أو نظِّم مسابقتك الخاصّة."
+          actions={
+            canRun ? (
+              <button type="button" className="btn primary" onClick={() => setCreating(true)}>
+                <Icon icon={Plus} size={14} />
+                مسابقة جديدة
+              </button>
+            ) : undefined
+          }
+          index="01"
+        />
+      </div>
 
       {/* r263: شريط أرقام هادئ بدل بطاقات KPI — القيم الصادقة نفسها. */}
       <StatLine

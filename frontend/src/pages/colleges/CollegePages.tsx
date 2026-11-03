@@ -43,6 +43,10 @@ import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
 // AdminExtra/AdminGovernance dropped their imports), so it lands in the
 // chunk-shared CSS.
 import '../../styles/colleges.css';
+// R332 W10b — the inner-public sheet bridge: .inx-head opening hairline +
+// the d2 display title + the [01] gutter index (after colleges.css so the
+// bridge's unlayered rules land last in the chunk-shared CSS).
+import '../../styles/landing/inner.css';
 import { formatDate } from '../../utils/numbers';
 
 interface CollegeListItem {
@@ -309,11 +313,16 @@ export function CollegesIndexPage() {
       {/* r264: ترويسة patterns هادئة — «المسرح الملوّن» (SectionAccent
           scene-paint) يتقاعد مع اتجاه Superlist: الهرمية عبر السطوح
           لا عبر الطلاء. ضيف الزائر يبقى فوق الترويسة كإجراء صفحة. */}
-      <PageHeader
-        title="البنية الأكاديمية التجريبية — جامعة مدارك التجريبية"
-        description="استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها."
-        actions={isGuest ? <GuestJoinRow /> : undefined}
-      />
+      {/* R332 W10b — .inx-head: the page-opening hairline + d2 display
+          title + [01] gutter index (the inner-public sheet bridge). */}
+      <div className="inx-head">
+        <PageHeader
+          title="البنية الأكاديمية التجريبية — جامعة مدارك التجريبية"
+          description="استكشف الكلّيّات والأقسام في سجلّ المؤسّسة المرجعية للعرض، وقادة كلّ كلّيّة، وأبرز طلّابها وأنشطها."
+          actions={isGuest ? <GuestJoinRow /> : undefined}
+          index="01"
+        />
+      </div>
 
       {q.isLoading && (
         /* r305: row-shaped placeholder — the gallery renders campus
@@ -1008,12 +1017,16 @@ export function CollegesLeaderboardPage() {
         كلّيّات الجامعة
       </Link>
       {/* G: ترويسة patterns — نفس عقد بقية العائلة (المجتمع/المسابقات/
-          الكليات)؛ صفّ الانضمام للضيف في خانة الإجراءات التي كان يشغلها. */}
-      <PageHeader
-        title="منافسة الكلّيّات"
-        description="مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ."
-        actions={isGuest ? <GuestJoinRow /> : undefined}
-      />
+          الكليات)؛ صفّ الانضمام للضيف في خانة الإجراءات التي كان يشغلها.
+          R332 W10b — .inx-head: نفس جسر ورقة الصفحة الداخلية. */}
+      <div className="inx-head">
+        <PageHeader
+          title="منافسة الكلّيّات"
+          description="مقارنة الكلّيّات على مؤشّرات الأداء الأكاديميّ والنشاط الرقميّ."
+          actions={isGuest ? <GuestJoinRow /> : undefined}
+          index="01"
+        />
+      </div>
 
       {/* Shape-matched skeleton (A9 P2-2, 5-C3 hand-off): the payload
           is a 25-row × 7-col table — a bare spinner left the page

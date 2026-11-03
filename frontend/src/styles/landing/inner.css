@@ -1,0 +1,64 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R332 W10b · the INNER PUBLIC grammar bridge (Heron sheet)
+   ─────────────────────────────────────────────────────────────────────
+   The guest inner pages that do NOT ride the legal document shell —
+   /colleges · /colleges/leaderboard · /competitions — open with the
+   app-density PageHeader (patterns.css .pf-page-title at the 28px
+   --fs-app-h1 rung, no gutter index, no opening rule): the
+   drawing-sheet grammar their siblings already speak (the /legal
+   family's .lg-bar, the authed shell's .page-index) never reached
+   them, because guest pages never load r319-shell.css and colleges.css
+   predates the sheet system.
+
+   THE FIX (audit w10b): a marker-scoped bridge, `.inx-head`, wrapped
+   around the three routes' PageHeaders by their owner pages:
+
+   · the opening hairline — 1px var(--rule-strong) + the --sp-5 gap,
+     the .lg-bar recipe verbatim (legal.css §3);
+   · the title lifts from the app register (28/24) to the DISPLAY d2
+     rung (--fs-d2 — 40px @1440, floored 31.74px @390), the same rung
+     .lg-bar rides;
+   · the `[01]` gutter index joins the .lg-bar-index accent register —
+     spelled out HERE (mono + accent-ink + tabular-nums) because guest
+     pages never load r319-shell.css, whose .page-index this span's
+     class would otherwise inherit. Self-contained by design.
+
+   CASCADE CONTRACT — same house precedent as r319-shell.css: imported
+   ONLY by the two owner chunks (CollegePages.tsx, CompetitionsPages.tsx,
+   after colleges.css) and deliberately UNLAYERED — a normal unlayered
+   declaration outranks every @layer rule regardless of specificity, so
+   the two-scoped selectors get the last word over patterns.css without
+   !important. Everything is marker-scoped under .inx-head, so pages
+   without the wrapper render byte-identical. Tokens only; logical
+   properties only; no raw colors, no radii, no motion.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* the page-opening seat: hairline + the breathing gap (the .lg-bar
+   recipe). The wrapper stays display:block — PageHeader
+   (.pf-page-header) owns its own flex column inside. */
+.inx-head {
+  margin: 0;
+  padding-block-start: var(--sp-5);
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+/* the display lift: app register (28/24) → the d2 display rung — the
+   same clamped rung .lg-bar rides (r325 Y4: floored 31.74px @390, not
+   the unclamped alias). */
+.inx-head .pf-page-title {
+  font-size: var(--fs-d2);
+}
+
+/* the gutter index — the .lg-bar-index accent register, spelled out
+   self-contained (guest pages never load r319-shell.css; the authed
+   /competitions shell DOES — this higher-specificity unlayered rule
+   wins there too, keeping one register across both mounts). */
+.inx-head .page-index {
+  margin-inline-end: var(--sp-2-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-ink);
+}

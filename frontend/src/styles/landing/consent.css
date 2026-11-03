@@ -1,0 +1,97 @@
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R332 (W8) — consent.css · the hairline CORNER CELL
+   ─────────────────────────────────────────────────────────────────────
+   Rebuild of the R328 corner card: the four separate ink-rule spans
+   (a drafting frame painted as four lines) retire — the cell is ONE
+   1px var(--rule) hairline box, radius 0, NO shadow, paper ground,
+   320px ceiling, and 12–13px type PINNED IN PX at every viewport (the
+   landing.css hand-tuned-chrome precedent: the rem ladder's mobile
+   floors inflated the card to 15.88px @390 — measured, before-probe).
+   Brand accent lives ONLY on the accept action (its hover/focus fill
+   wipe); «اعرف أكثر» drops the accent it wore since R314 and reads as
+   muted ink with an ink hover.
+
+   SEAT — NOT re-declared here: r314-chrome.css §1 owns the fixed
+   mirrored corner seat (inset-block-end/left 7px, z 240) and the
+   never-hide end-reserve + entrance; that sheet is untouched. This
+   sheet is imported BY ConsentBanner.tsx, so it injects BEFORE
+   r314-chrome.css in the module graph (component imports precede the
+   page's sheet imports) — every override here therefore wins on
+   SPECIFICITY alone: (0,2,0) roots / (0,3,0)–(0,4,0) hover states vs
+   r314's bare (0,1,0) `.cb-*` selectors. No !important, no ID
+   selectors, no theme forks (the one r314 dark fork on .cb-more's
+   hover needs the doubled-class muscle, marked below).
+
+   THE CONDITIONAL YIELD — `data-cb-yield`: the never-hide end-reserve
+   keeps the RESTING seat honest, but transient frames slide footer/CTA
+   links behind the fixed cell. While the UNANSWERED cell would
+   intersect any visible link/button, the component stamps
+   data-cb-yield and the cell RECEDES: visibility:hidden — the fixed
+   box stays measured (zero layout shift, zero CLS) and returns 600ms
+   after the corner clears (hysteresis, no flicker). See the watcher in
+   ConsentBanner.tsx. Focus inside the cell when it yields falls to
+   <body> — a transient scroll-driven state, documented there.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* ── THE CORNER CELL — one hairline, paper, 320 ceiling ────────────── */
+/* (0,2,0) doubled class — beats r314's (0,1,0) .cb-banner despite the
+   later graph position. */
+.cb-banner.cb-banner {
+  border: 1px solid var(--rule);  /* the ONE hairline — retires the four
+                                     .cb-rule ink spans (JSX deleted) */
+  border-radius: 0;               /* the cell canon: square, pinned */
+  box-shadow: none;               /* «بلا ظلال» — pinned, never inherited back */
+  background: var(--bg);          /* paper ground (re-pinned with the cell) */
+  /* 320px ceiling (was 360). The calc floor keeps the card inside the
+     frame + cell gutters on phones — spacing-gate: allow, the measured
+     grid gutters, not a rung. */
+  inline-size: min(320px, calc(100vw - 50px));
+}
+
+/* ── Type — 12–13px PINNED at every viewport ──────────────────────────
+   The rem rungs (--fs-body/--fs-mono-md) scale with the viewport and
+   inflated the card to 15.88px @390 / 14.73px @768 (before-probe).
+   Pinned px, the landing.css hand-tuned-chrome precedent. */
+.cb-banner .cb-text {
+  font-size: 13px;                /* the sentence */
+}
+
+.cb-banner .cb-more {
+  font-size: 12px;                /* the LEARN-MORE rung, pinned */
+}
+
+.cb-banner .cb-accept {
+  font-size: 12px;                /* the accept label, pinned */
+}
+
+.cb-banner .cb-reject {
+  font-size: 13px;                /* the reject label, pinned */
+}
+
+/* ── Accent ONLY on the accept action ─────────────────────────────────
+   «اعرف أكثر» wore --accent-ink since R314; the cell's one brand-accent
+   moment is now the accept wipe. The link reads muted ink, hovers to
+   full ink (underline already carried by r314's hover/focus rules).
+   The doubled `.cb-more.cb-more` over the element selector — (0,3,1)
+   base, (0,4,1) with :hover — is the muscle that also retires r314's
+   (0,3,1) DARK hover fork without a theme fork of our own: one rule
+   out-specifies light and dark alike. */
+.cb-banner a.cb-more.cb-more {
+  color: var(--text-muted);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cb-banner a.cb-more.cb-more:hover,
+  .cb-banner a.cb-more.cb-more:focus-visible {
+    color: var(--text);           /* ink on hover — never the accent */
+  }
+}
+
+/* ── THE CONDITIONAL YIELD — the cell recedes, the seat stays measured
+   visibility (not display/opacity): the fixed box keeps its geometry —
+   the bottom-stack manager's measurement never jumps, the page never
+   shifts, CLS stays 0. The watcher in ConsentBanner.tsx stamps and
+   clears the attribute (600ms hysteresis on the return). ──────────── */
+.cb-banner[data-cb-yield] {
+  visibility: hidden;
+}

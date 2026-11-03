@@ -255,10 +255,18 @@ export function SheetNav() {
     const onEnter = () => { overBar = true; };
     const onLeave = () => { overBar = false; };
 
+    /* R332 W9 — the bar height is CACHED (one offsetHeight read at
+     * effect-mount + the explicit re-measure seats), not read per
+     * scroll frame: the CDP profile put the per-frame forced layout at
+     * 11.1% of the 4×-throttled scroll window (SheetNav.tsx:261). The
+     * bar is a fixed-height chrome seat — resize/load/fonts-ready are
+     * the re-measure triggers (the r307 1-C H-2 reconciliation list). */
+    let barH = header.offsetHeight || 56;
+
     const apply = () => {
       raf = 0;
       const y = pendingY;
-      const h = header.offsetHeight || 56;
+      const h = barH;
       header.classList.toggle('on-scroll', y > h);
       const prev = lastY;
       lastY = y;
@@ -290,20 +298,25 @@ export function SheetNav() {
       if (!raf) raf = requestAnimationFrame(apply);
     };
 
+    const onRemeasure = () => {
+      barH = header.offsetHeight || barH;
+      onScroll();
+    };
+
     apply();
     header.addEventListener('pointerenter', onEnter);
     header.addEventListener('pointerleave', onLeave);
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll, { passive: true });
-    window.addEventListener('load', onScroll);
-    document.fonts?.ready?.then?.(onScroll).catch(() => undefined);
+    window.addEventListener('resize', onRemeasure, { passive: true });
+    window.addEventListener('load', onRemeasure);
+    document.fonts?.ready?.then?.(onRemeasure).catch(() => undefined);
     return () => {
       header.removeEventListener('pointerenter', onEnter);
       header.removeEventListener('pointerleave', onLeave);
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      window.removeEventListener('load', onScroll);
-      document.fonts?.ready?.then?.(onScroll).catch?.(() => undefined);
+      window.removeEventListener('resize', onRemeasure);
+      window.removeEventListener('load', onRemeasure);
+      document.fonts?.ready?.then?.(onRemeasure).catch?.(() => undefined);
       window.clearTimeout(hideTimer);
       if (raf) cancelAnimationFrame(raf);
     };
