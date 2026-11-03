@@ -271,3 +271,70 @@ jest.mock("react-native-keyboard-controller", () => {
     useKeyboardState: () => ({ isVisible: false, height: 0 }),
   };
 });
+
+/* ── R334 3-c (student home): routes now MOUNT AppSheet (the /report
+      sheet route), so the render net exercises the lazy bottom-sheet
+      graph. The REAL @gorhom/bottom-sheet v5 cannot boot under the
+      reanimated mock above (makeMutable is identity → useAnimatedDetents
+      crashes) and react-native-gesture-handler v3 schedules a native
+      install task at import — the same fakes sheet.test.tsx uses, now
+      global so every route renders. A per-file jest.mock still wins over
+      this (last registration), so sheet.test.tsx is unaffected. ─────── */
+jest.mock("react-native-gesture-handler", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
+  const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
+  const { View } = require("react-native");
+  return {
+    GestureHandlerRootView: ({ children, style }: { children?: React.ReactNode; style?: unknown }) =>
+      React.createElement(View, { style, pointerEvents: "box-none" }, children),
+  };
+});
+
+jest.mock("@gorhom/bottom-sheet", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
+  const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
+  const { View, TextInput, ScrollView } = require("react-native");
+
+  /** The ref contract AppSheet drives (present/dismiss + no-op nav). */
+  const BottomSheetModal = React.forwardRef(function BottomSheetModal(props: any, ref: any) {
+    const [presented, setPresented] = React.useState(false);
+    React.useImperativeHandle(ref, () => ({
+      present: () => setPresented(true),
+      dismiss: () => setPresented(false),
+      snapToIndex: () => undefined,
+      snapToPosition: () => undefined,
+      expand: () => undefined,
+      collapse: () => undefined,
+      close: () => setPresented(false),
+      forceClose: () => setPresented(false),
+    }));
+    if (!presented) return null;
+    const Footer = props.footerComponent;
+    return React.createElement(
+      View,
+      { accessibilityLabel: props.accessibilityLabel },
+      props.handleComponent === null ? null : React.createElement(View, { testID: "sheet-handle" }),
+      props.children,
+      Footer ? React.createElement(Footer, {}) : null,
+    );
+  });
+
+  const BottomSheetModalProvider = ({ children }: { children?: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children);
+  const BottomSheetView = (props: any) => React.createElement(View, props);
+  const BottomSheetScrollView = (props: any) => React.createElement(ScrollView, props);
+  const BottomSheetTextInput = (props: any) => React.createElement(TextInput, props);
+  const BottomSheetBackdrop = (props: any) => React.createElement(View, props);
+
+  return {
+    BottomSheetModal,
+    BottomSheetModalProvider,
+    BottomSheetView,
+    BottomSheetScrollView,
+    BottomSheetTextInput,
+    BottomSheetBackdrop,
+  };
+});
+
