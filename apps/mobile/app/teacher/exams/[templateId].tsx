@@ -228,7 +228,7 @@ export default function ExamTemplateDetail() {
 
       <View style={{ flexDirection: "row", gap: sp[6], flexWrap: "wrap", alignItems: "center" }}>
         <StatusBadge status={t.status} map={EXAM_STATUS_MAP} />
-        <Badge label={EXAM_KIND_LABEL[t.kind] ?? t.kind} tone="lavender" />
+        <Badge label={EXAM_KIND_LABEL[t.kind] ?? "تقييم"} tone="lavender" />
       </View>
 
       {/* تفاصيل القالب. */}
@@ -312,7 +312,7 @@ export default function ExamTemplateDetail() {
                 {q.prompt}
               </T>
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6], alignItems: "center" }}>
-                <Badge label={QUESTION_TYPE_LABEL[q.type] ?? q.type} tone="grey" />
+                <Badge label={QUESTION_TYPE_LABEL[q.type] ?? "سؤال"} tone="grey" />
                 <T variant="xs" color="muted">
                   {arCount(q.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
                 </T>
@@ -499,7 +499,7 @@ export default function ExamTemplateDetail() {
                     {latn(i + 1)}. {a.prompt}
                   </T>
                   <T variant="xs" color="muted">
-                    {QUESTION_TYPE_LABEL[a.type] ?? a.type} ·{" "}
+                    {QUESTION_TYPE_LABEL[a.type] ?? "سؤال"} ·{" "}
                     {arCount(a.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
                   </T>
                   <View style={{ backgroundColor: p.surfaceHover, padding: sp[8], marginTop: sp[4] }}>

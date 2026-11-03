@@ -203,7 +203,7 @@ export default function Curriculum() {
                       </T>
                       <T variant="xs" color="muted">
                         {durationLabel(l.durationSec)}
-                        {l.transcriptStatus ? ` · النص: ${TRANSCRIPT_LABEL[l.transcriptStatus] ?? l.transcriptStatus}` : ""}
+                        {l.transcriptStatus ? ` · النص: ${TRANSCRIPT_LABEL[l.transcriptStatus] ?? "غير معروف"}` : ""}
                       </T>
                     </View>
                   </View>
@@ -424,7 +424,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
           <View style={{ flex: 1 }}>
             <T variant="body" weight="bold">النص المكتوب (SRT/VTT)</T>
           </View>
-          <Badge label={TRANSCRIPT_LABEL[tStatus] ?? tStatus} tone={tStatus === "DONE" ? "mint" : tStatus === "FAILED" ? "rose" : "grey"} />
+          <Badge label={TRANSCRIPT_LABEL[tStatus] ?? "غير معروف"} tone={tStatus === "DONE" ? "mint" : tStatus === "FAILED" ? "rose" : "grey"} />
         </View>
         <Button
           label="توليد النص"

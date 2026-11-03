@@ -9,7 +9,7 @@
  * (tabs)/students and students/[offeringId], and small chip rows.
  */
 import { useCallback, useMemo, useState } from "react";
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/api/client";
 import { teacherApi, type RosterStudent, type TeacherOffering } from "@/api/teacher";
@@ -202,6 +202,23 @@ export function useTeacherOfferings() {
 
 export function offeringLabel(o: TeacherOffering): string {
   return `${o.course.name} (${o.course.code} · ${o.term})`;
+}
+
+/**
+ * True once `open` has ever been true. Keeps a sheet mounted after its
+ * first open (so the dismiss animation plays) while signed-out render
+ * nets — which never open sheets — never mount the native sheet graph at
+ * all (bottom-sheet → RNGH v3's import-time native install task; see
+ * foundations/sheets.md §lazy-native-graph). AppSheet already loads the
+ * graph lazily on first render; this keeps the FIRST render itself from
+ * happening until the user actually opens a sheet.
+ */
+export function useSheetMounted(open: boolean): boolean {
+  const [mounted, setMounted] = useState(false);
+  // React-blessed "adjust state during render" (same pattern as the
+  // grades scale adoption) — flips once, then never again.
+  if (open && !mounted) setMounted(true);
+  return mounted;
 }
 
 /** «المقرّر» picker — a labeled SelectField over my offerings. */
@@ -456,7 +473,7 @@ function QuickGradeForm({
     <View style={{ gap: sp[10] }}>
       <SelectField
         label="نوع التقييم"
-        value={{ id: kind, label: GRADE_KIND_LABEL[kind] ?? kind }}
+        value={{ id: kind, label: GRADE_KIND_LABEL[kind] ?? "تقييم" }}
         options={GRADE_KINDS.map((k) => ({ id: k, label: GRADE_KIND_LABEL[k] }))}
         onSelect={(id) => setKind(id)}
         sheetTitle="نوع التقييم"
@@ -534,6 +551,10 @@ export function OfferingRoster({
     });
   }, [rows, q, riskFilter]);
   const selected = rows.find((r) => r.id === openId) ?? null;
+  /* Net-safe sheet mounts: signed-out render nets never open a sheet, so
+   * the native sheet graph (RNGH v3) never loads under jest. */
+  const filterSheetMounted = useSheetMounted(filterOpen);
+  const studentSheetMounted = useSheetMounted(selected !== null);
 
   const onOpen = useCallback((id: string) => {
     haptics.selection();
@@ -594,22 +615,23 @@ export function OfferingRoster({
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         emptyTitle="لا نتائج مطابقة"
-        emptyMessage="جرّب كلمة بحث أخرى أو أعد تعرين التصفية."
+        emptyMessage="جرّب كلمة بحث أخرى أو أعد تعيين التصفية."
         contentPadding={{ horizontal: 20, bottom: 24 }}
       />
 
       {/* تصفية حسب حالة المتابعة */}
-      <FilterSheet
-        open={filterOpen}
-        onClose={() => setFilterOpen(false)}
-        title="تصفية الطلاب"
-        onApply={() => {
-          setRiskFilter(draftFilter);
-          setFilterOpen(false);
-          haptics.selection();
-        }}
-        onReset={() => setDraftFilter("all")}
-      >
+      {filterSheetMounted ? (
+        <FilterSheet
+          open={filterOpen}
+          onClose={() => setFilterOpen(false)}
+          title="تصفية الطلاب"
+          onApply={() => {
+            setRiskFilter(draftFilter);
+            setFilterOpen(false);
+            haptics.selection();
+          }}
+          onReset={() => setDraftFilter("all")}
+        >
         <T variant="sm" weight="medium" style={{ paddingBottom: sp[8] }}>
           حالة المتابعة
         </T>
@@ -621,16 +643,18 @@ export function OfferingRoster({
         <T variant="xs" color="muted" style={{ paddingTop: sp[8] }}>
           «متابعة» تشمل الطلاب تحت المراقبة وفي الخطر.
         </T>
-      </FilterSheet>
+        </FilterSheet>
+      ) : null}
 
       {/* ملف الطالب — ملخص الأداء + درجة سريعة */}
-      <AppSheet
-        open={selected !== null}
-        onClose={onClose}
-        title={selected?.name ?? ""}
-        snap="lg"
-        scrollable
-      >
+      {studentSheetMounted ? (
+        <AppSheet
+          open={selected !== null}
+          onClose={onClose}
+          title={selected?.name ?? ""}
+          snap="lg"
+          scrollable
+        >
         {selected ? (
           <View style={{ gap: sp[10] }}>
             <StatLine label="الحضور" value={pctOrDash(selected.attendancePct)} />
@@ -645,7 +669,7 @@ export function OfferingRoster({
               }
             />
             {selected.riskScore !== null ? (
-              <StatLine label="مؤشّق المخاطرة" value={`${latn(selected.riskScore)}%`} />
+              <StatLine label="مؤشّر المخاطرة" value={`${latn(selected.riskScore)}%`} />
             ) : null}
             {selected.signals.length > 0 ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
@@ -670,7 +694,8 @@ export function OfferingRoster({
             </View>
           </View>
         ) : null}
-      </AppSheet>
+        </AppSheet>
+      ) : null}
     </View>
   );
 }
@@ -698,7 +723,8 @@ export function StatusBadge({
   map: Record<string, { label: string; tone: StatusToneName }>;
 }) {
   const info = map[status];
-  if (!info) return <Badge label={status} tone="grey" />;
+  // No raw wire enums in UI copy — an unmapped status gets an honest Arabic seat.
+  if (!info) return <Badge label="غير محدَّدة" tone="grey" />;
   return <Badge label={info.label} tone={info.tone} />;
 }
 

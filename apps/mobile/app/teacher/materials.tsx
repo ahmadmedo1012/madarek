@@ -161,7 +161,7 @@ export default function Materials() {
                     {m.course.name}
                   </T>
                 ) : null}
-                <Badge label={MATERIAL_TYPE_LABEL[m.type] ?? m.type} tone="grey" mono />
+                <Badge label={MATERIAL_TYPE_LABEL[m.type] ?? "ملف"} tone="grey" mono />
                 <T variant="xs" color="muted">
                   {latn(m.views ?? 0)} مشاهدة · {latn(m.downloads ?? 0)} تحميل
                 </T>
@@ -240,8 +240,8 @@ export default function Materials() {
           <>
             <SelectField
               label="النوع"
-              value={{ id: type, label: MATERIAL_TYPE_LABEL[type] ?? type }}
-              options={TYPE_OPTIONS.map((t) => ({ id: t, label: MATERIAL_TYPE_LABEL[t] ?? t }))}
+              value={{ id: type, label: MATERIAL_TYPE_LABEL[type] ?? "ملف" }}
+              options={TYPE_OPTIONS.map((t) => ({ id: t, label: MATERIAL_TYPE_LABEL[t] ?? "ملف" }))}
               onSelect={setType}
               sheetTitle="النوع"
             />
