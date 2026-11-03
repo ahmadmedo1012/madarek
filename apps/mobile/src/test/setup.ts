@@ -238,14 +238,35 @@ jest.mock("lucide-react-native", () => {
 /* ── R331 A-App-Motion: react-native-keyboard-controller mounts native
       modules at import (the "not linked" crash under jest). The render
       nets prove screens don't crash, not that pixels track — stub the
-      provider/KAV/toolbar as pass-through components ────────────────── */
+      provider/KAV/toolbar as pass-through components.
+      R334 3-b: the stub grew up to FormScreen's full API — the auth
+      screens were the first ROUTE-level FormScreen consumers, and the
+      old stub (no KeyboardAwareScrollView/StickyView, a toolbar without
+      Prev/Next/Done statics) crashed the render net with "Element type
+      is invalid". Mirrors the fuller per-suite mock in form.test.tsx. ─ */
 jest.mock("react-native-keyboard-controller", () => {
   const React = require("react");
+  const RN = require("react-native");
   return {
     KeyboardProvider: ({ children }: { children: React.ReactNode }) => children,
     KeyboardAvoidingView: ({ children }: { children?: React.ReactNode }) =>
       React.createElement(React.Fragment, null, children ?? null),
-    KeyboardToolbar: () => null,
+    // the real component forwards ScrollViewProps to an animated ScrollView
+    KeyboardAwareScrollView: (props: Record<string, unknown>) =>
+      React.createElement(RN.ScrollView, props),
+    KeyboardStickyView: ({ children, ...rest }: { children?: React.ReactNode }) =>
+      React.createElement(RN.View, rest, children),
+    KeyboardToolbar: Object.assign(() => null, {
+      Background: () => null,
+      Content: ({ children }: { children?: React.ReactNode }) => children ?? null,
+      Prev: ({ children }: { children?: React.ReactNode }) =>
+        React.createElement(RN.View, { testID: "kb-prev" }, children ?? null),
+      Next: ({ children }: { children?: React.ReactNode }) =>
+        React.createElement(RN.View, { testID: "kb-next" }, children ?? null),
+      Done: ({ text }: { text?: React.ReactNode }) =>
+        React.createElement(RN.View, { testID: "kb-done" }, text ?? null),
+      Group: () => null,
+    }),
     useKeyboardAnimation: () => ({ height: { value: 0 }, progress: { value: 0 } }),
     useKeyboardState: () => ({ isVisible: false, height: 0 }),
   };

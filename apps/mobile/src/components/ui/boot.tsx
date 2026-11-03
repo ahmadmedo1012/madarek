@@ -170,6 +170,45 @@ export function BootMark({ size = 120 }: { size?: number }) {
   );
 }
 
+/* ── the deterministic entry handoff ────────────────────────────────── */
+
+/** The session fields the handoff rule reads (AuthUser-shaped subset). */
+export interface EntryUserLike {
+  role: string;
+  currentInstitution?: { id: string } | null;
+}
+
+/**
+ * resolveEntryDestination — the ONE boot→destination rule, shared by
+ * `/` (cold start with a cached session) and `/auth/login` (fresh
+ * login). Deterministic, pure, no imports:
+ *
+ *   1. `?continue=` wins ONLY when the session can honor it — an
+ *      institution context is active, or the user is the platform
+ *      OWNER (no institution membership by design).
+ *   2. Otherwise a non-OWNER/non-ADMIN role without an institution
+ *      context hits the institution gate (/select-institution).
+ *   3. Everyone else lands on their role home (unknown roles → student).
+ *
+ * The ADMIN exemption mirrors the login flow's original contract: an
+ * ADMIN (المسجل العام) is provisioned institution-bound — when the
+ * context is missing the role home renders and RoleGate re-gates to
+ * /select-institution if active memberships exist, which is the same
+ * destination without a dead-end when they don't.
+ */
+export function resolveEntryDestination(
+  user: EntryUserLike,
+  continueParam: string | null | undefined,
+  roleHome: Record<string, string>,
+): string {
+  const cont = continueParam ? decodeURIComponent(continueParam) : null;
+  if (cont && (user.currentInstitution || user.role === "OWNER")) return cont;
+  const needsInstitution =
+    user.role !== "OWNER" && user.role !== "ADMIN" && !user.currentInstitution;
+  if (needsInstitution) return "/select-institution";
+  return roleHome[user.role] ?? "/student/dashboard";
+}
+
 /* ── Boot — the full-screen boot/transition state ───────────────────── */
 
 const SLOW_AFTER_MS = 6000;
