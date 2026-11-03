@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
@@ -13,7 +14,6 @@ import { Field } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi, type OwnerInstitution } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { usePalette } from "@/design/theme";
 import { fullDate } from "@/lib/format";
 import {
@@ -105,7 +105,7 @@ export default function OwnerInstitutions() {
             <SkeletonList rows={4} />
           ) : listing.isError ? (
             <ErrorState
-              message={(listing.error as Error | null)?.message}
+              message={humanizeError(listing.error)}
               onRetry={() => listing.refetch()}
             />
           ) : rows.length === 0 ? (
@@ -274,7 +274,7 @@ function CreateInstitutionSheet({
         />
         {create.isError ? (
           <T variant="sm" color="danger">
-            تعذّر إنشاء المؤسسة — {(create.error as ApiError | null)?.message ?? "حاول مجدداً."}
+            تعذّر إنشاء المؤسسة — {humanizeError(create.error)}
           </T>
         ) : null}
       </View>

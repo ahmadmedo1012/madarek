@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import GraduationCap from "lucide-react-native/icons/graduation-cap";
 import UserMinus from "lucide-react-native/icons/user-minus";
@@ -14,7 +15,6 @@ import { SkeletonList, EmptyState, ErrorState, Skeleton } from "@/components/ui/
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { clamp01, initials, latn } from "@/lib/format";
@@ -83,7 +83,7 @@ export default function AdminStudents() {
         {users.isLoading ? (
           <SkeletonList rows={6} />
         ) : users.isError ? (
-          <ErrorState message={(users.error as Error | null)?.message} onRetry={() => users.refetch()} />
+          <ErrorState message={humanizeError(users.error)} onRetry={() => users.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
@@ -193,7 +193,7 @@ function EnrollmentManager({
       toast.success("تمّ التسجيل في المقرّر");
       setPicked(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذَّر التسجيل"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر التسجيل"),
   });
 
   const unenroll = useMutation({
@@ -204,7 +204,7 @@ function EnrollmentManager({
       toast.success("تمّ إلغاء التسجيل");
       setConfirming(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذَّر إلغاء التسجيل"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر إلغاء التسجيل"),
   });
 
   const options = (offerings.data ?? []).map((o) => {
@@ -236,7 +236,7 @@ function EnrollmentManager({
             <Skeleton h={44} />
           </View>
         ) : enrollments.isError ? (
-          <ErrorState message={(enrollments.error as Error | null)?.message} onRetry={() => enrollments.refetch()} compact />
+          <ErrorState message={humanizeError(enrollments.error)} onRetry={() => enrollments.refetch()} compact />
         ) : (enrollments.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
             لا تسجيلات حاليًا.
@@ -282,7 +282,7 @@ function EnrollmentManager({
         {offerings.isLoading ? (
           <Skeleton h={48} />
         ) : offerings.isError ? (
-          <ErrorState message={(offerings.error as Error | null)?.message} onRetry={() => offerings.refetch()} compact />
+          <ErrorState message={humanizeError(offerings.error)} onRetry={() => offerings.refetch()} compact />
         ) : (offerings.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
             لا توجد مقرّرات متاحة للتسجيل.

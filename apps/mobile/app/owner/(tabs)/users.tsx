@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -11,7 +12,6 @@ import { SearchBar, Segmented, SelectField } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { ROLE_LABELS } from "@/auth/session";
 import { initials } from "@/lib/format";
 import {
@@ -123,7 +123,7 @@ export default function OwnerUsers() {
         {directory.isLoading ? (
           <SkeletonList rows={6} />
         ) : directory.isError ? (
-          <ErrorState message={(directory.error as Error | null)?.message} onRetry={() => directory.refetch()} />
+          <ErrorState message={humanizeError(directory.error)} onRetry={() => directory.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}
@@ -222,7 +222,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     },
     onError: (e) => {
       setRoleConfirm(false);
-      toast.error((e as ApiError).message, "تعذّر تغيير الدور");
+      toast.error(humanizeError(e), "تعذّر تغيير الدور");
     },
   });
 
@@ -237,7 +237,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     onError: (e) => {
       setStatusConfirm(false);
       // The API's own Arabic message lands here (e.g. the last-active-owner guard).
-      toast.error((e as ApiError).message, "تعذّر تحديث حالة الحساب");
+      toast.error(humanizeError(e), "تعذّر تحديث حالة الحساب");
     },
   });
 

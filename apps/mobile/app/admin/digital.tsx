@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import Server from "lucide-react-native/icons/server";
 import { Screen , SectionBar } from "@/components/ui";
@@ -73,7 +74,7 @@ export default function AdminDigital() {
           <SkeletonList rows={5} />
         ) : metrics.isError ? (
           <ErrorState
-            message={(metrics.error as Error | null)?.message}
+            message={humanizeError(metrics.error)}
             onRetry={() => metrics.refetch()}
           />
         ) : d ? (

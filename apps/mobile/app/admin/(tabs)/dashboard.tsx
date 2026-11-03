@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import BookOpen from "lucide-react-native/icons/book-open";
@@ -56,7 +57,7 @@ export default function AdminDashboard() {
         {stats.isLoading ? (
           <SkeletonList rows={3} />
         ) : stats.isError ? (
-          <ErrorState message={(stats.error as Error | null)?.message} onRetry={() => stats.refetch()} />
+          <ErrorState message={humanizeError(stats.error)} onRetry={() => stats.refetch()} />
         ) : stats.data ? (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             <KpiCard label="الطلاب" value={num(stats.data.totalStudents ?? null)} style={{ minWidth: "47%" }} />
@@ -77,7 +78,7 @@ export default function AdminDashboard() {
           {papers.isLoading ? (
             <SkeletonList rows={2} />
           ) : papers.isError ? (
-            <ErrorState message={(papers.error as Error | null)?.message} onRetry={() => papers.refetch()} compact />
+            <ErrorState message={humanizeError(papers.error)} onRetry={() => papers.refetch()} compact />
           ) : papers.data && papers.data.rows.length > 0 ? (
             <RowList>
               {papers.data.rows.map((p, i) => (

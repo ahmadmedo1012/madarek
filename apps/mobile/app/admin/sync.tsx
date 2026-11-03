@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
 import { Screen } from "@/components/ui";
@@ -10,7 +11,6 @@ import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { SkeletonList, ErrorState, EmptyState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { dateTime, fromNow, latn, num } from "@/lib/format";
@@ -64,7 +64,7 @@ export default function AdminSync() {
       qc.invalidateQueries({ queryKey: ["admin", "sync"] });
       toast.success("شُغّلت المزامنة — ستظهر النتيجة في السجلّ عند اكتمالها.", "المزامنة");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تشغيل المزامنة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تشغيل المزامنة"),
   });
 
   const { expanded, toggle } = useExpanded();
@@ -93,7 +93,7 @@ export default function AdminSync() {
         {status.isLoading ? (
           <SkeletonList rows={5} />
         ) : status.isError ? (
-          <ErrorState message={(status.error as Error | null)?.message} onRetry={() => status.refetch()} />
+          <ErrorState message={humanizeError(status.error)} onRetry={() => status.refetch()} />
         ) : !status.data ? (
           <EmptyState
             title="لم تُنفَّذ أي مزامنة بعد"

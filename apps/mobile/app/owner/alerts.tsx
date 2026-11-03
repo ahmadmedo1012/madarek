@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CheckCircle2 from "lucide-react-native/icons/circle-check";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -12,7 +13,6 @@ import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
 import { alertCategoryLabel } from "@/features/governance/components";
@@ -50,7 +50,7 @@ export default function OwnerAlerts() {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
       toast.success("أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.", "تمّ حلّ التنبيه");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حلّ التنبيه"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حلّ التنبيه"),
   });
 
   const rows = Array.isArray(alerts.data) ? alerts.data : [];
@@ -74,7 +74,7 @@ export default function OwnerAlerts() {
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
         ) : alerts.isError ? (
-          <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} />
+          <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<CheckCircle2 size={22} color={tones.mint.ink} />}

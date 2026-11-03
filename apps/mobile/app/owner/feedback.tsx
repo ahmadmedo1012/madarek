@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -11,7 +12,6 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { socialApi } from "@/api/social";
 import type { PilotFeedback } from "@/api/types";
-import { ApiError } from "@/api/client";
 import { fromNow } from "@/lib/format";
 import {
   FEEDBACK_STATUS_LABEL,
@@ -77,7 +77,7 @@ export default function OwnerFeedback() {
       toast.success(`انتقل التقرير إلى «${FEEDBACK_STATUS_LABEL[payload.status] ?? payload.status}».`);
       setSelected(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث حالة التقرير"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث حالة التقرير"),
   });
 
   const rows = inbox.data?.rows ?? [];
@@ -107,7 +107,7 @@ export default function OwnerFeedback() {
         {inbox.isLoading ? (
           <SkeletonList rows={4} />
         ) : inbox.isError ? (
-          <ErrorState message={(inbox.error as Error | null)?.message} onRetry={() => inbox.refetch()} />
+          <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title={status === "all" ? "لا تقارير هنا" : "لا تقارير في هذه الحالة"}

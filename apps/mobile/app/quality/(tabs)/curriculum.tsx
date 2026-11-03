@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -70,7 +71,7 @@ export default function QualityCurriculum() {
         {tree.isLoading ? (
           <SkeletonList rows={6} />
         ) : tree.isError ? (
-          <ErrorState message={(tree.error as Error | null)?.message} onRetry={() => tree.refetch()} />
+          <ErrorState message={humanizeError(tree.error)} onRetry={() => tree.refetch()} />
         ) : facs.length === 0 ? (
           <EmptyState
             title="لا مناهج بعد"

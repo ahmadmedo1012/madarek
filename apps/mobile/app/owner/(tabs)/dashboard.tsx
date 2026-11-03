@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import Activity from "lucide-react-native/icons/activity";
@@ -70,7 +71,7 @@ export default function OwnerDashboard() {
         {stats.isLoading ? (
           <SkeletonList rows={4} />
         ) : stats.isError ? (
-          <ErrorState message={(stats.error as Error | null)?.message} onRetry={() => stats.refetch()} />
+          <ErrorState message={humanizeError(stats.error)} onRetry={() => stats.refetch()} />
         ) : s ? (
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
             <KpiCard label="إجمالي المستخدمين" value={num(s.totalUsers ?? null)} style={{ minWidth: "47%" }} />
@@ -100,7 +101,7 @@ export default function OwnerDashboard() {
               <Skeleton h={44} />
             </View>
           ) : alerts.isError ? (
-            <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} compact />
+            <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} compact />
           ) : alertRows.length === 0 ? (
             <T variant="body" color="muted">
               النظام يعمل بشكل طبيعي — لا تنبيهات مفتوحة.
@@ -137,7 +138,7 @@ export default function OwnerDashboard() {
           {activity.isLoading ? (
             <SkeletonList rows={3} />
           ) : activity.isError ? (
-            <ErrorState message={(activity.error as Error | null)?.message} onRetry={() => activity.refetch()} compact />
+            <ErrorState message={humanizeError(activity.error)} onRetry={() => activity.refetch()} compact />
           ) : events.length === 0 ? (
             <EmptyState title="لا توجد أحداث بعد" message="ستظهر أحدث العمليّات هنا فور حدوثها." />
           ) : (

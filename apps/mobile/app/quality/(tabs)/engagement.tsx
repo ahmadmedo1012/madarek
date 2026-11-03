@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
@@ -57,7 +58,7 @@ export default function QualityEngagement() {
           <SkeletonList rows={5} />
         ) : engagement.isError ? (
           <ErrorState
-            message={(engagement.error as Error | null)?.message}
+            message={humanizeError(engagement.error)}
             onRetry={() => engagement.refetch()}
           />
         ) : !d ? null : (

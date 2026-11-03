@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
@@ -73,7 +74,7 @@ export default function OwnerActivity() {
         {feed.isLoading ? (
           <SkeletonList rows={7} />
         ) : feed.isError ? (
-          <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
+          <ErrorState message={humanizeError(feed.error)} onRetry={() => feed.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد أحداث مسجَّلة بعد"
