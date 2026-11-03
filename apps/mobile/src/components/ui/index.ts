@@ -3,6 +3,7 @@ export * from "./text";
 export * from "./screen";
 export * from "./pressables";
 export * from "./surfaces";
+export * from "./sheet";
 export * from "./fields";
 export * from "./data";
 export * from "./states";
