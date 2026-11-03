@@ -93,7 +93,7 @@ describe("toast queue (R334)", () => {
   test("onShow slot fires per visible toast (the haptics hook point)", async () => {
     const shown: ToastItem[] = [];
     toast.onShow((t) => shown.push(t));
-    const view = await render(<ToastHost />);
+    await render(<ToastHost />);
     await act(async () => {
       toast.success("الأولى");
       toast.success("الثانية");

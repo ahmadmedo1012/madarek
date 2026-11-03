@@ -18,11 +18,13 @@ import { Hairline } from "./surfaces";
 
 /** The @gorhom/bottom-sheet module, loaded on first sheet render. */
 function bs(): typeof import("@gorhom/bottom-sheet") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- lazy load keeps the heavy sheet engine out of every screen's module graph (R334 render-net fix)
   return require("@gorhom/bottom-sheet");
 }
 
 /** react-native-gesture-handler, loaded on first sheet render. */
 function gh(): typeof import("react-native-gesture-handler") {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- lazy load keeps RNGH v3's import-time native task out of the jest render net (R334 render-net fix)
   return require("react-native-gesture-handler");
 }
 

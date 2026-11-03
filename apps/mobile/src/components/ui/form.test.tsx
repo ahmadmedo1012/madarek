@@ -26,7 +26,9 @@ import { T } from "./text";
 /* ── keyboard-controller: full pass-through mock (supersedes the setup
       stub for this suite — adds KeyboardAwareScrollView/StickyView) ── */
 jest.mock("react-native-keyboard-controller", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
   const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
   const RN = require("react-native");
   const Passthrough = ({ children }: { children?: React.ReactNode }) =>
     React.createElement(React.Fragment, null, children ?? null);

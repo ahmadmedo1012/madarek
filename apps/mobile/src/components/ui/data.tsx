@@ -611,19 +611,25 @@ export function usePagedList<T>(opts: UsePagedListOptions<T>): UsePagedListResul
   const lastPage = query.data?.pages.length ? query.data.pages[query.data.pages.length - 1] : null;
   const err = query.error instanceof Error ? query.error : null;
 
+  // TanStack v5 hands back stable fetchNextPage/refetch identities; the
+  // booleans flip as the query state moves. Destructuring lets the
+  // callbacks below depend on exactly the fields they read — no whole
+  // `query` dep that would re-create them on every render.
+  const { hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage, refetch: refetchQuery } = query;
+
   const onEndReached = useCallback(() => {
-    if (query.hasNextPage && !query.isFetchingNextPage && !query.isFetchNextPageError) {
-      void query.fetchNextPage();
+    if (hasNextPage && !isFetchingNextPage && !isFetchNextPageError) {
+      void fetchNextPage();
     }
-  }, [query.hasNextPage, query.isFetchingNextPage, query.isFetchNextPageError, query.fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, isFetchNextPageError, fetchNextPage]);
 
   const retryLoadMore = useCallback(() => {
-    void query.fetchNextPage();
-  }, [query.fetchNextPage]);
+    void fetchNextPage();
+  }, [fetchNextPage]);
 
   const refetch = useCallback(() => {
-    void query.refetch();
-  }, [query.refetch]);
+    void refetchQuery();
+  }, [refetchQuery]);
 
   return {
     items,
@@ -638,7 +644,7 @@ export function usePagedList<T>(opts: UsePagedListOptions<T>): UsePagedListResul
     isRefetching: query.isRefetching,
     onEndReached,
     isFetchingNextPage: query.isFetchingNextPage,
-    hasNextPage: !!query.hasNextPage,
+    hasNextPage,
     loadMoreError: query.isFetchNextPageError ? (err?.message ?? "تعذّر تحميل المزيد.") : null,
     retryLoadMore,
     query,

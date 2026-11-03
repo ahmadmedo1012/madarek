@@ -21,9 +21,19 @@
  * (see docs/mobile/foundations/sheets.md).
  */
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import {
+  ActionSheet,
+  ConfirmSheet,
+  FilterSheet,
+  PickerSheet,
+  SHEET_ANIMATION,
+} from "./sheet";
+import { T } from "./text";
 
 jest.mock("react-native-gesture-handler", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
   const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
   const { View } = require("react-native");
   return {
     GestureHandlerRootView: ({ children, style }: { children?: React.ReactNode; style?: unknown }) =>
@@ -32,7 +42,9 @@ jest.mock("react-native-gesture-handler", () => {
 });
 
 jest.mock("@gorhom/bottom-sheet", () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
   const React = require("react");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
   const { View, TextInput, ScrollView } = require("react-native");
 
   /** The ref contract AppSheet drives (present/dismiss + no-op nav). */
@@ -75,15 +87,6 @@ jest.mock("@gorhom/bottom-sheet", () => {
     BottomSheetBackdrop,
   };
 });
-
-import {
-  ActionSheet,
-  ConfirmSheet,
-  FilterSheet,
-  PickerSheet,
-  SHEET_ANIMATION,
-} from "./sheet";
-import { T } from "./text";
 
 const flush = () => new Promise((resolve) => setTimeout(resolve, 0));
 
