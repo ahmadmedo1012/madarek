@@ -1,25 +1,34 @@
 import { useEffect, useMemo, useRef, type ComponentProps, type ReactNode } from "react";
 import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Easing } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Check from "lucide-react-native/icons/check";
 import X from "lucide-react-native/icons/x";
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-  BottomSheetTextInput,
-  BottomSheetView,
-  type BottomSheetFooterProps,
-} from "@gorhom/bottom-sheet";
+import type { BottomSheetFooterProps } from "@gorhom/bottom-sheet";
 import { usePalette } from "@/design/theme";
 import { heronEase, motion, sp, touchFloor } from "@/design/tokens";
 import { useReduceMotion } from "@/hooks/useReduceMotion";
 import { T } from "./text";
 import { Button } from "./pressables";
 import { Hairline } from "./surfaces";
+
+/* The heavy native graph (@gorhom/bottom-sheet + react-native-gesture-handler)
+   loads on first sheet render — see the module header for the WHY. Metro and
+   jest both cache require() after the first call, so this is a one-time load. */
+
+/** The @gorhom/bottom-sheet module, loaded on first sheet render. */
+function bs(): typeof import("@gorhom/bottom-sheet") {
+  return require("@gorhom/bottom-sheet");
+}
+
+/** react-native-gesture-handler, loaded on first sheet render. */
+function gh(): typeof import("react-native-gesture-handler") {
+  return require("react-native-gesture-handler");
+}
+
+/* Type-only aliases into the (lazily loaded) package — erased at compile. */
+type BottomSheetBackdropComp = (typeof import("@gorhom/bottom-sheet"))["BottomSheetBackdrop"];
+type BottomSheetTextInputComp = (typeof import("@gorhom/bottom-sheet"))["BottomSheetTextInput"];
 
 /**
  * R334 2-c — AppSheet: the Heron bottom sheet, on @gorhom/bottom-sheet v5.
@@ -39,6 +48,16 @@ import { Hairline } from "./surfaces";
  * Mount AppSheet at the ROOT of the screen it serves (a sibling of the screen
  * content, not nested inside a card/row) so the hosting container covers the
  * full screen.
+ *
+ * WHY THE NATIVE GRAPH IS LOADED LAZILY (R334 follow-up): ui/index.ts
+ * re-exports this module, so a static import would put @gorhom/bottom-sheet
+ * → react-native-gesture-handler v3 into EVERY screen's module graph (every
+ * screen imports the barrel). RNGH v3 schedules a native
+ * `installUIRuntimeBindings` task at import time — harmless on device,
+ * fatal under jest (no native runtime: it killed src/test/render-net.test.tsx
+ * via the barrel). The requires below execute on the FIRST AppSheet render
+ * instead: the barrel stays cheap, the render net stays green, and on device
+ * the sheet engine loads the moment the first sheet mounts.
  */
 
 export type SheetSnap = "sm" | "md" | "lg" | "full";
@@ -121,6 +140,13 @@ export function AppSheet({
   durationMs,
   children,
 }: AppSheetProps) {
+  const {
+    BottomSheetModal,
+    BottomSheetModalProvider,
+    BottomSheetScrollView,
+    BottomSheetView,
+  } = bs();
+  const { GestureHandlerRootView } = gh();
   const p = usePalette();
   const insets = useSafeAreaInsets();
   const reduced = useReduceMotion();
@@ -283,7 +309,8 @@ export function AppSheet({
 }
 
 /** Themed backdrop — ink scrim, tap to close (Heron hairline world: no blur). */
-function SheetBackdrop(props: ComponentProps<typeof BottomSheetBackdrop>) {
+function SheetBackdrop(props: ComponentProps<BottomSheetBackdropComp>) {
+  const { BottomSheetBackdrop } = bs();
   return (
     <BottomSheetBackdrop
       {...props}
@@ -302,8 +329,9 @@ function SheetBackdrop(props: ComponentProps<typeof BottomSheetBackdrop>) {
  * Arabic-first (RTL) text alignment. Use INSIDE AppSheet instead of a bare
  * TextInput — plain TextInputs ignore the sheet's keyboard tracking.
  */
-export function SheetTextInput(props: ComponentProps<typeof BottomSheetTextInput>) {
+export function SheetTextInput(props: ComponentProps<BottomSheetTextInputComp>) {
   const p = usePalette();
+  const { BottomSheetTextInput } = bs();
   return (
     <BottomSheetTextInput
       placeholderTextColor={p.textFaint}
