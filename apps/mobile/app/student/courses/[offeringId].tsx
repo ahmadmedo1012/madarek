@@ -19,7 +19,7 @@ import FileText from "lucide-react-native/icons/file-text";
 import Flag from "lucide-react-native/icons/flag";
 import ImageIcon from "lucide-react-native/icons/image";
 import Megaphone from "lucide-react-native/icons/megaphone";
-import MoreHorizontal from "lucide-react-native/icons/more-horizontal";
+import Ellipsis from "lucide-react-native/icons/ellipsis";
 import Presentation from "lucide-react-native/icons/presentation";
 import Share2 from "lucide-react-native/icons/share-2";
 import Video from "lucide-react-native/icons/video";
@@ -93,8 +93,10 @@ function CourseTabs({ tab, onChange }: { tab: CourseTab; onChange: (t: CourseTab
               }
             }}
             style={{
+              /* minHeight, not height — a 200% font may wrap the label;
+               * the 44pt floor stays. */
               flex: 1,
-              height: 44,
+              minHeight: 44,
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: active ? p.accentSoft : "transparent",
@@ -406,7 +408,7 @@ export default function CourseDetailScreen() {
             }}
             style={{ width: touchFloor, height: touchFloor, alignItems: "center", justifyContent: "center" }}
           >
-            <MoreHorizontal size={22} color={p.text} />
+            <Ellipsis size={22} color={p.text} />
           </Pressable>
         }
       />
@@ -417,7 +419,8 @@ export default function CourseDetailScreen() {
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
             <CourseWell emoji={course?.iconEmoji} color={course?.themeColor} size={44} />
             <View style={{ flex: 1, gap: 2 }}>
-              <T variant="bodyLg" weight="bold" numberOfLines={1}>
+              {/* 2 lines, not 1 — long course titles survive a 200% font. */}
+              <T variant="bodyLg" weight="bold" numberOfLines={2}>
                 {course?.name}
               </T>
               <T variant="xs" color="muted" numberOfLines={1}>

@@ -8,6 +8,7 @@ import type { Announcement, EnrollmentRow, Lecture } from "@/api/types";
 import {
   activeCourseFilterCount,
   applyCourseFilters,
+  catalogDepartmentGroups,
   chunkPairs,
   courseFilterFacets,
   courseFiltersReducer,
@@ -188,6 +189,27 @@ describe("chunkPairs", () => {
     expect(chunkPairs([1, 2, 3, 4])).toEqual([[1, 2], [3, 4]]);
     expect(chunkPairs([1, 2, 3])).toEqual([[1, 2], [3]]);
     expect(chunkPairs([])).toEqual([]);
+  });
+});
+
+/* ── catalog department groups (دليل المقرّرات FilterSheet) ──────────── */
+
+describe("catalogDepartmentGroups", () => {
+  const faculties = [
+    { id: "f1", name: "كلية الهندسة", departments: [{ id: "d2", name: "قسم المدنية" }, { id: "d1", name: "قسم الحاسوب" }] },
+    { id: "f2", name: "كلية الآداب", departments: [] },
+    { id: "f3", name: "كلية الطب", departments: [{ id: "d3", name: "قسم التشريح" }] },
+    { id: "f4", name: "كلية بلا أقسام", departments: null },
+  ];
+
+  test("drops faculties with no departments, Arabic-sorts the rest", () => {
+    const groups = catalogDepartmentGroups(faculties);
+    expect(groups.map((g) => g.facultyName)).toEqual(["كلية الطب", "كلية الهندسة"]);
+    expect(groups[1].departments.map((d) => d.name)).toEqual(["قسم الحاسوب", "قسم المدنية"]);
+  });
+
+  test("empty payload → empty groups (the sheet shows «كل الأقسام» only)", () => {
+    expect(catalogDepartmentGroups([])).toEqual([]);
   });
 });
 
