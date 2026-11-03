@@ -6,6 +6,7 @@
  * action (presign requires an S3 backend) — this screen manages links.
  */
 
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -101,7 +102,7 @@ export default function Curriculum() {
       setDurationSec("");
       setLectureError(null);
     },
-    onError: (e) => setLectureError((e as Error).message),
+    onError: (e) => setLectureError(humanizeError(e)),
   });
 
   const deleteLecture = useMutation({
@@ -111,7 +112,7 @@ export default function Curriculum() {
       setDeleteTarget(null);
       toast.success("حُذفت المحاضرة من المنهج.", "تمّ الحذف");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الحذف"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
 
   const reorder = useMutation({
@@ -120,7 +121,7 @@ export default function Curriculum() {
       invalidate();
       toast.success("حُدِّث ترتيب المحاضرات.");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر إعادة الترتيب"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر إعادة الترتيب"),
   });
 
   const move = (index: number, dir: -1 | 1) => {
@@ -175,7 +176,7 @@ export default function Curriculum() {
           {lectures.isLoading ? (
             <SkeletonList rows={3} />
           ) : lectures.isError ? (
-            <ErrorState message={(lectures.error as Error | null)?.message} onRetry={() => lectures.refetch()} />
+            <ErrorState message={humanizeError(lectures.error)} onRetry={() => lectures.refetch()} />
           ) : rows.length === 0 ? (
             <EmptyState
               title="لا توجد محاضرات بعد"
@@ -344,7 +345,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       setChEnd("");
       setChError(null);
     },
-    onError: (e) => setChError((e as Error).message),
+    onError: (e) => setChError(humanizeError(e)),
   });
 
   const deleteChapter = useMutation({
@@ -353,7 +354,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       invalidateLecture();
       toast.success("حُذف الفصل.");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الحذف"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
 
   const addCheckpoint = useMutation({
@@ -383,7 +384,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       setCpExplanation("");
       setCpError(null);
     },
-    onError: (e) => setCpError((e as Error).message),
+    onError: (e) => setCpError(humanizeError(e)),
   });
 
   const deleteCheckpoint = useMutation({
@@ -392,7 +393,7 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       invalidateLecture();
       toast.success("حُذف سؤال التفاعل.");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الحذف"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الحذف"),
   });
 
   const generateTranscript = useMutation({
@@ -401,12 +402,12 @@ function LectureStructure({ lectureId, onInvalidated }: { lectureId: string; onI
       qc.invalidateQueries({ queryKey: ["learning", "lecture", lectureId] });
       toast.success("بدأ توليد النص المكتوب — تابع حالته من شريحة النص.", "توليد النص");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر بدء التوليد"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر بدء التوليد"),
   });
 
   if (detail.isLoading) return <SkeletonList rows={2} />;
   if (detail.isError) {
-    return <ErrorState message={(detail.error as Error | null)?.message} onRetry={() => detail.refetch()} compact />;
+    return <ErrorState message={humanizeError(detail.error)} onRetry={() => detail.refetch()} compact />;
   }
 
   const chapters = lecture?.chapters ?? [];

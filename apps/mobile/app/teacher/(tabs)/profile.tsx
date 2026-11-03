@@ -4,6 +4,7 @@
  * the four-field self edit) + the mobile menu hub (RowList) into every
  * teacher surface.
  */
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -111,7 +112,7 @@ export default function TeacherProfile() {
       toast.success("تمّ حفظ تعديلات ملفك الأكاديمي.", "تمّ الحفظ");
     },
     onError: (e) => {
-      setSaveError((e as Error).message || "تعذَّر حفظ التعديلات — حاول مرة أخرى.");
+      setSaveError(humanizeError(e));
     },
   });
 
@@ -132,7 +133,7 @@ export default function TeacherProfile() {
       {profile.isLoading ? (
         <SkeletonList rows={5} />
       ) : profile.isError ? (
-        <ErrorState message={(profile.error as Error | null)?.message} onRetry={() => profile.refetch()} />
+        <ErrorState message={humanizeError(profile.error)} onRetry={() => profile.refetch()} />
       ) : !me ? (
         <EmptyState
           title="لا يوجد ملف أستاذ مرتبط بهذا الحساب"

@@ -4,6 +4,7 @@
  * / view) | «بنك الأسئلة» (searchable bank rows + «سؤال جديد» with the
  * per-type choices/correct-answer editor).
  */
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -72,7 +73,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       toast.success(`أُستنسخ القالب إلى مسودة جديدة — «${row.title}».`, "تمّ الاستنساخ");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الاستنساخ"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الاستنساخ"),
   });
   const publish = useMutation({
     mutationFn: (id: string) => examsApi.publishTemplate(id),
@@ -82,7 +83,7 @@ export default function Exams() {
       setPublishTarget(null);
       toast.success("نُشر الاختبار وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر النشر"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
 
   /* New-question sheet state. */
@@ -147,7 +148,7 @@ export default function Exams() {
       setPoints("1");
       setQError(null);
     },
-    onError: (e) => setQError((e as Error).message),
+    onError: (e) => setQError(humanizeError(e)),
   });
 
   const categoryRows = (categories.data ?? []) as unknown as QuestionCategory[];
@@ -177,7 +178,7 @@ export default function Exams() {
           {templates.isLoading ? (
             <SkeletonList rows={4} />
           ) : templates.isError ? (
-            <ErrorState message={(templates.error as Error | null)?.message} onRetry={() => templates.refetch()} />
+            <ErrorState message={humanizeError(templates.error)} onRetry={() => templates.refetch()} />
           ) : (templates.data ?? []).length === 0 ? (
             <EmptyState
               title="لم تُنشئ قوالب اختبارات بعد"
@@ -254,7 +255,7 @@ export default function Exams() {
           {bank.isLoading ? (
             <SkeletonList rows={5} />
           ) : bank.isError ? (
-            <ErrorState message={(bank.error as Error | null)?.message} onRetry={() => bank.refetch()} />
+            <ErrorState message={humanizeError(bank.error)} onRetry={() => bank.refetch()} />
           ) : bankRows.length === 0 ? (
             <EmptyState
               title={q.trim() !== "" ? "لا توجد أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}

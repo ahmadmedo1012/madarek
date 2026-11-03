@@ -8,20 +8,23 @@
  * (the web's exact Arabic copy), the roster card reused by
  * (tabs)/students and students/[offeringId], and small chip rows.
  */
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ApiError } from "@/api/client";
 import { teacherApi, type RosterStudent, type TeacherOffering } from "@/api/teacher";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, type StatusToneName } from "@/design/tokens";
 import { T } from "@/components/ui/text";
-import { Badge, Sheet } from "@/components/ui/surfaces";
+import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
-import { SelectField } from "@/components/ui/fields";
-import { Avatar, LedgerRow, ProgressBar, RowList, StatLine } from "@/components/ui/data";
+import { SearchBar, Segmented, SelectField } from "@/components/ui/fields";
+import { AppSheet, FilterSheet, SheetTextInput } from "@/components/ui/sheet";
+import { Avatar, DataList, LedgerRow, makeRow, ProgressBar, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 
@@ -309,7 +312,7 @@ export function RosterRow({
   const risk = riskInfo(entry.risk);
   const band = entry.gradePct !== null ? gradeBand(entry.gradePct) : null;
   return (
-    <LedgerRow onPress={onPress} last={last} accessibilityLabel={`الطالب ${entry.name}`}>
+    <LedgerRow onPress={onPress} last={last} accessibilityLabel={`الطالب ${entry.name} — الحضور ${pctOrDash(entry.attendancePct)}، الدرجات ${pctOrDash(entry.gradePct)}`}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
         <Avatar
           initials={entry.avatarInitials ?? entry.name.slice(0, 2)}
@@ -348,7 +351,12 @@ export function RosterRow({
   );
 }
 
-/** Minimal labeled numeric input (score/maxScore/weight trio). */
+/** The DataList roster row (module scope: stable identity for makeRow). */
+const RosterListRow = makeRow<RosterEntry, { onOpen: (id: string) => void; last: boolean }>(
+  ({ item, onOpen, last }) => <RosterRow entry={item} onPress={() => onOpen(item.id)} last={last} />,
+);
+
+/** Minimal labeled numeric input (score/maxScore/weight trio) — sheet-safe. */
 export function QuickField({
   label,
   value,
@@ -368,7 +376,7 @@ export function QuickField({
       <T variant="sm" weight="medium" color="secondary">
         {label}
       </T>
-      <TextInput
+      <SheetTextInput
         accessibilityLabel={accessibilityLabel ?? label}
         value={value}
         onChangeText={onChange}
@@ -426,19 +434,21 @@ function QuickGradeForm({
         throw new ApiError("BAD_WEIGHT", "الوزن عدد صحيح بين 0 و100.", 400);
       }
       if (s > mx) {
-        throw new ApiError("OVER_MAX", `الدرجة يجب ألّا تتجاوز ${latn(mx)}.`, 400);
+        throw new ApiError("OVER_MAX", `الدرجة يجب ألَا تتجاوز ${latn(mx)}.`, 400);
       }
       return teacherApi.upsertGrades(offeringId, [
         { studentId: student.id, kind, score: s, maxScore: mx, weight: wt },
       ]);
     },
     onSuccess: () => {
+      haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["teacher"] });
-      toast.success("تمّ حفظ الدرجات المسجَّلة في هذا النوع.", "تمّ الحفظ");
+      toast.success("تمّ حفظ الدرجة وستظهر للطالب.", "تمّ الحفظ");
       onDone();
     },
     onError: (e) => {
-      setError(e instanceof ApiError ? e.message : "تعذَّر حفظ الدرجات — حاول مرة أخرى.");
+      haptics.notify("error");
+      setError(e instanceof ApiError ? e.message : humanizeError(e));
     },
   });
 
@@ -471,9 +481,29 @@ function QuickGradeForm({
   );
 }
 
+/* ─── Roster: search + filter + DataList + student sheet ──────── */
+
+/** Risk filter vocabulary (the roster FilterSheet's segmented control). */
+const RISK_FILTERS: { id: RiskFilter; label: string }[] = [
+  { id: "all", label: "الكل" },
+  { id: "OK", label: "مستقر" },
+  { id: "WATCH", label: "متابعة" },
+  { id: "CRITICAL", label: "حرج" },
+];
+
+type RiskFilter = "all" | "OK" | "WATCH" | "CRITICAL";
+
+function matchesRiskFilter(entry: RosterEntry, f: RiskFilter): boolean {
+  if (f === "all") return true;
+  if (f === "WATCH") return entry.risk === "WATCH" || entry.risk === "AT_RISK";
+  return entry.risk === f;
+}
+
 /**
- * The per-offering roster: list + per-student sheet (stats + attendance
- * summary + quick grade upsert). Reused by both roster surfaces.
+ * The per-offering roster: search + risk filter + a DataList (FlashList v2
+ * recycling for big rosters) + the per-student AppSheet (profile stats,
+ * attendance summary, quick grade upsert). Mount inside a `flex: 1` parent
+ * — the DataList is the scroller, never a child of `<Screen scroll>`.
  */
 export function OfferingRoster({
   offeringId,
@@ -489,35 +519,118 @@ export function OfferingRoster({
     enabled: offeringId !== "",
   });
   const [openId, setOpenId] = useState<string | null>(null);
+  const [q, setQ] = useState("");
+  const [riskFilter, setRiskFilter] = useState<RiskFilter>("all");
+  const [draftFilter, setDraftFilter] = useState<RiskFilter>("all");
+  const [filterOpen, setFilterOpen] = useState(false);
+
   const rows = useMemo(() => (roster.data ?? []).map(toRosterEntry), [roster.data]);
+  const filtered = useMemo(() => {
+    const needle = q.trim();
+    return rows.filter((r) => {
+      if (!matchesRiskFilter(r, riskFilter)) return false;
+      if (needle === "") return true;
+      return r.name.includes(needle) || r.universityId.includes(needle);
+    });
+  }, [rows, q, riskFilter]);
   const selected = rows.find((r) => r.id === openId) ?? null;
+
+  const onOpen = useCallback((id: string) => {
+    haptics.selection();
+    setOpenId(id);
+  }, []);
+  const onClose = useCallback(() => setOpenId(null), []);
+  const renderItem = useCallback(
+    ({ item, index }: { item: RosterEntry; index: number }) => (
+      <RosterListRow item={item} onOpen={onOpen} last={index === filtered.length - 1} />
+    ),
+    [onOpen, filtered.length],
+  );
+  const keyExtractor = useCallback((r: RosterEntry) => r.id, []);
 
   if (roster.isLoading) return <SkeletonList rows={5} />;
   if (roster.isError) {
-    return <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />;
+    return <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />;
   }
   if (rows.length === 0) {
     return (
       <EmptyState
-        title="لا يوجد طلاب مسجَّلون"
+        title="لا يوجد طلاب مسجّلون"
         message="لا توجد تسجيلات نشطة في هذا المقرّر بعد."
       />
     );
   }
 
+  const activeFilter = RISK_FILTERS.find((f) => f.id === riskFilter);
+
   return (
-    <View style={{ gap: sp[12] }}>
-      <RowList>
-        {rows.map((r, i) => (
-          <RosterRow
-            key={r.id}
-            entry={r}
-            last={i === rows.length - 1}
-            onPress={() => setOpenId(r.id)}
-          />
-        ))}
-      </RowList>
-      <Sheet open={selected !== null} onClose={() => setOpenId(null)} title={selected?.name ?? ""}>
+    <View style={{ flex: 1, gap: sp[10] }}>
+      <View style={{ paddingHorizontal: sp[20], gap: sp[10] }}>
+        <SearchBar value={q} onChange={setQ} placeholder="ابحث باسم الطالب أو الرقم الجامعي…" />
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], paddingHorizontal: sp[20] }}>
+        <Button
+          label={riskFilter === "all" ? "تصفية" : `تصفية: ${activeFilter?.label ?? ""}`}
+          kind="ghost"
+          small
+          onPress={() => {
+            setDraftFilter(riskFilter);
+            setFilterOpen(true);
+          }}
+        />
+        <T variant="xs" color="muted">
+          {arCount(filtered.length, [
+            "طالب واحد",
+            "طالبان",
+            "طلاب",
+            "طالباً",
+          ])}
+          {" من أصل "}
+          {latn(rows.length)}
+        </T>
+      </View>
+      <DataList
+        data={filtered}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        emptyTitle="لا نتائج مطابقة"
+        emptyMessage="جرّب كلمة بحث أخرى أو أعد تعرين التصفية."
+        contentPadding={{ horizontal: 20, bottom: 24 }}
+      />
+
+      {/* تصفية حسب حالة المتابعة */}
+      <FilterSheet
+        open={filterOpen}
+        onClose={() => setFilterOpen(false)}
+        title="تصفية الطلاب"
+        onApply={() => {
+          setRiskFilter(draftFilter);
+          setFilterOpen(false);
+          haptics.selection();
+        }}
+        onReset={() => setDraftFilter("all")}
+      >
+        <T variant="sm" weight="medium" style={{ paddingBottom: sp[8] }}>
+          حالة المتابعة
+        </T>
+        <Segmented
+          options={RISK_FILTERS}
+          selectedId={draftFilter}
+          onSelect={(id) => setDraftFilter(id as RiskFilter)}
+        />
+        <T variant="xs" color="muted" style={{ paddingTop: sp[8] }}>
+          «متابعة» تشمل الطلاب تحت المراقبة وفي الخطر.
+        </T>
+      </FilterSheet>
+
+      {/* ملف الطالب — ملخص الأداء + درجة سريعة */}
+      <AppSheet
+        open={selected !== null}
+        onClose={onClose}
+        title={selected?.name ?? ""}
+        snap="lg"
+        scrollable
+      >
         {selected ? (
           <View style={{ gap: sp[10] }}>
             <StatLine label="الحضور" value={pctOrDash(selected.attendancePct)} />
@@ -532,12 +645,12 @@ export function OfferingRoster({
               }
             />
             {selected.riskScore !== null ? (
-              <StatLine label="مؤشّر المخاطرة" value={`${latn(selected.riskScore)}%`} />
+              <StatLine label="مؤشّق المخاطرة" value={`${latn(selected.riskScore)}%`} />
             ) : null}
             {selected.signals.length > 0 ? (
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
-                {selected.signals.map((s) => (
-                  <Badge key={s} label={s} tone="yellow" />
+                {selected.signals.map((sig) => (
+                  <Badge key={sig} label={sig} tone="yellow" />
                 ))}
               </View>
             ) : null}
@@ -553,11 +666,11 @@ export function OfferingRoster({
               <T variant="sm" color="muted" style={{ paddingBottom: sp[8] }}>
                 {offeringName ? `${offeringName} · ` : ""}درجة واحدة تُرسَل فورًا لهذا الطالب.
               </T>
-              <QuickGradeForm offeringId={offeringId} student={selected} onDone={() => setOpenId(null)} />
+              <QuickGradeForm offeringId={offeringId} student={selected} onDone={onClose} />
             </View>
           </View>
         ) : null}
-      </Sheet>
+      </AppSheet>
     </View>
   );
 }

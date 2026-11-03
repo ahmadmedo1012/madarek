@@ -3,6 +3,7 @@
  * TeacherIntelligencePage (global at-risk panel + per-offering analytics
  * + the template-simulated curriculum suggestion with its honest badge).
  */
+import { humanizeError } from "@/lib/errors";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -155,7 +156,7 @@ export default function TeacherIntelligence() {
     onSuccess: () => {
       toast.success("وصل الاقتراح — قالبيّ ومحاكى كما هو معلن.");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الاقتراح"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الاقتراح"),
   });
 
   const riskRows = useMemo(() => {
@@ -192,7 +193,7 @@ export default function TeacherIntelligence() {
       {risks.isLoading ? (
         <SkeletonList rows={3} />
       ) : risks.isError ? (
-        <ErrorState message={(risks.error as Error | null)?.message} onRetry={() => risks.refetch()} compact />
+        <ErrorState message={humanizeError(risks.error)} onRetry={() => risks.refetch()} compact />
       ) : riskRows.length === 0 ? (
         <EmptyState
           title="جميع طلابك في وضع جيد"
@@ -270,7 +271,7 @@ export default function TeacherIntelligence() {
             <SkeletonList rows={3} rowHeight={44} />
           ) : analytics.isError ? (
             <ErrorState
-              message={(analytics.error as Error | null)?.message}
+              message={humanizeError(analytics.error)}
               onRetry={() => analytics.refetch()}
               compact
             />

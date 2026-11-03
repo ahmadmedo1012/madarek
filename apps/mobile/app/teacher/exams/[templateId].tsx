@@ -3,6 +3,8 @@
  * العرض والتوقيت (updateTemplate)، والمحاولات مع التصحيح اليدوي
  * (gradeAttempt — verdict صحيحة/خاطئة + ملاحظة لكل إجابة معلَّقة).
  */
+import { humanizeError } from "@/lib/errors";
+import { usePalette } from "@/design/theme";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { useLocalSearchParams } from "expo-router";
@@ -68,6 +70,7 @@ type AttemptWire = {
 
 export default function ExamTemplateDetail() {
   const { templateId } = useLocalSearchParams<{ templateId: string }>();
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const id = templateId ?? "";
@@ -125,7 +128,7 @@ export default function ExamTemplateDetail() {
       setEditing(false);
       setEditError(null);
     },
-    onError: (e) => setEditError((e as Error).message),
+    onError: (e) => setEditError(humanizeError(e)),
   });
 
   /* Publish / clone. */
@@ -138,7 +141,7 @@ export default function ExamTemplateDetail() {
       setConfirmPublish(false);
       toast.success("نُشر الاختبار وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر النشر"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
   const clone = useMutation({
     mutationFn: () => examsApi.cloneTemplate(id),
@@ -146,7 +149,7 @@ export default function ExamTemplateDetail() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       toast.success(`أُستنسخ القالب إلى مسودة جديدة — «${row.title}».`, "تمّ الاستنساخ");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الاستنساخ"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الاستنساخ"),
   });
 
   /* Manual grading state. */
@@ -175,7 +178,7 @@ export default function ExamTemplateDetail() {
       setNotes({});
       setGradeError(null);
     },
-    onError: (e) => setGradeError((e as Error).message),
+    onError: (e) => setGradeError(humanizeError(e)),
   });
 
   const questions = useMemo(() => {
@@ -205,7 +208,7 @@ export default function ExamTemplateDetail() {
     return (
       <Screen scroll>
         <StackHeader title="قالب الاختبار" />
-        <ErrorState message={(template.error as Error | null)?.message} onRetry={() => template.refetch()} />
+        <ErrorState message={humanizeError(template.error)} onRetry={() => template.refetch()} />
       </Screen>
     );
   }
@@ -338,7 +341,7 @@ export default function ExamTemplateDetail() {
       {attempts.isLoading ? (
         <SkeletonList rows={3} />
       ) : attempts.isError ? (
-        <ErrorState message={(attempts.error as Error | null)?.message} onRetry={() => attempts.refetch()} />
+        <ErrorState message={humanizeError(attempts.error)} onRetry={() => attempts.refetch()} />
       ) : attemptRows.length === 0 ? (
         <EmptyState
           title="لا محاولات بعد"
@@ -499,7 +502,7 @@ export default function ExamTemplateDetail() {
                     {QUESTION_TYPE_LABEL[a.type] ?? a.type} ·{" "}
                     {arCount(a.points, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
                   </T>
-                  <View style={{ backgroundColor: "rgba(0,0,0,0.04)", padding: sp[8], marginTop: sp[4] }}>
+                  <View style={{ backgroundColor: p.surfaceHover, padding: sp[8], marginTop: sp[4] }}>
                     {a.studentAnswer !== null && a.studentAnswer !== "" ? (
                       <T variant="body" color="secondary">
                         {a.studentAnswer}

@@ -2,6 +2,7 @@
  * (tabs)/schedule — جدول المحاضرات. Web parity: TeacherSchedulePage
  * (dayName sections + «اليوم» marker + slot rows with time/room/code).
  */
+import { humanizeError } from "@/lib/errors";
 import { useMemo } from "react";
 import { View } from "react-native";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -59,7 +60,7 @@ export default function TeacherSchedule() {
       {offs.isLoading ? (
         <SkeletonList rows={5} />
       ) : offs.isError ? (
-        <ErrorState message={(offs.error as Error | null)?.message} onRetry={() => offs.refetch()} />
+        <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
       ) : days.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجَّل"
