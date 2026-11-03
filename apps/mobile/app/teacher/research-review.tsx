@@ -5,6 +5,7 @@
  * simulated scan cells, grade 0–20 + التقدير, publish with ConfirmDialog,
  * the PDF reader deep link).
  */
+import { humanizeError } from "@/lib/errors";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -90,7 +91,7 @@ export default function ResearchReview() {
       setFeedback("");
       setGradeError(null);
     },
-    onError: (e) => setGradeError((e as Error).message),
+    onError: (e) => setGradeError(humanizeError(e)),
   });
 
   const publish = useMutation({
@@ -101,7 +102,7 @@ export default function ResearchReview() {
       setConfirmPublish(false);
       toast.success("أصبح البحث متاحاً للطلاب في مكتبة الجامعة.", "تمّ نشر البحث");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر النشر"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
 
   const openPaper = (paper: ResearchPaper) => {
@@ -163,7 +164,7 @@ export default function ResearchReview() {
       {queue.isLoading ? (
         <SkeletonList rows={5} />
       ) : queue.isError ? (
-        <ErrorState message={(queue.error as Error | null)?.message} onRetry={() => queue.refetch()} />
+        <ErrorState message={humanizeError(queue.error)} onRetry={() => queue.refetch()} />
       ) : (
         <>
           {/* The honest KPI trio. */}

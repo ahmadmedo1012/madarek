@@ -3,6 +3,7 @@
  * offering + date + topic; the 4-state roll call; live summary counts;
  * the save button posts one record per student).
  */
+import { humanizeError } from "@/lib/errors";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ import { StackHeader } from "@/components/shell/AppTopBar";
 import { teacherApi } from "@/api/teacher";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { latn } from "@/lib/format";
-import { useStatusTones } from "@/design/theme";
+import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, toneForAttendanceStatus } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
@@ -48,6 +49,7 @@ function StatusToggle({
   name: string;
 }) {
   const tones = useStatusTones();
+  const p = usePalette();
   const on = value === status;
   const t = tones[toneForAttendanceStatus(status)];
   const label = ATT_OPTIONS.find((o) => o.v === status)?.label ?? "";
@@ -64,7 +66,7 @@ function StatusToggle({
         paddingHorizontal: sp[8],
         backgroundColor: on ? t.bg : "transparent",
         borderWidth: StyleSheet.hairlineWidth,
-        borderColor: on ? t.ink : "rgba(0,0,0,0.12)",
+        borderColor: on ? t.ink : p.border,
         flex: 1,
       }}
     >
@@ -77,12 +79,13 @@ function StatusToggle({
 
 function SummaryBar({ label, ratio, tone }: { label: string; ratio: number; tone: "mint" | "yellow" | "rose" | "sky" }) {
   const tones = useStatusTones();
+  const p = usePalette();
   return (
     <View style={{ gap: sp[4] }}>
       <T variant="sm" color="secondary">
         {label}
       </T>
-      <View style={{ height: 6, backgroundColor: "rgba(0,0,0,0.08)", overflow: "hidden" }}>
+      <View style={{ height: 6, backgroundColor: p.border, overflow: "hidden" }}>
         <View
           style={{
             height: 6,
@@ -96,6 +99,7 @@ function SummaryBar({ label, ratio, tone }: { label: string; ratio: number; tone
 }
 
 export default function Attendance() {
+  const p = usePalette();
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const offs = useTeacherOfferings();
@@ -147,7 +151,7 @@ export default function Attendance() {
       qc.invalidateQueries({ queryKey: ["teacher"] });
       toast.success("تمّ حفظ سجلّ الحضور لهذا التاريخ.", "تمّ الحفظ");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الحفظ"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الحفظ"),
   });
 
   return (
@@ -163,7 +167,7 @@ export default function Attendance() {
       {offs.isLoading ? (
         <T variant="body" color="muted">جارٍ تحميل مقرّراتك…</T>
       ) : offs.isError ? (
-        <ErrorState message={(offs.error as Error | null)?.message} onRetry={() => offs.refetch()} compact />
+        <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
       ) : offerings.length === 0 ? (
         <EmptyState title="لا توجد مقرّرات" message="ستظهر المقرّرات هنا حين تُسنَد إليك." />
       ) : (
@@ -201,7 +205,7 @@ export default function Attendance() {
           {roster.isLoading ? (
             <SkeletonList rows={4} />
           ) : roster.isError ? (
-            <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />
+            <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
             <EmptyState title="لا يوجد طلاب" message="لا توجد تسجيلات نشطة في هذا المقرّر بعد." />
           ) : (
@@ -215,7 +219,7 @@ export default function Attendance() {
                       paddingVertical: sp[12],
                       gap: sp[8],
                       borderBottomWidth: i === rows.length - 1 ? 0 : StyleSheet.hairlineWidth,
-                      borderColor: "rgba(0,0,0,0.08)",
+                      borderColor: p.border,
                     }}
                   >
                     <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
