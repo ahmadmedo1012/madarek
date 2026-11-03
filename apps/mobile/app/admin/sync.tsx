@@ -17,9 +17,10 @@ import { dateTime, fromNow, latn, num } from "@/lib/format";
 import {
   countAr,
   ExpandChevron,
+  SyncStatusChip,
+  syncStatusLabel,
   useExpanded,
   SYNC_CATEGORY_LABEL,
-  SYNC_STATUS_LABEL,
 } from "@/features/governance/components";
 
 interface SyncRunRow {
@@ -70,6 +71,9 @@ export default function AdminSync() {
   const { expanded, toggle } = useExpanded();
   const latest = status.data?.latestRun ?? null;
   const history = status.data?.runHistory ?? [];
+  /** A run still in flight: the button stays guarded (no double-fire) and
+   *  the band discloses the live polling — no fabricated progress bar. */
+  const running = latest?.status === "RUNNING";
 
   return (
     <Screen scroll>
@@ -83,12 +87,27 @@ export default function AdminSync() {
         </T>
 
         <Button
-          label={trigger.isPending ? "جارٍ التشغيل…" : "تشغيل المزامنة"}
+          label={
+            trigger.isPending
+              ? "جارٍ التشغيل…"
+              : running
+                ? "مزامنة جارية الآن…"
+                : "تشغيل المزامنة"
+          }
           kind="primary"
           icon={<RefreshCw size={14} color={p.primaryFg} />}
-          disabled={trigger.isPending}
+          disabled={trigger.isPending || running}
           onPress={() => trigger.mutate()}
         />
+
+        {running ? (
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+            <SyncStatusChip status="RUNNING" />
+            <T variant="sm" color="muted">
+              بدأت {latest?.startedAt ? fromNow(latest.startedAt) : "الآن"} — يُحدَّث السجلّ تلقائياً كل 30 ثانية.
+            </T>
+          </View>
+        ) : null}
 
         {status.isLoading ? (
           <SkeletonList rows={5} />
@@ -120,11 +139,7 @@ export default function AdminSync() {
                   />
                   <StatLine
                     label="حالة آخر تشغيل"
-                    value={
-                      latest
-                        ? SYNC_STATUS_LABEL[latest.status ?? ""] ?? latest.status ?? "—"
-                        : "—"
-                    }
+                    value={latest ? syncStatusLabel(latest.status) : "—"}
                     hint={latest?.completedAt ? fromNow(latest.completedAt) : undefined}
                   />
                 </LedgerRow>
@@ -134,7 +149,7 @@ export default function AdminSync() {
             {latest?.errorMsg ? (
               <T variant="sm" color="danger">
                 {latest.status === "FAILED" ? "تعذّر إكمال التشغيل الأخير: " : "التشغيل الأخير اكتمل جزئياً: "}
-                {latest.errorMsg}
+                {humanizeError(latest.errorMsg)}
               </T>
             ) : null}
             {latest?.notes ? (
@@ -154,17 +169,7 @@ export default function AdminSync() {
                   {history.map((r, i) => (
                     <LedgerRow key={r.id ?? i} last={i === history.length - 1}>
                       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                        <Badge
-                          label={SYNC_STATUS_LABEL[r.status ?? ""] ?? r.status ?? "—"}
-                          tone={
-                            r.status === "SUCCESS"
-                              ? "mint"
-                              : r.status === "FAILED"
-                                ? "rose"
-                                : "yellow"
-                          }
-                          mono={!(r.status && r.status in SYNC_STATUS_LABEL)}
-                        />
+                        <SyncStatusChip status={r.status} />
                         <T variant="xs" color="muted">
                           {dateTime(r.startedAt)}
                         </T>
@@ -203,12 +208,12 @@ export default function AdminSync() {
                       <RowList key={key}>
                         <LedgerRow
                           onPress={() => toggle(key)}
-                          accessibilityLabel={`فئة ${SYNC_CATEGORY_LABEL[key] ?? key}`}
+                          accessibilityLabel={`فئة ${SYNC_CATEGORY_LABEL[key] ?? "بيانات أخرى"}`}
                         >
                           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                             <View style={{ flex: 1 }}>
                               <T variant="body" weight="bold">
-                                {SYNC_CATEGORY_LABEL[key] ?? key}
+                                {SYNC_CATEGORY_LABEL[key] ?? "بيانات أخرى"}
                               </T>
                               <T variant="xs" color="muted">
                                 {latn(cat.count ?? cat.items?.length ?? 0)} حقل

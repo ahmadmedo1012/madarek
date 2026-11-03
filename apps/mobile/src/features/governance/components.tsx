@@ -22,6 +22,7 @@
  */
 import { type ReactNode, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import { Image } from "expo-image";
 import Check from "lucide-react-native/icons/check";
 import ChevronDown from "lucide-react-native/icons/chevron-down";
 import X from "lucide-react-native/icons/x";
@@ -30,7 +31,7 @@ import { sp, type StatusToneName } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
-import { StatLine } from "@/components/ui/data";
+import { StatLine, Avatar } from "@/components/ui/data";
 import { CountUp, RingProgress } from "@/motion";
 import { fonts } from "@/design/fonts";
 import { type as typeScale } from "@/design/tokens";
@@ -471,6 +472,54 @@ export function RoleChip({ role, label }: { role?: string | null; label: string 
   return <Badge label={label} tone={role ? (ROLE_TONE[role] ?? "grey") : "grey"} />;
 }
 
+/** Avatar URL coercion — only a real string from the payload counts;
+ *  anything else (missing, null, non-string) renders initials only. */
+export function avatarUrlOf(row: unknown): string | null {
+  const url = (row as { avatarUrl?: unknown } | null | undefined)?.avatarUrl;
+  return typeof url === "string" && url.trim().length > 0 ? url.trim() : null;
+}
+
+/** UserAvatar — expo-image remote avatar over the initials Avatar: the
+ *  initials stay visible while the image loads (placeholder) and FOREVER
+ *  if the URL fails (onError) — a broken image box never reaches the user.
+ *  No URL at all → the plain initials circle (the roster default). */
+export function UserAvatar({
+  url,
+  initials,
+  color,
+  size = 44,
+}: {
+  url?: string | null;
+  initials: string;
+  color?: string | null;
+  size?: number;
+}) {
+  const [failed, setFailed] = useState(false);
+  if (!url || failed) {
+    return <Avatar initials={initials} color={color} size={size} />;
+  }
+  return (
+    <View style={{ width: size, height: size }}>
+      <Avatar initials={initials} color={color} size={size} />
+      <Image
+        source={{ uri: url }}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+        }}
+        contentFit="cover"
+        transition={150}
+        accessibilityLabel={`صورة الحساب ${initials}`}
+        onError={() => setFailed(true)}
+      />
+    </View>
+  );
+}
+
 /** Audit-log actions (OwnerActivityPage ACTION_LABEL parity). */
 export const AUDIT_ACTION_LABEL: Record<string, string> = {
   "user.login": "تسجيل دخول ناجح",
@@ -611,6 +660,64 @@ export const INST_STATUS_LABEL: Record<string, string> = {
   ACTIVE: "نشطة",
   SUSPENDED: "معلّقة",
 };
+/** The one institution-status renderer — same no-raw-enum rule as the
+ *  other chips: an unknown status reads «غير معروف», never the code. */
+export function instStatusLabel(status?: string | null): string {
+  if (!status) return "—";
+  return INST_STATUS_LABEL[status] ?? UNKNOWN_LABEL;
+}
+export function InstitutionStatusChip({ status }: { status?: string | null }) {
+  return <Badge label={instStatusLabel(status)} tone={status === "ACTIVE" ? "mint" : status === "SUSPENDED" ? "rose" : "grey"} />;
+}
+
+/** Feedback-inbox statuses — label helper with the no-raw-enum fallback. */
+export function feedbackStatusLabel(status?: string | null): string {
+  if (!status) return "—";
+  return FEEDBACK_STATUS_LABEL[status] ?? UNKNOWN_LABEL;
+}
+
+/** Exam question types (web QTYPE_LABEL parity — exam-moderation rows). */
+export const QUESTION_TYPE_LABEL: Record<string, string> = {
+  MCQ: "اختيار من متعدد",
+  TRUE_FALSE: "صح أم خطأ",
+  SHORT: "إجابة قصيرة",
+  ESSAY: "سؤال مقالي",
+};
+export function questionTypeLabel(type?: string | null): string {
+  if (!type) return "—";
+  return QUESTION_TYPE_LABEL[type] ?? UNKNOWN_LABEL;
+}
+
+/** Question difficulty (web DIFFICULTY_LABEL parity). */
+export const DIFFICULTY_LABEL: Record<string, string> = {
+  EASY: "سهل",
+  MEDIUM: "متوسط",
+  HARD: "صعب",
+};
+export const DIFFICULTY_TONE: Record<string, StatusToneName> = {
+  EASY: "mint",
+  MEDIUM: "yellow",
+  HARD: "rose",
+};
+export function difficultyLabel(level?: string | null): string {
+  if (!level) return "—";
+  return DIFFICULTY_LABEL[level] ?? UNKNOWN_LABEL;
+}
+
+/** Platform-setting categories (free-form on the backend, `general` the
+ *  default) — known values get Arabic, everything else reads «فئة أخرى». */
+export const SETTING_CATEGORY_LABEL: Record<string, string> = {
+  general: "عام",
+  platform: "المنصّة",
+  storage: "التخزين",
+  ai: "الذكاء الاصطناعيّ",
+  notifications: "الإشعارات",
+  security: "الأمان",
+};
+export function settingCategoryLabel(category?: string | null): string {
+  if (!category) return "—";
+  return SETTING_CATEGORY_LABEL[category] ?? "فئة أخرى";
+}
 
 /** The 17 platform capabilities (GOV contract map). */
 export const CAPABILITY_LABEL: Record<string, string> = {
@@ -1021,6 +1128,8 @@ export interface OwnerUserRow {
   isActive?: boolean;
   avatarInitials?: string | null;
   avatarColor?: string | null;
+  /** Remote avatar (expo-image) — most owner rows carry initials only. */
+  avatarUrl?: string | null;
   createdAt?: string;
   memberships?: {
     institution?: { id?: string; name?: string; slug?: string; status?: string } | null;

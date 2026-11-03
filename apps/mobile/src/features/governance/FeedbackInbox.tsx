@@ -16,11 +16,11 @@ import type { PilotFeedback } from "@/api/types";
 import { fromNow, latn } from "@/lib/format";
 import {
   FEEDBACK_NEXT,
-  FEEDBACK_STATUS_LABEL,
   PagerFooter,
   UNIT,
   feedbackKindLabel,
   feedbackKindTone,
+  feedbackStatusLabel,
   pageOf,
 } from "@/features/governance/components";
 
@@ -48,7 +48,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
       socialApi.updateFeedback(payload.id, payload.status),
     onSuccess: (_d, payload) => {
       qc.invalidateQueries({ queryKey: ["feedback"] });
-      toast.success(`انتقل التقرير إلى «${FEEDBACK_STATUS_LABEL[payload.status] ?? payload.status}».`);
+      toast.success(`انتقل التقرير إلى «${feedbackStatusLabel(payload.status)}».`);
     },
     onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث حالة التقرير"),
   });
@@ -97,7 +97,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                       <Badge label={feedbackKindLabel(f.kind)} tone={feedbackKindTone(f.kind)} />
                       <Badge
-                        label={FEEDBACK_STATUS_LABEL[f.status] ?? f.status}
+                        label={feedbackStatusLabel(f.status)}
                         tone={
                           f.status === "fixed"
                             ? "mint"
@@ -128,7 +128,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
                         {next.map((s) => (
                           <View key={s} style={{ minWidth: 120 }}>
                             <Button
-                              label={`→ ${FEEDBACK_STATUS_LABEL[s] ?? s}`}
+                              label={`→ ${feedbackStatusLabel(s)}`}
                               kind="ghost"
                               small
                               disabled={update.isPending}

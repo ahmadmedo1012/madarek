@@ -19,7 +19,7 @@ import type { ExamQuestionRow, ExamTemplateRow } from "@/api/exams";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { fromNow, latn, num } from "@/lib/format";
-import { EXAM_KIND_LABEL, countAr, pageOf } from "@/features/governance/components";
+import { EXAM_KIND_LABEL, countAr, difficultyLabel, pageOf, questionTypeLabel, UNKNOWN_LABEL } from "@/features/governance/components";
 
 interface ModerationTarget {
   kind: "template" | "question";
@@ -146,9 +146,8 @@ export default function QualityExamModeration() {
                     </T>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
                       <Badge
-                        label={EXAM_KIND_LABEL[row.kind ?? ""] ?? row.kind ?? "—"}
+                        label={EXAM_KIND_LABEL[row.kind ?? ""] ?? UNKNOWN_LABEL}
                         tone="copper"
-                        mono={!(row.kind && row.kind in EXAM_KIND_LABEL)}
                       />
                       {row.offering?.course?.name ? (
                         <Badge label={row.offering.course.name} tone="sky" />
@@ -202,7 +201,7 @@ export default function QualityExamModeration() {
                     {q.prompt}
                   </T>
                   <T variant="xs" color="muted">
-                    {q.type} · {q.difficulty} ·{" "}
+                    {questionTypeLabel(q.type)} · {difficultyLabel(q.difficulty)} ·{" "}
                     {countAr(q.points ?? 0, ["نقطة واحدة", "نقطتان", "نقاط", "نقطة"])}
                   </T>
                 </LedgerRow>

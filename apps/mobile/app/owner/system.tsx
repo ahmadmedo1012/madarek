@@ -20,6 +20,7 @@ import {
   FlagToggle,
   countAr,
   numOf,
+  settingCategoryLabel,
   textOf,
   type SystemRow,
 } from "@/features/governance/components";
@@ -29,6 +30,11 @@ const STORAGE_DRIVER_LABEL: Record<string, string> = {
   local: "محليّ — قرص الخادم",
   s3: "تخزين كائنات (S3-متوافق)",
 };
+/** Unknown driver codes read «تعريف غير معروف» — never the raw env code. */
+function storageDriverLabel(driver?: string | null): string {
+  if (!driver) return "—";
+  return STORAGE_DRIVER_LABEL[driver] ?? "تعريف غير معروف";
+}
 
 /** The payload row carries `name` too (Prisma FeatureFlag) — render it. */
 interface FlagRow {
@@ -199,9 +205,8 @@ export default function OwnerSystem() {
                     السائق
                   </T>
                   <Badge
-                    label={driver ? (STORAGE_DRIVER_LABEL[driver] ?? driver) : "—"}
+                    label={storageDriverLabel(driver)}
                     tone={driver === "s3" ? "sky" : driver === "local" ? "yellow" : "grey"}
-                    mono={driver != null && !(driver in STORAGE_DRIVER_LABEL)}
                   />
                 </View>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
@@ -249,7 +254,7 @@ export default function OwnerSystem() {
                   >
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                       <MonoLabel>{row.key}</MonoLabel>
-                      {row.category ? <Badge label={row.category} tone="grey" mono /> : null}
+                      {row.category ? <Badge label={settingCategoryLabel(row.category)} tone="grey" /> : null}
                     </View>
                     <T variant="sm" color="secondary" numberOfLines={2}>
                       {textOf(row.value)}

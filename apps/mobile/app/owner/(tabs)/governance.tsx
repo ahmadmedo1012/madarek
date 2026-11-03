@@ -10,6 +10,7 @@ import { ownerApi } from "@/api/owner";
 import { latn } from "@/lib/format";
 import {
   countAr,
+  loginReasonLabel,
   numOf,
   type GovernanceRow,
   type LoginAnalyticsRow,
@@ -163,7 +164,7 @@ export default function OwnerGovernance() {
             <RowList>
               {(la?.topReasons ?? []).map((r, i, arr) => (
                 <LedgerRow key={r.reason ?? i} last={i === arr.length - 1}>
-                  <StatLine label={r.reason ?? "—"} value={numOf(r.count)} />
+                  <StatLine label={loginReasonLabel(r.reason)} value={numOf(r.count)} />
                 </LedgerRow>
               ))}
             </RowList>

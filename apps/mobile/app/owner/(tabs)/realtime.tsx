@@ -51,6 +51,10 @@ export default function OwnerRealtime() {
   const other = entries.filter(([k, v]) => !(typeof v === "number" && Number.isFinite(v)) && v !== null && v !== undefined);
 
   const updatedAt = new Date(rt.dataUpdatedAt || now);
+  // useNow ticks every 60s; POLL_MS×2 (30s) is the honest freshness bound —
+  // a reading older than two missed polls reads «قراءات قديمة».
+  const ageMs = now - updatedAt.getTime();
+  const freshness: "live" | "stale" = rt.data ? (ageMs <= POLL_MS * 2 ? "live" : "stale") : "live";
 
   return (
     <Screen scroll>
@@ -66,6 +70,13 @@ export default function OwnerRealtime() {
         </View>
 
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          {rt.isError ? (
+            <Badge label="انقطع التحديث" tone="rose" />
+          ) : freshness === "stale" ? (
+            <Badge label="قراءات قديمة" tone="yellow" />
+          ) : (
+            <Badge label="تحديث حيّ" tone="mint" />
+          )}
           <Badge label="يُحدَّث كل 15 ثانية" tone="grey" />
           {rt.data ? (
             <T variant="sm" color="faint">

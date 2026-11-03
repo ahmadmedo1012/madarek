@@ -18,7 +18,7 @@ import { ownerApi } from "@/api/owner";
 import { usePalette } from "@/design/theme";
 import { fullDate } from "@/lib/format";
 import {
-  INST_STATUS_LABEL,
+  InstitutionStatusChip,
   countAr,
   numOf,
   type InstitutionRow,
@@ -160,7 +160,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       <StackHeader title={inst.name} kicker={inst.slug} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <InstitutionStatusBadge status={inst.status} />
+          <InstitutionStatusChip status={inst.status} />
           {members !== null ? (
             <T variant="sm" color="muted">
               {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
@@ -321,18 +321,6 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
         onCancel={() => setRestoreTarget(null)}
       />
     </Screen>
-  );
-}
-
-/** Institution status → Badge tone (the list + detail share one vocabulary). */
-function InstitutionStatusBadge({ status }: { status?: string }) {
-  const known = status != null && status in INST_STATUS_LABEL;
-  return (
-    <Badge
-      label={known ? INST_STATUS_LABEL[status] : status || "—"}
-      tone={status === "ACTIVE" ? "mint" : status === "SUSPENDED" ? "rose" : "grey"}
-      mono={!known}
-    />
   );
 }
 
