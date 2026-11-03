@@ -88,4 +88,55 @@ Verified-in-sandbox via tarball probe of `@expo/ui@58.0.27` (`npm pack` + file/`
 
 ---
 
-*Committed progressively: table + smoke tests first (this part), decisions + scan + adopt-list follow in the next commit on this branch.*
+## 6. Decision recommendations
+
+### (i) Sheets kit — **KEEP `@gorhom/bottom-sheet` 5.2.14** (installed)
+
+| | @gorhom/bottom-sheet 5.2.14 | @expo/ui BottomSheet (58.0.27) |
+|---|---|---|
+| Status here | installed, = npm latest, peers satisfied | new native module (fingerprint bump → EAS rebuild before any OTA) |
+| API | full control: N arbitrary `snapPoints`, inline & modal, dynamic sizing, `BottomSheetFlashList` (all verified-in-sandbox from installed README) | gorhom-compatible subset; **Android = 2 snap states only (~50% + expanded**, arbitrary positions web-only — verified-in-sandbox from `.d.ts`) |
+| RTL | RN views → mirrors under `I18nManager.forceRTL` (consistent with the whole app) | native Compose/SwiftUI views follow **device locale**, not `forceRTL` → mixed-direction risk on LTR-locale devices (`unverified`, device-class — §3) |
+| keyboard-controller interop | works under the root `KeyboardProvider` (already mounted, verified-in-sandbox); `keyboardBehavior`/`keyboardBlurBehavior` props on the sheet | keyboard handled natively/automatically (verified-in-sandbox from `.d.ts`) — but the app standard already rides keyboard-controller for the rest of the UI |
+
+**Verdict:** gorhom 5 is the R334 foundation — zero new native code, full snap control, RTL-consistent, already installed. The current `Sheet` in `src/components/ui/surfaces.tsx` is a hand-rolled Modal (verified-in-sandbox) — the 2-c agent ports it onto gorhom. **Track @expo/ui's community bottom-sheet for a later native-material pass**: its API was explicitly designed gorhom-compatible (verified-in-sandbox), so a future swap is an import change, not a rewrite. Prerequisite either way: mount `GestureHandlerRootView` at root (§7-1).
+
+### (ii) Tabs — **KEEP the custom `RoleTabBar` on expo-router `Tabs`**; defer `NativeTabs`
+
+- `NativeTabs` exists in installed expo-router 58.0.28 (verified-in-sandbox: `build/native-tabs/*`; the root re-export is marked deprecated → import from `expo-router/native-tabs`).
+- It requires the optional peers `@expo/ui ^58.0.25` + `expo-symbols ^58.0.4` (verified-in-sandbox from expo-router's `peerDependenciesMeta`) — neither installed → **two new native modules → fingerprint bump**.
+- The custom bar already delivers the Heron chrome (paper surface, hairline rule, orange 2dp active underline, unread badge, light haptics — verified-in-sandbox from `TabBar.tsx`), is driven by the single source of truth `ROLE_TABS` (5 roles × 5 Arabic-labeled tabs, `roleTabs.ts`), mounts **once** outside screens (state-preserving, the R331 defect fix), and "mirrors automatically under I18nManager.forceRTL" (its own docblock, verified-in-sandbox).
+- Native `UITabBar`/`BottomNavigationView` follow the OS locale → same RTL risk as §3 (`unverified`, device-class) and would discard the custom underline/badge chrome.
+- **Verdict:** keep `RoleTabBar` for R334 (JS-only, tested, on-design). NativeTabs is a post-R334 experiment to run *inside* a fingerprint-bumping release, and only worth it if we accept locale-following RTL and the loss of custom tab chrome on Android/iOS.
+
+### (iii) Lists — **STANDARDIZE on FlashList v2** (installed 2.3.2); track `@legendapp/list`, don't adopt
+
+- FlashList v2 is JS-only (no fingerprint impact — §2), matches the SDK-58 pin, needs no size estimates, has masonry + recycling, integrates with the sheets kit (`BottomSheetFlashList`), and is already proven in `NotificationsScreen.tsx` (verified-in-sandbox).
+- `@legendapp/list` 3.7.1 is real and JS-only, but: not Expo-pinned, smaller ecosystem, and this mission's lists (notifications, courses, matrices — modest item counts) don't need a second list engine. Both APIs are FlatList-shaped, so a later switch is cheap.
+- **Verdict:** FlashList v2 everywhere in R334 (2-d agent's base); legend-list stays on the watchlist.
+
+### (iv) Charts — **react-native-svg 15.16.0** (installed) for grades/results; defer Skia
+
+- SVG is already in the fingerprint and already ships (brand/plan illustrations — verified-in-sandbox); grades/results charts are small static datasets where Skia's GPU advantage is irrelevant; hand-rolled SVG chart primitives match the Heron design language exactly (the web frontend already hand-rolls its charts — `frontend/src/components/charts/`, verified-in-sandbox).
+- Skia 2.14.0 peers all fit (§1) but it is a heavy native module: fingerprint bump + binary-size pressure against the ≤8 MB Mobile gate (RELEASE.md, verified-in-sandbox). Same applies to Skia-based `victory-native` 43.0.1 ([npm](https://www.npmjs.com/package/victory-native)). SVG-based `react-native-gifted-charts` 1.4.81 adds little over hand-rolled SVG here.
+- **Verdict:** react-native-svg now; revisit Skia only for a perf-measured need (large live datasets) in a fingerprint-bumping release.
+
+## 7. Top-5 "adopt now" (all JS-only — no new native modules, no fingerprint change)
+
+1. **Mount `GestureHandlerRootView` at the app root** — from the already-installed RNGH 3.3.0; it is the hard prerequisite for every sheet/gesture/toast feature this round and is currently missing (`app/_layout.tsx` — verified-in-sandbox gap). Zero new deps.
+2. **Actually use `pixelmatch`** — already root devDep 8.0.0 (verified-in-sandbox); wire a tiny diff script over `expo export:web` captures → instant visual-regression signal for the RN-web surface. Zero new deps.
+3. **`@shopify/flash-list` v2 as the one list engine** — already installed; codifies recycling + no-estimate sizing for every list screen (§6-iii). Zero new deps.
+4. **`react-native-reanimated-carousel` 5.2.1** (when a carousel need lands — onboarding/matrix swipes) — JS-only on top of installed reanimated+RNGH (verified-in-sandbox tarball); caveat: its `RNGH <4.0.0` peer pin must be lifted upstream before any future RNGH-4 bump.
+5. **`sonner-native` 0.27.0** (optional, only if toasts get redesigned) — JS-only and its whole peer set is satisfied by the installed versions (verified-in-sandbox §4-b).
+
+Deferred-by-design (all need a fingerprint-bumping release): `@expo/ui` (+ NativeTabs, expo-symbols), `react-native-bottom-tabs`, `react-native-screen-transitions` (+teleport), Skia/victory-native, and the 4 patch-bump drifts (worklets 0.13.1, RNGH 3.4.0, flash-list 2.3.3, keyboard-controller 1.22.9) — take those together in one `expo install --check`-guided native-bump commit, not mid-mission.
+
+---
+
+## 8. Sources & honesty summary
+
+- Registry: `npm view <pkg> version/peerDependencies/...` on 2026-11-03 (~20:40 UTC) — every version/peer claim above; package pages linked per row.
+- Repo/worktree: `apps/mobile/package.json`, installed `node_modules` (expo `bundledNativeModules.json`, flash-list/gorhom/keyboard-controller READMEs, expo-router build output + peer meta), `app/_layout.tsx`, `TabBar.tsx`/`roleTabs.ts`, `src/components/ui/*`, `src/features/notifications/*`, root `package.json`, `docs/RELEASE.md` — all verified-in-sandbox.
+- Tarball probes (`npm pack` + read): `@expo/ui@58.0.27` (README, CHANGELOG, `build/community/bottom-sheet/*`, `build/keyboard/*`), `moti@0.30.0` (README), `react-native-reanimated-carousel@5.2.1` (file list) — all verified-in-sandbox.
+- `unverified` items (cannot run from here): device-class RTL behavior of native components vs `I18nManager.forceRTL` (§3, §6-i/ii); Lost Pixel GitHub-action behavior beyond npm metadata; maestro.mobile.dev install URL; FlashList v2-changes doc page content (URL cited from installed README); zeego capabilities beyond version.
+- No secrets in this file; no app code changed by this agent.
