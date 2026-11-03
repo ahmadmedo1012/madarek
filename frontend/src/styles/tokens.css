@@ -310,6 +310,10 @@
     --motion-duration-long:     var(--t-slow);    /* 500ms */
     --motion-duration-page:     400ms;
     --motion-duration-reveal:   480ms;
+    /* R333 (P-C) — the drawn-card reveal rung: heron-craft row 13's
+       imgCardReveal (1.6s expo.out) re-keyed to the r305 house
+       register, one step above the 480ms block rise. */
+    --motion-duration-card:     900ms;
     --motion-duration-stat:     700ms;
     --motion-duration-skeleton: 1200ms;
     --motion-duration-scene-reveal: 2200ms;

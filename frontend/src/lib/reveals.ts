@@ -1,51 +1,58 @@
 /**
  * reveals — R333 (P-C) — the ONE scroll-reveal recipe for the landing's
- * second half (Heron-craft §2 themes 6–7: a single reused grammar —
- * `imgCardReveal` scale 0.8→1 · 1.6s `expo.out` for drawn cards, and a
- * `blockRise` y 24→0 · 0.9s `power3.out` for blocks — with hierarchy
- * from SCALE, never from recipe proliferation).
+ * second half, riding the HOUSE reveal contract (heron-craft §2 themes
+ * 6–7: a single reused grammar with hierarchy from SCALE, never from
+ * recipe proliferation).
+ *
+ * ── The house contract (shared.css `.reveal-up` / `.reveal-d-N`) ─────
+ *   `.reveal-up`          opacity 0 + translateY(14px)
+ *   `.reveal-up.in-view`  opacity 1 + translateY(0)
+ *   transition            var(--t-slower) var(--ease-out)  ← the r305
+ *                         Heron-register re-key (expo-family curve)
+ *   `.reveal-d-1..5`      transition-delay 80/160/240/320/400ms
+ *   `.reveal-card`        this sheet's card rung (below): scale
+ *                         0.8→1 + fade on var(--motion-duration-card)
+ *
+ * Why classes, not a JS animation library: the motion-tokens gate
+ * scans .ts too — raw durations/easings in TS are gate violations —
+ * and the repo's canonical reveal grammar is CSS-class-driven
+ * (hooks/useReveal.ts: the belt writes `.in-view`, CSS owns the
+ * tween). This module is that same vocabulary, applied imperatively
+ * to markup P-C could not wrap in RevealCssClass without touching
+ * twin-locked JSX: ONE IntersectionObserver pair, classes only.
  *
  * ── Grammar (the measured staggers) ─────────────────────────────────
- *   lines  (display headings)   stagger 80ms   y 24→0 + fade, 0.9s power3.out
- *   items  (list rows, lede…)   stagger 60ms   y 24→0 + fade, 0.9s power3.out
- *   cards  (drawn art panels)   —              scale 0.8→1 + fade, 1.6s expo.out
+ *   lines  (display headings)   whole-block, .reveal-d-N = 80ms steps
+ *   items  (list rows, lede…)   whole-block, 80ms steps within group
+ *   cards  (drawn art panels)   .reveal-card scale 0.8→1 + fade
  *
  * ── ARABIC SHAPING SAFEGUARD (non-negotiable) ───────────────────────
  * Arabic is cursive: word/char splitting produces ISOLATED letter
- * forms, and even line-level splitting was measured live to corrupt
- * the RTL CTA title (a trailing «؟» isolated on its own line + an
- * empty <em> shell). So SplitText 'lines' runs ONLY for non-Arabic
- * display; every Arabic element — display or body — animates as ONE
- * whole block (y/opacity), words never split into individual spans.
- *
- * ── Engine seam ─────────────────────────────────────────────────────
- * The app mounts Lenis on WINDOW (window.__mdrkLenis — lib/motion/
- * sheetLenis.ts); window scroll is native, so ScrollTrigger needs NO
- * scrollerProxy and NO second ticker: registerPlugin(ScrollTrigger)
- * and the default `scroller: window` is the existing engine.
+ * forms, and even line-level splitting was measured live (r333
+ * evidence) to corrupt the RTL CTA title (a trailing «؟» isolated on
+ * its own line + an empty <em> shell). Every element animates as ONE
+ * whole block (y/opacity/scale); words are never split into spans.
+ * (The SplitText plugin was retired with this rewrite — its only
+ * landing target was Arabic, so the ~9KB gz bought nothing.)
  *
  * ── Progressive enhancement + reduced motion ────────────────────────
- * Content ships VISIBLE. The hidden state is written by gsap.set (in a
- * layout effect, pre-paint) only after this module is live — never by
- * a static CSS rule — so a failed import/JS death can never hide
- * copy. Under prefers-reduced-motion initReveals() bails entirely and
- * the elements keep their authored final state (the reveals.css belt
- * enforces the same outcome against any stale inline state).
+ * Content ships VISIBLE: the `.reveal-up`/`.reveal-card` classes are
+ * ADDED BY THIS MODULE (never authored in JSX/CSS), so a failed import
+ * or JS death can never hide copy. Under prefers-reduced-motion
+ * initReveals() bails entirely before adding anything (the reveals.css
+ * belt enforces the same outcome defensively).
  *
  * ── Idempotency / lifecycle ─────────────────────────────────────────
- * window.__mdrkReveals guards double init; destroy() kills every
- * trigger, reverts every split, clears inline state and the armed root
+ * window.__mdrkReveals guards double init; destroy() disconnects the
+ * observers, removes every class this module added and the armed root
  * class — safe for landing remounts (React 18 double-effect included).
  */
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitText } from 'gsap/SplitText';
 
-/** Root seam class — added BEFORE any trigger exists (the arm order). */
+/** Root seam class — added BEFORE any hiding class lands (the arm order). */
 const ARMED_CLASS = 'js-reveal-armed';
 
 /** Grammar targets — the landing's second half (P-C sheets). */
-const LINES_SEL = '.fo-cta-title'; // display heading → SplitText LINES only
+const LINES_SEL = '.fo-cta-title'; // display heading → whole-block rise
 const ITEM_SEL =
   '.pm-col, .rl-row, .fo-cta-lede, .fo-cta-actions, .fo-cta-meta';
 const CARD_SEL = '.pm-artzone .pm-art, .fo-cta-sketch'; // drawn panels
@@ -58,17 +65,8 @@ interface RevealsWindow extends Window {
   __mdrkReveals?: RevealsHandle;
 }
 
-let pluginsReady = false;
-function ensurePlugins(): void {
-  if (pluginsReady) return;
-  gsap.registerPlugin(ScrollTrigger, SplitText);
-  pluginsReady = true;
-}
-
-/** Final-state writer — the only place hidden state exists (JS-only). */
-function settle(el: Element): void {
-  gsap.set(el, { opacity: 1, y: 0, scale: 1, clearProps: 'transform' });
-}
+const OBSERVER_ROOT_MARGIN_LINES = '0px 0px -15% 0px'; // the 85% entry line
+const OBSERVER_ROOT_MARGIN_ITEMS = '0px 0px -12% 0px'; // the 88% entry line
 
 export function initReveals(): RevealsHandle {
   const noop: RevealsHandle = { destroy() {} };
@@ -81,132 +79,98 @@ export function initReveals(): RevealsHandle {
     return noop; // RM: bail entirely — content stays in final state
   }
 
-  ensurePlugins();
-  // The ARM SEAM comes first: root class, then hidden state, then triggers.
+  // The ARM SEAM comes first: root class, then hiding classes, then observers.
   document.documentElement.classList.add(ARMED_CLASS);
 
-  const lines = gsap.utils.toArray<HTMLElement>(LINES_SEL);
-  const items = gsap.utils.toArray<HTMLElement>(ITEM_SEL);
-  const cards = gsap.utils.toArray<HTMLElement>(CARD_SEL);
-  const triggers: ScrollTrigger[] = [];
-  const splits: SplitText[] = [];
-  const mobile = window.matchMedia('(max-width: 767px)').matches;
+  const lines = toArray(document, LINES_SEL);
+  const items = toArray(document, ITEM_SEL);
+  const cards = toArray(document, CARD_SEL);
+  const observers: IntersectionObserver[] = [];
+  /** every class this module added — destroy() removes exactly these. */
+  const touched: Array<{ el: Element; cls: string }> = [];
 
-  /* Lines — display headings. ARABIC SHAPING GUARD: Arabic is cursive
-   * and RTL — SplitText's line segmentation was measured LIVE (r333
-   * evidence) to isolate a trailing «؟» on its own line and to leave
-   * an empty <em> shell on the CTA title, so any Arabic-bearing
-   * display element animates as ONE whole block (the same blockRise
-   * recipe, per-element) and SplitText 'lines' stays reserved for
-   * non-Arabic display. Words/chars are never split in either branch. */
-  const ARABIC = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
-  lines.forEach((el) => {
-    let targets: Element[] = [el];
-    if (!mobile && !ARABIC.test((el.textContent || '').slice(0, 64))) {
-      try {
-        const split = new SplitText(el, {
-          type: 'lines',
-          linesClass: 'mdrk-line',
-        });
-        splits.push(split);
-        targets = split.lines;
-      } catch {
-        targets = [el]; // split failure must never hide the heading
-      }
-    }
-    gsap.set(targets, { opacity: 0, y: 24 });
-    triggers.push(
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 85%',
-        once: true,
-        onEnter: () =>
-          gsap.to(targets, {
-            opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: 'power3.out',
-            stagger: 0.08, // the measured 80ms line stagger
-            overwrite: 'auto',
-          }),
-      }),
-    );
-  });
+  const arm = (el: Element, cls: string) => {
+    el.classList.add(cls);
+    touched.push({ el, cls });
+  };
 
-  /* Items — rows and copy blocks rise as WHOLE elements (never split
-   * Arabic words). Batch keeps the 60ms item stagger within each
-   * viewport-entry group. y-only: no x wipes — direction-safe in RTL. */
-  if (items.length) {
-    gsap.set(items, { opacity: 0, y: 24 });
-    ScrollTrigger.batch(items, {
-      start: 'top 88%',
-      once: true,
-      onEnter: (batch) => {
-        batch.forEach((el) => el.classList.add('in-view')); // .pm-draw draw-in seam
-        gsap.to(batch, {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          ease: 'power3.out',
-          stagger: 0.06, // the measured 60ms item stagger
-          overwrite: 'auto',
-        });
-      },
-    });
-  }
-
-  /* Cards — the Heron imgCardReveal: scale 0.8→1 · 1.6s expo.out on
-   * the drawn panels (pain plates + the CTA sketch). Scale/opacity
-   * only — geometry stays direction-agnostic. */
-  cards.forEach((el) => {
-    gsap.set(el, { opacity: 0, scale: 0.8 });
-    triggers.push(
-      ScrollTrigger.create({
-        trigger: el,
-        start: 'top 85%',
-        once: true,
-        onEnter: () =>
-          gsap.to(el, {
-            opacity: 1,
-            scale: 1,
-            duration: 1.6,
-            ease: 'expo.out',
-            overwrite: 'auto',
-          }),
-      }),
-    );
-  });
-
-  /* Fling/scroll-restoration belt — anything already above the fold
-   * line when we arm (mid-page restore, back-nav) settles instantly;
-   * a one-shot trigger must never hold content below its start. */
-  const settlePassed = () => {
-    const fold = window.innerHeight;
-    [...lines, ...items, ...cards].forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (r.bottom <= 0 || r.top < fold * 0.12) settle(el);
+  /** The reveal write: `.in-view` — the ONLY state change the grammar
+   * needs; the transition lives in shared.css/reveals.css. The stagger
+   * rides the house `.reveal-d-N` delay classes, assigned HERE (at
+   * intersect time, within the entering batch — document order, capped
+   * at d-5) so an element entering alone never waits on a group index. */
+  const revealBatch = (els: Element[]) => {
+    els.forEach((el, i) => {
+      const step = Math.min(i, 5);
+      if (step > 0) arm(el, `reveal-d-${step}`);
+      el.classList.add('in-view');
     });
   };
-  settlePassed();
+  const reveal = (el: Element) => el.classList.add('in-view');
 
-  const onFonts = () => ScrollTrigger.refresh();
-  if (typeof document.fonts !== 'undefined' && document.fonts?.ready) {
-    void document.fonts.ready.then(onFonts).catch(() => undefined);
+  /** Fling/scroll-restoration belt — anything already above the fold
+   * line when we arm settles instantly (no entrance for passed content);
+   * a reveal must never hold content below its start. */
+  const isPassed = (el: Element) =>
+    el.getBoundingClientRect().bottom <= 0 ||
+    el.getBoundingClientRect().top < window.innerHeight * 0.12;
+
+  /* ── Lines — display headings, whole blocks, 80ms steps ─────────── */
+  const pendingLines = lines.filter((el) => !isPassed(el));
+  lines.filter(isPassed).forEach(reveal);
+  pendingLines.forEach((el) => arm(el, 'reveal-up'));
+  observe(pendingLines, OBSERVER_ROOT_MARGIN_LINES);
+
+  /* ── Items — rows and copy blocks, 80ms steps within each group ────
+   * (y-only + fade: no x — direction-safe in RTL. Groups enter as one
+   * beat with internal stagger, like the reference.) */
+  const pendingItems = items.filter((el) => !isPassed(el));
+  items.filter(isPassed).forEach(reveal);
+  pendingItems.forEach((el) => arm(el, 'reveal-up'));
+  observe(pendingItems, OBSERVER_ROOT_MARGIN_ITEMS);
+
+  /* ── Cards — the Heron imgCardReveal: scale 0.8→1 + fade on the
+   * dedicated card rung. Scale/opacity only — direction-agnostic. ── */
+  const pendingCards = cards.filter((el) => !isPassed(el));
+  cards.filter(isPassed).forEach(reveal);
+  pendingCards.forEach((el) => arm(el, 'reveal-card'));
+  observe(pendingCards, OBSERVER_ROOT_MARGIN_LINES);
+
+  /** ONE observer per root-margin bucket (the house bucket rule —
+   * hooks/useReveal.ts): entries sharing a margin share one IO. */
+  function observe(els: Element[], rootMargin: string) {
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const batch = entries
+          .filter((e) => e.isIntersecting)
+          .map((e) => e.target)
+          .sort(byDocumentOrder);
+        if (batch.length) revealBatch(batch);
+        batch.forEach((el) => io.unobserve(el)); // once:true — never replays
+      },
+      { rootMargin },
+    );
+    els.forEach((el) => io.observe(el));
+    observers.push(io);
+  }
+
+  function toArray(doc: Document, sel: string): HTMLElement[] {
+    return Array.from(doc.querySelectorAll<HTMLElement>(sel));
+  }
+
+  /** document-order sort for batch staggers (RTL-safe: top before
+   * bottom; horizontal order never matters — no x motion). */
+  function byDocumentOrder(a: Element, b: Element): number {
+    const ra = a.getBoundingClientRect();
+    const rb = b.getBoundingClientRect();
+    return ra.top - rb.top || ra.left - rb.left;
   }
 
   const handle: RevealsHandle = {
     destroy() {
-      triggers.forEach((t) => t.kill());
-      splits.forEach((s) => {
-        try {
-          s.revert();
-        } catch {
-          /* already reverted */
-        }
-      });
-      [...lines, ...items, ...cards].forEach((el) =>
-        gsap.set(el, { clearProps: 'opacity,transform' }),
-      );
+      observers.forEach((io) => io.disconnect());
+      touched.forEach(({ el, cls }) => el.classList.remove(cls));
       document.documentElement.classList.remove(ARMED_CLASS);
       delete w.__mdrkReveals;
     },

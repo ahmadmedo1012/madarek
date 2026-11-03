@@ -391,9 +391,10 @@
 }
 
 /* ── Reveal-up — the landing choreography class contract ────────────
-   The ONLY consumers are RevealCssClass call sites on this page (see
-   hooks/useReveal.ts); nothing else in any sheet targets .reveal-up /
-   .reveal-d-*. The base.css universal reduced-motion !important
+   Consumers: RevealCssClass call sites on this page (see
+   hooks/useReveal.ts) AND the R333 imperative module (lib/reveals.ts,
+   which adds the classes only after JS is live); nothing else in any
+   sheet targets .reveal-up / .reveal-d-*. The base.css universal reduced-motion !important
    already owned the RM behaviour; this copy (opacity/transform only)
    keeps the authored static sheet outcome. */
 .reveal-up {

@@ -1,8 +1,10 @@
-/* R333 (P-C) — the reveal arm seam + the reduced-motion belt.
-   The module (src/lib/reveals.ts) owns ALL hidden state (gsap.set,
-   pre-paint) — this sheet ships NO opacity:0 default: content is
-   visible without JS by construction. No @keyframes here (the
-   motion-tokens gate scans keyframes; this grammar is GSAP-only). */
+/* R333 (P-C) — the reveal card rung + the arm seam + reduced-motion
+   belts. The module (src/lib/reveals.ts) owns ALL hiding classes
+   (`.reveal-up` comes from shared.css's house contract; `.reveal-card`
+   is defined here) — nothing in any sheet hides content by default,
+   so content is visible without JS by construction. No @keyframes
+   here (the motion-tokens gate scans keyframes; this grammar is
+   class + transition only, tokens throughout, zero !important). */
 
 /* the armed root class is observability, not hiding — a hook point for
    harnesses asserting the reveal grammar is live. */
@@ -10,25 +12,33 @@
   --mdrk-reveals: on;
 }
 
-/* SplitText line wrappers — stacking context only, zero visual
-   properties (lines inherit direction; no RTL assumption). */
-.mdrk-line {
-  display: block;
+/* ── The card rung — heron-craft row 13's imgCardReveal, re-keyed to
+   the r305 house register (the reference's 1.6s expo.out compressed
+   per the same re-key that took its 1s blockRise to --t-slower). ── */
+.reveal-card {
+  opacity: 0;
+  scale: 0.8;
+  transition:
+    opacity var(--motion-duration-card) var(--ease-out),
+    scale var(--motion-duration-card) var(--ease-out);
 }
 
-/* ── Reduced motion: the complete static sheet (defense in depth —
-   the module bails under RM before arming; this belt guarantees the
-   authored final state even against stale inline styles). ── */
+.reveal-card.in-view {
+  opacity: 1;
+  scale: 1;
+}
+
+/* ── Reduced motion: the complete static sheet. Scoped one level
+   deeper than the base contract (.js-reveal-armed .reveal-*) so it
+   wins the cascade WITHOUT !important — the module bails under RM
+   before arming, so this belt is defense in depth against stale
+   classes only. ── */
 @media (prefers-reduced-motion: reduce) {
-  .fo-cta-title,
-  .pm-col,
-  .rl-row,
-  .fo-cta-lede,
-  .fo-cta-actions,
-  .fo-cta-meta,
-  .pm-artzone .pm-art,
-  .fo-cta-sketch {
-    opacity: 1 !important;
-    transform: none !important;
+  .js-reveal-armed .reveal-up,
+  .js-reveal-armed .reveal-card {
+    opacity: 1;
+    transform: none;
+    scale: 1;
+    transition: none;
   }
 }

@@ -36,12 +36,12 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
     /* R312 (D4) hardening: the first mount rides the dev server's cold
      * transform of the landing chunk — under parallel-suite load it can
      * outrun the 5s default (CI runs a built app and is unaffected). */
-    await expect(page.locator('.sl')).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('.pl')).toBeVisible({ timeout: 30_000 });
     /* it must exit by itself (R313 asset-gated clock: the counter
      * finishes between ~3.25s (assets early) and 4.9s (the fallback
      * curve), + 0.7s hold + 0.835s split — the budget carries the dev
      * server's cold transform) */
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 20000 });
     /* R315 (B1·A.2) re-pin: the display H1 is «رحلة تعلم واحدة / من
      * المحاضرة إلى الإتقان» — the sheet-stands proof now anchors on it */
     await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
@@ -49,8 +49,8 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
      * reference's own measured reloadGate; the session flag is
      * inert) — and exits by itself again */
     await page.reload();
-    await expect(page.locator('.sl')).toBeVisible({ timeout: 15_000 });
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
+    await expect(page.locator('.pl')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
   });
 
@@ -64,10 +64,10 @@ test.describe('R308 — لوحة البدء (the entrance)', () => {
       }
     });
     await page.goto('/');
-    await page.locator('.sl-skip').click();
+    await page.locator('.pl-skip').click();
     /* R313 override: the skip runs the 835ms split (the exit must
      * PLAY, not cut) — gone by ~1s */
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 3000 });
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 3000 });
     /* R315 (B1·A.2) re-pin: the sheet-stands proof anchors on the
      * current display H1 (was the pre-r306 «مدارك» title) */
     await expect(page.locator('.fo-hero-title')).toContainText('رحلة تعلم واحدة');
@@ -149,7 +149,7 @@ test.describe('R308 — the static belt', () => {
       }
     });
     await page.goto('/');
-    await expect(page.locator('.sl')).toHaveCount(0);
+    await expect(page.locator('.pl')).toHaveCount(0);
     await expect(page.locator('.sc-canvas')).toHaveCount(0);
     /* R315 (B1·A.2) re-pin: the static belt's complete-sheet proof
      * anchors on the current display H1 (was «مدارك») */

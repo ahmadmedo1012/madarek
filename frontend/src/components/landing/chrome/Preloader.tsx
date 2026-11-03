@@ -9,9 +9,11 @@
  * (document load + document.fonts.ready) bounded to min 900 ms /
  * max 2.2 s — the counter never lies and never stalls.
  *
- * Exit: a GSAP wipe — the paper sheet collapses via clip-path
- * inset(0 100% 0 0) over 0.6 s power3.inOut after a short 100% hold,
- * revealing the page right-first (the RTL reading side). At exit START
+ * Exit: a CSS wipe — the paper sheet collapses via clip-path
+ * inset(0 100% 0 0) on the R313 sheet-exit rung (--t-sheet-exit:
+ * 835ms, --ease-in) after a short 100% hold, revealing the page
+ * right-first (the RTL reading side). No JS animation library — the
+ * .pl--exit class carries the whole transition. At exit START
  * the component dispatches the `mdrk:entry-done` custom event AND calls
  * onExitStart, so downstream chrome (the consent banner) mounts under
  * the reveal and never overlaps the overlay.
@@ -23,7 +25,6 @@
  * instantly), never for save-data/slow-device visitors.
  */
 import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
 import { Logo } from '../../../brand';
 import { markIntroSeen } from '../../../lib/motion/introGate';
 import '../../../styles/landing/preloader.css';
@@ -31,7 +32,6 @@ import '../../../styles/landing/preloader.css';
 const MIN_HOLD_MS = 900; /* the counter never resolves faster than this */
 const MAX_RUN_MS = 2200; /* the hard cap — readiness races this timer */
 const EXIT_HOLD_MS = 280; /* the 100% beat before the wipe opens */
-const EXIT_WIPE_S = 0.6; /* heron-craft row 20 physics: power3.inOut */
 const ENTRY_DONE_EVENT = 'mdrk:entry-done';
 
 type PreloaderProps = {
@@ -45,6 +45,11 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
   const [pct, setPct] = useState(0);
+
+  /* the R313 skip contract: the skip control ends the entrance
+   * immediately — but the EXIT must PLAY (the 0.88s hold+wipe), not
+   * cut. runExit is hoisted here via ref set in the effect below. */
+  const runExitRef = useRef<() => void>(() => {});
 
   /* the callbacks ride refs so the instrument below owns its clock
    * exactly once per mount (parent re-renders must not restart it). */
@@ -78,7 +83,6 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
     let exited = false;
     let raf = 0;
     let shown = 0; /* the eased display value behind the counter */
-    let timeline: gsap.core.Timeline | null = null;
     const cleanups: Array<() => void> = [];
 
     const runExit = () => {
@@ -92,16 +96,21 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
       document.dispatchEvent(new CustomEvent(ENTRY_DONE_EVENT));
       cbsRef.current.onExitStart?.();
       /* the wipe: the RIGHT cut grows — the paper collapses toward the
-       * left edge and the page reveals right-first (RTL reading side). */
-      timeline = gsap.timeline({
-        delay: EXIT_HOLD_MS / 1000,
-        onComplete: () => cbsRef.current.onDone?.(),
-      });
-      timeline.to(root, {
-        clipPath: 'inset(0 100% 0 0)',
-        duration: EXIT_WIPE_S,
-        ease: 'power3.inOut',
-      }, 0);
+       * left edge and the page reveals right-first (RTL reading side).
+       * The .pl--exit transition rides the R313 sheet-exit rung; the
+       * hold beat delays the class, then onDone lands on transitionend
+       * (with a cap-timeout twin so a dropped event can never strand
+       * the overlay). */
+      const doneTwice = { done: false };
+      const finish = () => {
+        if (doneTwice.done) return;
+        doneTwice.done = true;
+        cbsRef.current.onDone?.();
+      };
+      root.addEventListener('transitionend', finish, { once: true });
+      const onDoneCap = window.setTimeout(finish, EXIT_HOLD_MS + 835 + 250);
+      cleanups.push(() => window.clearTimeout(onDoneCap));
+      window.setTimeout(() => root.classList.add('pl--exit'), EXIT_HOLD_MS);
     };
 
     const release = () => { solved = true; };
@@ -116,6 +125,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
     /* the hard cap: readiness never holds the entry past 2.2 s */
     const cap = window.setTimeout(runExit, MAX_RUN_MS);
     cleanups.push(() => window.clearTimeout(cap));
+    runExitRef.current = runExit;
 
     const frame = (now: number) => {
       if (exited) return;
@@ -143,7 +153,6 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
 
     return () => {
       cleanups.forEach((fn) => fn());
-      timeline?.kill();
     };
   }, []);
 
@@ -172,6 +181,13 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
           <span className="pl-rail-track" />
           <span ref={fillRef} className="pl-rail-fill" style={{ transform: 'scaleX(0)' }} />
         </div>
+        <button
+          type="button"
+          className="pl-skip"
+          onClick={() => runExitRef.current()}
+        >
+          تخطي
+        </button>
       </div>
     </div>
   );

@@ -3,9 +3,10 @@
    A full-screen paper overlay on the page ground; the mark + wordmark
    stroke-draw via the brand system's own <Logo animated> (its bespoke
    timing is the documented brand spec — see scripts/check-motion-tokens
-   DEBT: brand/Logo.tsx). This sheet authors NO raw motion: the exit is
-   a GSAP clip-path wipe in Preloader.tsx; every duration here is
-   either a token or absent.
+   DEBT: brand/Logo.tsx). This sheet authors NO raw motion and NO JS
+   animation library: the exit is a CSS clip-path wipe driven by the
+   .pl--exit class (Preloader.tsx adds it), on the R313 sheet-exit
+   rung; every duration here is either a token or absent.
    ════════════════════════════════════════════════════════════════════ */
 
 .pl {
@@ -16,10 +17,17 @@
   place-items: center;
   background: var(--bg); /* the ONE paper ground — the entry sheet is
                             the same material as the page it reveals */
-  /* the GSAP wipe animates this from the full sheet to
-     inset(0 100% 0 0) — page reveals right-first (RTL reading side) */
+  /* the .pl--exit class animates this to inset(0 100% 0 0) — page
+     reveals right-first (RTL reading side) */
   clip-path: inset(0 0 0 0);
   will-change: clip-path;
+}
+
+/* the R313 sheet-exit rung (--t-sheet-exit: 835ms, the reference's
+   measured split) — the wipe must PLAY, never cut, skip included */
+.pl--exit {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--motion-duration-sheet-exit) var(--ease-in);
 }
 
 .pl-inner {
@@ -71,4 +79,32 @@
   inset: 0;
   background: var(--accent);
   transform-origin: right;
+}
+
+/* the R313 skip contract — a real control (button), paper-styled,
+ * hairline-drawn; ends the entrance immediately (the exit still plays) */
+.pl-skip {
+  appearance: none;
+  margin: 0;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 1px solid var(--text-muted);
+  border-radius: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+
+.pl-skip:hover,
+.pl-skip:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.pl-skip:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
