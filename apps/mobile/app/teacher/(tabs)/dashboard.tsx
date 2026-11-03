@@ -1,10 +1,18 @@
 /**
  * (tabs)/dashboard — لوحة الأستاذ. Web parity: TeacherDashboardPage.tsx
- * (KPI strip · pending-grading queue · today's classes · trend · feed),
- * mobile-composed with the mobile dashboard wire shape read honestly.
+ * recomposed mobile-first (R334 Phase D):
+ *
+ *   · stats hierarchy — ONE hero card (CountUp طلابي + the accent
+ *     RingProgress للحضور) over quiet StatLines; no 2×2 card grid;
+ *   · today's classes as a horizontal strip (phase-badged slots);
+ *   · grading queue with the count in its section header («N بانتظار
+ *     التصحيح») and one row per pending group;
+ *   · quick actions (تصحيح/حضور/بث/بحوث) on PressableScale;
+ *   · wire extras parsed structurally (src/features/teacher/wire.ts —
+ *     no more `as unknown as Wire*` double casts).
  */
 import { useMemo, useState } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import CalendarDays from "lucide-react-native/icons/calendar-days";
@@ -12,20 +20,24 @@ import ClipboardCheck from "lucide-react-native/icons/clipboard-check";
 import FileText from "lucide-react-native/icons/file-text";
 import LineChart from "lucide-react-native/icons/chart-line";
 import Microscope from "lucide-react-native/icons/microscope";
+import Radio from "lucide-react-native/icons/radio";
 import TriangleAlert from "lucide-react-native/icons/triangle-alert";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { teacherApi } from "@/api/teacher";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { humanizeError } from "@/lib/errors";
 import { fromNow, latn, pct } from "@/lib/format";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
 import { Badge, Card, Hairline } from "@/components/ui/surfaces";
-import { KpiCard, LedgerRow, RowList } from "@/components/ui/data";
+import { LedgerRow, RowList, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { Segmented } from "@/components/ui/fields";
+import { CountUp, PressableScale, RingProgress } from "@/motion";
 import { arCount, useTeacherOfferings } from "@/features/teacher/components";
+import { parseFeed, parsePendingGroups, parseTrend } from "@/features/teacher/wire";
 
 const NO_OFFERINGS: Awaited<ReturnType<typeof teacherApi.offerings>> = [];
 
@@ -37,31 +49,26 @@ const FEED_ACTION: Record<string, { label: string; to: string }> = {
   attendance: { label: "تسجيل الحضور", to: "/teacher/attendance" },
 };
 
-type WireFeedItem = {
-  kind?: string;
-  title?: string;
-  text?: string;
-  when?: string;
-  at?: string;
-  author?: { firstName: string; lastName: string } | null;
-  meta?: string;
-  late?: boolean;
-};
+const QUICK_ACTIONS: { key: string; label: string; to: string; icon: React.ComponentType<{ size?: number; color?: string }> }[] = [
+  { key: "grades", label: "التصحيح", to: "/teacher/grades", icon: ClipboardCheck },
+  { key: "attendance", label: "الحضور", to: "/teacher/attendance", icon: CalendarDays },
+  { key: "live", label: "بث مباشر", to: "/teacher/live", icon: Radio },
+  { key: "research", label: "البحوث", to: "/teacher/research-review", icon: Microscope },
+];
 
-type WirePendingGroup = {
-  assignmentId?: string;
-  title?: string;
-  count?: number;
-  course?: { name?: string; code?: string };
-  oldestSubmittedAt?: string | null;
+type TodaySlot = {
+  key: string;
+  courseName: string;
+  courseCode: string;
+  startTime: string;
+  endTime: string;
+  room: string | null;
 };
-
-type WireTrendPoint = { week: string; avgGradePct?: number | null; attendancePct?: number | null; value?: number | null };
 
 /** One today slot composed from the offerings' schedules (web todaySlots). */
-function todaySlots(offerings: Awaited<ReturnType<typeof teacherApi.offerings>>, now: Date) {
+function todaySlots(offerings: Awaited<ReturnType<typeof teacherApi.offerings>>, now: Date): TodaySlot[] {
   const dow = now.getDay();
-  const rows: { key: string; courseName: string; courseCode: string; startTime: string; endTime: string; room: string | null }[] = [];
+  const rows: TodaySlot[] = [];
   for (const o of offerings) {
     for (const slot of o.schedule ?? []) {
       if (slot.dayOfWeek !== dow) continue;
@@ -104,29 +111,18 @@ export default function TeacherDashboard() {
   const d = dash.data;
   const kpi = d?.kpi;
 
-  const trend = useMemo(() => {
-    const raw = ((d as unknown as { trend?: WireTrendPoint[] })?.trend ?? []) as WireTrendPoint[];
-    return raw.map((t) => ({
-      week: t.week,
-      grade: t.avgGradePct ?? t.value ?? null,
-      attendance: t.attendancePct ?? null,
-    }));
-  }, [d]);
-
+  const trend = useMemo(() => parseTrend(d?.trend), [d]);
   const trendDrawable =
     trend.filter((t) => t.grade !== null).length >= 2 || trend.filter((t) => t.attendance !== null).length >= 2;
 
-  const feed = useMemo(() => {
-    const raw = ((d as unknown as { feed?: WireFeedItem[] })?.feed ?? []) as WireFeedItem[];
-    return raw;
-  }, [d]);
+  const feed = useMemo(() => parseFeed(d?.feed), [d]);
   const visible = filter === "all" ? feed : feed.filter((f) => f.kind === filter);
 
-  const pendingGroups = useMemo(() => {
-    const raw = d?.pendingGrading;
-    if (Array.isArray(raw)) return raw as unknown as WirePendingGroup[];
-    return null;
-  }, [d]);
+  const pendingGroups = useMemo(() => parsePendingGroups(d?.pendingGrading), [d]);
+  const pendingTotal = useMemo(
+    () => (pendingGroups ? pendingGroups.reduce((sum, g) => sum + g.count, 0) : (typeof d?.pendingGrading === "number" ? d.pendingGrading : 0)),
+    [pendingGroups, d],
+  );
 
   const offerings = offs.data ?? NO_OFFERINGS;
   const slots = useMemo(() => todaySlots(offerings, new Date()), [offerings]);
@@ -144,10 +140,13 @@ export default function TeacherDashboard() {
       <Screen scroll>
         <AppTopBar alertsPath="/teacher/alerts" />
         <PageHeader title="لوحة الأستاذ" />
-        <ErrorState message={(dash.error as Error | null)?.message} onRetry={() => dash.refetch()} />
+        <ErrorState message={humanizeError(dash.error)} onRetry={() => dash.refetch()} />
       </Screen>
     );
   }
+
+  const emptySemester =
+    kpi && (kpi.studentCount ?? 0) === 0 && kpi.avgGradePct == null && kpi.attendancePct == null;
 
   return (
     <Screen scroll>
@@ -157,12 +156,9 @@ export default function TeacherDashboard() {
         kicker="كل ما يحتاج تدخّلك اليوم — في تيار واحد، مرتّب حسب الأولوية."
       />
 
-      {/* KPI strip — the mobile spec's four labels.
-          R2 (B4 final panel): a wall of «—» on a fresh account reads
-          «broken», not «awaiting data». With no students enrolled there
-          IS nothing to average — one honest consolidated card beats a
-          2×2 grid of dashes. Counts take over the moment they exist. */}
-      {kpi && (kpi.studentCount ?? 0) === 0 && kpi.avgGradePct == null && kpi.attendancePct == null ? (
+      {/* إحصاءات الفصل — hierarchy: one hero card, no card grid.
+          The attendance RingProgress carries the screen's ONE accent. */}
+      {emptySemester ? (
         <Card>
           <EmptyState
             icon={<ClipboardCheck size={22} color={p.textMuted} />}
@@ -171,33 +167,98 @@ export default function TeacherDashboard() {
           />
         </Card>
       ) : (
-        <>
-          <View style={{ flexDirection: "row", gap: sp[8] }}>
-            <KpiCard label="طلابي" value={kpi?.studentCount ?? 0} />
-            <KpiCard label="متوسط الدرجات" value={kpi?.avgGradePct !== null && kpi?.avgGradePct !== undefined ? pct(kpi.avgGradePct) : "—"} />
-      </View>
-      <View style={{ flexDirection: "row", gap: sp[8] }}>
-        <KpiCard label="الحضور" value={kpi?.attendancePct !== null && kpi?.attendancePct !== undefined ? pct(kpi.attendancePct) : "—"} />
-        <KpiCard
-          label="بحوث بانتظار المراجعة"
-          value={kpi?.needsReview ?? 0}
-          tone="accent"
-          style={{ justifyContent: "center" }}
-        />
-      </View>
-        </>
+        <Card>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[16] }}>
+            <View style={{ flex: 1 }}>
+              <T variant="sm" color="muted">
+                طلابي هذا الفصل
+              </T>
+              <CountUp value={kpi?.studentCount ?? 0} />
+            </View>
+            <RingProgress
+              size={84}
+              thickness={8}
+              progress={kpi?.attendancePct != null ? Math.min(1, Math.max(0, kpi.attendancePct / 100)) : 0}
+              color={p.accent}
+              trackColor={p.border}
+            >
+              <T variant="sm" weight="bold">
+                {kpi?.attendancePct != null ? pct(kpi.attendancePct) : "—"}
+              </T>
+              <T variant="xs" color="muted">
+                الحضور
+              </T>
+            </RingProgress>
+          </View>
+          <View style={{ paddingTop: sp[4] }}>
+            <StatLine
+              label="متوسط الدرجات"
+              value={kpi?.avgGradePct != null ? pct(kpi.avgGradePct) : "—"}
+            />
+            <StatLine label="بحوث بانتظار المراجعة" value={kpi?.needsReview ?? 0} />
+          </View>
+        </Card>
       )}
 
-      {/* طابور التصحيح — the pending-grading queue. */}
-      <SectionBar index={1} title="طابور التصحيح" />
+      {/* إجراءات سريعة — one tap into the heavy workflows. */}
+      <View style={{ flexDirection: "row", gap: sp[8] }}>
+        {QUICK_ACTIONS.map((a) => {
+          const Icon = a.icon;
+          return (
+            <PressableScale
+              key={a.key}
+              accessibilityRole="button"
+              accessibilityLabel={a.label}
+              onPress={() => router.push(a.to as never)}
+              style={{
+                flex: 1,
+                minHeight: 72,
+                alignItems: "center",
+                justifyContent: "center",
+                gap: sp[6],
+                backgroundColor: p.surface,
+                borderWidth: 1,
+                borderColor: p.border,
+              }}
+            >
+              <Icon size={20} color={p.textSecondary} />
+              <T variant="sm" weight="medium">
+                {a.label}
+              </T>
+            </PressableScale>
+          );
+        })}
+      </View>
+
+      {/* طابور التصحيح — count in the header, one row per group. */}
+      <SectionBar
+        index={1}
+        title="طابور التصحيح"
+        action={
+          pendingTotal > 0 ? (
+            <Badge
+              label={arCount(pendingTotal, [
+                "تسليم واحد بانتظار التصحيح",
+                "تسليمان بانتظار التصحيح",
+                "تسليمات بانتظار التصحيح",
+                "تسليماً بانتظار التصحيح",
+              ])}
+              tone="yellow"
+            />
+          ) : undefined
+        }
+      />
       {pendingGroups === null ? (
         <Card>
           <T variant="body" color="muted">
-            {typeof d.pendingGrading === "number"
-              ? d.pendingGrading === 0
-                ? "لا انتظار — كل التسليمات مُقيَّمة"
-                : `${arCount(Number(d.pendingGrading), ["تسليم واحد بانتظار درجتك", "تسليمان بانتظار درجتك", "تسليمات بانتظار درجتك", "تسليماً بانتظار درجتك"])}`
-              : "لا انتظار — كل التسليمات مُقيَّمة"}
+            {pendingTotal === 0
+              ? "لا انتظار — كل التسليمات مُقيَّمة"
+              : arCount(pendingTotal, [
+                  "تسليم واحد بانتظار درجتك",
+                  "تسليمان بانتظار درجتك",
+                  "تسليمات بانتظار درجتك",
+                  "تسليماً بانتظار درجتك",
+                ])}
           </T>
         </Card>
       ) : pendingGroups.length === 0 ? (
@@ -211,21 +272,21 @@ export default function TeacherDashboard() {
         <RowList>
           {pendingGroups.map((g, i) => (
             <LedgerRow
-              key={g.assignmentId ?? String(i)}
+              key={g.assignmentId !== "" ? g.assignmentId : String(i)}
               last={i === pendingGroups.length - 1}
               onPress={() => router.push("/teacher/assignments" as never)}
-              accessibilityLabel={`طابور التصحيح — ${g.title ?? ""}`}
+              accessibilityLabel={`طابور التصحيح — ${g.title}`}
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                 <T variant="h4" weight="bold" color="accentInk">
-                  {latn(g.count ?? 0)}
+                  {latn(g.count)}
                 </T>
                 <View style={{ flex: 1 }}>
                   <T variant="body" weight="medium" numberOfLines={1}>
-                    {g.title ?? "تسليم"}
+                    {g.title}
                   </T>
                   <T variant="xs" color="muted" numberOfLines={1}>
-                    {g.course?.name ?? ""}
+                    {g.courseName}
                     {g.oldestSubmittedAt ? ` · أقدم تسليم ${fromNow(g.oldestSubmittedAt)}` : ""}
                   </T>
                 </View>
@@ -236,48 +297,61 @@ export default function TeacherDashboard() {
         </RowList>
       )}
 
-      {/* طابور اليوم — today's classes. */}
+      {/* طابور اليوم — horizontal strip of today's slots. */}
       <SectionBar index={2} title="طابور اليوم" />
       {offs.isLoading ? (
         <SkeletonList rows={2} rowHeight={48} />
       ) : offs.isError ? (
-        <ErrorState message={(offs.error as Error | null)?.message} onRetry={() => offs.refetch()} compact />
+        <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
       ) : slots.length === 0 ? (
         <Card>
           <T variant="body" weight="bold">لا محاضرات اليوم</T>
           <T variant="sm" color="muted">جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ.</T>
         </Card>
       ) : (
-        <RowList>
-          {slots.map((s, i) => {
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: sp[8], paddingBottom: sp[4] }}
+        >
+          {slots.map((s) => {
             const phase = slotPhase(s.startTime, s.endTime, new Date());
             return (
-              <LedgerRow
+              <PressableScale
                 key={s.key}
-                last={i === slots.length - 1}
+                accessibilityRole="button"
+                accessibilityLabel={`محاضرة ${s.courseName} ${s.startTime} — ${s.endTime}`}
                 onPress={() => router.push("/teacher/schedule" as never)}
-                accessibilityLabel={`محاضرة ${s.courseName}`}
+                style={{
+                  width: 200,
+                  gap: sp[6],
+                  padding: sp[12],
+                  backgroundColor: p.surface,
+                  borderWidth: 1,
+                  borderColor: phase === "ongoing" ? p.rule : p.border,
+                  opacity: phase === "done" ? 0.55 : 1,
+                }}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                  <CalendarDays size={18} color={p.textMuted} />
-                  <View style={{ flex: 1 }}>
-                    <T variant="body" weight="medium" numberOfLines={1}>
-                      {s.courseName}
-                    </T>
-                    <T variant="xs" color="muted">
-                      {`${s.startTime} — ${s.endTime}`}
-                      {s.room ? ` · ${s.room}` : ""} · {s.courseCode}
-                    </T>
-                  </View>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <T variant="sm" weight="bold">
+                    {s.startTime} — {s.endTime}
+                  </T>
                   <Badge
                     label={phase === "ongoing" ? "جارٍ الآن" : phase === "done" ? "انتهت" : "قادمة"}
                     tone={phase === "ongoing" ? "rose" : phase === "done" ? "grey" : "sky"}
                   />
                 </View>
-              </LedgerRow>
+                <T variant="body" weight="medium" numberOfLines={1}>
+                  {s.courseName}
+                </T>
+                <T variant="xs" color="muted" numberOfLines={1}>
+                  {s.room ? `${s.room} · ` : ""}
+                  {s.courseCode}
+                </T>
+              </PressableScale>
             );
           })}
-        </RowList>
+        </ScrollView>
       )}
 
       {/* Trend — SVG-free View bars, honestly floored at ≥2 points. */}
@@ -340,10 +414,9 @@ export default function TeacherDashboard() {
       ) : (
         <RowList>
           {visible.map((f, i) => {
-            const kind = f.kind ?? "";
-            const action = FEED_ACTION[kind];
-            const Icon = kind === "research" ? Microscope : kind === "attendance" ? TriangleAlert : FileText;
-            const author = f.author ? `${f.author.firstName} ${f.author.lastName}` : "النظام";
+            const action = FEED_ACTION[f.kind];
+            const Icon = f.kind === "research" ? Microscope : f.kind === "attendance" ? TriangleAlert : FileText;
+            const author = f.author ?? "النظام";
             return (
               <LedgerRow
                 key={String(i)}
@@ -363,7 +436,7 @@ export default function TeacherDashboard() {
                       {f.late ? <Badge label="متأخر" tone="yellow" /> : null}
                     </View>
                     <T variant="xs" color="muted" numberOfLines={1}>
-                      {author} · {fromNow(f.when ?? f.at ?? null)}
+                      {author} · {fromNow(f.when)}
                     </T>
                   </View>
                   {action ? <Badge label={action.label} tone="sky" /> : null}
@@ -412,6 +485,7 @@ export default function TeacherDashboard() {
 
 /** One horizontal View bar (SVG-free trend line, latn value labels). */
 function TrendBar({ label, value, color }: { label: string; value: number | null; color: string }) {
+  const p = usePalette();
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
       <View style={{ width: 92 }}>
@@ -419,7 +493,7 @@ function TrendBar({ label, value, color }: { label: string; value: number | null
           {label}
         </T>
       </View>
-      <View style={{ flex: 1, height: 8, backgroundColor: "rgba(0,0,0,0.08)", overflow: "hidden" }}>
+      <View style={{ flex: 1, height: 8, backgroundColor: p.border, overflow: "hidden" }}>
         <View
           style={{
             height: 8,
