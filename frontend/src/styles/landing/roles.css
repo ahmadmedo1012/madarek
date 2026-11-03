@@ -125,3 +125,43 @@
   color: var(--text-muted);
 }
 
+/* ═══ R332 W5 — the roles dissolution seats. FILE END (the cascade
+   lesson: the base rules above and every strata re-seat lose to these
+   — same-specificity rules resolve by document order).
+
+   Roles measured PASS at 1440 (run-001: height Δ0.01% — the floor IS
+   the twin's 886.7; heading Δ0.0%) — so these seats move VERBATIM, no
+   value changes: the ≥992 block takes the strata law seats (the
+   100svh−1.6rem floor + the R328 8rem quiet rung + the head/more
+   rungs), the 768–991 tablet block takes the W3 rem-law band (the
+   145.2rem floor wins the belt's two min-block seats by file-end
+   order, as rendered pre-dissolution). The strata .rl- ≥992 + tablet
+   duplicates retire herewith; the roles fix rides the why cascade
+   above it (trigger-start). shared.css holds no competing seats on
+   these selectors in either belt. ═══ */
+@media (min-width: 992px) {
+  .rl-section {
+    padding-block: var(--space-8xl);
+    min-block-size: calc(100svh - 1.6rem);
+  }
+
+  .rl-head {
+    margin-block-end: 4.8rem;
+  }
+
+  .rl-more {
+    margin-block-start: 1.92rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .rl-section {
+    padding-block: var(--sp-5) var(--sp-4);
+    min-block-size: 145.2rem;
+  }
+
+  .rl-card {
+    min-block-size: 27.5rem;
+  }
+}
+

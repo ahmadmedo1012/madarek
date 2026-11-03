@@ -51,11 +51,23 @@
   min-inline-size: 0;
 }
 
-/* the aspect-ruled phone stage: same floor inside the art band's own
- * grid (the aspect ratio derives min-content width from the content
- * stack — 416px measured without it). */
+/* the stage — the shared .bp-stage box (R309's ONE physical frame
+ * contract): the aspect-ruled phone floor (min-content 416px measured
+ * without it), the drafting chrome, and the R328 56svh cap (the ink
+ * stays ≈ half the viewport at EVERY desktop height; without it the
+ * art row pushed the strip behind the corner card at 1280×720 −55px /
+ * 1920×1080 −12px — measured. The title owns the hierarchy; the
+ * drawing owns the page, not the fold). */
 .fo-hero-art .bp-stage {
   min-inline-size: 0;
+  inline-size: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  max-block-size: 56svh;
+  border: 1px solid var(--rule);
+  background: transparent; /* the paper shows through, never a white box (R315 A.1) */
+  padding: 12px; /* spacing-gate: allow — the window's own 12px mat seat (drafting chrome), deliberately not --sp-3 — the tier blocks re-seat the ladder, this seat stays px */
 }
 
 /* ── the art band — the whole elevation on transparent paper ────────
@@ -85,18 +97,6 @@
   display: grid;
 }
 
-/* the drafting frame — the shared .bp-stage box the inspection
- * instrument anchors to (R309's ONE physical frame contract). */
-.fo-hero-art .bp-stage {
-  inline-size: 100%;
-  display: grid;
-  place-items: center;
-  position: relative;
-  border: 1px solid var(--rule);
-  background: transparent; /* the paper shows through, never a white box (R315 A.1) */
-  padding: 12px; /* spacing-gate: allow — the window's own 12px mat seat (drafting chrome), deliberately not --sp-3 — the tier blocks re-seat the ladder, this seat stays px */
-}
-
 /* the ink — fills the frame's content width (the measured img-inner
  * grammar). Height from the viewBox's own aspect; the max cap keeps
  * short viewports honest (contain, never crop — the whole elevation
@@ -105,17 +105,6 @@
   inline-size: 100%;
   block-size: auto;
   max-block-size: 100%;
-}
-
-/* R328 (H2) — THE STAGE CAP: the ruled box never exceeds 56svh, so
- * the ink stays ≈ half the viewport at EVERY desktop height and the
- * content band + strip + the consent card's reserve ALWAYS fit inside
- * the 100svh band. Without the cap the art row's own sizing mood
- * pushed the strip behind the corner card at 1280×720 (−55px) and
- * 1920×1080 (−12px) — measured. The title owns the hierarchy; the
- * drawing owns the page, not the fold. */
-.fo-hero-art .bp-stage {
-  max-block-size: 56svh;
 }
 
 /* the line-art weight rides the vector gear — the strokes stay

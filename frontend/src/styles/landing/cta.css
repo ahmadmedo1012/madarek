@@ -8,16 +8,20 @@
 .fo-cta {
   padding-block: var(--sp-10);
   border-block-start: 1px solid var(--rule-strong);
-  min-block-size: 77vh;
+  min-block-size: 77vh; /* R314 cycle-2 §7 — the reference's 698px (from 755); ≥992 seats are the W5 dissolution at file end */
 }
 
-/* R314 (cycle-2 §7 heights): the cta band tightens to the reference's
- * 698px (from 755) — the title block's margins and the registry strip
- * give back the ~57px (R322 V1: the coords row is deleted). The floor
- * rides the same share (77.5vh = 698 @900); desktop-scoped. */
+/* R332 W5 — the ≥992 owner seat: the strata tiers dissolved HERE (ONE
+   definition per property — the strata 4.8/3.84rem + R328 12/8rem
+   duplicates retire). Values are the WINNING cascade verbatim: the
+   R328 one-ladder closer (opens at the scene's 12rem, closes at the
+   quiet 8rem — var(--space-12xl)/var(--space-8xl)), the W3 floor and
+   the compact inner rungs. Height holds 697.9 vs the twin's 698.2
+   (Δ0.04% measured, run-001). The rhythm FIX (the registry strip
+   flush under the resolve) rides the ≥1025 block at file end. */
 @media (min-width: 992px) {
   .fo-cta {
-    padding-block: var(--sp-8) var(--sp-7);
+    padding-block: var(--space-12xl) var(--space-8xl);
     /* R315 cycle-3 (W3 — the desktop law): the floor rides the root as a
      * CONSTANT REM height — 83.75rem = 496 @1024 · 621 @1280 · 698 @1440 ·
      * 931 @1920 (the fresh manifest's own quartet, ±0.1rem). The old
@@ -26,13 +30,17 @@
     min-block-size: 83.75rem;
   }
 
-  .fo-cta .fo-hero-meta {
-    margin-block-start: var(--sp-5);
+  .fo-cta-inner {
+    gap: 1.92rem;
+  }
+
+  .fo-cta-lede {
+    line-height: 1.6;
   }
 
   .cg-strip {
-    margin-block-start: var(--sp-5);
-    padding-block-start: var(--sp-4);
+    margin-block-start: 2.4rem;
+    padding-block-start: 1.92rem;
   }
 }
 
@@ -139,5 +147,64 @@
 
 .fo-cta .fo-meta-row:nth-last-child(-n + 2) {
   border-block-end: 0;
+}
+
+/* ═══ R332 W5 — the cta rhythm fix + the dissolution seats. FILE END
+   (the cascade lesson: the base rules above and every strata re-seat
+   lose to these — same-specificity rules resolve by document order).
+
+   Measured twin deltas @1440 (run-001): rhythm gutter 20 vs the twin's
+   0 (Δ20 over the ≤8 gate) — the gutter WAS the registry strip's 20px
+   margin-block-start (the band's two level-1 boxes: the resolve block
+   and the strip). THE FIX: the strip sits FLUSH under the resolve at
+   ≥1025 (margin 0 — the twin's three cta boxes butt), and the 83.75rem
+   floor absorbs the 20px (the band's own air) so the height holds
+   697.9. The 992–1024 canon-floor slice and the 768–991 tablet band
+   keep their measured seats verbatim (moved from strata — shared.css
+   holds no competing seats on these selectors in those belts).
+   The strata .fo-cta and .cg-strip ≥992 + tablet tiers retire herewith. ═══ */
+@media (min-width: 1025px) {
+  .cg-strip {
+    margin-block-start: 0;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1024px) {
+  .fo-cta-sketch {
+    display: none;
+  }
+
+  .fo-cta-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .fo-cta {
+    padding-block: var(--sp-8) var(--sp-7);
+    min-block-size: 58.8rem;
+  }
+
+  .fo-cta-sketch {
+    display: none;
+  }
+
+  .fo-cta-grid {
+    gap: var(--sp-3);
+  }
+
+  .fo-cta-inner {
+    gap: var(--sp-2);
+  }
+
+  .fo-cta-lede {
+    line-height: 1.5;
+  }
+
+  .fo-cta-actions {
+    padding-block-start: 0;
+  }
+  /* R332 W5: the tablet .cg-strip padding seat stays in strata.css
+     (the pre-dissolution winner at this belt) — ONE definition. */
 }
 

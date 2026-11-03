@@ -492,16 +492,16 @@
  * Every value below is rem-pure — heights ride the root exactly like
  * the reference's, tracking 768 → 820 → 844 → 991 without forks. */
 @media (min-width: 768px) and (max-width: 991px) {
-  /* 1 — content bands retire the desktop min-block floors (V13 grade) */
-  .st-section, .pm-section, .pr-section, .wy-section, .rl-section, .fo-cta {
+  /* 1 — content bands retire the desktop min-block floors (V13 grade).
+   * R332 W5: the .wy/.rl/.fo-cta seats of this group and their padding
+   * lines dissolved to the owner sheets (why/roles/cta.css, file end)
+   * — verbatim winners, ONE definition each. */
+  .st-section, .pm-section, .pr-section {
     min-block-size: 0;
   }
   .st-section { padding-block: var(--sp-8) var(--sp-7); }
   .pm-section { padding-block: var(--sp-8) var(--sp-7); }
   .pr-section { padding-block: var(--sp-5) var(--sp-4); }
-  .wy-section { padding-block: var(--sp-5) var(--sp-4); }
-  .rl-section { padding-block: var(--sp-5) var(--sp-4); }
-  .fo-cta { padding-block: var(--sp-8) var(--sp-7); }
 
   /* 2 — R322 (1-d): the sheet-title tablet clamp RETIRES — the rung
    * seats resolve the band-independent --fs-d2 here too (36.9px @768
@@ -618,7 +618,12 @@
   }
 
   .st-body-col {
-    padding: var(--space-4xl) var(--space-xl) var(--space-3xl);
+    /* R332 W2: the cell's opening pad steps 4xl → 3xl — the reference's
+     * phone cell opens its text ~24px under the art (measured title-y
+     * 398 in the 847px band, art 374), so the band-scale 4xl gap read
+     * +16px of air per cell in the twin's phone height. The inline/bottom
+     * rungs keep the R322 seat. */
+    padding: var(--space-3xl) var(--space-xl) var(--space-3xl);
     border-inline-start: 0;
     border-block-start: 1px solid var(--rule-strong);
   }
@@ -687,18 +692,21 @@
 
   .rl-section { min-block-size: calc(100svh - 1.6rem); }
 
-  .fo-fgrid { min-block-size: 42.6rem; }
-  /* R319 §D1/D2: the definite 37.7rem (314px) strip band is RETIRED —
-   * the band now sizes from its two content rows (the full-bleed
-   * five-column strip + the full-cell-width wordmark); docH ladder
-   * re-verified ±3% at 360/390/768/1024/1440. */
-  .fo-footer-bottom { min-block-size: 5.04rem; padding-inline: 3.12rem; }
-  .fo-footer-mark-svg { inline-size: 25.8rem; block-size: 25.8rem; }
-  .fo-footer-link { min-block-size: 3.36rem; }
-  .fo-fcell { min-block-size: 11.5rem; }
-  .fo-fcell-mark { min-block-size: 21.6rem; }
-  .fo-subscribe-input { block-size: 4.56rem; }
-  .fo-subscribe-btn { inline-size: 4.8rem; }
+  /* W6 R332 — the ≥992 footer re-seats BELOW RETIRE: every one was a
+   * same-value twin (or a dead-selector twin) of a footer.css rule,
+   * re-declared here and winning the cascade only by import order.
+   * The single definitions now live in footer.css: .fo-fgrid
+   * min-block-size 42.6rem · .fo-footer-bottom 5.04rem/3.12rem ·
+   * .fo-footer-link 3.36rem · .fo-fcell 11.5rem + 1.92/1.44rem ·
+   * .fo-footer-about 1.5 · .fo-footer-addr 1.92rem pair ·
+   * .fo-footer-addr-line 1.45 · .fo-fcell-addr 1.44/0.96rem (measured
+   * @1440: footer 936.9 → 710.1 vs Heron 710.7). The dead
+   * .fo-subscribe-* / .fo-footer-mark-svg / .fo-fcell-mark twins die
+   * with the block (no DOM element mounts those classes).
+   * R319 §D1/D2 (kept): the definite 37.7rem (314px) strip band is
+   * RETIRED — the band sizes from its two content rows; W6 re-pins the
+   * wordmark row to 15.5rem @≥1200 in footer.css so the band lands on
+   * the reference's own 314.2. */
 }
 
 /* ═══ R315 cycle-3 (W3) — the ≥992 content compaction on rem rungs ══
@@ -717,9 +725,12 @@
  * shrink with the cards below 1440 instead of holding the 768px-root
  * wrap height. Line-heights step to the reference's own compact rows. */
 @media (min-width: 992px) {
-  .pr-section, .wy-section, .rl-section {
+  .pr-section, .wy-section {
     padding-block: 3.84rem;
   }
+  /* R332 W5: .rl-section left this group — the roles owner seat
+     (roles.css, var(--space-8xl) = the same 8rem the closer tier
+     rendered pre-dissolution) is the ONE ≥992 definition now. */
 
   /* R322 (2-c/2-d): .st/.pm sections keep the transplant's own
      --space-8xl bands (content-sized, the V4 void discipline). */
@@ -747,19 +758,15 @@
   .fo-cta-lede { line-height: 1.6; }
   .fo-cta .fo-hero-meta { margin-block-start: 2.4rem; }
   .fo-meta-row { padding-block: 1.2rem; }
-  .cg-strip { margin-block-start: 2.4rem; padding-block-start: 1.92rem; }
 
-  .fo-fcell { padding: 1.92rem 1.44rem; }
-  .fo-footer-about { line-height: 1.5; }
-  .fo-footer-addr { margin-block-start: 1.92rem; padding-block-start: 1.92rem; }
-  .fo-footer-addr-line { line-height: 1.45; }
-  .fo-subscribe { margin-block-start: 0.48rem; gap: 0.96rem; }
-  .fo-subscribe-note { line-height: 1.45; }
-
-  /* the address pair's 12/8px cell padding re-seated on the root —
-   * pixel-identical at the 1440 anchor; the narrow slice sheds the
-   * 5.8px the 42.6rem grid floor needs for its second row */
-  .fo-fcell-addr { padding-block: 1.44rem 0.96rem; }
+  /* W6 R332 — the ≥992 footer re-seats BELOW RETIRE (one definition in
+   * footer.css / colleges.css): .cg-strip rides the colleges.css base
+   * seat (--sp-8/--sp-6 — the authored r313 rhythm; the strata
+   * tightening ran the footer trigger 21.3px early @1440, the loose
+   * seat lands the colophon on Heron's own 11651.3 top); .fo-fcell /
+   * .fo-footer-about / .fo-footer-addr / .fo-footer-addr-line /
+   * .fo-fcell-addr moved to footer.css ≥992 (same values, one home);
+   * the .fo-subscribe pair is dead (no element mounts the class). */
 }
 
 /* ═══ R315 cycle-3 (W3) — the narrow-desktop footer tracks ══════════
@@ -844,7 +851,9 @@
   /* R322 (2-c/2-d): the st-line/pm-card/pm-foot trims retire with
      the classes; .pm-head's margin rides the .pm-frame gap now. */
   .pm-head { margin-block-end: 0; }
-  .wy-section { padding-block: 2.88rem; }
+  /* R332 W5: the ≤1024 .wy-section 2.88rem trim RETIRES — why.css's
+     8rem quiet-band rung (the pre-dissolution render the twin
+     measured against) is the ONE definition in that slice now. */
   .wy-head { margin-block-end: 1.44rem; }
   .wy-note { margin-block-start: 1.44rem; }
   .wy-stage { padding: var(--sp-1) var(--sp-2); }
@@ -928,51 +937,40 @@
 @media (max-width: 479px) {
   /* ── THE LAW — every band pins the reference's constant-rem height ── */
   .st-section { min-block-size: 84.25rem; }
-  .pm-section { min-block-size: 87.65rem; }
-  .pr-section { min-block-size: 52.1rem; }
+  .pm-section { min-block-size: 87.65rem; padding-block: 4.03rem 3.22rem; }
+  .pr-section { min-block-size: 52.1rem; padding-block: 2.02rem 1.61rem; }
   /* R325 Y3: the wy 81.2rem floor RETIRES — the phone band folds the
      captures away (the rail carries the strip), so the floor pinned
      Heron's capture-list height onto a band with no captures: ~270px
      of dead air under the note (V4: no forced voids). */
-  .rl-section { min-block-size: 95.55rem; }
-  .fo-cta { min-block-size: 50.4rem; }
+  .rl-section { min-block-size: 95.55rem; padding-block: 1.61rem; }
+  .fo-cta { min-block-size: 50.4rem; padding-block: 2.02rem 1.61rem; }
   .fo-footer { min-block-size: 124.9rem; }
 
 
-  /* ── statement — rem-pure rhythm under the 84.25rem floor. The band's
-   * content (two tickers + the three-line spread) rides well under the
-   * floor; the leftover air distributes BETWEEN the rows (the reference's
-   * own intro carries its art beside/under the statement — a bottom-dump
-   * would read as a dead seam before the problem band's top rule). ── */
-  .st-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-block: 4.03rem 3.22rem;
-  }
-
-  .fo-ticker {
-    margin-block-start: 4.03rem;
-  }
-
-  /* R322 (2-c): the statement's direct-child ticker rule retires —
-     the crawl rides inside .st-partner now (its own gap owns it). */
+  /* ── statement — rem-pure rhythm under the 84.25rem floor.
+   * R332 W2: the R315-era flex column + the 4.03/3.22rem pads RETIRE.
+   * The R322 transplant left .st-grid the band's ONLY child (the flex
+   * seat had nothing left to distribute) and r330-home.css's
+   * `.st-section { padding-block: 0 }` — a later import — already rules
+   * the pads: the cells ARE the band (Heron's home-intro anatomy). The
+   * stale `.fo-ticker` 4.03rem margin-top retired with them: it donated
+   * 40px of dead air INSIDE .st-partner (the crawl has ridden there,
+   * under its own gap, since 2-c) — the twin run-001 read that air in
+   * the +39.8% phone height. The crawl's 1.01rem track pad stays. ── */
 
   .fo-ticker-track {
     padding-block: 1.01rem;
   }
 
-  /* R322 (2-c/2-d): the statement + problem rem-rhythm rules retire —
-     the transplant's own blocks (≤767 carousel + the base seats) own
-     the whole belt; the sections ride --space-8xl pads. */
-  .st-section { padding-block: 4.03rem 3.22rem; }
-  .pm-section { padding-block: 4.03rem 3.22rem; }
+  /* R322 (2-c/2-d): the problem rem-rhythm rule retires — the
+     transplant's own ≤767 carousel owns the belt. (R332 W2: the matching
+     .st-section line retired with the tier above — dead against
+     r330-home.css's later padding-block: 0.) */
 
   /* ── platform — the reference's phone cell is the head + the one
    * composition (517 @390); the note link row folds here like the
-   * tablet band's own fold ── */
-  .pr-section { padding-block: 2.02rem 1.61rem; }
-
+   * tablet band's own fold (padding rides the §LAW line above) ── */
   .pr-head {
     gap: 0.81rem;
     margin-block-end: 1.21rem;
@@ -1020,9 +1018,8 @@
   .wy-note { margin-block-start: 1.21rem; }
 
   /* ── roles — the ledger rows tighten to the reference's tile rhythm;
-   * the numeral row joins the mono rem ladder ── */
-  .rl-section { padding-block: 1.61rem; }
-
+   * the numeral row joins the mono rem ladder (padding rides the §LAW
+   * line above) ── */
   .rl-head {
     gap: 0.81rem;
     margin-block-end: 1.21rem;
@@ -1047,9 +1044,7 @@
   /* ── cta — the reference's phone band is title + line + button
    * (500 @390; R322 V1: the coords/corners debug rows are deleted):
    * the meta readout keeps its first two honest rows, rows 3–6 fold
-   * (the tablet band folds 5–6) ── */
-  .fo-cta { padding-block: 2.02rem 1.61rem; }
-
+   * (the tablet band folds 5–6; padding rides the §LAW line above) ── */
   .fo-cta-inner { gap: 1.21rem; }
   .fo-cta-lede { line-height: 1.5; }
   .fo-cta-actions { gap: 0.81rem; }
@@ -1174,13 +1169,13 @@
    * DELETED — the ≤767 transplant belt owns the hero now; a stale
    * twin here re-pinned the min under the new reserve. */
   .st-section { min-block-size: 84.25rem; }
-  .pm-section { min-block-size: 87.65rem; }
+  .pm-section { min-block-size: 87.65rem; padding-block: var(--sp-8) var(--sp-6); }
   .pr-section { min-block-size: 52.1rem; }
   /* R325 Y3: the wy 81.2rem floor RETIRES (the ≤479 note above — the
      large-phone band folds the captures too; the floor was pure void). */
-  .rl-section { min-block-size: 95.55rem; }
-  .fo-cta { min-block-size: 50.4rem; }
-  .fo-footer { min-block-size: 124.9rem; }
+  .rl-section { min-block-size: 95.55rem; padding-block: var(--sp-4); }
+  .fo-cta { min-block-size: 50.4rem; padding-block: var(--sp-5) var(--sp-4); }
+  .fo-footer { min-block-size: 124.9rem; display: grid; grid-template-rows: minmax(0, 1fr); }
 
   /* 2 — the ladder rides the root: each rung re-seats as its own 390
    * measure ÷ 9.92366. Raw-px seats are untouched by this (the 44px
@@ -1235,6 +1230,17 @@
     --fs-sm: 13px; --fs-xs: 13px; --fs-xxs: 13px;
   }
 
+  /* R332 W4 — the ≤399 FOOT RUNG lives TOP-LEVEL (after this block's
+     close — the file stays flat, no nested media): the band's mono
+     re-seat (the head's title/lede + the stacked closing column's
+     title/chip landed on the 1.6/1.4rem Heron rungs) released ≈171px
+     of the X14-tuned 4819px band total @390 — and the 473dvh track
+     rung is TEST-PINNED (r312-mobile-camera), so the air returns at
+     the band's foot: the R322 1-d law (padding/margins only, never
+     type), foot-seated so the section TOP (the trigger-start seat)
+     and the 473dvh pin clock are untouched. The ≤479 intrinsic
+     placeholder re-pins to the restored real (4706px content-box). */
+
   /* 6 — the footer's 390-measured constants ride the root (each is
    * its own verified mobile measure ÷ 9.92366 — the reference's own
    * mobile footer scales the same seats with its root) */
@@ -1249,10 +1255,10 @@
   /* 7 — the footer's own air law: the reference's mobile footer is
    * grid + image strip + legal row (the strip band carries ~23% of the
    * height); ours absorbs the floor's air inside the wordmark row so
-   * the legal row stays pinned to the band's bottom edge like theirs */
-  .fo-footer { display: grid; grid-template-rows: minmax(0, 1fr); }
-  .fo-footer-inner { grid-template-rows: auto minmax(0, 1fr) auto; }
-  .fo-wordmark { display: grid; place-content: center; }
+   * the legal row stays pinned to the band's bottom edge like theirs
+   * (display seats merged into the §LAW line above) */
+  .fo-footer-inner { grid-template-rows: auto minmax(0, 1fr) auto; padding-block: 0; gap: 0; }
+  .fo-wordmark { display: grid; place-content: center; padding-block: var(--sp-2) var(--sp-1-5); }
 
   /* 8 — ONE composition across the tier (the reference has no 640 rung
    * — its live boundaries are 991/767/479 only; the constant-rem law
@@ -1265,8 +1271,7 @@
    * renders the scaled phone composition exactly like 480–640. */
   /* R322 (2-d): the 641–767 pains sliver retires — the 768–991
      2-up block owns this belt (min-width 641 extends it below via
-     the shared tier rule above). */
-  .pm-section { padding-block: var(--sp-8) var(--sp-6); }
+     the shared tier rule above; the pm padding rides the §LAW line). */
 
   .pr-section .prf-cards { display: none; }
   /* the head + note margins step one ladder rung tighter (the phone
@@ -1282,14 +1287,12 @@
   .wy-rail { gap: var(--sp-1); }
   .wy-note { margin-block-start: var(--sp-3); }
 
-  .rl-section { padding-block: var(--sp-4); }
   .rl-head { gap: var(--sp-2); margin-block-end: var(--sp-3); }
   .rl-card { padding: var(--sp-2-5) var(--sp-3); gap: var(--sp-1); }
   .rl-cards { gap: var(--sp-1-5); }
   .rl-card-tag { padding-block: 0; line-height: 1.2; }
   .rl-more { margin-block-start: var(--sp-2); }
 
-  .fo-cta { padding-block: var(--sp-5) var(--sp-4); }
   .fo-cta-inner { gap: var(--sp-3); }
   .fo-cta-lede { line-height: 1.55; }
   .fo-cta-actions { gap: var(--sp-2); }
@@ -1312,11 +1315,22 @@
   .fo-fcell-addr { margin-block-start: 0; padding-block: var(--sp-2); }
   .fo-footer-about { line-height: 1.45; }
   .fo-subscribe-note { line-height: 1.5; }
-  .fo-wordmark { padding-block: var(--sp-2) var(--sp-1-5); }
   .fo-wordmark-en { font-size: var(--fs-mono-sm); }
-  .fo-footer-inner { padding-block: 0; gap: 0; }
   .fo-footer-bottom { display: grid; gap: 0; padding-block: 0; padding-inline: var(--sp-3); }
   .fo-footer-cluster { border-block-start: 1px solid var(--rule); }
+}
+
+/* R332 W4 — the ≤399 FOOT RUNG (top-level; see the note inside the
+   ≤767 belt above): the band's mono re-seat released ≈171px of the
+   X14-tuned 4819px band total @390 and the 473dvh track rung is
+   TEST-PINNED (r312-mobile-camera), so the air returns at the band's
+   foot — the R322 1-d law (padding/margins only, never type),
+   foot-seated so the section TOP (the trigger-start seat) and the
+   473dvh pin clock are untouched. The ≤479 intrinsic placeholder
+   re-pins to the restored real (4536px content-box @390: 4819 border
+   − 283 padding). */
+@media (max-width: 399px) {
+  .chapters { padding-block-end: 227px; } /* spacing-gate: allow — the released mono re-seat air, foot-seated */
 }
 
 
@@ -1508,6 +1522,13 @@
     padding: 0;
     border: 0;
     background: none;
+    /* the extracted cell's gutter-eat (full-1440.json: content-left 361 =
+     * 3 cols + 3 gutters of their 1427 container; img-wrap 601 = 5 + 5;
+     * the side keeps 4+3) — the negative end margin re-seats the same
+     * geometry on our measure: head 347px (25.3 %) · stage 578px
+     * (42.2 %) · side 446px (32.5 %) @1440, the extracted proportions
+     * to the pixel of the container */
+    margin-inline-end: -2rem; /* spacing-gate: allow — an external constant */
   }
 
   /* the step index fills the column's tail: four equal ruled rows
@@ -1537,9 +1558,8 @@
    * geometry on our measure: head 347px (25.3 %) · stage 578px
    * (42.2 %) · side 446px (32.5 %) @1440, the extracted
    * proportions to the pixel of the container */
-  .pr-head {
-    margin-inline-end: -2rem; /* spacing-gate: allow — the extracted cell's gutter-eat (361 = 3 cols + 3 gutters, full-1440.json), an external constant */
-  }
+  /* R332 W5: the .pr-head gutter-eat merged into the heading-column
+     seat above — ONE definition. */
 
   .pr-stage {
     grid-column: 4 / span 5;
@@ -1703,7 +1723,7 @@
  * breakpoint (1024 / 1440) with the local measured slope. */
 .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }   /* 502 @1024 · 597 @1440 — r324 X14 re-measure (59:50 art) */
 .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }   /* 432 @1024 · 609 @1440 — r324 X14 (89.1rem floor seat) */
-.chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); } /* 5203 @1024 · 6080 @1440 — r324 X14 (658dvh track) */
+.chapters   { contain-intrinsic-size: auto calc(3127px + 209.9vw); } /* 5276 @1024 · 6150 @1440 — R332 W4 re-measure post mono-re-seat + reserved closing cell (the X14 seat ran +96 stale pre-wave) */
 .pr-section { contain-intrinsic-size: auto calc(-2px + 40.14vw); }  /* 409 @1024 · 576 @1440 — R328 (H5) re-measure post-rhythm-ladder (the r325 seat ran +69 stale) */
 /* R325 Y3 re-measure: the wy floors retired, so the placeholder re-fits
    to the CONTENT-SIZED band (measure-intrinsic.mjs @1024/1440).
@@ -1716,7 +1736,7 @@
 @media (min-width: 992px) and (max-width: 1179px) {
   .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }
   .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }
-  .chapters   { contain-intrinsic-size: auto calc(3044px + 210.8vw); }
+  .chapters   { contain-intrinsic-size: auto calc(3127px + 209.9vw); }
   /* R328 (H5) re-measure (post-rhythm-ladder, BPS=1440,1024):
      pr 409→576 · rl 663→753 · cta 376→530 — the two-anchor
      fluid fit re-pinned; st rides its own 502→597 fit. */
@@ -1749,7 +1769,7 @@
 @media (max-width: 479px) {
   .st-section { contain-intrinsic-size: auto 820px; }
   .pm-section { contain-intrinsic-size: auto 797px; }
-  .chapters   { contain-intrinsic-size: auto 4974px; }
+  .chapters   { contain-intrinsic-size: auto 4536px; }
   .pr-section { contain-intrinsic-size: auto 617px; }   /* r325 merged re-measure (617 @390) */
   .wy-section { contain-intrinsic-size: auto 613px; } /* R325 Y3 re-measure — the ONE-column state list */
   .rl-section { contain-intrinsic-size: auto 915px; }
@@ -1782,24 +1802,13 @@
    1440 +1.67 % · 1024 +1.90 % · 768 +0.76 % · 390 +0.63 % (±2 % contract).
    ══════════════════════════════════════════════════════════════════ */
 
-/* the giant footer wordmark re-cut (X14): the full-width cut made the
- * strip own the band at 766px @1440 (+452 over the reference's 314
- * bottom band). The height-led cut keeps the drawn word — the R319
- * §D1 full-cell-width ruling is re-pinned by this X14 override: the
- * word letterboxes to a fixed ink height (the sheet's own aspect sets
- * the width, centered by the cell grid), the lens row above it stays. */
-@media (min-width: 1200px) {
-  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
-    inline-size: auto;
-    block-size: 41.4rem; /* 345px @1440 — the strip lands ≈ the reference's own band */
-  }
-}
-@media (min-width: 768px) and (max-width: 1199px) {
-  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
-    inline-size: auto;
-    block-size: 23.6rem; /* 217px @768 (Heron footer exact) · 140px @1024 */
-  }
-}
+/* W6 R332 — the X14 wordmark re-cut RETIRES to footer.css (ONE
+ * definition): the height-led letterbox seats live beside the base
+ * .fo-wordmark rule now — 15.5rem @≥1200 (129.2px @1440; the strip
+ * band lands on Heron's 314.2 and the footer on 710.7±3%) and the
+ * 23.6rem tablet seat @768–1199 (unchanged values, moved home). The
+ * 41.4rem seat measured here ran the strip band to 527.9px @1440
+ * (+24.14% footer — the run-001 FAIL this wave kills). */
 
 /* the phone seats the reference runs shorter */
 @media (max-width: 767px) {
@@ -1898,10 +1907,11 @@
    compact rungs (the V13 compaction contract — untouched). */
 @media (min-width: 992px) {
   .pr-section,
-  .wy-section,
-  .rl-section {
+  .wy-section {
     padding-block: 8rem; /* spacing-gate: allow — the sheet's ONE quiet-band rung (the st/pm measured seat), not a per-section value */
   }
+  /* R332 W5: .rl-section left this group too — see the note at the
+     3.84rem group above (roles.css owns the 8rem rung now). */
 
   .fo-cta {
     padding-block: 12rem 8rem; /* spacing-gate: allow — the closer opens at the scene's rung, closes at the quiet rung */

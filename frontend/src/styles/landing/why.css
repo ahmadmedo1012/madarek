@@ -256,3 +256,82 @@
   color: var(--text-muted);
 }
 
+/* ═══ R332 W5 — the why parity + dissolution seats. FILE END (the
+   cascade lesson: every base rule above and the strata re-seats must
+   lose to these — same-specificity rules resolve by document order).
+
+   Measured twin deltas @1440 (run-001): height 633.6 vs 698.1 (−9.3%),
+   rhythm gutter 24 vs the twin's 0 (Δ24 over the ≤8 gate). The R328
+   8rem quiet rung refilled only part of the R325-Y3 floor retirement;
+   the head's 24px seat was the twin-visible rhythm gutter.
+
+   ≥1025 (the twin's 1440 gate + the root-riding 1280/1920 bands):
+   · the stage strip breathes at the scene rung (var(--space-12xl) =
+     12rem = 100px @1440 — the R328 closer's own opening rung); the
+     budget: 633.6 + 66.7 (padding) − 24 (head seat) + 13.3 (note) ≈ 689
+     = the twin's 698.1 − 1.3% (inside the ±3% gate);
+   · the head sits FLUSH on the strip (margin 0 — the twin's why
+     gutter is 0: their head boxes butt the content);
+   · the note rides the --space-4xl rung (33.33px @1440).
+   992–1024: the narrow-desktop canon-floor slice is FROZEN at the exact
+   winners the strata slice rendered (moved here verbatim — the strata
+   duplicates retire; the R328 8rem ran there by file-end order).
+   768–991: the W3 rem-law tablet seats move verbatim (shared.css holds
+   no competing tablet seats on these selectors).
+   The strata .wy- ≥992/.wy-stage-text tiers retire with this block. ═══ */
+@media (min-width: 1025px) {
+  .wy-section {
+    padding-block: var(--space-12xl);
+  }
+
+  .wy-head {
+    margin-block-end: 0;
+  }
+
+  .wy-note {
+    margin-block-start: var(--space-4xl);
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1024px) {
+  .wy-section {
+    padding-block: 8rem; /* spacing-gate: allow — the R328 quiet-band rung as rendered pre-dissolution (frozen slice) */
+  }
+
+  .wy-head {
+    margin-block-end: 1.44rem;
+  }
+
+  .wy-note {
+    margin-block-start: 1.44rem;
+  }
+
+  .wy-stage {
+    padding: var(--sp-1) var(--sp-2);
+  }
+}
+
+@media (min-width: 992px) {
+  /* the W3 compact-row leading, live here since R315 (the strata
+     ≥992 tier dissolved here — value verbatim) */
+  .wy-stage-text {
+    line-height: 1.55;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .wy-section {
+    padding-block: var(--sp-5) var(--sp-4);
+    min-block-size: 0;
+  }
+
+  .wy-stage {
+    padding: var(--sp-1) var(--sp-2-5);
+    gap: var(--sp-0-25);
+  }
+
+  .wy-stage-text {
+    line-height: 1.45;
+  }
+}
+

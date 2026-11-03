@@ -241,9 +241,21 @@ const onFontsSettled = () => {
 /* R332 W9 — the ScrollTrigger.refresh-on-theme-change seat. A theme
  * flip rewrites <html data-theme>; if any theme arm swaps metrics
  * (font stack, borders, scrollbars) every cached docTop is stale. One
- * attribute-scoped MutationObserver per belt lifetime bumps the epoch
- * + schedules ONE debounced reconcile — zero layout reads at flip
- * time (identical shape to the fonts.ready seat below). */
+ * attribute-scoped MutationObserver bumps the epoch + schedules ONE
+ * debounced reconcile — zero layout reads at flip time (identical
+ * shape to the fonts.ready seat below).
+ *
+ * R332 W9 probe finding: the seat originally lived and died with the
+ * belt (attachBelt created it, detachBelt disconnected it). The
+ * landing's reveals are all one-shot, so after the first full scroll
+ * every entry settles → detachBelt() → the theme observer was GONE —
+ * a mid-session theme flip bumped nothing (measured live: epoch 17 →
+ * 17 across a light→dark flip with an empty registry). The seat is
+ * now module-lifetime: attachBelt installs it once, detachBelt leaves
+ * it. Cost when idle: one attribute-filtered observer that fires only
+ * on data-theme flips; the reconcile it schedules early-returns on an
+ * empty registry (zero layout reads when there is nothing to
+ * re-seat), and fresh registrations stamp the new epoch anyway. */
 const onThemeSettled = () => {
   bumpLayoutEpoch();
   scheduleReconcile();
@@ -319,8 +331,9 @@ const detachBelt = () => {
   window.removeEventListener('load', onAssetLoad, { capture: true });
   window.removeEventListener('transitionend', onAnimGeom, { capture: true });
   window.removeEventListener('animationend', onAnimGeom, { capture: true });
-  themeObs?.disconnect();
-  themeObs = null;
+  /* R332 W9 — themeObs deliberately survives the belt (module-lifetime
+   * seat, see the onThemeSettled block above): a theme flip after the
+   * last one-shot reveal settled must still bump the epoch. */
   if (beltRaf) {
     cancelAnimationFrame(beltRaf);
     beltRaf = 0;

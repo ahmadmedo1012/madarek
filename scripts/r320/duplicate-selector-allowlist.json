@@ -19,47 +19,11 @@
       "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
     },
     {
-      "key": "styles/landing/cta.css ↔ styles/landing/strata.css :: .cg-strip @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/cta.css ↔ styles/landing/strata.css :: .fo-cta .fo-hero-meta @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
       "key": "styles/landing/cta.css ↔ styles/landing/strata.css :: .fo-cta @ @media(min-width:992px)",
       "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
     },
     {
-      "key": "styles/landing/footer.css ↔ styles/landing/strata.css :: .fo-fcell @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/footer.css ↔ styles/landing/strata.css :: .fo-fcell-addr @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/footer.css ↔ styles/landing/strata.css :: .fo-fgrid @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/footer.css ↔ styles/landing/strata.css :: .fo-footer-about @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/footer.css ↔ styles/landing/strata.css :: .fo-footer-bottom @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/footer.css ↔ styles/landing/strata.css :: .fo-subscribe @ @media(min-width:992px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
       "key": "styles/landing/pains.css ↔ styles/landing/strata.css :: .pm-section @ @media(max-width:479px)",
-      "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
-    },
-    {
-      "key": "styles/landing/pains.css ↔ styles/landing/strata.css :: .st-section @ @media(max-width:479px)",
       "reason": "R332 A-CSS-Exec — landing.css split (pixel-identical A/B, 6/6 mean 0.000000, /home/z/evidence-r332/css-split/): strata.css carries the late-cascade tiers in original order; the later strata tier deliberately re-seats the earlier owner-sheet value exactly as when both lived in landing.css. W12 dissolves strata into owner sheets and retires these entries."
     },
     {

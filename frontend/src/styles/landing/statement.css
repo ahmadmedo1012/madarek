@@ -67,19 +67,35 @@
 
 .st-title {
   font-family: var(--font-display);
-  /* R322 (1-d FINAL): the statement band's scrub title takes the
-     SPECIAL statement seat — --fs-st (Heron's own per-char color-
-     scrub title: 4rem/33.33px w600 @1440 → 2.4rem/22.1px @768 →
-     2.4rem/23.8px @390, band-independent), weight 600, lh 1.10 (the
-     scrub spans' overflow wrappers need the headroom), balance. NOT
-     the D2 rung — Heron sizes the scrub title a rung under its
-     section H2s. */
-  font-size: var(--fs-st);
+  /* R322 (1-d FINAL) seat: the statement band's scrub title — Heron's
+     own per-char color-scrub intro title: 4rem/33.33px w600 @1440 →
+     2.4rem/23.8px @390, band-independent, lh 1.10 (the scrub spans'
+     overflow wrappers need the headroom), balance. NOT the D2 rung —
+     Heron sizes the scrub title a rung under its section H2s.
+     R332 W2: the size line moved to the .st-grid seat below —
+     r330-home.css re-seats this title at (0,2,0) AFTER this sheet's
+     import, so the rem ladder must own a higher-specificity seat to
+     rule the final cascade (the twin judges the computed value, not
+     this file). */
   font-weight: 600;
   line-height: 1.1;
   text-wrap: balance;
   color: var(--text);
   margin: 0;
+}
+
+/* R332 W2 — the display type re-bound to the rem ladder (twin run-001:
+   43.92px vs Heron 33.33px @1440 = +24.1% FAIL · 47.63px vs 23.8px @390
+   = 2× FAIL — r330-home.css's display-rung clamp owned the final
+   cascade). Heron's statement title is rem-pure on the SAME fluid root
+   this sheet already rides (tokens.css html rate: 0.5787vw ≥992 ·
+   1.19904vw ≤991 · 2.54453vw ≤767): 4rem @≥992 (33.33px @1440), 2.4rem
+   @≤991 (22.1px @768 on the tablet rate) — the ≤767 phone rate lands
+   the same 2.4rem rung at 23.82px @390, Heron-exact, so no third fork
+   exists to write. (0,3,0) seat: beats r330-home.css's
+   `.st-body-col .st-title` (0,2,0) regardless of import order. */
+.st-grid .st-body-col .st-title {
+  font-size: 4rem;
 }
 
 /* the reference's statement CTA (16.34×5rem — the measured button
@@ -114,6 +130,13 @@
 
 .st-partner .fo-ticker {
   inline-size: 100%;
+  /* R332 W2: the crawl rides INSIDE the partner strip (R322 2-c) — the
+     base .fo-ticker seat (hero.css, margin-block-start: var(--sp-8)) is
+     the hero band's separator air and donates 40px of dead margin here;
+     the strip's own gap + pad-top own the rhythm (the twin's phone
+     height read that 40px against Heron's 847px intro). The crawl is
+     this strip's only consumer, so the re-seat is band-local. */
+  margin-block-start: 0;
 }
 
 .st-partner .fo-ticker-item {
@@ -130,5 +153,16 @@
 
 .st-partner-desc .fo-text-link {
   color: var(--text-secondary);
+}
+
+/* R332 W2 — the ladder's ≤991 rung, seated AFTER the base (same (0,3,0)
+   specificity, later in the sheet → wins inside the band): 2.4rem rides
+   the 1.19904vw tablet rate (22.1px @768) and the 2.54453vw phone rate
+   (23.82px @390 — Heron's measured 23.8px) with one rule, exactly like
+   the reference's own band-independent rung. */
+@media (max-width: 991px) {
+  .st-grid .st-body-col .st-title {
+    font-size: 2.4rem;
+  }
 }
 

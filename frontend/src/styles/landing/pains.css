@@ -193,6 +193,15 @@
   }
 
   .pm-cols {
+    /* R332 W3 (twin run-001 · 390 defect): the desktop's explicit
+       4-track template MUST die here — with 4 explicit tracks in force,
+       auto-flow: column seats every item in row 1 and grid-auto-columns
+       (which sizes IMPLICIT tracks only) never applies: the four cards
+       squeezed into one 74.5px-per-column row (mono labels, titles and
+       «الجواب:» overprinting across columns). `none` hands the track
+       list to the implicit carousel columns below — Heron's own mobile
+       anatomy (swiper 11, problem list) as a snap carousel. */
+    grid-template-columns: none;
     grid-auto-flow: column;
     grid-auto-columns: 82%;
     gap: var(--space-lg);

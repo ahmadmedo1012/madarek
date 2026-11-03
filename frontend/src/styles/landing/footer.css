@@ -155,17 +155,16 @@
 .fo-fcell:nth-child(5) { grid-area: links-c; }
 .fo-fcell:nth-child(6) { grid-area: addr-a; }
 .fo-fcell:nth-child(7) { grid-area: addr-b; }
-.fo-fcell-mark { grid-area: mark; }
-
-.fo-fcell-links {
-  border-block-start: 1px solid var(--rule);
-}
-
 .fo-fcell-mark {
+  grid-area: mark;
   display: grid;
   place-items: center;
   align-content: center;
   min-block-size: 180px;
+}
+
+.fo-fcell-links {
+  border-block-start: 1px solid var(--rule);
 }
 
 /* R314 (cycle-2 §7 heights) — the ≥768 strip-image cell retires: its
@@ -211,8 +210,33 @@
      * rows stretch to 355 (the link row ~217 + the address row ~125
      * content — align-content's normal/stretch distributes the slack
      * to the auto rows so the cells' rules land on the band's own
-     * bottom border) */
-    min-block-size: 355px; /* spacing-gate: allow — the measured reference grid band (355 @1427), an external constant */
+     * bottom border).
+     * W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
+     * the band rides the ROOT (42.6rem = 355.0px @1440 · 252.5 @1024),
+     * exactly Heron's footer-main (354.7 measured live @1440) — the
+     * px literal froze the band at 1440 and drifted at every other
+     * rung of the 0.5787vw root. */
+    min-block-size: 42.6rem; /* spacing-gate: allow — the measured reference grid band (355 @1440), an external constant on the rem root */
+  }
+
+  /* W6 R332 — the mark seat: the [08] drawn-mark cell was retired from
+   * the markup (R323, one mark per view) but the ≥992 area map keeps
+   * the 'mark' column — with no grid item there the column rendered a
+   * BLANK void that broke the hairline grid read (the supervisor's
+   * «link grid aligned on the hairline grid»). A ruled ::after seat
+   * closes the column: same border construct as .fo-fcell (inline-start
+   * + block-start rules, the -1px collapse margins), empty like the
+   * reference's own unpopulated grid column (heron probe 1440: its
+   * footer-main also carries an empty column). ≥992 only — below, the
+   * 'mark' area's auto row collapses to 0 and must stay collapsed. */
+  .fo-fgrid::after {
+    content: '';
+    grid-area: mark;
+    display: block;
+    border-inline-start: 1px solid var(--rule);
+    border-block-start: 1px solid var(--rule);
+    margin-block-start: -1px; /* collapse double rules — the .fo-fcell construct */
+    margin-inline-start: -1px; /* collapse double rules — the .fo-fcell construct */
   }
 
   .fo-fcell:nth-child(3) { grid-area: na; }
@@ -236,7 +260,31 @@
    * grid band to 372. */
   .fo-fcell {
     gap: var(--sp-1);
-    padding: var(--sp-4) var(--sp-3);
+    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
+     * the rem twins of the 16/12 seat — pixel-identical @1440, riding
+     * the root at every other rung (the r315 cycle-3 law). */
+    padding: 1.92rem 1.44rem; /* spacing-gate: allow — the ratcheted cell inset 16/12 on the rem root */
+    min-block-size: 11.5rem; /* spacing-gate: allow — the cell floor 96px @1440 on the rem root */
+  }
+
+  /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted): the
+   * compact link rung rides the root (28.0px @1440 — the reference's
+   * compact menu band; the base 28px literal below still governs ≤991). */
+  .fo-footer-link {
+    min-block-size: 3.36rem;
+  }
+
+  /* W6 R332 — ONE definition (the strata ≥992 duplicates deleted): the
+   * address band + its lines keep the measured compact register on the
+   * rem root (16/16 seat · 12/8 cell pad · 1.5/1.45 leads — the values
+   * the final cascade already rendered @1440, now with one home). */
+  .fo-footer-addr {
+    margin-block-start: 1.92rem;
+    padding-block-start: 1.92rem;
+  }
+
+  .fo-footer-addr-line {
+    line-height: 1.45;
   }
 
   .fo-footer-heading {
@@ -245,7 +293,10 @@
   }
 
   .fo-footer-about {
-    line-height: 1.65;
+    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
+     * 1.5 — the compact desktop lead the final cascade already ran
+     * (strata won the tie); the base 1.8 stays ≤991. */
+    line-height: 1.5;
   }
 
   .fo-subscribe {
@@ -253,9 +304,11 @@
   }
 
   .fo-fcell-addr {
-    /* R321 §A2 — 12/8 → 10/6: the address band rides one step tighter
-       (the docH ratchet). */
-    padding-block: var(--sp-2-5) var(--sp-1-5);
+    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
+     * the r321 §A2 10/6 ratchet was re-pinned to 12/8 on the rem root
+     * by the r315 cycle-3 re-seat and the final cascade rendered 12/8
+     * (the twin-measured state) — kept here, one home. */
+    padding-block: 1.44rem 0.96rem;
   }
 
   /* R315 cycle-2: .fo-footer-repo RETIRED with the repo link itself
@@ -389,12 +442,38 @@
  * cell at every viewport, height follows the sheet's own aspect
  * (viewBox scaling — never font-size hacks). Ink = currentColor (the
  * paper/ink swap is by construction); the letterforms carry their own
- * non-scaling hairline geometry, so no stroke-width seat is needed. */
+ * non-scaling hairline geometry, so no stroke-width seat is needed.
+ * W6 R332 — the ≥768 seats below RE-PIN the cut to a height-led
+ * letterbox (ONE definition — the strata X14 duplicates deleted):
+ * Heron's footer carries NO wordmark band (probe @1440: footer-main
+ * 354.7 + footer-img-wrap 314.2 + copyright 41.8 = 710.7); our
+ * strip band (the inspection lens + this wordmark row) must SHARE
+ * the reference's 314.2px band. At ≥1200 the ink letterboxes to
+ * 15.5rem (129.2px @1440 → the band lands 312 vs 314.2, the footer
+ * 710.1 vs 710.7) — the full-width cut at 41.4rem ink ran the band
+ * to 527.9px (+24.14% footer, the run-001 FAIL). The word never
+ * clips: inline-size:auto + block-size keeps the sheet's own attr
+ * aspect (2.3629), the svg box stays inside .fo-wordmark (padding
+ * 0 2px), overflow visible by construction. */
 .fo-wordmark .mdrk-logo.fo-wordmark-logo {
   display: block;
   inline-size: 100%;
   block-size: auto;
   color: var(--text);
+}
+
+@media (min-width: 1200px) {
+  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
+    inline-size: auto;
+    block-size: 15.5rem; /* 129.2px @1440 — the strip band ≈ the reference's own 314.2 (lens row + this row share it) */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
+    inline-size: auto;
+    block-size: 23.6rem; /* 217px @768 (Heron footer exact) · 140px @1024 — the X14 tablet seat, moved home */
+  }
 }
 
 /* the ink — R319 §D1 → R320 §A2 (owner order): STROKE-ONLY outline
@@ -659,8 +738,12 @@
 @media (min-width: 992px) {
   .fo-footer-bottom {
     padding-block: var(--sp-2) 0;
-    padding-inline: 26px; /* spacing-gate: allow — the reference's own copyright-text inset (26.66 measured), an external constant */
-    min-block-size: 42px; /* spacing-gate: allow — the measured reference legal row (42), an external constant */
+    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
+     * the legal row's rem twins — 42px min (the reference's copyright
+     * row: 41.8 measured live @1440) and the 26px inset — pixel-
+     * identical @1440, riding the root everywhere else. */
+    padding-inline: 3.12rem; /* spacing-gate: allow — the reference's own copyright-text inset (26.66 measured), an external constant on the rem root */
+    min-block-size: 5.04rem; /* spacing-gate: allow — the measured reference legal row (42 @1440), an external constant on the rem root */
   }
 }
 
@@ -706,6 +789,19 @@
   color: var(--text-faint);
   padding-inline: var(--sp-1);
   user-select: none;
+}
+
+/* W6 R332 — the legal row's desktop rung: the 44px touch floor is a
+ * TOUCH constant; at ≥992 (the pointer rung) the nine quiet links ride
+ * the footer's own link ladder (3.36rem = 28px — the same rung the
+ * .fo-footer-link grid rows use). The © bar returns to the reference's
+ * measured 42px row (41.8 live @1440) instead of 53px. ≤991 keeps the
+ * unconditional touch floor. Sits AFTER the base .fo-legal-link rule —
+ * same specificity, document order must decide. */
+@media (min-width: 992px) {
+  .fo-legal-link {
+    min-block-size: 3.36rem;
+  }
 }
 
 /* ── Hover washes — guarded to real pointers (the r283 convention) ──

@@ -145,38 +145,6 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "landing/footer.css :: .bp-hotspot:hover .bp-hotspot-num",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "r331/nav.css :: .fo-actions-cta:hover",
-      "reason": "LANDING CTA — the fill is painted by the ::before wipe (landing.css), the rule flips the label ink in lockstep; landing.css is R319-frozen (C1-A must not touch it)"
-    },
-    {
-      "key": "r331/nav.css :: .fo-actions-login:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing/footer.css :: .fo-footer-link:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "r331/nav.css :: .fo-nav-link:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing/footer.css :: .fo-text-link:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing/hero.css :: .hi-reset:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing/chrome.css :: .sl-skip:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
       "key": "layout.css :: .topbar-user-trigger:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
@@ -503,18 +471,6 @@
     {
       "key": "unified-parity.css :: .badge:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "landing/footer.css :: html[data-theme='dark'] .fo-text-link:hover",
-      "reason": "INK-ONLY link emphasis — no background in any state of this selector: the ground is the inherited paper and never moves; --accent on the dark paper is the passing night pair (c2-L2 D7)"
-    },
-    {
-      "key": "r331/nav.css :: .fo-actions-cta:hover::before",
-      "reason": "WIPE-LAYER fill — same layered-button pattern as .fo-hero-discover:hover::before: the ::before carries no text, the element's own hover rule pairs the label; #DB3A00 = the r318 AA signal ground (c2-L2 D7)"
-    },
-    {
-      "key": "r331/nav.css :: html[data-theme='dark'] .fo-actions-cta:hover::before",
-      "reason": "WIPE-LAYER fill — dark twin of .fo-actions-cta:hover::before; no text in the layer"
     }
   ]
 }

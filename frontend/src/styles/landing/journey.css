@@ -29,26 +29,38 @@
 }
 
 .chapters-title {
-  font-family: var(--font-display);
-  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance).
-     This seat ESCAPED the ≤767 re-pin list and rendered 71.45px
-     @390 / 140.5px @767 (the census + the root probe — the V5
-     «one-word lines» headline, verbatim); the band-independent rung
-     fixes every belt at once — no mobile re-pin needed ever again. */
-  font-size: var(--fs-d2);
-  font-weight: 600;
-  line-height: 1.1;
+  /* R332 W4 — the TWIN LABEL-SCALE fix (run-001: journey heading median
+     40px vs Heron 13.33px, Δ66.67%). Like-for-like, Heron's home-map
+     band has NO display-size text at all: its section title
+     (home-map-content-title «RUN AN AGENT NATIVELY IN YOUR MODEL»)
+     is the small mono register — measured 13.3333px = 1.6rem on the
+     shared fluid root (w500 · lh 17.33 = 1.3 · ls −0.02em), and the
+     twin's own heading median is 13.33px. Ours rides the same rung:
+     13.33px @1440 · 15.88px @390 (run-001's «390 title ≤16.6px» seat).
+     The D2 rung this seat rode since R322 (1-d) was the STATEMENT
+     band's measure, not the map band's. The −0.02em tracking is NOT
+     mirrored: the copy is Arabic, and the site law keeps Arabic
+     display at its natural metrics (no tracking — see .wr-w below). */
+  font-family: var(--font-mono);
+  font-size: 1.6rem; /* 13.33px @1440 · 15.88px @390 — Heron's measured mono rung */
+  font-weight: 500;
+  line-height: 1.3;
   text-wrap: balance;
   color: var(--text);
 }
 
 .chapters-lede {
-  /* R322 (1-d): the reading ledes join the body band's --fs-body-lg
-     rung (15px @1440 — the brief §4 15–17px body band; landing-local,
-     --fs-body itself keeps its app consumers). */
-  font-size: var(--fs-body-lg);
-  line-height: 1.7;
-  color: var(--text-secondary);
+  /* R332 W4 — the head's second voice joins the band's mono caption
+     register (Heron's home-map carries no body-size text at all —
+     pCount 0; its only reading voice is the mono intro card). A 15px
+     sans lede beside a 13.33px mono title read inverted; at 1.4rem
+     mono the head is one quiet instrument block like the reference's
+     (the height loss lands the section INSIDE the twin's ±3% gate:
+     6237 vs 6300 @1440 · 4788 vs 4819 @390). */
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  line-height: 1.55;
+  color: var(--text-muted);
 }
 
 /* ════════════════════════════════════════════════════════════════════
@@ -165,8 +177,6 @@
   margin-inline: auto;
   display: flex;
   flex-direction: column;
-  display: flex;
-  flex-direction: column;
   /* the will-change budget (perf-baseline §7): the drifting window +
    * the ≤10 layer roots + the two plaques — the whole scroll story is
    * a stable compositor set; nothing else on the sheet promotes. */
@@ -270,11 +280,79 @@
    phase) carries the solid signal fill; its label warms to state-safe
    ink. Every drawn element carries .bp-drawable (the invalidation-bug
    lesson — never [pathLength] selectors for post-load restyles). */
-.pl-name {
-  font-family: var(--font-sans);
-  font-size: 16px;
-  font-weight: 600;
+/* R332 W4 — THE PLAN'S LABEL SCALE (like-for-like: Heron's room labels
+ * — home-map-main-img-sub-title — are txt-font-mono 13.3333px w500
+ * @1440; ours rendered 16 SVG-units ≈ 17px screen @1440 and, at the
+ * phone's overview camera, 16u × 326/1200 ≈ 4.3px — the supervisor's
+ * «tiny/illegible» defect). SVG text scales with the drawing (screen
+ * em = units × renderW/1200), so ONE static unit value cannot hold
+ * Heron's screen size across bands: the ladder below re-seats the
+ * units per breakpoint against the MEASURED plan-column width (after
+ * the R332 reserved closing cell: col ≈ 100vw − chrome − close − gap):
+ *   ≥992 base 30u — col 490–614px  → 12.8–14.6px screen
+ *   ≥1152     23u — col 614–763px  → 11.8–14.6px
+ *   ≥1352     20u — col 764–872px  → @1440: 13.27px — THE TWIN TARGET
+ *   ≥1520     17u — col 873px+    → @1920: 17.8px = Heron's 1.6rem
+ *   768–991   16u — the tablet camera crops 560-unit slices at 1.25×
+ *   ≤767      22u — the phone crops (460-unit slices, ≈0.72×) land
+ *             15.6px ≈ Heron's 15.87px mobile measure; the overview
+ *             beat (≈6% of the phone track, the mobile clock front-
+ *             loads it) rides ≈6px em — the physical floor of showing
+ *             a 1200-unit sheet on a 342px element (Heron shows the
+ *             same proportion at the same beat). */
+.jt .jt-plan .pl-name {
+  font-family: var(--font-mono);
+  font-size: 30px;
+  font-weight: 500;
   fill: var(--text-secondary);
+}
+
+@media (min-width: 1152px) {
+  .jt .jt-plan .pl-name { font-size: 23px; }
+}
+
+@media (min-width: 1352px) {
+  .jt .jt-plan .pl-name { font-size: 20px; }
+}
+
+@media (min-width: 1520px) {
+  .jt .jt-plan .pl-name { font-size: 17px; }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .jt .jt-plan .pl-name { font-size: 16px; }
+}
+
+@media (max-width: 767px) {
+  .jt .jt-plan .pl-name { font-size: 22px; }
+}
+
+/* the micro annotations (dims, areas, station markers, cut flags) ride
+ * the same ladder at the family's own 0.75 ratio (12/16 of the old
+ * seat) — @1440 they land 9.9px screen, inside the drafting-micro
+ * league the reference's plan itself uses. */
+.jt .jt-plan .bp-micro {
+  font-size: 22px;
+}
+
+@media (min-width: 1152px) {
+  .jt .jt-plan .bp-micro { font-size: 17px; }
+}
+
+@media (min-width: 1352px) {
+  .jt .jt-plan .bp-micro { font-size: 15px; }
+}
+
+@media (min-width: 1520px) {
+  .jt .jt-plan .bp-micro { font-size: 13px; }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .jt .jt-plan .bp-micro { font-size: 12px; }
+}
+
+@media (max-width: 767px) {
+  .jt .jt-plan .bp-micro { font-size: 16px; }
 }
 
 /* R318 §A4 → R319 §D3 — the plan labels' paper halo, re-ruled: a
@@ -630,25 +708,25 @@
   margin-block-end: var(--sp-2);
 }
 
-/* ── the CLOSING COLUMN — Heron's home-map-content as an OVERLAY ────
+/* ── the CLOSING COLUMN — Heron's home-map-content, its OWN CELL ────
    Heron flips 0→464px of plan width for this column at scrub end (a
-   WIDTH animation). R322 3-b reserved the column as a flex sibling —
-   review-c3 R1#2/R2#2 measured the cost: the plan lost its monument
-   (49% of Heron's stack area — the reserved column starves the one
-   hero of the section for 5 of 6 states). The fix keeps the CLS
-   guarantee AND restores the monument: the column becomes an
-   ABSOLUTE OVERLAY over the plan's inline-end 464px, revealed at the
-   scrub end by opacity + a small rise (transform+opacity only — no
-   layout animation, the pin-end 0.187 CLS stays dead), while the
-   plan column runs FULL FRAME WIDTH through the whole story
-   (Heron's own full-bleed plan through states 1–5). Paper ground +
-   hairline so it reads as a panel of the sheet, never a hole.
-   Pre-flip it is fully hidden (Heron's 0-width content-wrap); the
-   RM/static belts open it. */
+   WIDTH animation). R322 3-b made it an ABSOLUTE OVERLAY over the
+   plan's inline-end 464px to keep the plan full-frame through the
+   story — R332's supervisor pass measured the cost: the «الخلاصة»
+   panel's box INTERSECTED the plan svg's left wall at 1440 AND 1024
+   (the twin probe: close 464px @ x81 over svg 1284px @ x81). The
+   R332 W4 seat returns the column to Heron's own grid-cell grammar —
+   a RESERVED flex sibling at its measured width (clamp 280→464px,
+   Heron's 55.65rem ladder — 330.8px @1024, 464px @1440) — so the
+   panel NEVER shares pixels with the drawing at any state, while the
+   reveal stays the opacity+rise flip (zero layout animation, the
+   pin-end CLS stays dead). The plan column keeps flex:1 and the
+   drawing fills its own frame (Heron's end-state proportion: plan
+   ≈62% / panel ≈36% of the frame @1440). */
 .jt-close {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: var(--page-gutter);
+  position: static;
+  flex: 0 0 auto;
+  align-self: stretch;
   inline-size: clamp(280px, 32.3vw, 464px); /* Heron's exact 464px @1440 (55.7rem) — 32.3vw clears the cap at 1436+ */
   display: flex;
   flex-direction: column;
@@ -656,7 +734,6 @@
   border: 1px solid var(--rule-strong);
   background: var(--bg);
   contain: layout paint;
-  z-index: 4;
   opacity: 0;
   visibility: hidden;
   transform: translateY(10px);
@@ -685,25 +762,31 @@
   margin: 0;
   padding: var(--sp-2) var(--sp-3);
   border: 1px solid var(--rule-strong);
-  font-family: var(--font-display);
-  font-size: var(--fs-d3);
+  /* R332 W4 — the label joins the band's mono register (Heron's
+     closing column's only label, home-map-content-title-wrap, is the
+     13.33px mono voice; a 23.3px display chip next to a 13.33px mono
+     title read inverted). */
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
   font-weight: 500;
-  line-height: 1.15;
+  line-height: 1.4;
   text-wrap: balance;
-  color: var(--text);
+  color: var(--text-secondary);
   align-self: inline-start;
 }
 
-/* the statement — Heron's own seat: 3 lines at the D2 rung, pushed
-   down the column by the measured 39.84rem offset (the one big
-   spacing note in the reference's histogram — the statement sits
-   low, against the plan's foot). */
+/* the statement — R332 W4: the twin's LIKE-FOR-LIKE — Heron's closing
+   column title (home-map-content-title) is the 13.3333px mono rung
+   (w500 · lh 1.3), not a display seat; ours now rides the same rung
+   (the h2 the twin's heading median reads lands 13.33px @1440 /
+   15.88px @390). The 39.84rem push-down keeps Heron's measured h2
+   offset (map.md) — the seat, not the size, is the reference's. */
 .jt-close-title {
   margin: 39.84rem 0 0; /* spacing-gate: allow — Heron's own measured h2 offset (map.md), rem on the shared fluid root */
-  font-family: var(--font-display);
-  font-size: var(--fs-d2);
-  font-weight: 600;
-  line-height: 1.1;
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.3;
   text-wrap: balance;
   color: var(--text);
   opacity: 0;
@@ -1073,6 +1156,13 @@
 @media (max-width: 767px) {
   .jt-map-col {
     block-size: 380dvh;
+    /* R332 W4 — the phone plan fills the section frame: the column's
+     * own 8px inset (the A8 seat, kept at 768–991) put the drawing at
+     * 326px = 83.6% of 390 — the supervisor's «~300px + voids» defect.
+     * The .chapters section frame (24px) already provides the page
+     * inset; dropping the inner seat lands 342px = 87.7% ≥ the 85%
+     * probe floor and shrinks the sticky window's bands with it. */
+    padding-inline: 0;
   }
 
   /* the phone plan element — the PORTRAIT crop aspect (460×600):
