@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { heron, statusTones, type HeronPalette, type StatusTone, type StatusToneName, type ThemeName } from "./tokens";
+import { semanticThemeFor, type SemanticTheme } from "./semantic";
 
 export type ThemePreference = "light" | "dark" | "system";
 
@@ -34,18 +35,24 @@ export function setThemePreference(p: ThemePreference) {
 }
 
 /** Effective theme for the current preference + device scheme. */
-export function useTheme(): { name: ThemeName; palette: HeronPalette; tones: Record<StatusToneName, StatusTone> } {
+export function useTheme(): {
+  name: ThemeName;
+  palette: HeronPalette;
+  tones: Record<StatusToneName, StatusTone>;
+  /** R334 2-f — additive: the semantic seat layer (never breaks consumers). */
+  semantic: SemanticTheme;
+} {
   const preference = useThemePreference();
   const system = useColorScheme();
   const name: ThemeName = preference === "system" ? (system === "dark" ? "dark" : "light") : preference;
   return useMemo(
-    () => ({ name, palette: heron[name], tones: statusTones[name] }),
+    () => ({ name, palette: heron[name], tones: statusTones[name], semantic: semanticThemeFor(name) }),
     [name],
   );
 }
 
 export function themeFor(name: ThemeName) {
-  return { name, palette: heron[name], tones: statusTones[name] };
+  return { name, palette: heron[name], tones: statusTones[name], semantic: semanticThemeFor(name) };
 }
 
 /** Palette as a StyleSheet-compatible flat object (for non-hook contexts). */
@@ -55,6 +62,13 @@ export function usePalette(): HeronPalette {
 
 export function useStatusTones(): Record<StatusToneName, StatusTone> {
   return useTheme().tones;
+}
+
+/** R334 2-f — the semantic color layer (surface/elevated/sunken seats,
+ *  hairline presets, THE accent, status triples) resolved for the
+ *  effective theme. See ./semantic + docs/mobile/foundations/theming.md. */
+export function useSemanticTheme(): SemanticTheme {
+  return useTheme().semantic;
 }
 
 export interface ThemeContextValue {
