@@ -88,3 +88,67 @@ Root Stack (`app/_layout.tsx`: RTL-forced at module scope, one-reload `ensureRTL
 | (auth shell) | `app/auth/_layout.tsx` | guest | SHELL: Stack, fade animation | L3 | DEEP | none | P0 |
 
 _Continues: §5 student, §6 teacher, §7 admin/quality/owner, §8 summary._
+
+## 5 — Inventory: student (33 files)
+
+| Route path | File | Purpose | Tier | Read | Issues | Pri |
+|---|---|---|---|---|---|---|
+| /student (shell) | `student/_layout.tsx` | SHELL: RoleGate STUDENT + Stack | L3 | DEEP | none | P0 |
+| /student/(tabs) (shell) | `student/(tabs)/_layout.tsx` | SHELL: persistent RoleTabBar (STUDENT) | L3 | DEEP | none | P0 |
+| /student/dashboard | `(tabs)/dashboard.tsx` | «الرئيسية» — greeting, KPI slabs, resume card «أكمل ما بدأته», gaps «الفجوات ذات الأولوية», agenda (classes/assignments/live/exams) | L3 | DEEP | `agenda` sections render `null` while loading (no skeleton for sections 2–5, only KPI block); rows = .map in ScrollBody (fine ≤4); no haptics | P0 |
+| /student/courses | `(tabs)/courses.tsx` | «مقرراتي» — enrollments ledger w/ progress + schedule summary; honest admin-mediated empty state | L3 | DEEP | none material (full triad: skeleton/error/empty + refresh) | P0 |
+| /student/ai | `(tabs)/ai.tsx` | «المساعد» tab → Assistant feature | L2* | QS | delegate (Assistant) not audited; provider-badge honesty reported by R331 | P0 |
+| /student/alerts | `(tabs)/alerts.tsx` | «الإشعارات» inbox tab (badge target) | L2* | QS | delegate (NotificationsScreen) not audited | P0 |
+| /student/profile | `(tabs)/profile.tsx` | «حسابي» — identity card (session-first merge), academic facts, 30-link menu hub incl. «الإبلاغ عن مشكلة» | L3 | DEEP | menu hub is a long non-grouped flat list (30 LedgerRows, no section grouping/virtualization) | P0 |
+| /student/courses/[offeringId] | `courses/[offeringId].tsx` | «تفاصيل المقرّر» — overview, weekly schedule, lectures w/ progress, materials, assignments + «تسليم» sheet | L3 | DEEP | sections render muted text instead of EmptyState for schedule/lectures/materials (inconsistent grammar); materials list unpaginated | P0 |
+| /student/lectures/[lectureId] | `lectures/[lectureId].tsx`` | «مشغّل المحاضرة» — pinned expo-video, resume-seek, 10s watch reporting, checkpoint sheet (أ ب ج د هـ و), chapters, searchable VTT transcript, prev/next | L3 | DEEP | transcript renders up to 200 cues as .map in ScrollView (no virtualization → scroll jank risk on long lectures); no pull-to-refresh; no haptic on checkpoint reveal; hardcoded 16:9 (portrait letterbox ok) | P0 |
+| /student/online-exams | `online-exams.tsx` | «الاختبارات الإلكترونية» — segmented filter (الكل/متاحة/منجزة), window rules, attempt chips | L3 | DEEP | none material (full triad + placeholderData) | P0 |
+| /student/online-exams/[templateId] | `online-exams/[templateId].tsx` | Exam runner: questions, timing, submission, attempts | L2 | QS | 832 ln — likely L3 (timer/sheets per docblock) but NOT deep-read; audit in Round-2 fix plan | P0 |
+| /student/results | `results.tsx` | «النتائج» — weighted per-course rollup + breakdown + teacher feedback | L3 | DEEP | breakdown rows lack per-row skeleton (single SkeletonList ok); fine | P0 |
+| /student/schedule | `schedule.tsx` | «الجدول الأسبوعي» — day-grouped ledger, today-first filter | L3 | DEEP | horizontal Segmented inside nested horizontal ScrollView (nesting smell); fine otherwise | P0 |
+| /student/messages | `messages.tsx` | «الرسائل» → MessagesUI | L2* | QS | delegate not audited (composer keyboard-controller per R331) | P0 |
+| /student/assignments | `assignments.tsx` | «التكاليف» — cross-offering pending list + submit sheet | L2 | QS | not deep-read; kit present | P0 |
+| /student/calendar | `calendar.tsx` | «التقويم» — month grid (Africa/Tripoli) uniting classes/assignments/exams/live | L2 | QS | 363 ln not deep-read; month grid = perf/RTL risk to verify | P1 |
+| /student/catalog | `catalog.tsx` | «دليل المقرّرات» — read-only catalog + honest-door banner | L2 | QS | not deep-read | P1 |
+| /student/gamification | `gamification.tsx` | «نقاطي وأوسمتي» | L2 | QS | not deep-read | P1 |
+| /student/jobs | `jobs.tsx` | «الوظائف» | L2 | QS | not deep-read | P2 |
+| /student/labs | `labs.tsx` | «المعامل الافتراضية» | L2 | QS | not deep-read | P2 |
+| /student/library | `library.tsx` | «المكتبة» (457 ln, mutations) | L2 | QS | long list, no virtualization assumed; not deep-read | P1 |
+| /student/live | `live.tsx` | «الحصص المباشرة» — external links | L2 | QS | not deep-read | P1 |
+| /student/map | `map.tsx` | «خريطة الكليات» — honest directory (no fake coordinates) | L2 | QS | not deep-read | P2 |
+| /student/materials | `materials.tsx` | «موادي التعليمية» — one ledger + auth PDF route | L2 | QS | not deep-read | P1 |
+| /student/matrix | `matrix.tsx` | «مصفوفة الإتقان» — concept rows + «سدّ الفجوة» (uses FlatList — one of 4) | L2 | QS | not deep-read | P1 |
+| /student/mooc | `mooc.tsx` | «دورات MOOC» — external (WebBrowser) | L2 | QS | not deep-read | P2 |
+| /student/payment | `payment.tsx` | «الشؤون المالية» — honest-empty stub (no fee entities in model) | L1 | DEEP | placeholder by design: EmptyState + disclosure card only; dead-end (no amounts, no history) | P2 |
+| /student/research | `research.tsx` | «بحوثي» — submit/track research (442 ln) | L2 | QS | not deep-read | P1 |
+| /student/skills | `skills.tsx` | «مهاراتي» | L2 | QS | not deep-read | P2 |
+| /student/social | `social.tsx` | «المنشورات» — social feed w/ expo-image | L2 | QS | image feed in ScrollView .map — memory/perf risk; not deep-read | P2 |
+| /student/university | `university.tsx` | «عن الجامعة» — public facts + membership context | L2 | QS | untyped endpoint noted in docblock | P2 |
+| /student/webinars | `webinars.tsx` | «الندوات» | L2 | QS | not deep-read | P2 |
+| /student/ar | `ar.tsx` | «واقع افتراضي ومعزز» — read-only index, no launch | L1 | PART | operator not built — browsing stub with full triad; dead-end rows | P2 |
+
+## 6 — Inventory: teacher (22 files)
+
+| Route path | File | Purpose | Tier | Read | Issues | Pri |
+|---|---|---|---|---|---|---|
+| /teacher (shell) | `teacher/_layout.tsx` | SHELL: RoleGate TEACHER + Stack | L3 | DEEP | none | P0 |
+| /teacher/(tabs) (shell) | `teacher/(tabs)/_layout.tsx` | SHELL: persistent RoleTabBar (TEACHER) | L3 | DEEP | none | P0 |
+| /teacher/dashboard | `(tabs)/dashboard.tsx` | «اللوحة» — KPI strip, pending-grading queue, today's classes, trend, filtered feed | L3 | PART (120/437 + kit greps) | trend is hand-mapped from untyped wire (`WireTrendPoint` casts); feed filters; not fully deep-read | P0 |
+| /teacher/schedule | `(tabs)/schedule.tsx` | «الجدول» tab | L2 | QS | not deep-read (110 ln) | P0 |
+| /teacher/students | `(tabs)/students.tsx` | «الطلاب» — offering picker + shared OfferingRoster | L2 | DEEP | triad present but rendered as ad-hoc muted text/Cards, not the kit's EmptyState/ErrorState (grammar inconsistency) | P0 |
+| /teacher/intelligence | `(tabs)/intelligence.tsx` | «التحليلات» tab (325 ln) | L2 | QS | not deep-read | P0 |
+| /teacher/profile | `(tabs)/profile.tsx` | «حسابي» teacher menu hub | L2 | QS | not deep-read (325 ln) | P0 |
+| /teacher/ai | `ai.tsx` | Assistant pushed over shell (stacked + onBack) | L2* | DEEP (wrapper) | delegate not audited | P1 |
+| /teacher/alerts | `alerts.tsx` | Notifications inbox pushed (stacked) | L2* | DEEP (wrapper) | delegate not audited | P0 |
+| /teacher/assignments | `assignments.tsx` | «الواجبات والاختبارات» — grading queue + all assignments (443 ln) | L2 | QS | not deep-read | P0 |
+| /teacher/attendance | `attendance.tsx` | «الحضور والغياب» — 4-state roll call | L2 | QS | not deep-read | P1 |
+| /teacher/curriculum | `curriculum.tsx` | «بناء المنهج» — lectures/chapters/checkpoints authoring (627 ln) | L2 | QS | biggest teacher tool; dense form UI (web-panel feel); not deep-read | P1 |
+| /teacher/exams | `exams.tsx` | «بنك الأسئلة والاختبارات» — templates + question bank (461 ln) | L2 | QS | not deep-read | P1 |
+| /teacher/exams/[templateId] | `exams/[templateId].tsx` | Template editor + manual attempt grading (555 ln) | L2 | QS | not deep-read | P1 |
+| /teacher/grades | `grades.tsx` | «درجات الطلاب» — per-offering grade entry, scale adoption, batch save, toast | L3 | PART (110/314) | roster rows = per-student Field drafts in ScrollView (no virtualization for big rosters); not fully deep-read | P0 |
+| /teacher/labs | `labs.tsx` | «المعامل الافتراضية» + honest student-preview | L2 | QS | not deep-read | P2 |
+| /teacher/live | `live.tsx` | «إدارة البث المباشر» — KPIs, new session, lifecycle w/ confirms | L2 | QS | not deep-read (327 ln) | P0 |
+| /teacher/materials | `materials.tsx` | «الملفات التعليمية» — upload PDF (progress) / external link | L2 | QS | not deep-read | P1 |
+| /teacher/messages | `messages.tsx` | DM inbox → MessagesUI | L2* | DEEP (wrapper) | delegate not audited | P1 |
+| /teacher/research-review | `research-review.tsx` | «البحث العلمي» — triage queue + review sheet | L2 | QS | not deep-read | P1 |
+| /teacher/students/[offeringId] | `students/[offeringId].tsx` | Deep-linked roster (shared OfferingRoster) | L2 | QS | 53 ln wrapper around shared component | P1 |
