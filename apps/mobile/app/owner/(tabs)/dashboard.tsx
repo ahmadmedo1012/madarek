@@ -13,12 +13,14 @@ import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { RowList, LedgerRow, KpiCard } from "@/components/ui/data";
-import { SkeletonList, ErrorState, EmptyState, Skeleton } from "@/components/ui/states";
+import { DataList, LedgerRow, makeRow, RowList } from "@/components/ui/data";
+import { SkeletonList, EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
 import { ownerApi } from "@/api/owner";
 import { usePalette } from "@/design/theme";
-import { fromNow, num } from "@/lib/format";
+import { fromNow } from "@/lib/format";
 import {
+  MetricHero,
+  MetricTile,
   SeverityChip,
   auditActionLabel,
   countAr,
@@ -36,6 +38,19 @@ interface OwnerAlert {
   createdAt?: string;
   resolvedAt?: string | null;
 }
+
+/** memo-stable event row (module scope — DataList/makeRow contract). */
+const EventRow = makeRow<AuditRow>(({ item }) => (
+  <LedgerRow accessibilityLabel={auditActionLabel(item.action)}>
+    <T variant="body" weight="medium">
+      {auditActionLabel(item.action)}
+    </T>
+    <T variant="xs" color="muted" numberOfLines={1}>
+      {item.user ? `${item.user.firstName ?? ""} ${item.user.lastName ?? ""}`.trim() || "النظام" : "النظام"} ·{" "}
+      {fromNow(item.createdAt)}
+    </T>
+  </LedgerRow>
+));
 
 /** (tabs) Owner dashboard — «لوحة التحكم الرئيسية» (web OwnerDashboardPage parity). */
 export default function OwnerDashboard() {
@@ -69,17 +84,30 @@ export default function OwnerDashboard() {
         </View>
 
         {stats.isLoading ? (
-          <SkeletonList rows={4} />
+          <View style={{ gap: 8 }}>
+            <Skeleton h={132} />
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <Skeleton h={72} />
+              <Skeleton h={72} />
+            </View>
+          </View>
         ) : stats.isError ? (
           <ErrorState message={humanizeError(stats.error)} onRetry={() => stats.refetch()} />
         ) : s ? (
-          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-            <KpiCard label="إجمالي المستخدمين" value={num(s.totalUsers ?? null)} style={{ minWidth: "47%" }} />
-            <KpiCard label="الطلاب" value={num(s.students ?? null)} style={{ minWidth: "47%" }} />
-            <KpiCard label="الأساتذة" value={num(s.teachers ?? null)} style={{ minWidth: "47%" }} />
-            <KpiCard label="المقرّرات" value={num(s.totalCourses ?? null)} style={{ minWidth: "47%" }} />
-            <KpiCard label="الشُّعب" value={num(s.totalOfferings ?? null)} style={{ minWidth: "47%" }} />
-            <KpiCard label="التسجيلات" value={num(s.totalEnrollments ?? null)} style={{ minWidth: "47%" }} />
+          <View style={{ gap: 8 }}>
+            <MetricHero
+              label="إجمالي مستخدمي المنصّة"
+              value={s.totalUsers ?? null}
+              hint={countAr(s.totalUsers ?? 0, ["حساب واحد", "حسابان", "حسابات", "حساباً"])}
+            />
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <MetricTile label="الطلاب" value={s.students ?? null} />
+              <MetricTile label="الأساتذة" value={s.teachers ?? null} />
+            </View>
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <MetricTile label="المقرّرات" value={s.totalCourses ?? null} />
+              <MetricTile label="التسجيلات" value={s.totalEnrollments ?? null} />
+            </View>
           </View>
         ) : null}
 
@@ -143,19 +171,15 @@ export default function OwnerDashboard() {
             <EmptyState title="لا توجد أحداث بعد" message="ستظهر أحدث العمليّات هنا فور حدوثها." />
           ) : (
             <View style={{ gap: 12 }}>
-              <RowList>
-                {events.map((ev, i, arr) => (
-                  <LedgerRow key={ev.id} last={i === arr.length - 1}>
-                    <T variant="body" weight="medium">
-                      {auditActionLabel(ev.action)}
-                    </T>
-                    <T variant="xs" color="muted" numberOfLines={1}>
-                      {ev.user ? `${ev.user.firstName ?? ""} ${ev.user.lastName ?? ""}`.trim() || "النظام" : "النظام"} ·{" "}
-                      {fromNow(ev.createdAt)}
-                    </T>
-                  </LedgerRow>
-                ))}
-              </RowList>
+              <DataList
+                data={events}
+                renderItem={({ item }) => <EventRow item={item} />}
+                keyExtractor={(ev) => ev.id}
+                loadingSlot={<SkeletonList rows={3} />}
+                contentPadding={{ bottom: 8 }}
+                style={{ maxHeight: 5 * 76 }}
+                scrollProps={{ nestedScrollEnabled: true }}
+              />
               <Button
                 label="سجلّ النشاط الكامل"
                 kind="ghost"

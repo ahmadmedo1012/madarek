@@ -1,5 +1,4 @@
 import { View } from "react-native";
-import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import Eye from "lucide-react-native/icons/eye";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -7,14 +6,19 @@ import { Screen, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
 import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
-import { SkeletonList, ErrorState } from "@/components/ui/states";
+import { Skeleton, SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { qualityApi } from "@/api/quality";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
+import { sp } from "@/design/tokens";
+import { humanizeError } from "@/lib/errors";
 import { num } from "@/lib/format";
 import {
   HonestLedger,
+  MetricHero,
+  MetricTile,
   PAPER_STATUS_LABEL,
+  PAPER_STATUS_TONE,
   countAr,
   numOf,
 } from "@/features/governance/components";
@@ -32,7 +36,8 @@ const ATTENDANCE_KEY_LABEL: Record<string, string> = {
   EXCUSED: "سجلّات استئذان",
 };
 
-/** (tabs) Quality dashboard — «لوحة الجودة» (web QualityDashboardPage parity, honest rendering). */
+/** (tabs) Quality dashboard — «لوحة الجودة» (web QualityDashboardPage parity, honest rendering).
+ *  Hierarchy: ONE hero (active students) + attendance ring + supporting tiles. */
 export default function QualityDashboard() {
   const p = usePalette();
   const scope = useInstitutionScope();
@@ -49,6 +54,18 @@ export default function QualityDashboard() {
   const rest = data
     ? Object.fromEntries(Object.entries(data).filter(([k]) => !knownKeys.includes(k)))
     : {};
+
+  // attendance ring: presence share of all recorded roll-call entries
+  const att = {
+    present: numOf(attendance.PRESENT) ?? 0,
+    late: numOf(attendance.LATE) ?? 0,
+    absent: numOf(attendance.ABSENT) ?? 0,
+    excused: numOf(attendance.EXCUSED) ?? 0,
+  };
+  const attTotal = att.present + att.late + att.absent + att.excused;
+  const presentRate = attTotal > 0 ? (att.present + att.late) / attTotal : null;
+  const hasAnyData =
+    Object.keys(users).length + Object.keys(attendance).length + Object.keys(papers).length > 0;
 
   return (
     <Screen scroll>
@@ -68,38 +85,50 @@ export default function QualityDashboard() {
         </View>
 
         {overview.isLoading ? (
-          <SkeletonList rows={6} />
+          <View style={{ gap: 8 }}>
+            <Skeleton h={132} />
+            <View style={{ flexDirection: "row", gap: 8 }}>
+              <Skeleton h={72} />
+              <Skeleton h={72} />
+            </View>
+            <SkeletonList rows={2} rowHeight={48} />
+          </View>
         ) : overview.isError ? (
           <ErrorState
             message={humanizeError(overview.error)}
             onRetry={() => overview.refetch()}
           />
-        ) : !data ? null : (
+        ) : !data ? null : !hasAnyData ? (
+          <EmptyState
+            title="لا توجد مؤشرات بعد"
+            message="ستظهر مؤشرات الجودة هنا فور توفّر بيانات أكاديمية في المؤسّسة."
+            actionLabel="تحديث"
+            onAction={() => overview.refetch()}
+          />
+        ) : (
           <>
-            <View>
-              <SectionBar index={1} title="مؤشرات أساسية" />
-              <RowList>
-                <LedgerRow last>
-                  {Object.entries(users).map(([key, value]) => (
-                    <StatLine
-                      key={key}
-                      label={ROLE_KEY_LABEL[key] ?? key}
-                      value={num(numOf(value))}
-                      hint={key in ROLE_KEY_LABEL ? undefined : key}
-                    />
-                  ))}
-                  <StatLine label="المقرّرات" value={num(numOf(data.courses))} />
-                  <StatLine label="الشُّعب" value={num(numOf(data.offerings))} />
-                  <StatLine
-                    label="المحاضرات"
-                    value={
-                      numOf(data.lectures) !== null
-                        ? countAr(numOf(data.lectures) ?? 0, ["محاضرة واحدة", "محاضرتان", "محاضرات", "محاضرة"])
-                        : "—"
-                    }
-                  />
-                </LedgerRow>
-              </RowList>
+            <View style={{ gap: 8 }}>
+              <MetricHero
+                label="الطلاب النشطون"
+                value={numOf(users.STUDENT)}
+                hint="وفق آخر قراءة من قطاع الجودة"
+                progress={presentRate}
+              />
+              <View style={{ flexDirection: "row", gap: 8 }}>
+                <MetricTile label="هيئة التدريس" value={numOf(users.TEACHER)} />
+                <MetricTile label="المقرّرات" value={numOf(data.courses)} />
+              </View>
+              <View style={{ flexDirection: "row", gap: 8 }}>
+                <MetricTile label="الشُّعب" value={numOf(data.offerings)} />
+                <MetricTile
+                  label="المحاضرات"
+                  value={
+                    numOf(data.lectures) !== null
+                      ? numOf(data.lectures)
+                      : null
+                  }
+                />
+              </View>
             </View>
 
             <View>
@@ -109,15 +138,23 @@ export default function QualityDashboard() {
                   {Object.entries(attendance).map(([key, value]) => (
                     <StatLine
                       key={key}
-                      label={ATTENDANCE_KEY_LABEL[key] ?? key}
+                      label={ATTENDANCE_KEY_LABEL[key] ?? "سجلّات أخرى"}
                       value={num(numOf(value))}
-                      hint={key in ATTENDANCE_KEY_LABEL ? undefined : key}
+                      hint={key in ATTENDANCE_KEY_LABEL ? undefined : "فئة حضور غير مصنَّفة"}
                     />
                   ))}
                   {Object.keys(attendance).length === 0 ? (
                     <T variant="body" color="muted">
                       لا سجلّات حضور بعد.
                     </T>
+                  ) : null}
+                  {presentRate !== null ? (
+                    <StatLine
+                      label="نسبة الحضور الفعلية"
+                      value={`${num(Math.round(presentRate * 100))}%`}
+                      hint={countAr(attTotal, ["سجل واحد", "سجلان", "سجلات", "سجلاً"])}
+                      tone="accent"
+                    />
                   ) : null}
                 </LedgerRow>
               </RowList>
@@ -128,12 +165,17 @@ export default function QualityDashboard() {
               <RowList>
                 <LedgerRow last>
                   {Object.entries(papers).map(([key, value]) => (
-                    <StatLine
-                      key={key}
-                      label={PAPER_STATUS_LABEL[key] ?? key}
-                      value={num(numOf(value))}
-                      hint={key in PAPER_STATUS_LABEL ? undefined : key}
-                    />
+                    <View key={key} style={{ paddingVertical: sp[6] }}>
+                      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <Badge
+                          label={PAPER_STATUS_LABEL[key] ?? "حالة أخرى"}
+                          tone={PAPER_STATUS_TONE[key] ?? "grey"}
+                        />
+                        <T variant="bodyLg" weight="bold">
+                          {num(numOf(value))}
+                        </T>
+                      </View>
+                    </View>
                   ))}
                   {Object.keys(papers).length === 0 ? (
                     <T variant="body" color="muted">
