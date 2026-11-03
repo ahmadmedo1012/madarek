@@ -92,7 +92,30 @@ def capture_side(page, side: str, url: str, vp: dict, sections: list, outdir: Pa
     driver.ready(page, extra_ms=2500)
     page.wait_for_timeout(1000)
 
+    # R332 blind-panel policy (QA-3R finding): BOTH sides' consent/cookie
+    # chrome and badge overlays are masked — heron's `.cookie-banner` +
+    # `.awwwards` badge unblind every pair (present 9/9) while madarek's
+    # consent is seeded away (0/9). Consent UI is out of structure scope.
+    page.add_style_tag(content=(
+        " .cookie-banner, .awwwards, [class*='cookie'], [class*='awwwards'] "
+        " { display: none !important; }"))
+
+    # R332 blind-panel policy (QA-1R/QA-3R finding): madarek's reveal
+    # system did not settle within the capture budget in 6/9 pairs —
+    # prime every intersection observer by sweeping the section range
+    # once before the capture loop (the observers fire on intersection;
+    # the sweep seat-fires them, the seeks below then find settled states).
     maxscroll = driver.max_scroll(page, side)
+    ranges = measure_ranges(page, side, sections)
+    sweep_lo = min([r["top"] for r in ranges.values() if r] or [0])
+    sweep_hi = max([r["top"] + r["height"] for r in ranges.values() if r] or [0])
+    step = max(400, vp["height"] // 2)
+    yy = max(0, sweep_lo - vp["height"])
+    while yy <= min(sweep_hi + vp["height"], maxscroll):
+        driver.seek(page, side, yy, tol=cap["seekTolerancePx"], retries=3)
+        page.wait_for_timeout(120)
+        yy += step
+
     ranges = measure_ranges(page, side, sections)
 
     rec_fp = outdir / f"{side}-records.jsonl"

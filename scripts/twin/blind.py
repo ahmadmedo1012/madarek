@@ -105,6 +105,18 @@ def main():
                                   timeout=60000)
                         driver.ready(page, extra_ms=2000)
                         page.wait_for_timeout(1800)  # R332: entrance-fade guard — the first panel run caught mid-reveal frames (QA-1/QA-3 both flagged the wash-out asymmetry)
+                        # R332 blind-panel policy: mask BOTH sides' consent chrome
+                        # (heron cookie-banner + awwwards badge vs madarek seeded
+                        # consent) — QA-3R: the asymmetry alone unblinds every pair.
+                        page.add_style_tag(content=(
+                            " .cookie-banner, .awwwards, [class*='cookie'], "
+                            "[class*='awwwards'] { display: none !important; }"))
+                        # prime reveal observers: sweep the target's neighborhood
+                        # once (madarek's observers didn't settle in 6/9 pairs).
+                        rng_top = max(0, int(rec2["targetY"]) - 900)
+                        for yy in range(rng_top, int(rec2["targetY"]) + 900, 450):
+                            driver.seek(page, side, yy, tol=4, retries=3)
+                            page.wait_for_timeout(140)
                         driver.seek(page, side, rec2["targetY"])
                         driver.settle(page, 1400)
                         page.add_style_tag(content=CFG["blind"]["blurCss"])

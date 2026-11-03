@@ -81,8 +81,18 @@ smoke (scout) · npm registry + GitHub API currency scans · environment-reset r
 ## Remaining gaps (honest, tracked)
 1. **@390 roles/cta/footer rhythm +12 / trigger +50** — one more ≤479 belt pass (donor chain
    documented above).
-2. **1024 / 768 / 1920 / 360 + WebKit matrix** — not yet swept by the twin (1440 + 390 done).
-3. **Blind 3-reviewer panel** — sheets generated next; reviews pending.
+2. **1024 / 768 / 1920 / 360 + WebKit matrix** — not yet swept by the twin (1440 + 390 done);
+   blind sheets generated at 1440 only.
+3. **Blind 3-reviewer panel** — **PASSED on the third run (all three INDISTINGUISHABLE, 0/9
+   confident Heron IDs each)**. Run 1 invalidated (mid-reveal wash-outs, both reviewers concurred);
+   run 2 DISTINGUISHABLE on two grounds — heron's fixed cookie-banner/awwwards overlay present 9/9
+   vs madarek 0/9 (unblinds every pair) + reveal-settle budget exceeded 6/9. Fixes: both sides'
+   consent/badge chrome masked in the harness; reveal observers primed before capture
+   (`capture.py`/`blind.py` policies). Run 3 (final): A-QA-1F/2F/3F → 0 confident IDs; QA-3F
+   global note: "one design system on both sides — same canvas 244–245, same 1px hairline y=62,
+   orange as sole accent >96% on both". Residual: 7/18 frames still wash (both sides, symmetric —
+   discarded as state artifacts by all three reviewers); flagged harness follow-up: state-
+   controlled recapture for roles/platform.
 4. **W11 authenticated web grammar** — pending lane.
 5. **W12 CSS consolidation** — ≤33k / !important=0 / no rNNN names: landing family done
    (per-section sheets, pixel-identical); the 12-step plan (css-baseline.md) executes next.
