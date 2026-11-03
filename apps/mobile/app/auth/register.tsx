@@ -8,12 +8,14 @@ import { ApiError, get } from "@/api/client";
 import { useSession, ROLE_HOME } from "@/auth/session";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { FormScreen, Screen, SectionBar } from "@/components/ui/screen";
+import { AppStatusBar } from "@/design/statusbar";
+import { FormScreen } from "@/components/ui/form";
+import { SectionBar } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { Field, SecretField, SelectField } from "@/components/ui/fields";
-import { Button } from "@/components/ui/pressables";
-import { Card } from "@/components/ui/surfaces";
 import { BrandMark } from "@/components/ui/brand";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 
 interface InstitutionRow { id: string; name: string; slug: string }
 interface FacultyRow { id: string; name: string; departments: { id: string; name: string }[] }
@@ -26,7 +28,14 @@ const RANKS = [
   { id: "PROFESSOR", label: "أستاذ" },
 ];
 
-/** /auth/register — two-step wizard (role → academic identity). */
+/**
+ * /auth/register — two-step wizard (role → academic identity) on the form
+ * foundation: KeyboardAwareScrollView + the «التالي/السابق/تم» toolbar
+ * for step 2's long field chain, a sticky primary action with async
+ * loading, humanizeError for every failure, haptic outcomes. Inline
+ * Arabic validation keeps its local seat (SelectField choices and the
+ * invite-check interplay don't fit the per-field zod adapter).
+ */
 export default function Register() {
   const p = usePalette();
   const params = useLocalSearchParams<{ continue?: string }>();
@@ -108,7 +117,11 @@ export default function Register() {
   };
 
   const submit = async () => {
-    if (!validate()) return;
+    if (busy) return;
+    if (!validate()) {
+      haptics.notify("error");
+      return;
+    }
     setBusy(true);
     setError(null);
     try {
@@ -127,13 +140,14 @@ export default function Register() {
         rank: role === "TEACHER" && rank ? rank : undefined,
         inviteCode: inviteCode.trim() || undefined,
       });
+      haptics.notify("success");
       const cont = params.continue ? decodeURIComponent(params.continue) : null;
       router.replace(
         (user.currentInstitution ? cont ?? ROLE_HOME[user.role] ?? "/student/dashboard" : "/select-institution") as never,
       );
     } catch (err) {
-      const api = err as ApiError;
-      setError(api.message ?? "تعذّر إنشاء الحساب.");
+      setError(humanizeError(err));
+      haptics.notify("error");
     } finally {
       setBusy(false);
     }
@@ -141,9 +155,22 @@ export default function Register() {
 
   if (step === 0) {
     return (
-      <FormScreen>
-        <View style={{ flex: 1, gap: sp[16], padding: sp[24], justifyContent: "center" }}>
-          <View style={{ alignItems: "center", gap: sp[8] }}>
+      <>
+        <AppStatusBar />
+        <FormScreen
+          onSubmit={() => setStep(1)}
+          submitLabel="التالي"
+          footer={
+            <Pressable
+              accessibilityRole="link"
+              onPress={() => router.back()}
+              style={{ alignItems: "center", paddingVertical: sp[8] }}
+            >
+              <T variant="sm" color="muted">رجوع</T>
+            </Pressable>
+          }
+        >
+          <View style={{ alignItems: "center", gap: sp[8], paddingTop: sp[16] }}>
             <BrandMark size={40} />
             <T variant="h2" weight="bold">إنشاء حساب</T>
             <T variant="sm" color="muted">خطوة 1 من 2 — اختر صفة حسابك</T>
@@ -152,7 +179,11 @@ export default function Register() {
             <Pressable
               key={r}
               accessibilityRole="button"
-              onPress={() => setRole(r)}
+              accessibilityState={{ selected: r === role }}
+              onPress={() => {
+                if (r !== role) haptics.selection();
+                setRole(r);
+              }}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -178,40 +209,66 @@ export default function Register() {
           <T variant="xs" color="faint">
             الأدوار الأخرى (المسجل العام، الجودة، المالك) تُمنح بتعيين فقط — تواصل مع إدارة مؤسّستك.
           </T>
-          <Button label="التالي" onPress={() => setStep(1)} />
-          <Button label="رجوع" kind="ghost" onPress={() => router.back()} small />
-        </View>
-      </FormScreen>
+        </FormScreen>
+      </>
     );
   }
 
   return (
-    <Screen scroll>
-      <SectionBar index={1} title="بيانات الحساب الأكاديمي" />
-      <T variant="xs" color="faint">
-        الصفة: {role === "STUDENT" ? "طالب" : "أستاذ"} — للتغيير اضغط «رجوع».
-      </T>
-      <View style={{ gap: sp[12] }}>
+    <>
+      <AppStatusBar />
+      <FormScreen
+        onSubmit={submit}
+        submitLabel={busy ? "جارٍ الإنشاء…" : "إنشاء الحساب"}
+        submitLoading={busy}
+        submitKind="accent"
+        error={error}
+        footer={
+          <Pressable
+            accessibilityRole="link"
+            onPress={() => setStep(0)}
+            style={{ alignItems: "center", paddingVertical: sp[8] }}
+          >
+            <T variant="sm" color="muted">رجوع — تغيير الصفة</T>
+          </Pressable>
+        }
+      >
+        <SectionBar index={1} title="بيانات الحساب الأكاديمي" />
+        <T variant="xs" color="faint">
+          الصفة: {role === "STUDENT" ? "طالب" : "أستاذ"} — للتغيير اضغط «رجوع».
+        </T>
         <View style={{ flexDirection: "row", gap: sp[8] }}>
           <View style={{ flex: 1 }}>
-            <Field label="الاسم الأول" value={firstName} onChangeText={setFirstName} error={fieldErrors.firstName} />
+            <Field
+              label="الاسم الأول"
+              value={firstName}
+              onChangeText={setFirstName}
+              purpose="name"
+              error={fieldErrors.firstName}
+            />
           </View>
           <View style={{ flex: 1 }}>
-            <Field label="اسم العائلة" value={lastName} onChangeText={setLastName} error={fieldErrors.lastName} />
+            <Field
+              label="اسم العائلة"
+              value={lastName}
+              onChangeText={setLastName}
+              purpose="name"
+              error={fieldErrors.lastName}
+            />
           </View>
         </View>
         <Field
           label="البريد الإلكتروني"
           value={email}
           onChangeText={setEmail}
-          autoCapitalize="none"
-          inputMode="email"
+          purpose="email"
           error={fieldErrors.email}
         />
         <SecretField
           label="كلمة المرور"
           value={password}
           onChangeText={setPassword}
+          purpose="newPassword"
           error={fieldErrors.password}
           hint="12 حرفًا على الأقل — تجنّب كلمات المرور الشائعة."
         />
@@ -280,18 +337,10 @@ export default function Register() {
           value={inviteCode}
           onChangeText={setInviteCode}
           autoCapitalize="characters"
-          hint={inviteCode.trim() && inviteCheck.data?.ok ? `رمز صالح — ${inviteCheck.data.scopeLabel ?? ""}` : "إن كانت لديك دعوة من أستاذ أو إدارة."
-          }
+          hint={inviteCode.trim() && inviteCheck.data?.ok ? `رمز صالح — ${inviteCheck.data.scopeLabel ?? ""}` : "إن كانت لديك دعوة من أستاذ أو إدارة."}
           error={fieldErrors.inviteCode}
         />
-        {error ? (
-          <Card style={{ borderColor: p.accentInk }}>
-            <T variant="sm" color="danger">{error}</T>
-          </Card>
-        ) : null}
-        <Button label={busy ? "جارٍ الإنشاء…" : "إنشاء الحساب"} onPress={submit} loading={busy} />
-        <Button label="رجوع" kind="ghost" onPress={() => setStep(0)} small />
-      </View>
-    </Screen>
+      </FormScreen>
+    </>
   );
 }
