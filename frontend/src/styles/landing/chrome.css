@@ -135,10 +135,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
 /* ── The sheet measure — every top-level band shares it ────────────
    (R313 D8/D14: the header + footer LEFT the 1160 measure — the
    reference spans both to the FULL frame width, edge to edge of the
-   7px inset, with their own ~26px seat padding.) */
-.fo-hero-copy,
-.fo-hero-fig,
-.fo-hero-meta,
+   7px inset, with their own ~26px seat padding.)
+   PI-B2: the retired hero seats (.fo-hero-copy/.fo-hero-fig/
+   .fo-hero-meta — no such classes in any markup) are trimmed from the
+   group; the live bands keep the measure. */
 .st-section,
 .pm-section,
 .chapters,
@@ -155,9 +155,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
    margins NEUTRALIZE grid stretch (the items become fit-content
    sized — the elevation collapsed to the SVG's intrinsic width).
    The full-width composition gives every full-row hero child a
-   DEFINITE width; the cap + auto margins still center them. */
-.fo-hero-copy,
-.fo-hero-fig,
+   DEFINITE width; the cap + auto margins still center them.
+   PI-B2: .fo-hero-copy/.fo-hero-fig trimmed (markup-dead); the live
+   full-row child is the .fo-ticker. */
 .fo-ticker {
   inline-size: 100%;
 }
@@ -264,21 +264,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
   cursor: pointer;
 }
 
-/* the label stays for screen readers; the overlay carries the visible
-   one (a 44-px square has no room for a word and never should). */
-.fo-burger-label {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  margin: -1px; /* spacing-gate: allow — the landing sheet bespoke rung (authored literal, reviewed) */
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 /* the icon rides the Lucide glyph itself (the .fo-burger-ic class is
-   ON the svg): a 20px Menu/X that stays optically centered in the seat. */
+   ON the svg): a 20px Menu/X that stays optically centered in the seat.
+   PI-B2: the .fo-burger-label sr-only seat is GONE — the SheetNav
+   markup carries a visible «القائمة» label (.fo-burger-txt), no
+   sr-only twin. */
 .fo-burger-ic {
   inline-size: 1.25rem;
   block-size: 1.25rem;
@@ -319,17 +309,9 @@ html[data-theme='dark'] body.mdrk-grain::before {
   border-block-end: 1px solid var(--rule);
 }
 
-/* r324 X8 — the overlay's own head row: the visible «القائمة» word
-   (retired from the bar seat) as a quiet mono label over the rows. */
-.fo-mb-head {
-  padding: var(--sp-3) 26px var(--sp-2); /* spacing-gate: allow — the landing sheet bespoke rung (authored literal, reviewed) */
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono-sm);
-  font-weight: 400;
-  letter-spacing: 0; /* Arabic never takes letter-spacing */
-  color: var(--text-secondary);
-  border-block-end: 1px solid var(--rule);
-}
+/* PI-B2 — the .fo-mb-head overlay head row is GONE (r324 X8's visible
+   «القائمة» label seat): the R331 SheetNav rewrite carries no head row
+   (the .fo-mb-row list is the menu's first band) — class markup-dead. */
 
 .fo-mb-sub {
   border-block-end: 1px solid var(--rule);

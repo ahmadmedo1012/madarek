@@ -927,8 +927,7 @@
   transition-delay: calc(var(--wr-i, 0) * 40ms);
 }
 
-.wr.in-view .wr-i,
-.wr.is-in .wr-i {
+.wr.in-view .wr-i {
   transform: translateY(0);
 }
 

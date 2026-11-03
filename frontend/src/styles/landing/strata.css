@@ -57,9 +57,6 @@
    compact cut»). Every feature stays visible; the ≥1180 seats are
    untouched. */
 @media (max-width: 1099px) {
-  .fo-wordmark-svg {
-    max-inline-size: 82%;
-  }
   .fl-svg {
     max-inline-size: 80%;
     margin-inline: auto;
@@ -102,16 +99,6 @@
    artifact in both themes (the hero + plan precedent). */
 .fl-render {
   filter: contrast(1.06);
-}
-
-.fl-ink line,
-.fl-ink rect,
-.fl-ink polygon,
-.fl-ink circle,
-.fl-ink polyline {
-  fill: none;
-  stroke: var(--text);
-  stroke-width: 1.6;
 }
 
 .fl-signal polygon,
@@ -336,20 +323,6 @@
     padding-block-end: var(--sp-3);
   }
 
-  .rl-card {
-    padding: var(--sp-2-5) var(--sp-3);
-    gap: var(--sp-1);
-  }
-
-  .rl-cards {
-    gap: var(--sp-1-5);
-  }
-
-  .rl-card-tag {
-    padding-block: 0;
-    line-height: 1.2;
-  }
-
   .rl-more {
     margin-block-start: 0; /* R332 W390b — the ledger's last child butts (rhythm 0); air inside */
     padding-block-start: var(--sp-2);
@@ -372,14 +345,6 @@
 
   .fo-cta-actions {
     gap: var(--sp-2);
-  }
-
-  .fo-cta .fo-hero-meta {
-    margin-block-start: var(--sp-3);
-  }
-
-  .fo-cta .fo-meta-row {
-    padding-block: var(--sp-1);
   }
 
   /* ── footer: the phone band's own two-column map — the address +
@@ -416,21 +381,6 @@
 
   .fo-footer-about {
     line-height: 1.45;
-  }
-
-  .fo-subscribe-note {
-    line-height: 1.5;
-  }
-
-  /* the reference's mobile subscribe seat: full-bleed 374.13×47.63
-   * with the 47.63 arrow (all measured @390 — the row bleeds past the
-   * cell's inline padding to the frame-aligned cell box). */
-  .fo-subscribe-input {
-    block-size: 45.6px; /* spacing-gate: allow — the measured mobile input 47.63 − the row's 1px border pair, an external constant */
-  }
-
-  .fo-subscribe-btn {
-    inline-size: 45.6px; /* spacing-gate: allow — the measured mobile arrow 47.63 − the border pair, an external constant */
   }
 
   /* the closing wordmark band: the COMPACT cut rides the phone's own
@@ -531,9 +481,6 @@
    * rows are deleted); the registry strip tightens to the reference's
    * row rhythm */
   .fo-cta-sketch { display: none; }
-  .fo-cta .fo-meta-row:nth-last-child(-n + 2) { display: none; }
-  .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
-  .fo-meta-row { padding-block: var(--sp-0-5); }
   .cg-strip { padding-block: var(--sp-2); }
 
   /* 5 — platform rides the reference's two full-width 254px strips
@@ -552,18 +499,12 @@
   /* R322 (1-d) — the tablet .wy-stage-verb re-pin retires (D3 rung). */
   .wy-stage-text { line-height: 1.45; }
 
-  /* 7 — usecase: the roles grid breathes at the reference's tablet
-   * density (1336 @768 — their tall stacked composition; the cards
-   * take the air their 2-line texts actually use at this root) */
-  .rl-card { min-block-size: 27.5rem; }
-
   /* 8 — footer: the main grid compacts toward the reference's 672
    * @768 (head 170 + logo 331); lens strip + wordmark + legal rows
    * below keep their own seats (217 + 59 there) */
   .fo-footer-about { font-size: var(--fs-sm); line-height: 1.55; }
   .fo-fcell-tagline { padding-block: var(--sp-2); }
   .fo-fcell-strip { block-size: 11rem; }
-  .fo-footer-mark-svg { block-size: 14rem; inline-size: 14rem; }
   .fo-fgrid { row-gap: var(--sp-1); }
   /* R319 §D2: the tablet strip row retires its fixed 11rem — the
    * five-column sheet is full-bleed width-driven (1000:80), the row
@@ -594,7 +535,6 @@
    * fit under it — the registry strip tightens one more rung; R322 V1:
    * the coords/corners rows are deleted) */
   .cg-strip { padding-block: var(--sp-1); }
-  .fo-cta-grid { gap: var(--sp-3); }
 
   /* statement final trims — R322 (2-c): retired with .st-line/.st-spread. */
 
@@ -773,8 +713,6 @@
 
   .fo-cta-inner { gap: 1.92rem; }
   .fo-cta-lede { line-height: 1.6; }
-  .fo-cta .fo-hero-meta { margin-block-start: 2.4rem; }
-  .fo-meta-row { padding-block: 1.2rem; }
 
   /* W6 R332 — the ≥992 footer re-seats BELOW RETIRE (one definition in
    * footer.css / colleges.css): .cg-strip rides the colleges.css base
@@ -843,10 +781,7 @@
  * reference's 5.9px labels @1024). */
 @media (min-width: 992px) and (max-width: 1024px) {
   .fo-cta-sketch { display: none; }
-  .fo-cta .fo-meta-row:nth-last-child(-n + 2) { display: none; }
   .fo-cta { padding-block: var(--sp-6) var(--sp-5); }
-  .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
-  .fo-cta-grid { grid-template-columns: minmax(0, 1fr); }
   .fo-fcell-strip { display: none; }
   .fo-fgrid { row-gap: var(--sp-1); }
   .fo-fcell { padding-block: 1.2rem; }
@@ -1030,18 +965,6 @@
 
   .rl-lede { line-height: 1.5; }
 
-  .rl-cards { gap: 0.6rem; }
-
-  .rl-card {
-    padding: 1.01rem 1.21rem;
-    gap: 0.4rem;
-  }
-
-  .rl-card-num {
-    font-size: 1.31rem; /* mono numeral — the Latin ladder */
-    line-height: 1.2;
-  }
-
   .rl-more { margin-block-start: 0.81rem; }
 
   /* ── cta — the reference's phone band is title + line + button
@@ -1051,13 +974,6 @@
   .fo-cta-inner { gap: 1.21rem; }
   .fo-cta-lede { line-height: 1.5; }
   .fo-cta-actions { gap: 0.81rem; }
-
-  .fo-cta .fo-hero-meta {
-    margin-block-start: 1.21rem;
-    gap: 0.81rem;
-  }
-  .fo-cta .fo-meta-row { padding-block: 0.4rem; }
-  .fo-cta .fo-meta-row:nth-last-child(-n + 4) { display: none; }
 
   /* ── footer — the in-grid ink strip cell folds (the wordmark strip
    * below carries the band's ink role; the reference has no strip cell
@@ -1074,15 +990,6 @@
     padding-block: 0.81rem;
   }
 
-  .fo-fcell-mark {
-    padding-block: 1.21rem;
-  }
-
-  .fo-footer-mark-svg {
-    inline-size: 12rem; /* the 119.08px phone line-logo @390, rem-pure */
-    block-size: 12rem;
-  }
-
   .fo-footer-heading {
     padding-block-end: 0.6rem;
     margin-block-end: 0.4rem;
@@ -1090,23 +997,6 @@
 
   .fo-footer-link {
     min-block-size: 2.62rem; /* the 26px phone link row @390, rem-pure */
-  }
-
-  .fo-subscribe {
-    gap: 0.81rem;
-    margin-block-start: 0.81rem;
-  }
-
-  .fo-subscribe-row {
-    margin-inline: calc(-1 * 1.21rem); /* rides the cell's rem inset — never outbleeds it */
-  }
-
-  .fo-subscribe-input {
-    block-size: 4.59rem; /* the 47.63px phone row − the border pair, rem-pure */
-  }
-
-  .fo-subscribe-btn {
-    inline-size: 4.59rem; /* the 47.63px phone arrow − the border pair */
   }
 
   .fo-wordmark {
@@ -1249,10 +1139,6 @@
    * mobile footer scales the same seats with its root) */
   .fo-footer-link { min-block-size: 2.6201rem; }
   .fo-fcell-strip { block-size: 7.4583rem; }
-  .fo-fcell-mark { padding-block: 3.2245rem; }
-  .fo-footer-mark-svg { inline-size: 11.9872rem; block-size: 11.9872rem; }
-  .fo-subscribe-input { block-size: 4.5936rem; }
-  .fo-subscribe-btn { inline-size: 4.5936rem; }
   .fo-footer-bottom > * { padding-block: 1.5116rem; }
 
   /* 7 — the footer's own air law: the reference's mobile footer is
@@ -1291,16 +1177,11 @@
   .wy-note { margin-block-start: var(--sp-3); }
 
   .rl-head { gap: var(--sp-2); margin-block-end: var(--sp-3); }
-  .rl-card { padding: var(--sp-2-5) var(--sp-3); gap: var(--sp-1); }
-  .rl-cards { gap: var(--sp-1-5); }
-  .rl-card-tag { padding-block: 0; line-height: 1.2; }
   .rl-more { margin-block-start: var(--sp-2); }
 
   .fo-cta-inner { gap: var(--sp-3); }
   .fo-cta-lede { line-height: 1.55; }
   .fo-cta-actions { gap: var(--sp-2); }
-  .fo-cta .fo-hero-meta { margin-block-start: var(--sp-3); }
-  .fo-cta .fo-meta-row { padding-block: var(--sp-1); }
 
   .fo-fgrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1317,7 +1198,6 @@
   .fo-footer-heading { padding-block-end: var(--sp-1); margin-block-end: var(--sp-0-5); }
   .fo-fcell-addr { margin-block-start: 0; padding-block: var(--sp-2); }
   .fo-footer-about { line-height: 1.45; }
-  .fo-subscribe-note { line-height: 1.5; }
   .fo-wordmark-en { font-size: var(--fs-mono-sm); }
   .fo-footer-bottom { display: grid; gap: 0; padding-block: 0; padding-inline: var(--sp-3); }
   .fo-footer-cluster { border-block-start: 1px solid var(--rule); }

@@ -37,9 +37,9 @@
   /* R322 (2-d): the pains' 2-up wrap rides the new
      (768–991) .pm-cols block in the transplant section. */
 
-  .rl-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  /* PI-B2 — the ≤991 .rl-cards tile rung is GONE: the roles transplant
+   * (.rl-row ledger rows) removed the .rl-cards/.rl-card grid from the
+   * markup entirely. */
 
   /* R325 Y3 — the why strip folds to ONE column ≤991: the two-track
      base template squeezed the rail to its 152px min-content sliver
@@ -55,9 +55,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .fo-cta-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+  /* PI-B2 — the ≤991 .fo-cta-grid fold is GONE: no markup renders
+   * .fo-cta-grid (the CTA slab's own grid needs no mobile re-map). */
 
   /* R315 (B9 · K-F) — the sub-992 cell grid, recut coherently: the
    old cascade (a two-track template with NO area map at 769–1024,
@@ -93,15 +92,9 @@
 
 @media (max-width: 767px) {
   /* R322 (2-d): the R313 pains flow rules retire — the transplant's
-     own ≤767 carousel + 768–991 2-up blocks own the whole seat. */
-
-  .rl-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .rl-card {
-    min-block-size: 0;
-  }
+     own ≤767 carousel + 768–991 2-up blocks own the whole seat.
+     PI-B2: the ≤767 .rl-cards/.rl-card min-block-size rungs are GONE
+     with the retired tile grid (markup-dead). */
 
   /* R328 (H7 · R2 final) — the bands' opening rules END at the sheet
      frame on phones too (the hero's rules were inset; the pm/pr/wy/rl
@@ -117,12 +110,13 @@
   /* R325 Y3: the ≤767 .wy 1-col override retired — the ≤991 block
      above owns the fold now (one map, no drift). */
 
-  .fo-cta .fo-hero-meta {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
+  /* PI-B2 — the .fo-cta .fo-hero-meta rungs are GONE (.fo-hero-meta is
+     markup-dead). The .fo-meta-row fold twins are consolidated here
+     (the cascade-exact merge of the former late ≤767 display:none —
+     clears the no-duplicate-selectors error). */
   .fo-cta .fo-meta-row:nth-last-child(-n + 2) {
     border-block-end: 1px solid var(--rule);
+    display: none;
   }
 
   .fo-cta .fo-meta-row:last-child {
@@ -131,9 +125,9 @@
 
   /* R322 (2-c): .st-spread pads retire with the class. */
 
-  .fo-cta {
-    padding-block: var(--sp-10);
-  }
+  /* PI-B2 — the ≤767 .fo-cta padding twin is GONE (dup-selector
+     consolidation: the sp-8/sp-7 rung below already owned the seat —
+     later in the cascade, same specificity). */
 
   /* ═══ R314 (V13) — the mobile compaction pass. Measured @390×844 vs
      the reference (11 441px total): Madarek was 15 868 — every content
@@ -176,22 +170,12 @@
    * is 2rem/19.8px @390, so the rung lands IN the reference's league,
    * not below it). */
 
-  /* the why machine: the stacked captures under each item fold; the
-     item = number + title + one line (~180px) */
-  .wy-item-body-captures {
-    display: none;
-  }
-
-  .wy-item {
-    gap: var(--sp-1-5);
-  }
+  /* PI-B2 — the .wy-item / .wy-item-body-captures rungs are GONE: the
+     why rewrite (wy-stage rail + wy-stack) removed the item list from
+     the markup entirely. */
 
   /* R322 (1-d) — the .rl-card-title mobile body-scale re-pin retires
    * (the D3 rung governs, as .pm-card-title above). */
-
-  .rl-card-num {
-    font-size: var(--fs-xxs);
-  }
 
   /* the platform head: title + one line (the reference's mobile
      platform band is 517px total) */
@@ -236,24 +220,13 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  /* the roles grid: compact cells (the reference's 8 use-case tiles
-     are ~200px rows at 390 — title + one muted line) */
-  .rl-card {
-    padding: var(--sp-3);
-    gap: var(--sp-1-5);
-  }
-
-  .rl-card-line {
-    display: none; /* the tertiary line folds — parity over verbosity */
-  }
+  /* PI-B2 — the ≤767 .rl-card compaction rungs are GONE with the
+     retired tile grid (markup-dead; the reference's own use-case rows
+     are the .rl-row ledger now). */
 
   /* the CTA slab: the meta rows collapse to a compact 2-col readout */
   .fo-cta .fo-meta-row {
     padding-block: var(--sp-2);
-  }
-
-  .fo-cta .fo-hero-meta {
-    gap: var(--sp-2);
   }
 
   /* the footer: the strip thins, the wordmark caps, cells pad down.
@@ -270,14 +243,12 @@
     block-size: 110px;
   }
 
-  .fo-fcell-mark {
-    min-block-size: 0;
-    padding-block: var(--sp-3);
-  }
-
   .fo-wordmark {
     padding-block: var(--sp-4) var(--sp-3);
   }
+
+  /* PI-B2 — the ≤767 .fo-fcell-mark rung is GONE with the retired
+     mark cell (see the ≤640 note below). */
 
   /* the CTA slab: the sketch + the tertiary meta rows fold on mobile
      (the reference's 500px @390 CTA = coords + title + line + button) */
@@ -285,20 +256,10 @@
     display: none;
   }
 
-  .fo-cta .fo-meta-row:nth-last-child(-n + 2) {
-    display: none;
-  }
-
-  /* the platform band keeps ONE capture on mobile (the lead — the
-     reference's mobile platform cell is a single composition; the
-     teacher capture stays on ≥761px) */
-  /* r325 Y2: the retired .prf--std fold retires with the class — the
-     band's surfaces live in .pr-side now (hidden ≤767 there). */
-
-  /* the why cards compact to title+line rows */
-  .wy-item {
-    padding: var(--sp-2-5) var(--sp-3);
-  }
+  /* PI-B2 — the ≤767 display:none twin of the .fo-cta .fo-meta-row
+     nth-last-child fold is MERGED into the top ≤767 block (dup
+     consolidation, cascade-exact — nothing between the two seats
+     touched display or the border). */
 
   /* the footer cells pair up on small screens (1-col stack was the
      +55% height offender). R315 (B9 · K-F): the area map below 760
@@ -357,11 +318,9 @@
 
   /* R322 (2-d): the pains' phone art-drop retires — the carousel
      keeps the drawings (Heron's own mobile problem swiper shows the
-     art; the art stays decorative aria-hidden). */
-
-  .rl-cards {
-    grid-template-columns: minmax(0, 1fr);
-  }
+     art; the art stays decorative aria-hidden).
+     PI-B2: the ≤640 .rl-cards single-column rung is GONE with the
+     retired tile grid (markup-dead). */
 
   /* r325 Y2: the retired .pr-grid pair's mobile fold retires with it
      (the band is .pr-head + .pr-stage + .pr-side now). */
@@ -388,20 +347,10 @@
     block-size: 74px; /* spacing-gate: allow — the phone band's own horizon sliver (the reference has no strip-image cell @390; its grid budget is 1006.36 measured) */
   }
 
-  .fo-fcell-mark {
-    /* R315 (K-F · B9): the reference's mobile logo ROW breathes — its
-       wrapper is 182.58 tall around the 119.08 mark @390; the mark
-       cell centres the same 119 drawing in the same breathing room
-       (the old 96px twin sat in a 120px floor, 62px short of the
-       measured row). */
-    min-block-size: 0;
-    padding-block: 32px; /* spacing-gate: allow — the measured breathing room (182.58 − 119.08)/2 @390, an external constant */
-  }
-
-  .fo-footer-mark-svg {
-    inline-size: 119px; /* spacing-gate: allow — the reference's phone line-logo measure (119.08 @390), an external constant */
-    block-size: 119px;
-  }
+  /* PI-B2 — the ≤640 .fo-fcell-mark / .fo-footer-mark-svg rungs are
+     GONE: the [08] drawn-mark cell retired from the markup in R323
+     (A3 · defect 1, one mark per view) — no markup renders either
+     class at any width. */
 
   .fo-cta-actions .btn {
     inline-size: 100%;

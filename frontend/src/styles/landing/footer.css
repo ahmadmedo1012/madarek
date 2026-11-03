@@ -63,18 +63,9 @@
     gap: var(--sp-2);
   }
 
-  .fo-footer-mark-svg {
-    inline-size: 166px; /* spacing-gate: allow — the reference's tablet line-logo measure (165.75 @768), an external constant */
-    block-size: 166px;
-  }
-
-  .fo-subscribe-input {
-    block-size: 42px; /* spacing-gate: allow — the measured tablet input row 44.19 − the border pair, an external constant */
-  }
-
-  .fo-subscribe-btn {
-    inline-size: 42px; /* spacing-gate: allow — the measured tablet arrow 44.19 − the border pair, an external constant */
-  }
+  /* PI-B2 — the ≤991 .fo-subscribe / .fo-footer-mark-svg rungs are
+   * GONE with their retired seats (newsletter block R323 · defect 9;
+   * [08] drawn-mark cell R323 · defect 1 — both markup-dead). */
 }
 
 /* ═══ R314 (V9) — the reference's cell-grid footer (pair-100): every
@@ -155,13 +146,10 @@
 .fo-fcell:nth-child(5) { grid-area: links-c; }
 .fo-fcell:nth-child(6) { grid-area: addr-a; }
 .fo-fcell:nth-child(7) { grid-area: addr-b; }
-.fo-fcell-mark {
-  grid-area: mark;
-  display: grid;
-  place-items: center;
-  align-content: center;
-  min-block-size: 180px;
-}
+/* R323 (A3 · defect 1) — the [08] drawn-mark cell retired from the
+ * markup (one mark per view); the .fo-fcell-mark rules are gone. The
+ * ≥992 area map keeps the 'mark' column closed by the .fo-fgrid::after
+ * ruled seat below. */
 
 .fo-fcell-links {
   border-block-start: 1px solid var(--rule);
@@ -277,12 +265,10 @@
   /* W6 R332 — ONE definition (the strata ≥992 duplicates deleted): the
    * address band + its lines keep the measured compact register on the
    * rem root (16/16 seat · 12/8 cell pad · 1.5/1.45 leads — the values
-   * the final cascade already rendered @1440, now with one home). */
-  .fo-footer-addr {
-    margin-block-start: 1.92rem;
-    padding-block-start: 1.92rem;
-  }
-
+   * the final cascade already rendered @1440, now with one home).
+   * PI-B2: the .fo-footer-addr CONTAINER rule is gone — the markup
+   * carries only .fo-footer-addr-line children (the container seat is
+   * the .fo-fcell cell itself). */
   .fo-footer-addr-line {
     line-height: 1.45;
   }
@@ -298,10 +284,6 @@
     line-height: 1.5;
   }
 
-  .fo-subscribe {
-    margin-block-start: var(--sp-1);
-  }
-
   .fo-fcell-addr {
     /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
      * the r321 §A2 10/6 ratchet was re-pinned to 12/8 on the rem root
@@ -315,10 +297,6 @@
    * cell's honest lines ride the addr-line styling like the address
    * cell — one grammar for both info cells. */
 
-  .fo-fcell-mark {
-    place-items: center;
-    padding: var(--sp-3);
-  }
 }
 
 /* ── R315 (K-F · B9) — the image-strip band: the reference's
@@ -429,13 +407,6 @@
   margin-block-start: var(--sp-2);
 }
 
-.fo-wordmark-svg {
-  display: block;
-  inline-size: 100%; /* the FULL cell width at every viewport — the height follows the sheet's own aspect (viewBox scaling) */
-  block-size: auto;
-  color: var(--text); /* the ink — the letterforms stroke currentColor */
-}
-
 /* R323 (A3 · defect 1) — the NEW brand system's wordmark keeps the
  * full-cell-width cut: the <Logo variant="wordmark"> svg spans the
  * cell at every viewport, height follows the sheet's own aspect
@@ -470,25 +441,10 @@
  * never clips and RTL needs no mirroring (a scaling sheet, not a
  * directional layout). */
 
-/* the ink — R319 §D1 → R320 §A2 (owner order): STROKE-ONLY outline
- * letterforms (the reference's own drafting verdict: thin uniform
- * outlines, interior empty — paper shows through), ~1.7px NON-SCALING
- * at every rendered size (the vector-effect attribute on the path +
- * this width). In dark theme currentColor (var(--text)) IS the paper
- * stroke — the owner's §A2 dark-mode verdict holds by construction.
- * The R319 §D1 OCR tint twin (a 50%-ink fill under the outline —
- * computed #8F8F8B, the exact solid grey the owner measured) is
- * RETIRED: the reading rides the svg's role="img" + aria-label +
- * <title>, never the raster. */
-.fo-wordmark-ink,
-.fo-wordmark-ink path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7px;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-  vector-effect: non-scaling-stroke;
-}
+/* PI-B2 — the .fo-wordmark-ink / .fo-wordmark-svg rules are GONE: the
+ * R323 <Logo variant="wordmark"> cut above carries the stroke-only
+ * non-scaling ink by its own path geometry (no CSS stroke seat), and
+ * neither class exists in any markup. */
 
 .fo-wordmark-en {
   /* R321 §A2 — RETIRED from flow at EVERY width: the decorative Latin
@@ -522,12 +478,6 @@
 .fo-wordmark-reg-tr { inset-block-start: 0; inset-inline-end: 0; }
 .fo-wordmark-reg-bl { inset-block-end: 0; inset-inline-start: 0; }
 .fo-wordmark-reg-br { inset-block-end: 0; inset-inline-end: 0; }
-
-.fo-footer-col {
-  display: grid;
-  gap: var(--sp-2);
-  align-content: start;
-}
 
 .fo-footer-about {
   font-size: var(--fs-sm);
@@ -594,89 +544,16 @@
   transition: color var(--t-fast) var(--ease);
 }
 
-/* ── The subscribe seat — the reference's geometry (input 358×40,
- * hairline #B3B3AF + the 40×40 arrow cell), in its HONEST disabled
- * state: no endpoint exists, so the seat explains itself and collects
- * nothing (NO fake submission, NO success theatre).
- * R315 (K-F · B9): the reference's INPUT element spans its whole
- * column (358.08 of the 357.08 column — its 1px border kisses the
- * frame line) with the 40×40 arrow seated ON the input's inline-end
- * edge; the row bleeds past the tagline cell's own padding to the
- * cell box so the input carries the reference's measure (the old
- * inset row measured 281px @1440 — 77px short of the role).
- * ≤640: the reference's mobile full-bleed — 374.13×47.63 with the
- * 47.63 arrow (all measured @390). */
-.fo-subscribe {
-  display: grid;
-  gap: var(--sp-2);
-  margin-block-start: var(--sp-2);
-}
+/* PI-B2 — the .fo-subscribe-* seat is GONE: R323 (A3 · defect 9)
+ * removed the filler newsletter block from the markup entirely (the
+ * honest-copy rule — no fake opt-in), so every input/row/btn/note
+ * rule was dead. The tagline cell's identity block carries the cell.
+ * The ≥992/≤991 size rungs above were deleted with it. */
 
-.fo-subscribe-row {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  border: 1px solid var(--border-strong);
-  /* bleed to the tagline cell's own box — the cell IS the reference's
-   * column (356.5 @1440, 376 @390) */
-  margin-inline: calc(-1 * var(--sp-3));
-}
-
-.fo-subscribe-input {
-  flex: 1;
-  min-inline-size: 0;
-  block-size: 38px; /* the row (38 + the 1px pair) = the measured 40 */
-  padding-inline: var(--sp-3) 52px; /* the inline-end run keeps the arrow cell clear */ /* spacing-gate: allow — the 52px inline-end clearance is the arrow cell's own measured seat, not a rung */
-  background: transparent;
-  border: 0;
-  color: var(--text);
-  font: inherit;
-  font-size: var(--fs-body);
-  transition: border-color var(--t-slow) var(--ease);
-}
-
-.fo-subscribe-input::placeholder {
-  color: var(--text-faint);
-}
-
-.fo-subscribe-input:disabled {
-  color: var(--text-faint);
-  cursor: not-allowed;
-}
-
-.fo-subscribe-btn {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0;
-  inline-size: 40px;
-  display: grid;
-  place-items: center;
-  background: none;
-  border: 0;
-  border-inline-start: 1px solid var(--border-strong);
-  color: var(--text-faint);
-  cursor: not-allowed;
-}
-
-.fo-subscribe-btn:disabled {
-  cursor: not-allowed;
-}
-
-.fo-subscribe-note {
-  font-size: var(--fs-xs);
-  line-height: 1.7;
-  color: var(--text-faint);
-}
-
-/* ── The address block — the honest demo-institution seat ── */
-.fo-footer-addr {
-  display: grid;
-  gap: var(--sp-1-5);
-  margin-block-start: var(--sp-4);
-  padding-block-start: var(--sp-4);
-  border-block-start: 1px solid var(--rule);
-}
-
+/* ── The address block — the honest demo-institution seat ──
+ * PI-B2: the .fo-footer-addr CONTAINER rule is gone (no such class in
+ * the markup — the cells are .fo-fcell.fo-fcell-addr); the lines ride
+ * the .fo-footer-addr-line rule. */
 .fo-footer-addr-line {
   font-size: var(--fs-sm);
   line-height: 1.7;
@@ -687,32 +564,11 @@
    * order — no owner identity on any surface); the mono/LTR URL rules
    * are dead seats, removed. */
 
-/* ── The giant mark — 215×215, the reference's scroll fade-in
- * (0.61→1): the reveal is OPACITY-ONLY (the reference fades, never
- * lifts), so the .reveal-up translate is neutralised here.
- * R315 (K-F · B9): the mark itself is the CONSTRUCTION-LINE khatam —
- * hairline circles/crosshairs behind (non-scaling 1px var(--rule)),
- * the two rotated squares in ink var(--text), one small accent
- * registration square on the outer circle — the floating filled
- * diamond is retired. ── */
-.fo-footer-col-mark {
-  justify-items: center;
-}
-
-.fo-footer-mark {
-  display: grid;
-  place-items: center;
-  transform: none; /* the reference's fade has no lift */
-}
-
-.fo-footer-mark.reveal-up {
-  transform: none;
-}
-
-.fo-footer-mark-svg {
-  inline-size: 215px;
-  block-size: 215px;
-}
+/* PI-B2 — the giant mark seat (.fo-footer-col-mark / .fo-footer-mark /
+ * .fo-footer-mark-svg, 215×215 + the reveal-up neutraliser) is GONE:
+ * the [08] drawn-mark cell was retired from the markup in R323 (A3 ·
+ * defect 1, one mark per view) and every class here is markup-dead.
+ * The ≥992/≤767/≤640 rungs (shared.css) were deleted with it. */
 
 /* ── R315 (K-F · B9) — the footer's brand block reads as a real
  * two-line column: the name + the descriptor rode as INLINE spans
@@ -868,11 +724,10 @@
     color: var(--bg);
   }
 
-  .bp-hotspot:hover .bp-hotspot-num {
-    color: color-mix(in srgb, var(--bg) 72%, transparent);
-  }
-
-  /* R322 (2-d): the boxed-card hover grid retires with the boxes. */
+  /* PI-B2 — the .bp-hotspot-num hover twin is GONE (r331 css-coverage
+   * deadCandidatesSample confirms it runtime-dead; no markup renders a
+   * hotspot number child).
+   * R322 (2-d): the boxed-card hover grid retires with the boxes. */
 }
 
 /* ── Keyboard path (r172a §3 — ONE focus language): the nav's

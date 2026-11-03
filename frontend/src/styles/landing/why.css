@@ -33,8 +33,7 @@
   color: var(--text);
 }
 
-.wy-title em,
-.wy-verb em {
+.wy-title em {
   font-style: normal;
   color: var(--accent-ink);
 }
