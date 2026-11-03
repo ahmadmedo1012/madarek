@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 import { RoleTabBar } from "@/components/shell/TabBar";
 import { ROLE_TABS } from "@/components/shell/roleTabs";
+import { useImmersiveTabBar } from "@/components/shell/immersive";
 import { usePalette } from "@/design/theme";
 
 /**
@@ -18,16 +19,24 @@ import { usePalette } from "@/design/theme";
  * view hierarchy WITHOUT dropping their state — that is RN-screens' core
  * contract. Detail screens (courses/[offeringId], lectures/[lectureId]…)
  * live OUTSIDE this group and push over the bar from the parent Stack.
+ *
+ * R334 3-a:
+ *  · `animation: "fade"` — cheap fade-through between tab scenes (opacity
+ *    only) instead of the hard cut.
+ *  · `useImmersiveTabBar()` — the route-driven hide policy (lecture
+ *    player / exam runner / chat composer keyboard): the bar ANIMATES
+ *    off-screen, never unmounts. Wired HERE, never in screen files.
  */
 export default function StudentTabsLayout() {
   const p = usePalette();
+  const immersiveHidden = useImmersiveTabBar();
   return (
     <Tabs
-      tabBar={(props) => <RoleTabBar {...props} role="STUDENT" />}
+      tabBar={(props) => <RoleTabBar {...props} role="STUDENT" hidden={immersiveHidden} />}
       screenOptions={{
         headerShown: false,
         lazy: true,
-        animation: "none",
+        animation: "fade",
         sceneStyle: { backgroundColor: p.bg },
       }}
     >

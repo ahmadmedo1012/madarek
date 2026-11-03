@@ -30,7 +30,12 @@ export interface RoleTab {
    */
   path: string;
   label: string;
-  icon: ComponentType<{ size?: number; color?: string }>;
+  /**
+   * Lucide icon component. R334 3-a: `fill` is part of the contract — the
+   * active tab MORPHS outline→filled by filling the glyph body with the
+   * accent (lucide's svg `fill` prop); inactive tabs pass "transparent".
+   */
+  icon: ComponentType<{ size?: number; color?: string; fill?: string }>;
   /** Tab hosting the notifications inbox — receives the unread badge. */
   inbox?: boolean;
 }
