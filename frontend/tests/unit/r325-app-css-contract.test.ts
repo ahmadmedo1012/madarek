@@ -2,7 +2,7 @@
  * R325 — app grammar CSS contract (P2.1 · DESIGN.md §R325).
  *
  * Sibling of r305-shell-css-contract.test.ts (same scanner grammar,
- * one sheet): reads `src/styles/r325-app.css` as TEXT and pins
+ * one sheet): reads `src/styles/shared/app-grammar.css` as TEXT and pins
  *
  *  1. zero raw hex/rgb()/hsl() colors — every --app-* colour is a
  *     var() alias into tokens.css or a color-mix() on currentColor
@@ -33,7 +33,8 @@ const SHEET = path.join(
   '..',
   'src',
   'styles',
-  'r325-app.css',
+  'shared',
+  'app-grammar.css',
 );
 const raw = readFileSync(SHEET, 'utf-8');
 const rawLines = raw.split('\n');
@@ -49,7 +50,7 @@ describe('r325 app grammar CSS contract — token gates', () => {
     lines.forEach((text, idx) => {
       if (!HEX_COLOR.test(text) && !FUNC_COLOR.test(text)) return;
       if ((rawLines[idx] ?? '').includes('color-gate: allow')) return;
-      findings.push(`r325-app.css:${idx + 1} — ${text.trim()}`);
+      findings.push(`shared/app-grammar.css:${idx + 1} — ${text.trim()}`);
     });
     expect(findings, `raw color literals:\n${findings.join('\n')}`).toEqual([]);
   });
@@ -78,7 +79,7 @@ describe('r325 app grammar CSS contract — token gates', () => {
       if (!SPACING.test(l)) return;
       for (const m of l.matchAll(new RegExp(PX.source, 'g'))) {
         if (parseFloat(m[1]!) === 0) continue; // zero has no rung
-        findings.push(`r325-app.css:${idx + 1} — ${l.trim()}`);
+        findings.push(`shared/app-grammar.css:${idx + 1} — ${l.trim()}`);
         break;
       }
     });
@@ -99,7 +100,7 @@ describe('r325 app grammar CSS contract — motion gates', () => {
         const ms = parseFloat(t[1]!) * (t[2] === 's' ? 1000 : 1);
         if (ms <= 1) continue; // 0s/0ms kills
         if (DURATION_VAR.test(l)) continue; // tokenized value elsewhere on the line
-        findings.push(`r325-app.css:${idx + 1} — ${l.trim()} (raw ${t[0]})`);
+        findings.push(`shared/app-grammar.css:${idx + 1} — ${l.trim()} (raw ${t[0]})`);
       }
     });
     expect(findings, `raw motion durations:\n${findings.join('\n')}`).toEqual([]);

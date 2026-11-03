@@ -8,11 +8,11 @@ import { sessionForEmail, authStorageJson, ROLE_EMAIL } from './capture-routes.m
 const BASE = process.argv[2] || 'http://localhost:5173';
 const EXE = process.env.HOME + '/.cache/ms-playwright/chromium_headless_shell-1200/chrome-headless-shell-linux64/chrome-headless-shell';
 const TARGETS = [
-  'r305-student-schedule.css',
-  'r305-student-supplemental.css',
-  'r305-student.css',
-  'r305-research-pdf-ai.css',
-  'r321-player-page.css',
+  'student/heron-schedule.css',
+  'student/heron-supplemental.css',
+  'student/heron.css',
+  'shared/research-heron.css',
+  'student/lecture-player.css',
   'ai.css',
 ];
 
@@ -20,11 +20,11 @@ const browser = await chromium.launch({ executablePath: EXE, args: ['--disable-d
 
 /* sheet → a page that mounts it (per-page JS imports in dev) */
 const PAGE_FOR = {
-  'r305-student-schedule.css': '/student/calendar',
-  'r305-student-supplemental.css': '/student/profile',
-  'r305-student.css': '/student/dashboard',
-  'r305-research-pdf-ai.css': '/student/research',
-  'r321-player-page.css': '/student/lectures/cmvv0q0uj00fv78snnq41bqs9',
+  'student/heron-schedule.css': '/student/calendar',
+  'student/heron-supplemental.css': '/student/profile',
+  'student/heron.css': '/student/dashboard',
+  'shared/research-heron.css': '/student/research',
+  'student/lecture-player.css': '/student/lectures/cmvv0q0uj00fv78snnq41bqs9',
   'ai.css': '/student/ai',
 };
 

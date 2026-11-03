@@ -12,8 +12,8 @@ import { roleLabel } from '../lib/roleLabels';
 import { usePageTitle } from '../hooks/usePageTitle';
 /* The §B2 kit sheet (SectionBar + EmptyCell registers — global inside
  * @layer pages) + this page's own row/note family. */
-import '../styles/r319-student.css';
-import '../styles/r320-settings.css';
+import '../styles/student/pages.css';
+import '../styles/student/settings.css';
 
 /**
  * SettingsPage — the ANY-AUTHED account-settings sheet (R320 cycle-3,

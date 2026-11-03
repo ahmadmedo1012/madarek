@@ -55,7 +55,7 @@ import { acquireScrollLock, releaseScrollLock } from '../../../lib/scrollLock';
  * machine, the cell grammar, the menu choreography. Imported here so
  * the block ships with the component that owns it (the R331
  * file-ownership contract — landing.css keeps nothing header-shaped). */
-import '../../../styles/r331/nav.css';
+import '../../../styles/landing/nav.css';
 
 /* ── r309 (§3): the mobile menu's scroll-lock holder key — the open menu
  * owns the viewport via the ref-counted body lock (lib/scrollLock). */

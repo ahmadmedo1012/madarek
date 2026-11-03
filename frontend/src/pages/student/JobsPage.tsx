@@ -13,12 +13,12 @@ import { useJobs, useApplyJob, apiErrorMessage, type Job } from '../../hooks/use
 import { formatDate, formatInt } from '../../utils/numbers';
 import { countAr } from '../../lib/format';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
  * harmonics. */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 const TYPE_LABELS: Record<string, string> = {
   FULL_TIME: 'دوام كامل',

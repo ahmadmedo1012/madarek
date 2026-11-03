@@ -25,7 +25,7 @@ import {
 } from '../../components/patterns';
 import type { StatLineItem } from '../../components/patterns';
 import '../../styles/research.css';
-import '../../styles/r305-research-pdf-ai.css';
+import '../../styles/shared/research-heron.css';
 
 /* fmtDate (short ar-LY date, '—' for missing values) is
  * lib/format.formatDateAr (13-15 fold, audit 11-f P2-1). The annotation

@@ -418,14 +418,14 @@ describe('R305-A8 import wiring — the scoped Heron sheet in all three modules'
     'AdminSyncPage.tsx',
   ];
 
-  it('each module imports r305-admin-owner.css AFTER its admin.css import', () => {
+  it('each module imports heron-admin-owner.css AFTER its admin.css import', () => {
     for (const file of MODULES) {
       const src = readFileSync(
         resolvePath(__dirname, '../../src/pages/admin', file),
         'utf8',
       );
       const lines = src.split('\n');
-      const sheetIdx = lines.findIndex((l) => l.includes("import '../../styles/r305-admin-owner.css';"));
+      const sheetIdx = lines.findIndex((l) => l.includes("import '../../styles/shared/heron-admin-owner.css';"));
       const adminIdx = lines.findIndex((l) => l.includes("import '../../styles/admin.css';"));
       expect(sheetIdx, `${file}: the scoped sheet import is missing`).toBeGreaterThan(-1);
       expect(adminIdx, `${file}: the admin.css import is missing`).toBeGreaterThan(-1);
@@ -437,7 +437,7 @@ describe('R305-A8 import wiring — the scoped Heron sheet in all three modules'
       const nextImport = lines
         .slice(adminIdx + 1)
         .findIndex((l) => l.trim().startsWith('import '));
-      expect(lines[adminIdx + 1 + nextImport]).toContain('r305-admin-owner.css');
+      expect(lines[adminIdx + 1 + nextImport]).toContain('heron-admin-owner.css');
     }
   });
 });

@@ -189,9 +189,23 @@ function classify(rule) {
 
 /* ── run over the tree ─────────────────────────────────────────────── */
 
-const files = readdirSync(STYLES_DIR)
-  .filter((f) => f.endsWith('.css'))
-  .sort();
+/* Recursive walk — R332 A-CSS renames moved the round sheets into the
+ * owner directories (styles/{landing,shell,student,teacher,shared}/…).
+ * The lint must keep covering them (the keys in
+ * paired-state-allowlist.json name the sheets by their src-relative
+ * path); the walk mirrors scripts/r320/css-walk.mjs's cssFiles(). */
+const files = (() => {
+  const out = [];
+  const walk = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.css')) out.push(relative(STYLES_DIR, full).split('\\').join('/'));
+    }
+  };
+  walk(STYLES_DIR);
+  return out;
+})();
 
 const violations = [];
 let stateRuleCount = 0;

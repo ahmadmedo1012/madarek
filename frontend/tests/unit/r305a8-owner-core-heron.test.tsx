@@ -419,25 +419,25 @@ describe('OwnerInstitutionsPage — the destructive verbs ride .r305ao-btn-dange
    3. Import wiring — the scoped sheet loads AFTER its family sheet
    ══════════════════════════════════════════════════════════════════ */
 
-describe('R305-A8 — r305-admin-owner.css import wiring (source order = cascade order)', () => {
+describe('R305-A8 — heron-admin-owner.css import wiring (source order = cascade order)', () => {
   const read = (name: string) =>
     readFileSync(resolvePath(__dirname, '../../src/pages/owner', name), 'utf8');
 
   it('the owner barrel loads it directly after owner.css (the whole /owner lazy chunk)', () => {
     expect(read('OwnerPages.tsx')).toMatch(
-      /import '\.\.\/\.\.\/styles\/owner\.css';\nimport '\.\.\/\.\.\/styles\/r305-admin-owner\.css';/,
+      /import '\.\.\/\.\.\/styles\/owner\.css';\nimport '\.\.\/\.\.\/styles\/shared\/heron-admin-owner\.css';/,
     );
   });
 
   it('OwnerInstitutionsPage loads it directly after admin.css', () => {
     expect(read('OwnerInstitutionsPage.tsx')).toMatch(
-      /import '\.\.\/\.\.\/styles\/admin\.css';[^\n]*\nimport '\.\.\/\.\.\/styles\/r305-admin-owner\.css';/,
+      /import '\.\.\/\.\.\/styles\/admin\.css';[^\n]*\nimport '\.\.\/\.\.\/styles\/shared\/heron-admin-owner\.css';/,
     );
   });
 
   it('OwnerInstitutionDetailPage loads it directly after admin.css', () => {
     expect(read('OwnerInstitutionDetailPage.tsx')).toMatch(
-      /import '\.\.\/\.\.\/styles\/admin\.css';\nimport '\.\.\/\.\.\/styles\/r305-admin-owner\.css';/,
+      /import '\.\.\/\.\.\/styles\/admin\.css';\nimport '\.\.\/\.\.\/styles\/shared\/heron-admin-owner\.css';/,
     );
   });
 });

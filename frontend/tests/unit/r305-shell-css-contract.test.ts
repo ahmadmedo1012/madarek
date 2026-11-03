@@ -1,7 +1,7 @@
 /**
  * r305 — Heron shell CSS contract (Task 2-d).
  *
- * Reads the shell sheets (layout.css + r305-shell.css) as TEXT and
+ * Reads the shell sheets (layout.css + shell/shell.css) as TEXT and
  * asserts the design-gate contract the Heron Shell Contract binds this
  * round to:
  *
@@ -58,7 +58,7 @@ const STYLES_DIR = path.join(
   'styles',
 );
 
-const SHEETS = ['layout.css', 'r305-shell.css'] as const;
+const SHEETS = ['layout.css', 'shell/shell.css'] as const;
 const readSheet = (name: string) => readFileSync(path.join(STYLES_DIR, name), 'utf-8');
 const rawByName = new Map(SHEETS.map((name) => [name, readSheet(name)]));
 
@@ -465,9 +465,9 @@ describe('r305 shell CSS contract — logical properties', () => {
 
 // ── 5. layer hygiene + A4 vocabulary ────────────────────────────────
 describe('r305 shell CSS contract — layer hygiene & A4 vocabulary', () => {
-  const shell = parsed.find((s) => s.name === 'r305-shell.css')!;
+  const shell = parsed.find((s) => s.name === 'shell/shell.css')!;
 
-  it('r305-shell.css is unlayered — the Heron layer wins the cascade without !important', () => {
+  it('shell/shell.css is unlayered — the Heron layer wins the cascade without !important', () => {
     expect(shell.stripped).not.toMatch(/@layer\b/);
     expect(shell.stripped).not.toMatch(/!important/);
   });
@@ -487,7 +487,7 @@ describe('r305 shell CSS contract — layer hygiene & A4 vocabulary', () => {
 
 // ── 6. the 2-a/2-b markup hooks ─────────────────────────────────────
 describe('r305 shell CSS contract — 2-a/2-b hook grammar', () => {
-  const shell = parsed.find((s) => s.name === 'r305-shell.css')!;
+  const shell = parsed.find((s) => s.name === 'shell/shell.css')!;
   const layout = parsed.find((s) => s.name === 'layout.css')!;
 
   it('accordion nav groups: the firmer seam, the toggle press register, the desktop-only reveal', () => {
@@ -561,7 +561,7 @@ describe('r305 shell CSS contract — 2-a/2-b hook grammar', () => {
 
 // ── 7. restraint meta-contract ──────────────────────────────────────
 describe('r305 shell CSS contract — restraint meta-contract', () => {
-  const shell = parsed.find((s) => s.name === 'r305-shell.css')!;
+  const shell = parsed.find((s) => s.name === 'shell/shell.css')!;
 
   it('the Heron layer itself never paints the copper signal — it only retires others’ spending', () => {
     // The restrained-signal grammar's five copper sites are all owned

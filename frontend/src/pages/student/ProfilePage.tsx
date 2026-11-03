@@ -21,14 +21,14 @@ import { ChangePasswordCard } from '../../components/account/ChangePasswordCard'
 import '../../styles/training.css'; // .achievement-* family (D11 css split, 12-15)
 /* R305 Heron: the shared student vocabulary + this family's page-scoped
    refinements (the deep profile hero band, §1 of the family sheet). */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
  * academic family's harmonics (the same pair every converted student
  * page rides; the profile's own regions are Cards + the R305 hero band,
  * which keep their pinned registers). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 import { formatNum } from '../../utils/numbers';
 import { countAr } from '../../lib/format';
 /* R319 C1-C — visible-text hygiene on data-field values (§B2): the

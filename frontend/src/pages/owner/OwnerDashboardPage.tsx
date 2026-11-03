@@ -13,6 +13,12 @@ import { Card } from '../../components/primitives';
  * StatLine facts + the TodayList attention rows («يحتاج انتباهك») +
  * RowList recent events. StatStrip/LedgerPanel retire from this page. */
 import { PageFrame, PageHeader as PatternsPageHeader, StatLine, TodayList, RowList, RowItem } from '../../components/patterns';
+/* R332 W11 — the dashboard grammar bridge (styles/landing/inner.css §W11):
+ * the [nn] section-index chips (.w11-idx) the cards below mount — the
+ * r319 student sheet's SectionBar register, self-contained because this
+ * page never loads that sheet. */
+import '../../styles/landing/inner.css';
+
 import { useReducedMotion } from '../../components/motion';
 import { EmptyState, ErrorState, PageSkeleton, ListSkeleton, CardSkeleton, StripSkeleton, Skeleton } from '../../components/primitives/States';
 import { ChartFrame } from '../../components/charts';
@@ -36,6 +42,7 @@ const OPEN_ALERT_FORMS: [string, string, string, string] = [
 
 const ACTION_LABEL: Record<string, string> = {
   'user.login': 'تسجيل دخول',
+  'auth.login': 'تسجيل دخول',
   'user.logout': 'تسجيل خروج',
   'user.created': 'إنشاء حساب',
   'user.role_changed': 'تغيير صلاحيات',
@@ -47,6 +54,7 @@ const ACTION_LABEL: Record<string, string> = {
   'material.deleted': 'حذف ملف',
   'paper.published': 'نشر بحث',
   'announcement.created': 'بثّ إعلان',
+  'competition.created': 'إنشاء مسابقة',
   'sync.run': 'مزامنة بيانات الجامعة',
   // Real backend audit actions (owner/permissions/teacher routes) —
   // without these the feed shows raw English enums.
@@ -63,12 +71,26 @@ const ACTION_LABEL: Record<string, string> = {
   ALERT_RESOLVED: 'حلّ تنبيه تشغيليّ',
   SETTING_UPDATED: 'تحديث إعداد المنصّة',
   FEATURE_FLAG_TOGGLED: 'تبديل ميزة',
+  /* R332 W11 audit P1 (no raw technical strings): the catalog/structure
+   * actions the backend writes (catalog/users/routes auditLog.create)
+   * had no seat in the map — the events row printed the raw enum.
+   * Labels mirror OwnerActivityPage's canonical ACTION_LABEL voice. */
+  COURSE_CREATED: 'إنشاء مقرّر',
+  COURSE_UPDATED: 'تحديث مقرّر',
+  COURSE_DELETED: 'حذف مقرّر',
+  DEPARTMENT_CREATED: 'إنشاء قسم',
+  FACULTY_CREATED: 'إنشاء كلّيّة',
+  OFFERING_CREATED: 'إنشاء شعبة تدريس',
+  BULK_IMPORT: 'استيراد جماعي',
   'theme.update': 'تغيير مظهر المنصّة',
   'onboarding.complete': 'إكمال جولة التعريف',
   'milestone.fire': 'تحقيق إنجاز',
 };
 
-/** Audit-log resource types as written by the backend (Prisma models). */
+/* Audit-log resource types as written by the backend (Prisma models).
+ * R332 W11: extended to the FULL set the auditLog writers emit
+ * (catalog/users/offerings routes) — the dashboard's meta line used to
+ * print the raw Prisma model name for anything outside the map. */
 const RESOURCE_LABELS: Record<string, string> = {
   User: 'مستخدم',
   TeacherProfile: 'ملف أستاذ',
@@ -76,15 +98,32 @@ const RESOURCE_LABELS: Record<string, string> = {
   OperationalAlert: 'تنبيه تشغيليّ',
   PlatformSetting: 'إعداد منصّة',
   FeatureFlag: 'ميزة',
+  Course: 'مقرّر',
+  CourseOffering: 'شعبة تدريس',
+  Department: 'قسم',
+  Faculty: 'كلّيّة',
+  Enrollment: 'تسجيل',
+  Institution: 'مؤسّسة',
 };
 
+/* W11 audit P1 — the UNMAPPED fallback never prints the raw enum/key:
+ * the row reads the neutral Arabic noun, and the technical code moves
+ * into the title attribute (inspectable, never visible layout text). */
 function actionLabel(action: string): ReactNode {
-  return ACTION_LABEL[action] ?? <bdi>{action}</bdi>;
+  const label = ACTION_LABEL[action];
+  if (label) return label;
+  return (
+    <span title={action} className="owner-cell-muted">عملية نظام</span>
+  );
 }
 
 function resourceLabel(resourceType: string | null): ReactNode {
   if (!resourceType) return '—';
-  return RESOURCE_LABELS[resourceType] ?? <bdi>{resourceType}</bdi>;
+  const label = RESOURCE_LABELS[resourceType];
+  if (label) return label;
+  return (
+    <span title={resourceType} className="owner-cell-muted">سجلّ</span>
+  );
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -286,10 +325,10 @@ export function OwnerDashboardPage() {
           ))}
         </div>
         <div className="grid-2-1">
-          <Card title="توزيع المستخدمين">
+          <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>توزيع المستخدمين</>}>
             <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
           </Card>
-          <Card title="الحالة التشغيليّة">
+          <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>الحالة التشغيليّة</>}>
             <Skeleton width="100%" height={348} rounded="var(--r-lg)" />
           </Card>
         </div>
@@ -413,7 +452,7 @@ export function OwnerDashboardPage() {
 
       {/* Chart + Operational status */}
       <div className="grid-2-1">
-        <Card title="توزيع المستخدمين">
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>توزيع المستخدمين</>}>
           <ChartFrame
             className="owner-chart-container"
             ariaLabel="مخطط دائري يوزّع مستخدمي المنصّة على الأدوار: طلاب وأساتذة وإداريّون وفريق جودة"
@@ -428,7 +467,7 @@ export function OwnerDashboardPage() {
           </ChartFrame>
         </Card>
 
-        <Card title="الحالة التشغيليّة">
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>الحالة التشغيليّة</>}>
           <div className="owner-health-list">
             {/* r299: the «حالة المنصة» row died — the live-status band
                 directly above OWNS alert status (same query, same
@@ -498,7 +537,7 @@ export function OwnerDashboardPage() {
           r253: the 4-column table becomes dense RowList rows — one row
           per event (action · actor · resource · relative time), the
           same facts without the grid. */}
-      <Card title="الأحداث الأخيرة" icon={Clock} subtitle="آخر العمليّات على المنصّة">
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>الأحداث الأخيرة</>} icon={Clock} subtitle="آخر العمليّات على المنصّة">
         {activity.isPending ? (
           <ListSkeleton rows={6} />
         ) : activity.isError ? (
@@ -532,7 +571,7 @@ export function OwnerDashboardPage() {
 
       {/* Quick Actions — WS-F6: wired to real /owner/* routes (the old
           four buttons had no onClick and no destination). */}
-      <Card title="إجراءات سريعة" icon={ShieldCheck}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>إجراءات سريعة</>} icon={ShieldCheck}>
         <div className="owner-action-bar">
           <Link to="/owner/realtime" className="btn primary">
             <Icon icon={Radio} size={14} />

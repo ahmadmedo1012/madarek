@@ -34,7 +34,7 @@ import {
   MARK_POINT,
   MARK_VIEWBOX,
 } from '../brand/mark';
-import '../styles/r323-brand.css';
+import '../styles/shared/brand.css';
 
 /* the grid the construction is judged on: hairlines every 2 units,
  * lattice intersections the mark's anchors snap to. */

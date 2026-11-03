@@ -69,7 +69,7 @@ import '../../styles/admin.css'; // r150e: the borrowed admin-students-search ch
 // R305-A8 «Heron»: the scoped admin/owner sheet rides LAST (same @layer
 // pages, later source order → it wins the equal-specificity ties). Every
 // rule is scoped under the .r305ao page-root marker — zero leakage.
-import '../../styles/r305-admin-owner.css';
+import '../../styles/shared/heron-admin-owner.css';
 /* r299: the teachers roster's pagination rides the family's canonical
  * footer now (AdminPages' TablePaginationFooter — the cross-file
  * import precedent AdminPages itself set for pageList) instead of a

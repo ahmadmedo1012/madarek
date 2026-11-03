@@ -481,14 +481,14 @@ describe('DocumentViewerPage — the r305rp marker rides every rendered root', (
       'utf8',
     );
     const pdfCss = source.indexOf("import '../styles/pdf.css';");
-    const sheet = source.indexOf("import '../styles/r305-research-pdf-ai.css';");
+    const sheet = source.indexOf("import '../styles/shared/research-heron.css';");
     expect(pdfCss).toBeGreaterThan(-1);
     expect(sheet).toBeGreaterThan(pdfCss);
 
     // The sheet itself carries the a7-pdf section banner between the
     // sibling placeholders (the integration seam).
     const css = readFileSync(
-      resolvePath(__dirname, '../../src/styles/r305-research-pdf-ai.css'),
+      resolvePath(__dirname, '../../src/styles/shared/research-heron.css'),
       'utf8',
     );
     expect(css).toContain('a7-pdf appends here');

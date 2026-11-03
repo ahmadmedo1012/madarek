@@ -221,7 +221,7 @@ describe('OnboardingFlow role frame', () => {
  * re-opens the defect). */
 describe('R320 cycle-3 — the onboarding tour veil (Heron menu scrim)', () => {
   const SHELL_CSS = readFileSync(
-    path.resolve(__dirname, '../../src/styles/r305-shell.css'),
+    path.resolve(__dirname, '../../src/styles/shell/shell.css'),
     'utf-8',
   );
   const TOKENS_CSS = readFileSync(

@@ -3,12 +3,12 @@
  *
  * Sibling of r325-app-css-contract.test.ts (P2.1's token pins) and
  * r305-shell-css-contract.test.ts (the R305 Heron shell pins): reads
- * `src/styles/r325-shell.css` (the P2.3 shell layer) plus the
+ * `src/styles/shell/chrome.css` (the P2.3 shell layer) plus the
  * tokens.css layout block as TEXT and pins
  *
  *  1. the §R325.a trio MIGRATION — tokens.css's --sidebar-w /
  *     --sidebar-w-collapsed / --topbar-h alias the --app-* seats (the
- *     256/64/60 literals retired); r325-shell.css re-declares no
+ *     256/64/60 literals retired); shell/chrome.css re-declares no
  *     dimension of its own;
  *  2. the ACTIVE NAV grammar — the ink fill-wipe layer (.nav-fill:
  *     scaleX 0→1 at --t-fast, --app-ink ground, .on pair flipping the
@@ -44,8 +44,8 @@ const read = (name: string) => readFileSync(path.join(STYLES, name), 'utf-8');
 const strip = (text: string) =>
   text.replace(/\/\*[\s\S]*?\*\//g, (m) => '\n'.repeat((m.match(/\n/g) ?? []).length));
 
-const shell = strip(read('r325-shell.css'));
-const shellRaw = read('r325-shell.css');
+const shell = strip(read('shell/chrome.css'));
+const shellRaw = read('shell/chrome.css');
 const shellLines = shell.split('\n');
 const rawShellLines = shellRaw.split('\n');
 const tokens = strip(read('tokens.css'));
@@ -169,7 +169,7 @@ describe('r325 shell CSS contract — token gates', () => {
     shellLines.forEach((text, idx) => {
       if (!HEX_COLOR.test(text) && !FUNC_COLOR.test(text)) return;
       if ((rawShellLines[idx] ?? '').includes('color-gate: allow')) return;
-      findings.push(`r325-shell.css:${idx + 1} — ${text.trim()}`);
+      findings.push(`shell/chrome.css:${idx + 1} — ${text.trim()}`);
     });
     expect(findings, findings.join('\n')).toEqual([]);
   });
@@ -192,7 +192,7 @@ describe('r325 shell CSS contract — token gates', () => {
         const ms = parseFloat(t[1]!) * (t[2] === 's' ? 1000 : 1);
         if (ms <= 1) continue;
         if (DURATION_VAR.test(l)) continue;
-        findings.push(`r325-shell.css:${idx + 1} — ${l.trim()} (raw ${t[0]})`);
+        findings.push(`shell/chrome.css:${idx + 1} — ${l.trim()} (raw ${t[0]})`);
       }
     });
     expect(findings, findings.join('\n')).toEqual([]);

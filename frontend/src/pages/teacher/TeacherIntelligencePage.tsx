@@ -31,7 +31,7 @@ import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.filter-pill/.back-link families (D11 css split, 12-15)
 import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
-import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 primitives + §E tax- composition
+import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
 import { formatPct1, formatNum } from '../../utils/numbers';
 
 /* The shared risk vocabulary (the dashboard mirrors these exact

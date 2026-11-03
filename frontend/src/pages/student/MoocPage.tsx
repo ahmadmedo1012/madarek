@@ -16,12 +16,12 @@ import { formatInt, formatNum } from '../../utils/numbers';
 import { matchesNormalizedQuery } from '../../lib/search';
 import { countAr } from '../../lib/format';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
  * academic family's harmonics (the mooc thumb-cards' hairline re-seat). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 const moocIcon = (cat: string): LucideIcon => {
   if (cat === 'prog') return Code;

@@ -88,9 +88,9 @@ describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', (
 describe('r188 — the folio chrome that ships', () => {
   const live = readLanding();
   const tsx = read('src/pages/LandingPage.tsx');
-  /* R331 split: the masthead lives in chrome/SheetNav.tsx + r331/nav.css. */
+  /* R331 split: the masthead lives in chrome/SheetNav.tsx + landing/nav.css. */
   const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
-  const navCss = stripComments(read('src/styles/r331/nav.css'));
+  const navCss = stripComments(read('src/styles/landing/nav.css'));
 
   it('R315 override: the top progress ribbon is RETIRED (the reference has nothing at the frame top edge)', () => {
     // R315 override (K-A5): the owner's §0-A.5 verdict + E-crawl ground

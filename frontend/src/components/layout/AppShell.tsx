@@ -7,24 +7,24 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 // is owned by the 2-d CSS agent; this line is the 2-e coordination
 // point — main.tsx imports App after its CSS block, so this sheet
 // lands after polish.css in the bundle).
-import '../../styles/r305-shell.css';
+import '../../styles/shell/shell.css';
 // R319 (C2-G2 · §C3): the shared shell joins the sheet system — the
 // 7px drafting frame + the measured paper-grain film + the title-bar
 // mono registers + the last radius-0 chrome overrides. Same cascade
 // contract as r305-shell.css (unlayered, shell-imported, last word).
-import '../../styles/r319-shell.css';
+import '../../styles/shell/sheet-frame.css';
 // R325 (P2.1 · DESIGN.md §R325): the app grammar tokens — --app-*
 // (grid/shell chrome, forms, tables, chips, role identity, motion) +
 // the .pat-* state primitives (.pat-hatch/.pat-dots/.pat-cross/
 // .pat-skeleton). Same cascade contract as the two sheets above
 // (unlayered, shell-imported); P2.2/P2.3 consume the --app-* seats.
-import '../../styles/r325-app.css';
+import '../../styles/shared/app-grammar.css';
 // R325 (P2.3 · DESIGN.md §R325): the shell grammar itself — the
 // active-nav tick/fill-wipe, the role identity seat, the topbar/bottom
 // nav conformance rules, the --app-t-page route register, the drawer
 // z-run. Last word of the shell cascade (after r325-app.css, unlayered,
 // shell-imported — the same house contract).
-import '../../styles/r325-shell.css';
+import '../../styles/shell/chrome.css';
 // R325 (P2.5 · DESIGN.md §R325): the INDICATOR sheet — the seven
 // measurement instruments of components/patterns/indicators.tsx
 // (RulerGauge · SegmentedProgress · MasteryCells · StreakTicks ·
@@ -32,7 +32,7 @@ import '../../styles/r325-shell.css';
 // consumer seats. Same cascade contract (unlayered, shell-imported);
 // every ink is currentColor/theme-token, so the instruments are
 // theme-proof and deep-band-proof by construction.
-import '../../styles/r325-indicators.css';
+import '../../styles/shared/indicators.css';
 import { SheetFrame, SheetGrain } from './SheetFrame';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';

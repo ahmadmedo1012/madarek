@@ -199,10 +199,10 @@ describe('R305-A8 — the scoped Heron sheet wiring (source pins)', () => {
   const src = () =>
     readFileSync(resolvePath(__dirname, '../../src/pages/admin/AdminPages.tsx'), 'utf8');
 
-  it('r305-admin-owner.css is imported directly after admin.css (later import wins the layer tie)', () => {
+  it('heron-admin-owner.css is imported directly after admin.css (later import wins the layer tie)', () => {
     const source = src();
     const adminAt = source.indexOf("import '../../styles/admin.css'");
-    const heronAt = source.indexOf("import '../../styles/r305-admin-owner.css'");
+    const heronAt = source.indexOf("import '../../styles/shared/heron-admin-owner.css'");
     expect(adminAt).toBeGreaterThan(-1);
     expect(heronAt).toBeGreaterThan(adminAt);
   });

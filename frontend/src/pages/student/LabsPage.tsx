@@ -22,12 +22,12 @@ import { formatNum } from '../../utils/numbers';
    The labs catalog rides the FOUNDATION classes only (kicker section
    register, meta-row separators, status chips) — the family sheet adds
    no page-scoped rules for this page. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
  * academic family's harmonics (the lab thumb-cards' hairline re-seat). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 interface LabExperiment {
   title: string;

@@ -18,12 +18,12 @@ import { toast } from '../../lib/toast';
    student's faculty. */
 import { sanitizeInstitutionName } from '../../utils/display-text';
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
  * harmonics (the copper disclosure rail keeps its r305s-next pin). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 /**
  * Honest financial-affairs landing.

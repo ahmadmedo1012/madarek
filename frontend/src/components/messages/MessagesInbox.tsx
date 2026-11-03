@@ -33,7 +33,7 @@ import { formatDate } from '../../utils/numbers';
 /* The §B2 component anatomy (the .r319s-bar / .r319s-chip / .r319s-empty
  * registers) — owned HERE so both role inboxes draw the same sheet
  * grammar regardless of which page shell mounts them. */
-import '../../styles/r319-student.css';
+import '../../styles/student/pages.css';
 
 /* One server page of the messages list (15-d P2-7). The old call
  * fetched 50 rows and rendered a client-side `.slice(0, 30)` — rows

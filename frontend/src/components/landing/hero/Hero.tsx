@@ -55,7 +55,7 @@ import { Icon } from '../../Icon';
 import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
 import { HeroInspect } from '../cursor/HeroInspect';
-import '../../../styles/r331/hero.css';
+import '../../../styles/landing/hero-mechanics.css';
 
 /* The display title — 3 authored lines (the reference's h1 wraps to 9
  * mask lines inside its narrow title-wrap; Arabic carries the same

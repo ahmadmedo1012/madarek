@@ -35,13 +35,13 @@ import { formatDate } from '../../utils/numbers';
 /* R305-A5 (Heron): the shared student vocabulary + this family's sheet.
  * student.css (global shell import) styles the base page classes; these
  * two carry the Heron primitives and the page-scoped refinements. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-courses.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-courses.css';
 /* R319 (c3-S1): the sheet system — the §B2 component anatomy (loaded
  * by every student page that renders the kit) + this family's own
  * harmonics (thumb-card hairline re-seat, the row progress seat). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 /* courseIcon + DEFAULT_COURSE_TINT (via courseTint) + the assignment-kind
  * labels live in lib/courseMeta.ts (waves 9-a / 13-15 — this page's former

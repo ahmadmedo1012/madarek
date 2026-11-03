@@ -280,7 +280,7 @@ describe('R305 gamification — the level statement is the ONE deep band', () =>
   });
 
   it('the gold discipline: the sheet never consumes var(--gold); UniversityInfo membership rows lost the gold badge', () => {
-    const sheet = stripComments(read('src/styles/r305-student-supplemental.css'));
+    const sheet = stripComments(read('src/styles/student/heron-supplemental.css'));
     expect(sheet).not.toContain('var(--gold)');
     expect(sheet).not.toContain('r305s-chip--gold');
     // The institutional classifications are NOT achievements — neutral chips.
@@ -387,7 +387,7 @@ describe('R305 alerts — the notification list de-boxes onto the page surface (
     expect(alertsSrc.match(/r305p-alerts/g)?.length).toBe(1);
     // The sheet's one scope fix: the old negative start margin dies
     // inside the section so the rows meet the kicker.
-    expect(read('src/styles/r305-student-supplemental.css'))
+    expect(read('src/styles/student/heron-supplemental.css'))
       .toContain('.r305p-alerts .np-list { margin-block-start: 0; }');
   });
 });
@@ -453,9 +453,9 @@ describe('R305 labs — the catalog is ONE editorial section with honest states'
     // The old Badge grammar is gone from the page.
     expect(src).not.toMatch(/\bBadge\b/);
     // Import contract: foundation + family sheets, in order.
-    expect(src.indexOf("import '../../styles/r305-student.css';")).toBeGreaterThan(-1);
-    expect(src.indexOf("import '../../styles/r305-student-supplemental.css';"))
-      .toBeGreaterThan(src.indexOf("import '../../styles/r305-student.css';"));
+    expect(src.indexOf("import '../../styles/student/heron.css';")).toBeGreaterThan(-1);
+    expect(src.indexOf("import '../../styles/student/heron-supplemental.css';"))
+      .toBeGreaterThan(src.indexOf("import '../../styles/student/heron.css';"));
   });
 });
 
@@ -478,8 +478,8 @@ describe('R305 messages — the shell rides the pinned shared inbox', () => {
 
   it('the page imports the foundation + family sheets and touches no inbox markup', () => {
     const src = read('src/pages/student/MessagesPage.tsx');
-    expect(src).toContain("import '../../styles/r305-student.css';");
-    expect(src).toContain("import '../../styles/r305-student-supplemental.css';");
+    expect(src).toContain("import '../../styles/student/heron.css';");
+    expect(src).toContain("import '../../styles/student/heron-supplemental.css';");
     // The page stays a thin shell — title, subtitle, compose discovery.
     expect(src).toContain('title="الرسائل"');
     expect(src).toContain('renderCompose=');
@@ -491,7 +491,7 @@ describe('R305 messages — the shell rides the pinned shared inbox', () => {
 /* ── 7 · Family-sheet discipline ─────────────────────────────────── */
 
 describe('R305 supplemental — the family sheet obeys the gate contract', () => {
-  const sheet = read('src/styles/r305-student-supplemental.css');
+  const sheet = read('src/styles/student/heron-supplemental.css');
 
   it('is a @layer pages sheet consuming var()/color-mix() only — zero raw color literals', () => {
     expect(sheet).toMatch(/@layer pages \{/);
@@ -526,8 +526,8 @@ describe('R305 supplemental — the family sheet obeys the gate contract', () =>
     ];
     for (const file of pages) {
       const src = read(`src/pages/student/${file}.tsx`);
-      expect(src, file).toContain("import '../../styles/r305-student.css';");
-      expect(src, file).toContain("import '../../styles/r305-student-supplemental.css';");
+      expect(src, file).toContain("import '../../styles/student/heron.css';");
+      expect(src, file).toContain("import '../../styles/student/heron-supplemental.css';");
     }
   });
 
@@ -541,7 +541,7 @@ describe('R305 supplemental — the family sheet obeys the gate contract', () =>
       '/* ── r305-c (schedule family) + r305-d (supplemental family) imports —',
     );
     expect(src).toMatch(
-      /\/\* ── r305-c \(schedule family\) \+ r305-d \(supplemental family\) imports —[\s\S]*?── \*\/\nimport '\.\.\/\.\.\/styles\/r305-student\.css';\nimport '\.\.\/\.\.\/styles\/r305-student-schedule\.css';\nimport '\.\.\/\.\.\/styles\/r305-student-supplemental\.css';/,
+      /\/\* ── r305-c \(schedule family\) \+ r305-d \(supplemental family\) imports —[\s\S]*?── \*\/\nimport '\.\.\/\.\.\/styles\/student\/heron\.css';\nimport '\.\.\/\.\.\/styles\/student\/heron-schedule\.css';\nimport '\.\.\/\.\.\/styles\/student\/heron-supplemental\.css';/,
     );
   });
 });

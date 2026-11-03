@@ -25,16 +25,16 @@ import { formatInt } from '../../utils/numbers';
 /* R305-A5 (Heron): the shared student vocabulary + this family's sheet.
  * The video/progress/checkpoint logic is untouched — this pass only
  * refines the surfaces around it. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-courses.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-courses.css';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
  * student page mounts (SectionBar/BarCount/EmptyCell + the family's
  * unlayered masthead tail precedent). */
-import '../../styles/r319-student.css';
+import '../../styles/student/pages.css';
 /* R321 (c1 · WP-B3): the player page's own harmonics — the .r321p-page
  * opt-in root, the retired panel wall + the inner-scale masthead
  * re-seat (the r321-exams.css contract); family-unique rules only. */
-import '../../styles/r321-player-page.css';
+import '../../styles/student/lecture-player.css';
 
 /* fmtTime (the m:ss media clock) is lib/format.formatMmSs (13-15 fold,
  * audit 11-f P2-1) — deliberately NOT curriculumValidation.formatSec,

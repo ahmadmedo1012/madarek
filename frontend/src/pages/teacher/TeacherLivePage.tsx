@@ -22,7 +22,7 @@ import { useDiscardGuard } from '../../components/curriculum/AuthoringModal';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
 import '../../styles/owner.css'; // ConfirmDialog surfaces via the discard guard (D11 css split, 12-15)
-import '../../styles/r305-teacher-quality.css'; // R305 Heron: §0 primitives + §E tax- composition
+import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
 import {
   useTeacherOfferings, useLiveSessions, useCreateLiveSession,
   useLifecycleLiveSession, apiErrorMessage, type LiveSessionRow,

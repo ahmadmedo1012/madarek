@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../Icon';
 import type { ProductCapture } from '../../data/university-media';
-import '../../styles/r314-productframe.css';
+import '../../styles/landing/product-frame.css';
 
 export interface ProductFrameProps {
   capture: ProductCapture;

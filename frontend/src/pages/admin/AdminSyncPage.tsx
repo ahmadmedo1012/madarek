@@ -32,7 +32,7 @@ import '../../styles/admin.css';
 // R305-A8 «Heron»: the scoped admin/owner sheet rides LAST (same @layer
 // pages, later source order → it wins the equal-specificity ties). Every
 // rule is scoped under the .r305ao page-root marker — zero leakage.
-import '../../styles/r305-admin-owner.css';
+import '../../styles/shared/heron-admin-owner.css';
 import { withInstitutionScope } from '../../lib/queryClient';
 import { apiErrorMessage } from '../../hooks/useResources';
 import { formatRelativeArShort, countAr } from '../../lib/format';

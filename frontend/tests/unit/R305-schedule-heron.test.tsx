@@ -147,7 +147,7 @@ describe('R305 calendar — today is the ONE emphasized cell, weekend goes quiet
   });
 
   it('stylesheet: today rides the accent wash + copper edge (the ONE emphasized cell)', () => {
-    const sheet = read('src/styles/r305-student-schedule.css');
+    const sheet = read('src/styles/student/heron-schedule.css');
     const rule = sheet.match(/\.cal-cell\[data-today='true'\]\s*\{[^}]*\}/);
     expect(rule).not.toBeNull();
     expect(rule![0]).toContain('color-mix(in srgb, var(--accent) 7%, var(--surface))');
@@ -268,7 +268,7 @@ describe('R305 schedule — day sections + the honest week load', () => {
   });
 
   it('stylesheet: the ledger rules exist (between days + kicker hairline in each header)', () => {
-    const sheet = read('src/styles/r305-student-schedule.css');
+    const sheet = read('src/styles/student/heron-schedule.css');
     expect(sheet).toMatch(/\.schedule-day \+ \.schedule-day\s*\{[^}]*border-block-start:\s*1px solid var\(--surface-divider\)/);
     expect(sheet).toMatch(/\.schedule-day \.pf-section-header::after\s*\{[^}]*background:\s*var\(--surface-divider\)/);
   });
@@ -323,7 +323,7 @@ describe('R305 results — the summary strip is the ONE deep band', () => {
   });
 
   it('stylesheet: the band re-derives the PATTERN inks via scoped tokens (cascade-proof)', () => {
-    const sheet = read('src/styles/r305-student-schedule.css');
+    const sheet = read('src/styles/student/heron-schedule.css');
     /* patterns.css (the StatLine owner) is UNLAYERED — unlayered author
      * styles beat @layer pages at any specificity, so a color override
      * on .pf-stat-* here would be dead CSS. The band therefore re-derives
@@ -439,15 +439,15 @@ describe('R305 schedule family sheet — wiring + gate shape', () => {
   ];
 
   it('the foundation + family sheet are imported by every owned page (and only there)', () => {
-    const sheet = read('src/styles/r305-student-schedule.css');
+    const sheet = read('src/styles/student/heron-schedule.css');
     for (const p of PAGES) {
       const src = read(p);
-      expect(src).toContain("import '../../styles/r305-student.css';");
-      expect(src).toContain("import '../../styles/r305-student-schedule.css';");
+      expect(src).toContain("import '../../styles/student/heron.css';");
+      expect(src).toContain("import '../../styles/student/heron-schedule.css';");
     }
     // No other page module pulls the schedule family sheet.
     for (const other of ['src/pages/student/DashboardPage.tsx', 'src/pages/student/CoursesPage.tsx']) {
-      expect(read(other)).not.toContain('r305-student-schedule.css');
+      expect(read(other)).not.toContain('student/heron-schedule.css');
     }
     // The sheet sits in the pages layer with the rest of the family.
     expect(sheet).toMatch(/@layer pages \{/);

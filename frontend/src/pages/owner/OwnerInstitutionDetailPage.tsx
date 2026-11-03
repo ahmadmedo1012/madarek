@@ -30,7 +30,7 @@ import type { OwnerInstitution } from '../../lib/api';
 // consumes — the same CSS AdminCoursesPage loads; the faculty cards
 // read the global components.css families (admin-faculty-*).
 import '../../styles/admin.css';
-import '../../styles/r305-admin-owner.css'; // R305-A8 «Heron» scoped sheet — directly after the family sheet (Task 1 contract)
+import '../../styles/shared/heron-admin-owner.css'; // R305-A8 «Heron» scoped sheet — directly after the family sheet (Task 1 contract)
 import { formatNum } from '../../utils/numbers';
 
 /**

@@ -56,12 +56,16 @@
 #                                    under `.landing`, and the base.css
 #                                    0.01ms !important belt bounds every
 #                                    animation here for reduced-motion.)
-#   frontend/src/styles/r331/*.css   (R331 — the per-section landing
-#                                    sheets that now OWN their sections:
-#                                    hero/nav/journey/sections/footer.
-#                                    Same contract as landing.css above:
-#                                    the Heron port's authored
-#                                    choreography IS the numbers from
+#   frontend/src/styles/landing/nav.css +
+#   frontend/src/styles/landing/hero-mechanics.css
+#                                    (R331 — the per-section landing
+#                                    sheets that now OWN their sections;
+#                                    R332 A-CSS renames moved them out of
+#                                    styles/r331/. journey/sections/footer
+#                                    never landed as files. Same contract
+#                                    as landing.css above: the Heron
+#                                    port's authored choreography IS the
+#                                    numbers from
 #                                    docs/redesign/r331/heron-program.{md,json}.
 #                                    Each file is imported by exactly its
 #                                    section component, every rule is
@@ -144,11 +148,8 @@ WHOLESALE = {
     'frontend/src/styles/landing/strata.css',
     # R331 — the per-section landing sheets (see the header note):
     # component-imported, section-scoped, reduced-motion-bounded.
-    'frontend/src/styles/r331/hero.css',
-    'frontend/src/styles/r331/nav.css',
-    'frontend/src/styles/r331/journey.css',
-    'frontend/src/styles/r331/sections.css',
-    'frontend/src/styles/r331/footer.css',
+    'frontend/src/styles/landing/hero-mechanics.css',
+    'frontend/src/styles/landing/nav.css',
     # r127-F1: the parity-export pair — token-definition foundations
     # (see the header note). Unwired from the app; value-gated by
     # scripts/verify-parity-export.mjs instead.

@@ -34,7 +34,7 @@ import '../../styles/teacher-quality.css';
 // R305 Heron (§0+§D): the shared hr- primitives + this family's
 // quality-boards overlay. Imported AFTER the R304 family sheet so the
 // equal-specificity Heron rules land last.
-import '../../styles/r305-teacher-quality.css';
+import '../../styles/teacher/heron.css';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Filler, Tooltip, Legend);
 

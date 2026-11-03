@@ -16,7 +16,7 @@ import { Icon } from '../../components/Icon';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { Modal } from '../../components/overlays/Modal';
 import '../../styles/admin.css'; // R304: the ws-table family lives on the admin sheet
-import '../../styles/r305-admin-owner.css'; // R305-A8 «Heron» scoped sheet — directly after the family sheet (Task 1 contract)
+import '../../styles/shared/heron-admin-owner.css'; // R305-A8 «Heron» scoped sheet — directly after the family sheet (Task 1 contract)
 import {
   useCreateInstitution,
   useOwnerInstitutions,

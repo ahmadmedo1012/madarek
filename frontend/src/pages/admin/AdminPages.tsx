@@ -63,7 +63,12 @@ import '../../styles/admin.css'; // r150e: the roster chrome left colleges.css
  * admin.css so it wins the @layer pages tie. Every rule in the sheet
  * is scoped under the .r305ao page-root marker class, so teacher /
  * quality / community screens are untouched. */
-import '../../styles/r305-admin-owner.css';
+import '../../styles/shared/heron-admin-owner.css';
+/* R332 W11 — the dashboard grammar bridge (styles/landing/inner.css §W11):
+ * the [nn] section-index chips (.w11-idx) the dashboard's cards mount +
+ * the .w11-quick metric lift on the «مؤشرات سريعة» stat rows — marker-
+ * scoped, so the other admin pages in this file render untouched. */
+import '../../styles/landing/inner.css';
 import { formatDate } from '../../utils/numbers';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, PointElement, LineElement, Filler, Tooltip);
@@ -381,7 +386,7 @@ export function AdminDashboardPage() {
           rhythm = contrast between tight and generous, never uniform). */}
       <div className="grid-2-1" style={{ marginBlockStart: 'var(--sp-9)' }}>
         <Card
-          title="توزّع الطلاب حسب الكلّيّة"
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>توزّع الطلاب حسب الكلّيّة</>}
           icon={BarChart3}
           subtitle={topByStudents.length > 1
             ? `أعلى ${countAr(topByStudents.length, ['كلّيّة', 'كلّيّتين', 'كلّيّات', 'كلّيّة'])} عدداً · انقر عموداً لعرض طلابها`
@@ -457,7 +462,14 @@ export function AdminDashboardPage() {
           )}
         </Card>
 
-        <Card title="مؤشرات سريعة" icon={TrendingUp}>
+        {/* W11: .w11-quick — the quick-stat values lift from the uniform
+            --fs-sm body rung to the metric rung (inner.css §W11); the
+            same .admin-stat classes elsewhere are untouched. */}
+        <Card
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>مؤشرات سريعة</>}
+          icon={TrendingUp}
+          className="w11-quick"
+        >
           <div className="flex-col gap-2">
             {/* 5-A8 §5 row 6 + P3-2: the rows navigate where a route
                 answers them; the papers PAIR collapsed into one drill
@@ -485,7 +497,7 @@ export function AdminDashboardPage() {
         </Card>
       </div>
 
-      <Card title="نشاط الإنتاج العلميّ — آخر 6 أشهر" icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>نشاط الإنتاج العلميّ — آخر 6 أشهر</>} icon={TrendingUp} subtitle="أبحاث مقدَّمة، مقيَّمة، ومنشورة شهرياً">
         {r.paperTrend.length === 0 || r.paperTrend.every((m) => m.submitted + m.graded + m.published === 0) ? (
           <EmptyState illustration="empty-research"
             icon={TrendingUp}

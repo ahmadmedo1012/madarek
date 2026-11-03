@@ -302,10 +302,10 @@ describe('StudentResearchPage — reviewer identity (R305-A7 regression)', () =>
    ══════════════════════════════════════════════════════════════════ */
 
 describe('StudentResearchPage — Heron sheet import wiring (R305-A7)', () => {
-  it('r305-research-pdf-ai.css is imported DIRECTLY after research.css', () => {
+  it('research-heron.css is imported DIRECTLY after research.css', () => {
     const src = readFileSync(PAGE_SRC, 'utf8');
     const researchIdx = src.indexOf("import '../../styles/research.css';");
-    const heronIdx = src.indexOf("import '../../styles/r305-research-pdf-ai.css';");
+    const heronIdx = src.indexOf("import '../../styles/shared/research-heron.css';");
     expect(researchIdx).toBeGreaterThan(-1);
     expect(heronIdx).toBeGreaterThan(researchIdx);
   });

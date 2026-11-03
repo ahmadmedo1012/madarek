@@ -69,11 +69,11 @@ import { formatNum } from '../../utils/numbers';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
  * page mounts (SectionBar/BarCount/EmptyCell + the family's unlayered
  * masthead tail precedent). */
-import '../../styles/r319-student.css';
+import '../../styles/student/pages.css';
 /* R321 (c1 · WP-B4): the community family's own harmonics — the
  * .r321c-page opt-in root + the inner-scale masthead re-seat (the
  * r321-exams.css contract); family-unique rules only. */
-import '../../styles/r321-community.css';
+import '../../styles/student/community.css';
 
 const SCOPE_LABEL: Record<string, string> = {
   PLATFORM: 'كل المنصة', FACULTY: 'كلّيّة', DEPARTMENT: 'قسم', OFFERING: 'مقرر',

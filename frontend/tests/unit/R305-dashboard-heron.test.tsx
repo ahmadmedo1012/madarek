@@ -365,12 +365,12 @@ describe('R305 — the pending mirror', () => {
 describe('R305 — source hygiene pins', () => {
   it('the page imports the shared foundation and its family sheet', () => {
     const page = stripComments(read('src/pages/student/DashboardPage.tsx'));
-    expect(page).toContain("import '../../styles/r305-student.css';");
-    expect(page).toContain("import '../../styles/r305-student-dashboard.css';");
+    expect(page).toContain("import '../../styles/student/heron.css';");
+    expect(page).toContain("import '../../styles/student/heron-dashboard.css';");
   });
 
   it('every :hover the family sheet authors sits inside the (hover)+(pointer) guard', () => {
-    const css = stripComments(read('src/styles/r305-student-dashboard.css'));
+    const css = stripComments(read('src/styles/student/heron-dashboard.css'));
     const totalHovers = (css.match(/:hover/g) ?? []).length;
     expect(totalHovers).toBeGreaterThan(0);
     const guarded = css.match(/@media \(hover: hover\) and \(pointer: fine\) \{[\s\S]*?\n  \}/g) ?? [];
@@ -379,7 +379,7 @@ describe('R305 — source hygiene pins', () => {
   });
 
   it('the deep-band inks derive from the band fg/ground pair (color-mix, no raw colors)', () => {
-    const css = stripComments(read('src/styles/r305-student-dashboard.css'));
+    const css = stripComments(read('src/styles/student/heron-dashboard.css'));
     expect(css).toMatch(
       /\.dash-hero-deep \.dash-resume-eyebrow \{[^}]*color:\s*color-mix\(in srgb, var\(--neutral-0\) 85%, var\(--neutral-900\)\)/,
     );

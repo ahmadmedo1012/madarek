@@ -42,17 +42,17 @@ import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
 import '../../styles/teacher-quality.css'; // R304 — the family sheet (oex- section lives here)
 /* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-schedule.css';
-import '../../styles/r305-teacher-quality.css'; // R305 — the Heron layer (oex2- section lives here)
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-schedule.css';
+import '../../styles/teacher/heron.css'; // R305 — the Heron layer (oex2- section lives here)
 /* ── R321 B1a (student sweep) — the exams LIST joins the sheet system:
  * the shared §B2 anatomy sheet (page-chunked like every converted
  * family page — the JobsPage/SettingsPage precedent), then THIS
  * family's own harmonics (the .r321x-page opt-in root + the
  * inner-scale masthead re-seat; family-unique rules only, the
  * r319-student-pages.css contract). ── */
-import '../../styles/r319-student.css';
-import '../../styles/r321-exams.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/exams.css';
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',

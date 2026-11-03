@@ -334,7 +334,7 @@ describe('R305 player — the now-playing block is the page’s ONE deep band', 
 /* ── 4 · Family-sheet discipline ─────────────────────────────────── */
 
 describe('R305 courses — the family sheet obeys the gate contract', () => {
-  const sheet = read('src/styles/r305-student-courses.css');
+  const sheet = read('src/styles/student/heron-courses.css');
 
   it('is a @layer pages sheet consuming var()/color-mix() only — zero raw color literals', () => {
     expect(sheet).toMatch(/@layer pages \{/);
@@ -359,8 +359,8 @@ describe('R305 courses — the family sheet obeys the gate contract', () => {
   it('all four pages import the foundation + family sheets', () => {
     for (const file of ['CoursesPage', 'CatalogPage', 'CourseDetailPage', 'LecturePlayerPage']) {
       const src = read(`src/pages/student/${file}.tsx`);
-      expect(src).toContain("import '../../styles/r305-student.css';");
-      expect(src).toContain("import '../../styles/r305-student-courses.css';");
+      expect(src).toContain("import '../../styles/student/heron.css';");
+      expect(src).toContain("import '../../styles/student/heron-courses.css';");
     }
   });
 });

@@ -37,14 +37,14 @@ import { formatDate } from '../../utils/numbers';
 /* ── r305-c (schedule family) + r305-d (supplemental family) imports —
    collapsed by the R305 integrator (handoff N1): the duplicated
    r305-student.css import was legal (Vite dedupes) but confusing. ── */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-schedule.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-schedule.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 component anatomy + the
  * academic family's harmonics (the same pair every converted student
  * page rides; this file's pages opt in per-page via .r319s-page). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, RadialLinearScale, PointElement, LineElement, Filler);
 

@@ -31,13 +31,13 @@ import '../../styles/research.css';
 /* R305-A7 «Heron»: the scoped research/PDF/library sheet — loaded
  * DIRECTLY AFTER the family sheet so later source order inside
  * @layer pages wins the equal-specificity ties (§0 scoping contract). */
-import '../../styles/r305-research-pdf-ai.css';
+import '../../styles/shared/research-heron.css';
 /* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
  * academic family's harmonics. The .r319s-page class on the same root
  * as .r305rp opts this route into the masthead re-seat (one display
  * voice per page — the h1). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 const CATEGORIES: Array<{ id: string; label: string; icon: LucideIcon }> = [
   { id: 'all', label: 'الكل', icon: LibraryIcon },

@@ -75,7 +75,7 @@ import {
 import '../../styles/owner.css'; // ConfirmDialog + ToggleSwitch surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
 import '../../styles/teacher-quality.css'; // R304 — the family sheet (exa- section lives here)
-import '../../styles/r305-teacher-quality.css'; // R305 — the Heron layer (exa2- section lives here)
+import '../../styles/teacher/heron.css'; // R305 — the Heron layer (exa2- section lives here)
 
 /* ═══════════════ Label maps (TS-pinned over the full enums — 15-a) ═══════════════ */
 

@@ -281,71 +281,71 @@
       "reason": "SCROLLBAR CHROME — decorative thumb tint, no text ever renders inside it"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .back-link:hover",
+      "key": "shared/heron-admin-owner.css :: .r305ao .back-link:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .owner-timeline-item:hover",
+      "key": "shared/heron-admin-owner.css :: .r305ao .owner-timeline-item:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .pf-breadcrumbs [aria-current='page']",
+      "key": "shared/heron-admin-owner.css :: .r305ao .pf-breadcrumbs [aria-current='page']",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .stat-cell-link:hover",
+      "key": "shared/heron-admin-owner.css :: .r305ao .stat-cell-link:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .stat-cell-link:hover .stat-value",
+      "key": "shared/heron-admin-owner.css :: .r305ao .stat-cell-link:hover .stat-value",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .table tbody tr:hover,\n  .r305ao .ws-table tbody tr:hover",
+      "key": "shared/heron-admin-owner.css :: .r305ao .table tbody tr:hover,\n  .r305ao .ws-table tbody tr:hover",
       "reason": "ADMIN table row — surface-step-only; the row ink (var(--text) tier) never moves and stays AA on the stepped ground"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao .table-pagination-actions button:hover:not(:disabled)",
+      "key": "shared/heron-admin-owner.css :: .r305ao .table-pagination-actions button:hover:not(:disabled)",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "r305-admin-owner.css :: .r305ao-btn-danger:hover:not(:disabled)",
+      "key": "shared/heron-admin-owner.css :: .r305ao-btn-danger:hover:not(:disabled)",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-research-pdf-ai.css :: .r305pdf-selbar-btn:hover",
+      "key": "shared/research-heron.css :: .r305pdf-selbar-btn:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-research-pdf-ai.css :: .r305rp .r305rp-rev-row:hover",
+      "key": "shared/research-heron.css :: .r305rp .r305rp-rev-row:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-research-pdf-ai.css :: .r305rp .rs-search input:focus-visible",
+      "key": "shared/research-heron.css :: .r305rp .rs-search input:focus-visible",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-shell.css :: .has-shell .onboarding-flow-skip:hover",
+      "key": "shell/shell.css :: .has-shell .onboarding-flow-skip:hover",
       "reason": "r305-shell §7 — surface-step-only acknowledgment on the skip text; the ink half is the constant quiet-chrome voice and never moves"
     },
     {
-      "key": "r305-shell.css :: .topbar-inst-trigger[data-context-lost=\"true\"]:hover",
+      "key": "shell/shell.css :: .topbar-inst-trigger[data-context-lost=\"true\"]:hover",
       "reason": "URGENCY PAIR — the REST state (r305-shell §12) sets the danger bg+ink pair; hover only deepens the bg while the danger ink half stays"
     },
     {
-      "key": "r305-shell.css :: [data-collapsible=\"true\"] .nav-group-toggle:hover > span",
+      "key": "shell/shell.css :: [data-collapsible=\"true\"] .nav-group-toggle:hover > span",
       "reason": "ACCORDION TOGGLE — the toggle base look is INLINE-styled (r183-B7: background:none in the style attribute); CSS cannot pair with an inline ground, and the label ink steps on that constant paper"
     },
     {
-      "key": "r305-teacher-quality.css :: .hr-scope .table tbody tr:hover",
+      "key": "teacher/heron.css :: .hr-scope .table tbody tr:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r305-teacher-quality.css :: .hr-table tbody tr:hover",
+      "key": "teacher/heron.css :: .hr-table tbody tr:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "r314-chrome.css :: .cb-reject:hover",
+      "key": "landing/consent-edge.css :: .cb-reject:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {

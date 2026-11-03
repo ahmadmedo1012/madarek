@@ -105,10 +105,10 @@ function renderPage() {
 // ─── 1 · the sheet/marker contract ────────────────────────────────
 
 describe('R305-A7 — the sheet rides the module (§0 scoping contract)', () => {
-  it('r305-research-pdf-ai.css is imported directly AFTER ai.css', () => {
+  it('research-heron.css is imported directly AFTER ai.css', () => {
     const page = read('src/pages/student/AiAssistantPage.tsx');
     const aiLine = page.indexOf("import '../../styles/ai.css'");
-    const heronLine = page.indexOf("import '../../styles/r305-research-pdf-ai.css'");
+    const heronLine = page.indexOf("import '../../styles/shared/research-heron.css'");
     expect(aiLine).toBeGreaterThan(-1);
     expect(heronLine).toBeGreaterThan(aiLine);
   });
@@ -180,7 +180,7 @@ describe('R305-A7 — the conversation ledger', () => {
   });
 
   it('hairline row separation is bound in the sheet source (the ledger rule)', () => {
-    const css = stripComments(read('src/styles/r305-research-pdf-ai.css'));
+    const css = stripComments(read('src/styles/shared/research-heron.css'));
     expect(css).toMatch(/\.r305rp \.chat-msg \+ \.chat-msg\s*\{[^}]*border-block-start: 1px solid var\(--surface-divider\)/);
     // …and the marker scopes every §D restyle: every selector that
     // targets .chat-bubble in the sheet carries the .r305rp prefix.

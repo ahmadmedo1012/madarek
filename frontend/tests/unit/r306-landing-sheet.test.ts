@@ -55,8 +55,8 @@ const LANDING_FAMILY = [
 
 const live = stripComments([
   ...LANDING_FAMILY,
-  'src/styles/r331/nav.css',
-  'src/styles/r331/hero.css',
+  'src/styles/landing/nav.css',
+  'src/styles/landing/hero-mechanics.css',
 ].map(read).join('\n'));
 /* Strip BOTH comment forms: block comments AND line-start // prose —
  * tombstone narration quoting retired values must neither satisfy a

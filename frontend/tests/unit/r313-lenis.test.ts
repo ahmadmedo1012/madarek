@@ -259,7 +259,7 @@ describe('r313 4-b — App wiring + the prevent vocabulary', () => {
     expect(navTsx).toContain('data-lenis-prevent');
     /* R332 split: the mobile-menu rules moved to styles/landing/chrome.css
      * (the stub landing.css is rule-free). */
-    const css = stripComments(read('src/styles/r331/nav.css')) + stripComments(read('src/styles/landing/chrome.css'));
+    const css = stripComments(read('src/styles/landing/nav.css')) + stripComments(read('src/styles/landing/chrome.css'));
     expect(css).toMatch(/\.fo-mobile-menu[^{]*{\s*[^}]*overflow-y:\s*auto/); // it IS an inner scroller
   });
 });

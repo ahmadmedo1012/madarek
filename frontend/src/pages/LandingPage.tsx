@@ -48,7 +48,7 @@ import { clamp } from '../lib/motion/sheetConductor';
 // landing.css so the sheet's R323 chrome block (the compact phone
 // consent bar + the --z-consent/--z-loader tokens) is the cascade's
 // last word over the chrome pair without specificity forks.
-import '../styles/r314-chrome.css';
+import '../styles/landing/consent-edge.css';
 // landing.css — «لوحة مدارك r306 → r313» — the Heron-parity drawing
 // sheet, re-composed to the reference's 9-section structure (D7):
 // hero → statement → live (the pains) → chapters (the pinned map) →
@@ -85,7 +85,7 @@ import '../styles/landing/strata.css';
 // scale, the ruled-table pains grid, deepened reveals). Loaded AFTER
 // landing.css so its namespaced rules win by cascade order — the ONLY
 // stylesheet this round may add (file-ownership contract).
-import '../styles/r330-home.css';
+import '../styles/landing/home.css';
 /* R331 (A-Web-Nav) — the masthead owns its own file now: the header
  * state machine, the seat register, the menu choreography and
  * r331/nav.css all live in the chrome component

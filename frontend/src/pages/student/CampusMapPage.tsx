@@ -12,16 +12,16 @@ import { useFaculties, useCurrentInstitutionSlug } from '../../hooks/useResource
 import { formatNum } from '../../utils/numbers';
 
 /* R305 Heron: the shared student vocabulary + this family's refinements. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy every converted
  * student page mounts (SectionBar/BarCount/EmptyCell + the family's
  * unlayered masthead tail precedent). */
-import '../../styles/r319-student.css';
+import '../../styles/student/pages.css';
 /* R321 (c1 · WP-B2): the map/live family's own harmonics — the
  * .r321m-page opt-in root + the inner-scale masthead re-seat (the
  * r321-exams.css contract); family-unique rules only. */
-import '../../styles/r321-map-live.css';
+import '../../styles/student/map-live.css';
 
 /**
  * Honest campus directory.

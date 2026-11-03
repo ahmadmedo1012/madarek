@@ -46,12 +46,12 @@ import { EmptyCell } from '../../components/student';
 import '../../styles/training.css'; // training surfaces + shared families this module owns (D11 css split, 12-15)
 /* R305 Heron: the shared student vocabulary + the supplemental family's
    page-scoped refinements (the achievements deep strip — §2 of that sheet). */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
  * harmonics (the r305a-strip KPI band keeps its own pinned register). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 const CATEGORY_LABEL: Record<TrainingCategory, string> = {
   ONBOARDING: 'تعريف بالمنصة',

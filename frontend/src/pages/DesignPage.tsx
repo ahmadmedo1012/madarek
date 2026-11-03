@@ -70,13 +70,13 @@ import { toast } from '../lib/toast';
 import { dueChip, StatusChip } from '../components/student/StatusChip';
 import { useBottomStackLayer } from '../hooks/useBottomStackLayer';
 import { getBottomStackTotal } from '../lib/bottomStack';
-import '../styles/r323-design.css';
+import '../styles/shared/design.css';
 /* §R325.n — the gallery is the specimen page FOR the app-grammar
    sheet: it mounts the same unlayered sheet AppShell mounts so the
    --app-* seats and .pat-* patterns it exhibits resolve for real.
    The shell cascade contract (after r319-shell.css) is untouched —
    this import serves the evidence surface only. */
-import '../styles/r325-app.css';
+import '../styles/shared/app-grammar.css';
 
 const BTN_VARIANTS: Array<{ v: Parameters<typeof Button>[0]['variant']; label: string }> = [
   { v: 'default', label: 'افتراضي' },

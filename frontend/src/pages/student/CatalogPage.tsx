@@ -14,13 +14,13 @@ import { countAr } from '../../lib/format';
 import { useAuthStore } from '../../stores/auth.store';
 import { useCoursesCatalog, type CatalogCourseRow } from '../../hooks/useResources';
 /* R305-A5 (Heron): the shared student vocabulary + this family's sheet. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-courses.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-courses.css';
 /* R319 (c3-S1): the sheet system — the §B2 component anatomy + the
  * academic family's harmonics (the catalogue thumb-cards' hairline
  * re-seat + the masthead re-seat via the .r319s-page wrapper). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 /**
  * r180-F4 — «دليل المقررات»: the student-facing catalogue of their

@@ -14,7 +14,7 @@ import { useAuthStore, type AppRole } from '../stores/auth.store';
 import { isViewerFilenameParam } from '../components/pdf/loadError';
 import { PageFrame } from '../components/patterns';
 import '../styles/pdf.css';
-import '../styles/r305-research-pdf-ai.css';
+import '../styles/shared/research-heron.css';
 import '../styles/research.css';
 
 // Code-split: PdfViewer + pdfjs-dist + worker land in their own chunk.

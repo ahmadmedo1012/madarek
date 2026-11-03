@@ -177,10 +177,21 @@ const NUMERAL_SEATS = ['stat-value', 'admin-stat-value', 'metric', 'kpi-value', 
 interface HeadingRule { file: string; sel: string; body: string; }
 
 function cssFiles(): string[] {
-  const all = readdirSync(STYLES).filter((f) => f.endsWith('.css')).sort();
+  // Recursive walk — the R332 owner-dir split (styles/{landing,shell,
+  // student,teacher,shared}/…) moved family sheets into subdirectories;
+  // the census must keep covering them (labels are src-relative paths).
+  const out: string[] = [];
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith('.css')) out.push(full);
+    }
+  };
+  walk(STYLES);
   // unified-parity + shared-design-system re-declare the token layer but
   // no page headings of their own beyond the mirrors — still swept.
-  return all.map((f) => path.join(STYLES, f));
+  return out;
 }
 
 /** A rule with its cascade context: the @media condition it sits in
@@ -241,7 +252,7 @@ function gather(): (HeadingRule & { media: string | null; order: number })[] {
     for (const { media, sel, body, order } of walked) {
       if (!isHeadingSelector(sel)) continue;
       if (!/font-(size|weight)\s*:/.test(body)) continue;
-      rules.push({ file: path.basename(file), sel, body, media, order });
+      rules.push({ file: path.relative(STYLES, file).split(path.sep).join('/'), sel, body, media, order });
     }
   }
   return rules;
@@ -257,7 +268,7 @@ describe('r325 Y4 — the type census gate (every heading level × every seat ×
   it('the sweep actually reaches the fleet (no silent empty sweep)', () => {
     expect(RULES.length).toBeGreaterThanOrEqual(50);
     const files = new Set(RULES.map((r) => r.file));
-    for (const f of ['legal.css', 'base.css', 'components.css', 'patterns.css', 'colleges.css', 'r319-student.css']) {
+    for (const f of ['legal.css', 'base.css', 'components.css', 'patterns.css', 'colleges.css', 'student/pages.css']) {
       expect(files.has(f), `the sweep covers ${f}`).toBe(true);
     }
   });

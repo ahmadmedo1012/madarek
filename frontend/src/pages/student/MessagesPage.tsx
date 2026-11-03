@@ -27,14 +27,14 @@ import { useMyEnrollments } from '../../hooks/useResources';
    with the teacher inbox. The Heron register therefore lands on the
    student surface through those shared states unchanged — no wrapper
    markup is added that would fork the two inboxes' anatomy. */
-import '../../styles/r305-student.css';
-import '../../styles/r305-student-supplemental.css';
+import '../../styles/student/heron.css';
+import '../../styles/student/heron-supplemental.css';
 /* R319 (c3-S2): the sheet system — the §B2 anatomy + the family's
  * harmonics ride the shared inbox the page shells (the inbox component
  * owns its own r319 imports; the page-level pair mirrors the family
  * contract every converted student page carries). */
-import '../../styles/r319-student.css';
-import '../../styles/r319-student-pages.css';
+import '../../styles/student/pages.css';
+import '../../styles/student/academic-pages.css';
 
 /** The student compose shell: the enrolled-teachers optgroup. One real
  * endpoint behind it (GET /enrollments/me — the same rows the courses

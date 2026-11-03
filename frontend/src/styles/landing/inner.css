@@ -62,3 +62,58 @@
   font-variant-numeric: tabular-nums;
   color: var(--accent-ink);
 }
+
+/* ═════════════════════════════════════════════════════════════════════
+   MADAREK — R332 W11 · the ROLE-DASHBOARD grammar bridge
+   ─────────────────────────────────────────────────────────────────────
+   The four role dashboards (/student · /teacher · /admin · /owner) sit
+   under the landing's grammar at app density. The student sheet already
+   carries the full §B2 register (r319-student.css SectionBar [01]…[05]);
+   the teacher / admin / owner sheets predate it — their section titles
+   had no index seat and the admin dashboard's quick-stat rows read as
+   ONE uniform body-text rung. This section EXTENDS the W10b file with
+   the two seams those pages mount, marker-scoped so pages without the
+   markers render byte-identical.
+
+   CASCADE CONTRACT — unchanged from the .inx-head block above: imported
+   only by the owning pages, unlayered (outranks the @layer page sheets
+   without !important), tokens only, logical properties only.
+   ═════════════════════════════════════════════════════════════════════ */
+
+/* the section index chip — the r319s-bar-index register (r319-student.css
+   §1: mono · 11px floor · medium · 0.08em · tabular · text-faint,
+   dir=ltr, aria-hidden) spelled out self-contained, because the
+   teacher/admin/owner dashboards never load r319-student.css. Mounted
+   by the owning pages inside their SectionHeader / Card titles so the
+   [01]…[nn] gutter grammar reads across ALL four dashboards. */
+.w11-idx {
+  margin-inline-end: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-faint);
+}
+
+/* W11 audit P1 — the admin dashboard's «مؤشرات سريعة» stat rows: the
+   label AND the value both rode --fs-sm (one uniform body rung). The
+   value is the row's DATA — it lifts to the metric rung (the same
+   --type-metric-size voice the KPI StatStrip cells speak), semibold +
+   tabular; the label keeps its small muted register. Scoped to the
+   .w11-quick marker the dashboard's card mounts — the same .admin-stat
+   classes on reports/analysis render untouched. */
+.w11-quick .admin-stat-value {
+  font-size: var(--type-metric-size);
+  font-weight: var(--fw-semibold);
+  line-height: var(--lh-snug);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+  min-inline-size: 0;
+}
+
+/* the row's breathing room scales with its lifted value (the metric
+   rung needs ≥44px so the label/value pair keeps its baseline). */
+.w11-quick .admin-stat-row {
+  min-block-size: 44px;
+}
