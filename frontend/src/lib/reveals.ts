@@ -55,7 +55,10 @@ const ARMED_CLASS = 'js-reveal-armed';
 const LINES_SEL = '.fo-cta-title'; // display heading → whole-block rise
 const ITEM_SEL =
   '.pm-col, .rl-row, .fo-cta-lede, .fo-cta-actions, .fo-cta-meta';
-const CARD_SEL = '.pm-artzone .pm-art, .fo-cta-sketch'; // drawn panels
+/* P-A2 R333 — the #product proof strip's panels joined the card rung:
+   the .pr-shot figures get row 13's imgCardReveal (scale 0.8→1) on the
+   same IO pair + RM bail as the drawn panels. */
+const CARD_SEL = '.pm-artzone .pm-art, .fo-cta-sketch, .pr-shots .pr-shot'; // drawn panels + the product-proof shots
 
 export interface RevealsHandle {
   destroy(): void;

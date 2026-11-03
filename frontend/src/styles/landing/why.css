@@ -334,3 +334,19 @@
   }
 }
 
+/* ═══ P-A2 R333 (INV-08 · heron-craft row 13) — the strip's
+   proper-scale seat. The capture presents edge-to-edge in its cell
+   on the 1px RULE frame (radius 0 — the sheet's canon; the old
+   --border-strong/--r-xs photo chrome softened the proof), and every
+   frame carries the mono [nn] index chip (ProductFrame idxChip —
+   aria-hidden chrome; the rail owns the stage semantics). The stage
+   01 seat rides the 2× re-capture (1440×870 @1×): same surface, the
+   heron platform frame's own ratio (the img box stays platform.css's
+   inline-size:100% / block-size:auto — edge-to-edge, CLS-safe).
+   Scoped to .wy — file-end so it wins the cascade WITHOUT
+   specificity forks (the W5 lesson). ═══ */
+.wy .prf-photo {
+  border-color: var(--rule);
+  border-radius: 0;
+}
+

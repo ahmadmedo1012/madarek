@@ -43,6 +43,14 @@ import { Preloader } from '../components/landing/chrome/Preloader';
 import { SheetCursor } from '../components/landing/cursor/SheetCursor';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
+/* P-A2 R333 (INV-08 · heron-craft row 13) — the platform band's
+ * product-proof strip: three REAL captures of the running platform,
+ * re-captured @2880×1740 (the heron platform frame's 1440×870 @1×)
+ * from the seeded stack. Vite-asset imports — the import IS the
+ * fingerprinted dist asset; lazy <img>s, Arabic alt, never eager. */
+import lectureShot from '../assets/product/lecture-checkpoint.webp';
+import aiTutorShot from '../assets/product/ai-tutor.webp';
+import examActiveShot from '../assets/product/exam-active.webp';
 import { FooterLens } from '../components/landing/footer/FooterLens';
 // R323 (A3 · defects 1+9): FooterArt (FooterMarkArt/WordmarkArt) is
 // retired — the giant footer wordmark is <Logo variant="wordmark"> now
@@ -334,6 +342,83 @@ function PlatformShowcase() {
         <span className="pr-cap-line">نقطة فحص تُصحَّح فورًا داخل القاعة</span>
       </figcaption>
     </figure>
+  );
+}
+
+/* ── P-A2 R333 (INV-08 · heron-craft row 13) — THE PRODUCT-PROOF
+ * STRIP. Heron's platform band proves the drawing became a working
+ * tool with its real app windows; the r325 Y2 rebuild kept the drawn
+ * frame alone (the supervisor defect: the sheet's only real captures
+ * lived in the why strip). The proof strip seats the 2× captures as
+ * three prf-card-grammar panels — hairline frame, radius 0, the
+ * paper chip (mono index + Arabic label — the caption IS content) —
+ * under the band's grid (row 3, inside the row-1 stretch's slack:
+ * height-neutral by construction, the twin floor stays exact).
+ *
+ * The entrance is row 13's own imgCardReveal (scale 0.8→1 + fade):
+ * the panels ride reveals.ts CARD_SEL → .reveal-card, the house
+ * IO-driven rung — reduced motion bails before arming and the strip
+ * ships visible; JS-off the same (the module owns ALL hiding).
+ * Honest by construction: the alts describe the REAL seeded UI; the
+ * chips name the surface; zero links (the funnel counts stay 5+5). */
+const PLATFORM_SHOTS = [
+  {
+    src: lectureShot,
+    chip: '[01]',
+    labelAr: 'محاضرة تفاعلية',
+    altAr: 'مشغّل محاضرة مدارك أثناء محاضرة «هندسة البرمجيات» مع بطاقة نقطة فحص مدمجة في الفيديو — بيانات العرض التجريبية',
+  },
+  {
+    src: aiTutorShot,
+    chip: '[02]',
+    labelAr: 'معلّم ذكي',
+    altAr: 'المساعد الأكاديمي في مدارك يجيب عن سؤال الطالب داخل الواجهة — بيانات العرض التجريبية',
+  },
+  {
+    src: examActiveShot,
+    chip: '[03]',
+    labelAr: 'اختبار',
+    altAr: 'اختبار إلكتروني في مدارك أثناء عمله بمؤقّت حيّ مع عدّاد الأسئلة — بيانات العرض التجريبية',
+  },
+] as const;
+
+function PlatformShots() {
+  return (
+    <div className="pr-shots" role="group" aria-label="واجهات المنصّة الحقيقية">
+      {PLATFORM_SHOTS.map((s) => (
+        <figure key={s.chip} className="pr-shot">
+          <div className="pr-shot-media">
+            <img
+              src={s.src}
+              alt={s.altAr}
+              loading="lazy"
+              decoding="async"
+              width={1440}
+              height={870}
+            />
+            {/* the drafting frame layer — four 1px corner ticks inside
+                the hairline box (vector-effect keeps them 1px at every
+                scale); pure chrome, aria-hidden */}
+            <svg
+              className="pr-shot-frame"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M0 7 L0 0 L7 0" vectorEffect="non-scaling-stroke" />
+              <path d="M93 0 L100 0 L100 7" vectorEffect="non-scaling-stroke" />
+              <path d="M100 93 L100 100 L93 100" vectorEffect="non-scaling-stroke" />
+              <path d="M7 100 L0 100 L0 93" vectorEffect="non-scaling-stroke" />
+            </svg>
+          </div>
+          <figcaption className="prf-idxchip pr-shot-chip">
+            <span className="fo-mono" dir="ltr">{s.chip}</span>
+            <span className="pr-shot-label">{s.labelAr}</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
   );
 }
 
@@ -924,6 +1009,13 @@ export default function LandingPage() {
               <Icon icon={ArrowLeft} size={13} />
             </a>
           </RevealCssClass>
+
+          {/* P-A2 (INV-08 · heron row 13) — the product-proof strip:
+              the band's real 2× captures, seated in row 3 (the ≥992
+              grid's stretch slack — height-neutral). ≤991 the band's
+              capture-free fold stands (the twin lock): the strip
+              renders ≥992 only. */}
+          <PlatformShots />
         </section>
 
         {/* ═══ [6] لماذا مدارك — the Watch/Check/Test/Master stage

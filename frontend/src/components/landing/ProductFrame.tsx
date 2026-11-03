@@ -37,6 +37,21 @@ export interface ProductFrameProps {
    * in the figcaption.
    */
   viewTag?: string;
+  /**
+   * P-A2 R333 (INV-08 · heron-craft row 13) — the 2× asset seat: when
+   * set, the <img> rides the imported Vite asset (src/assets/product/
+   * *.webp, 2880×1740 @2× = 1440×870 @1×) instead of the public
+   * /media/product ladder. CLS-safe by construction: the width/height
+   * attributes state the 1× intrinsic box.
+   */
+  twoXSrc?: string;
+  /**
+   * P-A2 R333 — the mono [nn] index chip at the photo's top
+   * inline-start corner (the wy strip's stage echo, the retired
+   * prf-viewtag's seat grammar). Drafting chrome: rendered aria-hidden
+   * — the honest read stays in the caption below.
+   */
+  idxChip?: string;
 }
 
 function productSrcset(id: string, widths: number[]): string {
@@ -145,6 +160,8 @@ export function ProductFrame({
   ctaTo,
   ctaAnchor = false,
   viewTag,
+  twoXSrc,
+  idxChip,
 }: ProductFrameProps) {
   const widths = capture.widths;
   const w = widths[widths.length - 1] ?? widths[0] ?? 720;
@@ -154,17 +171,36 @@ export function ProductFrame({
     <figure className={['prf', `prf--${variant}`].join(' ')}>
       <div className="prf-stage">
         <div className="prf-photo">
-          <img
-            src={`/media/product/${capture.id}-${widths[0]}.webp`}
-            srcSet={productSrcset(capture.id, widths)}
-            sizes={capture.sizes}
-            width={w}
-            height={h}
-            alt={capture.altAr}
-            loading="lazy"
-            decoding="async"
-          />
+          {twoXSrc ? (
+            /* P-A2 — the 2× seat: one fingerprinted asset, the 1×
+               intrinsic 1440×870 box (CLS-safe, the heron platform
+               frame's own ratio) */
+            <img
+              src={twoXSrc}
+              width={1440}
+              height={870}
+              alt={capture.altAr}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <img
+              src={`/media/product/${capture.id}-${widths[0]}.webp`}
+              srcSet={productSrcset(capture.id, widths)}
+              sizes={capture.sizes}
+              width={w}
+              height={h}
+              alt={capture.altAr}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
         </div>
+        {idxChip && (
+          <span className="prf-idxchip fo-mono" dir="ltr" aria-hidden="true">
+            {idxChip}
+          </span>
+        )}
         <ProductMockCards variant={variant} />
         {viewTag && (
           <span className="prf-viewtag" dir="ltr" aria-hidden="true">

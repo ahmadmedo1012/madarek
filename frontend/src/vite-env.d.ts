@@ -35,6 +35,14 @@ declare module '*.svg' {
   export default url;
 }
 
+/* P-A2 R333 (INV-08 · heron-craft row 13) — the 2× product captures
+ * (src/assets/product/*.webp) ride Vite's asset pipeline: the default
+ * export IS the emitted, fingerprinted dist asset URL. */
+declare module '*.webp' {
+  const url: string;
+  export default url;
+}
+
 // Vite ?url suffix turns any import into a same-origin URL string —
 // used by the PDF viewer to load the worker as a module.
 declare module '*?url' {

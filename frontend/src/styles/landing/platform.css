@@ -536,3 +536,105 @@
    with them into campus.css); the pr-grid keeps its two-block shape
    until the phone band. */
 
+/* ── P-A2 R333 (INV-08 · heron-craft row 13) — the product-proof
+   strip ──────────────────────────────────────────────────────────────
+   The band's REAL 2× captures (2880×1740 → 1440×870 @1×, the heron
+   platform frame's own ratio) as three prf-card-grammar panels:
+   hairline 1px --rule frame, radius 0, --surface ground, zero
+   shadow — plus the SVG corner-tick layer (the drafting frame
+   treatment, aria-hidden) and the paper caption chip (mono index +
+   Arabic label — the chip is a figcaption, real content).
+
+   GEOMETRY CONTRACT (the twin): ≥992 the strip is the section grid's
+   row 3 (grid-column 1 / -1) — the row-1 minmax(0,1fr) stretch
+   absorbs it, so the 85.2rem floor still pins the band's height
+   (height-neutral by construction; verified against the probe).
+   ≤991 the band's capture-free fold stands (the twin lock, the same
+   law the ≤767 .wy-stack fold rides) — the strip renders ≥992 only.
+
+   ENTRANCE: none here — the panels ride reveals.ts CARD_SEL →
+   .reveal-card (row 13's imgCardReveal, scale 0.8→1); reduced motion
+   bails before arming and the strip ships visible (reveals.css belt). */
+.pr-shots {
+  /* the proof band's media height — one tunable seat (the row-1
+     stretch's slack owns it; rem so the fluid root scales it) */
+  --pr-shot-h: 13rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-3);
+  min-inline-size: 0;
+  margin-block-start: var(--sp-4);
+}
+
+.pr-shot {
+  position: relative;
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.pr-shot-media {
+  overflow: clip;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--surface);
+}
+
+.pr-shot-media img {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--pr-shot-h);
+  object-fit: cover;
+  object-position: top; /* the UI chrome (bars/headers) leads the crop */
+}
+
+/* the drafting frame layer — four 1px corner ticks inside the box
+   (vector-effect on the paths keeps the stroke 1px at every scale) */
+.pr-shot-frame {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.pr-shot-frame path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+}
+
+/* the caption chip — the shared .prf-idxchip grammar (product-frame.css)
+   widened for the index + label pair. The chip IS content here
+   (figcaption — the honest surface name), never aria-hidden. */
+.pr-shot .prf-idxchip {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1-5);
+}
+
+.pr-shot-label {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* ≤991: the band's capture-free fold stands (the twin lock — the
+   768–991 strips and the ≤767 stack keep their measured shapes). */
+@media (max-width: 991px) {
+  .pr-shots {
+    display: none;
+  }
+}
+
+/* ≥992: the strip is the section grid's row 3, full width — the
+   row-1 stretch (the head/stage/side slack) absorbs it. */
+@media (min-width: 992px) {
+  .pr-shots {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+}
+

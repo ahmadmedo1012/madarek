@@ -249,6 +249,23 @@ export const PRODUCT_CAPTURES: [
   },
 ];
 
+/* ── P-A2 R333 (INV-08 · heron-craft row 13) — the 2× capture seats ──
+ * The same seeded surfaces re-captured @2880×1740 (the heron platform
+ * frame's 1440×870 @1× — docs/redesign/r333/media-capture.md). These
+ * ride the Vite asset pipeline (src/assets/product/*.webp → hashed
+ * dist assets) through ProductFrame's `twoXSrc` override; the public
+ * /media/product ladder above keeps serving the 1280×800 seats.
+ * widths[0] states the 1× intrinsic width (the CLS box is 1440×870). */
+export const CAPTURE_LECTURE_CHECKPOINT_2X: ProductCapture = {
+  id: 'lecture-checkpoint',
+  titleAr: 'المحاضرة التفاعلية',
+  captionAr: 'مشغّل المحاضرة مع نقطة فحص تُصحَّح فورًا',
+  altAr: 'لقطة حقيقية من مشغّل المحاضرة في مدارك أثناء محاضرة «هندسة البرمجيات»، مع بطاقة نقطة فحص مدمجة في الفيديو — بيانات العرض التجريبية',
+  route: '/student/courses',
+  widths: [1440],
+  sizes: '(min-width: 992px) 30rem, 100vw',
+};
+
 export type RoleKey = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 
 /* The four role-seat captures (r307): the non-student dashboards the

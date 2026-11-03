@@ -48,6 +48,10 @@ def parse_args():
     ap.add_argument("--sides", default="heron,madarek")
     ap.add_argument("--step", type=int, default=None,
                     help="override progress step pct (e.g. 10 for a smoke run)")
+    ap.add_argument("--engine", default="chromium", choices=["chromium", "webkit"],
+                    help="browser engine; webkit needs the r333 userland lib fix "
+                         "(scripts/r333/webkit-userland.sh) + software-EGL env vars "
+                         "set before this process starts")
     return ap.parse_args()
 
 
@@ -186,7 +190,7 @@ def main():
     results = {}
     t0 = time.time()
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(headless=True)
+        browser = getattr(pw, args.engine).launch(headless=True)
         ctx = browser.new_context(viewport=vp, device_scale_factor=1,
                                   user_agent=UA, locale="en-US")
         ctx.add_init_script(CONSENT_SEED)
@@ -216,7 +220,8 @@ def main():
             existing[side]["maxScroll"] = r["maxScroll"]
     ranges_fp.write_text(json.dumps(existing, indent=1))
 
-    summary = {"vp": args.vp, "sections": sections, "elapsedS": int(time.time() - t0),
+    summary = {"vp": args.vp, "engine": args.engine, "sections": sections,
+               "elapsedS": int(time.time() - t0),
                "sides": {k: {kk: vv for kk, vv in v.items() if kk != "ranges"}
                          for k, v in results.items()}}
     (outdir / "capture-summary.json").write_text(json.dumps(summary, indent=1))

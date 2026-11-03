@@ -32,7 +32,15 @@
 import { useRef } from 'react';
 import { useSheetScroll } from '../../lib/motion/useSheetScroll';
 import { ProductFrame } from './ProductFrame';
-import { PRODUCT_CAPTURES } from '../../data/university-media';
+import {
+  CAPTURE_LECTURE_CHECKPOINT_2X,
+  PRODUCT_CAPTURES,
+  type ProductCapture,
+} from '../../data/university-media';
+/* P-A2 R333 (INV-08 · heron-craft row 13) — the 2× capture: the SAME
+ * lecture-player surface re-captured @2880×1740 (1440×870 @1×) from
+ * the seeded stack; Vite-asset loaded (fingerprinted dist asset). */
+import lectureShot2x from '../../assets/product/lecture-checkpoint.webp';
 
 export interface WhyStage {
   num: string;
@@ -40,6 +48,12 @@ export interface WhyStage {
   titleAr: string;
   textAr: string;
   captureId: string;
+  /** P-A2 R333 (INV-08) — the proper-scale seat: when set, the stage's
+   * frame rides the 2× re-capture (Vite asset) instead of the 1280×800
+   * public ladder. The capture carries the honest Arabic copy; the
+   * story stays the same surface, now at the heron platform frame's
+   * own 1440×870 @1× resolution. */
+  twoX?: { src: string; capture: ProductCapture };
 }
 
 /* The four verbs — the SAME journey stages the pinned walkthrough plays
@@ -57,6 +71,11 @@ export const WHY_STAGES: WhyStage[] = [
     titleAr: 'المحاضرة التفاعلية',
     textAr: 'محاضرة مسجَّلة بنقاط فحص تُصحَّح فورًا، وحضور يُحتسب تلقائيًا.',
     captureId: 'student-lecture-player',
+    /* P-A2 (INV-08) — the supervisor defect's «اللقطة الصغيرة»: the
+     * lecture frame is the strip's proper-scale seat now — the same
+     * seeded surface (player + checkpoint card) at 2×, edge-to-edge
+     * in its cell on the 1px rule frame with the [01] chip. */
+    twoX: { src: lectureShot2x, capture: CAPTURE_LECTURE_CHECKPOINT_2X },
   },
   {
     num: '02',
@@ -120,15 +139,22 @@ export function WhyScene() {
         ))}
       </ol>
 
-      {/* the capture stack — one frame per stage, cross-fading */}
+      {/* the capture stack — one frame per stage, cross-fading. P-A2
+          (INV-08): every frame carries the mono [nn] index chip (the
+          stage echo, aria-hidden chrome) and presents edge-to-edge in
+          its cell on the 1px rule frame (why.css re-seat). */}
       <div className="wy-stack">
         {WHY_STAGES.map((s, i) => {
-          const capture = PRODUCT_CAPTURES.find((c) => c.id === s.captureId);
+          const capture = s.twoX
+            ? s.twoX.capture
+            : PRODUCT_CAPTURES.find((c) => c.id === s.captureId);
           if (!capture) return null;
           return (
             <div key={s.num} className="wy-capture" data-i={i}>
               <ProductFrame
                 capture={{ ...capture, sizes: '(min-width: 992px) 48rem, 100vw' }}
+                twoXSrc={s.twoX?.src}
+                idxChip={`[${s.num}]`}
               />
             </div>
           );

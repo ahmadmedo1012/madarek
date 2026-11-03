@@ -1388,8 +1388,11 @@
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: 2rem; /* spacing-gate: allow — the extracted grid's own measured gutter (16.6667px @1440, full-1440.json), an external constant */
     /* row 1 (the stretched cells) absorbs the floor's slack; row 2 is
-       the note line under the surface column */
-    grid-template-rows: minmax(0, 1fr) auto;
+       the note line under the surface column; row 3 (P-A2 R333
+       INV-08) is the product-proof strip — the 2× captures seat
+       INSIDE the stretch's slack, so the 85.2rem floor still pins
+       the band (height-neutral; verified against the probe) */
+    grid-template-rows: minmax(0, 1fr) auto auto;
   }
 
   /* ── THE HEADING COLUMN — the extracted content-left seat ───────

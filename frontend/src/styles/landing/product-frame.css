@@ -298,6 +298,29 @@
   padding-block-end: var(--sp-1-5);
 }
 
+/* ── The mono [nn] index chip — P-A2 R333 (INV-08) ──────────────────
+   Drafting chrome at the photo's top inline-start corner (the retired
+   prf-viewtag's seat grammar): the 1px hairline paper chip. Seats
+   inside .prf-stage (the stage's overflow: clip owns the boundary).
+   aria-hidden in the markup — the honest read stays in the caption.
+   The wy strip re-seats it beside its 2× capture (see why.css); the
+   #product proof strip reuses the same chip grammar for its caption
+   chips (.pr-shot .prf-idxchip in platform.css — those ARE content:
+   a figcaption, never aria-hidden). */
+.prf-idxchip {
+  position: absolute;
+  inset-block-start: var(--sp-1-5);
+  inset-inline-start: var(--sp-1-5);
+  z-index: 2;
+  padding: 0.3rem 0.6rem; /* spacing-gate: allow — the drafted chip's own label rhythm (the pr-cell-bar 0.44/0.8rem family, an external constant) */
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: var(--fs-mono-xs);
+  line-height: 1;
+  pointer-events: none;
+}
+
 /* ── The entrance — ONE opacity/translate rise, never scroll-linked ──
    (PI-46 R333: the base .prf-card animation and the three variant
    animation-delays that stood here are consolidated into the grammar
