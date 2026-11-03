@@ -30,6 +30,7 @@ import { render, fireEvent } from "@testing-library/react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { RoleTabBar } from "@/components/shell/TabBar";
 import { ROLE_TABS } from "@/components/shell/roleTabs";
+import { isImmersiveRoute, isComposerRoute } from "@/components/shell/immersive";
 
 /* The bar's badge rides a react-query hook (60s refetch interval) — mocking
    it keeps this unit deterministic: no async store updates between asserts
@@ -132,7 +133,11 @@ type BarUtils = Awaited<ReturnType<typeof render>> & {
   tree: (index: number) => React.ReactElement;
 };
 
-async function mountBar(role: keyof typeof ROLE_TABS, stateIndex: number): Promise<BarUtils> {
+async function mountBar(
+  role: keyof typeof ROLE_TABS,
+  stateIndex: number,
+  hidden = false,
+): Promise<BarUtils> {
   const routes = ROLE_TABS[role].map((t) => ({ key: `${role.toLowerCase()}-${t.name}`, name: t.name }));
   const navigateToTab = jest.fn();
   const tree = (index: number) => (
@@ -142,6 +147,7 @@ async function mountBar(role: keyof typeof ROLE_TABS, stateIndex: number): Promi
         navigateToTab={navigateToTab}
         insets={{ top: 0, bottom: 0, left: 0, right: 0 }}
         role={role}
+        hidden={hidden}
       />
     </SafeAreaProvider>
   );
@@ -210,6 +216,86 @@ describe("RoleTabBar — one persistent bar per role", () => {
     expect(bar.getByRole("tab", { name: "الحوكمة" })).toBeTruthy();
     expect(JSON.stringify(ROLE_TABS)).not.toContain("الحواكمة");
     await bar.unmount();
+  });
+
+  test("the active tab is marked selected and every tab keeps role/state a11y", async () => {
+    const bar = await mountBar("STUDENT", 2);
+    for (const [i, tab] of ROLE_TABS.STUDENT.entries()) {
+      const el = bar.getByRole("tab", { name: tab.label });
+      expect(el.props.accessibilityRole).toBe("tab");
+      expect(el.props.accessibilityState.selected).toBe(i === 2);
+    }
+    await bar.unmount();
+  });
+});
+
+/* ── 3b. R334 3-a — the immersive-hide policy ───────────────────────── */
+
+describe("immersive-hide policy (route-driven; the bar NEVER unmounts)", () => {
+  test("lecture player + exam RUNNER hide; exam LIST keeps the bar", () => {
+    expect(isImmersiveRoute(["student", "lectures", "42"])).toBe(true);
+    expect(isImmersiveRoute(["student", "online-exams", "tpl_9"])).toBe(true);
+    // the exam CENTER list is not immersive — the bar stays
+    expect(isImmersiveRoute(["student", "online-exams"])).toBe(false);
+    expect(isImmersiveRoute(["student", "dashboard"])).toBe(false);
+    expect(isImmersiveRoute(["teacher", "grades"])).toBe(false);
+    expect(isImmersiveRoute([])).toBe(false);
+  });
+
+  test("the student assistant tab is the composer route (keyboard gate)", () => {
+    expect(isComposerRoute(["student", "ai"])).toBe(true);
+    expect(isComposerRoute(["student", "courses"])).toBe(false);
+    expect(isComposerRoute(["teacher", "ai"])).toBe(false);
+  });
+
+  test("every (tabs) layout wires the policy (and only layouts do)", () => {
+    const roles = Object.keys(ROLE_TABS) as (keyof typeof ROLE_TABS)[];
+    for (const role of roles) {
+      const src = readFileSync(join(APP, role.toLowerCase(), "(tabs)", "_layout.tsx"), "utf8");
+      expect(src).toContain("useImmersiveTabBar");
+      expect(src).toContain("hidden={immersiveHidden}");
+      // fade-through between tab scenes (R334 3-a)
+      expect(src).toContain('animation: "fade"');
+    }
+    // the hide policy is wired ONLY in shell layouts — never in a screen
+    const offenders = walk(APP).filter((f) => {
+      if (f.endsWith("_layout.tsx")) return false;
+      return /useImmersiveTabBar|isImmersiveRoute/.test(readFileSync(f, "utf8"));
+    });
+    expect(offenders).toEqual([]);
+  });
+
+  test("hidden=true keeps the bar MOUNTED (one tablist, five tabs) — no unmount", async () => {
+    const bar = await mountBar("STUDENT", 0, true);
+    expect(bar.queryAllByTestId("role-tab-bar")).toHaveLength(1);
+    expect(countRole(bar.toJSON(), "tablist")).toBe(1);
+    expect(bar.getAllByRole("tab")).toHaveLength(5);
+    await bar.unmount();
+  });
+
+  test("hidden bar leaves layout flow (position absolute) yet still navigates", async () => {
+    const bar = await mountBar("STUDENT", 0, true);
+    const root = bar.getByTestId("role-tab-bar");
+    // the stock UIKit-bar mechanism: hidden → absolute (screens reclaim
+    // the height); the slide itself is the animated translateY on device.
+    expect(JSON.stringify(root.props.style)).toContain("absolute");
+    await fireEvent.press(bar.getByRole("tab", { name: "مقرراتي" }));
+    expect(bar.navigateToTab).toHaveBeenCalledTimes(1);
+    await bar.unmount();
+  });
+});
+
+/* ── 3c. R334 3-a — the compact top bar policy ──────────────────────── */
+
+describe("AppTopBar — compact policy (identity moved to Profile)", () => {
+  test("identity/institution left the top bar (source contract)", () => {
+    const src = readFileSync(join(ROOT, "src", "components", "shell", "AppTopBar.tsx"), "utf8");
+    expect(src).toContain('accessibilityLabel="البحث"');
+    expect(src).toContain("الإشعارات");
+    // the identity block + avatar/settings button are gone from the chrome
+    expect(src).not.toContain("currentInstitution");
+    expect(src).not.toContain("initials");
+    expect(src).not.toContain('router.push("/settings")');
   });
 });
 
