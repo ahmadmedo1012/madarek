@@ -71,7 +71,13 @@ Loop: build → twin → fix → twin. **The Twin Report decides.**
 |---|---|---|---|---|
 | 39e748fe | R331 final (baseline) | ✅ | ✅ | Actions API at R331 close |
 | 298dbb7e | r332 kickoff scaffold | ✅ 11/11 (lint·typecheck·build·unit×2·db·e2e·e2e-ios·design·surface·size) | ✅ | API-checked check-runs |
-| 8b624ad0 | arsenal delta + css baseline + twin harness v0 | (pending at push) | (pending) | polled next |
+| 8b624ad0 | arsenal delta + css baseline + twin harness v0 | ✅ 11/11 | ✅ | API-checked |
+| 43620711 | twin run-001 verdicts + defect confirmation | ✅ 11/11 | ✅ | API-checked |
+| 0d5dce20 | landing.css→per-section sheets; W1 hero full-bleed; gates re-keyed | ✅ 12/12 | ✅ | API-checked |
+| dc68420d | W2+W3 twin-PASS; W4/W5/W6 dissolution partials | ⚠ E2E flake→rerun ✅ 12/12 | ✅ | runner-load timeout (r309 drag), local greens ×2, flake named |
+| bd55775c | W5c why PASS; W4c+W6c display rungs — all 9 in threshold @1440 | ✅ 12/12 (rerun; first run auto-cancelled) | ✅ | API-checked |
+| d90eff11 | W7/W8/W9/W10a/W10b (re-landed post-reset) | ⚠ E2E flake→rerun ✅ 12/12 | ✅ | distinct test (r305 active-mark), same signature; flake named |
+| 152d06a7 | W390a/W390b phone tier | (pending at push) | (pending) | polled next |
 
 ## Tools actually used (unproven claims are void)
 | tool | invoked | commit | artifact |
@@ -82,6 +88,9 @@ Loop: build → twin → fix → twin. **The Twin Report decides.**
 | eyes-on frame review (Read) | run-001 | (this commit) | hero inner-box + statement-390 confirmed |
 | npm registry + GitHub API currency scan | A-Scout | 8b624ad0 | arsenal-delta.md |
 | stylelint@16 -f json census | A-CSS | 8b624ad0 | css-baseline.md (78e/104w) |
+| twin capture/report ×6 runs | run-001→003 + w390a-e | 43620711→152d06a7 | per-section verdicts, all-9 @1440 in threshold |
+| Vite dep re-optimization (vite --force) | W10a | d90eff11 | /auth Invalid-hook crash cleared (dev-server graph, not product) |
+| environment reset ×2 recovery | — | d90eff11, 152d06a7 | clone+install+server in ≈5 min; zero committed work lost |
 
 ## Twin run-001 verdicts (judge — full numbers in `twin/run-001.md`)
 1440 PASS-side: heights hero/pains/roles/platform/journey/cta ≤0.45% Δ; hero fs identical.
