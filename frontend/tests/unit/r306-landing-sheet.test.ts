@@ -237,7 +237,12 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     const mq =
       [...live.matchAll(/@media \(max-width: 767px\)\s*\{([\s\S]*?)\n\}\s*\n/g)]
         .map((m) => m[1] as string)
-        .find((b) => /\.fo-hero-art \.bp-stage/.test(b)) ?? '';
+        /* R333 re-key: the retired .fo-hero-art band grammar was
+         * deleted from the sheets (dead since the R332 W1 full-bleed
+         * rebuild; deletion proven landing-byte-identical in evidence
+         * r333/pi-b1) — the live hero anatomy is the .hro-* family,
+         * so the mobile-block extractor anchors on it now. */
+        .find((b) => /\.hro-/.test(b)) ?? '';
     // R322 override (2-b · the measured transplant): the window family
     // renamed .fo-hero-window → .fo-hero-art (the art BAND of the
     // two-band hero). The seat changes, the measure holds — the
@@ -248,8 +253,10 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     // art-mass + stacked-cells pins move to the base seats. The 2-line
     // H1 strip measure holds on the D1 rung (measured ≤767: h=67px =
     // exactly 2 lines @390 AND @360).
-    expect(live).toMatch(/\.fo-hero-art \.bp-svg\s*\{[\s\S]*?inline-size:\s*100%/s);
-    expect(live).toMatch(/\.fo-hero-art \.bp-svg\s*\{[\s\S]*?block-size:\s*auto/s);
+    /* R333 re-key: the width-driven drawing contract lives on the
+     * base .bp-svg seat (hero.css) since the band grammar retired. */
+    expect(live).toMatch(/\.bp-svg\s*\{[\s\S]*?inline-size:\s*100%/s);
+    expect(live).toMatch(/\.bp-svg\s*\{[\s\S]*?block-size:\s*auto/s);
     // R322 override (1-d FINAL · the type-scale migration): the ≤767 H1
     // re-clamp RETIRED — the D1 rung (--fs-d1, band-independent) governs
     // from the base seat: 31.74px floor across the phone band (Heron's
@@ -286,10 +293,11 @@ describe('r306 → r310 — the elevation illustration (the honest interactive)'
     expect(liveTsx).toMatch(/className="bp-dmark bp-dmark-tl"(?: aria-hidden="true")? \/>/);
     expect(live).toMatch(/\.bp-plus::before\s*\{\s*content:\s*'\+'/);
     expect(live).toMatch(/\.bp-dmark::before\s*\{\s*content:\s*'\+'/);
-    // R322 override (2-b): the dashed inner frame rides the renamed
-    // .fo-hero-art .bp-stage::before seat (same 1px dashed rule,
-    // proximity-revealed as before).
-    expect(live).toMatch(/\.fo-hero-art \.bp-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
+    // R322 override (2-b) → R333 re-key: the dashed inner frame rides
+    // the live .hro-stage::before seat (same 1px dashed rule,
+    // proximity-revealed as before) after the retired band grammar
+    // was deleted (evidence r333/pi-b1, landing byte-identical).
+    expect(live).toMatch(/\.hro-stage::before\s*\{[\s\S]*?border:\s*1px dashed/s);
     // the render pipeline is reproducible + committed (repo root)
     expect(read('../scripts/r314/ink-render.mjs')).toContain('OVERRIDES');
   });
