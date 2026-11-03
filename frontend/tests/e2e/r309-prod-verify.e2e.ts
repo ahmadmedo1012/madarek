@@ -158,21 +158,21 @@ test('prod · the entrance — composed first frame, ≈9–10s sequence, scroll
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(BASE + '/');
   /* fresh context → the intro plays; measure from the loader mount */
-  await page.waitForSelector('.sl', { timeout: 20000 });
+  await page.waitForSelector('.pl', { timeout: 20000 });
   const tMount = Date.now();
   const early = await page.evaluate(() => ({
     theme: document.documentElement.dataset.theme,
-    bg: getComputedStyle(document.querySelector('.sl-main') as Element).backgroundColor,
-    chrome: !!document.querySelector('.sl-progress') && !!document.querySelector('.sl-meta'),
+    bg: getComputedStyle(document.querySelector('.pl-main') as Element).backgroundColor,
+    chrome: !!document.querySelector('.pl-progress') && !!document.querySelector('.pl-meta'),
   }));
   expect(early.chrome).toBe(true);
   expect(early.bg).not.toBe('rgb(0, 0, 0)');
   await page.screenshot({ path: `${SHOTS}/prod-loader-early.png` });
-  await expect(page.locator('.sl-pct')).toHaveText('100%', { timeout: 8000 });
+  await expect(page.locator('.pl-counter')).toHaveText('100%', { timeout: 8000 });
   const doneAt = Date.now() - tMount;
   expect(doneAt).toBeGreaterThanOrEqual(3500);
   expect(doneAt).toBeLessThanOrEqual(7000);
-  await expect(page.locator('.sl')).toHaveCount(0, { timeout: 8000 });
+  await expect(page.locator('.pl')).toHaveCount(0, { timeout: 8000 });
   const goneAt = Date.now() - tMount;
   expect(goneAt).toBeGreaterThanOrEqual(8000);
   expect(goneAt).toBeLessThanOrEqual(11500);

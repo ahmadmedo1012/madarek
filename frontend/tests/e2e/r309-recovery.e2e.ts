@@ -472,14 +472,14 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
     /* the early frame is COMPOSED (the loader chrome + drawing), and
      * the document root never paints an unexplained blank dark frame
      * (the boot script's default now matches the store: light). */
-    await page.waitForSelector('.sl', { timeout: 15000 });
+    await page.waitForSelector('.pl', { timeout: 15000 });
     const tMount = Date.now(); /* measure the SEQUENCE from mount —
      * goto includes the dev server's cold transform */
     const early = await page.evaluate(() => {
-      const main = document.querySelector('.sl-main');
+      const main = document.querySelector('.pl-main');
       const cs = main ? getComputedStyle(main) : null;
       return {
-        hasChrome: !!document.querySelector('.sl-progress') && !!document.querySelector('.sl-meta'),
+        hasChrome: !!document.querySelector('.pl-progress') && !!document.querySelector('.pl-meta'),
         bg: cs ? cs.backgroundColor : null,
         theme: document.documentElement.dataset.theme,
       };
@@ -490,7 +490,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
     /* R313 override: the counter is ASSET-GATED — 100% lands between
      * ~3.25s (assets resolved early) and 4.9s (the fallback curve);
      * never the R309 fixed 5s+3.6s hold */
-    await expect(page.locator('.sl-pct')).toHaveText('100%', { timeout: 8000 });
+    await expect(page.locator('.pl-counter')).toHaveText('100%', { timeout: 8000 });
     const doneAt = Date.now() - tMount;
     expect(doneAt).toBeGreaterThanOrEqual(2500);
     expect(doneAt).toBeLessThanOrEqual(7000);
@@ -498,7 +498,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
     /* the completed state holds ~0.7s, then the geometric 835ms
      * center-out split hides the sheet — R313: the split PLAYS (the
      * R309 race cut it at ~21ms); total ≈ counter + 0.7 + 0.835s */
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 6000 });
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 6000 });
     const goneAt = Date.now() - tMount;
     expect(goneAt).toBeGreaterThanOrEqual(3200);
     expect(goneAt).toBeLessThanOrEqual(9000);
@@ -516,7 +516,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
      * saveData/≤2g/≤2-core visitors skip too). The R313 replay-always
      * pin is retired per the round brief's owner order. */
     await page.reload();
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 4000 });
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 4000 });
     await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
   });
 
@@ -530,8 +530,8 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
       }
     });
     await page.goto('/');
-    await page.locator('.sl-skip').click();
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 4000 });
+    await page.locator('.pl-skip').click();
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 4000 });
     expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
   });
 
@@ -546,7 +546,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
         }
       });
       await page.goto('/');
-      await expect(page.locator('.sl')).toHaveCount(0);
+      await expect(page.locator('.pl')).toHaveCount(0);
       await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
       expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe('');
     });
@@ -559,7 +559,7 @@ test.describe('R309/R313 loader — the asset-gated entrance clock and the lock 
      * .sl-meta-row + any resurgent coordinate seat under the same
      * no-release-labels law. */
     const labels = await page.evaluate(() =>
-      Array.from(document.querySelectorAll('.sl-meta-row, [class*="sheet-coord"]')).map((el) => el.textContent?.trim() ?? ''),
+      Array.from(document.querySelectorAll('.pl-meta-row, [class*="sheet-coord"]')).map((el) => el.textContent?.trim() ?? ''),
     );
     for (const l of labels) {
       expect(l, `stale release label: ${l}`).not.toMatch(/R3\d\d/i);

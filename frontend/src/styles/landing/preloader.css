@@ -108,3 +108,46 @@
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+/* ── the instrument chrome (r309/r311 contract): the measuring
+   crosshairs (heron-craft row 6 — the overlay is an instrument, not
+   a splash), the progress seat and the mono meta row. ── */
+.pl-cross-h,
+.pl-cross-v {
+  position: absolute;
+  background: var(--text);
+  mix-blend-mode: difference;
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.pl-cross-h {
+  inset-inline: 0;
+  top: 50%;
+  block-size: 1px;
+}
+
+.pl-cross-v {
+  inset-block: 0;
+  inset-inline-start: 50%;
+  inline-size: 1px;
+}
+
+.pl-progress {
+  display: grid;
+  justify-items: center;
+}
+
+.pl-meta {
+  display: grid;
+  justify-items: center;
+}
+
+.pl-meta-row {
+  display: flex;
+  gap: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}

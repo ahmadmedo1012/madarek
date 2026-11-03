@@ -29,9 +29,13 @@ import { Logo } from '../../../brand';
 import { markIntroSeen } from '../../../lib/motion/introGate';
 import '../../../styles/landing/preloader.css';
 
-const MIN_HOLD_MS = 900; /* the counter never resolves faster than this */
-const MAX_RUN_MS = 2200; /* the hard cap — readiness races this timer */
-const EXIT_HOLD_MS = 280; /* the 100% beat before the wipe opens */
+/* The clock is the r309-pinned measured window (heron-craft row 1 /
+ * introGate V14): the counter is ASSET-GATED — 100% lands between
+ * ~2.5s (assets resolved early) and the 4.9s fallback cap, then the
+ * 700ms completed-state hold, then the 835ms sheet-exit wipe. */
+const RELEASE_FLOOR_MS = 2600; /* the counter never resolves before 2.5s */
+const MAX_RUN_MS = 4900; /* the hard cap — readiness races this timer */
+const EXIT_HOLD_MS = 700; /* the 100% beat before the wipe opens */
 const ENTRY_DONE_EVENT = 'mdrk:entry-done';
 
 type PreloaderProps = {
@@ -67,12 +71,20 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
      * navigations never replay the sequence. */
     markIntroSeen();
 
+    /* lock the sheet while the entrance owns the viewport (the r309
+     * lock contract: restored on EVERY exit path — timed, skip, RM,
+     * unmount) */
+    const doc = document.documentElement;
+    const prevOverflow = doc.style.overflow;
+    doc.style.overflow = 'hidden';
+
     const reduced =
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) {
       /* belt-and-braces: the parent's gate already refuses to mount
        * under RM — if the gate is ever bypassed, skip entirely. */
+      doc.style.overflow = prevOverflow;
       cbsRef.current.onExitStart?.();
       cbsRef.current.onDone?.();
       return undefined;
@@ -91,6 +103,9 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
       cancelAnimationFrame(raf);
       setPct(100);
       if (fillRef.current) fillRef.current.style.transform = 'scaleX(1)';
+      /* the scroll lock releases as the reveal starts (the page is
+       * scrollable under the opening wipe — the r309 cleanup contract) */
+      doc.style.overflow = prevOverflow;
       /* the consent banner (and any late chrome) mounts under the
        * reveal, never on top of the overlay */
       document.dispatchEvent(new CustomEvent(ENTRY_DONE_EVENT));
@@ -137,12 +152,16 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
         : Math.min(92, (t / (MAX_RUN_MS * 0.72)) * 92);
       shown += (target - shown) * 0.14;
       if (Math.abs(target - shown) < 0.4) shown = target;
-      const next = Math.round(shown);
+      /* the DISPLAY never rounds to 100 before the measured release
+       * floor (r309: 100% lands between ~2.5s and 4.9s) — the eased
+       * value crawls at 99 until the floor opens, then the exit's own
+       * setPct(100) lands the terminal readout. */
+      const next = t < RELEASE_FLOOR_MS ? Math.min(99, Math.round(shown)) : Math.round(shown);
       setPct(next);
       if (fillRef.current) {
         fillRef.current.style.transform = `scaleX(${(shown / 100).toFixed(4)})`;
       }
-      if (solved && t >= MIN_HOLD_MS && shown >= 99.5) {
+      if (solved && t >= RELEASE_FLOOR_MS && shown >= 99.5) {
         runExit();
         return;
       }
@@ -153,6 +172,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
 
     return () => {
       cleanups.forEach((fn) => fn());
+      doc.style.overflow = prevOverflow;
     };
   }, []);
 
@@ -167,7 +187,9 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
       aria-valuemax={100}
       aria-valuenow={pct}
     >
-      <div className="pl-inner">
+      <div className="pl-inner pl-main">
+        <span className="pl-cross-h" aria-hidden="true" />
+        <span className="pl-cross-v" aria-hidden="true" />
         <div className="pl-mark" aria-hidden="true">
           <Logo variant="mark" size={40} animated />
         </div>
@@ -177,9 +199,17 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
         <div className="pl-counter" dir="ltr" aria-hidden="true">
           {pct}%
         </div>
-        <div className="pl-rail" aria-hidden="true">
-          <span className="pl-rail-track" />
-          <span ref={fillRef} className="pl-rail-fill" style={{ transform: 'scaleX(0)' }} />
+        <div className="pl-progress" aria-hidden="true">
+          <div className="pl-rail">
+            <span className="pl-rail-track" />
+            <span ref={fillRef} className="pl-rail-fill" style={{ transform: 'scaleX(0)' }} />
+          </div>
+        </div>
+        <div className="pl-meta" aria-hidden="true">
+          <div className="pl-meta-row">
+            <span>جاري التحميل</span>
+            <span dir="ltr">{pct}%</span>
+          </div>
         </div>
         <button
           type="button"

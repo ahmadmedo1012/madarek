@@ -144,26 +144,26 @@ test.describe('R311 — the entrance loader', () => {
     });
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    await expect(page.locator('.sl')).toBeVisible();
+    await expect(page.locator('.pl')).toBeVisible();
 
     /* its own cross + readout is the sole instrument (the arms are the
      * cross's visible geometry — the anchor span itself is 0×0) */
     await page.mouse.move(720, 420);
     await page.waitForTimeout(400);
-    await expect(page.locator('.sl')).toHaveAttribute('data-cursor', 'none');
-    await expect(page.locator('.sl-cross-h')).toBeVisible();
-    await expect(page.locator('.sl-cross-v')).toBeVisible();
-    await expect(page.locator('.sl')).toBeVisible();
+    await expect(page.locator('.pl')).toHaveAttribute('data-cursor', 'none');
+    await expect(page.locator('.pl-cross-h')).toBeVisible();
+    await expect(page.locator('.pl-cross-v')).toBeVisible();
+    await expect(page.locator('.pl')).toBeVisible();
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
     await expect(page.locator('.sc-canvas')).toHaveCount(1); /* mounted, suppressed inside the zone */
 
     /* narrow window: the loader still owns the pointer at EVERY width */
     await page.setViewportSize(VW.narrow);
-    await expect(page.locator('.sl')).toBeVisible();
+    await expect(page.locator('.pl')).toBeVisible();
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
 
     /* exit handoff: back on the sheet, the square owns the pointer */
-    await expect(page.locator('.sl')).toHaveCount(0, { timeout: 20000 });
+    await expect(page.locator('.pl')).toHaveCount(0, { timeout: 20000 });
     await expect(page.locator('.cursor-layer')).toHaveCount(0);
     await expect(page.locator('.sc-canvas')).toHaveCount(1);
     await expect(page.locator('.fo-hero-title')).toContainText(HERO_READY);
