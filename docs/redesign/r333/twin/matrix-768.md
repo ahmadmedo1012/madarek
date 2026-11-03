@@ -36,3 +36,38 @@ statement PARTIAL = verdict-rule artifact (rhythm n/a, layered band); all measur
 ## MISSING at this vp (not captured — budget)
 
 `hero, pains, platform, why, roles` (5 of 9 sections). WebKit sweep = later task.
+
+---
+
+# P-F2 completion — hero, pains, platform, why, roles @768
+
+Swept by P-F2 (twin matrix completion): same harness, `--step 4`, evidence in
+`768/{why,roles,platform,hero,pains}/`; full 9-section tables regenerated in `report.md` /
+`report.json`; run stats in `pf2-capture-summary.json`.
+
+| section | verdict | height Δ% | heading fs Δ% | rhythm Δpx | trigger Δpx | notes (heron vs madarek) |
+|---|---|---|---|---|---|---|
+| hero | PARTIAL* | 0.08 | 0.08 | n/a | 7.4 | h 885.3 vs 886.0, fs 36.83 both — clean; *rhythm-n/a artifact |
+| pains | PARTIAL* | 0.04 | 0.08 | n/a | 6.9 | h 1332.8 vs 1333.4, fs 36.83 both — clean; *artifact |
+| platform | FAIL | 0.71 | **25.0** | n/a | 64.9 | fs heron 22.10 vs madarek 29.47 (6.25×) — REAL; trigger 1.6× upstream |
+| why | FAIL | **187.97** | **20.06** | **24.0** | 68.4 | h **1881.9 vs 653.5** — heron post-activation growth (attribution in matrix-1920); fs 5× REAL |
+| roles | FAIL | 2.21 | **20.06** | **40.0** | **1296.8** | h 1366.6 vs 1337.1 (within 3%); fs 5× REAL; trigger = cascade |
+
+\* PARTIAL = verdict-rule artifact (rhythm n/a); all measured metrics within threshold.
+
+## P-F2 notes
+
+- **768 remains the worst type viewport — now 5 of 9 sections break the fs cap ≥5×**: platform
+  (22.10 vs 29.47) and roles (29.47 vs 36.86) join journey/cta/footer. Heron steps display type
+  down at 768; madarek holds the larger step (same non-monotonic rem-ladder family P-F found).
+- **roles trigger 1296.8 ≈ cta/footer's 1326.3/1326.2** → divergence is upstream, not
+  roles-local: heron why measured 1881.9 vs madarek 653.5 post-activation (artifact mechanism
+  per matrix-1920), plus the fresh tablet offset. Roles heights themselves are within 3%
+  (1366.6 vs 1337.1).
+- madarek why rhythm 24px and roles rhythm 40px vs heron 0 (3×/5×) — minor gaps P-F's cta
+  rhythm finding (40px @768) also exhibits.
+Thumb: `thumbs/platform-768-p48-heronLEFT-madarekRIGHT.jpg`.
+
+## MISSING after P-F2
+
+None at this vp — all 9 sections captured @768 (chromium). Remaining matrix gap: WebKit.

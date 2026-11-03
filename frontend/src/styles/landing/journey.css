@@ -64,6 +64,21 @@
   }
 }
 
+/* R333 P-F3 (matrix-768 journey fs FAIL 44.20 vs 36.83, Δ20%): the
+ * ≤991 4rem seat reads 36.83px @768 — heron's tablet band carries the
+ * 4.8rem tb rung there (44.2px on the 1.199vw root). ONE tablet seat
+ * between the 5.6rem ≥992 base and the 4rem phone seat: @768 lands
+ * 44.20 like-for-like, @1024 keeps 5.6rem (33.19 both, matrix-1024
+ * clean) and @390 keeps 4rem (39.69 both, matrix-390 clean) — heron's
+ * own ladder steps down again below 768, so the phone seat must NOT
+ * ride the tablet rung. Same specificity, later document order → wins
+ * the 768–991 belt only. */
+@media (min-width: 768px) and (max-width: 991px) {
+  .chapters-title {
+    font-size: 4.8rem; /* 44.20px @768 — heron's measured tb rung twin */
+  }
+}
+
 @media (max-width: 767px) {
   /* R332 W390a — the head seat: the bigger title's air comes out of
    * the head's own ladder rungs (sp-8 → sp-5, −36px @390) so the

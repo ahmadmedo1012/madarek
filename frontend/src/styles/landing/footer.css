@@ -247,11 +247,18 @@
    * later wins), painting every desktop link 32px and pushing the
    * grid band to 372. */
   .fo-fcell {
-    gap: var(--sp-1);
+    gap: 0; /* R333 P-F3 — the compact index stacks row-to-row (the 4px gap read +20px/cell @1024 where the 42.6rem floor must bind — heron's main band is the rem constant); the 3.36rem row floor keeps the touch rhythm */
     /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
      * the rem twins of the 16/12 seat — pixel-identical @1440, riding
-     * the root at every other rung (the r315 cycle-3 law). */
-    padding: 1.92rem 1.44rem; /* spacing-gate: allow — the ratcheted cell inset 16/12 on the rem root */
+     * the root at every other rung (the r315 cycle-3 law).
+     * R333 P-F3 — the BLOCK half steps to the 8px rung (0.96rem): the
+     * fixed-px --fs micro voice at 992–1199 (root 5.926–6.94px) let the
+     * cell content outrun the 42.6rem band floor (fgrid 304 vs 252.5
+     * @1024 — the matrix-1024 footer FAIL's first term). The compact
+     * grid keeps every cell + row (NOT deleting content); the tighter
+     * block inset + gap-0 stack brings the content back under the
+     * heron-measured band. */
+    padding: 0.96rem 1.44rem; /* spacing-gate: allow — the ratcheted cell inset 8/12 on the rem root (the tablet-compact seat) */
     min-block-size: 11.5rem; /* spacing-gate: allow — the cell floor 96px @1440 on the rem root */
   }
 
@@ -288,8 +295,11 @@
     /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
      * the r321 §A2 10/6 ratchet was re-pinned to 12/8 on the rem root
      * by the r315 cycle-3 re-seat and the final cascade rendered 12/8
-     * (the twin-measured state) — kept here, one home. */
-    padding-block: 1.44rem 0.96rem;
+     * (the twin-measured state) — kept here, one home.
+     * R333 P-F3 — the tablet-compact re-seat drops the block pair to
+     * the 8/4 rungs with the cell inset above (the address band's
+     * content must sit under the 42.6rem floor at 992–1199 too). */
+    padding-block: 0.96rem 0.48rem;
   }
 
   /* R315 cycle-2: .fo-footer-repo RETIRED with the repo link itself
@@ -432,14 +442,44 @@
   color: var(--text);
 }
 
-/* R333 P-D — heron-craft row 17: the wordmark returns to the FULL
+/* R333 P-F3 — the W6 height-led letterbox pair returns for ≥768
+ * (measured, matrix-1920/1024/768 footer FAILs 1543/890/1089 vs heron
+ * 948/505/968): the P-D full-bleed cut on the generated sheet (viewBox
+ * 248.29×112 ≈ 2.22 aspect) renders 585px tall @1440 — the strip band
+ * ran to 766 and the footer to 1164 (+63.8% over heron's 710.7; the
+ * ±3% docH gate blown at EVERY ≥768 width). The ink letterboxes to
+ * 15.5rem @≥992 / 23.6rem @768–991 (the X14 tablet seat, boundary
+ * moved to the 992 desktop rung), inline-size auto — the word still
+ * spans its full available measure inside the band, never clips, and
+ * the band (lens row + this row) lands on heron's own img-wrap
+ * constant. The base rule keeps the full-width cut ≤767, where the
+ * P-D cut measures 161px @390 and the mobile footer holds −2.1%. */
+@media (min-width: 992px) {
+  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
+    inline-size: auto;
+    block-size: 15.5rem; /* 129.2px @1440 → the strip band ≈ the reference's own 314.2 (lens row + this row share it) · 172.2 @1920 */
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
+    inline-size: auto;
+    block-size: 23.6rem; /* 217.4px @768 (Heron footer exact — the X14 tablet seat, moved home) */
+  }
+}
+
+/* R333 P-D — heron-craft row 17: the wordmark rides the FULL
  * available-width cut at EVERY viewport (the reference's monumental
- * signature: natural 3428×754, rendered full-width). The R332 W6
- * height-led letterbox seats (15.5rem @1200 / 23.6rem @768) are
- * retired by owner order this round; the base rule's inline-size:
- * 100% + viewBox aspect scaling carries every width, so the word
- * never clips and RTL needs no mirroring (a scaling sheet, not a
- * directional layout). */
+ * signature, rendered full-width). The R332 W6 height-led letterbox
+ * seats were retired by owner order this round; the base rule's
+ * inline-size: 100% + viewBox aspect scaling carries every width, so
+ * the word never clips and RTL needs no mirroring (a scaling sheet,
+ * not a directional layout).
+ * R333 P-F3 (supersedes the ≥768 leg): the full-bleed cut measured
+ * +63.8% over heron's footer @1440 (unswept by the matrix, caught by
+ * the P-F3 probe) and drove the matrix-1920/1024 footer FAILs — the
+ * W6 letterbox pair above is re-seated ≥768 by the twin geometry
+ * guard; the mobile cut (≤767) is untouched. */
 
 /* PI-B2 — the .fo-wordmark-ink / .fo-wordmark-svg rules are GONE: the
  * R323 <Logo variant="wordmark"> cut above carries the stroke-only
@@ -525,6 +565,21 @@
      * held, the grid band stays floor-bound at 355, docH unchanged. */
     padding-block-end: var(--sp-0-5);
     margin-block-end: 0;
+  }
+}
+
+/* R333 P-F3 (matrix-768 footer fs FAIL 25.78 vs 13.00, Δ98.34%): the
+ * scanned footer display voice drops to the 13px --fs-xs floor at
+ * 768–991 (the ≥992 3.2rem rung doesn't reach the tablet belt and
+ * nothing seated it). Heron's own tablet register is 2.8rem on the
+ * 1.199vw root = 25.78px @768 — one seat, like-for-like. ≤767 the
+ * strata file-end 2.4rem rung keeps the phone band (23.82 @390,
+ * matrix-390 fs clean); ≥992 the 3.2rem twin seat above is untouched
+ * (matrix-1024 fs Δ0.0 must hold). */
+@media (min-width: 768px) and (max-width: 991px) {
+  .fo-footer-heading {
+    font-size: 2.8rem;
+    line-height: var(--lh-snug);
   }
 }
 

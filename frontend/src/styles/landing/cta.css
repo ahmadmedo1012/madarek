@@ -43,7 +43,12 @@
   }
 
   .cg-strip {
-    margin-block-start: 2.4rem;
+    /* R333 P-F3 — margin 0 from the ≥992 floor up (was 2.4rem, which
+       read 14.2px @1024 — the matrix-1024 rhythm FAIL): the strip sits
+       FLUSH under the resolve at every ≥992 width; the 83.75rem band
+       floor absorbs the air exactly like the ≥1025 seat did (height
+       holds 496 @1024 · 698 @1440). */
+    margin-block-start: 0;
     padding-block-start: 1.92rem;
   }
 }
@@ -69,16 +74,19 @@
 
 .fo-cta-title {
   font-family: var(--font-display);
-  /* R333 (P-C — the supervisor's «the closing CTA is tiny» defect): the
-     resolve leaves the D2 seat for the DISPLAY register — the same
-     formula family as --fs-d1 (px floor · vw mid · rem cap):
-     46.7px @1440 (the D1 rung) → 36.9 @768 → the r332 W390b
-     2.4rem-equivalent 23.8px floor @390 (Heron's own cta rung). The
-     px floor (not a rem floor) is the convention — a rem floor at the
-     2.5445vw mobile root would JUMP 36.9→46.8px across the 767/768
-     boundary; the px floor glides. Weight 600 · lh 1.10 · balance
-     stay from the D2 join. */
-  font-size: clamp(23.8px, 4.8vw, 5.6rem);
+  /* R333 P-F3 — heron's own cta rung, ONE rem seat on the shared fluid
+   * root (matrix-1920 fs FAIL 53.33 vs 62.22 · matrix-1024 28.44 vs
+   * 33.19 — both Δ14.29%): the P-C px-floor·vw·cap clamp paired the
+   * resolve to heron's h1 D1 voice, which renders 62.22px @1920 —
+   * heron's cta is 4.8rem there (53.33 @1920 · 28.44 @1024 · 40.0
+   * @1440). The clamp cannot produce that ladder (one vw cannot hit
+   * three root-shifted rungs), so the seat returns to the rem rung;
+   * the tablet 3.2rem and phone 2.4rem belts seat the step-down ladder
+   * below (heron steps DOWN at tablet — matrix-768 29.47 vs 36.86).
+   * ≤767 the strata file-end 2.4rem seat (23.8168px @390 — heron's own
+   * cta h2 mb rung, run-003 like-for-like) keeps the phone band.
+   * Weight 600 · lh 1.10 · balance stay from the D2 join. */
+  font-size: 4.8rem;
   font-weight: 600;
   line-height: 1.1;
   text-wrap: balance;
@@ -170,19 +178,18 @@
    Measured twin deltas @1440 (run-001): rhythm gutter 20 vs the twin's
    0 (Δ20 over the ≤8 gate) — the gutter WAS the registry strip's 20px
    margin-block-start (the band's two level-1 boxes: the resolve block
-   and the strip). THE FIX: the strip sits FLUSH under the resolve at
-   ≥1025 (margin 0 — the twin's three cta boxes butt), and the 83.75rem
-   floor absorbs the 20px (the band's own air) so the height holds
-   697.9. The 992–1024 canon-floor slice and the 768–991 tablet band
-   keep their measured seats verbatim (moved from strata — shared.css
-   holds no competing seats on these selectors in those belts).
+   and the strip). THE FIX: the strip sits FLUSH under the resolve
+   (margin 0 — the twin's three cta boxes butt), and the 83.75rem
+   floor absorbs the air (the band's own air) so the height holds
+   697.9. R333 P-F3: the flush seat now spans the WHOLE ≥992 floor
+   (the 992–1024 slice's 2.4rem margin read 14.2px @1024 — the
+   matrix-1024 rhythm FAIL) and the 768–991 tablet band joins with the
+   strata 58.8rem floor absorbing the 40px colleges-base gutter
+   (matrix-768 rhythm FAIL 40 vs 0). The 992–1024 canon-floor slice's
+   sketch/grid fold and the 768–991 tablet band keep their other
+   measured seats verbatim (moved from strata — shared.css holds no
+   competing seats on these selectors in those belts).
    The strata .fo-cta and .cg-strip ≥992 + tablet tiers retire herewith. ═══ */
-@media (min-width: 1025px) {
-  .cg-strip {
-    margin-block-start: 0;
-  }
-}
-
 @media (min-width: 992px) and (max-width: 1024px) {
   .fo-cta-sketch {
     display: none;
@@ -199,8 +206,27 @@
     min-block-size: 58.8rem;
   }
 
+  .fo-cta-title {
+    /* R333 P-F3 (matrix-768 cta fs FAIL 29.47 vs 36.86, Δ20.06%): heron
+     * steps the cta voice DOWN at tablet — 3.2rem on the 1.199vw root
+     * = 29.47px @768 (its ladder 4.8rem ≥992 → 3.2rem → 2.4rem ≤767;
+     * madarek's 4.8vw clamp ran the band UP to 36.86 — the
+     * non-monotonic ladder the matrix flags). One seat, one belt. */
+    font-size: 3.2rem;
+  }
+
   .fo-cta-sketch {
     display: none;
+  }
+
+  /* R333 P-F3 (matrix-768 cta rhythm FAIL 40 vs 0): the 40px gutter is
+   * the colleges-base --sp-8 strip margin surviving this belt (the
+   * ≥1025 flush seat never reached it). The strip sits FLUSH under the
+   * resolve here too — the strata 58.8rem band floor absorbs the air
+   * (height holds 541 @768, Δ0.02% unchanged). The strata tablet seat
+   * keeps the strip's PADDING (ONE definition — see its note). */
+  .cg-strip {
+    margin-block-start: 0;
   }
 
   .fo-cta-grid {

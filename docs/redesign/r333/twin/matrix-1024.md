@@ -35,3 +35,40 @@ measured metrics within threshold.
 ## MISSING at this vp (not captured — budget)
 
 `hero, pains, platform, why, roles` (5 of 9 sections). WebKit sweep = later task.
+
+---
+
+# P-F2 completion — hero, pains, platform, why, roles @1024
+
+Swept by P-F2 (twin matrix completion): same harness, `--step 4`, evidence in
+`1024/{why,roles,platform,hero,pains}/`; full 9-section tables regenerated in `report.md` /
+`report.json`; run stats in `pf2-capture-summary.json`.
+
+| section | verdict | height Δ% | heading fs Δ% | rhythm Δpx | trigger Δpx | notes (heron vs madarek) |
+|---|---|---|---|---|---|---|
+| hero | PARTIAL* | 0.46 | 0.0 | n/a | 4.7 | h 758.5 vs 755.0, fs 33.19 both — clean; *rhythm-n/a artifact |
+| pains | FAIL | 0.0 | **10.38** | n/a | 8.2 | h 528.0 both; fs heron 28.44 vs madarek 31.74 (2.6×) — REAL |
+| platform | PARTIAL* | 0.0 | 0.0 | n/a | 8.8 | h 504.9 both, fs 18.96 both — effectively clean; *artifact |
+| why | FAIL | **275.38** | **10.38** | 8.5 | 8.8 | h **1768.4 vs 471.1** — heron post-activation growth (attribution in matrix-1920); fs 2.6× REAL |
+| roles | FAIL | 0.0 | **10.38** | n/a | **1288.5** | h 758.5 both; trigger = cascade; fs 2.6× REAL |
+
+\* PARTIAL = verdict-rule artifact (rhythm n/a); all measured metrics within threshold.
+
+## P-F2 notes
+
+- **pains @1024 is a real type defect** (new finding): heron steps pains display type down at
+  tablet (53.33 → 28.44) while madarek jumps to 31.74 — the same size it uses at 390 — skipping
+  heron's tablet step. pains/why/roles @1024 share this one rem-ladder family (all Δ10.38%,
+  2.6×), matching cta's 14.29% above.
+- **why height 275% = the same heron lazy-activation artifact** quantified @1920 (see
+  matrix-1920 cascade resolution): heron why balloons after the pre-capture sweep while
+  madarek is stable; heron platform (504.9 = 504.9) and roles (758.5 = 758.5) heights agree
+  exactly, so the growth sits in heron why and drives the roles trigger offset (1288.5 ≈
+  cta/footer's 1288.5/1288.6). No fresh-load probe was run @1024 — attribution is by mechanism
+  + exact platform/roles height agreement.
+- madarek why rhythm 8.5px vs heron 0 (1.06×) — marginal.
+Thumb: `thumbs/pains-1024-p48-heronLEFT-madarekRIGHT.jpg`.
+
+## MISSING after P-F2
+
+None at this vp — all 9 sections captured @1024 (chromium). Remaining matrix gap: WebKit.
