@@ -1,36 +1,195 @@
 /**
- * /student/courses/[offeringId] — تفاصيل المقرّر (web CourseDetailPage
- * parity): نظرة عامة (description, teacher, credits, room, weekly
- * schedule), المحاضرات (completed badges + checkpoint counts),
- * المواد (authenticated PDF viewer route), التكاليف (dueLabel chips +
- * the «تسليم» sheet — teacherApi.submitAssignment).
+ * /student/courses/[offeringId] — تفاصيل المقرّر (R334 Round-2 recompose):
+ * a STICKY identity header (course well + progress ring + schedule
+ * chips), segmented tabs «المحاضرات / المواد / الإعلانات»
+ * (haptics.selection on switch), a DataList per tab (lectures can be
+ * long), watch-state chips in semantic feedback tones (mint/copper/grey
+ * — never a second accent), file-type icons + sizes on materials,
+ * OFFERING-scoped announcements, and course actions (share/report) via
+ * ActionSheet. expo-image carries lecture posters.
  */
-import { View } from "react-native";
+import { Pressable, Share, StyleSheet, View } from "react-native";
 import { useMemo, useState } from "react";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
-import Send from "lucide-react-native/icons/send";
+import Animated from "react-native-reanimated";
+import { Image } from "expo-image";
+import Archive from "lucide-react-native/icons/archive";
+import FileText from "lucide-react-native/icons/file-text";
+import Flag from "lucide-react-native/icons/flag";
+import ImageIcon from "lucide-react-native/icons/image";
+import Megaphone from "lucide-react-native/icons/megaphone";
+import MoreHorizontal from "lucide-react-native/icons/more-horizontal";
+import Presentation from "lucide-react-native/icons/presentation";
+import Share2 from "lucide-react-native/icons/share-2";
+import Video from "lucide-react-native/icons/video";
 import { learningApi } from "@/api/learning";
-import type { Assignment, Material } from "@/api/types";
+import { socialApi } from "@/api/social";
+import type { Announcement, Lecture, Material } from "@/api/types";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
-import { sp } from "@/design/tokens";
+import { sp, touchFloor } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
-import { SectionBar } from "@/components/ui/screen";
+import { Screen } from "@/components/ui/screen";
 import { Badge, Card } from "@/components/ui/surfaces";
-import { Button } from "@/components/ui/pressables";
-import { LedgerRow, ProgressBar, RowList, StatLine } from "@/components/ui/data";
+import { DataList, makeRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
-import { dayName, dueLabel, latn, pct, sizeLabel } from "@/lib/format";
+import { ActionSheet } from "@/components/ui/sheet";
+import { toast } from "@/components/ui/toast";
+import { StackHeader } from "@/components/shell/AppTopBar";
+import { PressableScale, RingProgress, useStaggerEntrance } from "@/motion";
+import { haptics } from "@/haptics";
+import { humanizeError } from "@/lib/errors";
+import { dayName, fromNow, latn, pct, sizeLabel } from "@/lib/format";
 import { countAr } from "@/features/student/more";
+import { CourseWell, mmss, openMaterial } from "@/features/student/components";
 import {
-  AssignSubmitSheet,
-  CourseWell,
-  PushFrame,
-  mmss,
-  openMaterial,
-  type SubmitTarget,
-} from "@/features/student/components";
+  isOfferingAnnouncement,
+  lectureChip,
+  lecturesProgress,
+  type ScopedAnnouncement,
+} from "@/features/student/coursesLogic";
+
+/* ══ shared bits ══════════════════════════════════════════════════════ */
+
+/** Entrance stagger cap — beyond 8 children the rhythm stops (motion doc). */
+const STAGGER_CAP = 8;
+
+function useCardEntrance(index: number) {
+  const enter = useStaggerEntrance({ base: 60, step: 60 });
+  return index < STAGGER_CAP ? enter(index) : undefined;
+}
+
+type CourseTab = "lectures" | "materials" | "announcements";
+
+const COURSE_TABS: { key: CourseTab; label: string }[] = [
+  { key: "lectures", label: "المحاضرات" },
+  { key: "materials", label: "المواد" },
+  { key: "announcements", label: "الإعلانات" },
+];
+
+/* ══ segmented tabs (active state = the screen's one accent chrome) ═══ */
+
+function CourseTabs({ tab, onChange }: { tab: CourseTab; onChange: (t: CourseTab) => void }) {
+  const p = usePalette();
+  return (
+    <View
+      accessibilityRole="tablist"
+      accessibilityLabel="أقسام المقرّر"
+      style={{ flexDirection: "row", borderWidth: StyleSheet.hairlineWidth, borderColor: p.border }}
+    >
+      {COURSE_TABS.map(({ key, label }) => {
+        const active = tab === key;
+        return (
+          <Pressable
+            key={key}
+            accessibilityRole="tab"
+            accessibilityLabel={label}
+            accessibilityState={{ selected: active }}
+            onPress={() => {
+              if (tab !== key) {
+                haptics.selection();
+                onChange(key);
+              }
+            }}
+            style={{
+              flex: 1,
+              height: 44,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: active ? p.accentSoft : "transparent",
+            }}
+          >
+            <T variant="sm" weight={active ? "bold" : "medium"} style={{ color: active ? p.accentInk : p.textSecondary }}>
+              {label}
+            </T>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+/* ══ lectures tab — watch-state chips + expo-image posters ════════════ */
+
+const LectureRow = makeRow<Lecture, { index: number }>(({ item, index }) => {
+  const p = usePalette();
+  const entering = useCardEntrance(index);
+  const chip = lectureChip(item);
+  const checkpoints = item._count?.checkpoints ?? 0;
+  const answered = item.answers?.length ?? 0;
+  const pending = Math.max(0, checkpoints - answered);
+  const poster = item.posterUrl && /^https?:\/\//.test(item.posterUrl) ? item.posterUrl : null;
+  return (
+    <Animated.View entering={entering}>
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={`محاضرة ${latn(item.ordinal)}: ${item.title} — ${chip.label}`}
+        onPress={() => router.push(`/student/lectures/${item.id}` as never)}
+        style={{
+          backgroundColor: p.surface,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: p.border,
+          padding: sp[12],
+          gap: sp[8],
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+          {poster ? (
+            <Image
+              source={{ uri: poster }}
+              style={{ width: 72, height: 44, backgroundColor: p.surfaceHover }}
+              contentFit="cover"
+              transition={150}
+              recyclingKey={item.id}
+              accessibilityLabel={`غلاف محاضرة ${item.title}`}
+            />
+          ) : (
+            <View
+              style={{
+                width: 72,
+                height: 44,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: p.surfaceHover,
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: p.border,
+              }}
+            >
+              <MonoLabel>{String(item.ordinal).padStart(2, "0")}</MonoLabel>
+            </View>
+          )}
+          <View style={{ flex: 1, gap: 2 }}>
+            <T variant="body" weight="bold" numberOfLines={1}>
+              {item.title}
+            </T>
+            <T variant="xs" color="muted" numberOfLines={1}>
+              {`${item.durationSec ? mmss(item.durationSec) : "—"} · ${countAr(item._count?.chapters ?? 0, [
+                "فصل واحد",
+                "فصلان",
+                "فصول",
+                "فصلاً",
+              ])} · ${countAr(checkpoints, ["نقطة تفاعل واحدة", "نقطتا تفاعل", "نقاط تفاعل", "نقطة تفاعل"])}`}
+            </T>
+          </View>
+          <Badge label={chip.label} tone={chip.tone} />
+        </View>
+        {pending > 0 ? (
+          <T variant="xs" color="muted">
+            {countAr(pending, [
+              "نقطة تفاعل متبقية واحدة",
+              "نقطتا تفاعل متبقيتان",
+              "نقاط تفاعل متبقية",
+              "نقطة تفاعل متبقية",
+            ])}
+          </T>
+        ) : null}
+      </PressableScale>
+    </Animated.View>
+  );
+});
+
+/* ══ materials tab — file-type icons + sizes ══════════════════════════ */
 
 const MATERIAL_TYPE_LABEL: Record<string, string> = {
   PDF: "PDF",
@@ -46,17 +205,116 @@ function materialTypeLabel(type: string): string {
   return MATERIAL_TYPE_LABEL[type] ?? type;
 }
 
-const ASSIGNMENT_KIND_LABEL: Record<string, string> = {
-  HOMEWORK: "واجب",
-  QUIZ: "اختبار قصير",
-  PROJECT: "مشروع",
-  EXAM: "اختبار",
+const MATERIAL_ICON: Record<string, typeof FileText> = {
+  PDF: FileText,
+  DOC: FileText,
+  PPT: Presentation,
+  ZIP: Archive,
+  VIDEO: Video,
+  IMAGE: ImageIcon,
 };
+
+const MaterialRow = makeRow<Material, { index: number }>(({ item, index }) => {
+  const p = usePalette();
+  const entering = useCardEntrance(index);
+  const Icon = MATERIAL_ICON[item.type?.toUpperCase?.() ?? ""] ?? FileText;
+  return (
+    <Animated.View entering={entering}>
+      <PressableScale
+        accessibilityRole="button"
+        accessibilityLabel={`مادة: ${item.name} — ${materialTypeLabel(item.type)} ${sizeLabel(item.sizeBytes)}`}
+        onPress={() => openMaterial(item.url, item.name)}
+        style={{
+          backgroundColor: p.surface,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: p.border,
+          padding: sp[12],
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+          <View
+            style={{
+              width: 40,
+              height: 40,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: p.surfaceHover,
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: p.border,
+            }}
+          >
+            <Icon size={18} color={p.textMuted} />
+          </View>
+          <View style={{ flex: 1, gap: 2 }}>
+            <T variant="body" weight="bold" numberOfLines={1}>
+              {item.name}
+            </T>
+            <T variant="xs" color="muted" numberOfLines={1}>
+              {`${materialTypeLabel(item.type)} · ${sizeLabel(item.sizeBytes)}`}
+            </T>
+          </View>
+        </View>
+      </PressableScale>
+    </Animated.View>
+  );
+});
+
+/* ══ announcements tab — OFFERING-scoped feed rows ════════════════════ */
+
+const AnnouncementRow = makeRow<ScopedAnnouncement, { index: number }>(({ item, index }) => {
+  const p = usePalette();
+  const entering = useCardEntrance(index);
+  const author = item.author ? `${item.author.firstName} ${item.author.lastName}` : null;
+  return (
+    <Animated.View entering={entering}>
+      <View
+        accessibilityLabel={`إعلان: ${item.title}`}
+        style={{
+          backgroundColor: p.surface,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: p.border,
+          padding: sp[12],
+          gap: sp[6],
+        }}
+      >
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+          <View
+            style={{
+              width: 32,
+              height: 32,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: p.surfaceHover,
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: p.border,
+            }}
+          >
+            <Megaphone size={16} color={p.textMuted} />
+          </View>
+          <T variant="body" weight="bold" numberOfLines={1} style={{ flex: 1 }}>
+            {item.title}
+          </T>
+          {item.pinned ? <Badge label="مثبّت" tone="yellow" /> : null}
+        </View>
+        {item.body ? (
+          <T variant="sm" color="secondary" numberOfLines={3}>
+            {item.body}
+          </T>
+        ) : null}
+        <T variant="xs" color="faint">
+          {`${fromNow(item.publishedAt)}${author ? ` · ${author}` : ""}`}
+        </T>
+      </View>
+    </Animated.View>
+  );
+});
+
+/* ══ the screen ═══════════════════════════════════════════════════════ */
 
 export default function CourseDetailScreen() {
   const { offeringId } = useLocalSearchParams<{ offeringId: string }>();
-  const router = useRouter();
   const scope = useInstitutionScope();
+  const p = usePalette();
 
   const full = useQuery({
     queryKey: ["offerings", offeringId, "full", scope],
@@ -64,285 +322,246 @@ export default function CourseDetailScreen() {
     enabled: !!offeringId,
   });
 
-  const [submitTarget, setSubmitTarget] = useState<SubmitTarget | null>(null);
+  const announcements = useQuery({
+    queryKey: ["announcements", "feed", scope],
+    queryFn: () => socialApi.announcements(),
+    enabled: !!offeringId,
+  });
+
+  const [tab, setTab] = useState<CourseTab>("lectures");
+  /** Mount-on-demand: the sheet engine loads on first OPEN, not on screen mount. */
+  const [actionsMounted, setActionsMounted] = useState(false);
+  const [actionsOpen, setActionsOpen] = useState(false);
 
   const lectures = useMemo(
     () => [...(full.data?.lectures ?? [])].sort((a, b) => a.ordinal - b.ordinal),
     [full.data],
   );
   const materials = full.data?.materials ?? [];
-  const assignments = useMemo(
-    () =>
-      [...(full.data?.assignments ?? [])].sort((a, b) => {
-        const at = a.dueAt ? new Date(a.dueAt).getTime() : Number.MAX_SAFE_INTEGER;
-        const bt = b.dueAt ? new Date(b.dueAt).getTime() : Number.MAX_SAFE_INTEGER;
-        return at - bt;
-      }),
-    [full.data],
-  );
   const schedule = useMemo(
     () => [...(full.data?.schedule ?? [])].sort((a, b) => a.dayOfWeek - b.dayOfWeek),
     [full.data],
   );
-
   const course = full.data?.course;
   const teacher = full.data?.teacher;
-  const watchedCount = lectures.filter((l) => l.watchEvents?.[0]?.completed).length;
-  const lecProgress = lectures.length > 0 ? Math.round((watchedCount / lectures.length) * 100) : 0;
+  const progress = lecturesProgress(lectures);
+
+  const offeringAnnouncements = useMemo(
+    () =>
+      (announcements.data ?? [])
+        .filter((a: Announcement): a is ScopedAnnouncement =>
+          isOfferingAnnouncement(a as ScopedAnnouncement, offeringId),
+        ),
+    [announcements.data, offeringId],
+  );
+
+  const shareCourse = async () => {
+    if (!course) return;
+    try {
+      await Share.share({
+        message: `مقرّر «${course.name}» (${course.code})${
+          teacher ? ` — د. ${teacher.firstName} ${teacher.lastName}` : ""
+        } · فصل ${full.data?.term ?? ""}`,
+        title: "مشاركة المقرّر",
+      });
+    } catch (e) {
+      toast.error(humanizeError(e), "تعذّرت المشاركة");
+    }
+  };
+
+  /* ── first-load tri-state for the whole screen ── */
+  if (full.isLoading) {
+    return (
+      <Screen scroll={false} padded={false}>
+        <StackHeader title="تفاصيل المقرّر" />
+        <View style={{ paddingHorizontal: sp[20], paddingTop: sp[8] }}>
+          <SkeletonList rows={6} rowHeight={72} />
+        </View>
+      </Screen>
+    );
+  }
+  if (full.isError || !full.data) {
+    return (
+      <Screen scroll={false} padded={false}>
+        <StackHeader title="تفاصيل المقرّر" onBack={() => router.back()} />
+        <View style={{ paddingHorizontal: sp[20], paddingTop: sp[8] }}>
+          <ErrorState message={humanizeError(full.error)} onRetry={() => full.refetch()} />
+        </View>
+      </Screen>
+    );
+  }
 
   return (
-    <PushFrame
-      title={course?.name ?? "تفاصيل المقرّر"}
-      kicker={course?.code}
-      refreshing={full.isFetching && !full.isLoading}
-      onRefresh={() => full.refetch()}
-    >
-      {full.isLoading ? (
-        <SkeletonList rows={6} rowHeight={72} />
-      ) : full.isError || !full.data ? (
-        <ErrorState message={(full.error as Error)?.message} onRetry={() => full.refetch()} />
-      ) : (
-        <>
-          {/* نظرة عامة */}
-          <View style={{ gap: sp[12] }}>
-            <SectionBar index={1} title="نظرة عامة" />
-            <Card style={{ gap: sp[8] }}>
-              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
-                <CourseWell emoji={course?.iconEmoji} color={course?.themeColor} size={44} />
-                <View style={{ flex: 1, gap: 2 }}>
-                  <T variant="bodyLg" weight="bold">
-                    {course?.name}
-                  </T>
-                  <T variant="sm" color="muted">
-                    {course?.department?.name ?? "قسم غير محدَّد"}
-                    {course?.faculty ? ` · ${course.faculty.name}` : ""}
-                  </T>
-                </View>
-              </View>
-              {course?.description ? (
-                <T variant="body" color="secondary">
-                  {course.description}
-                </T>
-              ) : null}
-              <StatLine
-                label="الأستاذ"
-                value={teacher ? `د. ${teacher.firstName} ${teacher.lastName}` : "—"}
-              />
-              <StatLine
-                label="الساعات المعتمدة"
-                value={
-                  course?.credits
-                    ? countAr(course.credits, ["ساعة معتمدة واحدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])
-                    : "—"
-                }
-              />
-              <StatLine label="القاعة" value={full.data.room ?? "قاعة تُحدَّد لاحقاً"} />
-              <StatLine label="الفصل" value={full.data.term} />
-            </Card>
-          </View>
+    <Screen scroll={false} padded={false}>
+      <StackHeader
+        title={course?.name ?? "تفاصيل المقرّر"}
+        kicker={course?.code}
+        right={
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="إجراءات المقرّر"
+            onPress={() => {
+              setActionsMounted(true);
+              setActionsOpen(true);
+            }}
+            style={{ width: touchFloor, height: touchFloor, alignItems: "center", justifyContent: "center" }}
+          >
+            <MoreHorizontal size={22} color={p.text} />
+          </Pressable>
+        }
+      />
 
-          {/* الجدول الأسبوعي */}
-          <View style={{ gap: sp[8] }}>
-            <SectionBar index={2} title="الجدول الأسبوعي" />
-            {schedule.length === 0 ? (
-              <T variant="sm" color="muted">
-                لم يُنشَر جدول هذا المقرّر بعد.
+      {/* sticky identity header — never scrolls away */}
+      <View style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
+        <Card style={{ gap: sp[10] }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+            <CourseWell emoji={course?.iconEmoji} color={course?.themeColor} size={44} />
+            <View style={{ flex: 1, gap: 2 }}>
+              <T variant="bodyLg" weight="bold" numberOfLines={1}>
+                {course?.name}
               </T>
-            ) : (
-              <RowList>
-                {schedule.map((s, i) => (
-                  <LedgerRow key={s.id} last={i === schedule.length - 1}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                      <MonoLabel>{`${s.startTime}–${s.endTime}`}</MonoLabel>
-                      <T variant="body" weight="medium" style={{ flex: 1 }}>
-                        {dayName(s.dayOfWeek)}
-                      </T>
-                    </View>
-                    <T variant="sm" color="muted">
-                      {s.room ?? full.data?.room ?? "قاعة تُحدَّد لاحقاً"}
-                    </T>
-                  </LedgerRow>
-                ))}
-              </RowList>
-            )}
-          </View>
-
-          {/* المحاضرات */}
-          <View style={{ gap: sp[8] }}>
-            <SectionBar
-              index={3}
-              title="المحاضرات"
-              action={
-                lectures.length > 0 ? (
-                  <T variant="xs" color="muted">{`${latn(watchedCount)}/${latn(lectures.length)}`}</T>
-                ) : undefined
-              }
-            />
-            <View style={{ gap: 4 }}>
-              <ProgressBar ratio={lecProgress / 100} accent label={`تقدّمك في المنهج ${pct(lecProgress)}`} />
-              <T variant="xs" color="muted">
-                {`تقدّمك في المنهج ${pct(lecProgress)} · ${countAr(watchedCount, [
-                  "محاضرة مكتملة",
-                  "محاضرتان مكتملتان",
-                  "محاضرات مكتملة",
-                  "محاضرة مكتملة",
-                ])} من ${latn(lectures.length)}`}
+              <T variant="xs" color="muted" numberOfLines={1}>
+                {course?.department?.name ?? "قسم غير محدَّد"}
+                {course?.faculty ? ` · ${course.faculty.name}` : ""}
               </T>
             </View>
-            {lectures.length === 0 ? (
-              <T variant="sm" color="muted">
-                لم تُرفع محاضرات بعد — سيضيفها الأستاذ تباعاً مع تقدّم الفصل.
-              </T>
-            ) : (
-              <RowList>
-                {lectures.map((lec, i) => {
-                  const we = lec.watchEvents?.[0];
-                  const completed = we?.completed ?? false;
-                  const checkpoints = lec._count?.checkpoints ?? 0;
-                  const answered = (lec as { answeredCheckpoints?: number }).answeredCheckpoints ?? 0;
-                  const pending = Math.max(0, checkpoints - answered);
-                  const watchedPct = we && we.totalSec > 0 ? Math.round((we.watchedSec / we.totalSec) * 100) : 0;
-                  return (
-                    <LedgerRow
-                      key={lec.id}
-                      last={i === lectures.length - 1}
-                      accessibilityLabel={`محاضرة ${latn(lec.ordinal)}: ${lec.title}`}
-                      onPress={() => router.push(`/student/lectures/${lec.id}` as never)}
-                    >
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                        <MonoLabel>{String(lec.ordinal).padStart(2, "0")}</MonoLabel>
-                        <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1}>
-                          {lec.title}
-                        </T>
-                        {completed ? <Badge label="مكتملة" tone="mint" /> : null}
-                      </View>
-                      <T variant="sm" color="muted">
-                        {`${lec.durationSec ? mmss(lec.durationSec) : "—"} · ${countAr(lec._count?.chapters ?? 0, [
-                          "فصل واحد",
-                          "فصلان",
-                          "فصول",
-                          "فصلاً",
-                        ])} · ${countAr(checkpoints, [
-                          "نقطة تفاعل واحدة",
-                          "نقطتا تفاعل",
-                          "نقاط تفاعل",
-                          "نقطة تفاعل",
-                        ])}`}
-                      </T>
-                      {!completed && watchedPct > 0 ? <Badge label={pct(watchedPct)} tone="copper" /> : null}
-                      {pending > 0 ? <Badge label="نقاط تفاعل متبقية" tone="yellow" /> : null}
-                    </LedgerRow>
-                  );
-                })}
-              </RowList>
-            )}
+            <RingProgress
+              size={48}
+              thickness={4}
+              progress={progress / 100}
+              accessibilityLabel={`تقدّمك في المنهج ${pct(progress)}`}
+            >
+              <T variant="xs" weight="bold">{pct(progress)}</T>
+            </RingProgress>
           </View>
 
-          {/* المواد */}
-          <View style={{ gap: sp[8] }}>
-            <SectionBar index={4} title="المواد" />
-            {materials.length === 0 ? (
-              <T variant="sm" color="muted">
-                الأستاذ لم يرفع مواد بعد — ستظهر هنا العروض والملفات فور نشرها.
-              </T>
-            ) : (
-              <RowList>
-                {materials.map((m, i) => (
-                  <MaterialRowView key={m.id} m={m} last={i === materials.length - 1} />
-                ))}
-              </RowList>
-            )}
-          </View>
-
-          {/* التكاليف */}
-          <View style={{ gap: sp[8] }}>
-            <SectionBar index={5} title="التكاليف" />
-            <T variant="sm" color="muted">
-              مواعيد التسليم ووزن كل تكليف في درجة المقرّر.
+          <T variant="sm" color="secondary">
+            {teacher ? `د. ${teacher.firstName} ${teacher.lastName}` : "بلا أستاذ مسجَّل"}
+            {course?.credits
+              ? ` · ${countAr(course.credits, ["ساعة معتمدة واحدة", "ساعتان معتمدتان", "ساعات معتمدة", "ساعة معتمدة"])}`
+              : ""}
+          </T>
+          <T variant="xs" color="muted">
+            {`فصل ${full.data.term} · القاعة ${full.data.room ?? "تُحدَّد لاحقاً"}`}
+          </T>
+          {course?.description ? (
+            <T variant="body" color="secondary" numberOfLines={3}>
+              {course.description}
             </T>
-            {assignments.length === 0 ? (
-              <EmptyState
-                title="لا توجد واجبات نشطة"
-                message="حالياً لا شيء بانتظارك في هذا المقرر. وقت جيد لمراجعة المحاضرات السابقة."
-              />
-            ) : (
-              <RowList>
-                {assignments.map((a, i) => (
-                  <AssignmentRowView
-                    key={a.id}
-                    a={a}
-                    last={i === assignments.length - 1}
-                    onSubmit={() =>
-                      setSubmitTarget({
-                        id: a.id,
-                        title: a.title,
-                        dueAt: a.dueAt,
-                        type: a.type,
-                        courseName: course?.name ?? undefined,
-                      })
-                    }
-                  />
-                ))}
-              </RowList>
-            )}
-          </View>
-        </>
-      )}
+          ) : null}
+          {schedule.length > 0 ? (
+            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
+              {schedule.map((s) => (
+                <View
+                  key={s.id}
+                  style={{
+                    borderWidth: StyleSheet.hairlineWidth,
+                    borderColor: p.border,
+                    paddingHorizontal: sp[8],
+                    paddingVertical: 3,
+                    backgroundColor: p.surfaceHover,
+                  }}
+                >
+                  <T variant="xs" color="secondary">
+                    {`${dayName(s.dayOfWeek)} ${s.startTime}`}
+                  </T>
+                </View>
+              ))}
+            </View>
+          ) : null}
+          <T variant="xs" color="muted">
+            {`${pct(progress)} · ${countAr(
+              lectures.filter((l) => l.watchEvents?.[0]?.completed).length,
+              ["محاضرة مكتملة", "محاضرتان مكتملتان", "محاضرات مكتملة", "محاضرة مكتملة"],
+            )} من ${latn(lectures.length)}`}
+          </T>
+        </Card>
 
-      {submitTarget ? (
-        <AssignSubmitSheet
-          open={!!submitTarget}
-          onClose={() => setSubmitTarget(null)}
-          offeringId={offeringId}
-          assignment={submitTarget}
+        <CourseTabs tab={tab} onChange={setTab} />
+      </View>
+
+      {/* the tab body — DataList IS the scroller (flex: 1) */}
+      <View style={{ flex: 1, paddingTop: sp[12] }}>
+        {tab === "lectures" ? (
+          <DataList
+            data={lectures}
+            renderItem={({ item, index }) => <LectureRow item={item} index={index} />}
+            keyExtractor={(l) => l.id}
+            refetch={() => full.refetch()}
+            isRefetching={full.isRefetching}
+            emptyTitle="لا توجد محاضرات"
+            emptyMessage="لم تُرفع محاضرات بعد — سيضيفها الأستاذ تباعاً مع تقدّم الفصل."
+            emptySlot={
+              <EmptyState
+                room="lecture-hall"
+                title="لا توجد محاضرات"
+                message="لم تُرفع محاضرات بعد — سيضيفها الأستاذ تباعاً مع تقدّم الفصل."
+              />
+            }
+            contentPadding={{ horizontal: 20, bottom: 24 }}
+          />
+        ) : tab === "materials" ? (
+          <DataList
+            data={materials}
+            renderItem={({ item, index }) => <MaterialRow item={item} index={index} />}
+            keyExtractor={(m) => m.id}
+            refetch={() => full.refetch()}
+            isRefetching={full.isRefetching}
+            emptyTitle="لا توجد ملفات"
+            emptyMessage="ستظهر مواد المقرّر هنا فور رفع الأستاذ لها."
+            emptySlot={
+              <EmptyState
+                room="library"
+                title="لا توجد ملفات"
+                message="ستظهر مواد المقرّر هنا فور رفع الأستاذ لها."
+              />
+            }
+            contentPadding={{ horizontal: 20, bottom: 24 }}
+          />
+        ) : (
+          <DataList
+            data={offeringAnnouncements}
+            renderItem={({ item, index }) => <AnnouncementRow item={item} index={index} />}
+            keyExtractor={(a) => a.id}
+            isLoading={announcements.isLoading}
+            isError={announcements.isError}
+            errorMessage={humanizeError(announcements.error)}
+            onRetry={() => announcements.refetch()}
+            refetch={() => announcements.refetch()}
+            isRefetching={announcements.isRefetching}
+            emptyTitle="لا توجد إعلانات"
+            emptyMessage="ستظهر إعلانات هذا المقرّر هنا فور نشرها."
+            emptySlot={
+              <EmptyState
+                room="building"
+                title="لا توجد إعلانات"
+                message="ستظهر إعلانات هذا المقرّر هنا فور نشرها."
+              />
+            }
+            contentPadding={{ horizontal: 20, bottom: 24 }}
+          />
+        )}
+      </View>
+
+      {actionsMounted ? (
+        <ActionSheet
+          open={actionsOpen}
+          onClose={() => setActionsOpen(false)}
+          title="إجراءات المقرّر"
+          actions={[
+            {
+              label: "مشاركة المقرّر",
+              icon: <Share2 size={18} color={p.text} />,
+              onPress: () => void shareCourse(),
+            },
+            {
+              label: "الإبلاغ عن مشكلة",
+              icon: <Flag size={18} color={p.text} />,
+              onPress: () => router.push("/report" as never),
+            },
+          ]}
         />
       ) : null}
-    </PushFrame>
-  );
-}
-
-function MaterialRowView({ m, last }: { m: Material; last: boolean }) {
-  return (
-    <LedgerRow last={last} accessibilityLabel={`مادة: ${m.name}`} onPress={() => openMaterial(m.url, m.name)}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-        <T variant="body" weight="bold" style={{ flex: 1 }} numberOfLines={1}>
-          {m.name}
-        </T>
-        <Badge label={materialTypeLabel(m.type)} tone="grey" mono />
-      </View>
-      <T variant="sm" color="muted">
-        {`${materialTypeLabel(m.type)} · ${sizeLabel(m.sizeBytes)}`}
-      </T>
-    </LedgerRow>
-  );
-}
-
-function AssignmentRowView({ a, last, onSubmit }: { a: Assignment; last: boolean; onSubmit: () => void }) {
-  const p = usePalette();
-  const due = dueLabel(a.dueAt);
-  return (
-    <LedgerRow last={last} accessibilityLabel={`تكليف: ${a.title}`}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-        <View style={{ flex: 1, gap: 2 }}>
-          <T variant="body" weight="bold" numberOfLines={1}>
-            {a.title}
-          </T>
-          <T variant="sm" color="muted">
-            {`${ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}${a.weight != null ? ` · الوزن ${latn(Math.round(a.weight))}%` : ""}`}
-          </T>
-        </View>
-        <Badge label={due.text} tone={due.overdue ? "rose" : "yellow"} />
-      </View>
-      <View style={{ flexDirection: "row", gap: sp[8], alignSelf: "flex-start" }}>
-        <Button
-          label="تسليم"
-          kind="accent"
-          small
-          onPress={onSubmit}
-          icon={<Send size={14} color={p.accentFg} />}
-          accessibilityLabel={`تسليم ${a.title}`}
-        />
-      </View>
-    </LedgerRow>
+    </Screen>
   );
 }
