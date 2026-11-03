@@ -31,7 +31,11 @@
   }
 
   .fo-cta-inner {
-    gap: 1.92rem;
+    /* R333 (P-C): the display-scale title (+6.7px over D2) re-seats on
+       the next spacing rung so the taller block keeps its air — the
+       band's 83.75rem floor absorbs it (content stays under the twin
+       height; verified in the r333 evidence run). */
+    gap: 2.4rem;
   }
 
   .fo-cta-lede {
@@ -65,9 +69,16 @@
 
 .fo-cta-title {
   font-family: var(--font-display);
-  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance —
-     the ad-hoc 1.15 literal retires with the 60px seat). */
-  font-size: var(--fs-d2);
+  /* R333 (P-C — the supervisor's «the closing CTA is tiny» defect): the
+     resolve leaves the D2 seat for the DISPLAY register — the same
+     formula family as --fs-d1 (px floor · vw mid · rem cap):
+     46.7px @1440 (the D1 rung) → 36.9 @768 → the r332 W390b
+     2.4rem-equivalent 23.8px floor @390 (Heron's own cta rung). The
+     px floor (not a rem floor) is the convention — a rem floor at the
+     2.5445vw mobile root would JUMP 36.9→46.8px across the 767/768
+     boundary; the px floor glides. Weight 600 · lh 1.10 · balance
+     stay from the D2 join. */
+  font-size: clamp(23.8px, 4.8vw, 5.6rem);
   font-weight: 600;
   line-height: 1.1;
   text-wrap: balance;
@@ -75,7 +86,10 @@
 }
 
 .fo-cta-lede {
-  font-size: var(--fs-body-lg);
+  /* R333 (P-C): +1 rung off the 15px body-lg lead — 16.7px @1440,
+     13px floor-gated (the ladder's max(floor, Nrem) convention); the
+     closing band's copy must carry the resolve, not whisper it. */
+  font-size: max(14px, 2rem);
   line-height: 1.7;
   color: var(--text-secondary);
   max-inline-size: 52ch;

@@ -461,19 +461,14 @@
   color: var(--text);
 }
 
-@media (min-width: 1200px) {
-  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
-    inline-size: auto;
-    block-size: 15.5rem; /* 129.2px @1440 — the strip band ≈ the reference's own 314.2 (lens row + this row share it) */
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
-    inline-size: auto;
-    block-size: 23.6rem; /* 217px @768 (Heron footer exact) · 140px @1024 — the X14 tablet seat, moved home */
-  }
-}
+/* R333 P-D — heron-craft row 17: the wordmark returns to the FULL
+ * available-width cut at EVERY viewport (the reference's monumental
+ * signature: natural 3428×754, rendered full-width). The R332 W6
+ * height-led letterbox seats (15.5rem @1200 / 23.6rem @768) are
+ * retired by owner order this round; the base rule's inline-size:
+ * 100% + viewBox aspect scaling carries every width, so the word
+ * never clips and RTL needs no mirroring (a scaling sheet, not a
+ * directional layout). */
 
 /* the ink — R319 §D1 → R320 §A2 (owner order): STROKE-ONLY outline
  * letterforms (the reference's own drafting verdict: thin uniform

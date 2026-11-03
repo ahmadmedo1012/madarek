@@ -383,88 +383,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
    under prefers-reduced-motion.
    ════════════════════════════════════════════════════════════════════ */
 
-/* ── sc — the custom pointer instrument (canvas + interactive ring).
-   The canvas carries the 10px signal square (V15: the reference's
-   measured 10×10 bbox / 100 opaque pixels) + velocity trail; the ring
-   is the hover/press layer (a 2.8rem outline that contracts into a
-   targeting reticle while pressed). Native cursor hiding is GATED on
-   the instrument actually running (data-sheet-cursor on <html>) — any
-   failure degrades to the native cursor. ─────────────────────────── */
-.sc-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 250;
-  pointer-events: none;
-}
-
-.sc-ring {
-  position: fixed;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  /* V15 · R314 cycle-2: the reference's measured #canvas-cursor-hover —
-     width/height 2.8rem (23.3px @1440 root 8.333px); retunes the R308
-     24px approximation onto the reference's own rem geometry. */
-  inline-size: 2.8rem;
-  block-size: 2.8rem;
-  margin: -1.4rem 0 0 -1.4rem; /* spacing-gate: allow — negative half-ring centering (no negative token exists) */
-  /* V15: #FC724D is the reference's measured reticle border rgb(252,114,77)
-     (r308 reference-observations §2, live DOM read) — no token exists. */
-  border: 2px solid #FC724D; /* color-gate: allow — measured reference reticle border, no token exists */
-  z-index: 251;
-  pointer-events: none;
-  opacity: 0;
-  scale: 1;
-  transition:
-    opacity var(--t-fast) var(--ease),
-    scale var(--t-fast) var(--ease);
-}
-
-.sc-ring[data-on='on'] {
-  opacity: 1;
-}
-
-.sc-ring[data-pressed='on'] {
-  scale: 0.56;
-}
-
-.sc-ring[data-on='on'][data-pressed='on'] {
-  opacity: 0.68;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  [data-sheet-cursor='live'] .landing,
-  [data-sheet-cursor='live'] .landing * {
-    cursor: none !important;
-  }
-  /* R310 §1 — the ownership ladder (R311 §1.5 vocabulary: "none").
-     Zones whose LOCAL instrument is NOT initialized (the hero's
-     drafting layer is gated ≥992px) give the native cursor back —
-     a dead zone with no glyph at all is the one failure worse than
-     a duplicated one. Where the local layer IS active, the rule
-     below re-hides the native cursor so exactly ONE pointer glyph
-     renders (the local instrument). */
-  [data-sheet-cursor='live'] .landing [data-cursor='none'] {
-    cursor: crosshair !important;
-  }
-}
-
-@media (hover: hover) and (min-width: 992px) {
-  /* the hero's local drafting instrument owns the pointer here — the
-     native crosshair must not draw a second glyph over the plus
-     (R311 §1.5: unified "none" vocabulary) */
-  [data-sheet-cursor='live'] .landing [data-cursor='none'] {
-    cursor: none !important;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  /* the entrance loader owns the pointer at EVERY width while it
-     plays (its cross + coordinate readout is the sole instrument) */
-  [data-sheet-cursor='live'] .landing .sl,
-  [data-sheet-cursor='live'] .landing .sl * {
-    cursor: none !important;
-  }
-}
+/* R333 P-D — the custom-pointer instrument (.sc-canvas/.sc-ring + the
+   data-sheet-cursor hiding ladder) moved to its own clean sheet:
+   styles/landing/cursor.css (imported by cursor/SheetCursor.tsx).
+   The 4 documented cursor !important rules retired with it — the
+   ladder re-authors without !important (author > UA cascade). */
 
 .sl {
   position: fixed;

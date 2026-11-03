@@ -922,21 +922,23 @@
   :root[data-theme="dark"]  body[data-role="owner"]           { --role-accent: #B7B2A6; }
 
   /* Default when no data-role is set: fall through to existing --accent. */
-  :root { --role-accent: var(--accent); }
-
-  /* ─── 2. College-accent slot ──────────────────────────────────────── */
-  /* Pages SET --college-accent inline (after the runtime contrast gate
-     in lib/theme.ts → gateCollegeAccent()). The soft derivation below
-     gives a tinted surface usable for header glow / breadcrumb fill. */
+  /* (PI-45 R333: the formerly separate :root blocks — role-accent
+     default, college-accent slot, z-order scale, and the Wave-6
+     --gold-soft/--text-2xl block — are consolidated into this single
+     block, declaration order preserved, cascade-identical.) */
   :root {
+    --role-accent: var(--accent);
+
+    /* ─── 2. College-accent slot ──────────────────────────────────────── */
+    /* Pages SET --college-accent inline (after the runtime contrast gate
+       in lib/theme.ts → gateCollegeAccent()). The soft derivation below
+       gives a tinted surface usable for header glow / breadcrumb fill. */
     --college-accent: var(--role-accent);
     --college-accent-soft: color-mix(in srgb, var(--college-accent) 18%, transparent);
-  }
 
-  /* ─── 3a. Z-order tokens (theme-independent) ───────────────────────
-     One scale for BOTH themes (dropdown 100 < popover 200 < tooltip 250
-     < sheet 300 < modal 400 < toast 500 < lightbox 600). */
-  :root {
+    /* ─── 3a. Z-order tokens (theme-independent) ───────────────────────
+       One scale for BOTH themes (dropdown 100 < popover 200 < tooltip 250
+       < sheet 300 < modal 400 < toast 500 < lightbox 600). */
     --z-base: 0;
     --z-dropdown: 100;
     --z-popover: 200;
@@ -945,12 +947,27 @@
     --z-modal: 400;
     --z-toast: 500;
     --z-lightbox: 600;
+
+    /* ─── 6. Wave additions (append-only heritage, r305 values) ────── */
+
+    /* --gold-soft — soft gold ground for chip/tint surfaces placed
+       behind gold text. One definition suffices for both themes
+       because --c-yellow-bg is itself re-mapped by the theme blocks.
+       WCAG (r305): light gold-ink #8F5A28 on this ground = 4.84:1 (AA);
+       dark #F2B782 on the night yellow bg = 7.07:1 (AAA). */
+    --gold-soft: var(--c-yellow-bg);
+
+    /* --text-2xl — backing token for the `.text-2xl` size utility.
+       Follows the legacy alias family: --fs-2xl = --fs-h1 = 30px. */
+    --text-2xl: var(--fs-2xl);
   }
 
   /* ─── 3. Elevation language — R313: RETIRED (decorative shadows ────
      removed; depth via hairlines only). The rungs resolve none in both
      themes; the prefers-contrast outline-ring ports below remain the
      a11y fallback and are the ONLY non-none elev values left. */
+  /* (PI-45 R333: the light-theme elevation + illustration blocks are
+     consolidated into this single block, cascade-identical.) */
   :root[data-theme="light"] {
     /* R313 override: decorative shadows removed — depth via hairlines only */
     --elev-1: none;
@@ -958,20 +975,8 @@
     --elev-3: none;
     --elev-4: none;
     --elev-5: none;
-  }
 
-  /* ─── Elevation language — Dark (R313: retired with the light set) ── */
-  :root[data-theme="dark"] {
-    /* R313 override: decorative shadows removed — depth via hairlines only */
-    --elev-1: none;
-    --elev-2: none;
-    --elev-3: none;
-    --elev-4: none;
-    --elev-5: none;
-  }
-
-  /* ─── 4. Illustration palette — Light ─────────────────────────────── */
-  :root[data-theme="light"] {
+    /* ─── 4. Illustration palette — Light ─────────────────────────────── */
     --ill-hue-1: var(--c-copper-ink);
     --ill-hue-2: var(--c-mint-ink);
     --ill-hue-3: var(--c-sky-ink);
@@ -983,8 +988,18 @@
     --ill-shadow: rgba(28,28,28,0.10);
   }
 
-  /* ─── Illustration palette — Dark ─────────────────────────────────── */
+  /* ─── Elevation language — Dark (R313: retired with the light set) ── */
+  /* (PI-45 R333: the dark-theme elevation + illustration blocks are
+     consolidated into this single block, cascade-identical.) */
   :root[data-theme="dark"] {
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
+
+    /* ─── Illustration palette — Dark ─────────────────────────────────── */
     --ill-hue-1: var(--c-copper-ink);
     --ill-hue-2: var(--c-mint-ink);
     --ill-hue-3: var(--c-sky-ink);
@@ -995,6 +1010,10 @@
     --ill-paper: var(--neutral-100);
     --ill-shadow: rgba(0,0,0,0.30);
   }
+
+  /* (── 4. Illustration palette: the Light/Dark :root[data-theme] blocks
+     that stood here are consolidated into the elevation blocks above —
+     PI-45 R333, cascade-identical.) ─────────────────────────────────── */
 
   /* ─── 5. prefers-contrast: more — Light ───────────────────────────── */
   @media (prefers-contrast: more) {
@@ -1039,20 +1058,9 @@
     }
   }
 
-  /* ─── 6. Wave additions (append-only heritage, r305 values) ────── */
-
-  :root {
-    /* --gold-soft — soft gold ground for chip/tint surfaces placed
-       behind gold text. One definition suffices for both themes
-       because --c-yellow-bg is itself re-mapped by the theme blocks.
-       WCAG (r305): light gold-ink #8F5A28 on this ground = 4.84:1 (AA);
-       dark #F2B782 on the night yellow bg = 7.07:1 (AAA). */
-    --gold-soft: var(--c-yellow-bg);
-
-    /* --text-2xl — backing token for the `.text-2xl` size utility.
-       Follows the legacy alias family: --fs-2xl = --fs-h1 = 30px. */
-    --text-2xl: var(--fs-2xl);
-  }
+  /* (── 6. Wave additions (append-only heritage, r305 values): the
+     --gold-soft / --text-2xl :root block that stood here is consolidated
+     into the single :root block above — PI-45 R333, cascade-identical.) */
 }
 
 /* ═════════════════════════════════════════════════════════════════════
@@ -1061,12 +1069,28 @@
 
 @layer tokens {
 
+  /* (PI-45 R333: the no-JS :root elevation-defaults block that stood
+     below the reduced-motion gap is consolidated into this single block,
+     cascade-identical.) */
   :root {
     /* Display-weight honesty: the self-hosted IBM Plex Sans Arabic ships
        400/500/600/700 only (public/fonts/, verified) — the family has no
        true 800 anywhere. --fw-black resolves to the real 700 so the
        token says what renders. Alexandria (display) ships 500/600/700. */
     --fw-black: var(--fw-bold);
+
+    /* no-JS elevation defaults: --elev-1..5 are defined under the
+       :root[data-theme] blocks, so with JS disabled (data-theme never set)
+       every --elev-* consumer needs a plain-:root default. R313: the
+       default IS none — the decorative ladder is retired everywhere;
+       the [data-theme] blocks repeat the same value (a default, not a
+       fork). */
+    /* R313 override: decorative shadows removed — depth via hairlines only */
+    --elev-1: none;
+    --elev-2: none;
+    --elev-3: none;
+    --elev-4: none;
+    --elev-5: none;
   }
 
   /* Close the reduced-motion gap: the raw block above zeroes
@@ -1079,20 +1103,13 @@
     }
   }
 
-  /* no-JS elevation defaults: --elev-1..5 are defined under the
+  /* (no-JS elevation defaults: --elev-1..5 are defined under the
      :root[data-theme] blocks, so with JS disabled (data-theme never set)
      every --elev-* consumer needs a plain-:root default. R313: the
      default IS none — the decorative ladder is retired everywhere;
      the [data-theme] blocks repeat the same value (a default, not a
-     fork). */
-  :root {
-    /* R313 override: decorative shadows removed — depth via hairlines only */
-    --elev-1: none;
-    --elev-2: none;
-    --elev-3: none;
-    --elev-4: none;
-    --elev-5: none;
-  }
+     fork). The :root block that stood here is consolidated into the
+     --fw-black :root block above — PI-45 R333, cascade-identical.) */
 
   /* ══════════════════════════════════════════════════════════════
      PRINT LIGHT-LOCK (from polish.css, r150a) — "color-scheme: light"

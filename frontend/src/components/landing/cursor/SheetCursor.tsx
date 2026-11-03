@@ -38,6 +38,9 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { subscribeSheetFrame, wakeSheet, lerp } from '../../../lib/motion/sheetConductor';
+/* R333 P-D — the instrument's dedicated sheet (re-landed out of
+ * chrome.css; no !important in it — the hiding ladder is pure cascade) */
+import '../../../styles/landing/cursor.css';
 
 /* Measured reference constants (see reference-observations.md §4/§5;
  * V15 · R314 cycle-2: the square re-pinned to the r313 pixel-read

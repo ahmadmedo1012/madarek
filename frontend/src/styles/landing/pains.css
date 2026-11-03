@@ -57,9 +57,12 @@
 .pm-sub {
   /* the far-edge note — the body band's --fs-body-lg rung, natural
      width, no max-ch box (the reference's sub sits on the column's
-     own measure, not a reading-measure island). */
+     own measure, not a reading-measure island).
+     R333 (P-C): +1 rung — 16.7px @1440 (max(floor, Nrem) convention,
+     13px floor-gated); the band's lead must read at the column
+     bodies' new register, not under it. */
   margin: 0;
-  font-size: var(--fs-body-lg);
+  font-size: max(14px, 2rem);
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -160,7 +163,11 @@
 
 .pm-item-sub {
   margin: 0;
-  font-size: var(--fs-sm);
+  /* R333 (P-C — the «pains body text small» defect): the column body
+     leaves the fixed 13px sm rung for the 16px @1440 body register
+     (max(floor, Nrem): 16px @1440 → 19px @390 — the ladder's own
+     body-lg mobile drift; 13px floor-gated). */
+  font-size: max(13px, 1.92rem);
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -171,10 +178,13 @@
   margin: 0;
   /* the VLM review's one spacing note: a full --space-lg of air
      before the answer rule (the head's generous rhythm carries down
-     the column — the answer is the column's terminal anchor). */
+     the column — the answer is the column's terminal anchor).
+     R333 (P-C): rides the body rung now (--fs-body equiv 13.3px
+     @1440) — the honest answer keeps its weight-600 accent-ink voice
+     (5.06:1 — AA) at the bodies' new 16px register. */
   padding-block-start: var(--space-lg);
   border-block-start: 1px dashed var(--rule-strong);
-  font-size: var(--fs-xs);
+  font-size: max(13px, 1.6rem);
   font-weight: 600;
   color: var(--accent-ink);
 }

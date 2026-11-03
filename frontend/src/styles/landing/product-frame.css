@@ -84,6 +84,14 @@
   border-radius: 0;
   background: var(--surface);
   box-shadow: none;
+
+  /* ── The entrance — ONE opacity/translate rise, never scroll-linked ──
+     Outside a reveal wrapper the fragment rises once at mount; inside
+     the landing's .reveal-up choreography (the pr-grid) it waits for
+     the section's own .in-view beat — one CSS animation, staggered by
+     raw delays (the choreography exemption). PI-46 R333: consolidated
+     from the former second .prf-card block — cascade-identical. */
+  animation: prf-card-in var(--t-slower) var(--ease-out) both;
 }
 
 /* The dark title bar (24px): light theme rides --text (#282828 — the
@@ -139,6 +147,7 @@
   inline-size: 200px;
   inset-block-start: 8px;
   inset-inline-end: 8px;
+  animation-delay: 80ms;   /* PI-46 R333: from the former tail block */
 }
 
 /* one qualitative line each — no fabricated dialogue specifics, and
@@ -180,6 +189,7 @@
   inline-size: 172px;
   inset-block-end: 8px;
   inset-inline-end: 8px;
+  animation-delay: 160ms;   /* PI-46 R333: from the former tail block */
 }
 
 .prf-card--mastery .prf-card-bar {
@@ -243,6 +253,7 @@
   inline-size: 124px;
   inset-block-end: 8px;
   inset-inline-start: 8px;
+  animation-delay: 240ms;   /* PI-46 R333: from the former tail block */
 }
 
 .prf-card--attend .prf-card-bar {
@@ -288,14 +299,10 @@
 }
 
 /* ── The entrance — ONE opacity/translate rise, never scroll-linked ──
-   Outside a reveal wrapper the fragment rises once at mount; inside
-   the landing's .reveal-up choreography (the pr-grid) it waits for
-   the section's own .in-view beat — one CSS animation, staggered by
-   raw delays (the choreography exemption). */
-.prf-card {
-  animation: prf-card-in var(--t-slower) var(--ease-out) both;
-}
-
+   (PI-46 R333: the base .prf-card animation and the three variant
+   animation-delays that stood here are consolidated into the grammar
+   blocks above — cascade-identical: the shorthand now sits BEFORE the
+   variant delays, so the per-card delays still win.) */
 .reveal-up .prf-card {
   animation: none;   /* armed, not played — the reveal owns the beat */
 }
@@ -303,10 +310,6 @@
 .reveal-up.in-view .prf-card {
   animation: prf-card-in var(--t-slower) var(--ease-out) both;
 }
-
-.prf-card--chat    { animation-delay: 80ms; }
-.prf-card--mastery { animation-delay: 160ms; }
-.prf-card--attend  { animation-delay: 240ms; }
 
 @keyframes prf-card-in {
   from {

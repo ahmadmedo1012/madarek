@@ -1,5 +1,5 @@
 import { Link, Navigate } from 'react-router-dom';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import {
   ArrowLeft, Check,
 } from 'lucide-react';
@@ -17,6 +17,10 @@ import { ROLE_SHOWCASES } from '../data/university-media';
 import { LIVE_COUNT } from '../data/landing-ledger';
 import { formatInt } from '../utils/numbers';
 import { RevealCssClass } from '../hooks/useReveal';
+/* R333 (P-C) — the ONE reveal recipe for the second half (SplitText
+ * LINES-only display rise · batch item rise · imgCardReveal cards;
+ * Arabic line-level only, RM bails, JS-off-safe arming). */
+import { initReveals } from '../lib/reveals';
 /* r325 Y2 — PlatformCanvas/PlatformPlanArt (the head-strip plan +
  * its over-art pin) retire with the Y2 rebuild: the plan's caption
  * lives under the ONE product frame now (see PlatformShowcase). */
@@ -29,7 +33,13 @@ import { Hero } from '../components/landing/hero/Hero';
 import { StatementArt } from '../components/landing/StatementArt';
 import { WhyScene } from '../components/landing/WhyScene';
 import { PainArt } from '../components/landing/PainArt';
-import { SheetLoader } from '../components/landing/SheetLoader';
+/* R333 P-D — the entry sequence rebuild (heron-craft row 1): the
+ * preloader is the paper overlay + stroke-draw + % counter with the
+ * GSAP clip-path wipe exit; the R313 SheetLoader retires from the
+ * mount (the file stays for rollback) — the introGate decision (once
+ * per session, RM/save-data skip) is unchanged and Preloader stamps
+ * the same session flag. */
+import { Preloader } from '../components/landing/chrome/Preloader';
 import { SheetCursor } from '../components/landing/cursor/SheetCursor';
 import { JourneyScene } from '../components/landing/journey/JourneyScene';
 import { ScrubReveal } from '../components/landing/journey/WordReveal';
@@ -70,6 +80,7 @@ import '../styles/landing/consent-edge.css';
 import '../styles/landing/chrome.css';
 import '../styles/landing/hero.css';
 import '../styles/landing/statement.css';
+import '../styles/landing/reveals.css';
 import '../styles/landing/journey.css';
 import '../styles/landing/pains.css';
 import '../styles/landing/roles.css';
@@ -384,6 +395,17 @@ export default function LandingPage() {
     return () => document.body.classList.remove('mdrk-grain');
   }, []);
 
+  /* R333 (P-C) — the second-half reveal grammar (layout effect: the
+   * gsap.set hidden state lands PRE-PAINT, so the armed frame never
+   * flashes un-hidden content). initReveals is idempotent
+   * (window.__mdrkReveals) and its destroy() kills every trigger and
+   * reverts every split — remount-safe (React 18 double-effect
+   * included). RM: the module bails and the copy ships visible. */
+  useLayoutEffect(() => {
+    const reveals = initReveals();
+    return () => reveals.destroy();
+  }, []);
+
   /* R308 → R322 (2-c) — the statement title's scrub driver, re-pinned
    * to the reference's own anchors (scroll-spec.md): the trigger is
    * the TITLE (not the section), center-based — start «center
@@ -560,14 +582,14 @@ export default function LandingPage() {
       ].join(' ')}
     >
 
-      {/* R308 — the entrance sequence (once per session; the loader
-          gates itself again on the pure decision and calls onDone).
-          R310: onExitStart flips the sheet to intro-done the moment
-          the exit slit opens — the hero's ink-in draws WHILE the
-          loader reveals it (a seamless entrance→page transition, per
-          the R310 spec §3.1). */}
+      {/* R333 P-D — the entrance sequence (once per session via the
+          introGate session flag; RM/save-data visitors skip entirely).
+          onExitStart flips the sheet to intro-done the moment the
+          wipe opens — the hero's ink-in draws WHILE the preloader
+          reveals it, and the consent banner mounts beneath the
+          reveal (never overlapping the overlay). */}
       {introPlaying && (
-        <SheetLoader
+        <Preloader
           onExitStart={() => setIntroDone(true)}
           onDone={() => {
             setIntroDone(true);
@@ -575,10 +597,6 @@ export default function LandingPage() {
           }}
         />
       )}
-
-      {/* R308 — the custom pointer instrument (fine pointers only;
-          reduced motion and touch keep the native cursor). */}
-      <SheetCursor />
 
       {/* P3-24: skip-to-content — first Tab stop, hidden until focused. */}
       <a href="#main" className="fo-skip-link">تخطَّ إلى المحتوى</a>
@@ -733,12 +751,11 @@ export default function LandingPage() {
             </header>
 
             <ol className="pm-cols" ref={pmColsRef} aria-label="الأوجاع الأربعة">
-              {PAINS.map((p, i) => (
-                <RevealCssClass
-                  as="li"
+              {PAINS.map((p) => (
+                <li
                   key={p.num}
                   className="pm-col"
-                  delay={((i % 3) + 1) as 1 | 2 | 3}
+                  data-mdrk-reveal="item"
                 >
                   <div className="pm-meta">
                     <span className="pm-keyword fo-mono" dir="ltr">{p.keyword}</span>
@@ -753,7 +770,7 @@ export default function LandingPage() {
                     <p className="pm-item-sub">{p.text}</p>
                     <p className="pm-item-answer">{p.answer}</p>
                   </div>
-                </RevealCssClass>
+                </li>
               ))}
             </ol>
 
@@ -957,12 +974,12 @@ export default function LandingPage() {
 
           <ul className="rl-ledger">
             {LEDGER_ROWS.map((r, i) => (
-              <RevealCssClass as="li" key={r.name} className="rl-row" delay={((i % 3) + 1) as 1 | 2 | 3}>
+              <li key={r.name} className="rl-row" data-mdrk-reveal="item">
                 <span className="rl-row-num fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
                 <h3 className="rl-row-name">{r.name}</h3>
                 <p className="rl-row-line">{r.line}</p>
                 <span className={`rl-row-tag${r.live ? ' is-live' : ''}`}>{r.state}</span>
-              </RevealCssClass>
+              </li>
             ))}
           </ul>
 
@@ -982,24 +999,24 @@ export default function LandingPage() {
             debug text is not content. ═══ */}
         <section className="fo-cta" id="vision" aria-label="ابدأ رحلتك — أنشئ حسابك">
           <div className="fo-cta-inner">
-            <RevealCssClass as="h2" className="fo-cta-title" delay={1}>
+            <h2 className="fo-cta-title" data-mdrk-reveal="lines">
               جاهز لبدء <em>رحلتك</em>؟
-            </RevealCssClass>
-            <RevealCssClass as="p" className="fo-cta-lede" delay={2}>
+            </h2>
+            <p className="fo-cta-lede" data-mdrk-reveal="item">
               أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
               وتابع تقدّمك من أول محاضرة.
-            </RevealCssClass>
-            <RevealCssClass as="div" className="fo-cta-actions" delay={3} id="cta">
+            </p>
+            <div className="fo-cta-actions" data-mdrk-reveal="item" id="cta">
               <Link to="/auth/register" className="btn accent lg">
                 أنشئ حسابك الجامعي
                 <Icon icon={ArrowLeft} size={16} />
               </Link>
               <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
-            </RevealCssClass>
-            <RevealCssClass as="p" className="fo-cta-meta" delay={4}>
+            </div>
+            <p className="fo-cta-meta" data-mdrk-reveal="item">
               <Icon icon={Check} size={13} />
               مدارك · {year} · منصّة تعليمية مستقلّة
-            </RevealCssClass>
+            </p>
           </div>
 
           {/* [9] the colleges registry strip — the ruled hairline row
@@ -1216,9 +1233,18 @@ export default function LandingPage() {
 
       {/* R314 B10 — the landing chrome pair: the local-storage consent
           gate (V11) + the right-edge vertical tab (V12). Public surface
-          only — these never mount on auth pages. */}
-      <ConsentBanner />
+          only — these never mount on auth pages.
+          R333 P-D — the consent banner waits for the preloader's exit
+          (introDone flips at wipe-start / the `mdrk:entry-done` event;
+          no overlay overlap), while the tab is not an overlay and
+          mounts as before. */}
+      {introDone && <ConsentBanner />}
       <EdgeTab />
+
+      {/* R308 → R333 P-D — the custom pointer instrument, mounted LAST
+          (fine pointers only; reduced motion and touch keep the native
+          cursor). Its dedicated sheet is styles/landing/cursor.css. */}
+      <SheetCursor />
     </div>
   );
 }

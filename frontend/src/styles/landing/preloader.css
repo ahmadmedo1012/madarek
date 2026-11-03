@@ -1,0 +1,74 @@
+/* ════════════════════════════════════════════════════════════════════
+   R333 P-D — the entry preloader sheet (heron-craft row 1).
+   A full-screen paper overlay on the page ground; the mark + wordmark
+   stroke-draw via the brand system's own <Logo animated> (its bespoke
+   timing is the documented brand spec — see scripts/check-motion-tokens
+   DEBT: brand/Logo.tsx). This sheet authors NO raw motion: the exit is
+   a GSAP clip-path wipe in Preloader.tsx; every duration here is
+   either a token or absent.
+   ════════════════════════════════════════════════════════════════════ */
+
+.pl {
+  position: fixed;
+  inset: 0;
+  z-index: 320; /* above the nav/cursor chrome (250/251) while it plays */
+  display: grid;
+  place-items: center;
+  background: var(--bg); /* the ONE paper ground — the entry sheet is
+                            the same material as the page it reveals */
+  /* the GSAP wipe animates this from the full sheet to
+     inset(0 100% 0 0) — page reveals right-first (RTL reading side) */
+  clip-path: inset(0 0 0 0);
+  will-change: clip-path;
+}
+
+.pl-inner {
+  display: grid;
+  justify-items: center;
+  gap: var(--sp-3);
+  text-align: center;
+}
+
+.pl-mark,
+.pl-wordmark {
+  color: var(--text); /* the outlined letterforms stroke currentColor */
+  line-height: 0;
+}
+
+.pl-mark svg,
+.pl-wordmark svg {
+  display: block;
+  inline-size: auto;
+  block-size: auto;
+}
+
+.pl-counter {
+  direction: ltr; /* the mono readout is Latin-mono, like the reference */
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent); /* the ONE signal — the reference's mono counter */
+}
+
+.pl-rail {
+  position: relative;
+  inline-size: min(16rem, 56vw);
+  block-size: 1px; /* the hairline rail — blueprint drawing weight */
+}
+
+.pl-rail-track {
+  position: absolute;
+  inset: 0;
+  background: var(--text-muted);
+  opacity: 0.35;
+}
+
+/* the fill grows right→left (the RTL reading direction) */
+.pl-rail-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: right;
+}

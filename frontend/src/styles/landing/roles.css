@@ -73,7 +73,12 @@
 .rl-row-name {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--fs-d3);
+  /* R333 (P-C — the «roles list timid» defect): +2 rungs off the D3
+     seat — 26.7px @1440 (the ledger row reads at the item-title
+     register above D3, under the section H2's D2), 20px floor @390,
+     2.22vw mid. clamp(px floor · vw mid · rem cap) — the --fs-d1
+     convention; the ledger stays a ledger, not a poster. */
+  font-size: clamp(20px, 2.22vw, 3.2rem);
   font-weight: 600;
   line-height: 1.15;
   color: var(--text);
@@ -85,7 +90,11 @@
 .rl-row-line {
   grid-column: 2 / 3;
   margin: 0;
-  font-size: var(--fs-sm);
+  /* R333 (P-C): the honest one-line description leaves the fixed 13px
+     sm rung for the 16px @1440 body register (max(floor, Nrem) —
+     13px floor-gated); --text-secondary holds ≥4.5:1 on the paper
+     ground at body size. */
+  font-size: max(13px, 1.92rem);
   line-height: 1.6;
   color: var(--text-secondary);
   display: -webkit-box;

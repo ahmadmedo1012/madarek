@@ -1,0 +1,104 @@
+/* ════════════════════════════════════════════════════════════════════
+   R333 P-D — the cursor sheet (heron-craft row 8 · INV-05).
+   The custom pointer instrument's dedicated stylesheet, re-landed out
+   of chrome.css: a full-viewport 2D canvas carrying the 10px signal
+   square + velocity trail, and the DOM ring that GROWS over real
+   interactive elements and contracts into a targeting reticle while
+   pressed (threshold-gated — the canvas only trails above a speed
+   threshold; see SheetCursor.tsx).
+
+   Gating ladder (the sheet adds none — the native cursor is reclaimed by
+   plain cascade order: author rules beat the UA's link cursors, and
+   rule order decides the data-cursor='none' exceptions):
+     · the instrument only mounts for (hover: hover) and (pointer: fine)
+       and never under prefers-reduced-motion (SheetCursor.tsx decides
+       via matchMedia; when live it stamps data-sheet-cursor on <html>);
+     · any failure to start keeps the native cursor (the data attribute
+       is the gate — no attribute, no hiding).
+   The entrance preloader (.pl) owns the pointer while it plays.
+   ════════════════════════════════════════════════════════════════════ */
+
+.sc-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  pointer-events: none;
+}
+
+.sc-ring {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  /* the reference's measured #canvas-cursor-hover — 2.8rem square
+     (23.3px @1440 root 8.333px) */
+  inline-size: 2.8rem;
+  block-size: 2.8rem;
+  margin: -1.4rem 0 0 -1.4rem; /* spacing-gate: allow — negative half-ring centering (no negative token exists) */
+  /* #FC724D is the reference's measured reticle border rgb(252,114,77) —
+     no token exists (r308 reference-observations §2, live DOM read) */
+  border: 2px solid #FC724D; /* color-gate: allow — measured reference reticle border, no token exists */
+  z-index: 251;
+  pointer-events: none;
+  opacity: 0;
+  scale: 1;
+  transition:
+    opacity var(--t-fast) var(--ease),
+    scale var(--t-fast) var(--ease);
+}
+
+.sc-ring[data-on='on'] {
+  opacity: 1;
+}
+
+.sc-ring[data-pressed='on'] {
+  scale: 0.56;
+}
+
+.sc-ring[data-on='on'][data-pressed='on'] {
+  opacity: 0.68;
+}
+
+/* Difference-blend OPTION over hero art (heron-craft row 8): opt in by
+   stamping data-blend='on' on the canvas — where mix-blend-mode is
+   supported the instrument inverts against the art beneath it, exactly
+   like the reference's difference-blend measuring lines. */
+@supports (mix-blend-mode: difference) {
+  .sc-canvas[data-blend='on'] {
+    mix-blend-mode: difference;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /* the page ground: every surface under the live instrument */
+  [data-sheet-cursor='live'] .landing {
+    cursor: none;
+  }
+
+  /* author reclaim of the UA link/button cursors (author rules beat
+     UA styles — none needed here) */
+  [data-sheet-cursor='live'] .landing :is(a, button, [role='button'], input, select, textarea, label, summary) {
+    cursor: none;
+  }
+
+  /* the local-instrument zones (the hero's drafting layer below 992px
+     is not initialized there — the native crosshair returns so a dead
+     zone never renders zero glyphs) */
+  [data-sheet-cursor='live'] .landing [data-cursor='none'] {
+    cursor: crosshair;
+  }
+
+  /* the entry preloader owns the pointer at EVERY width while it
+     plays (its counter is the sole instrument) */
+  [data-sheet-cursor='live'] .landing .pl,
+  [data-sheet-cursor='live'] .landing .pl * {
+    cursor: none;
+  }
+}
+
+@media (hover: hover) and (min-width: 992px) {
+  /* ≥992 the hero's local drafting instrument owns the pointer — the
+     native crosshair must not draw a second glyph over the plus */
+  [data-sheet-cursor='live'] .landing [data-cursor='none'] {
+    cursor: none;
+  }
+}

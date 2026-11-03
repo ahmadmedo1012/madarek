@@ -141,12 +141,13 @@ describe('R311 cursor ownership — the real router + landing in one tree', () =
     expect(document.querySelector('.bp-stage')?.getAttribute('data-cursor')).toBe('none');
 
     /* the entrance loader (jsdom plays it: fine media + empty session)
-     * must carry the same token */
+     * must carry the same token — R333: the loader is the Preloader (.pl),
+     * which replaced the R313 SheetLoader (.sl) as the entry overlay */
     await waitFor(
-      () => expect(document.querySelector('.sl')).not.toBeNull(),
+      () => expect(document.querySelector('.pl')).not.toBeNull(),
       { timeout: 2000 },
     );
-    expect(document.querySelector('.sl')?.getAttribute('data-cursor')).toBe('none');
+    expect(document.querySelector('.pl')?.getAttribute('data-cursor')).toBe('none');
   });
 
   it('SPA navigation to /colleges: the app layer returns exactly as r305-A2', () => {

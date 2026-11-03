@@ -1,0 +1,34 @@
+/* R333 (P-C) — the reveal arm seam + the reduced-motion belt.
+   The module (src/lib/reveals.ts) owns ALL hidden state (gsap.set,
+   pre-paint) — this sheet ships NO opacity:0 default: content is
+   visible without JS by construction. No @keyframes here (the
+   motion-tokens gate scans keyframes; this grammar is GSAP-only). */
+
+/* the armed root class is observability, not hiding — a hook point for
+   harnesses asserting the reveal grammar is live. */
+.js-reveal-armed {
+  --mdrk-reveals: on;
+}
+
+/* SplitText line wrappers — stacking context only, zero visual
+   properties (lines inherit direction; no RTL assumption). */
+.mdrk-line {
+  display: block;
+}
+
+/* ── Reduced motion: the complete static sheet (defense in depth —
+   the module bails under RM before arming; this belt guarantees the
+   authored final state even against stale inline styles). ── */
+@media (prefers-reduced-motion: reduce) {
+  .fo-cta-title,
+  .pm-col,
+  .rl-row,
+  .fo-cta-lede,
+  .fo-cta-actions,
+  .fo-cta-meta,
+  .pm-artzone .pm-art,
+  .fo-cta-sketch {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
