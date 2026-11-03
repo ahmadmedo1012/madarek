@@ -96,7 +96,8 @@ const CourseListCard = makeRow<EnrollmentRow, { index: number }>(({ item, index 
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
           <CourseWell emoji={c.iconEmoji} color={c.themeColor} />
           <View style={{ flex: 1, gap: 2 }}>
-            <T variant="bodyLg" weight="bold" numberOfLines={1}>
+            {/* 2 lines, not 1 — long course titles survive a 200% font. */}
+            <T variant="bodyLg" weight="bold" numberOfLines={2}>
               {c.name}
             </T>
             <T variant="sm" color="secondary" numberOfLines={1}>
@@ -217,7 +218,9 @@ function ViewToggle({ view, onChange }: { view: CourseView; onChange: (v: Course
               }
             }}
             style={{
-              height: 44,
+              /* minHeight, not height — a 200% font may wrap the label;
+               * the 44pt floor stays. */
+              minHeight: 44,
               paddingHorizontal: sp[12],
               flexDirection: "row",
               alignItems: "center",
@@ -284,7 +287,9 @@ export default function StudentCourses() {
     queryFn: () => learningApi.enrollments(),
   });
 
-  const rows = feed.data ?? [];
+  /* Stable empty array — a bare `?? []` re-creates it every render and
+   * defeats the facets/filtered memo deps while the feed loads. */
+  const rows = useMemo(() => feed.data ?? [], [feed.data]);
   const facets = useMemo(() => courseFilterFacets(rows), [rows]);
 
   const [view, setView] = useState<CourseView>("list");
@@ -398,7 +403,7 @@ export default function StudentCourses() {
             accessibilityLabel={activeCount > 0 ? `تصفية المقرّرات — ${latn(activeCount)} مُفعّلة` : "تصفية المقرّرات"}
             onPress={openFilters}
             style={({ pressed }) => ({
-              height: 44,
+              minHeight: 44,
               paddingHorizontal: sp[12],
               flexDirection: "row",
               alignItems: "center",

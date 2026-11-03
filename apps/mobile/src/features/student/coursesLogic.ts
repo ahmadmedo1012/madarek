@@ -129,6 +129,45 @@ export function lecturesProgress(lectures: readonly Lecture[]): number {
   return Math.round((done / lectures.length) * 100);
 }
 
+/* ══ Catalog department filter (دليل المقرّرات FilterSheet) ══════════ */
+
+/**
+ * Structural slice of the `/faculties` payload the catalog FilterSheet
+ * reads (catalogApi.faculties) — no import from the api layer so this
+ * module stays dependency-free for its colocated net.
+ */
+export interface FacultyWithDepartments {
+  id: string;
+  name: string;
+  departments?: { id: string; name: string }[] | null;
+}
+
+/** One faculty heading + its department options, Arabic-sorted. */
+export interface CatalogDepartmentGroup {
+  facultyId: string;
+  facultyName: string;
+  departments: { id: string; name: string }[];
+}
+
+/**
+ * Group the faculties payload into FilterSheet sections (faculty heading
+ * → department radio rows). Faculties with no departments are dropped
+ * (an empty heading is noise, not information).
+ */
+export function catalogDepartmentGroups(
+  faculties: readonly FacultyWithDepartments[],
+): CatalogDepartmentGroup[] {
+  const byAr = new Intl.Collator("ar", { numeric: true });
+  return faculties
+    .filter((f) => (f.departments?.length ?? 0) > 0)
+    .map((f) => ({
+      facultyId: f.id,
+      facultyName: f.name,
+      departments: [...(f.departments ?? [])].sort((a, b) => byAr.compare(a.name, b.name)),
+    }))
+    .sort((a, b) => byAr.compare(a.facultyName, b.facultyName));
+}
+
 /* ══ Grid pairing (the list/grid segmented toggle) ════════════════════ */
 
 /** The segmented toggle's two layout modes. */
