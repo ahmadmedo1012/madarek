@@ -386,9 +386,15 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
     const s0 = await sheetState(page);
     expect(s0.pin?.position).toBe('sticky');
     expect(s0.pin?.height).toBe(900);
-    /* Heron's 464px closing column @1440 — RESERVED from stage 0 (the
-     * width flip is NOT transplanted; the pin-end 0.187 CLS dies) */
-    expect(s0.closeW).toBe(464);
+    /* R333 re-seat (P-B, owner order: the signature scene reads at
+     * ≥70% of the viewport): the reserved closing column slimmed
+     * 464 → clamp(256px, 19.5vw, 330px) — 281px @1440 — and the
+     * released width hands to the drawing (55.3% → 72.4% of the
+     * viewport). The column is still RESERVED from stage 0 (the
+     * width flip stays untransplanted; the pin-end 0.187 CLS dies) —
+     * the pin asserts the clamp's seat, not the retired px. */
+    expect(s0.closeW).toBeGreaterThanOrEqual(256);
+    expect(s0.closeW).toBeLessThanOrEqual(330);
     expect(s0.par).toBe('xMidYMid meet');
     expect(s0.viewBox).toBe('0 0 1200 760');
 
@@ -416,7 +422,9 @@ test.describe('R312 — the desktop map contract (the R322 transplant)', () => {
     const end = await sheetState(page);
     expect(end.stage).toBe('5');
     expect(end.open).toBe('on');
-    /* the geometry NEVER moved — the same reserved 464px box */
-    expect(end.closeW).toBe(464);
+    /* the geometry NEVER moved — the same reserved closing box on
+     * the R333 re-seat (clamp(256px, 19.5vw, 330px) — see above) */
+    expect(end.closeW).toBeGreaterThanOrEqual(256);
+    expect(end.closeW).toBeLessThanOrEqual(330);
   });
 });
