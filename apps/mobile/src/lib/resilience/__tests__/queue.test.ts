@@ -155,7 +155,7 @@ describe("the shipped sender", () => {
     };
     await sendAnswerViaExamsApi(item);
     const fetchMock = globalThis.fetch as unknown as {
-      mock: { calls: Array<[string, { method?: string; body?: string }]> };
+      mock: { calls: [string, { method?: string; body?: string }][] };
     };
     const [url, init] = fetchMock.mock.calls[fetchMock.mock.calls.length - 1];
     expect(String(url)).toContain("/exams/attempts/a1/answer");

@@ -21,7 +21,7 @@
  *     exactly what the banner's «سيتم إعادة المحاولة تلقائيًا» promises.
  *     Ref-counted so remounts never double-subscribe.
  */
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { Animated, Easing, StyleSheet, View } from "react-native";
 import {
   addEventListener as addNetInfoListener,
@@ -123,9 +123,14 @@ type BannerPhase = "hidden" | "offline" | "back";
  * The thin connectivity banner — mount ONCE at the app root (inside
  * SafeAreaProvider). Self-subscribing; nothing to pass. Enter/exit is
  * transform/opacity only; reduced-motion shows/hides without animation.
+ *
+ * R334 A-cleanup — the phase/mount bookkeeping no longer sets state
+ * synchronously inside effects (react-hooks/set-state-in-effect): the
+ * banner subscribes to NetInfo itself and derives every visible
+ * transition from the external-system callback, and the only timed
+ * state changes ride async callbacks (setTimeout / Animated completion).
  */
 export function NetworkBanner() {
-  const { isOnline, isResolved } = useNetworkStatus();
   useOnlineManagerBridge();
   const reduced = useReduceMotion();
   const tones = useStatusTones();
@@ -133,52 +138,75 @@ export function NetworkBanner() {
 
   const [phase, setPhase] = useState<BannerPhase>("hidden");
   // Stays mounted while the exit animation runs (the Animated completion
-  // callback unmounts) — the boot.tsx enter/exit pattern.
-  const [mounted, setMounted] = useState(false);
+  // callback clears it) — the boot.tsx enter/exit pattern.
+  const [exiting, setExiting] = useState(false);
   const [v] = useState(() => new Animated.Value(0));
 
   // Phase follows the resolved connectivity line only (never the
   // optimistic pre-resolve default): offline → banner; offline→online →
-  // «عاد الاتصال» flash then exit; anything else → hidden.
-  const prevOnline = useRef<boolean | null>(null);
+  // «عاد الاتصال» flash then exit; anything else → hidden. Transitions
+  // are observed in the NetInfo subscription callback (setState there
+  // is the blessed external-system pattern — never synchronous in the
+  // effect body).
   useEffect(() => {
-    if (!isResolved) return;
-    const was = prevOnline.current;
-    prevOnline.current = isOnline;
-    if (!isOnline) {
-      setPhase("offline");
-      return;
-    }
-    if (was === false) {
-      setPhase("back");
-      const t = setTimeout(() => setPhase("hidden"), BACK_FLASH_MS);
-      return () => clearTimeout(t);
-    }
-    setPhase("hidden");
-  }, [isOnline, isResolved]);
-
-  // Enter/exit animation — opacity + translateY only.
-  useEffect(() => {
-    if (phase === "hidden") {
-      if (!mounted) return;
-      if (reduced) {
-        setMounted(false);
+    let was: boolean | null = null;
+    const apply = (s: NetInfoState) => {
+      const online = s.isConnected !== false && s.isInternetReachable !== false;
+      if (was === null) {
+        // First resolved reading: no transition to celebrate — only go
+        // offline-honest if actually offline.
+        was = online;
+        setPhase(online ? "hidden" : "offline");
         return;
       }
-      Animated.timing(v, { toValue: 0, duration: EXIT_MS, easing: EASE, useNativeDriver: true }).start(
-        ({ finished }) => {
-          if (finished) setMounted(false);
-        },
-      );
+      if (online === was) return;
+      was = online;
+      setPhase(online ? "back" : "offline");
+    };
+    const unsubscribe = addNetInfoListener(apply);
+    fetchNetInfoState()
+      .then(apply)
+      .catch(() => undefined);
+    return () => unsubscribe();
+  }, []);
+
+  // «عاد الاتصال» stays up for BACK_FLASH_MS, then hides and rides the
+  // exit animation (both setStates live in the timer callback — async).
+  useEffect(() => {
+    if (phase !== "back") return;
+    const t = setTimeout(() => {
+      setPhase("hidden");
+      setExiting(true);
+    }, BACK_FLASH_MS);
+    return () => clearTimeout(t);
+  }, [phase]);
+
+  const show = phase !== "hidden";
+  const mounted = show || exiting;
+
+  // Enter/exit animation — opacity + translateY only. Mounting is
+  // derived from `show` (immediate); the exit-unmount lands in the
+  // Animated completion callback. Reduced motion collapses the exit to
+  // a 0ms timing so the same async path hides it statically.
+  useEffect(() => {
+    if (show) {
+      if (reduced) {
+        v.setValue(1);
+        return;
+      }
+      Animated.timing(v, { toValue: 1, duration: ENTER_MS, easing: EASE, useNativeDriver: true }).start();
       return;
     }
-    setMounted(true);
-    if (reduced) {
-      v.setValue(1);
-      return;
-    }
-    Animated.timing(v, { toValue: 1, duration: ENTER_MS, easing: EASE, useNativeDriver: true }).start();
-  }, [phase, mounted, reduced, v]);
+    if (!exiting) return;
+    Animated.timing(v, {
+      toValue: 0,
+      duration: reduced ? 0 : EXIT_MS,
+      easing: EASE,
+      useNativeDriver: true,
+    }).start(({ finished }) => {
+      if (finished) setExiting(false);
+    });
+  }, [show, exiting, reduced, v]);
 
   if (!mounted) return null;
 

@@ -38,6 +38,7 @@ const mockFlashListProps: FlashListProps<unknown>[] = [];
 
 jest.mock("@shopify/flash-list", () => {
   const actual = jest.requireActual("@shopify/flash-list");
+  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
   const React = require("react");
   const FlashListSpy = (props: FlashListProps<unknown>) => {
     mockFlashListProps.push(props);
@@ -429,9 +430,10 @@ function hookClient() {
 
 /** renderHook wrapper factory — each case gets a fresh QueryClient. */
 function hookWrapper(client: QueryClient) {
-  return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={client}>{children}</QueryClientProvider>
-  );
+  function HookWrapper({ children }: { children: React.ReactNode }) {
+    return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  }
+  return HookWrapper;
 }
 
 describe("usePagedList", () => {
