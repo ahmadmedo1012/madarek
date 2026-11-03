@@ -94,10 +94,16 @@ smoke (scout) · npm registry + GitHub API currency scans · environment-reset r
    discarded as state artifacts by all three reviewers); flagged harness follow-up: state-
    controlled recapture for roles/platform.
 4. **W11 authenticated web grammar** — pending lane.
-5. **W12 CSS consolidation** — ≤33k / !important=0 / no rNNN names: landing family done
-   (per-section sheets, pixel-identical); the 12-step plan (css-baseline.md) executes next.
-   NOTE: the two "orphan" sheets (unified-parity.css, shared-design-system.css) are LOAD-BEARING
-   parity-export artifacts (verify-parity-export.mjs) — they must NOT be deleted (corrects
-   css-baseline.md's step 1).
+5. **W12 CSS consolidation** — **renames DONE: zero `rNNN-*` names remain** (every round sheet
+   moved byte-identical to landing/ shell/ student/ teacher/ shared/; importers, gates,
+   allowlists and test enumerations updated; 3080/3080 tests). OPEN: line count ≤33k (52k —
+   the coverage-driven dead-bucket deletions, 12-step plan in css-baseline.md) and
+   `!important` → 0 (43 real declarations; census + 5 worked patterns in css-baseline.md;
+   parity-export artifacts verified load-bearing and exempt from deletion). NOTE: the two
+   "orphan" sheets are LOAD-BEARING parity-export artifacts (verify-parity-export.mjs) —
+   they must NOT be deleted (corrects css-baseline.md step 1).
+6. **W11 dashboards** — DONE: all four role dashboards grammar-passed ([nn] indices, owner
+   raw-enum labels mapped, admin metric hierarchy); states verified via the mock seam; live
+   backend wire shapes unverified (backend down) — honest limit.
 6. **≥55fps@4× CPU** — unreachable on this host (37.5fps @1× control, 0 long tasks; CLS
    0.0041). Engine-side cost is not the constraint (W9 attribution table).

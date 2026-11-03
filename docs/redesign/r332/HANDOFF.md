@@ -77,7 +77,12 @@ Loop: build → twin → fix → twin. **The Twin Report decides.**
 | dc68420d | W2+W3 twin-PASS; W4/W5/W6 dissolution partials | ⚠ E2E flake→rerun ✅ 12/12 | ✅ | runner-load timeout (r309 drag), local greens ×2, flake named |
 | bd55775c | W5c why PASS; W4c+W6c display rungs — all 9 in threshold @1440 | ✅ 12/12 (rerun; first run auto-cancelled) | ✅ | API-checked |
 | d90eff11 | W7/W8/W9/W10a/W10b (re-landed post-reset) | ⚠ E2E flake→rerun ✅ 12/12 | ✅ | distinct test (r305 active-mark), same signature; flake named |
-| 152d06a7 | W390a/W390b phone tier | (pending at push) | (pending) | polled next |
+| 152d06a7 | W390a/W390b phone tier | ✅ 11/11 | ✅ | API-checked |
+| ccfeab7b | HANDOFF ledger update | ✅ 1/1 (size) | ✅ | docs-only |
+| 133e2afc | REPORT.md draft | ✅ 1/1 (size) | ✅ | docs-only |
+| 7947a735 | blind panel runs 1-2 verdicts | ✅ 12/12 | ✅ | API-checked |
+| de9e0d7e | BLIND PANEL PASSED 3/3 INDISTINGUISHABLE | ✅ 12/12 | ✅ | API-checked |
+| 220d7530 | W12a renames complete + W11 dashboards | ⚠ E2E flake → rerun (3rd occurrence, same canary r309 drag, load-correlated, local green ×3) | ✅ | named per rules |
 
 ## Tools actually used (unproven claims are void)
 | tool | invoked | commit | artifact |
