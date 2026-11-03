@@ -29,24 +29,36 @@
 }
 
 .chapters-title {
-  /* R332 W4 — the TWIN LABEL-SCALE fix (run-001: journey heading median
-     40px vs Heron 13.33px, Δ66.67%). Like-for-like, Heron's home-map
-     band has NO display-size text at all: its section title
-     (home-map-content-title «RUN AN AGENT NATIVELY IN YOUR MODEL»)
-     is the small mono register — measured 13.3333px = 1.6rem on the
-     shared fluid root (w500 · lh 17.33 = 1.3 · ls −0.02em), and the
-     twin's own heading median is 13.33px. Ours rides the same rung:
-     13.33px @1440 · 15.88px @390 (run-001's «390 title ≤16.6px» seat).
-     The D2 rung this seat rode since R322 (1-d) was the STATEMENT
-     band's measure, not the map band's. The −0.02em tracking is NOT
-     mirrored: the copy is Arabic, and the site law keeps Arabic
-     display at its natural metrics (no tracking — see .wr-w below). */
-  font-family: var(--font-mono);
-  font-size: 1.6rem; /* 13.33px @1440 · 15.88px @390 — Heron's measured mono rung */
-  font-weight: 500;
-  line-height: 1.3;
+  /* R332 W4c — the run-002 re-pair. Heron's home-map band DOES carry a
+     display voice: TWO .heading.h1 lines («Right there with you» /
+     «For the whole design») measured 46.6667px @1440 across all 51
+     twin steps — the typeLadder's own h1 rung (5.6rem/700/lh 1). The
+     W4 13.33px mono seat rode run-001, whose first-6 heading slice
+     missed those lines; run-002 catches them (heron live now leads
+     the band with the intel block). The title returns to the measured
+     display rung: 46.67px @1440, Alexandria 700 — Heron's pairing is
+     BT Grotesk h1 + txt-16 labels, ours is --font-display +
+     --font-mono. Arabic copy keeps natural metrics: no tracking, no
+     transform (the site law — see .wr-w below). ≤991 keeps the W4
+     mono re-seat VERBATIM: 1.6rem/500/1.3 = 15.88px @390, the seat
+     the ≤399 foot rung (227px pad) is calibrated against and the
+     twin's «390 title ≤16.6px» probe bound. */
+  font-family: var(--font-display);
+  font-size: 5.6rem; /* 46.67px @1440 — Heron's measured .heading.h1 twin */
+  font-weight: 700;
+  line-height: 1;
   text-wrap: balance;
   color: var(--text);
+}
+
+@media (max-width: 991px) {
+  /* the W4 mono label re-seat — byte-identical rendering ≤991 */
+  .chapters-title {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
 }
 
 .chapters-lede {

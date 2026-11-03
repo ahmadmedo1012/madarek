@@ -725,7 +725,10 @@
  * shrink with the cards below 1440 instead of holding the 768px-root
  * wrap height. Line-heights step to the reference's own compact rows. */
 @media (min-width: 992px) {
-  .pr-section, .wy-section {
+  /* R332 W5c: .wy-section left this group — why.css owns the section's
+     own ≥992 seats (992–1024 frozen 8rem slice · ≥1025 --space-12xl
+     quiet rung); platform keeps the 3.84rem compact seat untouched. */
+  .pr-section {
     padding-block: 3.84rem;
   }
   /* R332 W5: .rl-section left this group — the roles owner seat
@@ -747,9 +750,11 @@
     gap: 0.48rem 1.92rem;
   }
 
-  .wy-head { margin-block-end: 2.88rem; }
-  .wy-note { margin-block-start: 2.4rem; }
-  .wy-stage-text { line-height: 1.55; }
+  /* R332 W5c: the .wy- ≥992 tiers RETIRE (why.css duplicates own the
+     seat verbatim — .wy-stage-text 1.55 at why.css's ≥992 tier; the
+     head/note margins live in why.css's 992–1024 frozen slice and the
+     ≥1025 block. The old 2.88rem head seat was the twin-visible 24px
+     rhythm gutter — Heron's why head butts the strip at 0). */
 
   .rl-head { margin-block-end: 4.8rem; }
   .rl-more { margin-block-start: 1.92rem; }
@@ -1906,8 +1911,10 @@
    scene's own 12rem and closes at 8rem. The ≤991 belts keep their own
    compact rungs (the V13 compaction contract — untouched). */
 @media (min-width: 992px) {
-  .pr-section,
-  .wy-section {
+  /* R332 W5c: .wy-section left the ladder — its ≥992 padding lives in
+     why.css now (992–1024 frozen 8rem · ≥1025 --space-12xl); platform
+     KEEPS the 8rem quiet rung (its own Δ0.04% height must hold). */
+  .pr-section {
     padding-block: 8rem; /* spacing-gate: allow — the sheet's ONE quiet-band rung (the st/pm measured seat), not a per-section value */
   }
   /* R332 W5: .rl-section left this group too — see the note at the

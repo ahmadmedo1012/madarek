@@ -287,11 +287,10 @@
     line-height: 1.45;
   }
 
-  .fo-footer-heading {
-    padding-block-end: var(--sp-1);
-    margin-block-end: var(--sp-0-5);
-  }
-
+  /* W6c R332 — the ≥992 .fo-footer-heading chrome pair RETIRED here:
+   * it was dead in the cascade (the base rule below — same specificity,
+   * later document order — always repainted it) and the display rung's
+   * live trim now sits in the late ≥992 block beside the font rung. */
   .fo-footer-about {
     /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
      * 1.5 — the compact desktop lead the final cascade already ran
@@ -553,6 +552,35 @@
   padding-block-end: var(--sp-1-5);
   border-block-end: 1px solid var(--rule);
   margin-block-end: var(--sp-1);
+}
+
+/* W6c R332 — the scanned display rung (≥992): the h-scan (driver.py:
+ * h1–h4 + [class*=title] + [class*=heading], per-step MAX = the band's
+ * display type) reads the reference's footer display voice at 26.6667px
+ * @1440 — its .heading h4 statement lines («An AI agent that / works
+ * inside your / design tools», measured live in .footer-title-wrap).
+ * Madarek's scanned footer headings are exactly these five column
+ * heads, so the like-for-like display rung rides ONE ladder step under
+ * h3 — the r313 +0.8rem steps → 3.2rem on the shared fluid root
+ * (26.67px @1440 · 18.96 @1024), the same root the reference's h4
+ * scales on. lh 1.2 — the --lh-snug display lead. Sits AFTER the base
+ * rule — same specificity, document order must decide (the r315 K-F·B9
+ * lesson: the base 13px below would silently repaint this rung).
+ * ≤991 keeps the 13px micro floor (the base rule; the reference's own
+ * footer labels are mono-micro there too). Grid headroom @1440: the
+ * tallest column ~237px inside the 42.6rem (355) floor — the band
+ * stays floor-bound (docH unchanged). */
+@media (min-width: 992px) {
+  .fo-footer-heading {
+    font-size: 3.2rem;
+    line-height: var(--lh-snug);
+    /* the display rung's row chrome = the strata 992–1319 register
+     * (pad 2 / margin 0 — «the row chrome the 42.6rem floor can
+     * seat»): the 26.67px head holds the row rhythm the 13px head
+     * held, the grid band stays floor-bound at 355, docH unchanged. */
+    padding-block-end: var(--sp-0-5);
+    margin-block-end: 0;
+  }
 }
 
 .fo-footer-link {

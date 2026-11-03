@@ -428,20 +428,34 @@
 }
 
 .pr-title {
-  font-family: var(--font-display);
-  /* R322 (1-d FINAL): the product H2 joins the D2 rung like every
-     section statement (weight 600 · lh 1.10 · balance). The interim
-     R318 §A5 h4 sheet-title seat (3.2rem/26.67px @1440) is re-pinned
-     by this scale migration: the census-after caught this seat OFF
-     the rungs at 28.86px @390 (its ≤767 px clamp) — the only
-     display-size survivor at phone widths; the rung lands it at
-     31.74px like every H2. The ≤767 clamp and the ≥992 sheet-title
-     literal retire below. */
-  font-size: var(--fs-d2);
+  /* R332 W4c — the twin label-scale re-pair (platform). Heron's
+     home-platform band's display voice is the feature titles'
+     .heading.h4 seat («Heron Chat widget» / «Heron Dashboard») —
+     measured 26.6667px w600 lh 1 across all 51 twin steps (3.2rem on
+     the shared root; the 13.33px rows in the same slice are the
+     [class*=title] WRAPPERS around it, and run-001's first-6 missed
+     the h4 seats entirely). Ours drops from the D2 statement rung
+     (40px @1440, fsΔ 66.67%) to that measured h4 rung; the body-voice
+     pairing (family: the sans, no mono chip) is kept — Heron's h4
+     rides its body face like ours inherits the band's. The D2 seat's
+     own history (R318 §A5 h4 → R322 1-d rung) retires with it.
+     ≤767 mirrors Heron's mb-h4 step (2rem/1.2 = 19.85px @390); the
+     768–991 band folds .pr-head. The band keeps its 79vh min-block
+     floor and the ≥992 .pr-head seat, so the height twin (Δ0.04%)
+     is untouched. */
+  font-size: 3.2rem; /* 26.67px @1440 — Heron's measured .heading.h4 twin */
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1;
   text-wrap: balance;
   color: var(--text);
+}
+
+@media (max-width: 767px) {
+  /* Heron's own mb-h4 step (.heading.mb-h4: 2rem / 1.2em) */
+  .pr-title {
+    font-size: 2rem; /* 19.85px @390 */
+    line-height: 1.2;
+  }
 }
 
 .pr-lede {
