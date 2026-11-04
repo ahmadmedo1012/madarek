@@ -22,6 +22,8 @@ import { Segmented } from "@/components/ui/fields";
 import { LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { latn, pct } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 import { countAr } from "@/features/student/more";
 import { GapList, CourseWell, PushFrame, masteryMeta } from "@/features/student/components";
 
@@ -119,7 +121,7 @@ export default function MatrixScreen() {
         {gaps.isLoading ? (
           <SkeletonList rows={2} rowHeight={56} />
         ) : gaps.isError ? (
-          <ErrorState message={(gaps.error as Error | null)?.message} onRetry={() => gaps.refetch()} compact />
+          <ErrorState message={humanizeError(gaps.error)} onRetry={() => gaps.refetch()} compact />
         ) : (gaps.data ?? []).length === 0 ? (
           <T variant="sm" color="muted">
             لا فجوات حالياً — أحسنت! استمر بحضور المحاضرات والإجابة على نقاط التفاعل.
@@ -133,7 +135,7 @@ export default function MatrixScreen() {
       {matrix.isLoading ? (
         <SkeletonList rows={5} rowHeight={72} />
       ) : matrix.isError ? (
-        <ErrorState message={(matrix.error as Error | null)?.message} onRetry={() => matrix.refetch()} />
+        <ErrorState message={humanizeError(matrix.error)} onRetry={() => matrix.refetch()} />
       ) : courses.length === 0 ? (
         <EmptyState
           title="لم تتشكّل مصفوفتك بعد"
@@ -149,7 +151,15 @@ export default function MatrixScreen() {
               </T>
             ) : null}
             <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ minHeight: 44 }}>
-              <Segmented options={LEVEL_FILTERS} selectedId={filter} onSelect={setFilter} style={{ minWidth: 600 }} />
+              <Segmented
+                options={LEVEL_FILTERS}
+                selectedId={filter}
+                onSelect={(id) => {
+                  haptics.selection();
+                  setFilter(id);
+                }}
+                style={{ minWidth: 600 }}
+              />
             </ScrollView>
           </View>
 

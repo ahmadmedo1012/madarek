@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
 import Trash2 from "lucide-react-native/icons/trash";
@@ -13,7 +14,6 @@ import { Field, Segmented, SelectField } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { fullDate, latn } from "@/lib/format";
@@ -87,7 +87,7 @@ const [maxUses, setMaxUses] = useState("1");
       setDays("7");
       setMaxUses("1");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر إنشاء الدعوة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إنشاء الدعوة"),
   });
 
   const remove = useMutation({
@@ -97,7 +97,7 @@ const [maxUses, setMaxUses] = useState("1");
       toast.success("حُذف كود الدعوة.", "تمّ الحذف");
       setDeleting(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حذف الدعوة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حذف الدعوة"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name }));
@@ -130,7 +130,7 @@ const [maxUses, setMaxUses] = useState("1");
         {invites.isLoading ? (
           <SkeletonList rows={4} />
         ) : invites.isError ? (
-          <ErrorState message={(invites.error as Error | null)?.message} onRetry={() => invites.refetch()} />
+          <ErrorState message={humanizeError(invites.error)} onRetry={() => invites.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد دعوات بعد"

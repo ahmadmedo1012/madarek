@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
@@ -56,7 +57,7 @@ export default function AdminReports() {
         {reports.isLoading ? (
           <SkeletonList rows={6} />
         ) : reports.isError ? (
-          <ErrorState message={(reports.error as Error | null)?.message} onRetry={() => reports.refetch()} />
+          <ErrorState message={humanizeError(reports.error)} onRetry={() => reports.refetch()} />
         ) : !reports.data || typeof reports.data !== "object" ? (
           <EmptyState title="لا توجد بيانات بعد" message="ستظهر التقارير فور توفّر بيانات المؤسسة." />
         ) : (

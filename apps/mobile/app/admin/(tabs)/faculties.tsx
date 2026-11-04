@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
 import { AppTopBar } from "@/components/shell/AppTopBar";
@@ -12,7 +13,6 @@ import { Field } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useSession } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
@@ -64,7 +64,7 @@ export default function AdminFaculties() {
       setFCity("");
       setFEmoji("");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّرت إضافة الكلّيّة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّرت إضافة الكلّيّة"),
   });
 
   const createDepartment = useMutation({
@@ -75,7 +75,7 @@ export default function AdminFaculties() {
       setDeptTarget(null);
       setDName("");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّرت إضافة القسم"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّرت إضافة القسم"),
   });
 
   const { expanded, toggle } = useExpanded();
@@ -117,7 +117,7 @@ export default function AdminFaculties() {
           {facs.isLoading ? (
             <SkeletonList rows={5} />
           ) : facs.isError ? (
-            <ErrorState message={(facs.error as Error | null)?.message} onRetry={() => facs.refetch()} />
+            <ErrorState message={humanizeError(facs.error)} onRetry={() => facs.refetch()} />
           ) : facs.data && facs.data.length > 0 ? (
             <View style={{ gap: 8 }}>
               {facs.data.map((f) => {

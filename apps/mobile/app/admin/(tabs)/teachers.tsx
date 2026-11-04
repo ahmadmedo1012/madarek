@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Crown from "lucide-react-native/icons/crown";
@@ -9,24 +10,23 @@ import { Screen } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Badge, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
-import { RowList, LedgerRow, Avatar, StatLine } from "@/components/ui/data";
+import {
+  DataList,
+  LedgerRow,
+  StatLine,
+  makeRow,
+  usePagedList,
+} from "@/components/ui/data";
 import { SearchBar, Segmented, SelectField } from "@/components/ui/fields";
-import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
+import { sp } from "@/design/tokens";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { POSITION_LABELS, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { initials, num } from "@/lib/format";
-import {
-  pageOf,
-  PagerFooter,
-  UNIT,
-  textOf,
-  type FacultyNode,
-} from "@/features/governance/components";
+import { pageOf, textOf, UserAvatar, avatarUrlOf, type FacultyNode } from "@/features/governance/components";
 
 const PAGE_LIMIT = 20;
 
@@ -44,7 +44,6 @@ export default function AdminTeachers() {
   const scope = useInstitutionScope();
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
-  const [page, setPage] = useState(1);
 
   const appliedRef = useRef(appliedQ);
   useEffect(() => {
@@ -53,7 +52,6 @@ export default function AdminTeachers() {
       if (next === appliedRef.current) return;
       appliedRef.current = next;
       setAppliedQ(next);
-      setPage(1);
     }, 300);
     return () => clearTimeout(t);
   }, [q]);
@@ -62,20 +60,19 @@ export default function AdminTeachers() {
     queryKey: ["admin", "users", { role: "TEACHER", page: 1, q: "", countOnly: true }, scope],
     queryFn: async () => pageOf<AdminUserRow>(await adminApi.users({ role: "TEACHER", page: 1, limit: 1 })),
   });
-  const roster = useQuery({
-    queryKey: ["admin", "users", { role: "TEACHER", page, q: appliedQ }, scope],
-    queryFn: async () =>
-      pageOf<AdminUserRow>(await adminApi.users({ role: "TEACHER", page, q: appliedQ || undefined, limit: PAGE_LIMIT })),
-    placeholderData: (prev) => prev,
+  const roster = usePagedList<AdminUserRow>({
+    queryKey: ["admin", "users", { role: "TEACHER", q: appliedQ }, scope],
+    fetchPage: (page) =>
+      adminApi.users({ role: "TEACHER", page, q: appliedQ || undefined, limit: PAGE_LIMIT }),
+    limit: PAGE_LIMIT,
   });
 
   const [selected, setSelected] = useState<AdminUserRow | null>(null);
-  const rows = roster.data?.rows ?? [];
 
   return (
-    <Screen scroll>
+    <Screen scroll={false} padded={false}>
       <AppTopBar alertsPath="/admin/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <View>
           <T variant="h2" weight="bold">
             إدارة الأساتذة
@@ -95,80 +92,71 @@ export default function AdminTeachers() {
           value={q}
           onChange={setQ}
           placeholder="ابحث بالاسم أو البريد الإلكتروني…"
-          onClear={() => {
-            setQ("");
-            setPage(1);
-          }}
+          onClear={() => setQ("")}
         />
-
-        {roster.isLoading ? (
-          <SkeletonList rows={6} />
-        ) : roster.isError ? (
-          <ErrorState message={(roster.error as Error | null)?.message} onRetry={() => roster.refetch()} />
-        ) : rows.length === 0 ? (
-          <EmptyState
-            title={appliedQ ? "لا نتائج مطابقة" : "لم يتم تسجيل أساتذة بعد"}
-            message={
-              appliedQ
-                ? "لم نجد أساتذة تطابق البحث الحالي."
-                : "ستظهر القائمة فور تسجيل أول أستاذ في النظام."
-            }
-            actionLabel={appliedQ ? "مسح البحث" : undefined}
-            onAction={appliedQ ? () => setQ("") : undefined}
-          />
-        ) : (
-          <View style={{ gap: 12 }}>
-            <RowList>
-              {rows.map((t, i) => (
-                <LedgerRow
-                  key={t.id}
-                  onPress={() => setSelected(t)}
-                  accessibilityLabel={`ملف ${t.firstName} ${t.lastName}`}
-                  last={i === rows.length - 1}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    <Avatar
-                      initials={t.avatarInitials ?? initials(t.firstName, t.lastName)}
-                      color={t.avatarColor}
-                      size={36}
-                    />
-                    <View style={{ flex: 1, gap: 2 }}>
-                      <T variant="body" weight="bold" numberOfLines={1}>
-                        {t.firstName} {t.lastName}
-                      </T>
-                      <T variant="xs" color="muted" numberOfLines={1}>
-                        {t.email}
-                      </T>
-                    </View>
-                    {t.verifiedAt ? <Badge label="موثَّق" tone="mint" /> : null}
-                    {t.position ? (
-                      <Badge
-                        label={POSITION_LABELS[t.position] ?? t.position}
-                        tone="lavender"
-                        mono={!(t.position in POSITION_LABELS)}
-                      />
-                    ) : null}
-                  </View>
-                </LedgerRow>
-              ))}
-            </RowList>
-            <PagerFooter
-              page={page}
-              rowsLength={rows.length}
-              limit={PAGE_LIMIT}
-              meta={roster.data?.meta ?? null}
-              unit={UNIT.teacher}
-              onPage={setPage}
-              loading={roster.isFetching}
-            />
-          </View>
-        )}
+      </View>
+      <View style={{ flex: 1 }}>
+        <DataList
+          data={roster.items}
+          renderItem={({ item }) => <TeacherRow item={item} onSelect={setSelected} />}
+          keyExtractor={(t) => t.id}
+          isLoading={roster.isLoading}
+          isError={roster.isError}
+          errorMessage={humanizeError(roster.query.error)}
+          onRetry={() => roster.refetch()}
+          refetch={roster.refetch}
+          isRefetching={roster.isRefetching}
+          onEndReached={roster.onEndReached}
+          isFetchingNextPage={roster.isFetchingNextPage}
+          hasNextPage={roster.hasNextPage}
+          loadMoreError={roster.loadMoreError}
+          onRetryLoadMore={roster.retryLoadMore}
+          emptyTitle={appliedQ ? "لا نتائج مطابقة" : "لم يتم تسجيل أساتذة بعد"}
+          emptyMessage={
+            appliedQ
+              ? "لم نجد أساتذة تطابق البحث الحالي."
+              : "ستظهر القائمة فور تسجيل أول أستاذ في النظام."
+          }
+          contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
+        />
       </View>
 
       {selected ? <TeacherSheet teacher={selected} onClose={() => setSelected(null)} /> : null}
     </Screen>
   );
 }
+
+/* ─── roster row (module scope, memo-stable) ─── */
+
+const TeacherRow = makeRow<AdminUserRow, { onSelect: (row: AdminUserRow) => void }>(
+  ({ item, onSelect }) => (
+    <LedgerRow
+      onPress={() => onSelect(item)}
+      accessibilityLabel={`ملف ${item.firstName} ${item.lastName}`}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <UserAvatar
+          url={avatarUrlOf(item)}
+          initials={item.avatarInitials ?? initials(item.firstName, item.lastName)}
+          color={item.avatarColor}
+          size={36}
+        />
+        <View style={{ flex: 1, gap: 2 }}>
+          <T variant="body" weight="bold" numberOfLines={1}>
+            {item.firstName} {item.lastName}
+          </T>
+          <T variant="xs" color="muted" numberOfLines={1}>
+            {item.email}
+          </T>
+        </View>
+        {item.verifiedAt ? <Badge label="موثَّق" tone="mint" /> : null}
+        {item.position ? (
+          <Badge label={POSITION_LABELS[item.position] ?? "منصب آخر"} tone="lavender" />
+        ) : null}
+      </View>
+    </LedgerRow>
+  ),
+);
 
 /* ─── Teacher actions sheet: verify + position + permissions ─── */
 
@@ -202,7 +190,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       qc.invalidateQueries({ queryKey: ["admin", "teachers"] });
       toast.success(verified ? `تمّ توثيق «${teacher.firstName} ${teacher.lastName}».` : "أُلغي توثيق الأستاذ.");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث التوثيق"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث التوثيق"),
   });
 
   const [position, setPosition] = useState<PositionChoice>(
@@ -227,7 +215,7 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       toast.success("تمّ حفظ التعيين.", "المنصب القياديّ");
       onClose();
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ التعيين"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ التعيين"),
   });
 
   const facultyOptions = (facs.data ?? []).map((f) => ({ id: f.id, label: f.name, sub: f.city ?? null }));
@@ -249,12 +237,12 @@ function TeacherSheet({ teacher, onClose }: { teacher: AdminUserRow; onClose: ()
       {mode === "actions" ? (
         <View style={{ gap: 12 }}>
           <T variant="body" color="muted">
-            {ROLE_LABELS[teacher.role] ?? teacher.role} · {teacher.email}
+            {ROLE_LABELS[teacher.role] ?? "دور آخر"} · {teacher.email}
           </T>
           <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
             {teacher.verifiedAt ? <Badge label="موثَّق" tone="mint" /> : <Badge label="غير موثَّق" tone="grey" />}
             {teacher.position ? (
-              <Badge label={POSITION_LABELS[teacher.position] ?? teacher.position} tone="lavender" />
+              <Badge label={POSITION_LABELS[teacher.position] ?? "منصب آخر"} tone="lavender" />
             ) : null}
           </View>
 

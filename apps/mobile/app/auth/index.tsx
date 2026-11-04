@@ -1,194 +1,116 @@
-import { useState } from "react";
-import { Pressable, StyleSheet, View } from "react-native";
-import TriangleAlert from "lucide-react-native/icons/triangle-alert";
+import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
+import Svg, { Line } from "react-native-svg";
+import Animated from "react-native-reanimated";
 import { router, useLocalSearchParams } from "expo-router";
-import { ApiError } from "@/api/client";
-import { useSession, ROLE_HOME } from "@/auth/session";
+import { AppStatusBar } from "@/design/statusbar";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { FormScreen } from "@/components/ui/screen";
-import { T, MonoLabel } from "@/components/ui/text";
-import { Field, SecretField } from "@/components/ui/fields";
+import { Screen } from "@/components/ui/screen";
+import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { Hairline, Card } from "@/components/ui/surfaces";
 import { BrandMark } from "@/components/ui/brand";
+import { Hairline } from "@/components/ui/surfaces";
+import { useStaggerEntrance } from "@/motion";
+import { PlanBuilding } from "@/brand/plan";
 
-const DEMO_ACCOUNTS = [
-  { email: "student@test.ly", label: "طالب" },
-  { email: "teacher@test.ly", label: "أستاذ" },
-  { email: "registrar@test.ly", label: "مسجل عام" },
-  { email: "quality@test.ly", label: "جودة" },
-  { email: "owner@test.ly", label: "مالك" },
-];
-const DEMO_PASSWORD = "12345678";
-const SHOW_DEMO = __DEV__ || process.env.EXPO_PUBLIC_SHOW_TEST_ACCOUNTS === "1";
-
-/** /auth — تسجيل الدخول (mirrors the web AuthPage contract). */
-export default function SignIn() {
-  const p = usePalette();
+/**
+ * /auth — the Welcome: the app's SIGNATURE MOMENT.
+ *
+ * The drafted architectural facade draws itself in on paper (the existing
+ * plan library — strokeDash reveal via usePlanDraw, reduced-motion jumps
+ * to the finished drawing), decisive Arabic display type, then the action
+ * stack rises in a staggered entrance (base 120 · step 90 — well under
+ * the 400ms rhythm cap; reduced-motion lands instantly). ONE orange CTA
+ * («ابدأ الآن») + ONE quiet text link — no boxed cards, the paper is the
+ * design.
+ *
+ * Guests reach this from the boot handoff; ?continue= rides every action
+ * for post-auth return. Signed-in users are normally routed straight to
+ * their role home by the boot screen.
+ */
+export default function Welcome() {
+  const { bg, text } = usePalette();
   const params = useLocalSearchParams<{ continue?: string }>();
-  const login = useSession((s) => s.login);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [fieldError, setFieldError] = useState<string | null>(null);
+  const enter = useStaggerEntrance({ base: 120, step: 90 });
 
-  /* R2 (B4 review) — login error clarity: an API refusal (wrong
-   * password, locked account, waking server) is NOT an email-field
-   * problem. Field errors = validation only; API errors get the
-   * dedicated alert banner under the button — the web AuthPage's
-   * contract (A13 P2-1: a 429 lockout is honestly a lockout, never
-   * «تحقّق من البيانات»). */
-  const apiMessage = (err: unknown): string => {
-    const api = err as ApiError | null;
-    if (api?.code === "TOO_MANY_REQUESTS" || api?.status === 429) {
-      return api.message || "محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.";
-    }
-    return api?.message || "تعذّر تسجيل الدخول — تحقّق من اتصالك ثم أعد المحاولة.";
-  };
-
-  const go = (user: { role: string; currentInstitution?: { id: string } | null }) => {
-    const cont = params.continue ? decodeURIComponent(params.continue) : null;
-    // OWNER is platform-level by design: it carries NO institution membership,
-    // so the institution gate never applies to it.
-    const needsInstitution =
-      user.role !== "OWNER" && !user.currentInstitution && user.role !== "ADMIN";
-    const dest =
-      cont && (user.currentInstitution || user.role === "OWNER")
-        ? cont
-        : needsInstitution
-          ? "/select-institution"
-          : ROLE_HOME[user.role] ?? "/student/dashboard";
-    router.replace(dest as never);
-  };
-
-  const submit = async () => {
-    if (!email.trim() || !password) {
-      setFieldError("أدخل البريد ورقم التسجيل مع كلمة المرور.");
-      return;
-    }
-    setFieldError(null);
-    setBusy(true);
-    setError(null);
-    try {
-      const user = await login(email.trim(), password);
-      go(user);
-    } catch (err) {
-      setError(apiMessage(err));
-    } finally {
-      setBusy(false);
-    }
-  };
+  const withContinue = (pathname: string) =>
+    params.continue ? ({ pathname, params: { continue: params.continue } } as never) : (pathname as never);
 
   return (
-    <FormScreen>
-      <View style={{ flex: 1, justifyContent: "center", gap: sp[20], paddingHorizontal: sp[24] }}>
-        <View style={{ alignItems: "center", gap: sp[8] }}>
-          <BrandMark size={48} />
-          <T variant="h2" weight="bold">تسجيل الدخول</T>
-          <T variant="sm" color="muted">مدارك — منصّة التعليم الذكي</T>
-        </View>
+    <>
+      <AppStatusBar />
+      <Screen
+        scroll
+        padded={false}
+        style={{ backgroundColor: bg }}
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
+        {/* the drafting sheet: faint axis grid across the whole paper */}
+        <GridBackdrop color={text} />
 
-        <View style={{ gap: sp[12] }}>
-          <Field
-            label="البريد الإلكتروني أو رقم التسجيل"
-            testID="login-email"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            inputMode="email"
-            error={fieldError}
-          />
-          <SecretField
-            label="كلمة المرور"
-            testID="login-password"
-            value={password}
-            onChangeText={setPassword}
-            onSubmitEditing={submit}
-          />
-        </View>
+        <View style={{ paddingHorizontal: sp[24], paddingTop: sp[40], paddingBottom: sp[16], flexGrow: 1 }}>
+          {/* quiet mark row — the drawing carries the brand from here */}
+          <Animated.View entering={enter(0)} style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+            <BrandMark size={20} />
+            <T variant="bodyLg" weight="bold">مدارك</T>
+          </Animated.View>
 
-        <Button label={busy ? "جارٍ الدخول…" : "دخول"} onPress={submit} loading={busy} />
+          {/* the signature: the facade draws itself in */}
+          <PlanBuilding autoplay width="78%" style={{ marginTop: sp[40] }} />
 
-        {error ? (
-          <View
-            accessibilityRole="alert"
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-start",
-              gap: sp[8],
-              borderWidth: StyleSheet.hairlineWidth,
-              borderColor: p.accentInk,
-              backgroundColor: p.accentSoft,
-              paddingHorizontal: sp[12],
-              paddingVertical: sp[10],
-            }}
-          >
-            <TriangleAlert size={15} color={p.accentInk} />
-            <T variant="sm" style={{ flex: 1, color: p.accentInk }}>
-              {error}
-            </T>
-          </View>
-        ) : null}
+          {/* title stack — decisive display type */}
+          <Animated.View entering={enter(1)} style={{ marginTop: sp[32], gap: sp[6] }}>
+            <T variant="display" weight="bold" style={{ lineHeight: 40 }}>رحلة تعلم واحدة</T>
+            <T variant="h4" weight="medium" color="secondary">من المحاضرة إلى الإتقان</T>
+          </Animated.View>
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-          <Pressable accessibilityRole="button" onPress={() => router.push("/auth/forgot-password")}>
-            <T variant="sm" color="accentInk">نسيت كلمة المرور؟</T>
-          </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => router.push({ pathname: "/auth/register", params })}
-          >
-            <T variant="sm" color="accentInk">إنشاء حساب جديد</T>
-          </Pressable>
-        </View>
+          {/* decisive actions — ONE orange CTA, one quiet link */}
+          <Animated.View entering={enter(2)} style={{ marginTop: "auto", paddingTop: sp[40], gap: sp[4] }}>
+            <Button
+              label="ابدأ الآن"
+              kind="accent"
+              onPress={() => router.push(withContinue("/auth/login"))}
+            />
+            <Pressable
+              accessibilityRole="link"
+              hitSlop={8}
+              onPress={() => router.push(withContinue("/auth/register"))}
+              style={({ pressed }) => ({ minHeight: 44, justifyContent: "center", opacity: pressed ? 0.6 : 1 })}
+            >
+              <T variant="body" weight="medium" color="secondary" style={{ textAlign: "center" }}>
+                إنشاء حساب جديد
+              </T>
+            </Pressable>
+          </Animated.View>
 
-        {SHOW_DEMO ? (
-          <Card style={{ gap: sp[8] }}>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-              <MonoLabel>[DEMO]</MonoLabel>
-              <T variant="sm" color="muted">حسابات العرض — كلمة المرور: {DEMO_PASSWORD}</T>
-            </View>
+          <Animated.View entering={enter(3)} style={{ marginTop: sp[24], gap: sp[8] }}>
             <Hairline />
-            <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
-              {DEMO_ACCOUNTS.map((a) => (
-                <Pressable
-                  key={a.email}
-                  accessibilityRole="button"
-                  accessibilityLabel={`حساب عرض: ${a.label}`}
-                  onPress={() => {
-                    setEmail(a.email);
-                    setPassword(DEMO_PASSWORD);
-                  }}
-                  style={{
-                    borderWidth: StyleSheet.hairlineWidth,
-                    borderColor: p.rule,
-                    paddingHorizontal: sp[10],
-                    paddingVertical: 6,
-                    backgroundColor: p.surfaceHover,
-                  }}
-                >
-                  <T variant="sm" weight="medium">
-                    {a.label} — {a.email}
-                  </T>
-                </Pressable>
-              ))}
-            </View>
-            <T variant="xs" color="faint">تظهر هذه اللوحة في بنيات التطوير والمعاينة فقط.</T>
-          </Card>
-        ) : null}
+            <T variant="xs" color="faint">
+              مدارك منصّة تعليمية مستقلّة عربية-أولًا من ليبيا — بيانات مؤسّسة العرض المرجعية بوضع الطيار الحالي.
+            </T>
+          </Animated.View>
+        </View>
+      </Screen>
+    </>
+  );
+}
 
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => router.replace("/")}
-          style={{ alignItems: "center", paddingVertical: sp[8] }}
-        >
-          <T variant="sm" color="muted">العودة إلى صفحة البداية</T>
-        </Pressable>
-      </View>
-    </FormScreen>
+/** Full-bleed hairline grid — the drafting paper under the whole sheet. */
+function GridBackdrop({ color }: { color: string }) {
+  const { width, height } = useWindowDimensions();
+  const step = 32;
+  const cols = Math.ceil(width / step);
+  const rows = Math.ceil(height / step);
+  return (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      <Svg width={width} height={height} style={{ opacity: 0.06 }}>
+        {Array.from({ length: cols + 1 }, (_, i) => (
+          <Line key={`v${i}`} x1={i * step} y1={0} x2={i * step} y2={height} stroke={color} strokeWidth={1} />
+        ))}
+        {Array.from({ length: rows + 1 }, (_, i) => (
+          <Line key={`h${i}`} x1={0} y1={i * step} x2={width} y2={i * step} stroke={color} strokeWidth={1} />
+        ))}
+      </Svg>
+    </View>
   );
 }

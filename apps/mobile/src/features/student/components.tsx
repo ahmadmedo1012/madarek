@@ -15,10 +15,9 @@ import { useState, type ReactNode } from "react";
 import { RefreshControl, ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import CircleAlert from "lucide-react-native/icons/circle-alert";
 import { teacherApi } from "@/api/teacher";
 import { ApiError } from "@/api/client";
-import type { KnowledgeGap, Submission } from "@/api/types";
+import type { KnowledgeGap, ResumeCard, Submission } from "@/api/types";
 import type { MaterialRow , ResultCourse, StudentDashboard } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
@@ -26,10 +25,10 @@ import { sp, type StatusToneName } from "@/design/tokens";
 import { Screen, SectionBar } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { Badge, Sheet } from "@/components/ui/surfaces";
+import { Sheet } from "@/components/ui/surfaces";
 import { Field } from "@/components/ui/fields";
-import { LedgerRow, RowList } from "@/components/ui/data";
-import { dueLabel, latn } from "@/lib/format";
+import { LedgerRow, ProgressBar, RowList } from "@/components/ui/data";
+import { dateTime, dueLabel, latn, pct } from "@/lib/format";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { countAr } from "@/features/student/more";
 
@@ -203,9 +202,11 @@ export function CourseWell({
 
 /* ══ Priority gaps (dashboard + matrix share the exact row contract) ══ */
 
-/**
- * GapList — «سدّ الفجوة» rows: a gap WITH a recommendation is a whole-row
- * link to the lecture that teaches the concept; without one it stays an
+/** Priority gaps — ONE shared-border ledger (R334 R2: the n repeated copper
+ * «سدّ الفجوة» chips read as a wall of red buttons and spent the screen's
+ * accent budget n times). The row is quiet ink now: concept + course + a
+ * hairline mastery bar; the concept with a recommendation is a whole-row
+ * link (a11y label keeps the «سدّ الفجوة» verb), without one it stays an
  * honest non-link (or falls back to the matrix on the dashboard).
  */
 export function GapList({
@@ -219,7 +220,6 @@ export function GapList({
   fallbackToMatrix?: boolean;
   emptyNote?: string;
 }) {
-  const tones = useStatusTones();
   const rows = gaps.slice(0, max ?? gaps.length);
   if (rows.length === 0) {
     return (
@@ -231,47 +231,33 @@ export function GapList({
   return (
     <RowList>
       {rows.map((g, i) => {
-        const meta = `${g.courseName} · ${latn(Math.round(g.level * 100))}% الآن`;
-        if (g.recommendedLectureId) {
-          return (
-            <LedgerRow
-              key={g.conceptId}
-              last={i === rows.length - 1}
-              accessibilityLabel={`سدّ الفجوة: ${g.conceptName}`}
-              onPress={() => router.push(`/student/lectures/${g.recommendedLectureId}` as never)}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                <CircleAlert size={16} color={tones.yellow.ink} />
-                <T variant="body" weight="bold" style={{ flex: 1 }}>
-                  {g.conceptName}
-                </T>
-                <Badge label="سدّ الفجوة" tone="copper" />
-              </View>
-              <T variant="sm" color="muted">
-                {meta}
-              </T>
-            </LedgerRow>
-          );
-        }
+        const meta = `${g.courseName} · ${pct(g.level * 100)} الآن`;
         return (
           <LedgerRow
             key={g.conceptId}
             last={i === rows.length - 1}
-            accessibilityLabel={fallbackToMatrix ? `عرض المصفوفة: ${g.conceptName}` : g.conceptName}
+            accessibilityLabel={
+              g.recommendedLectureId
+                ? `سدّ الفجوة: ${g.conceptName}`
+                : fallbackToMatrix
+                  ? `عرض المصفوفة: ${g.conceptName}`
+                  : `${g.conceptName} — لا توصية بعد`
+            }
             onPress={
-              fallbackToMatrix ? () => router.push("/student/matrix" as never) : undefined
+              g.recommendedLectureId
+                ? () => router.push(`/student/lectures/${g.recommendedLectureId}` as never)
+                : fallbackToMatrix
+                  ? () => router.push("/student/matrix" as never)
+                  : undefined
             }
           >
-            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-              <CircleAlert size={16} color={tones.yellow.ink} />
-              <T variant="body" weight="bold" style={{ flex: 1 }}>
-                {g.conceptName}
-              </T>
-              <Badge label="لا توصية بعد" tone="grey" />
-            </View>
-            <T variant="sm" color="muted">
+            <T variant="body" weight="bold" numberOfLines={1}>
+              {g.conceptName}
+            </T>
+            <T variant="sm" color="muted" numberOfLines={1}>
               {meta}
             </T>
+            <ProgressBar ratio={g.level} label={`مستوى الإتقان ${pct(g.level * 100)}`} />
           </LedgerRow>
         );
       })}
@@ -499,7 +485,9 @@ const GRADE_KIND_LABEL: Record<string, string> = {
 };
 
 export function gradeKindLabel(kind: string): string {
-  return GRADE_KIND_LABEL[kind] ?? kind;
+  // Unknown kinds must never leak the raw enum to a reader (R334
+  // technical-string guard) — fall back to the generic Arabic noun.
+  return GRADE_KIND_LABEL[kind] ?? "تقييم";
 }
 
 /* ══ Mastery language (matrix 5-level, spec tone mapping) ══════════ */
@@ -622,11 +610,105 @@ export function tripoliDow(): number {
 
 export type AgendaClass = StudentDashboard["agenda"]["classes"][number];
 
-/** «اليوم» / «غدًا» for the agenda's when flag. */
+/** «اليوم» / «غدًا» for the agenda's when flag — unknown flags never leak
+ *  the raw enum (technical-string guard). */
 export function classWhenLabel(when: string): string {
   if (when === "today") return "اليوم";
   if (when === "tomorrow") return "غدًا";
-  return when;
+  return "لاحقًا";
+}
+
+/* ══ «الخطوة التالية» — the hero card's single recommended action ═══ */
+
+export interface NextStep {
+  kind: "lecture" | "assignment" | "exam" | "class";
+  /** Primary line (course / assignment / exam title). */
+  title: string;
+  /** Supporting line (lecture ordinal, due label, window, room…). */
+  subline: string;
+  /** CTA copy — «متابعة المحاضرة» / «فتح التكليف» / … */
+  actionLabel: string;
+  /** Route the CTA pushes. */
+  href: string;
+  /** 0..100 lecture progress when the step resumes a lecture (ring). */
+  progressPct?: number | null;
+  /** Screen-reader sentence (the visible lines don't carry the verb). */
+  a11y: string;
+}
+
+/**
+ * The dashboard's ONE next step, derived purely from the two queries
+ * (web NextStep semantics, mobile-recomposed): resume the lecture in
+ * progress → the soonest assignment (overdue first, then by dueAt) →
+ * the next exam window → today's first class → null (nothing urgent).
+ */
+export function nextStep(
+  dash: StudentDashboard | undefined,
+  resume: ResumeCard | null | undefined,
+  now = Date.now(),
+): NextStep | null {
+  if (resume) {
+    const pctDone = resume.progressPct ?? 0;
+    return {
+      kind: "lecture",
+      title: resume.lecture.course.name,
+      subline: `المحاضرة ${latn(resume.lecture.ordinal)} · ${resume.lecture.title}`,
+      actionLabel: resume.mode === "continue" ? "متابعة المحاضرة" : "ابدأ المحاضرة",
+      href: `/student/lectures/${resume.lecture.id}`,
+      progressPct: pctDone,
+      a11y: `${resume.mode === "continue" ? "أكمل من حيث توقفت" : "الخطوة التالية"}: ${resume.lecture.course.name}، المحاضرة ${latn(resume.lecture.ordinal)}، ${pctDone > 0 ? `مكتملة بنسبة ${pct(pctDone)}` : "لم تبدأ بعد"}`,
+    };
+  }
+
+  const assignments = dash?.agenda.assignments ?? [];
+  const soonest = [...assignments].sort(
+    (a, b) => (a.dueAt ? new Date(a.dueAt).getTime() : Number.POSITIVE_INFINITY) - (b.dueAt ? new Date(b.dueAt).getTime() : Number.POSITIVE_INFINITY),
+  )[0];
+  if (soonest) {
+    const due = dueLabel(soonest.dueAt);
+    return {
+      kind: "assignment",
+      title: soonest.courseCode ? `${soonest.title} (${soonest.courseCode})` : soonest.title,
+      subline: `تسليم ${due.text}`,
+      actionLabel: "فتح التكليف",
+      href: "/student/assignments",
+      a11y: `التكليف التالي: ${soonest.title}، تسليم ${due.text}`,
+    };
+  }
+
+  const exams = dash?.agenda.exams ?? [];
+  const nextExam = [...exams].sort(
+    (a, b) => (a.openAt ? new Date(a.openAt).getTime() : Number.POSITIVE_INFINITY) - (b.openAt ? new Date(b.openAt).getTime() : Number.POSITIVE_INFINITY),
+  )[0];
+  if (nextExam) {
+    const opensFuture = nextExam.openAt ? new Date(nextExam.openAt).getTime() > now : false;
+    return {
+      kind: "exam",
+      title: nextExam.title,
+      subline: opensFuture
+        ? `يفتح باب الاختبار ${dateTime(nextExam.openAt)}`
+        : nextExam.closeAt
+          ? `آخر موعد للتسليم ${dateTime(nextExam.closeAt)}`
+          : "نافذة الاختبار مفتوحة",
+      actionLabel: "فتح الاختبار",
+      href: "/student/online-exams",
+      a11y: `الاختبار التالي: ${nextExam.title}`,
+    };
+  }
+
+  const firstClass = (dash?.agenda.classes ?? []).find((c) => c.when === "today");
+  if (firstClass) {
+    return {
+      kind: "class",
+      title: firstClass.courseName,
+      subline: `${firstClass.startTime}–${firstClass.endTime}${firstClass.room ? ` · قاعة ${firstClass.room}` : ""}`,
+      actionLabel: "عرض الجدول",
+      href: "/student/schedule",
+      a11y: `حصة اليوم التالية: ${firstClass.courseName}`,
+    };
+  }
+
+  return null;
 }
 
 /* ══ Reused section shell (title + optional count + body) ══════════ */

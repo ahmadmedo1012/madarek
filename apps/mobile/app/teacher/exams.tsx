@@ -4,6 +4,7 @@
  * / view) | «بنك الأسئلة» (searchable bank rows + «سؤال جديد» with the
  * per-type choices/correct-answer editor).
  */
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -72,7 +73,7 @@ export default function Exams() {
       qc.invalidateQueries({ queryKey: ["exams", "templates"] });
       toast.success(`أُستنسخ القالب إلى مسودة جديدة — «${row.title}».`, "تمّ الاستنساخ");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر الاستنساخ"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر الاستنساخ"),
   });
   const publish = useMutation({
     mutationFn: (id: string) => examsApi.publishTemplate(id),
@@ -82,7 +83,7 @@ export default function Exams() {
       setPublishTarget(null);
       toast.success("نُشر الاختبار وسيظهر للطلاب حسب نطاقه.", "تمّ نشر الاختبار");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر النشر"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر النشر"),
   });
 
   /* New-question sheet state. */
@@ -147,7 +148,7 @@ export default function Exams() {
       setPoints("1");
       setQError(null);
     },
-    onError: (e) => setQError((e as Error).message),
+    onError: (e) => setQError(humanizeError(e)),
   });
 
   const categoryRows = (categories.data ?? []) as unknown as QuestionCategory[];
@@ -177,7 +178,7 @@ export default function Exams() {
           {templates.isLoading ? (
             <SkeletonList rows={4} />
           ) : templates.isError ? (
-            <ErrorState message={(templates.error as Error | null)?.message} onRetry={() => templates.refetch()} />
+            <ErrorState message={humanizeError(templates.error)} onRetry={() => templates.refetch()} />
           ) : (templates.data ?? []).length === 0 ? (
             <EmptyState
               title="لم تُنشئ قوالب اختبارات بعد"
@@ -205,7 +206,7 @@ export default function Exams() {
                           {t.openAt ? ` · يفتح ${dateTime(t.openAt)}` : ""}
                         </T>
                       </View>
-                      <Badge label={EXAM_KIND_LABEL[t.kind] ?? t.kind} tone="lavender" />
+                      <Badge label={EXAM_KIND_LABEL[t.kind] ?? "تقييم"} tone="lavender" />
                       <StatusBadge status={t.status} map={EXAM_STATUS_MAP} />
                     </View>
                     <View style={{ flexDirection: "row", gap: sp[6], flexWrap: "wrap" }}>
@@ -254,7 +255,7 @@ export default function Exams() {
           {bank.isLoading ? (
             <SkeletonList rows={5} />
           ) : bank.isError ? (
-            <ErrorState message={(bank.error as Error | null)?.message} onRetry={() => bank.refetch()} />
+            <ErrorState message={humanizeError(bank.error)} onRetry={() => bank.refetch()} />
           ) : bankRows.length === 0 ? (
             <EmptyState
               title={q.trim() !== "" ? "لا توجد أسئلة تطابق البحث" : "البنك فارغ حتى الآن"}
@@ -276,9 +277,9 @@ export default function Exams() {
                     {question.prompt}
                   </T>
                   <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6], alignItems: "center" }}>
-                    <Badge label={QUESTION_TYPE_LABEL[question.type] ?? question.type} tone="grey" />
+                    <Badge label={QUESTION_TYPE_LABEL[question.type] ?? "سؤال"} tone="grey" />
                     <Badge
-                      label={DIFFICULTY_LABEL[question.difficulty] ?? question.difficulty}
+                      label={DIFFICULTY_LABEL[question.difficulty] ?? "غير محدَّد"}
                       tone={question.difficulty === "EASY" ? "mint" : question.difficulty === "HARD" ? "rose" : "yellow"}
                     />
                     <Badge
@@ -427,7 +428,7 @@ export default function Exams() {
           ) : null}
           <SelectField
             label="الصعوبة"
-            value={{ id: difficulty, label: DIFFICULTY_LABEL[difficulty] ?? difficulty }}
+            value={{ id: difficulty, label: DIFFICULTY_LABEL[difficulty] ?? "غير محدَّد" }}
             options={Object.keys(DIFFICULTY_LABEL).map((d) => ({ id: d, label: DIFFICULTY_LABEL[d] }))}
             onSelect={(d) => setDifficulty(d)}
             sheetTitle="الصعوبة"

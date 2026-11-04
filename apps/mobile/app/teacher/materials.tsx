@@ -4,6 +4,7 @@
  * two-channel add sheet: «رفع PDF» (raw-bytes uploadRawPdf with progress)
  * | «رابط خارجي» (the by-link addMaterial contract).
  */
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -84,7 +85,7 @@ export default function Materials() {
       setSheetOpen(false);
       resetForm();
     },
-    onError: (e) => setError((e as Error).message),
+    onError: (e) => setError(humanizeError(e)),
   });
 
   const uploadPdf = useMutation({
@@ -105,7 +106,7 @@ export default function Materials() {
       setSheetOpen(false);
       resetForm();
     },
-    onError: (e) => setError((e as Error).message),
+    onError: (e) => setError(humanizeError(e)),
   });
 
   const resetForm = () => {
@@ -139,7 +140,7 @@ export default function Materials() {
       {materials.isLoading ? (
         <SkeletonList rows={5} />
       ) : materials.isError ? (
-        <ErrorState message={(materials.error as Error | null)?.message} onRetry={() => materials.refetch()} />
+        <ErrorState message={humanizeError(materials.error)} onRetry={() => materials.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم ترفع ملفات بعد"
@@ -160,7 +161,7 @@ export default function Materials() {
                     {m.course.name}
                   </T>
                 ) : null}
-                <Badge label={MATERIAL_TYPE_LABEL[m.type] ?? m.type} tone="grey" mono />
+                <Badge label={MATERIAL_TYPE_LABEL[m.type] ?? "ملف"} tone="grey" mono />
                 <T variant="xs" color="muted">
                   {latn(m.views ?? 0)} مشاهدة · {latn(m.downloads ?? 0)} تحميل
                 </T>
@@ -217,7 +218,7 @@ export default function Materials() {
                     if (name.trim() === "" && fname !== "") setName(fname);
                   }
                 } catch (e) {
-                  setError((e as Error).message);
+                  setError(humanizeError(e));
                 }
               }}
             />
@@ -239,8 +240,8 @@ export default function Materials() {
           <>
             <SelectField
               label="النوع"
-              value={{ id: type, label: MATERIAL_TYPE_LABEL[type] ?? type }}
-              options={TYPE_OPTIONS.map((t) => ({ id: t, label: MATERIAL_TYPE_LABEL[t] ?? t }))}
+              value={{ id: type, label: MATERIAL_TYPE_LABEL[type] ?? "ملف" }}
+              options={TYPE_OPTIONS.map((t) => ({ id: t, label: MATERIAL_TYPE_LABEL[t] ?? "ملف" }))}
               onSelect={setType}
               sheetTitle="النوع"
             />

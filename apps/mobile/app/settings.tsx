@@ -1,25 +1,35 @@
 import { useEffect, useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import Fingerprint from "lucide-react-native/icons/fingerprint-pattern";
 import Flag from "lucide-react-native/icons/flag";
+import Vibrate from "lucide-react-native/icons/vibrate";
 import { router } from "expo-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiWithCookieCapture, ApiError, put } from "@/api/client";
 import { useSession, ROLE_LABELS, POSITION_LABELS, RANK_LABELS } from "@/auth/session";
 import { setThemePreference, usePalette, useThemePreference, type ThemePreference } from "@/design/theme";
 import { unregisterPushDevices } from "@/lib/push";
+import { NUMERALS_OPTIONS, useNumerals } from "@/lib/format";
+import { haptics } from "@/haptics";
+import { PressableScale } from "@/motion";
 import { sp } from "@/design/tokens";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { Card, Badge, ConfirmDialog, Hairline } from "@/components/ui/surfaces";
+import { Card, Badge, Hairline } from "@/components/ui/surfaces";
 import { Field, Segmented, SecretField } from "@/components/ui/fields";
+import { ConfirmSheet } from "@/components/ui/sheet";
 import { toast } from "@/components/ui/toast";
 import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometricLockEnabled } from "@/lib/biometric";
 import type { SessionResponse } from "@/api/types";
 import Constants from "expo-constants";
 
-/** /settings — theme + change password + account actions (every role). */
+/** /settings — the SHARED settings surface (every role): the same
+ *  preference seats the student profile exposes (appearance · numerals ·
+ *  haptics) plus account security (password, app lock, session). The
+ *  student Profile keeps a one-tap mirror of the same toggles — both
+ *  seats read/write the identical persisted state, so they can never
+ *  disagree. */
 export default function Settings() {
   const p = usePalette();
   const user = useSession((s) => s.user);
@@ -27,6 +37,16 @@ export default function Settings() {
   const setSession = useSession((s) => s.setSession);
   const preference = useThemePreference();
   const qc = useQueryClient();
+  const { numerals, setNumerals } = useNumerals();
+
+  /* «ردود اللمس» — the persisted kill-switch, identical seat to Profile
+     (isEnabled() is a synchronous cached read → lazy initialiser, no effect). */
+  const [hapticsOn, setHapticsOn] = useState(() => haptics.isEnabled());
+  const toggleHaptics = (next: boolean) => {
+    haptics.setEnabled(next);
+    setHapticsOn(next);
+    if (next) haptics.impact("light"); // a felt sample of what was enabled
+  };
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -79,6 +99,11 @@ export default function Settings() {
     }
   };
 
+  const changeNumerals = (next: string) => {
+    haptics.selection();
+    setNumerals(next as typeof numerals);
+  };
+
   const changePassword = async () => {
     setPwError(null);
     if (newPassword.length < 12 || newPassword.length > 72) {
@@ -111,15 +136,47 @@ export default function Settings() {
 
   return (
     <Screen scroll>
-      <PageHeader title="الإعدادات" kicker="مدارك" mono="SETTINGS" />
+      <PageHeader title="الإعدادات" kicker="مدارك" />
 
-      <SectionBar index={1} title="المظهر" />
+      <SectionBar index={1} title="التفضيلات" />
       <Card style={{ gap: sp[8] }}>
+        <T variant="body" weight="bold">المظهر</T>
         <T variant="body" color="secondary">
           يتبع التطبيق تفضيلك هنا وعلى الموقع — يتزامن مع حسابك.
         </T>
-        <Segmented options={themeOptions} selectedId={preference} onSelect={(id) => applyTheme(id as ThemePreference)} />
+        <Segmented
+          options={themeOptions}
+          selectedId={preference}
+          onSelect={(id) => {
+            haptics.selection();
+            void applyTheme(id as ThemePreference);
+          }}
+        />
         <T variant="xs" color="faint">{themeLabel}</T>
+      </Card>
+      <Card style={{ gap: sp[8] }}>
+        <T variant="body" weight="bold">الأرقام</T>
+        <Segmented options={NUMERALS_OPTIONS} selectedId={numerals} onSelect={changeNumerals} />
+        <T variant="xs" color="faint">
+          طريقة عرض الأرقام في لوحتك ونتائجك — {`١٢٣`} بالخط العربي أو {`123`} باللاتيني.
+        </T>
+      </Card>
+      <Card style={{ gap: sp[8] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+          <Vibrate size={20} color={p.textMuted} />
+          <View style={{ flex: 1 }}>
+            <T variant="body" weight="bold">ردود اللمس</T>
+            <T variant="xs" color="muted">
+              اهتزاز خفيف عند التفاعلات الرئيسة — يعمل على الجوال فقط.
+            </T>
+          </View>
+          <Button
+            label={hapticsOn ? "إلغاء" : "تفعيل"}
+            kind={hapticsOn ? "ghost" : "primary"}
+            small
+            onPress={() => toggleHaptics(!hapticsOn)}
+          />
+        </View>
       </Card>
 
       <SectionBar index={2} title="الحساب" />
@@ -157,23 +214,20 @@ export default function Settings() {
           teacher carry it in their Profile menus; admin/quality/owner reach
           it here). Replaces the removed floating feedback FAB. */}
       <Card>
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityLabel="الإبلاغ عن مشكلة"
-          onPress={() => router.push("/report")}
-          style={({ pressed }) => ({
-            flexDirection: "row",
-            alignItems: "center",
-            gap: sp[10],
-            opacity: pressed ? 0.7 : 1,
-            minHeight: 44,
-          })}
+          onPress={() => {
+            haptics.selection();
+            router.push("/report");
+          }}
+          style={{ flexDirection: "row", alignItems: "center", gap: sp[10], minHeight: 44 }}
         >
           <Flag size={20} color={p.textMuted} />
           <T variant="body" weight="medium" style={{ flex: 1 }}>
             الإبلاغ عن مشكلة
           </T>
-        </Pressable>
+        </PressableScale>
       </Card>
 
       <SectionBar index={3} title="تغيير كلمة المرور" />
@@ -219,18 +273,27 @@ export default function Settings() {
       )}
 
       <SectionBar index={5} title="الجلسة" />
-      <Button label="تسجيل الخروج" kind="danger" onPress={() => setConfirmLogout(true)} />
+      <Button
+        label="تسجيل الخروج"
+        kind="danger"
+        onPress={() => {
+          haptics.notify("warning");
+          setConfirmLogout(true);
+        }}
+      />
       <T variant="xs" color="faint" style={{ textAlign: "center" }}>
         مدارك موبايل {Constants.expoConfig?.version ?? "1.0.0"} — Expo SDK {Constants.expoConfig?.sdkVersion ?? "58"}
       </T>
 
-      <ConfirmDialog
+      {/* Same destructive ConfirmSheet as the student Profile — one
+          confirmation pattern for logout across the app. */}
+      <ConfirmSheet
         open={confirmLogout}
+        onClose={() => setConfirmLogout(false)}
         title="تسجيل الخروج؟"
         message="ستنتهي جلستك على هذا الجهاز فقط — تُحفظ جلسات أجهزتك الأخرى."
         confirmLabel="خروج"
-        danger
-        onCancel={() => setConfirmLogout(false)}
+        destructive
         onConfirm={async () => {
           setConfirmLogout(false);
           // R327 C3 — a handed-over phone must not keep pushing.

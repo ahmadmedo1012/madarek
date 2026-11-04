@@ -4,6 +4,7 @@
  * student's answer + «متأخر» chip), «جميع الواجبات» (due chips, ceiling),
  * and «واجب جديد» (offering/title/type/due/weight/maxScore/description).
  */
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
@@ -134,7 +135,7 @@ export default function Assignments() {
       setFeedback("");
       setGradeError(null);
     },
-    onError: (e) => setGradeError((e as Error).message),
+    onError: (e) => setGradeError(humanizeError(e)),
   });
 
   const create = useMutation({
@@ -173,7 +174,7 @@ export default function Assignments() {
       setDescription("");
       setCreateError(null);
     },
-    onError: (e) => setCreateError((e as Error).message),
+    onError: (e) => setCreateError(humanizeError(e)),
   });
 
   const pendingRows = ((pending.data ?? []) as unknown as PendingWire[]).map(pendingView);
@@ -196,7 +197,7 @@ export default function Assignments() {
       {pending.isLoading ? (
         <SkeletonList rows={3} />
       ) : pending.isError ? (
-        <ErrorState message={(pending.error as Error | null)?.message} onRetry={() => pending.refetch()} />
+        <ErrorState message={humanizeError(pending.error)} onRetry={() => pending.refetch()} />
       ) : pendingRows.length === 0 ? (
         <EmptyState title="لا تسليمات بانتظار التصحيح" message="ستظهر هنا تسليمات طلابك فور وصولها." />
       ) : (
@@ -242,7 +243,7 @@ export default function Assignments() {
       {assignments.isLoading ? (
         <SkeletonList rows={4} />
       ) : assignments.isError ? (
-        <ErrorState message={(assignments.error as Error | null)?.message} onRetry={() => assignments.refetch()} />
+        <ErrorState message={humanizeError(assignments.error)} onRetry={() => assignments.refetch()} />
       ) : assignmentRows.length === 0 ? (
         <EmptyState
           title="لا توجد واجبات بعد"
@@ -258,7 +259,7 @@ export default function Assignments() {
             return (
               <LedgerRow key={a.id} last={i === assignmentRows.length - 1} accessibilityLabel={`واجب ${a.title}`}>
                 <T variant="body" weight="medium" numberOfLines={2}>
-                  {ASSIGNMENT_KIND_LABEL[a.type] ?? a.type}: {a.title}
+                  {ASSIGNMENT_KIND_LABEL[a.type] ?? "تكليف"}: {a.title}
                 </T>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6], alignItems: "center" }}>
                   {a.course?.name ? (
@@ -373,7 +374,7 @@ export default function Assignments() {
           />
           <SelectField
             label="النوع"
-            value={{ id: type, label: ASSIGNMENT_KIND_LABEL[type] ?? type }}
+            value={{ id: type, label: ASSIGNMENT_KIND_LABEL[type] ?? "تكليف" }}
             options={Object.keys(ASSIGNMENT_KIND_LABEL).map((k) => ({
               id: k,
               label: ASSIGNMENT_KIND_LABEL[k],

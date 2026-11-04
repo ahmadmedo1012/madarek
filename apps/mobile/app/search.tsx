@@ -13,7 +13,8 @@ import { Screen, PageHeader } from "@/components/ui/screen";
 import { T } from "@/components/ui/text";
 import { SearchBar } from "@/components/ui/fields";
 import { Card, Badge } from "@/components/ui/surfaces";
-import { EmptyState, SkeletonList } from "@/components/ui/states";
+import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { humanizeError } from "@/lib/errors";
 import type { SearchResults } from "@/api/types";
 
 /** /search — global search across courses, lectures, papers, training tracks. */
@@ -83,7 +84,8 @@ export default function Search() {
           accessibilityRole="button"
           accessibilityLabel="تنفيذ البحث"
           onPress={() => setSubmitted(q.trim())}
-          style={{ alignSelf: "flex-start" }}
+          hitSlop={12}
+          style={{ alignSelf: "flex-start", paddingVertical: sp[8] }}
         >
           <T variant="sm" weight="bold" color="accentInk">
             تنفيذ البحث عن «{q.trim()}»
@@ -96,9 +98,10 @@ export default function Search() {
       ) : results.isLoading ? (
         <SkeletonList rows={4} />
       ) : results.isError ? (
-        <T variant="body" color="muted">
-          تعذّر جلب النتائج — {(results.error as Error | null)?.message}
-        </T>
+        <ErrorState
+          message={humanizeError(results.error)}
+          onRetry={() => results.refetch()}
+        />
       ) : sections.length === 0 ? (
         <EmptyState title="لا نتائج" message={`لا شيء يطابق «${submitted}» في نطاق حسابك الحالي.`} />
       ) : (

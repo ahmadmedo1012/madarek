@@ -4,6 +4,7 @@
  * it does: recording a lab session exactly the way the student labs
  * explorer does (studentApi.recordLab).
  */
+import { humanizeError } from "@/lib/errors";
 import { useState } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -50,7 +51,7 @@ export default function TeacherLabs() {
       qc.invalidateQueries({ queryKey: ["me", "lab-sessions"] });
       toast.success("سُجّلت جلسة معمل (معاينة كطالب) — تظهر في سجل جلساتك.", "معاينة المعمل");
     },
-    onError: (e) => toast.error((e as Error).message, "تعذَّر تسجيل الجلسة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر تسجيل الجلسة"),
   });
 
   const rows = (labs.data ?? []) as unknown as LabRow[];
@@ -78,7 +79,7 @@ export default function TeacherLabs() {
       {labs.isLoading ? (
         <SkeletonList rows={4} />
       ) : labs.isError ? (
-        <ErrorState message={(labs.error as Error | null)?.message} onRetry={() => labs.refetch()} />
+        <ErrorState message={humanizeError(labs.error)} onRetry={() => labs.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           title="لم تُضف معامل بعد"

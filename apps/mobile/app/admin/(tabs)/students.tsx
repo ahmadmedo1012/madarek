@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import GraduationCap from "lucide-react-native/icons/graduation-cap";
 import UserMinus from "lucide-react-native/icons/user-minus";
@@ -8,33 +9,33 @@ import { Screen } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Badge, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
-import { RowList, LedgerRow, Avatar, ProgressBar } from "@/components/ui/data";
+import { DataList, LedgerRow, ProgressBar, makeRow, usePagedList } from "@/components/ui/data";
 import { SearchBar, SelectField } from "@/components/ui/fields";
-import { SkeletonList, EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
+import { ErrorState, Skeleton } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { adminApi } from "@/api/admin";
 import type { AdminUserRow } from "@/api/admin";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
+import { sp } from "@/design/tokens";
 import { clamp01, initials, latn } from "@/lib/format";
 import {
-  pageOf,
-  PagerFooter,
-  UNIT,
+  UserAvatar,
+  avatarUrlOf,
   type OfferingPickRow,
   type StudentEnrollmentRow,
 } from "@/features/governance/components";
 
 const PAGE_LIMIT = 20;
 
-/** (tabs) Students roster — «إدارة الطلاب» (web AdminStudentsPage parity). */
+/** (tabs) Students roster — «إدارة الطلاب» (web AdminStudentsPage parity).
+ *  DataList migration (R334 audit P0): FlashList rows + accumulate-style
+ *  pagination (usePagedList + onEndReached) instead of ScrollView+map. */
 export default function AdminStudents() {
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
-  const [page, setPage] = useState(1);
 
   const appliedRef = useRef(appliedQ);
   useEffect(() => {
@@ -43,24 +44,23 @@ export default function AdminStudents() {
       if (next === appliedRef.current) return;
       appliedRef.current = next;
       setAppliedQ(next);
-      setPage(1);
     }, 300);
     return () => clearTimeout(t);
   }, [q]);
 
-  const users = useQuery({
-    queryKey: ["admin", "users", { role: "STUDENT", page, q: appliedQ }, scope],
-    queryFn: async () => pageOf<AdminUserRow>(await adminApi.users({ role: "STUDENT", page, q: appliedQ || undefined, limit: PAGE_LIMIT })),
-    placeholderData: (prev) => prev,
+  const users = usePagedList<AdminUserRow>({
+    queryKey: ["admin", "users", { role: "STUDENT", q: appliedQ }, scope],
+    fetchPage: (page) =>
+      adminApi.users({ role: "STUDENT", page, q: appliedQ || undefined, limit: PAGE_LIMIT }),
+    limit: PAGE_LIMIT,
   });
 
   const [selected, setSelected] = useState<AdminUserRow | null>(null);
-  const rows = users.data?.rows ?? [];
 
   return (
-    <Screen scroll>
+    <Screen scroll={false} padded={false}>
       <AppTopBar alertsPath="/admin/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <View>
           <T variant="h2" weight="bold">
             إدارة الطلاب
@@ -74,70 +74,33 @@ export default function AdminStudents() {
           value={q}
           onChange={setQ}
           placeholder="ابحث بالاسم أو البريد…"
-          onClear={() => {
-            setQ("");
-            setPage(1);
-          }}
+          onClear={() => setQ("")}
         />
-
-        {users.isLoading ? (
-          <SkeletonList rows={6} />
-        ) : users.isError ? (
-          <ErrorState message={(users.error as Error | null)?.message} onRetry={() => users.refetch()} />
-        ) : rows.length === 0 ? (
-          <EmptyState
-            title={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
-            message={
-              appliedQ
-                ? "جرّب تعديل البحث لعرض نتائج أوسع."
-                : "ستظهر القائمة فور تسجيل أوّل طالب في النظام."
-            }
-            actionLabel={appliedQ ? "مسح البحث" : undefined}
-            onAction={appliedQ ? () => setQ("") : undefined}
-          />
-        ) : (
-          <View style={{ gap: 12 }}>
-            <RowList>
-              {rows.map((s, i) => (
-                <LedgerRow
-                  key={s.id}
-                  onPress={() => setSelected(s)}
-                  accessibilityLabel={`بيانات وتسجيلات ${s.firstName} ${s.lastName}`}
-                  last={i === rows.length - 1}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    <Avatar
-                      initials={s.avatarInitials ?? initials(s.firstName, s.lastName)}
-                      color={s.avatarColor}
-                      size={36}
-                    />
-                    <View style={{ flex: 1, gap: 2 }}>
-                      <T variant="body" weight="bold" numberOfLines={1}>
-                        {s.firstName} {s.lastName}
-                      </T>
-                      <T variant="xs" color="muted" numberOfLines={1}>
-                        {s.email}
-                      </T>
-                      <T variant="xs" color="faint" numberOfLines={1}>
-                        رقم القيد: {s.universityId || "—"}
-                      </T>
-                    </View>
-                    <Badge label={s.isActive ? "نشط" : "موقوف"} tone={s.isActive ? "mint" : "rose"} />
-                  </View>
-                </LedgerRow>
-              ))}
-            </RowList>
-            <PagerFooter
-              page={page}
-              rowsLength={rows.length}
-              limit={PAGE_LIMIT}
-              meta={users.data?.meta ?? null}
-              unit={UNIT.student}
-              onPage={setPage}
-              loading={users.isFetching}
-            />
-          </View>
-        )}
+      </View>
+      <View style={{ flex: 1 }}>
+        <DataList
+          data={users.items}
+          renderItem={({ item }) => <StudentRow item={item} onSelect={setSelected} />}
+          keyExtractor={(s) => s.id}
+          isLoading={users.isLoading}
+          isError={users.isError}
+          errorMessage={humanizeError(users.query.error)}
+          onRetry={() => users.refetch()}
+          refetch={users.refetch}
+          isRefetching={users.isRefetching}
+          onEndReached={users.onEndReached}
+          isFetchingNextPage={users.isFetchingNextPage}
+          hasNextPage={users.hasNextPage}
+          loadMoreError={users.loadMoreError}
+          onRetryLoadMore={users.retryLoadMore}
+          emptyTitle={appliedQ ? "لا توجد نتائج" : "لا يوجد طلاب بعد"}
+          emptyMessage={
+            appliedQ
+              ? "جرّب تعديل البحث لعرض نتائج أوسع."
+              : "ستظهر القائمة فور تسجيل أوّل طالب في النظام."
+          }
+          contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
+        />
       </View>
 
       {selected ? (
@@ -152,6 +115,38 @@ export default function AdminStudents() {
     </Screen>
   );
 }
+
+/* ─── roster row (module scope, memo-stable) ─── */
+
+const StudentRow = makeRow<AdminUserRow, { onSelect: (row: AdminUserRow) => void }>(
+  ({ item, onSelect }) => (
+    <LedgerRow
+      onPress={() => onSelect(item)}
+      accessibilityLabel={`بيانات وتسجيلات ${item.firstName} ${item.lastName}`}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <UserAvatar
+          url={avatarUrlOf(item)}
+          initials={item.avatarInitials ?? initials(item.firstName, item.lastName)}
+          color={item.avatarColor}
+          size={36}
+        />
+        <View style={{ flex: 1, gap: 2 }}>
+          <T variant="body" weight="bold" numberOfLines={1}>
+            {item.firstName} {item.lastName}
+          </T>
+          <T variant="xs" color="muted" numberOfLines={1}>
+            {item.email}
+          </T>
+          <T variant="xs" color="faint" numberOfLines={1}>
+            رقم القيد: {item.universityId || "—"}
+          </T>
+        </View>
+        <Badge label={item.isActive ? "نشط" : "موقوف"} tone={item.isActive ? "mint" : "rose"} />
+      </View>
+    </LedgerRow>
+  ),
+);
 
 /* ─── Enrollment manager sheet (web EnrollmentModal parity) ─── */
 
@@ -193,7 +188,7 @@ function EnrollmentManager({
       toast.success("تمّ التسجيل في المقرّر");
       setPicked(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذَّر التسجيل"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر التسجيل"),
   });
 
   const unenroll = useMutation({
@@ -204,7 +199,7 @@ function EnrollmentManager({
       toast.success("تمّ إلغاء التسجيل");
       setConfirming(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذَّر إلغاء التسجيل"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر إلغاء التسجيل"),
   });
 
   const options = (offerings.data ?? []).map((o) => {
@@ -236,15 +231,22 @@ function EnrollmentManager({
             <Skeleton h={44} />
           </View>
         ) : enrollments.isError ? (
-          <ErrorState message={(enrollments.error as Error | null)?.message} onRetry={() => enrollments.refetch()} compact />
+          <ErrorState message={humanizeError(enrollments.error)} onRetry={() => enrollments.refetch()} compact />
         ) : (enrollments.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
             لا تسجيلات حاليًا.
           </T>
         ) : (
-          <RowList>
-            {(enrollments.data ?? []).map((e, i, arr) => (
-              <LedgerRow key={e.id} last={i === arr.length - 1}>
+          <View style={{ gap: 8 }}>
+            {(enrollments.data ?? []).map((e) => (
+              <LedgerRow
+                key={e.id}
+                accessibilityLabel={`تسجيل في ${e.offering?.course?.name ?? "مقرّر"}${
+                  typeof e.progressPct === "number"
+                    ? ` — التقدُّم ${latn(Math.round(e.progressPct))}%`
+                    : ""
+                }`}
+              >
                 <View style={{ gap: 4 }}>
                   <T variant="body" weight="medium">
                     {e.offering?.course?.name ?? "—"}
@@ -273,7 +275,7 @@ function EnrollmentManager({
                 </View>
               </LedgerRow>
             ))}
-          </RowList>
+          </View>
         )}
 
         <T variant="sm" weight="bold">
@@ -282,7 +284,7 @@ function EnrollmentManager({
         {offerings.isLoading ? (
           <Skeleton h={48} />
         ) : offerings.isError ? (
-          <ErrorState message={(offerings.error as Error | null)?.message} onRetry={() => offerings.refetch()} compact />
+          <ErrorState message={humanizeError(offerings.error)} onRetry={() => offerings.refetch()} compact />
         ) : (offerings.data ?? []).length === 0 ? (
           <T variant="body" color="muted">
             لا توجد مقرّرات متاحة للتسجيل.

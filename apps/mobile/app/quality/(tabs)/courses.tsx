@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -48,7 +49,7 @@ export default function QualityCourses() {
         {courses.isLoading ? (
           <SkeletonList rows={5} />
         ) : courses.isError ? (
-          <ErrorState message={(courses.error as Error | null)?.message} onRetry={() => courses.refetch()} />
+          <ErrorState message={humanizeError(courses.error)} onRetry={() => courses.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد مقرّرات نشطة بعد"

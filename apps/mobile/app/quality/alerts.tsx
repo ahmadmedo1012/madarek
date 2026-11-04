@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { Screen } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -70,7 +71,7 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
         ) : alerts.isError ? (
-          <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} />
+          <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا توجد تنبيهات حالياً"

@@ -1,69 +1,94 @@
 import { useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
-import { ApiError, post } from "@/api/client";
+import { z } from "zod";
+import { post } from "@/api/client";
 import { sp } from "@/design/tokens";
-import { Screen, PageHeader } from "@/components/ui/screen";
+import { AppStatusBar } from "@/design/statusbar";
+import { FormScreen, useFormValidation, ar } from "@/components/ui/form";
 import { T } from "@/components/ui/text";
 import { Field } from "@/components/ui/fields";
-import { Button } from "@/components/ui/pressables";
-import { Card } from "@/components/ui/surfaces";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 
-/** /auth/forgot-password — always-200 request; devInbox surfaces test reset links. */
+/**
+ * /auth/forgot-password — always-200 request (the API never confirms
+ * existence); devInbox surfaces test reset links. On the form foundation:
+ * keyboard-aware + «التالي/تم» toolbar, inline Arabic validation, the
+ * mint success note rides the sticky action bar.
+ */
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [devLink, setDevLink] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const form = useFormValidation({ schema: z.object({ email: ar.email() }) });
 
   const submit = async () => {
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
-      setError("أدخل بريدًا إلكترونيًا صالحًا.");
+    if (busy) return;
+    if (!form.validateAll()) {
+      haptics.notify("error");
       return;
     }
     setBusy(true);
     setError(null);
     try {
-      const res = await post<{ message: string; devInbox?: { url: string } }>("/auth/forgot-password", { email: email.trim() });
+      const res = await post<{ message: string; devInbox?: { url: string } }>("/auth/forgot-password", {
+        email: String(form.values.email).trim(),
+      });
+      haptics.notify("success");
       setMessage(res.message ?? "إن كان البريد مسجّلًا فستصلك رسالة تحتوي رابط إعادة التعيين.");
       setDevLink(res.devInbox?.url ?? null);
     } catch (err) {
-      setError((err as ApiError).message ?? "تعذّر إرسال الطلب.");
+      setError(humanizeError(err));
+      haptics.notify("error");
     } finally {
       setBusy(false);
     }
   };
 
   return (
-    <Screen scroll>
-      <PageHeader title="استعادة كلمة المرور" kicker="حسابك" compact />
-      <T variant="body" color="secondary">
-        أدخل بريدك المسجّل وسنرسل رابط إعادة تعيين كلمة المرور إذا كان الحساب موجودًا.
-      </T>
-      <View style={{ gap: sp[12] }}>
+    <>
+      <AppStatusBar />
+      <FormScreen
+        onSubmit={submit}
+        submitLabel={busy ? "جارٍ الإرسال…" : "إرسال رابط الاستعادة"}
+        submitLoading={busy}
+        submitKind="accent"
+        error={error}
+        success={message}
+        footer={
+          <View style={{ alignItems: "center" }}>
+            <T
+              variant="sm"
+              color="secondary"
+              onPress={() => router.back()}
+              accessibilityRole="link"
+              style={{ paddingVertical: sp[8] }}
+            >
+              رجوع إلى تسجيل الدخول
+            </T>
+          </View>
+        }
+      >
+        <T variant="h2" weight="bold">استعادة كلمة المرور</T>
+        <T variant="body" color="secondary">
+          أدخل بريدك المسجّل وسنرسل رابط إعادة تعيين كلمة المرور إذا كان الحساب موجودًا.
+        </T>
         <Field
+          {...form.field("email")}
+          fieldId="email"
           label="البريد الإلكتروني"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          inputMode="email"
-          error={error}
+          purpose="email"
+          required
         />
-        <Button label={busy ? "جارٍ الإرسال…" : "إرسال رابط الاستعادة"} onPress={submit} loading={busy} />
-        {message ? (
-          <Card>
-            <T variant="body">{message}</T>
-            {devLink ? (
-              <View style={{ marginTop: sp[8], gap: sp[4] }}>
-                <T variant="sm" color="muted">رابط بيئة الاختبار:</T>
-                <T variant="monoSm" color="accentInk">{devLink}</T>
-              </View>
-            ) : null}
-          </Card>
+        {message && devLink ? (
+          <View style={{ gap: sp[4] }}>
+            <T variant="sm" color="muted">رابط بيئة الاختبار:</T>
+            <T variant="monoSm" color="accentInk">{devLink}</T>
+          </View>
         ) : null}
-        <Button label="رجوع إلى تسجيل الدخول" kind="ghost" onPress={() => router.back()} small />
-      </View>
-    </Screen>
+      </FormScreen>
+    </>
   );
 }

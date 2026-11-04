@@ -1,24 +1,31 @@
 import { Pressable, StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import ArrowRight from "lucide-react-native/icons/arrow-right";
-import Building2 from "lucide-react-native/icons/building-complex";
+import Bell from "lucide-react-native/icons/bell";
 import Search from "lucide-react-native/icons/search";
-import { useSession } from "@/auth/session";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { T, MonoLabel } from "@/components/ui/text";
+import { T } from "@/components/ui/text";
 import { BrandMark } from "@/components/ui/brand";
-import { initials , latn } from "@/lib/format";
+import { latn } from "@/lib/format";
 import { useUnreadCount } from "@/hooks/useNotifications";
 
 /**
- * AppTopBar — the role shell header: brand, greeting + institution chip,
- * search entry, and the notifications badge (bell target per role maps to
- * the alerts page, mirroring web alertsPath).
+ * AppTopBar — the compact role-shell header (R334 3-a policy):
+ * brand · title · search · bell.
+ *
+ * The identity block (user name + institution chip + avatar → /settings)
+ * lived here since R331 and crowded every tab screen; identity/institution
+ * now live in Profile (حسابي — the identity card is that tab's hero) and
+ * /settings stays reachable from the Profile menu + the report card. The
+ * prop contract is unchanged (`alertsPath`) — all ~30 tab screens compile
+ * untouched.
+ *
+ * "back/menu" seat: there is no drawer in this app (the shell is
+ * tab-based); pushed screens get their back affordance from StackHeader.
  */
 export function AppTopBar({ alertsPath }: { alertsPath: string }) {
   const p = usePalette();
-  const user = useSession((s) => s.user);
   const { data: unread = 0 } = useUnreadCount();
 
   return (
@@ -33,28 +40,13 @@ export function AppTopBar({ alertsPath }: { alertsPath: string }) {
         flexDirection: "row",
         alignItems: "center",
         gap: sp[8],
+        minHeight: 52,
       }}
     >
-      <BrandMark size={28} />
-      <View style={{ flex: 1, gap: 0 }}>
-        {/* Z8 (B4 review): the role prefix crowded the name into an
-            ellipsis while space remained. The web Topbar shows the NAME
-            only — the role already lives in every tab label and screen
-            title, so the prefix was pure duplication. Web parity wins. */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
-          <T variant="xs" weight="bold" numberOfLines={1}>
-            {user ? `${user.firstName} ${user.lastName}` : "مدارك"}
-          </T>
-        </View>
-        {user?.currentInstitution ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
-            <Building2 size={11} color={p.textMuted} />
-            <T variant="xs" color="muted" numberOfLines={1}>
-              {user.currentInstitution.name}
-            </T>
-          </View>
-        ) : null}
-      </View>
+      <BrandMark size={26} />
+      <T variant="h4" weight="bold" numberOfLines={1} style={{ flex: 1 }}>
+        مدارك
+      </T>
       <Pressable
         accessibilityRole="button"
         accessibilityLabel="البحث"
@@ -70,47 +62,41 @@ export function AppTopBar({ alertsPath }: { alertsPath: string }) {
         style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
       >
         <View>
-          <MonoLabel>{unread > 0 ? latn(unread > 99 ? 99 : unread) : "•"}</MonoLabel>
-          <View
-            style={{
-              position: "absolute",
-              top: 6,
-              start: 10,
-              width: 8,
-              height: 8,
-              backgroundColor: unread > 0 ? p.accent : "transparent",
-            }}
-          />
-        </View>
-      </Pressable>
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel="حسابي"
-        onPress={() => router.push("/settings")}
-        style={{ width: 44, height: 44, alignItems: "center", justifyContent: "center" }}
-      >
-        <View
-          style={{
-            width: 34,
-            height: 34,
-            borderRadius: 17,
-            backgroundColor: user?.avatarColor ?? p.accentSoft,
-            borderWidth: StyleSheet.hairlineWidth,
-            borderColor: p.rule,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <T variant="xs" weight="bold" style={{ color: p.accentFg }}>
-            {user ? initials(user.firstName, user.lastName) : "؟"}
-          </T>
+          <Bell size={20} color={p.text} />
+          {unread > 0 ? (
+            <View
+              accessibilityElementsHidden
+              style={{
+                position: "absolute",
+                top: -2,
+                start: 12,
+                minWidth: 16,
+                height: 16,
+                borderRadius: 8,
+                backgroundColor: p.accent,
+                alignItems: "center",
+                justifyContent: "center",
+                paddingHorizontal: 3,
+              }}
+            >
+              <T variant="xs" style={{ color: p.accentFg }}>
+                {unread > 99 ? "99+" : latn(unread)}
+              </T>
+            </View>
+          ) : null}
         </View>
       </Pressable>
     </View>
   );
 }
 
-/** StackHeader — back arrow (RTL: points right) + drafting title. */
+/**
+ * StackHeader — back arrow (RTL: points right) + drafting title.
+ * The pushed-screen header (compact policy: back · title · right action).
+ * Native large-title collapse is deliberately NOT implemented — these are
+ * in-screen headers over a scroll body, not native-stack headers; see
+ * docs/mobile/screens/shell.md.
+ */
 export function StackHeader({
   title,
   kicker,

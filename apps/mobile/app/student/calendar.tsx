@@ -4,7 +4,16 @@
  * four deadline surfaces — recurring weekly classes (/enrollments/me
  * schedule slots), assignment due dates, exam windows and live sessions
  * (the dashboard agenda) — with per-kind dots (class=ink, assignment=
- * accent, exam=gold, live=lavender) and a selected-day list below.
+ * accent, exam=gold, live=lavender).
+ *
+ * R334 Round 2 (3-h Comms):
+ *   · day numbers + counts render through the numerals POLICY hook
+ *     (useNumerals — ٠١٢٣ when the user prefers Arabic-Indic glyphs);
+ *   · tapping a day opens a DAY SHEET (AppSheet — bottom-sheet v5 with
+ *     its interactive keyboard behavior) listing that day's events with
+ *     deep links. The sheet mounts ONLY while open: the real bottom-sheet
+ *     graph must not load during the jest render-net route walk;
+ *   · errors through humanizeError (never raw error.message).
  */
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -22,12 +31,13 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
-import { SectionBar } from "@/components/ui/screen";
 import { Badge } from "@/components/ui/surfaces";
 import { IconButton } from "@/components/ui/pressables";
+import { AppSheet } from "@/components/ui/sheet";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
-import { AR_DAYS, latn, timeOf } from "@/lib/format";
+import { AR_DAYS, timeOf, useNumerals } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { countAr } from "@/features/student/more";
 import {
   PushFrame,
@@ -57,10 +67,19 @@ const KIND_LABEL: Record<CalKind, string> = {
 
 const KIND_ORDER: Record<CalKind, number> = { class: 0, assignment: 1, exam: 2, live: 3 };
 
+/** The day-sheet payload: a grid cell + its events. */
+interface DaySheet {
+  key: string;
+  dow: number;
+  day: number;
+  events: CalEvent[];
+}
+
 export default function CalendarScreen() {
   const scope = useInstitutionScope();
   const p = usePalette();
   const tones = useStatusTones();
+  const { formatNumber } = useNumerals();
 
   const enrollments = useQuery({
     queryKey: ["enrollments", "me", scope],
@@ -74,7 +93,7 @@ export default function CalendarScreen() {
   const today = tripoliToday();
   const todayKey = civilKey(today);
   const [view, setView] = useState({ y: today.y, m: today.m });
-  const [selectedKey, setSelectedKey] = useState(todayKey);
+  const [daySheet, setDaySheet] = useState<DaySheet | null>(null);
 
   const cells = useMemo(() => monthGridCells(view.y, view.m), [view]);
 
@@ -146,7 +165,7 @@ export default function CalendarScreen() {
     kind === "class" ? p.text : kind === "assignment" ? p.accent : kind === "exam" ? p.gold : tones.lavender.ink;
 
   const awayFromToday =
-    view.y !== today.y || view.m !== today.m || selectedKey !== todayKey;
+    view.y !== today.y || view.m !== today.m;
   const shiftMonth = (delta: number) => {
     setView((v) => {
       const d = new Date(Date.UTC(v.y, v.m - 1 + delta, 1));
@@ -156,25 +175,22 @@ export default function CalendarScreen() {
   const goToday = () => {
     const t = tripoliToday();
     setView({ y: t.y, m: t.m });
-    setSelectedKey(civilKey(t));
   };
 
-  const selectedEvents = byDay.get(selectedKey) ?? [];
-  const selectedCell = cells.find((c) => c.key === selectedKey);
   const monthEventCells = cells.filter((c) => c.inMonth && byDay.has(c.key)).length;
-
   const loading = enrollments.isLoading || dash.isLoading;
 
   return (
-    <PushFrame
-      title="التقويم"
-      kicker="كل مواعيدك في نظرة واحدة — بتوقيت ليبيا"
-      refreshing={(enrollments.isFetching || dash.isFetching) && !loading}
-      onRefresh={() => {
-        void enrollments.refetch();
-        void dash.refetch();
-      }}
-    >
+    <>
+      <PushFrame
+        title="التقويم"
+        kicker="كل مواعيدك في نظرة واحدة — بتوقيت ليبيا"
+        refreshing={(enrollments.isFetching || dash.isFetching) && !loading}
+        onRefresh={() => {
+          void enrollments.refetch();
+          void dash.refetch();
+        }}
+      >
       {/* Legend — words + dots */}
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[10], rowGap: 4 }}>
         {(Object.keys(KIND_LABEL) as CalKind[]).map((kind) => (
@@ -190,12 +206,12 @@ export default function CalendarScreen() {
       {loading ? (
         <SkeletonList rows={6} rowHeight={56} />
       ) : enrollments.isError ? (
-        <ErrorState message={(enrollments.error as Error | null)?.message} onRetry={() => enrollments.refetch()} />
+        <ErrorState message={humanizeError(enrollments.error)} onRetry={() => enrollments.refetch()} />
       ) : dash.isError ? (
-        <ErrorState message={(dash.error as Error | null)?.message} onRetry={() => dash.refetch()} />
+        <ErrorState message={humanizeError(dash.error)} onRetry={() => dash.refetch()} />
       ) : (
         <>
-          {/* Month navigation */}
+          {/* Month navigation — RTL: السابق sits on the right. */}
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
             <IconButton label="الشهر السابق" onPress={() => shiftMonth(-1)}>
               <ChevronRight size={20} color={p.text} />
@@ -217,7 +233,7 @@ export default function CalendarScreen() {
             </IconButton>
           </View>
 
-          {/* Weekday header — Sunday-first, RTL flow */}
+          {/* Weekday header — Sunday-first, RTL flow (starts at the right). */}
           <View style={{ flexDirection: "row" }}>
             {AR_DAYS.map((name) => (
               <View key={name} style={{ flex: 1, alignItems: "center", paddingVertical: 4 }}>
@@ -228,7 +244,7 @@ export default function CalendarScreen() {
             ))}
           </View>
 
-          {/* The 42-cell month grid */}
+          {/* The 42-cell month grid — numerals render via the policy hook. */}
           <View style={{ borderWidth: StyleSheet.hairlineWidth, borderColor: p.border }}>
             {Array.from({ length: 6 }).map((_, row) => (
               <View key={row} style={{ flexDirection: "row" }}>
@@ -236,30 +252,36 @@ export default function CalendarScreen() {
                   const kinds = kindsFor(cell.key);
                   const count = byDay.get(cell.key)?.length ?? 0;
                   const isToday = cell.key === todayKey;
-                  const isSelected = cell.key === selectedKey;
                   return (
                     <Pressable
                       key={cell.key}
                       accessibilityRole="button"
                       accessibilityLabel={
-                        `${AR_DAYS[cell.dow]} ${latn(cell.day)}${count > 0 ? ` — ${latn(count)} ${count === 1 ? "حدث" : "أحداث"}` : ""}`
+                        `${AR_DAYS[cell.dow]} ${formatNumber(cell.day)}${count > 0 ? ` — ${formatNumber(count)} ${count === 1 ? "حدث" : "أحداث"}` : ""}`
                       }
-                      onPress={() => setSelectedKey(cell.key)}
+                      onPress={() =>
+                        setDaySheet({
+                          key: cell.key,
+                          dow: cell.dow,
+                          day: cell.day,
+                          events: byDay.get(cell.key) ?? [],
+                        })
+                      }
                       style={[
                         styles.cell,
                         {
                           borderColor: p.border,
-                          backgroundColor: isSelected ? p.primary : "transparent",
+                          backgroundColor: isToday ? p.accentSoft : "transparent",
                           opacity: cell.inMonth ? 1 : 0.35,
                         },
                       ]}
                     >
                       <T
                         variant="sm"
-                        weight={isToday || isSelected ? "bold" : "regular"}
-                        style={{ color: isSelected ? p.primaryFg : isToday ? p.accent : p.text }}
+                        weight={isToday ? "bold" : "regular"}
+                        style={{ color: isToday ? p.accentInk : p.text }}
                       >
-                        {latn(cell.day)}
+                        {formatNumber(cell.day)}
                       </T>
                       {kinds.length > 0 ? (
                         <View style={{ flexDirection: "row", gap: 3, marginTop: 2 }}>
@@ -278,64 +300,10 @@ export default function CalendarScreen() {
             ))}
           </View>
 
-          {/* Selected day */}
-          <View style={{ gap: sp[8] }}>
-            <SectionBar
-              index={1}
-              title={
-                selectedCell
-                  ? `${AR_DAYS[selectedCell.dow]} · ${latn(selectedCell.day)}`
-                  : "اختر يومًا"
-              }
-              action={
-                selectedEvents.length > 0 ? (
-                  <T variant="xs" color="muted">
-                    {latn(selectedEvents.length)}
-                  </T>
-                ) : undefined
-              }
-            />
-            {selectedEvents.length === 0 ? (
-              <EmptyState
-                title="لا أحداث في هذا اليوم"
-                message="اختر يومًا آخر من الشبكة أعلاه — أو راجع جدولك ومقرّراتك."
-              />
-            ) : (
-              <RowList>
-                {selectedEvents.map((ev, i) => (
-                  <LedgerRow
-                    key={ev.key}
-                    last={i === selectedEvents.length - 1}
-                    accessibilityLabel={ev.title}
-                    onPress={() => {
-                      if (ev.to) router.push(ev.to as never);
-                    }}
-                  >
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                      {ev.kind === "class" ? (
-                        <Presentation size={16} color={p.text} />
-                      ) : ev.kind === "assignment" ? (
-                        <ClipboardList size={16} color={p.accent} />
-                      ) : ev.kind === "exam" ? (
-                        <ClipboardCheck size={16} color={p.goldInk} />
-                      ) : (
-                        <Radio size={16} color={tones.lavender.ink} />
-                      )}
-                      <T variant="body" weight="medium" style={{ flex: 1 }} numberOfLines={2}>
-                        {ev.title}
-                      </T>
-                      <Badge label={KIND_LABEL[ev.kind]} tone={ev.kind === "class" ? "grey" : ev.kind === "assignment" ? "copper" : ev.kind === "exam" ? "yellow" : "lavender"} />
-                    </View>
-                    {ev.time ? (
-                      <T variant="sm" color="muted">
-                        {ev.time}
-                      </T>
-                    ) : null}
-                  </LedgerRow>
-                ))}
-              </RowList>
-            )}
-          </View>
+          {/* Hint — the events themselves live in the day sheet now. */}
+          <T variant="xs" color="faint">
+            اختر يوماً من الشبكة لعرض مواعيده.
+          </T>
 
           {monthEventCells === 0 ? (
             <T variant="sm" color="muted">
@@ -348,7 +316,61 @@ export default function CalendarScreen() {
           )}
         </>
       )}
-    </PushFrame>
+      </PushFrame>
+
+      {/* DAY SHEET — mounts only while a day is chosen (bottom-sheet graph
+          stays out of the route render net; loads on first open on device). */}
+      {daySheet ? (
+        <AppSheet
+          open
+          onClose={() => setDaySheet(null)}
+          title={`${AR_DAYS[daySheet.dow]} · ${formatNumber(daySheet.day)}`}
+          snap="md"
+        >
+          {daySheet.events.length === 0 ? (
+            <EmptyState
+              room="library"
+              title="لا أحداث في هذا اليوم"
+              message="اختر يومًا آخر من الشبكة — أو راجع جدولك ومقرّراتك."
+            />
+          ) : (
+            <RowList>
+              {daySheet.events.map((ev, i) => (
+                <LedgerRow
+                  key={ev.key}
+                  last={i === daySheet.events.length - 1}
+                  accessibilityLabel={ev.title}
+                  onPress={() => {
+                    if (ev.to) router.push(ev.to as never);
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+                    {ev.kind === "class" ? (
+                      <Presentation size={16} color={p.text} />
+                    ) : ev.kind === "assignment" ? (
+                      <ClipboardList size={16} color={p.accent} />
+                    ) : ev.kind === "exam" ? (
+                      <ClipboardCheck size={16} color={p.goldInk} />
+                    ) : (
+                      <Radio size={16} color={tones.lavender.ink} />
+                    )}
+                    <T variant="body" weight="medium" style={{ flex: 1 }} numberOfLines={2}>
+                      {ev.title}
+                    </T>
+                    <Badge label={KIND_LABEL[ev.kind]} tone={ev.kind === "class" ? "grey" : ev.kind === "assignment" ? "copper" : ev.kind === "exam" ? "yellow" : "lavender"} />
+                  </View>
+                  {ev.time ? (
+                    <T variant="sm" color="muted">
+                      {ev.time}
+                    </T>
+                  ) : null}
+                </LedgerRow>
+              ))}
+            </RowList>
+          )}
+        </AppSheet>
+      ) : null}
+    </>
   );
 }
 

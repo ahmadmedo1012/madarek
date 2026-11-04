@@ -1,26 +1,26 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { humanizeError } from "@/lib/errors";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Badge, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
-import { RowList, LedgerRow, Avatar } from "@/components/ui/data";
+import {
+  DataList,
+  LedgerRow,
+  makeRow,
+  usePagedList,
+} from "@/components/ui/data";
 import { SearchBar, Segmented, SelectField } from "@/components/ui/fields";
-import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
+import { sp } from "@/design/tokens";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
-import { ApiError } from "@/api/client";
+import type { Paginated } from "@/api/types";
 import { ROLE_LABELS } from "@/auth/session";
 import { initials } from "@/lib/format";
-import {
-  RoleChip,
-  pageOf,
-  PagerFooter,
-  UNIT,
-  type OwnerUserRow,
-} from "@/features/governance/components";
+import { RoleChip, UserAvatar, avatarUrlOf, type OwnerUserRow } from "@/features/governance/components";
 
 const PAGE_LIMIT = 20;
 
@@ -56,7 +56,6 @@ export default function OwnerUsers() {
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
   const [role, setRole] = useState("all");
-  const [page, setPage] = useState(1);
 
   const appliedRef = useRef(appliedQ);
   useEffect(() => {
@@ -65,33 +64,29 @@ export default function OwnerUsers() {
       if (next === appliedRef.current) return;
       appliedRef.current = next;
       setAppliedQ(next);
-      setPage(1);
     }, 300);
     return () => clearTimeout(t);
   }, [q]);
 
-  const directory = useQuery({
-    queryKey: ["owner", "users", { page, q: appliedQ, role }],
-    queryFn: async () =>
-      pageOf<OwnerUserRow>(
-        await ownerApi.users({
-          page,
-          limit: PAGE_LIMIT,
-          q: appliedQ || undefined,
-          role: role === "all" ? undefined : role,
-        }),
-      ),
-    placeholderData: (prev) => prev,
+  const directory = usePagedList<OwnerUserRow>({
+    queryKey: ["owner", "users", { q: appliedQ, role }],
+    fetchPage: (page) =>
+      ownerApi.users({
+        page,
+        limit: PAGE_LIMIT,
+        q: appliedQ || undefined,
+        role: role === "all" ? undefined : role,
+      }) as Promise<Paginated<OwnerUserRow>>,
+    limit: PAGE_LIMIT,
   });
 
   const [selected, setSelected] = useState<OwnerUserRow | null>(null);
-  const rows = directory.data?.rows ?? [];
   const hasFilters = role !== "all" || appliedQ !== "";
 
   return (
-    <Screen scroll>
+    <Screen scroll={false} padded={false}>
       <AppTopBar alertsPath="/owner/alerts" />
-      <View style={{ gap: 16, paddingTop: 16 }}>
+      <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <View>
           <T variant="h2" weight="bold">
             إدارة المستخدمين
@@ -105,103 +100,87 @@ export default function OwnerUsers() {
           value={q}
           onChange={setQ}
           placeholder="ابحث بالاسم أو البريد الإلكتروني…"
-          onClear={() => {
-            setQ("");
-            setPage(1);
-          }}
+          onClear={() => setQ("")}
         />
 
         <Segmented
           options={ROLE_FILTERS}
           selectedId={role}
-          onSelect={(id) => {
-            setRole(id);
-            setPage(1);
-          }}
+          onSelect={(id) => setRole(id)}
         />
-
-        {directory.isLoading ? (
-          <SkeletonList rows={6} />
-        ) : directory.isError ? (
-          <ErrorState message={(directory.error as Error | null)?.message} onRetry={() => directory.refetch()} />
-        ) : rows.length === 0 ? (
-          <EmptyState
-            title={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}
-            message={
-              hasFilters
-                ? "لم نجد حسابات تطابق البحث أو الدور المحدّد."
-                : "ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة."
-            }
-            actionLabel={hasFilters ? "مسح البحث والفلاتر" : undefined}
-            onAction={
-              hasFilters
-                ? () => {
-                    setQ("");
-                    setRole("all");
-                    setPage(1);
-                  }
-                : undefined
-            }
-          />
-        ) : (
-          <View style={{ gap: 12 }}>
-            <RowList>
-              {rows.map((u, i) => (
-                <LedgerRow
-                  key={u.id}
-                  onPress={() => setSelected(u)}
-                  accessibilityLabel={`إجراءات ${nameOf(u)}`}
-                  last={i === rows.length - 1}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                    <Avatar
-                      initials={u.avatarInitials ?? initials(u.firstName, u.lastName)}
-                      color={u.avatarColor}
-                      size={36}
-                    />
-                    <View style={{ flex: 1, gap: 2 }}>
-                      <T variant="body" weight="bold" numberOfLines={1}>
-                        {nameOf(u)}
-                      </T>
-                      {u.email ? (
-                        <T variant="xs" color="muted" numberOfLines={1}>
-                          {u.email}
-                        </T>
-                      ) : null}
-                      {(u.memberships ?? []).length > 0 ? (
-                        <T variant="xs" color="faint" numberOfLines={1}>
-                          {(u.memberships ?? [])
-                            .map((m) => m.institution?.name)
-                            .filter(Boolean)
-                            .join("، ") || "بلا مؤسسة"}
-                        </T>
-                      ) : null}
-                    </View>
-                    <View style={{ gap: 4 }}>
-                      <RoleChip role={u.role} label={ROLE_LABELS[u.role ?? ""] ?? u.role ?? "—"} />
-                      {u.isActive ? <Badge label="مفعّل" tone="mint" /> : <Badge label="معطّل" tone="rose" />}
-                    </View>
-                  </View>
-                </LedgerRow>
-              ))}
-            </RowList>
-            <PagerFooter
-              page={page}
-              rowsLength={rows.length}
-              limit={PAGE_LIMIT}
-              meta={directory.data?.meta ?? null}
-              unit={UNIT.user}
-              onPage={setPage}
-              loading={directory.isFetching}
-            />
-          </View>
-        )}
+      </View>
+      <View style={{ flex: 1 }}>
+        <DataList
+          data={directory.items}
+          renderItem={({ item }) => <DirectoryRow item={item} onSelect={setSelected} />}
+          keyExtractor={(u) => u.id}
+          isLoading={directory.isLoading}
+          isError={directory.isError}
+          errorMessage={humanizeError(directory.query.error)}
+          onRetry={() => directory.refetch()}
+          refetch={directory.refetch}
+          isRefetching={directory.isRefetching}
+          onEndReached={directory.onEndReached}
+          isFetchingNextPage={directory.isFetchingNextPage}
+          hasNextPage={directory.hasNextPage}
+          loadMoreError={directory.loadMoreError}
+          onRetryLoadMore={directory.retryLoadMore}
+          emptyTitle={hasFilters ? "لا نتائج مطابقة" : "لا يوجد مستخدمون بعد"}
+          emptyMessage={
+            hasFilters
+              ? "لم نجد حسابات تطابق البحث أو الدور المحدّد."
+              : "ستظهر الحسابات هنا فور تسجيل أوّل مستخدم في المنصّة."
+          }
+          contentPadding={{ horizontal: 20, top: 8, bottom: 24 }}
+        />
       </View>
 
       {selected ? <UserActionsSheet user={selected} onClose={() => setSelected(null)} /> : null}
     </Screen>
   );
 }
+
+/* ─── directory row (module scope, memo-stable) ─── */
+
+const DirectoryRow = makeRow<OwnerUserRow, { onSelect: (row: OwnerUserRow) => void }>(
+  ({ item, onSelect }) => (
+    <LedgerRow
+      onPress={() => onSelect(item)}
+      accessibilityLabel={`إجراءات ${nameOf(item)}`}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+        <UserAvatar
+          url={item.avatarUrl ?? avatarUrlOf(item)}
+          initials={item.avatarInitials ?? initials(item.firstName, item.lastName)}
+          color={item.avatarColor}
+          size={36}
+        />
+        <View style={{ flex: 1, gap: 2 }}>
+          <T variant="body" weight="bold" numberOfLines={1}>
+            {nameOf(item)}
+          </T>
+          {item.email ? (
+            <T variant="xs" color="muted" numberOfLines={1}>
+              {item.email}
+            </T>
+          ) : null}
+          {(item.memberships ?? []).length > 0 ? (
+            <T variant="xs" color="faint" numberOfLines={1}>
+              {(item.memberships ?? [])
+                .map((m) => m.institution?.name)
+                .filter(Boolean)
+                .join("، ") || "بلا مؤسسة"}
+            </T>
+          ) : null}
+        </View>
+        <View style={{ gap: 4 }}>
+          <RoleChip role={item.role} label={ROLE_LABELS[item.role ?? ""] ?? "دور آخر"} />
+          {item.isActive ? <Badge label="مفعّل" tone="mint" /> : <Badge label="معطّل" tone="rose" />}
+        </View>
+      </View>
+    </LedgerRow>
+  ),
+);
 
 /* ─── Per-user actions sheet: role change + status toggle ─── */
 
@@ -216,13 +195,13 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     mutationFn: (role: string) => ownerApi.setUserRole(user.id, role),
     onSuccess: (_d, role) => {
       qc.invalidateQueries({ queryKey: ["owner", "users"] });
-      toast.success(`أصبح دور «${name}» الآن ${ROLE_LABELS[role] ?? role}.`, "تمّ تغيير الدور");
+      toast.success(`أصبح دور «${name}» الآن ${ROLE_LABELS[role] ?? "دور آخر"}.`, "تمّ تغيير الدور");
       setRoleConfirm(false);
       onClose();
     },
     onError: (e) => {
       setRoleConfirm(false);
-      toast.error((e as ApiError).message, "تعذّر تغيير الدور");
+      toast.error(humanizeError(e), "تعذّر تغيير الدور");
     },
   });
 
@@ -237,7 +216,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
     onError: (e) => {
       setStatusConfirm(false);
       // The API's own Arabic message lands here (e.g. the last-active-owner guard).
-      toast.error((e as ApiError).message, "تعذّر تحديث حالة الحساب");
+      toast.error(humanizeError(e), "تعذّر تحديث حالة الحساب");
     },
   });
 
@@ -253,7 +232,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
       <View style={{ gap: 12 }}>
         {user.email ? <T variant="body" color="muted">{user.email}</T> : null}
         <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-          <RoleChip role={user.role} label={ROLE_LABELS[user.role ?? ""] ?? user.role ?? "—"} />
+          <RoleChip role={user.role} label={ROLE_LABELS[user.role ?? ""] ?? "دور آخر"} />
           {user.isActive ? <Badge label="مفعّل" tone="mint" /> : <Badge label="معطّل" tone="rose" />}
         </View>
         {insts ? (
@@ -276,8 +255,8 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
             sheetTitle="اختر الدور الجديد"
             value={
               roleDraft
-                ? { id: roleDraft, label: ROLE_LABELS[roleDraft] ?? roleDraft }
-                : { id: user.role ?? "", label: ROLE_LABELS[user.role ?? ""] ?? user.role ?? "—" }
+                ? { id: roleDraft, label: ROLE_LABELS[roleDraft] ?? "دور آخر" }
+                : { id: user.role ?? "", label: ROLE_LABELS[user.role ?? ""] ?? "دور آخر" }
             }
             options={ELIGIBLE_ROLES}
             onSelect={(id) => {
@@ -303,7 +282,7 @@ function UserActionsSheet({ user, onClose }: { user: OwnerUserRow; onClose: () =
         title="تغيير الدور"
         message={
           roleDraft
-            ? `هل تريد تغيير دور «${name}» من ${ROLE_LABELS[user.role ?? ""] ?? user.role} إلى ${ROLE_LABELS[roleDraft] ?? roleDraft}؟${insts ? ` عضويته النشطة: ${insts}.` : " لا عضوية مؤسسة نشطة لهذا الحساب."}`
+            ? `هل تريد تغيير دور «${name}» من ${ROLE_LABELS[user.role ?? ""] ?? "دور آخر"} إلى ${ROLE_LABELS[roleDraft] ?? "دور آخر"}؟${insts ? ` عضويته النشطة: ${insts}.` : " لا عضوية مؤسسة نشطة لهذا الحساب."}`
             : ""
         }
         confirmLabel="تغيير الدور"

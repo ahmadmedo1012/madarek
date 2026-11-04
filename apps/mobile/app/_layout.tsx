@@ -2,10 +2,15 @@ import "@/global.css";
 import { I18nManager } from "react-native";
 
 import { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { Stack } from "expo-router";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+// R334 3-a — RNGH v3 wants its root view at the TRUE root (audit P0): every
+// gesture under it (sheets, pans, edge swipes) rides the installed runtime.
+// The bottom-sheet engine keeps its own lazy-loaded copy (the render-net
+// regression fix in ui/sheet.tsx is untouched); this static import only
+// executes in the app shell — jest never imports _layout files.
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 // R331 A-App-Motion — the keyboard now rides react-native-keyboard-controller:
 // per-pixel tracking driven on the UI thread (reanimated worklets), RTL-safe,
 // both platforms. The two legacy RN KeyboardAvoidingView seats (FormScreen,
@@ -18,6 +23,21 @@ import { queryClient } from "@/lib/queryClient";
 import { ThemeProvider, useTheme } from "@/design/theme";
 import { heron } from "@/design/tokens";
 import { fontMap } from "@/design/fonts";
+// R334 2-f — the status bar derives its style from the EFFECTIVE app theme
+// (a user preference), never the device scheme (`auto` was wrong).
+import { AppStatusBar } from "@/design/statusbar";
+// R334 B8 (resilience) — the offline layer the root mounts:
+//   · NetworkBanner — self-subscribing connectivity banner (it also wires
+//     NetInfo → TanStack onlineManager, so queries pause/resume honestly)
+//   · persistQueryClient — one-time query-cache restore + session save
+import { NetworkBanner } from "@/lib/resilience/network";
+import { persistQueryClient } from "@/lib/resilience/persistence";
+// R334 3-a (audit round 2) — BottomSheetModalProvider available at the root
+// for direct consumers, via the same lazy-require pattern as ui/sheet.tsx
+// (the render-net fix stays intact; jest never imports _layout files).
+import { RootSheetModalProvider } from "@/components/shell/SheetModalHost";
+// R334 2-b — hydrate the persisted haptics preference once at boot.
+import { haptics } from "@/haptics";
 import { ToastHost } from "@/components/ui/toast";
 import { useSession } from "@/auth/session";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
@@ -45,6 +65,23 @@ void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 // R326 M1.1: global JS-exception + unhandled-rejection capture → /client-errors.
 installGlobalErrorHandlers();
+
+/**
+ * R334 B8 — one-time query-cache restore + session save subscription.
+ * Mounts INSIDE QueryClientProvider; the module guard survives React
+ * remounts (StrictMode/dev) so the cache subscription is never doubled.
+ */
+function QueryCacheBoot() {
+  useEffect(() => {
+    if (queryCacheStarted) return;
+    queryCacheStarted = true;
+    const persisted = persistQueryClient({ queryClient });
+    void persisted.persistQueryClientRestore().then(() => crumb(bootMs("query cache restored")));
+    // the save subscription lives for the session — root never tears down
+  }, []);
+  return null;
+}
+let queryCacheStarted = false;
 
 function RootNavigator() {
   const { name } = useTheme();
@@ -86,6 +123,9 @@ export default function RootLayout() {
   const gate = useVersionGate();
   useEffect(() => {
     crumb(bootMs("root layout mounted"));
+    // R334 2-b — exact haptics gate state for this session (fire-and-forget;
+    // the module already kicked its own cheap hydrate at import).
+    void haptics.hydrate();
   }, []);
 
   useEffect(() => {
@@ -126,20 +166,31 @@ export default function RootLayout() {
 
   return (
     <ErrorBoundary scope="root">
+      {/* R334 3-a — the gesture runtime's true root (audit P0). */}
+      <GestureHandlerRootView style={{ flex: 1 }}>
       <QueryClientProvider client={queryClient}>
+        {/* R334 B8 — persisted query cache (24h, buster-gated). */}
+        <QueryCacheBoot />
         {/* R331 A-App-Motion — the keyboard's animated root (see the import
             note): every KeyboardAvoidingView/KeyboardToolbar below rides it. */}
         <KeyboardProvider>
         <ThemeProvider>
           <SafeAreaProvider>
+            {/* R334 3-a (audit round 2) — sheet modals hosted from the root:
+                BottomSheetModalProvider for any DIRECT BottomSheetModal
+                consumer (AppSheet keeps its local provider — 2-c's file). */}
+            <RootSheetModalProvider>
             {/* R327 C3 — the optional cold-start biometric lock. Off by
                 default; renders nothing until the SecureStore flag says
                 otherwise. Web: hasHardware=false → permanent no-op. */}
             <BiometricGate>
-              <StatusBar style="auto" />
+              {/* R334 2-f — theme-derived status bar (was: style="auto"). */}
+              <AppStatusBar />
               <ErrorBoundary scope="navigator">
                 <RootNavigator />
               </ErrorBoundary>
+              {/* R334 B8 — offline banner + TanStack onlineManager bridge. */}
+              <NetworkBanner />
             </BiometricGate>
             {/* R327 C3 — channels + tap→deep-link + silent registration. */}
             <PushRegistrar />
@@ -147,10 +198,12 @@ export default function RootLayout() {
             {/* R331 A-App-Shell — no floating FeedbackSheetHost FAB here anymore:
                 «الإبلاغ عن مشكلة» is a real route (/report) from the Profile
                 menu and /settings; nothing overlays screen content now. */}
+            </RootSheetModalProvider>
           </SafeAreaProvider>
         </ThemeProvider>
         </KeyboardProvider>
       </QueryClientProvider>
+      </GestureHandlerRootView>
     </ErrorBoundary>
   );
 }

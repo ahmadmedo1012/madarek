@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import CheckCircle2 from "lucide-react-native/icons/circle-check";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -12,10 +13,9 @@ import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { useStatusTones } from "@/design/theme";
 import { dateTime, latn } from "@/lib/format";
-import { alertCategoryLabel } from "@/features/governance/components";
+import { SeverityChip, alertCategoryLabel } from "@/features/governance/components";
 
 interface OwnerAlertRow {
   id: string;
@@ -50,7 +50,7 @@ export default function OwnerAlerts() {
       qc.invalidateQueries({ queryKey: ["owner", "alerts"] });
       toast.success("أُغلق التنبيه وسُجّلت العمليّة في سجلّ النشاط.", "تمّ حلّ التنبيه");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حلّ التنبيه"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حلّ التنبيه"),
   });
 
   const rows = Array.isArray(alerts.data) ? alerts.data : [];
@@ -74,7 +74,7 @@ export default function OwnerAlerts() {
         {alerts.isLoading ? (
           <SkeletonList rows={4} />
         ) : alerts.isError ? (
-          <ErrorState message={(alerts.error as Error | null)?.message} onRetry={() => alerts.refetch()} />
+          <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             icon={<CheckCircle2 size={22} color={tones.mint.ink} />}
@@ -98,7 +98,7 @@ export default function OwnerAlerts() {
                 {rows.map((a, i) => (
                   <LedgerRow key={a.id} last={i === rows.length - 1}>
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                      <SeverityBadge severity={a.severity} />
+                      <SeverityChip severity={a.severity} />
                       {a.category ? <Badge label={alertCategoryLabel(a.category)} tone="grey" /> : null}
                       <T variant="xs" color="faint">
                         {dateTime(a.createdAt)}
@@ -155,30 +155,5 @@ export default function OwnerAlerts() {
   );
 }
 
-/** Severity chip — the console's one vocabulary (حرج/تحذير/معلومة). */
-function SeverityBadge({ severity }: { severity?: string }) {
-  const key = severity ?? "";
-  const known =
-    key === "critical" || key === "CRITICAL" || key === "error" ||
-    key === "warning" || key === "WARNING" ||
-    key === "info" || key === "INFO";
-  const label =
-    key === "critical" || key === "CRITICAL" || key === "error"
-      ? "حرج"
-      : key === "warning" || key === "WARNING"
-        ? "تحذير"
-        : key === "info" || key === "INFO"
-          ? "معلومة"
-          : key || "—";
-  const tone =
-    key === "critical" || key === "CRITICAL" || key === "error"
-      ? "rose"
-      : key === "warning" || key === "WARNING"
-        ? "yellow"
-        : key === "info" || key === "INFO"
-          ? "sky"
-          : "grey";
-  return <Badge label={label} tone={tone} mono={!known && !!key} />;
-}
 
 

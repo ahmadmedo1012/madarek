@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router, useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
 import Pencil from "lucide-react-native/icons/pencil";
@@ -14,11 +15,10 @@ import { Field } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { usePalette } from "@/design/theme";
 import { fullDate } from "@/lib/format";
 import {
-  INST_STATUS_LABEL,
+  InstitutionStatusChip,
   countAr,
   numOf,
   type InstitutionRow,
@@ -62,7 +62,7 @@ export default function OwnerInstitutionDetail() {
         <StackHeader title="المؤسسة" kicker="لوحة المالك" />
         <View style={{ paddingTop: 16 }}>
           <ErrorState
-            message={(listing.error as Error | null)?.message}
+            message={humanizeError(listing.error)}
             onRetry={() => listing.refetch()}
           />
         </View>
@@ -104,7 +104,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success("حُفظت أسماء المؤسسة.", "بيانات المؤسسة");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر حفظ الأسماء"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر حفظ الأسماء"),
   });
 
   const provision = useMutation({
@@ -130,7 +130,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
         "تمّ التعيين",
       );
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تعيين المسجل العام"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تعيين المسجل العام"),
   });
 
   const revoke = useMutation({
@@ -139,7 +139,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success(`أُلغيت العضوية في «${inst.name}».`, "تمّ إلغاء العضوية");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر إلغاء العضوية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر إلغاء العضوية"),
   });
 
   const restore = useMutation({
@@ -148,7 +148,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       invalidate();
       toast.success(`أُعيدت العضوية في «${inst.name}».`, "تمّت الاستعادة");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّرت استعادة العضوية"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّرت استعادة العضوية"),
   });
 
   const members = numOf(inst.activeMembershipCount ?? inst.membersCount);
@@ -160,7 +160,7 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
       <StackHeader title={inst.name} kicker={inst.slug} />
       <View style={{ gap: 16, paddingTop: 16 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-          <InstitutionStatusBadge status={inst.status} />
+          <InstitutionStatusChip status={inst.status} />
           {members !== null ? (
             <T variant="sm" color="muted">
               {countAr(members, ["عضو نشط واحد", "عضوان نشطان", "أعضاء نشطون", "عضواً نشطاً"])}
@@ -324,18 +324,6 @@ function InstitutionConsole({ inst }: { inst: InstitutionRow }) {
   );
 }
 
-/** Institution status → Badge tone (the list + detail share one vocabulary). */
-function InstitutionStatusBadge({ status }: { status?: string }) {
-  const known = status != null && status in INST_STATUS_LABEL;
-  return (
-    <Badge
-      label={known ? INST_STATUS_LABEL[status] : status || "—"}
-      tone={status === "ACTIVE" ? "mint" : status === "SUSPENDED" ? "rose" : "grey"}
-      mono={!known}
-    />
-  );
-}
-
 /* ─── Rename sheet — PATCH /owner/institutions/:id ─── */
 
 function RenameSheet({
@@ -391,7 +379,7 @@ function RenameSheet({
         />
         {rename.isError ? (
           <T variant="sm" color="danger">
-            {(rename.error as ApiError)?.message ?? "تعذّر حفظ الأسماء — حاول مجدداً."}
+            {humanizeError(rename.error)}
           </T>
         ) : null}
       </View>
@@ -463,7 +451,7 @@ function ProvisionSheet({
         />
         {provision.isError ? (
           <T variant="sm" color="danger">
-            {(provision.error as ApiError)?.message ?? "تعذّر تعيين المسجل العام — حاول مجدداً."}
+            {humanizeError(provision.error)}
           </T>
         ) : null}
       </View>

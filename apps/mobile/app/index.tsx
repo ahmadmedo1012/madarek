@@ -1,34 +1,41 @@
 import { useEffect } from "react";
-import { Pressable, StyleSheet, View, useWindowDimensions } from "react-native";
-import Svg, { Line } from "react-native-svg";
-import { router, useLocalSearchParams } from "expo-router";
+import { useRouter, useLocalSearchParams } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import { useSession, ROLE_HOME } from "@/auth/session";
 import { get } from "@/api/client";
 import type { AuthUser } from "@/api/types";
-import { usePalette } from "@/design/theme";
-import { sp } from "@/design/tokens";
-import { Screen } from "@/components/ui/screen";
-import { T } from "@/components/ui/text";
-import { Button } from "@/components/ui/pressables";
-import { BrandMark } from "@/components/ui/brand";
-import { Hairline } from "@/components/ui/surfaces";
-import { LoadingScreen } from "@/components/ui/states";
-import { PlanBuilding } from "@/brand/plan";
+import { AppStatusBar } from "@/design/statusbar";
+import { Boot, resolveEntryDestination } from "@/components/ui/boot";
 
 /**
- * Welcome — the public native entry. Guests see the app's SIGNATURE:
- * the drafted architectural plan of the website, drawing itself in on
- * paper — one facade elevation, one type stack, ONE orange CTA.
- * Authenticated users are routed to their role home (web HomeRedirect
- * parity). Supports ?continue= for post-auth return.
+ * / — the Boot screen. The native splash (icon 120 · centred · paper
+ * ground) cross-fades into this screen at the SAME geometry: the brand
+ * mark IS the loader (converging squares), ONE logo and at most ONE
+ * loader at a time — no second mark, no generic spinner.
+ *
+ * The handoff is deterministic (resolveEntryDestination — pinned by
+ * boot.test.ts):
+ *   · session still hydrating → honest cold-wait copy «نستعد لتحميل
+ *     مدارك…» (the 6s slow label «الخادم يستيقظ…» + retry lives in Boot);
+ *   · a cached session → its role home (the /auth/me refresh rides the
+ *     background — the cached user routes immediately, no dead wait on a
+ *     cold Render);
+ *   · a guest → /auth (the Welcome — the signature moment).
+ *
+ * Update/min-version states are owned by the root layout: below the
+ * server floor `BlockingUpdateGate` replaces the navigator entirely, so
+ * this screen never renders there (renders its states correctly by
+ * construction).
  */
-export default function Welcome() {
-  const { bg, text } = usePalette();
+export default function BootScreen() {
+  const router = useRouter();
   const user = useSession((s) => s.user);
   const isHydrated = useSession((s) => s.isHydrated);
   const params = useLocalSearchParams<{ continue?: string }>();
 
+  // Background refresh of /auth/me (60s stale window). The cached user
+  // routes the handoff immediately; when me resolves fresher the effect
+  // re-runs and lands the same/updated destination — belt and braces.
   const meQuery = useQuery({
     queryKey: ["session", "me"],
     enabled: !!user,
@@ -37,92 +44,28 @@ export default function Welcome() {
   });
 
   useEffect(() => {
-    if (!isHydrated || !user) return;
+    if (!isHydrated) return;
+    if (!user) {
+      // Guest → the Welcome. ?continue= rides along for post-auth return.
+      router.replace(
+        params.continue
+          ? ({ pathname: "/auth", params: { continue: params.continue } } as never)
+          : "/auth",
+      );
+      return;
+    }
     const fresh = meQuery.data ? (meQuery.data as AuthUser) : user;
-    const cont = params.continue ? decodeURIComponent(params.continue) : null;
-    const dest =
-      cont && (fresh.currentInstitution || fresh.role === "OWNER")
-        ? cont
-        : !fresh.currentInstitution && fresh.role !== "OWNER"
-          ? "/select-institution"
-          : ROLE_HOME[fresh.role] ?? "/student/dashboard";
-    router.replace(dest as never);
-  }, [isHydrated, user, meQuery.data, params.continue]);
-
-  if (!isHydrated) {
-    return <LoadingScreen label="جارٍ تجهيز الجلسة…" />;
-  }
-  if (user) {
-    return <LoadingScreen label="جارٍ الدخول…" />;
-  }
+    router.replace(resolveEntryDestination(fresh, params.continue, ROLE_HOME) as never);
+  }, [isHydrated, user, meQuery.data, params.continue, router]);
 
   return (
-    <Screen scroll padded={false} style={{ backgroundColor: bg }} contentContainerStyle={{ flexGrow: 1 }}>
-      {/* the drafting sheet: faint axis grid across the whole paper */}
-      <GridBackdrop color={text} />
-
-      <View style={{ paddingHorizontal: sp[24], paddingTop: sp[40], paddingBottom: sp[16], flexGrow: 1 }}>
-        {/* quiet mark row — the drawing carries the brand from here */}
-        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-          <BrandMark size={20} />
-          <T variant="bodyLg" weight="bold">مدارك</T>
-        </View>
-
-        {/* the signature: the facade draws itself in */}
-        <PlanBuilding autoplay width="78%" style={{ marginTop: sp[40] }} />
-
-        {/* title stack */}
-        <View style={{ marginTop: sp[32], gap: sp[6] }}>
-          <T variant="display" weight="bold" style={{ lineHeight: 40 }}>رحلة تعلم واحدة</T>
-          <T variant="h4" weight="medium" color="secondary">من المحاضرة إلى الإتقان</T>
-        </View>
-
-        {/* decisive actions — ONE orange CTA, one quiet link */}
-        <View style={{ marginTop: "auto", paddingTop: sp[40], gap: sp[4] }}>
-          <Button
-            label="تسجيل الدخول"
-            kind="accent"
-            onPress={() => router.push({ pathname: "/auth", params: params.continue ? { continue: params.continue } : {} })}
-          />
-          <Pressable
-            accessibilityRole="link"
-            hitSlop={8}
-            onPress={() => router.push({ pathname: "/auth/register", params: params.continue ? { continue: params.continue } : {} })}
-            style={({ pressed }) => ({ minHeight: 44, justifyContent: "center", opacity: pressed ? 0.6 : 1 })}
-          >
-            <T variant="body" weight="medium" color="secondary" style={{ textAlign: "center" }}>
-              إنشاء حساب جديد
-            </T>
-          </Pressable>
-        </View>
-
-        <View style={{ marginTop: sp[24], gap: sp[8] }}>
-          <Hairline />
-          <T variant="xs" color="faint">
-            مدارك منصّة تعليمية مستقلّة عربية-أولًا من ليبيا — بيانات مؤسّسة العرض المرجعية بوضع الطيار الحالي.
-          </T>
-        </View>
-      </View>
-    </Screen>
-  );
-}
-
-/** Full-bleed hairline grid — the drafting paper under the whole sheet. */
-function GridBackdrop({ color }: { color: string }) {
-  const { width, height } = useWindowDimensions();
-  const step = 32;
-  const cols = Math.ceil(width / step);
-  const rows = Math.ceil(height / step);
-  return (
-    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-      <Svg width={width} height={height} style={{ opacity: 0.06 }}>
-        {Array.from({ length: cols + 1 }, (_, i) => (
-          <Line key={`v${i}`} x1={i * step} y1={0} x2={i * step} y2={height} stroke={color} strokeWidth={1} />
-        ))}
-        {Array.from({ length: rows + 1 }, (_, i) => (
-          <Line key={`h${i}`} x1={0} y1={i * step} x2={width} y2={i * step} stroke={color} strokeWidth={1} />
-        ))}
-      </Svg>
-    </View>
+    <>
+      <AppStatusBar />
+      {user ? (
+        <Boot label="جارٍ الدخول…" />
+      ) : (
+        <Boot label="نستعد لتحميل مدارك…" />
+      )}
+    </>
   );
 }

@@ -119,6 +119,19 @@ jest.mock("expo-local-authentication", () => ({
 jest.mock("react-native-reanimated", () => require("react-native-reanimated/mock"));
 jest.mock("react-native-worklets", () => require("react-native-worklets/src/mock"));
 
+/* ── netinfo: no native runtime under jest — the real module throws inside
+      its TurboModule lazy getters the moment addEventListener/fetch run,
+      which took down any net mounting useNetworkStatus (R334: flagged by
+      the exams + courses + shell workstreams). Always-online stub. ───── */
+jest.mock("@react-native-community/netinfo", () => ({
+  addEventListener: (cb: (state: unknown) => void) => {
+    cb({ isConnected: true, isInternetReachable: true, type: "unknown" });
+    return () => undefined;
+  },
+  fetch: async () => ({ isConnected: true, isInternetReachable: true, type: "unknown" }),
+  useNetInfo: () => ({ isConnected: true, isInternetReachable: true, type: "unknown" }),
+}));
+
 /* ── safe-area: the REAL provider only renders children after the native
       onInsetsChange event — which NEVER fires under jest, silently
       hollowing every mount. The official mock is a passthrough context
@@ -238,15 +251,103 @@ jest.mock("lucide-react-native", () => {
 /* ── R331 A-App-Motion: react-native-keyboard-controller mounts native
       modules at import (the "not linked" crash under jest). The render
       nets prove screens don't crash, not that pixels track — stub the
-      provider/KAV/toolbar as pass-through components ────────────────── */
+      provider/KAV/toolbar as pass-through components.
+      R334 3-b: the stub grew up to FormScreen's full API — the auth
+      screens were the first ROUTE-level FormScreen consumers, and the
+      old stub (no KeyboardAwareScrollView/StickyView, a toolbar without
+      Prev/Next/Done statics) crashed the render net with "Element type
+      is invalid". Mirrors the fuller per-suite mock in form.test.tsx. ─ */
 jest.mock("react-native-keyboard-controller", () => {
   const React = require("react");
+  const RN = require("react-native");
   return {
     KeyboardProvider: ({ children }: { children: React.ReactNode }) => children,
     KeyboardAvoidingView: ({ children }: { children?: React.ReactNode }) =>
       React.createElement(React.Fragment, null, children ?? null),
-    KeyboardToolbar: () => null,
+    // the real component forwards ScrollViewProps to an animated ScrollView
+    KeyboardAwareScrollView: (props: Record<string, unknown>) =>
+      React.createElement(RN.ScrollView, props),
+    KeyboardStickyView: ({ children, ...rest }: { children?: React.ReactNode }) =>
+      React.createElement(RN.View, rest, children),
+    KeyboardToolbar: Object.assign(() => null, {
+      Background: () => null,
+      Content: ({ children }: { children?: React.ReactNode }) => children ?? null,
+      Prev: ({ children }: { children?: React.ReactNode }) =>
+        React.createElement(RN.View, { testID: "kb-prev" }, children ?? null),
+      Next: ({ children }: { children?: React.ReactNode }) =>
+        React.createElement(RN.View, { testID: "kb-next" }, children ?? null),
+      Done: ({ text }: { text?: React.ReactNode }) =>
+        React.createElement(RN.View, { testID: "kb-done" }, text ?? null),
+      Group: () => null,
+    }),
     useKeyboardAnimation: () => ({ height: { value: 0 }, progress: { value: 0 } }),
     useKeyboardState: () => ({ isVisible: false, height: 0 }),
   };
 });
+
+/* ── R334 3-c (student home): routes now MOUNT AppSheet (the /report
+      sheet route), so the render net exercises the lazy bottom-sheet
+      graph. The REAL @gorhom/bottom-sheet v5 cannot boot under the
+      reanimated mock above (makeMutable is identity → useAnimatedDetents
+      crashes) and react-native-gesture-handler v3 schedules a native
+      install task at import — the same fakes sheet.test.tsx uses, now
+      global so every route renders. A per-file jest.mock still wins over
+      this (last registration), so sheet.test.tsx is unaffected. ─────── */
+jest.mock("react-native-gesture-handler", () => {
+   
+  const React = require("react");
+   
+  const { View } = require("react-native");
+  return {
+    GestureHandlerRootView: ({ children, style }: { children?: React.ReactNode; style?: unknown }) =>
+      React.createElement(View, { style, pointerEvents: "box-none" }, children),
+  };
+});
+
+jest.mock("@gorhom/bottom-sheet", () => {
+   
+  const React = require("react");
+   
+  const { View, TextInput, ScrollView } = require("react-native");
+
+  /** The ref contract AppSheet drives (present/dismiss + no-op nav). */
+  const BottomSheetModal = React.forwardRef(function BottomSheetModal(props: any, ref: any) {
+    const [presented, setPresented] = React.useState(false);
+    React.useImperativeHandle(ref, () => ({
+      present: () => setPresented(true),
+      dismiss: () => setPresented(false),
+      snapToIndex: () => undefined,
+      snapToPosition: () => undefined,
+      expand: () => undefined,
+      collapse: () => undefined,
+      close: () => setPresented(false),
+      forceClose: () => setPresented(false),
+    }));
+    if (!presented) return null;
+    const Footer = props.footerComponent;
+    return React.createElement(
+      View,
+      { accessibilityLabel: props.accessibilityLabel },
+      props.handleComponent === null ? null : React.createElement(View, { testID: "sheet-handle" }),
+      props.children,
+      Footer ? React.createElement(Footer, {}) : null,
+    );
+  });
+
+  const BottomSheetModalProvider = ({ children }: { children?: React.ReactNode }) =>
+    React.createElement(React.Fragment, null, children);
+  const BottomSheetView = (props: any) => React.createElement(View, props);
+  const BottomSheetScrollView = (props: any) => React.createElement(ScrollView, props);
+  const BottomSheetTextInput = (props: any) => React.createElement(TextInput, props);
+  const BottomSheetBackdrop = (props: any) => React.createElement(View, props);
+
+  return {
+    BottomSheetModal,
+    BottomSheetModalProvider,
+    BottomSheetView,
+    BottomSheetScrollView,
+    BottomSheetTextInput,
+    BottomSheetBackdrop,
+  };
+});
+

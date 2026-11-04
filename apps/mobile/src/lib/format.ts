@@ -9,7 +9,25 @@
  * the app the moment the student tree loads after login. Every formatter is
  * now a lazily-built, cached, try/catch-guarded factory with an explicit
  * fallback chain: `ar-LY-u-nu-latn` → `ar` → `en-US`.
+ *
+ * R334 2-f — NUMERALS POLICY. The app-wide default stays LATIN (Western
+ * digits 0-9): that is what `latn()`/`num()` have always forced and what
+ * the web renders via ar-LY-u-nu-latn — no behavior change for existing
+ * callers. New code that wants to honor the user's persisted preference
+ * uses `formatNumber(value, { numerals })` + the `useNumerals()` hook:
+ *
+ *   const { formatNumber } = useNumerals();
+ *   <T>{formatNumber(kpi.courseCount)}</T>            // ٠١٢٣ or 0123
+ *
+ * The preference persists via zustand + AsyncStorage (the exact pattern of
+ * the theme store in src/design/theme.tsx — key "madarek-mobile-numerals").
+ * No Intl.NumberFormat on purpose: Hermes Intl support is engine-dependent
+ * (the R326 crash), so digit mapping is a pure string transform.
  */
+
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TZ = "Africa/Tripoli";
 
@@ -55,9 +73,109 @@ function fmtDate(opts: DateTimeFormatOptions): Intl.DateTimeFormat {
   );
 }
 
+// ── R334 2-f — numerals policy ────────────────────────────────────────────
+
+/** The two digit-script options the user may prefer. */
+export type NumeralsPreference = "latin" | "arabic-indic";
+
+const ARABIC_INDIC_DIGITS = "٠١٢٣٤٥٦٧٨٩";
+
+/** ٠١٢٣٤٥٦٧٨٩ → 0123 (digit-script normalization; no-op for numbers). */
+const toLatinDigits = (s: string): string =>
+  s.replace(/[٠-٩]/g, (d) => String(ARABIC_INDIC_DIGITS.indexOf(d)));
+
 /** Force Western digit glyphs regardless of device locale. */
 export function latn(n: number): string {
-  return String(n).replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+  return toLatinDigits(String(n));
+}
+
+/** Force Arabic-Indic digit glyphs (٠١٢٣٤٥٦٧٨٩). Pure string transform. */
+export function arabicIndic(n: number | string): string {
+  return String(n).replace(/[0-9]/g, (d) => ARABIC_INDIC_DIGITS[Number(d)]);
+}
+
+export interface FormatNumberOptions {
+  /**
+   * Digit script. Default "latin" — the app-wide convention today
+   * (latn() + web ar-LY-u-nu-latn parity); the persisted user
+   * preference only flows through `useNumerals()`.
+   */
+  numerals?: NumeralsPreference;
+}
+
+/**
+ * The canonical number formatter: `formatNumber(42)` → "42" (today's
+ * behavior, byte-for-byte) · `formatNumber(42, { numerals: "arabic-indic" })`
+ * → "٤٢". Null/undefined/NaN render the "—" fallback like num(). Never
+ * rounds, never groups, never throws — same contract as the rest of this
+ * module. Accepts strings ("42%" fragments) so callers can convert
+ * already-built fragments; latin mode also normalizes stray ٠-٩ back to
+ * 0-9 (symmetric with arabic-indic mode).
+ */
+export function formatNumber(
+  value: number | string | null | undefined,
+  { numerals = "latin" }: FormatNumberOptions = {},
+): string {
+  if (value === null || value === undefined) return "—";
+  const raw = typeof value === "number" ? (Number.isNaN(value) ? null : String(value)) : value;
+  if (raw === null) return "—";
+  return numerals === "arabic-indic" ? arabicIndic(raw) : toLatinDigits(raw);
+}
+
+/** Settings-UI options (Arabic labels that SHOW the glyphs they choose). */
+export const NUMERALS_OPTIONS: { id: NumeralsPreference; label: string }[] = [
+  { id: "latin", label: "0123 لاتينية" },
+  { id: "arabic-indic", label: "٠١٢٣ عربية-هندية" },
+];
+
+interface NumeralsState {
+  preference: NumeralsPreference;
+  setPreference: (p: NumeralsPreference) => void;
+}
+
+const useNumeralsStore = create(
+  persist<NumeralsState>(
+    (set) => ({
+      preference: "latin",
+      setPreference: (preference) => set({ preference }),
+    }),
+    {
+      name: "madarek-mobile-numerals",
+      storage: createJSONStorage(() => AsyncStorage),
+    },
+  ),
+);
+
+export function useNumeralsPreference(): NumeralsPreference {
+  return useNumeralsStore((s) => s.preference);
+}
+
+export function setNumeralsPreference(p: NumeralsPreference) {
+  useNumeralsStore.getState().setPreference(p);
+}
+
+export interface NumeralsApi {
+  /** The persisted preference ("latin" until the user changes it). */
+  numerals: NumeralsPreference;
+  /** formatNumber bound to the preference. */
+  formatNumber: (value: number | string | null | undefined) => string;
+  /** Set + persist the preference. */
+  setNumerals: (p: NumeralsPreference) => void;
+}
+
+/**
+ * The numerals hook for screens: reads the persisted preference and hands
+ * back a bound formatter. Existing pure helpers (num/pct/fromNow/…) keep
+ * latin digits — they predate the policy and their screens are owned by
+ * other branches; new UI adopts this hook.
+ */
+export function useNumerals(): NumeralsApi {
+  const numerals = useNumeralsPreference();
+  return {
+    numerals,
+    formatNumber: (value) => formatNumber(value, { numerals }),
+    setNumerals: setNumeralsPreference,
+  };
 }
 
 export function num(n: number | null | undefined, fallback = "—"): string {

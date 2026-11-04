@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui";
@@ -12,15 +13,14 @@ import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { socialApi } from "@/api/social";
 import type { PilotFeedback } from "@/api/types";
-import { ApiError } from "@/api/client";
 import { fromNow, latn } from "@/lib/format";
 import {
   FEEDBACK_NEXT,
-  FEEDBACK_STATUS_LABEL,
   PagerFooter,
   UNIT,
   feedbackKindLabel,
   feedbackKindTone,
+  feedbackStatusLabel,
   pageOf,
 } from "@/features/governance/components";
 
@@ -48,9 +48,9 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
       socialApi.updateFeedback(payload.id, payload.status),
     onSuccess: (_d, payload) => {
       qc.invalidateQueries({ queryKey: ["feedback"] });
-      toast.success(`انتقل التقرير إلى «${FEEDBACK_STATUS_LABEL[payload.status] ?? payload.status}».`);
+      toast.success(`انتقل التقرير إلى «${feedbackStatusLabel(payload.status)}».`);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر تحديث حالة التقرير"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر تحديث حالة التقرير"),
   });
 
   const rows = inbox.data?.rows ?? [];
@@ -81,7 +81,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
         {inbox.isLoading ? (
           <SkeletonList rows={4} />
         ) : inbox.isError ? (
-          <ErrorState message={(inbox.error as Error | null)?.message} onRetry={() => inbox.refetch()} />
+          <ErrorState message={humanizeError(inbox.error)} onRetry={() => inbox.refetch()} />
         ) : rows.length === 0 ? (
           <EmptyState
             title="لا تقارير هنا"
@@ -97,7 +97,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                       <Badge label={feedbackKindLabel(f.kind)} tone={feedbackKindTone(f.kind)} />
                       <Badge
-                        label={FEEDBACK_STATUS_LABEL[f.status] ?? f.status}
+                        label={feedbackStatusLabel(f.status)}
                         tone={
                           f.status === "fixed"
                             ? "mint"
@@ -128,7 +128,7 @@ export function FeedbackInbox({ kicker }: { kicker: string }) {
                         {next.map((s) => (
                           <View key={s} style={{ minWidth: 120 }}>
                             <Button
-                              label={`→ ${FEEDBACK_STATUS_LABEL[s] ?? s}`}
+                              label={`→ ${feedbackStatusLabel(s)}`}
                               kind="ghost"
                               small
                               disabled={update.isPending}

@@ -2,23 +2,30 @@
  * live — إدارة البث المباشر. Web parity: TeacherLivePage — the KPI strip,
  * «جلسة جديدة» (offering/title/topic/scheduledAt/joinUrl/description),
  * and the lifecycle actions (START/END/CANCEL via liveApi.lifecycle with
- * confirms on the destructive ones + Arabic toasts). The sessions list
- * is already teacher-scoped server-side (offering.teacherId).
+ * ConfirmSheet on the destructive ones + Arabic toasts + haptics on every
+ * state transition). The sessions list is already teacher-scoped
+ * server-side (offering.teacherId).
+ *
+ * Attendee honesty: the live API has no live-attendee feed — rows show
+ * the offering's enrolled count («طلاب المقرّر N»), never a live number.
  */
 import { useMemo, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { liveApi } from "@/api/live";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 import { dateTime, latn } from "@/lib/format";
+import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Screen, PageHeader, SectionBar } from "@/components/ui/screen";
-import { Badge, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
+import { Badge } from "@/components/ui/surfaces";
+import { AppSheet, ConfirmSheet, SheetTextInput } from "@/components/ui/sheet";
 import { KpiCard, LedgerRow, RowList } from "@/components/ui/data";
 import { Button } from "@/components/ui/pressables";
-import { Field } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import {
@@ -26,10 +33,59 @@ import {
   OfferingPicker,
   StatusBadge,
   arCount,
+  useSheetMounted,
   useTeacherOfferings,
 } from "@/features/teacher/components";
 
 const NO_SESSIONS: Awaited<ReturnType<typeof liveApi.sessions>> = [];
+
+/** Labeled sheet input — SheetTextInput so the sheet tracks the keyboard. */
+function SheetField({
+  label,
+  value,
+  onChangeText,
+  hint,
+  placeholder,
+  accessibilityLabel,
+}: {
+  label: string;
+  value: string;
+  onChangeText: (v: string) => void;
+  hint?: string;
+  placeholder?: string;
+  accessibilityLabel?: string;
+}) {
+  const p = usePalette();
+  return (
+    <View style={{ gap: sp[6] }}>
+      <T variant="sm" weight="medium" color="secondary">
+        {label}
+      </T>
+      <SheetTextInput
+        accessibilityLabel={accessibilityLabel ?? label}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder={placeholder}
+        placeholderTextColor={p.textFaint}
+        style={{
+          backgroundColor: p.bg,
+          borderWidth: StyleSheet.hairlineWidth,
+          borderColor: p.rule,
+          paddingHorizontal: sp[12],
+          minHeight: 48,
+          color: p.text,
+          fontSize: 15,
+          textAlign: "right",
+        }}
+      />
+      {hint ? (
+        <T variant="xs" color="muted">
+          {hint}
+        </T>
+      ) : null}
+    </View>
+  );
+}
 
 export default function TeacherLive() {
   const scope = useInstitutionScope();
@@ -55,6 +111,12 @@ export default function TeacherLive() {
 
   const [confirmAction, setConfirmAction] = useState<{ id: string; action: "START" | "END" | "CANCEL"; title: string } | null>(null);
 
+  /* Net-safe sheet mounts: the native sheet graph (bottom-sheet → RNGH v3)
+   * loads on the first sheet RENDER — gates keep signed-out render nets
+   * (which never open a sheet) from ever mounting it. See useSheetMounted. */
+  const createSheetMounted = useSheetMounted(creating);
+  const confirmSheetMounted = useSheetMounted(confirmAction !== null);
+
   const create = useMutation({
     mutationFn: async () => {
       const effId = offeringId || offerings[0]?.id || "";
@@ -73,6 +135,7 @@ export default function TeacherLive() {
       });
     },
     onSuccess: () => {
+      haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
       toast.success("جُدولت الجلسة وستظهر لطلاب المقرّر.", "تمّت الجدولة");
       setCreating(false);
@@ -84,13 +147,17 @@ export default function TeacherLive() {
       setDescription("");
       setCreateError(null);
     },
-    onError: (e) => setCreateError((e as Error).message),
+    onError: (e) => {
+      haptics.notify("error");
+      setCreateError(humanizeError(e));
+    },
   });
 
   const lifecycle = useMutation({
     mutationFn: ({ id, action }: { id: string; action: "START" | "END" | "CANCEL" }) =>
       liveApi.lifecycle(id, action),
     onSuccess: (_row, vars) => {
+      haptics.notify("success");
       qc.invalidateQueries({ queryKey: ["live", "sessions"] });
       setConfirmAction(null);
       if (vars.action === "START") toast.success("بدأ البث الآن — الطلاب يرون الجلسة مباشرة.", "بدء البث");
@@ -98,8 +165,9 @@ export default function TeacherLive() {
       else toast.success("أُلغيت الجلسة.", "إلغاء الجلسة");
     },
     onError: (e) => {
+      haptics.notify("error");
       setConfirmAction(null);
-      toast.error((e as Error).message, "تعذَّر تحديث حالة الجلسة");
+      toast.error(humanizeError(e), "تعذَّر تحديث حالة الجلسة");
     },
   });
 
@@ -110,6 +178,12 @@ export default function TeacherLive() {
     () => all.filter((s) => s.status === "ENDED" || s.status === "CANCELLED"),
     [all],
   );
+  /** Enrolled students per offering — the honest «طلاب المقرّر» count. */
+  const enrolledByOffering = useMemo(() => {
+    const m = new Map<string, number | undefined>();
+    for (const o of offerings) m.set(o.id, o.studentsCount);
+    return m;
+  }, [offerings]);
 
   const SessionRow = ({
     session,
@@ -121,29 +195,33 @@ export default function TeacherLive() {
     onStart?: () => void;
     onEnd?: () => void;
     onCancel?: () => void;
-  }) => (
-    <LedgerRow accessibilityLabel={`جلسة ${session.title}`}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-        <View style={{ flex: 1 }}>
-          <T variant="body" weight="medium" numberOfLines={1}>
-            {session.title}
-          </T>
-          <T variant="xs" color="muted" numberOfLines={1}>
-            {session.offering?.course?.code ?? ""}
-            {session.topic ? ` · ${session.topic}` : ""} · {dateTime(session.scheduledAt)}
-          </T>
+  }) => {
+    const enrolled = enrolledByOffering.get(session.offeringId);
+    return (
+      <LedgerRow accessibilityLabel={`جلسة ${session.title}`}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+          <View style={{ flex: 1 }}>
+            <T variant="body" weight="medium" numberOfLines={1}>
+              {session.title}
+            </T>
+            <T variant="xs" color="muted" numberOfLines={1}>
+              {session.offering?.course?.code ?? ""}
+              {session.topic ? ` · ${session.topic}` : ""} · {dateTime(session.scheduledAt)}
+              {enrolled !== undefined ? ` · ${arCount(enrolled, ["طالب واحد في المقرّر", "طالبان في المقرّر", "طلاب المقرّر", "طالباً في المقرّر"])}` : ""}
+            </T>
+          </View>
+          <StatusBadge status={session.status} map={LIVE_STATUS_MAP} />
         </View>
-        <StatusBadge status={session.status} map={LIVE_STATUS_MAP} />
-      </View>
-      {onStart || onEnd || onCancel ? (
-        <View style={{ flexDirection: "row", gap: sp[6] }}>
-          {onStart ? <Button label="بدء" kind="accent" small onPress={onStart} /> : null}
-          {onEnd ? <Button label="إنهاء" kind="primary" small onPress={onEnd} /> : null}
-          {onCancel ? <Button label="إلغاء الجلسة" kind="ghost" small onPress={onCancel} /> : null}
-        </View>
-      ) : null}
-    </LedgerRow>
-  );
+        {onStart || onEnd || onCancel ? (
+          <View style={{ flexDirection: "row", gap: sp[6] }}>
+            {onStart ? <Button label="بدء البث" kind="accent" small onPress={onStart} /> : null}
+            {onEnd ? <Button label="إنهاء البث" kind="primary" small onPress={onEnd} /> : null}
+            {onCancel ? <Button label="إلغاء الجلسة" kind="ghost" small onPress={onCancel} /> : null}
+          </View>
+        ) : null}
+      </LedgerRow>
+    );
+  };
 
   return (
     <Screen scroll>
@@ -162,11 +240,11 @@ export default function TeacherLive() {
       {sessions.isLoading ? (
         <SkeletonList rows={4} />
       ) : sessions.isError ? (
-        <ErrorState message={(sessions.error as Error | null)?.message} onRetry={() => sessions.refetch()} />
+        <ErrorState message={humanizeError(sessions.error)} onRetry={() => sessions.refetch()} />
       ) : (
         <>
           <View style={{ flexDirection: "row", gap: sp[8] }}>
-            <KpiCard label="مباشرة الآن" value={live.length} />
+            <KpiCard label="مباشرة الآن" value={live.length} tone={live.length > 0 ? "accent" : undefined} />
             <KpiCard label="مجدولة" value={scheduled.length} />
             <KpiCard label="منتهية" value={past.length} />
           </View>
@@ -183,8 +261,15 @@ export default function TeacherLive() {
                   />
                 ))}
               </RowList>
+              <T variant="xs" color="faint">
+                تحدَّث الحالة تلقائيًا كل {latn(30)} ثانية.
+              </T>
             </>
-          ) : null}
+          ) : (
+            <T variant="sm" color="muted">
+              لا يوجد بث مباشر الآن — ابدأ جلسة مجدولة أو أنشئ جلسة جديدة.
+            </T>
+          )}
 
           <SectionBar
             index={3}
@@ -231,8 +316,28 @@ export default function TeacherLive() {
         </>
       )}
 
-      {/* جلسة جديدة. */}
-      <Sheet open={creating} onClose={() => setCreating(false)} title="جلسة بث جديدة">
+      {/* جلسة جديدة — AppSheet (keyboard-aware SheetTextInput fields). */}
+      {createSheetMounted ? (
+      <AppSheet
+        open={creating}
+        onClose={() => setCreating(false)}
+        title="جلسة بث جديدة"
+        snap="lg"
+        dynamic={false}
+        scrollable
+        footer={
+          <Button
+            label={create.isPending ? "جارٍ الإنشاء…" : "جدولة الجلسة"}
+            kind="accent"
+            loading={create.isPending}
+            disabled={offerings.length === 0}
+            onPress={() => {
+              setCreateError(null);
+              create.mutate();
+            }}
+          />
+        }
+      >
         <View style={{ gap: sp[10] }}>
           <OfferingPicker
             offerings={offerings}
@@ -241,7 +346,7 @@ export default function TeacherLive() {
             label="المقرّر"
             loading={offs.isLoading}
           />
-          <Field
+          <SheetField
             label="عنوان الجلسة"
             value={title}
             onChangeText={(v) => {
@@ -251,14 +356,14 @@ export default function TeacherLive() {
             placeholder="مثال: شرح الوحدة الثالثة — التعلم الآلي"
             accessibilityLabel="عنوان الجلسة"
           />
-          <Field
+          <SheetField
             label="الموضوع الفرعي (اختياري)"
             value={topic}
             onChangeText={setTopic}
             placeholder="مثال: الانحدار الخطي"
             accessibilityLabel="الموضوع الفرعي"
           />
-          <Field
+          <SheetField
             label="موعد الجلسة — التاريخ"
             value={schedDate}
             onChangeText={(v) => {
@@ -268,21 +373,21 @@ export default function TeacherLive() {
             hint="بصيغة YYYY-MM-DD"
             accessibilityLabel="تاريخ الجلسة"
           />
-          <Field
+          <SheetField
             label="موعد الجلسة — الوقت"
             value={schedTime}
             onChangeText={setSchedTime}
             hint="بصيغة HH:MM"
             accessibilityLabel="وقت الجلسة"
           />
-          <Field
+          <SheetField
             label="رابط الانضمام (اختياري)"
             value={joinUrl}
             onChangeText={setJoinUrl}
             hint="Zoom / BigBlueButton / Jitsi"
             accessibilityLabel="رابط الانضمام"
           />
-          <Field
+          <SheetField
             label="وصف (اختياري)"
             value={description}
             onChangeText={setDescription}
@@ -294,22 +399,15 @@ export default function TeacherLive() {
               {createError}
             </T>
           ) : null}
-          <Button
-            label={create.isPending ? "جارٍ الإنشاء…" : "جدولة الجلسة"}
-            kind="accent"
-            loading={create.isPending}
-            disabled={offerings.length === 0}
-            onPress={() => {
-              setCreateError(null);
-              create.mutate();
-            }}
-          />
         </View>
-      </Sheet>
+      </AppSheet>
+      ) : null}
 
-      {/* Lifecycle confirms — END and CANCEL are destructive. */}
-      <ConfirmDialog
+      {/* Lifecycle confirms — END and CANCEL are destructive (ConfirmSheet). */}
+      {confirmSheetMounted ? (
+      <ConfirmSheet
         open={confirmAction !== null}
+        onClose={() => setConfirmAction(null)}
         title={confirmAction?.action === "END" ? "إنهاء البث" : "إلغاء الجلسة"}
         message={
           confirmAction?.action === "END"
@@ -317,11 +415,11 @@ export default function TeacherLive() {
             : `إلغاء «${confirmAction?.title ?? ""}» يحذفها من جدول الطلاب. هل تريد الإلغاء؟`
         }
         confirmLabel={confirmAction?.action === "END" ? "إنهاء" : "إلغاء الجلسة"}
-        danger={confirmAction?.action === "CANCEL"}
+        destructive={confirmAction?.action === "CANCEL"}
         loading={lifecycle.isPending}
         onConfirm={() => confirmAction && lifecycle.mutate(confirmAction)}
-        onCancel={() => setConfirmAction(null)}
       />
+      ) : null}
     </Screen>
   );
 }

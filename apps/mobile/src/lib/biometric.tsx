@@ -22,6 +22,7 @@ import * as SecureStore from "expo-secure-store";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
+import { haptics } from "@/haptics";
 
 const LOCK_FLAG = "mdrk-biometric-lock";
 
@@ -57,8 +58,11 @@ export async function setBiometricLockEnabled(v: boolean): Promise<void> {
 }
 
 /** One authentication attempt (device PIN fallback allowed). */
-export async function authenticate(reason = "افتح مدارك"): Promise<boolean> {
+export async function authenticate(reason = "افتح مدارك لعرض حسابك"): Promise<boolean> {
   try {
+    // A quiet tick as the native prompt appears — the haptics foundation
+    // owns the gate/throttle; web and reduced settings no-op safely.
+    haptics.selection();
     const res = await LocalAuthentication.authenticateAsync({
       promptMessage: reason,
       fallbackLabel: "استخدم رمز الجهاز",
@@ -132,33 +136,40 @@ export function BiometricGate({ children }: { children: ReactNode }) {
           مدارك مقفلة
         </T>
         <T variant="body" color="muted" align="center" style={{ paddingHorizontal: sp[24] }}>
-          {busy ? "بانتظار بصمتك…" : "افتح القفل للوصول إلى حسابك — الجلسة مخفية حتى الفتح."}
+          {busy
+            ? "بانتظار بصمتك…"
+            : "لم تُفتح بعد — اضغط «فتح القفل» للمحاولة مرة أخرى."}
         </T>
         {!busy ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="فتح القفل بالبصمة"
-            onPress={() => {
-              setBusy(true);
-              void authenticate().then((ok) => {
-                setBusy(false);
-                if (ok) setLocked(false);
-              });
-            }}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: sp[8],
-              minHeight: 48,
-              paddingHorizontal: sp[20],
-              backgroundColor: p.primary,
-            }}
-          >
-            <Lock size={16} color={p.primaryFg} />
-            <T variant="body" weight="bold" style={{ color: p.primaryFg }}>
-              فتح القفل
+          <>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="فتح القفل بالبصمة أو رمز الجهاز"
+              onPress={() => {
+                setBusy(true);
+                void authenticate().then((ok) => {
+                  setBusy(false);
+                  if (ok) setLocked(false);
+                });
+              }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: sp[8],
+                minHeight: 48,
+                paddingHorizontal: sp[20],
+                backgroundColor: p.primary,
+              }}
+            >
+              <Lock size={16} color={p.primaryFg} />
+              <T variant="body" weight="bold" style={{ color: p.primaryFg }}>
+                فتح القفل
+              </T>
+            </Pressable>
+            <T variant="xs" color="faint" align="center" style={{ paddingHorizontal: sp[24] }}>
+              تعمل البصمة أو رمز قفل الجهاز — لن تُحبس خارج حسابك أبدًا.
             </T>
-          </Pressable>
+          </>
         ) : null}
       </View>
     </View>

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { View } from "react-native";
+import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
@@ -7,33 +8,21 @@ import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
-import { Badge, Sheet } from "@/components/ui/surfaces";
+import { Sheet } from "@/components/ui/surfaces";
 import { RowList, LedgerRow } from "@/components/ui/data";
 import { Field } from "@/components/ui/fields";
 import { SkeletonList, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { ownerApi, type OwnerInstitution } from "@/api/owner";
-import { ApiError } from "@/api/client";
 import { usePalette } from "@/design/theme";
 import { fullDate } from "@/lib/format";
 import {
-  INST_STATUS_LABEL,
+  InstitutionStatusChip,
   countAr,
   numOf,
   type InstitutionRow,
 } from "@/features/governance/components";
 
-/** Institution status → Badge tone (the list + detail share one vocabulary). */
-function InstitutionStatusBadge({ status }: { status?: string }) {
-  const known = status != null && status in INST_STATUS_LABEL;
-  return (
-    <Badge
-      label={known ? INST_STATUS_LABEL[status] : status || "—"}
-      tone={status === "ACTIVE" ? "mint" : status === "SUSPENDED" ? "rose" : "grey"}
-      mono={!known}
-    />
-  );
-}
 
 /**
  * Pushed: /owner/institutions — «المؤسسات» (web OwnerInstitutionsPage parity):
@@ -105,7 +94,7 @@ export default function OwnerInstitutions() {
             <SkeletonList rows={4} />
           ) : listing.isError ? (
             <ErrorState
-              message={(listing.error as Error | null)?.message}
+              message={humanizeError(listing.error)}
               onRetry={() => listing.refetch()}
             />
           ) : rows.length === 0 ? (
@@ -127,7 +116,7 @@ export default function OwnerInstitutions() {
                       last={i === rows.length - 1}
                     >
                       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                        <InstitutionStatusBadge status={inst.status} />
+                        <InstitutionStatusChip status={inst.status} />
                         {inst.createdAt ? (
                           <T variant="xs" color="faint">
                             {fullDate(inst.createdAt)}
@@ -274,7 +263,7 @@ function CreateInstitutionSheet({
         />
         {create.isError ? (
           <T variant="sm" color="danger">
-            تعذّر إنشاء المؤسسة — {(create.error as ApiError | null)?.message ?? "حاول مجدداً."}
+            تعذّر إنشاء المؤسسة — {humanizeError(create.error)}
           </T>
         ) : null}
       </View>
