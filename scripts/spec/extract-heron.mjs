@@ -401,6 +401,15 @@ try {
       wrapErr: res.motionSetup.wrapErr,
       hasTriggerTable: res.motionSetup.hasTriggerTable,
     };
+    // RLE the marks: consecutive steps with identical section layouts carry no
+    // pin-transition information and blow the 500KB/file size gate.
+    const rleMarks = [];
+    for (const m of pageJson.marks) {
+      const sig = JSON.stringify(m.sections);
+      if (rleMarks.length === 0 || rleMarks[rleMarks.length - 1].sig !== sig) rleMarks.push({ ...m, sig });
+    }
+    pageJson.marks = rleMarks.map(({ sig, ...rest }) => rest);
+    pageJson.marksCompressed = true;
     writeFileSync(join(OUT, `_page.${bp.name}.json`), JSON.stringify(pageJson, null, 1));
     const seen = new Set();
     const tweens = [];
