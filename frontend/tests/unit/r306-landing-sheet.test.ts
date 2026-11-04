@@ -65,11 +65,21 @@ const live = stripComments([
  * literals mid-line, never at line start, so the anchored pattern
  * is safe). */
 const stripLineComments = (src: string) => src.replace(/^\s*\/\/.*$/gm, '');
-/* R331 split: the guest surface = LandingPage + chrome/SheetNav + hero/Hero. */
+/* R331 split: the guest surface = LandingPage + chrome/SheetNav + hero/Hero.
+ * P2-0 (r335 split): + the nine section bands (same surface, new layout). */
 const liveTsx = stripLineComments(stripComments([
   'src/pages/LandingPage.tsx',
   'src/components/landing/chrome/SheetNav.tsx',
   'src/components/landing/hero/Hero.tsx',
+  'src/components/landing/sections/Hero.tsx',
+  'src/components/landing/sections/Statement.tsx',
+  'src/components/landing/sections/Live.tsx',
+  'src/components/landing/sections/Chapters.tsx',
+  'src/components/landing/sections/Product.tsx',
+  'src/components/landing/sections/Why.tsx',
+  'src/components/landing/sections/Roles.tsx',
+  'src/components/landing/sections/Vision.tsx',
+  'src/components/landing/sections/Footer.tsx',
 ].map(read).join('\n')));
 
 describe('r306 — the poster world is retired', () => {
@@ -370,7 +380,9 @@ describe('r306 — the funnel/a11y contracts carried forward', () => {
   });
 
   it('the honest numbers still compute from the registry (no invented adoption)', () => {
-    expect(liveTsx).toContain("from '../data/colleges.config'");
+    /* P2-0 (r335 split): the registry import rides sections/Vision.tsx
+     * (depth-correct relative path from its new home). */
+    expect(liveTsx).toContain("data/colleges.config'");
     // R322 override (2-b): the landing's marquee rides HERO_WORK_ITEMS
     // (the live-capability ledger's own short work labels — same
     // registry truth, shorter strings); the honest COUNT still

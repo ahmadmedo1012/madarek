@@ -80,13 +80,21 @@ describe('r168b — landing copy claims only what ships', () => {
   });
 
   it('r188 → r191 — the vision stage labels AR/VR as a catalog, not running experiments', () => {
-    const page = stripJsx(read('src/pages/LandingPage.tsx'));
+    /* P2-0 (r335 split): the honest-absence lines live in the roles
+     * ledger now — sections/Roles.tsx. */
+    const page = stripJsx(read('src/components/landing/sections/Roles.tsx'));
     expect(page).toContain('المعامل الافتراضية');
     expect(page).toContain('دون تشغيل بعد');
   });
 
   it('r188 — the section landmarks carry distinct aria-labels', () => {
-    const page = stripJsx(read('src/pages/LandingPage.tsx'));
+    /* P2-0 (r335 split): the identity seat (footer) + the resolve
+     * section (vision) ride their section files — the pin reads the
+     * composer plus both bands. */
+    const page =
+      stripJsx(read('src/pages/LandingPage.tsx')) +
+      stripJsx(read('src/components/landing/sections/Vision.tsx')) +
+      stripJsx(read('src/components/landing/sections/Footer.tsx'));
     expect(page).toContain('aria-label="مدارك — منصّة التعليم الذكي"');
     expect(page).toContain('aria-label="ابدأ رحلتك — أنشئ حسابك"');
     // The old duplicate pair must not reappear.

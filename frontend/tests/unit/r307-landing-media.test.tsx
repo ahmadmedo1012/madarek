@@ -35,12 +35,24 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 const stripComments = (src: string) => src.replace(/\/\*[\s\S]*?\*\//g, '');
 const stripLineComments = (src: string) => src.replace(/^\s*\/\/.*$/gm, '');
 
-const tsx = read('src/pages/LandingPage.tsx');
-/* R331 split: the guest surface = LandingPage + chrome/SheetNav + hero/Hero. */
+/* P2-0 (r335 split): the product band moved to sections/Product.tsx —
+ * the product-block extraction below reads its new home. */
+const productTsx = read('src/components/landing/sections/Product.tsx');
+/* R331 split: the guest surface = LandingPage + chrome/SheetNav + hero/Hero.
+ * P2-0 (r335 split): + the nine section bands (same surface, new layout). */
 const surfaceTsx = [
   'src/pages/LandingPage.tsx',
   'src/components/landing/chrome/SheetNav.tsx',
   'src/components/landing/hero/Hero.tsx',
+  'src/components/landing/sections/Hero.tsx',
+  'src/components/landing/sections/Statement.tsx',
+  'src/components/landing/sections/Live.tsx',
+  'src/components/landing/sections/Chapters.tsx',
+  'src/components/landing/sections/Product.tsx',
+  'src/components/landing/sections/Why.tsx',
+  'src/components/landing/sections/Roles.tsx',
+  'src/components/landing/sections/Vision.tsx',
+  'src/components/landing/sections/Footer.tsx',
 ].map(read).join('\n');
 const liveTsx = stripLineComments(stripComments(surfaceTsx));
 const manifest = JSON.parse(read('public/media/manifest.json')) as {
@@ -172,8 +184,8 @@ describe('r307 — the media layer added ZERO new funnel links', () => {
     // (R313: the section ends at the why-section now, not #videos.
     //  r324 X3: the CTA rides the section's row-2 .pr-note line —
     //  a direct href="#cta" anchor, still never an auth route.)
-    const productAt = tsx.indexOf('id="product"');
-    const productBlock = stripComments(tsx.slice(productAt, tsx.indexOf('className="wy-section"')));
+    const productAt = productTsx.indexOf('id="product"');
+    const productBlock = stripComments(productTsx.slice(productAt, productTsx.indexOf('className="wy-section"')));
     expect(productBlock).toContain('href="#cta"');
     expect(productBlock).not.toMatch(/to="\/auth/);
     expect(productBlock).not.toMatch(/href="\/auth/);

@@ -125,7 +125,20 @@ describe('r188 — brand-integrity gate (active surfaces stay Zawia-free)', () =
     const seed = readFileSync(path.join(root, 'backend/prisma/seed.ts'), 'utf8');
     expect(seed).toContain("slug: 'madarek-demo'");
     expect(seed).toContain("name: 'جامعة مدارك التجريبية'");
-    const landing = readFileSync(path.join(root, 'frontend/src/pages/LandingPage.tsx'), 'utf8');
+    /* P2-0 (r335 split): the demo-tenant copy rides the guest surface
+     * (LandingPage + the nine section bands) — the pin reads all of it. */
+    const landing = [
+      'frontend/src/pages/LandingPage.tsx',
+      'frontend/src/components/landing/sections/Hero.tsx',
+      'frontend/src/components/landing/sections/Statement.tsx',
+      'frontend/src/components/landing/sections/Live.tsx',
+      'frontend/src/components/landing/sections/Chapters.tsx',
+      'frontend/src/components/landing/sections/Product.tsx',
+      'frontend/src/components/landing/sections/Why.tsx',
+      'frontend/src/components/landing/sections/Roles.tsx',
+      'frontend/src/components/landing/sections/Vision.tsx',
+      'frontend/src/components/landing/sections/Footer.tsx',
+    ].map((p) => readFileSync(path.join(root, p), 'utf8')).join('\n');
     expect(landing).toContain('جامعة مدارك التجريبية');
     expect(landing).toContain('اصطناعية بالكامل');
   });
