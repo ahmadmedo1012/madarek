@@ -338,7 +338,11 @@ jobs:
 
   conform-gate:
     name: Conformance gate (frozen Heron spec, ratchet)
-    runs-on: ubuntu-latest
+    # R337 CI fix: same ubuntu-latest → 26.04 roll that hit the e2e and
+    # ios-webkit jobs (R320) — @playwright/test 1.60 has no chromium
+    # builds for ubuntu26.04-x64, so `npx playwright install chromium`
+    # fails before the matrix even runs. Pinned to 24.04 like its siblings.
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4

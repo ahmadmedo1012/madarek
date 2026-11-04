@@ -325,13 +325,18 @@ test.describe('المسار النشط واستعادة التمرير', () => {
     // المراقب المحدود يعيد التطبيق حتى ~60 إطارًا — تحت حمل CI قد
     // يتجاوز 60 إطار 2500ms (CI خضراء أثبتت 4.3s للمسار نفسه)، فالنافذة
     // 4000ms تغطي الإطار الواحد البطيء دون إضعاف التثبيت (±60px كما هو).
+    // R337: نافذة 4000ms كانت تحدّ قدَم المراقب نفسه — المسار قاس 4.3s
+    // في CI خضراء سابقًا، ووصل الحد مرة أخرى في 5327cb3f (كلا المحاولتين
+    // انتهتا بالتايم-آوت على waitForFunction فقط، والاختبار يمر محليًا
+    // 3/3 تحت حمل عاملَين). النافذة 8000ms تُبقي التثبيت كما هو (±60px)
+    // وتفصل بين «الاستعادة بطيئة تحت الحمل» و«الاستعادة مفقودة».
     await page.waitForFunction(
       (expected) => {
         const el = document.querySelector<HTMLElement>('.content');
         return el != null && Math.abs(el.scrollTop - (expected as number)) < 60;
       },
       y,
-      { timeout: 4000 },
+      { timeout: 8000 },
     );
     const restored = await page.evaluate(() => document.querySelector<HTMLElement>('.content')?.scrollTop ?? -1);
     expect(Math.abs(restored - y), `التمرير استُعيد (${restored} ≈ ${y})`).toBeLessThanOrEqual(60);
