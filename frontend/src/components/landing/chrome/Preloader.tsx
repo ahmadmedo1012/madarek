@@ -9,14 +9,18 @@
  * (document load + document.fonts.ready) bounded to min 900 ms /
  * max 2.2 s — the counter never lies and never stalls.
  *
- * Exit: a CSS wipe — the paper sheet collapses via clip-path
- * inset(0 100% 0 0) on the R313 sheet-exit rung (--t-sheet-exit:
- * 835ms, --ease-in) after a short 100% hold, revealing the page
- * right-first (the RTL reading side). No JS animation library — the
- * .pl--exit class carries the whole transition. At exit START
- * the component dispatches the `mdrk:entry-done` custom event AND calls
- * onExitStart, so downstream chrome (the consent banner) mounts under
- * the reveal and never overlaps the overlay.
+ * Exit (r335 W-chrome — the FROZEN _motion spec's recorded choreography):
+ * the content fades 0.4s (power2.out-equivalent house decel) while the
+ * paper opens as the recorded TWO-BAND split — the top/bottom halves
+ * (preloader.css ::before/::after) fly ∓101% apart across the R313
+ * sheet-exit rung (835ms) on the recorded cubic-bezier(1,0,0.44,1) —
+ * then the overlay hides instantly (the recorded autoAlpha:0 set) and
+ * unmounts: the transitionend guard counts only the BAND's ::before
+ * leg, so the unmount lands on the split's last frame. No JS animation
+ * library — the .pl--exit class carries the whole choreography. At
+ * exit START the component dispatches the `mdrk:entry-done` custom
+ * event AND calls onExitStart, so downstream chrome (the consent
+ * banner) mounts under the reveal and never overlaps the overlay.
  *
  * Gating (owned by the parent through the introGate decision):
  * plays once per session (the `madarek-intro-seen` sessionStorage flag
@@ -127,7 +131,18 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
         doneTwice.done = true;
         cbsRef.current.onDone?.();
       };
-      root.addEventListener('transitionend', finish, { once: true });
+      /* the unmount waits for the PAPER SPLIT's last frame: only the
+       * band's own ::before transition finishes the exit — the shorter
+       * content-fade transitionend bubbles past uncounted (r335
+       * conformance: the recorded autoAlpha:0 hide lands AFTER the
+       * 0.8s flight, never mid-split). */
+      const onBandEnd = (e: TransitionEvent) => {
+        if (e.pseudoElement !== '::before') return;
+        root.removeEventListener('transitionend', onBandEnd);
+        finish();
+      };
+      root.addEventListener('transitionend', onBandEnd);
+      cleanups.push(() => root.removeEventListener('transitionend', onBandEnd));
       const onDoneCap = window.setTimeout(finish, EXIT_HOLD_MS + 835 + 250);
       cleanups.push(() => window.clearTimeout(onDoneCap));
       window.setTimeout(() => root.classList.add('pl--exit'), EXIT_HOLD_MS);
@@ -185,6 +200,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
     <div
       ref={rootRef}
       className="pl"
+      data-spec="preloader.overlay"
       data-cursor="none"
       role="progressbar"
       aria-label="تحميل صفحة مدارك"

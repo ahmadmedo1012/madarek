@@ -1,12 +1,35 @@
 /* ════════════════════════════════════════════════════════════════════
-   R333 P-D — the entry preloader sheet (heron-craft row 1).
-   A full-screen paper overlay on the page ground; the mark + wordmark
-   stroke-draw via the brand system's own <Logo animated> (its bespoke
-   timing is the documented brand spec — see scripts/check-motion-tokens
-   DEBT: brand/Logo.tsx). This sheet authors NO raw motion and NO JS
-   animation library: the exit is a CSS clip-path wipe driven by the
-   .pl--exit class (Preloader.tsx adds it), on the R313 sheet-exit
-   rung; every duration here is either a token or absent.
+   R333 P-D → r335 (W-chrome) — the entry preloader sheet, conformed to
+   the FROZEN r335 Heron motion spec (docs/redesign/r335/heron-spec/
+   _motion.1440.json + _motion.390.json, targets `.loading-*`):
+
+     · the loading CONTENT fades out first — recorded
+       `to { duration:0.4, ease:power2.out, opacity:0 }` on
+       .loading-content/.loading-content-title/.loading-progress-text
+       → here: .pl-inner opacity→0 on var(--motion-duration-page)
+       (400ms) with the house decel token (--ease-out, the register's
+       power2.out-equivalent);
+     · the paper OPENS AS A TWO-BAND SPLIT — recorded on .loading-main
+       as widening clip polygons (slit 49.94%/50.06% → bands apart) and
+       on the .loading-progress-item pair as the exit flight
+       `to { duration:0.8, ease:cubic-bezier(1,0,0.44,1), y:∓… }`
+       → here: the paper lives on two half-bands (::before/::after)
+       that translate ∓101% apart across var(--motion-duration-sheet-exit)
+       (835ms — the R313-measured rung of this same reference exit)
+       on the recorded cubic-bezier(1,0,0.44,1);
+     · the overlay itself hides INSTANTLY and unmounts — recorded
+       `to { duration:0, ease:power2.out, autoAlpha:0 }` on the
+       loading-wrap seat; here the unmount is Preloader's
+       transitionend (guarded to the band's ::before) + cap twin, so
+       the overlay vanishes with the split's last frame. Zero JS
+       animation, zero @keyframes — the whole exit is two CSS
+       transitions on the .pl--exit class.
+
+   Every duration is a token; the two raw easings carry their recorded
+   provenance. The mark/wordmark stroke-draw stays the brand system's
+   own <Logo animated> (its bespoke timing is the documented brand
+   spec). Reduced motion never mounts this sheet (the introGate
+   refuses); the belt below still pins the exit to an instant hide.
    ════════════════════════════════════════════════════════════════════ */
 
 .pl {
@@ -15,22 +38,57 @@
   z-index: 320; /* above the nav/cursor chrome (250/251) while it plays */
   display: grid;
   place-items: center;
-  background: var(--bg); /* the ONE paper ground — the entry sheet is
-                            the same material as the page it reveals */
-  /* the .pl--exit class animates this to inset(0 100% 0 0) — page
-     reveals right-first (RTL reading side) */
-  clip-path: inset(0 0 0 0);
-  will-change: clip-path;
+  /* the paper ground is the TWO-BAND pair below — the root stays
+     clear so the bands can fly apart without dragging the content's
+     paint with them (the recorded .loading-main split geometry) */
+  background: transparent;
 }
 
-/* the R313 sheet-exit rung (--t-sheet-exit: 835ms, the reference's
-   measured split) — the wipe must PLAY, never cut, skip included */
-.pl--exit {
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--motion-duration-sheet-exit) var(--ease-in);
+/* the paper bands — the top/bottom halves of the recorded
+   .loading-main clip split, meeting flush at the centreline at rest */
+.pl::before,
+.pl::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  background: var(--bg); /* the ONE paper ground — the entry sheet is
+                            the same material as the page it reveals */
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pl::before {
+  inset-block: 0 50%; /* the top band */
+}
+
+.pl::after {
+  inset-block: 50% 0; /* the bottom band */
+}
+
+/* ── THE EXIT (the .pl--exit class; Preloader adds it after the 100%
+ * hold beat) — the recorded choreography, simultaneous:
+ *   content fade 0.4s · bands fly apart 0.835s · instant hide+unmount.
+ * transitionend lands on the root from the band's own ::before (the
+ * longest transition), so the unmount waits for the split's last
+ * frame — never for the shorter content fade. ══ */
+.pl--exit::before {
+  transform: translateY(-101%);
+  transition: transform var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+}
+
+.pl--exit::after {
+  transform: translateY(101%);
+  transition: transform var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+}
+
+.pl--exit .pl-inner {
+  opacity: 0;
+  transition: opacity var(--motion-duration-page) var(--ease-out); /* power2.out-equivalent — the house decel rung */
 }
 
 .pl-inner {
+  position: relative;
+  z-index: 1; /* the content rides above its own paper bands */
   display: grid;
   justify-items: center;
   gap: var(--sp-3);
@@ -150,4 +208,17 @@
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   color: var(--text-muted);
+}
+
+/* ── Reduced motion — the sheet never plays under RM (the introGate
+   refuses to mount it; the component belt-and-braces exits instantly).
+   This belt pins the exit to an instant hide should the class ever
+   land under RM: the bands stand open, the content stands hidden. ── */
+@media (prefers-reduced-motion: reduce) {
+  .pl--exit::before,
+  .pl--exit::after,
+  .pl--exit .pl-inner,
+  .pl-skip {
+    transition: none;
+  }
 }

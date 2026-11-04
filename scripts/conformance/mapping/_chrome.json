@@ -1,0 +1,13 @@
+{
+  "_readme": "r335 W-chrome — the PAGE-LEVEL chrome mapping (W-chrome owns this file). run.mjs auto-loads every mapping/*.json via its readdirSync merge, so NO run.mjs edit is needed. What it adds: (1) ourSection['chrome'] → the fixed masthead seat (SheetNav's header.fo-header) and heronPageKey['chrome'] → the frozen _page.<bp>.json mark 'header.header', so the page-level sectionVh + pinSpan assertions arm the moment a per-bp chrome spec file (docs/redesign/r335/heron-spec/chrome.<bp>.json) ever lands — today there is none, so run.mjs reports the cell 'missing: no-heron-spec' and counts ZERO assertions from it (no pass/fail drift for the wave). (2) The documented note that NO explicit element mappings exist for the chrome: the frozen home-hero-wrap.1440.json walk contains NO header elements (Heron's header is a separate top-level seat — verified: zero 'header' paths in the spec), so the mission's 'nav elements under home-hero-wrap's header marks' set is EMPTY and home-hero-wrap.json needed no edit. What the r335 specs record for the chrome is conformed in CSS instead: preloader exit (content fade 0.4s power2.out + two-band paper split 0.8s cubic-bezier(1,0,0.44,1) + instant autoAlpha:0 hide + unmount), nav reveal (menu seats fromTo opacity:0 right after the split), header geometry (bar top 6.3px/56.7px @1440 · 7.6px/49.8px @390 — ours 7px/56px · 7px/50px, inside ±2px), menu-wrap hide shift (full bar height = the on-hide -101% lift), Lenis smoothWheel:true. NO cursor tweens are recorded at any breakpoint (grep 'cursor' in _motion.*.json → 0) — the existing SheetCursor instrument is kept per mission. The data-spec hooks (nav.bar · nav.link.0..5 · nav.cta · preloader.overlay · cursor.dot · consent.banner) are stamped on the chrome DOM for future mapping work.",
+  "ourSection": {
+    "chrome": "header.fo-header"
+  },
+  "heronPageKey": {
+    "chrome": "header.header"
+  },
+  "scaleFactor": {
+    "chrome": 1
+  },
+  "explicit": []
+}

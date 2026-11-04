@@ -51,6 +51,9 @@ import { Icon } from '../../Icon';
 import { Logo } from '../../../brand';
 import { ThemeToggle } from '../../layout/ThemeToggle';
 import { acquireScrollLock, releaseScrollLock } from '../../../lib/scrollLock';
+/* r335 (W-chrome) — the conformance hooks: nav.bar / nav.link.N /
+ * nav.cta stamp the measured chrome seats for scripts/conformance
+ * (mapping/_chrome.json). */
 /* r331/nav.css — this component's whole stylesheet: the header state
  * machine, the cell grammar, the menu choreography. Imported here so
  * the block ships with the component that owns it (the R331
@@ -108,11 +111,11 @@ function HeaderNav() {
   const { pathname } = useLocation();
   return (
     <nav className="fo-nav" aria-label="التنقل الرئيسي">
-      {NAV_SEATS.map((seat) => {
+      {NAV_SEATS.map((seat, i) => {
         const current = !seat.anchor && seat.href === pathname;
         const cls = current ? 'fo-nav-link is-current' : 'fo-nav-link';
         return seat.anchor ? (
-          <a key={seat.href} href={seat.href} className={cls}>
+          <a key={seat.href} href={seat.href} className={cls} data-spec={`nav.link.${i}`}>
             <RollLabel text={seat.label} />
           </a>
         ) : (
@@ -120,6 +123,7 @@ function HeaderNav() {
             key={seat.href}
             to={seat.href}
             className={cls}
+            data-spec={`nav.link.${i}`}
             aria-current={current ? 'page' : undefined}
           >
             <RollLabel text={seat.label} />
@@ -329,7 +333,7 @@ export function SheetNav() {
   const rowStyle = (i: number): CSSProperties => ({ '--i': i } as CSSProperties);
 
   return (
-    <header className="fo-header" ref={headerRef}>
+    <header className="fo-header" ref={headerRef} data-spec="nav.bar">
       <div className="fo-header-inner">
         {/* the brand cell — mark + «مدارك» wordmark (the guest-landing
             e2e reads the wordmark; the display voice seats it). */}
@@ -343,7 +347,7 @@ export function SheetNav() {
         <div className="fo-header-actions">
           <ThemeToggle />
           <Link to="/auth" className="fo-actions-login">تسجيل الدخول</Link>
-          <Link to="/auth/register" className="fo-actions-cta">
+          <Link to="/auth/register" className="fo-actions-cta" data-spec="nav.cta">
             <RollLabel text="ابدأ الآن" />
             <Icon icon={ArrowLeft} size={14} className="fo-actions-cta-arrow" aria-hidden />
           </Link>
