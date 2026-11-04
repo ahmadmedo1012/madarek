@@ -6,7 +6,6 @@ import Send from "lucide-react-native/icons/send";
 import Sparkles from "lucide-react-native/icons/sparkles";
 import { socialApi } from "@/api/social";
 import type { Competition } from "@/api/types";
-import { ApiError } from "@/api/client";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { dueLabel, fromNow, latn } from "@/lib/format";
@@ -19,6 +18,7 @@ import { Field } from "@/components/ui/fields";
 import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
+import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { SignInPrompt, apiMessage, competitionStatus, isUnauthError, submissionEnded } from "@/features/common/components";
 
@@ -58,6 +58,7 @@ export default function CompetitionDetail() {
     mutationFn: () => socialApi.enterCompetition(params.id, { title: title.trim(), body: body.trim() }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["competitions"] });
+      haptics.notify("success");
       toast.success("وصلت مشاركتك — بالتوفيق!", "المشاركة");
       setEntering(false);
       setTitle("");
@@ -292,7 +293,7 @@ export default function CompetitionDetail() {
           />
           {enter.isError ? (
             <T variant="sm" color="danger">
-              {(enter.error as ApiError)?.message ?? "تعذّر تقديم المشاركة."}
+              {apiMessage(enter.error, "تعذّر تقديم المشاركة.")}
             </T>
           ) : null}
         </View>

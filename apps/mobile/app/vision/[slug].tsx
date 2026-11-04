@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { I18nManager, View } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import ArrowLeft from "lucide-react-native/icons/arrow-left";
 import ArrowRight from "lucide-react-native/icons/arrow-right";
@@ -188,12 +188,36 @@ function PrevNextButton({
         {side === "prev" ? "السابق" : "التالي"}
       </T>
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
-        {side === "next" ? <ArrowLeft size={14} color={p.accentInk} /> : null}
+        {side === "next" ? NextArrow() : null}
         <T variant="sm" weight="bold" numberOfLines={1} style={{ flex: 1 }}>
           {concept.title}
         </T>
-        {side === "prev" ? <ArrowRight size={14} color={p.accentInk} /> : null}
+        {side === "prev" ? PrevArrow() : null}
       </View>
     </Card>
+  );
+}
+
+/**
+ * Direction-agnostic flow arrows (RTL-aware, R334 sweep): in RTL the
+ * reading flow advances toward the LEFT, so «next» points left and
+ * «prev» points right; LTR mirrors. Previously hard-wired to RTL-only —
+ * silently wrong if layout direction ever flips.
+ */
+function NextArrow() {
+  const p = usePalette();
+  return I18nManager.isRTL ? (
+    <ArrowLeft size={14} color={p.accentInk} />
+  ) : (
+    <ArrowRight size={14} color={p.accentInk} />
+  );
+}
+
+function PrevArrow() {
+  const p = usePalette();
+  return I18nManager.isRTL ? (
+    <ArrowRight size={14} color={p.accentInk} />
+  ) : (
+    <ArrowLeft size={14} color={p.accentInk} />
   );
 }
