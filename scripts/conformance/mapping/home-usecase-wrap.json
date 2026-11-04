@@ -1,5 +1,5 @@
 {
-  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: roles ledger — section#roles.rl-section (sections/Roles.tsx).]",
+  "_readme": "R337 A-usecase — home-usecase-wrap ledger, REGENERATED against the frozen spec by scripts/build-roles-mapping.py (re-run after changing Roles.tsx hooks). Every element of the spec tree is bound explicitly to a data-spec key (run.mjs suffix-matches heron paths, so one entry serves every breakpoint with the same tree shape; row paths were extracted verbatim from the canonical 1920 census). The 19 1440/1024-only word-split boxes are excused with a written reason (animation residue, not product structure). ourSection: section#roles.rl-section (sections/Roles.tsx — the r337 Heron rebuild: hairline frame + 8-slide media deck + ruled accordion).",
   "ourSection": {
     "home-usecase-wrap": "section#roles.rl-section"
   },
@@ -9,5 +9,949 @@
   "scaleFactor": {
     "home-usecase-wrap": 1
   },
-  "explicit": []
+  "explicit": [
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1]",
+      "spec": "home-usecase-wrap > div[1]",
+      "ours": "roles.wrap"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1]",
+      "ours": "roles.inner"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[1]",
+      "ours": "roles.ruletop"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[2]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[2]",
+      "ours": "roles.rulebottom"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3]",
+      "ours": "roles.frame"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1]",
+      "ours": "roles.media"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[1]",
+      "ours": "roles.mediarule"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[2]",
+      "ours": "roles.mediadeck"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[1]",
+      "ours": "roles.mediainner"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "roles.slide.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "ours": "roles.slideimg.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "roles.slide.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > img[1]",
+      "ours": "roles.slideimg.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "ours": "roles.slide.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > img[1]",
+      "ours": "roles.slideimg.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[4]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[4]",
+      "ours": "roles.slide.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[4] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[4] > img[1]",
+      "ours": "roles.slideimg.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[5]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[5]",
+      "ours": "roles.slide.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[5] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[5] > img[1]",
+      "ours": "roles.slideimg.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[6]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[6]",
+      "ours": "roles.slide.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[6] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[6] > img[1]",
+      "ours": "roles.slideimg.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[7]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[7]",
+      "ours": "roles.slide.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[7] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[7] > img[1]",
+      "ours": "roles.slideimg.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[8]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[8]",
+      "ours": "roles.slide.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[8] > img[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > div[8] > img[1]",
+      "ours": "roles.slideimg.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2]",
+      "ours": "roles.titlecol"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[1]",
+      "ours": "roles.labelbox"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "roles.label"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
+      "ours": "roles.h2box"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > h2[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > h2[1]",
+      "ours": "roles.h2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[2] > div[2] > h2[1] > br[1]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[2] > div[2] > h2[1] > br[1]",
+      "ours": "roles.h2br1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[2] > div[2] > h2[1] > br[2]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[2] > div[2] > h2[1] > br[2]",
+      "ours": "roles.h2br2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[3]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[3]",
+      "ours": "roles.midrule"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[4]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[4]",
+      "ours": "roles.midrule"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[3]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[3]",
+      "ours": "roles.contentcol"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[3] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[3] > div[1]",
+      "ours": "roles.accwrap"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > section[1] > div[3] > div[3] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > section[1] > div[3] > div[3] > div[1] > div[1]",
+      "ours": "roles.acc"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "roles.row.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtw.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtwf.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "roles.rowicon.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "roles.rowlinebox.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowline.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[3]",
+      "ours": "roles.rowrule1.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[4]",
+      "ours": "roles.rowrule2.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[5]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[5]",
+      "ours": "roles.rowruletop.1"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[2]",
+      "ours": "roles.row.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowtw.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "roles.rowtwf.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "roles.rowicon.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "ours": "roles.rowzero.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[3]",
+      "ours": "roles.rowrule1.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[4]",
+      "ours": "roles.rowrule2.2"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[3]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[3]",
+      "ours": "roles.row.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[1]",
+      "ours": "roles.rowtw.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "ours": "roles.rowtwf.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[2]",
+      "ours": "roles.rowicon.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[2]",
+      "ours": "roles.rowzero.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[3]",
+      "ours": "roles.rowrule1.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[4]",
+      "ours": "roles.rowrule2.3"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[4]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[4]",
+      "ours": "roles.row.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[1]",
+      "ours": "roles.rowtw.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "ours": "roles.rowtwf.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[4] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[4] > div[1] > div[2]",
+      "ours": "roles.rowicon.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[4] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[4] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[4] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[4] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[4] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[4] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[2]",
+      "ours": "roles.rowzero.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[3]",
+      "ours": "roles.rowrule1.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[4]",
+      "ours": "roles.rowrule2.4"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[5]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[5]",
+      "ours": "roles.row.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[1]",
+      "ours": "roles.rowtw.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[5] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[5] > div[1] > div[1]",
+      "ours": "roles.rowtwf.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[5] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[5] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[5] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[5] > div[1] > div[2]",
+      "ours": "roles.rowicon.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[5] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[5] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[5] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[5] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[5] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[5] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[2]",
+      "ours": "roles.rowzero.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[3]",
+      "ours": "roles.rowrule1.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[4]",
+      "ours": "roles.rowrule2.5"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[6]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[6]",
+      "ours": "roles.row.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[1]",
+      "ours": "roles.rowtw.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[6] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[6] > div[1] > div[1]",
+      "ours": "roles.rowtwf.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[6] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[6] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[6] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[6] > div[1] > div[2]",
+      "ours": "roles.rowicon.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[6] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[6] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[6] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[6] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[6] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[6] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[2]",
+      "ours": "roles.rowzero.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[3]",
+      "ours": "roles.rowrule1.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[4]",
+      "ours": "roles.rowrule2.6"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[7]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[7]",
+      "ours": "roles.row.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[1]",
+      "ours": "roles.rowtw.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[7] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[7] > div[1] > div[1]",
+      "ours": "roles.rowtwf.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[7] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[7] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[7] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[7] > div[1] > div[2]",
+      "ours": "roles.rowicon.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[7] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[7] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[7] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[7] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[7] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[7] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[2]",
+      "ours": "roles.rowzero.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[3]",
+      "ours": "roles.rowrule1.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[4]",
+      "ours": "roles.rowrule2.7"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[8]",
+      "spec": "home-usecase-wrap > section[1] > div[3] > div[3] > div[1] > div[1] > div[8]",
+      "ours": "roles.row.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[1]",
+      "ours": "roles.rowtw.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[8] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[8] > div[1] > div[1]",
+      "ours": "roles.rowtwf.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowink.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[8] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[8] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "roles.rowtitle.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[1] > div[1] > div[8] > div[1] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[1] > div[1] > div[8] > div[1] > div[2]",
+      "ours": "roles.rowicon.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[2] > div[1]",
+      "spec": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[2] > div[1]",
+      "ours": "roles.rowiconbtn.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[8] > div[1] > div[2] > div[1] > svg[1]",
+      "spec": "home-usecase-wrap > div[1] > div[8] > div[1] > div[2] > div[1] > svg[1]",
+      "ours": "roles.rowsvg.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[8] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "spec": "home-usecase-wrap > div[8] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+      "ours": "roles.rowpath1.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[8] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "spec": "home-usecase-wrap > div[8] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+      "ours": "roles.rowpath2.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[2]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[2]",
+      "ours": "roles.rowzero.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[3]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[3]",
+      "ours": "roles.rowrule1.8"
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
+      "spec": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[4]",
+      "ours": "roles.rowrule2.8"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[4]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[5]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[6]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[7]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[8]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[9]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[10]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[11]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[12]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[4] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[5] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[6] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[7] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    },
+    {
+      "section": "home-usecase-wrap",
+      "heron": "home-usecase-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    }
+  ]
 }
