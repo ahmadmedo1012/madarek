@@ -19,3 +19,10 @@ The lead applies these at merge. Format: what / why / exact diff / blocked-by.
 - **Exact diff:** ...
 - **Status:** open
 -->
+
+### LR-002: URGENT — main is red on its own `check-icons.sh` gate (r333 WAVE 5 regression)
+- **What:** `frontend/src/pages/LandingPage.tsx:402` contains a raw `<svg>` (inline SVG outside the documented allowlist) — introduced by main's `d58a29e` (r333 WAVE 5). It fails the `Design gates` CI job on **main itself** and therefore on this branch (rebased superset; the file is byte-identical to `origin/main`).
+- **Why:** CI on `feat/mobile-r334-pro` shows one failure from this; every other job is green (typecheck, E2E ×2, lint, DB integration, frontend/backend tests, build, drift, size gate).
+- **Exact diff (lead's choice):** either convert the inline SVG at `LandingPage.tsx:402` to the documented `Illustration`/`Icon` primitives, or add the file to the allowlist in `scripts/check-icons.sh` with a category comment.
+- **Status:** open — **cannot be fixed from the mobile branch** (`frontend/**` and `scripts/` are read-only for R334 by mission rules).
+- **Raised by:** R334 lead-of-mission, final CI verification pass.
