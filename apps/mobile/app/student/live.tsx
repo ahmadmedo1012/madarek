@@ -5,7 +5,6 @@ import ExternalLink from "lucide-react-native/icons/external-link";
 import MonitorPlay from "lucide-react-native/icons/monitor-play";
 import { liveApi } from "@/api/live";
 import type { LiveSession } from "@/api/types";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
@@ -18,6 +17,7 @@ import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { dateTime, num } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr, fmtClock } from "@/features/student/more";
 
 /** The backend opens the join window 10 minutes before the scheduled time. */
@@ -62,7 +62,7 @@ export default function LiveScreen() {
         void Linking.openURL(url).catch(() => toast.error("تعذّر فتح الغرفة الخارجية."));
       }
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر الانضمام"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر الانضمام"),
   });
 
   return (
@@ -75,7 +75,7 @@ export default function LiveScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={4} rowHeight={72} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
+        <ErrorState message={humanizeError(feed.error)} onRetry={() => feed.refetch()} />
       ) : list.length === 0 ? (
         <EmptyState
           title="لا توجد بثوث بعد"
@@ -137,7 +137,7 @@ function SessionSection({
       ) : (
         <RowList>
           {sessions.map((s, i) => {
-            const status = LIVE_STATUS[s.status] ?? { label: s.status, tone: "grey" as const };
+            const status = LIVE_STATUS[s.status] ?? { label: "حالة غير معروفة", tone: "grey" as const };
             const course = s.offering?.course;
             return (
               <LedgerRow key={s.id} last={i === sessions.length - 1} accessibilityLabel={`جلسة: ${s.title}`}>
