@@ -1,12 +1,12 @@
 {
- "generatedAt": "2026-11-04T20:53:49.569Z",
+ "generatedAt": "2026-11-04T21:31:35.846Z",
  "url": "http://localhost:5173/",
  "specDir": "/home/z/work/madarek/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 25554,
-  "pass": 10117,
-  "fail": 15437,
-  "passRate": 39.6,
+  "total": 26369,
+  "pass": 10489,
+  "fail": 15880,
+  "passRate": 39.8,
   "exceptionUses": 0,
   "exceptionRate": 0,
   "exceptionCap": "<5%",
@@ -352,10 +352,10 @@
   },
   "home-map-wrap": {
    "390": {
-    "passRate": 46.5,
+    "passRate": 46.6,
     "n": 959,
-    "pass": 446,
-    "fail": 513,
+    "pass": 447,
+    "fail": 512,
     "exceptions": 0,
     "explicit": 0,
     "dataSpec": 0,
@@ -659,10 +659,10 @@
     "missing": null
    },
    "1440": {
-    "passRate": 40.4,
+    "passRate": 40.5,
     "n": 736,
-    "pass": 297,
-    "fail": 439,
+    "pass": 298,
+    "fail": 438,
     "exceptions": 0,
     "explicit": 0,
     "dataSpec": 0,
@@ -6811,8 +6811,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1040,
-   "actual": 283,
-   "delta": 757
+   "actual": 282,
+   "delta": 758
   },
   {
    "section": "home-hero-wrap",
@@ -8388,17 +8388,6 @@
    "delta": 653.5
   },
   {
-   "section": "home-intro-wrap",
-   "bp": "390",
-   "kind": "x-mirror",
-   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 195,
-   "actual": 847,
-   "delta": 652.5
-  },
-  {
    "section": "home-hero-wrap",
    "bp": "768",
    "kind": "y",
@@ -8419,6 +8408,17 @@
    "expected": 15,
    "actual": 667,
    "delta": 652
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 195,
+   "actual": 846,
+   "delta": 651.5
   },
   {
    "section": "home-map-wrap",
@@ -9488,5 +9488,55 @@
    "delta": 573
   }
  ],
- "unmatchedReport": []
+ "unmatchedReport": [],
+ "scrollFeel": {
+  "pass": 25,
+  "fail": 5,
+  "failures": [
+   {
+    "bp": "1920",
+    "kind": "scroll:scrollRestoration-manual",
+    "expected": "manual",
+    "actual": "auto"
+   },
+   {
+    "bp": "1440",
+    "kind": "scroll:scrollRestoration-manual",
+    "expected": "manual",
+    "actual": "auto"
+   },
+   {
+    "bp": "1024",
+    "kind": "scroll:scrollRestoration-manual",
+    "expected": "manual",
+    "actual": "auto"
+   },
+   {
+    "bp": "768",
+    "kind": "scroll:scrollRestoration-manual",
+    "expected": "manual",
+    "actual": "auto"
+   },
+   {
+    "bp": "390",
+    "kind": "scroll:scrollRestoration-manual",
+    "expected": "manual",
+    "actual": "auto"
+   }
+  ]
+ },
+ "scrollCurves": {
+  "pass": 0,
+  "fail": 5
+ },
+ "interact": {
+  "pass": 340,
+  "fail": 396,
+  "hoverChecked": 736
+ },
+ "patterns": {
+  "pass": 5,
+  "fail": 39,
+  "checked": 46
+ }
 }

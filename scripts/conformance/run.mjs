@@ -42,6 +42,8 @@ import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as T from "./tolerances.mjs";
+import { feel as scrollFeel, assert as scrollCurves } from "./scroll.mjs";
+import { interact as interactStates, patterns as patternCheck } from "./interact.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = join(__dirname, "..", "..");
@@ -83,6 +85,8 @@ const arg = (n, d) => (process.argv.indexOf(`--${n}`) > 0 ? process.argv[process
 const SECTIONS_WANTED = arg("sections", null)?.split(",").map((s) => s.trim()) ?? SECTIONS;
 const BPS_WANTED = arg("bps", null)?.split(",").map((b) => b.trim()) ?? BPS.map((b) => b.name);
 const GATE = process.argv.includes("--gate");
+const WITH_SCROLL = process.argv.includes("--scroll");
+const WITH_INTERACT = process.argv.includes("--interact");
 const RATCHET_UPDATE = process.argv.includes("--ratchet");
 const RATCHET_FILE = join(__dirname, "ratchet.json");
 const OUT = arg("out", join(__dirname, "results.json"));
@@ -399,6 +403,36 @@ try {
   }
 } finally {
   await browser.close();
+}
+
+// ── extensions (R337): scroll feel + scrub curves + interaction + patterns ──
+if (WITH_SCROLL || GATE) {
+  try {
+    const feelRes = await scrollFeel(URL, BPS_WANTED);
+    totalPass += feelRes.pass; totalFail += feelRes.fail;
+    results.scrollFeel = feelRes;
+    for (const f of feelRes.failures) results.failures.push({ section: "(scroll)", bp: f.bp, kind: f.kind, heronPath: "-", oursSelector: "-", mode: "scroll", expected: f.expected, actual: f.actual, delta: 0 });
+    const curveRes = await scrollCurves(URL, BPS_WANTED);
+    totalPass += curveRes.pass; totalFail += curveRes.fail;
+    results.scrollCurves = { pass: curveRes.pass, fail: curveRes.fail };
+    for (const f of curveRes.failures) results.failures.push({ section: "(scroll-curve)", bp: f.bp, kind: f.kind, heronPath: f.trigger ?? "-", oursSelector: "-", mode: "scroll-curve", expected: typeof f.expected === "object" ? JSON.stringify(f.expected) : f.expected, actual: typeof f.actual === "object" ? JSON.stringify(f.actual) : f.actual, delta: f.delta ?? 0 });
+  } catch (e) {
+    results.scrollError = String(e);
+  }
+}
+if (WITH_INTERACT) {
+  try {
+    const inter = await interactStates(URL, BPS_WANTED, SECTIONS_WANTED);
+    totalPass += inter.pass; totalFail += inter.fail;
+    results.interact = { pass: inter.pass, fail: inter.fail, hoverChecked: inter.hoverChecked };
+    for (const f of inter.failures) results.failures.push({ section: f.section, bp: f.bp, kind: f.kind, heronPath: f.heronPath, oursSelector: "-", mode: "interact", expected: f.expected, actual: f.actual, delta: 0 });
+    const pat = await patternCheck(URL);
+    totalPass += pat.pass; totalFail += pat.fail;
+    results.patterns = { pass: pat.pass, fail: pat.fail, checked: pat.checked };
+    for (const f of pat.failures) results.failures.push({ section: "(pattern)", bp: "1440", kind: f.kind, heronPath: f.pattern, oursSelector: "-", mode: "pattern", expected: f.expected, actual: f.actual, delta: 0 });
+  } catch (e) {
+    results.interactError = String(e);
+  }
 }
 
 // ── summary + report ─────────────────────────────────────────────────────────

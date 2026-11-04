@@ -365,8 +365,8 @@ jobs:
         run: nohup npx vite --port 5173 --strictPort > /tmp/vite.log 2>&1 &
       - name: Wait for dev server
         run: npx --yes wait-on http://localhost:5173/ --timeout 60000
-      - name: Conformance matrix vs ratchet
-        run: node scripts/conformance/run.mjs --gate
+      - name: Conformance matrix vs ratchet (scroll + interaction extensions)
+        run: node scripts/conformance/run.mjs --gate --scroll --interact
       - name: Upload results artifact
         if: always()
         uses: actions/upload-artifact@v4

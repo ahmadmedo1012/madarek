@@ -1,8 +1,8 @@
 {
-  "rate": 39.6,
-  "total": 25554,
-  "pass": 10117,
-  "fail": 15437,
-  "updatedAt": "2026-11-04T21:00:00.000Z",
-  "_readme": "R336 honest baseline (v2 instrument: transformed expectations, unmatched=FAIL). Monotonic floor — --gate fails below this; --ratchet raises it after green runs. Never allowed to drop."
+  "rate": 39.8,
+  "total": 26369,
+  "pass": 10489,
+  "fail": 15880,
+  "updatedAt": "2026-11-04T22:30:00.000Z",
+  "_readme": "R337 extended baseline (v2 instrument + scroll-feel + interaction states + pattern census). Monotonic floor — --gate fails below this; --ratchet raises it after green runs. Never allowed to drop. Scrub curves: extraction from live Heron still pending (scroll-curves.*.json absent — cells fail as no-frozen-curves, 5 at present); once frozen they join the denominator."
 }
