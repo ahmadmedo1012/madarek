@@ -33,9 +33,24 @@ VLM ceremonies. Most time goes into code.
 | console probes (test body / afterEach / timers counts) | isolate the drain | afterEach blocked; ≤138 timers total; clock distortion + drain pathology |
 | jest doNotFake experiment | root fix | 96s→22s, all green both Node versions |
 
-## Spec/conformance status
+## Spec/conformance status (R336 state table — replaces the stale "pending" rows)
 
-- `scripts/spec/extract-heron.mjs` — pending (A-Spec-1..4)
-- `docs/redesign/r335/heron-spec/*.json` — pending
-- `scripts/conformance/` — pending (A-Conform)
+| item | state @ 86d6e91f (R336 start) |
+|---|---|
+| Frozen Heron specs | ✅ `docs/redesign/r335/heron-spec/*` (5 bps, 9 sections + footer + page/motion), extractor `scripts/spec/extract-heron.mjs` |
+| Conformance suite | ⚠️ `scripts/conformance/` exists; the INSTRUMENT is weak — fixed first this round (below) |
+| W-chrome (nav/preloader/cursor/consent) | ✅ conformed @1440 (69.9%, 986 assertions), `data-spec` hooks in |
+| Landing sections | ❌ 0/9 conformed — Phase 2 main work |
+| CSS | ❌ 43,428 lines / 109 `!important` (target ≤33,000 / 0) |
+| Inner + authed pages | ❌ Phase 3 not started |
+| Mobile P1 / Android workflow / review ≥9 | ❌ Phase 5 not started |
+| CI | ✅ green again at 86d6e91f (red at e1ecedb6: bundle 776.2>776 KB, r306 stale pin, r309 mount flake — all root-caused, NO ceiling raised) |
+| OTA (verified, run 41853500404) | ✅ production iOS group `1995b95a-756c-4dd2-a506-5103e3ab72ed` (update `01a1a71b-019f-74f8-b1c6-d51fa598ac17`); preview iOS group `9dd70372-683c-4009-8f7c-4a58cf6a93a9`; preview Android group `449c6060-16a1-4bac-b6a4-7c14de54211b` |
+| Branches | ✅ all r335/* deleted (content merged); `feat/mobile-r334-pro` kept — tip is a stale rebase snapshot, main is strictly ahead |
+
+**Conformance instrument gaps (fix BEFORE trusting any pass-rate):**
+1. `exceptionRate` 20.4% vs cap <5% — the Arabic rules (rtl-x-mirror 70, ar-letter-spacing-zero 69, ar-line-height-floor 62) become TRANSFORMED EXPECTATIONS: assert mirrored x, |ls|≤0.05em, lh-floor directly — they stop counting as exceptions because they are the spec, not waivers.
+2. Mapping mostly heuristic (hero @1440: 1 explicit / 41 heuristic / 278 unmatched of 597) — explicit `data-spec` keys for every spec element with a counterpart; `unmatched` reported as FAIL (or named no-counterpart with reason).
+3. Full 9×5 matrix in one report (last results.json = 2 sections @1440), then `--gate` in CI at the honest baseline + ratchet file (rate may never drop).
+
 - Baselines for the round: CSS 43,555 lines / 105 `!important` (target ≤33,000 / 0); web entry gz ≤776 KB (ceiling unchanged).
