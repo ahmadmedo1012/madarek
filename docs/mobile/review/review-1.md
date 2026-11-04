@@ -60,6 +60,8 @@
 
 ⌕ = code-review-only (no fresh VLM inspection this panel — rate-limited or PART read). **Overall average: 8.47 / 10. PASS 4 · FAIL 26.**
 
+**Addendum (post-table, VLM recovered):** the rate limit lifted late in the window and two more captures were inspected: `r-teacher-dashboard.png` (#18) and `r-owner-dashboard.png` (#27). Both confirmed the code-derived verdicts — teacher dashboard: top-heavy layout (the empty-stats card eats ~35% of the first screen), inconsistent vertical rhythm between the greeting/quick-actions/first section, quick-action tile gutters narrower than side margins, section headers reading as inline text; owner dashboard: low-contrast muted subtitle on paper, dead vertical space between greeting and stats card, notification dot partially outside the bell glyph, static count in a card that promises "إحصائيات حيّة". Rows #18 and #27 are therefore **code + VLM inspected**; their scores stand (the findings corroborate the M/St/S deductions already ticketed as T1/T6). The remaining ⌕ rows are genuinely code-review-only.
+
 **Reading of the result:** the four passes are the boot handoff, the signature welcome, and the two most-trafficked student tabs — exactly the surfaces the R334 mission invested in (staggered entrances, haptics, real-geometry skeletons, one-accent discipline, CountUp/RingProgress with a11y). Everything else misses **PASS** on motion (governance/teacher/admin dashboards have zero entrance animation and mostly zero haptics), thin a11y labeling, and state-grammar drift (muted-text empties instead of the kit's `EmptyState` rooms). None of the failures is broken — floor across the board is a solid L2; the gap to L3 is systematic, not random.
 
 ---
