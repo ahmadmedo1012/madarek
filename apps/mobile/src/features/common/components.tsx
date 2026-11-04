@@ -8,6 +8,7 @@ import LogIn from "lucide-react-native/icons/log-in";
 import { router } from "expo-router";
 import { ApiError } from "@/api/client";
 import { latn } from "@/lib/format";
+import { GENERIC_AR, humanizeError } from "@/lib/errors";
 import { usePalette } from "@/design/theme";
 import { EmptyState } from "@/components/ui/states";
 
@@ -58,8 +59,18 @@ export function isUnauthError(e: unknown): boolean {
   return e instanceof ApiError && (e.code === "UNAUTHENTICATED" || e.status === 401);
 }
 
+/**
+ * The common surfaces' error boundary: ALWAYS Arabic. Routes through
+ * `humanizeError` (src/lib/errors) so an already-Arabic message passes
+ * through verbatim while English/library fragments map to honest Arabic
+ * copy — the raw `e.message` leak the static audit flagged (§6) can't
+ * render from these screens anymore. `fallback` only wins when the
+ * humanizer itself has nothing better (it never throws, never returns
+ * raw English).
+ */
 export function apiMessage(e: unknown, fallback = "حدث خطأ غير متوقّع."): string {
-  return e instanceof Error && e.message ? e.message : fallback;
+  const humanized = humanizeError(e);
+  return humanized === GENERIC_AR ? fallback : humanized;
 }
 
 /** Competition status → Arabic label + Heron tone (task mapping). */
