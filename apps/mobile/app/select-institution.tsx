@@ -108,7 +108,10 @@ export default function SelectInstitution() {
             <PressableScale
               key={m.institutionId}
               accessibilityRole="button"
-              accessibilityLabel={`اختيار ${m.name}`}
+              accessibilityLabel={`اختيار ${m.name} — ${
+                ROLE_LABELS[m.role] ?? m.role
+              }${busy ? " — جارٍ الدخول" : ""}`}
+              accessibilityState={{ busy, disabled: busyId !== null }}
               onPress={() => void pick(m.institutionId)}
               disabled={busyId !== null}
               style={{

@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { humanizeError } from "@/lib/errors";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -15,12 +16,15 @@ import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { DataList, LedgerRow, makeRow, RowList } from "@/components/ui/data";
 import { SkeletonList, EmptyState, ErrorState, Skeleton } from "@/components/ui/states";
+import { useStaggerEntrance } from "@/motion";
+import { haptics } from "@/haptics";
 import { ownerApi } from "@/api/owner";
 import { usePalette } from "@/design/theme";
 import { fromNow } from "@/lib/format";
 import {
   MetricHero,
   MetricTile,
+  SEVERITY_LABEL,
   SeverityChip,
   auditActionLabel,
   countAr,
@@ -52,9 +56,14 @@ const EventRow = makeRow<AuditRow>(({ item }) => (
   </LedgerRow>
 ));
 
-/** (tabs) Owner dashboard — «لوحة التحكم الرئيسية» (web OwnerDashboardPage parity). */
+/** (tabs) Owner dashboard — «لوحة التحكم الرئيسية» (web OwnerDashboardPage parity).
+ *  R334 review-panel fixes: staggered entrance, haptics.selection on the
+ *  menu rows, Arabic a11y labels on the alert rows, and the true-empty
+ *  alerts state renders a kit EmptyState room (never plain muted text). */
 export default function OwnerDashboard() {
   const p = usePalette();
+  /* Entrance stagger — base 40, step 60 → 5th block lands at 280ms (cap 400). */
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
   const stats = useQuery({ queryKey: ["owner", "stats"], queryFn: () => ownerApi.stats() });
   const alerts = useQuery({
     queryKey: ["owner", "alerts"],
@@ -74,27 +83,29 @@ export default function OwnerDashboard() {
     <Screen scroll>
       <AppTopBar alertsPath="/owner/alerts" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
+        <Animated.View entering={entering(0)}>
           <T variant="h2" weight="bold">
             لوحة التحكم الرئيسية
           </T>
           <T variant="body" color="muted">
             نظرة شاملة وإحصائيات حيّة عن المنصة
           </T>
-        </View>
+        </Animated.View>
 
         {stats.isLoading ? (
-          <View style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
             <Skeleton h={132} />
             <View style={{ flexDirection: "row", gap: 8 }}>
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
-          </View>
+          </Animated.View>
         ) : stats.isError ? (
-          <ErrorState message={humanizeError(stats.error)} onRetry={() => stats.refetch()} />
+          <Animated.View entering={entering(1)}>
+            <ErrorState message={humanizeError(stats.error)} onRetry={() => stats.refetch()} />
+          </Animated.View>
         ) : s ? (
-          <View style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
             <MetricHero
               label="إجمالي مستخدمي المنصّة"
               value={s.totalUsers ?? null}
@@ -108,10 +119,10 @@ export default function OwnerDashboard() {
               <MetricTile label="المقرّرات" value={s.totalCourses ?? null} />
               <MetricTile label="التسجيلات" value={s.totalEnrollments ?? null} />
             </View>
-          </View>
+          </Animated.View>
         ) : null}
 
-        <View>
+        <Animated.View entering={entering(2)}>
           <SectionBar
             index={1}
             title="التنبيهات التشغيليّة"
@@ -131,14 +142,22 @@ export default function OwnerDashboard() {
           ) : alerts.isError ? (
             <ErrorState message={humanizeError(alerts.error)} onRetry={() => alerts.refetch()} compact />
           ) : alertRows.length === 0 ? (
-            <T variant="body" color="muted">
-              النظام يعمل بشكل طبيعي — لا تنبيهات مفتوحة.
-            </T>
+            <EmptyState
+              room="building"
+              title="النظام يعمل بشكل طبيعي"
+              message="لا تنبيهات تشغيليّة مفتوحة حاليًا — ستظهر التنبيهات والحوادث هنا فور رصدها."
+            />
           ) : (
             <View style={{ gap: 12 }}>
               <RowList>
                 {alertRows.slice(0, 3).map((a, i, arr) => (
-                  <LedgerRow key={a.id} last={i === arr.length - 1}>
+                  <LedgerRow
+                    key={a.id}
+                    last={i === arr.length - 1}
+                    accessibilityLabel={`تنبيه ${
+                      (a.severity != null && SEVERITY_LABEL[a.severity]) || "تشغيليّ"
+                    }: ${a.title ?? "بدون عنوان"} · ${fromNow(a.createdAt)}`}
+                  >
                     <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
                       <SeverityChip severity={a.severity} />
                       <T variant="xs" color="faint">
@@ -159,9 +178,9 @@ export default function OwnerDashboard() {
               />
             </View>
           )}
-        </View>
+        </Animated.View>
 
-        <View>
+        <Animated.View entering={entering(3)}>
           <SectionBar index={2} title="الأحداث الأخيرة" />
           {activity.isLoading ? (
             <SkeletonList rows={3} />
@@ -188,13 +207,16 @@ export default function OwnerDashboard() {
               />
             </View>
           )}
-        </View>
+        </Animated.View>
 
-        <View>
+        <Animated.View entering={entering(4)}>
           <SectionBar index={3} title="لوحة المالك" />
           <RowList>
             <LedgerRow
-              onPress={() => router.push("/owner/institutions" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/institutions" as never);
+              }}
               accessibilityLabel="المؤسسات"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -210,7 +232,10 @@ export default function OwnerDashboard() {
               </View>
             </LedgerRow>
             <LedgerRow
-              onPress={() => router.push("/owner/activity" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/activity" as never);
+              }}
               accessibilityLabel="سجلّ النشاط"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -226,7 +251,10 @@ export default function OwnerDashboard() {
               </View>
             </LedgerRow>
             <LedgerRow
-              onPress={() => router.push("/owner/alerts" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/alerts" as never);
+              }}
               accessibilityLabel="التنبيهات التشغيليّة"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -242,7 +270,10 @@ export default function OwnerDashboard() {
               </View>
             </LedgerRow>
             <LedgerRow
-              onPress={() => router.push("/owner/ai" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/ai" as never);
+              }}
               accessibilityLabel="مركز الذكاء الاصطناعيّ"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -258,7 +289,10 @@ export default function OwnerDashboard() {
               </View>
             </LedgerRow>
             <LedgerRow
-              onPress={() => router.push("/owner/education" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/education" as never);
+              }}
               accessibilityLabel="النظرة التعليميّة"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -274,7 +308,10 @@ export default function OwnerDashboard() {
               </View>
             </LedgerRow>
             <LedgerRow
-              onPress={() => router.push("/owner/system" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/system" as never);
+              }}
               accessibilityLabel="النظام والتشغيل"
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -290,7 +327,10 @@ export default function OwnerDashboard() {
               </View>
             </LedgerRow>
             <LedgerRow
-              onPress={() => router.push("/owner/content" as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push("/owner/content" as never);
+              }}
               accessibilityLabel="المحتوى والعلامة التجاريّة"
               last
             >
@@ -310,7 +350,7 @@ export default function OwnerDashboard() {
           <T variant="xs" color="faint">
             المراقبة الحيّة والمستخدمون والحوكمة في تبويبات الشريط السفلي · صندوق التغذية الراجعة من صفحة «المحتوى».
           </T>
-        </View>
+        </Animated.View>
       </View>
     </Screen>
   );
