@@ -21,6 +21,7 @@ import { SectionBar } from "@/components/ui/screen";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
 
@@ -67,7 +68,7 @@ export default function CampusMapScreen() {
       onRefresh={() => faculties.refetch()}
     >
       {faculties.isError ? (
-        <ErrorState message={(faculties.error as Error | null)?.message} onRetry={() => faculties.refetch()} />
+        <ErrorState message={humanizeError(faculties.error)} onRetry={() => faculties.refetch()} />
       ) : !slug ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
