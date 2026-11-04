@@ -21,7 +21,7 @@ import { aiApi } from "@/api/ai";
 import { usePalette, useSemanticTheme } from "@/design/theme";
 import { AppStatusBar } from "@/design/statusbar";
 import { sp } from "@/design/tokens";
-import { T, MonoLabel } from "@/components/ui/text";
+import { T } from "@/components/ui/text";
 import { Badge, Card } from "@/components/ui/surfaces";
 import { Button, IconButton } from "@/components/ui/pressables";
 import { ActionSheet, AppSheet, ConfirmSheet } from "@/components/ui/sheet";
@@ -335,9 +335,10 @@ export function Assistant({
             <T variant="xs" color="muted" numberOfLines={1}>
               المزوّد «local» — ردود قالبيّة مركّبة محليًا حتى تفعيل مزوّد خارجي حقيقي.
             </T>
-          ) : model ? (
-            <MonoLabel>{model}</MonoLabel>
           ) : null}
+          {/* R334 review fix — the raw model id (e.g. vendor/model-7b) is a
+              technical string: never user-visible. The provider badge above
+              carries the provenance a user needs. */}
         </View>
         {messages.length > 0 ? (
           <IconButton accessibilityLabel="محادثة جديدة" onPress={newConversation}>
@@ -738,7 +739,7 @@ function TurnBubble({
       )}
       {turn.role === "assistant" && turn.status === "done" && turn.messageId ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
-          {turn.model ? <MonoLabel>{turn.model}</MonoLabel> : null}
+          {/* R334 review fix — raw model ids are technical strings; dropped. */}
           <IconButton accessibilityLabel="تقييم مفيد" onPress={() => onRate(1)}>
             <ThumbsUp size={14} color={p.textFaint} />
           </IconButton>

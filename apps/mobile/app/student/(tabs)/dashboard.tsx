@@ -220,7 +220,15 @@ export default function StudentDashboard() {
                   {kpi.attendancePct === null ? "—" : fmt(pct(kpi.attendancePct))}
                 </T>
               </RingProgress>
-              <View style={{ flex: 1, flexDirection: "row", gap: sp[8] }}>
+              <View
+                style={{
+                  flex: 1,
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  rowGap: sp[8],
+                  gap: sp[8],
+                }}
+              >
                 {(
                   [
                     { label: "مقررات", value: kpi.courseCount, a11y: `${fmt(kpi.courseCount)} مقررات` },
@@ -232,7 +240,7 @@ export default function StudentDashboard() {
                     { label: "نقاط الخبرة", value: kpi.totalXp, a11y: `${fmt(kpi.totalXp)} نقطة خبرة` },
                   ] as const
                 ).map((s) => (
-                  <View key={s.label} style={{ flex: 1, gap: 2, alignItems: "center" }}>
+                  <View key={s.label} style={{ flexGrow: 1, flexShrink: 1, flexBasis: "30%", gap: 2, alignItems: "center" }}>
                     <CountUp
                       value={s.value}
                       formatter={(n) => fmt(Math.round(n))}
