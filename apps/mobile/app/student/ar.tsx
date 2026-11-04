@@ -12,6 +12,7 @@ import { Badge, Card } from "@/components/ui/surfaces";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { num } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 
 /**
@@ -37,7 +38,7 @@ export default function ArScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={3} rowHeight={72} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
+        <ErrorState message={humanizeError(feed.error)} onRetry={() => feed.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Headset size={24} color={p.textFaint} />}
