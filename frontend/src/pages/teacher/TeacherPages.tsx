@@ -234,10 +234,11 @@ export function TeacherSchedulePage() {
                       {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
                     </div>
                   </div>
-                  {/* Latin course code inside an RTL line — bdi isolates
-                      it on the row's trailing chip (5-B6: the sub-line is
-                      room + enrollment reality only). */}
-                  <span className="hr-chip"><bdi>{it.courseCode}</bdi></span>
+                  {/* P-G3b-r — Arabic-first codes: the course's Arabic name
+                      leads the row; the Latin code demotes from the chip
+                      voice to the row's mono meta tail (.tpg-lecture-code,
+                      bdi-isolated inside the RTL flex line — 5-B6). */}
+                  <bdi className="tpg-lecture-code">{it.courseCode}</bdi>
                 </div>
               ))}
             </section>

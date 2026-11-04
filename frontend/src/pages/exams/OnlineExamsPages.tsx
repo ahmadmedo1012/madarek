@@ -1661,12 +1661,22 @@ export function ExamTakerPage() {
             <span className="form-error-msg">{submitError}</span>
           </div>
         )}
-        <span className={`oex-submit-status${unanswered > 0 ? ' warn' : ' ok'}`}>
-          <Icon icon={unanswered > 0 ? AlertTriangle : CheckCircle2} size={14} />
-          {unanswered > 0
-            ? countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])
-            : 'أُجيب عن كل الأسئلة'}
-        </span>
+        {/* P-G3b-r — the bar leaves its floating row: one hairline cell
+            (framed by the sheet) carrying the [nn/nn] mono index beside
+            the unanswered prose; the countdown itself stays on the sticky
+            .oex-bar (always on screen — a second timer here would read
+            as two instruments ~100px apart at the paper's end). */}
+        <div className="oex-submit-lead">
+          <bdi className="oex-submit-index font-mono" dir="ltr" aria-hidden="true">
+            [{String(answeredCount).padStart(2, '0')}/{String(attempt.questions.length).padStart(2, '0')}]
+          </bdi>
+          <span className={`oex-submit-status${unanswered > 0 ? ' warn' : ' ok'}`}>
+            <Icon icon={unanswered > 0 ? AlertTriangle : CheckCircle2} size={14} />
+            {unanswered > 0
+              ? countAr(unanswered, ['سؤال واحد بدون إجابة', 'سؤالان بدون إجابة', 'أسئلة بدون إجابة', 'سؤالاً بدون إجابة'])
+              : 'أُجيب عن كل الأسئلة'}
+          </span>
+        </div>
         <button type="button" className="btn primary hr-cta" onClick={() => setConfirming(true)} disabled={finish.isPending}>
           {finish.isPending ? 'جارٍ التسليم…' : 'تسليم الاختبار'}
         </button>

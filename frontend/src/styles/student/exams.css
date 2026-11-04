@@ -90,18 +90,10 @@
     padding-block: var(--sp-5);
   }
 
-  /* The sticky command bar + the docked submit bar square their
-     corners (hairline instruments, not card walls). The border stays
-     the 1px rule teacher-quality.css paints — only the radius joins
-     the sheet. */
+  /* The sticky command bar squares its corners (hairline instrument,
+     not a card wall); the submit cell is radius 0 at the base rule. */
   .r321x-taker .oex-bar {
     border-radius: 0;
-  }
-
-  @media (max-width: 920px) {
-    .r321x-taker .oex-submit-bar {
-      border-radius: 0;
-    }
   }
 
   /* The jump-target landing ring follows its cell's square corners
@@ -121,6 +113,12 @@
      verb beside the countdown hint. Tokens only; radius 0; the frame
      is static texture (the Reveal wrapper owns the one-shot motion). */
   .r321x-taker .oex-cover {
+    /* P-G3b-r fix: .pf-page is a COLUMN FLEX container — auto inline
+       margins alone defeat align-items:stretch and shrink-wrapped the
+       cover to its min-content (~366px @1440, measured live), not the
+       staged 720px workspace. An explicit inline-size restores the
+       column; the auto margins still center the capped box. */
+    inline-size: 100%;
     max-inline-size: 720px;
     margin-inline: auto;
     background: var(--surface-1);
@@ -727,19 +725,44 @@
 
   @keyframes oex-save-in { from { opacity: 0; } }
 
-  /* Submit bar — the unanswered count rides inline; on phone the bar is
-     bottom-sticky above the fixed bottom-nav so a 60-question paper
-     never hides the way out. */
+  /* Submit bar — P-G3b-r: the bar leaves its floating row and becomes
+     one hairline cell on every band (the cover's action-bar register:
+     surface-2 band, 1px rule, radius 0) carrying the [nn/nn] mono index
+     beside the unanswered prose and the submit verb. On ≤920px the same
+     cell is bottom-sticky above the fixed bottom-nav so a 60-question
+     paper never hides the way out. */
   .oex-submit-bar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
     gap: var(--sp-3);
-    margin-block-start: var(--sp-4);
+    margin-block-start: var(--sp-5);
+    padding: var(--sp-3) var(--sp-4);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    border-radius: 0;
   }
 
   .oex-submit-bar .form-error { flex-basis: 100%; }
+
+  /* The lead cluster: the mono index (answered/total, the same
+     instrument voice as the cover's spec row) beside the status prose. */
+  .oex-submit-lead {
+    display: inline-flex;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--sp-2) var(--sp-3);
+  }
+
+  .oex-submit-index {
+    flex-shrink: 0;
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-muted);
+  }
 
   .oex-submit-status {
     display: inline-flex;
@@ -760,9 +783,6 @@
       bottom: calc(72px + env(safe-area-inset-bottom) + var(--sp-2));
       z-index: 20;
       padding: var(--sp-2) var(--sp-3);
-      background: var(--surface);
-      border: 1px solid var(--rule);
-      border-radius: var(--r-lg);
       /* R313 (WP-F · D16): flat docked bar — hairline frame, no shadow. */
     }
   }

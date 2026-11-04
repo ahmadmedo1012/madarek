@@ -8,12 +8,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  GRID HELPERS                                                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: var(--sp-5); }
-  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: var(--sp-5); }
   .grid-2-1 { display: grid; grid-template-columns: 2fr 1fr; gap: var(--sp-6); }
-  .grid-1-2 { display: grid; grid-template-columns: 1fr 2fr; gap: var(--sp-6); }
-  .grid-auto-200 { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: var(--sp-5); }
-  .grid-auto-260 { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: var(--sp-5); }
 
   /* r152i (A3): .grid-4's responsive flip now reads its CONTAINER,
      not the viewport — the 1px cliff at 1100/1101px (4 cramped 172px
@@ -28,9 +23,7 @@
      content column (base.css .content-inner) for page strips and
      .modal-card for dialog strips; the self-container stays for
      nested grid-in-grid cases. */
-  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); container: grid4 / inline-size; }
   @container grid4 (max-width: 860px) {
-    .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
   }
 
   /* r155d: 1100 → 1024 — folds to the documented tablet rung (r152i
@@ -41,12 +34,9 @@
      band's narrowest (1025px viewport, 256px sidebar, 48px gutters),
      above the system's own 220px grid-auto floor. */
   @media (max-width: 1024px) {
-    .grid-3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
     .grid-2-1, .grid-1-2 { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
-    .grid-3, .grid-2 { grid-template-columns: 1fr; gap: var(--sp-3); }
-    .grid-auto-200, .grid-auto-260 { grid-template-columns: 1fr; gap: var(--sp-3); }
   }
   /* 23-b (A8 P3-9) — retired into the container band above: every live
      .grid-4 consumer is a compact KPI strip, and the 2×2 floor now
@@ -64,7 +54,6 @@
     min-inline-size: 0;
     box-shadow: var(--shadow-card);
   }
-  .card.compact { padding: var(--sp-5); }
   .card.flush   { padding: 0; overflow: clip; }
   /* r294 (polish v8 fold): cursor-follow spotlight — a quiet radial
      wash fades in on hover over every non-flush card. The centre is
@@ -94,35 +83,12 @@
     .card:not(.flush):hover::before { opacity: 1; }
   }
   .card > * { position: relative; z-index: 1; }
-  .card.bordered { border-color: var(--rule); }
-  .card.glass {
-    /* R313 (D16): the glass card goes solid — surface + hairline, no
-       backdrop-filter (the reference has none anywhere). */
-    background: var(--surface);
-    border-color: var(--glass-border, var(--border-strong));
-  }
   /* r296 (polish v10 fold): any iframe/video inside a card clips to
      the premium frame instead of breaking its radius. */
-  .card iframe,
-  .card video {
-    border-radius: var(--r-md);
-    max-inline-size: 100%;
-  }
   /* 13-17 dead-selector sweep (11-g P2-7): .card-link dropped from
      these groups — zero TSX consumers (cards opt into interactivity via
      the .interactive / a > / button > forms). */
-  .card.interactive,
-  a > .card,
-  button > .card { cursor: pointer; }
   @media (hover: hover) and (pointer: fine) {
-    .card.interactive:hover,
-    a > .card:hover,
-    button > .card:hover,
-    .card.bordered:hover {
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-card-h);
-      transform: translateY(-1px);
-    }
   }
   /* R329 (gate:clean): the card press recipe lives in polish.css
      alone (v9 @layer pages + the overrides-layer re-seat) — this
@@ -144,12 +110,6 @@
     padding-block-end: var(--sp-4);
     border-block-end: 1px solid var(--rule);
   }
-  .card.compact .card-header,
-  .card.flush .card-header {
-    border-block-end: 0;
-    padding-block-end: 0;
-    margin-block-end: var(--sp-4);
-  }
   .card-title-block { display: flex; flex-direction: column; gap: var(--sp-1); min-inline-size: 0; }
   .card-title {
     font-family: var(--font-display);
@@ -170,22 +130,12 @@
      as a real <h2>/<h3> (heading prop), the browser's default heading
      font-size/margin would break the row — reset them so the semantic
      upgrade is pixel-identical to the old <span>. */
-  .card-title-text {
-    font: inherit;
-    color: inherit;
-    letter-spacing: inherit;
-    line-height: inherit;
-    margin: 0;
-    padding: 0;
-    min-inline-size: 0;
-  }
   .card-subtitle {
     font-size: var(--type-label-size);
     color: var(--text-muted);
     line-height: var(--lh-base);
     font-weight: var(--fw-regular);
   }
-  .card-actions { display: flex; align-items: center; gap: var(--sp-2); flex-shrink: 0; }
 
   /* STICKER family — RETIRED (premium-polish dead-code sweep): the
      Notion-style .sticker/.sticker-wiggle family + its idle keyframes
@@ -194,125 +144,27 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  METRIC / KPI                                                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .metric {
-    /* r166b (E2 #3): the icon glyph rides the BOTH-THEME-SAFE accent
-       ink instead of the raw --accent fill. Light: --accent-ink →
-       --c-copper-deep #5C3416 on --accent-soft #F4E4D2 = 8.62:1 (was
-       #B57438 = 1.76:1 — under the 3:1 non-text floor, the r131
-       light-well hardening this family somehow missed). Dark:
-       --accent-ink ≡ --accent #E9B44C on #2C2312 = 8.18:1, unchanged.
-       The VALUE text and LABEL keep their own roles — only the icon
-       well + the polish.css ::before leading edge consume this. */
-    --_metric-color: var(--accent-ink);
-    --_metric-bg:    var(--accent-soft);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    padding: var(--sp-6);
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--sp-4);
-    /* R329 (gate:clean): overflow is polish.css's overrides seat
-       (hidden) — the clip copy here was inert. */
-    /* r294 (polish v8+v13 fold): the OVERRIDES-layer v13 trio was
-       the rendered truth (it beat the v8 pages-layer copy, which beat
-       this base) — consolidated here, both polish copies deleted. */
-    transition: border-color var(--t-base) var(--ease),
-                box-shadow var(--t-base) var(--ease),
-                transform var(--t-base) var(--ease-out);
-    min-block-size: 132px;
-    /* 012-design-graphics-uplift T056 — elevation language picks up
-       the dark-mode top-edge highlight automatically (the --elev-1
-       cascade). Keeps --shadow-card as the legacy fallback. */
-    box-shadow: var(--elev-1, var(--shadow-card));
-  }
   /* r148 (AUDIT-2 H1): الرفع/touch كان يضيء كل بلاطات KPI كأنها قابلة
      للنقر بينما 162 من 170 موقع استدعاء غير تفاعلية — إشارة كاذبة.
      النطاق الآن على الصنف الدلالي metric-link الذي يرسمه MetricCard
      عند وجود to/onClick فقط. */
   @media (hover: hover) and (pointer: fine) {
-    .metric.metric-link:hover {
-      /* r294 (polish v8 fold): the TOUCH path — v8's un-gated pages-layer
-         hover (sticky-hover devices) that the v13 overrides copy never
-         matched. Off-token by design: accent-tinted hover glow. */
-      transform: translateY(-1px);
-      border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
-      box-shadow:
-        0 1px 2px color-mix(in srgb, var(--black) 3%, transparent),
-        0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
-    }
   }
   @media (hover: hover) {
     /* r294 (polish v13 fold): the POINTER path — the overrides-layer
        hover that beat v8's on precise pointers; single owner now. */
-    .metric.metric-link:hover {
-      transform: translateY(-2px);
-      border-color: color-mix(in srgb, var(--accent) 40%, var(--rule));
-      /* Off-token by design: accent glow layered on the card shadow token. */
-      box-shadow:
-        0 8px 24px -8px color-mix(in srgb, var(--accent) 20%, transparent),
-        var(--shadow-card-h);
-    }
   }
   @media (prefers-reduced-motion: reduce) {
-    .metric { transition: none; }
     @media (hover: hover) and (pointer: fine) {
-      .metric.metric-link:hover { transform: none; }
     }
   }
   /* r294 (polish v8 fold): reduce vertical noise on small screens. */
   @media (max-width: 640px) {
-    .metric { padding: var(--sp-3) var(--sp-4); }
   }
 
-  .metric-head { display: flex; flex-direction: column; gap: var(--sp-2); flex: 1; min-inline-size: 0; }
-  .metric-label {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-    font-weight: var(--fw-semibold);
-    line-height: 1.3;
-    /* wave 9-a (ruling #2, 4-a flag): Latin tracking + uppercase
-       removed — Arabic cursive joins must stay untracked; uppercase
-       is a no-op for Arabic and only ever hurt Latin runs. */
-  }
-  .metric-value {
-    font-family: var(--font-display);
-    font-size: var(--type-metric-size-lg);
-    font-weight: var(--type-metric-weight);
-    color: var(--text);
-    line-height: var(--type-metric-line-height);
-    /* R329 (gate:clean): letter-spacing is polish.css's overrides
-       seat (--ls-tight) — the type-scale copy here was inert. */
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: var(--type-metric-feature-settings);
-  }
-  .metric-change {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-variant-numeric: tabular-nums;
-  }
   /* 16-E8: .metric-change .up/.dn deleted with MetricCard.changeDirection —
      the prop was never passed by any of the 175 call sites (15-f FE-11),
      so the ↑/↓ arrow span those rules styled never rendered. */
-  .metric-icon {
-    inline-size: 44px;
-    block-size: 44px;
-    border-radius: var(--r-lg);
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--_metric-bg);
-    color: var(--_metric-color);
-    /* 012 FR-004 — KPI tile rim: subtle role-accent tint on the icon
-       well (chrome only, never body text). */
-    box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--role-accent, var(--accent)) 30%, transparent);
-  }
 
   /* r166b (E2 #2 — dead `color` prop): MetricCard has emitted
      .metric.amber/.green/.red/.purple/.gold classes since the
@@ -342,12 +194,6 @@
      (the .pill.on / .btn.danger dark-override precedent). Only the
      icon well + leading edge change — .metric-value/.metric-label keep
      their text roles untouched. */
-  .metric.green  { --_metric-color: var(--success-ink); --_metric-bg: var(--success-soft); }
-  .metric.amber  { --_metric-color: var(--warning-ink); --_metric-bg: var(--warning-soft); }
-  .metric.red    { --_metric-color: var(--danger-ink);  --_metric-bg: var(--danger-soft); }
-  .metric.purple { --_metric-color: var(--c-lavender-deep); --_metric-bg: var(--c-lavender-bg); }
-  [data-theme="dark"] .metric.purple { --_metric-color: var(--c-lavender-ink); }
-  .metric.gold   { --_metric-color: var(--gold-ink);     --_metric-bg: var(--gold-soft); }
 
   /* compact KPI strip */
   /* 13-17 dead-selector sweep (11-g P2-7): .kpi-strip, .kpi-cell and
@@ -498,7 +344,6 @@
       transform: none;
     }
   }
-  .btn[aria-disabled="true"]:not(:disabled) { opacity: var(--state-btn-disabled-opacity); pointer-events: none; }
 
   /* ── PRIMARY — the accent signal slab (R313: the ink slab is      ──
      retired; #FA3600 + white label is the reference's CTA seat —
@@ -561,10 +406,6 @@
      :not([data-loading])-gated; this re-assertion keeps motion.css's
      earlier contract winning inside this layer too). */
   @media (hover: hover) and (pointer: fine) {
-    .btn[data-loading="true"]:hover {
-      transform: none;
-      box-shadow: var(--_btn-shadow);
-    }
   }
 
   .btn.ghost {
@@ -588,18 +429,6 @@
     --_btn-shadow: none;
   }
 
-  .btn.danger {
-    --_btn-bg: var(--danger);
-    /* A12 (21-b): --danger-fg keeps the AA-safe ink on the rose fill
-       in BOTH themes (#191918-class ink: 5.51:1 light / 8.31:1 dark). */
-    --_btn-fg: var(--danger-fg);
-    --_btn-bd: var(--danger);
-    /* R313 (D4): the wipe keeps the documented BRIGHTEN hover (the
-       family's colour-swap register, tuned for the near-black ink —
-       6.6:1 light / 9.3:1 dark). */
-    --_btn-wipe: color-mix(in oklab, var(--danger) 86%, var(--neutral-0));
-    --_btn-wipe-fg: var(--danger-fg);
-  }
   [data-theme='dark'] .btn.danger {
     --_btn-wipe: color-mix(in oklab, var(--danger) 86%, var(--white));
   }
@@ -607,42 +436,15 @@
      danger-ink recipe; hover rides the ink wipe like every ghost
      (R313: --_btn-bg-hover retired), with the soft rose wash as the
      wipe so the destructive identity survives the swap. */
-  .btn.ghost.danger {
-    --_btn-fg: var(--danger-ink);
-    --_btn-wipe: var(--danger-soft);
-    --_btn-wipe-fg: var(--danger-ink);
-  }
 
   .btn.sm  { block-size: 32px; padding-inline: var(--sp-3); font-size: var(--type-label-size-sm); border-radius: var(--r-sm); }
   .btn.lg  { block-size: 48px; padding-inline: var(--sp-6); font-size: var(--type-body-size); border-radius: var(--r-md); }
-  .btn.full { inline-size: 100%; }
   /* r157 dead-selector sweep (audit 6A11 #8, fresh-rg verified): .btn.xl
      and .btn.pill deleted — zero TSX consumers render either modifier
      (the Button primitive caps at sm/md/lg; pill radii live on
      .pill/.icon-btn families). */
 
-  .icon-btn {
-    inline-size: 38px;
-    block-size: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--r-md);
-    border: 1px solid transparent;
-    color: var(--text-secondary);
-    background: transparent;
-    cursor: pointer;
-    position: relative;
-    transition: var(--t-clean);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .icon-btn:hover {
-      /* R313 (D4): the icon seat joins the ink-wipe grammar — a plain
-         colour swap (no label to roll, no layer needed). */
-      background: var(--primary);
-      color: var(--primary-fg);
-      border-color: var(--primary);
-    }
   }
   /* 13-17 dead-selector sweep (11-g P2-7): .icon-btn.has-badge::after
      (danger dot on a notification bell) deleted — zero TSX consumers
@@ -695,17 +497,14 @@
   }
   /* r148 (AUDIT-2 L2): .badge:hover كان يرفع span غير تفاعلي (عرض خالص —
      primitives/index.tsx:217) — إشارة كاذبة. الحذف. */
-  .badge.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
   .badge.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
   .badge.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
-  .badge.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
   .badge.brand { background: var(--c-copper-bg);   color: var(--c-copper-deep); }
   /* r306 — the gold seat separates from the brand accent: achievement/
      status gold (XP, certificates, GRADED, WATCH, QUALITY role) reads
      the true gold role (--gold-soft/--gold-ink), never the orange
      signal. Contrast: 4.85:1 light / 7.07:1 dark (AA at the 13px
      600-weight badge register). */
-  .badge.gold  { background: var(--gold-soft);  color: var(--gold-ink); }
   /* r157 dead-selector sweep (audit 6A11 #8, fresh-rg verified):
      .badge.peach / .badge.sky / .badge.dot::before deleted — zero TSX
      consumers render any of the three (the Badge primitive's ThemeColor
@@ -771,12 +570,6 @@
   }
   [data-theme="dark"] .pill.on { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 
-  .reward-pill {
-    display: inline-flex; align-items: center; gap: var(--sp-1);
-    padding: var(--sp-1) var(--sp-3); border-radius: var(--r-full); /* r149 (R3-A2 R7): سلم الشارات 4/12 */
-    background: var(--accent-soft); color: var(--accent-strong);
-    font-size: var(--fs-xxs); font-weight: var(--fw-semibold);
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TABS (segmented)                                              ║
@@ -845,18 +638,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PROGRESS                                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .progress { display: flex; flex-direction: column; gap: var(--sp-1-5); } /* r149 (R3-A2 #1): 6px → النصف-درجة */
-  .progress-head {
-    display: flex; align-items: center; justify-content: space-between;
-    font-size: var(--type-label-size-sm); color: var(--text-muted);
-  }
-  .progress-track {
-    position: relative; /* r173a: the 0% marker dot anchors to the start edge */
-    block-size: 8px;
-    background: var(--surface-3);
-    border-radius: var(--r-full);
-    overflow: clip;
-  }
   /* r173a — the 0% affordance (the r171 VLM deferred note): a zero
      value painted nothing but the faint surface-3 track, which reads
      as disabled ("nothing here") on the showValue={false} surfaces.
@@ -867,55 +648,11 @@
      — marker, not fill, so it never reads as "1% of progress"), with
      the 1px inset --surface cutout the checkpoint marks use. Existing
      tokens only; v>0 renders untouched — the fill owns the track. */
-  .progress-zero-mark {
-    position: absolute;
-    inset-block-start: 0;
-    inset-inline-start: 0;
-    block-size: 8px;
-    inline-size: 8px;
-    border-radius: var(--r-full);
-    background: var(--text-muted);
-    box-shadow: inset 0 0 0 1px var(--surface);
-  }
-  .progress-fill {
-    block-size: 100%;
-    /* 23-b (A11 P2-10 — scaleX debt cleared): the fill paints at full
-       track width and the VALUE rides transform: scaleX() — the width
-       layout transition (reflow per frame) is gone. The primitive sets
-       the scale inline (primitives/index.tsx ProgressBar); transform-
-       origin follows the reading direction like the owner-meter fills
-       (owner.css): inline-start edge = right in RTL. */
-    inline-size: 100%;
-    background: var(--neutral-900);
-    border-radius: inherit;
-    transform-origin: left center;
-    transform: scaleX(0);
-    transition: transform var(--t-slow) var(--ease-out);
-  }
-  [dir="rtl"] .progress-fill { transform-origin: right center; }
-  [data-theme="dark"] .progress-fill { background: var(--accent); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  ALERT ROW                                                     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .alert {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    background: var(--surface);
-    transition: var(--t-clean);
-  }
   /* r148 (AUDIT-2 L4): .alert:hover كان يضيء صف تنبيه ساكنًا — الحذف. */
-  .alert-dot {
-    inline-size: 8px; block-size: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-block-start: 7px; /* spacing-gate: allow — alert-dot optical baseline against the adjacent text line */
-    flex-shrink: 0;
-  }
   .alert.red    .alert-dot { background: var(--danger); }
   /* 5-D1 (A11 P2-4): --warning #D6A330 on the white .alert card
      measured 2.30:1 (non-text floor 3:1). The chart-safe amber tier
@@ -926,11 +663,6 @@
      clear the floor while still reading amber. */
   .alert.amber  .alert-dot { background: var(--chart-6); }
   .alert.green  .alert-dot { background: var(--success); }
-  .alert.purple .alert-dot { background: var(--c-lavender-ink); }
-  .alert-body { display: flex; flex-direction: column; gap: var(--sp-1); min-inline-size: 0; flex: 1; }
-  .alert-title { font-weight: var(--fw-semibold); color: var(--text); font-size: var(--type-label-size); }
-  .alert-desc  { font-size: var(--type-label-size); color: var(--text-secondary); line-height: var(--lh-base); }
-  .alert-time  { font-size: var(--fs-xxs); color: var(--text-muted); margin-block-start: var(--sp-0-5); }
   /* r166a (E1 unread-visibility defect): the alerts page's read/unread
      rows carried the SAME surface, border and title weight — the state
      lived only in a small «غير مقروء» Badge, so the list could not be
@@ -940,10 +672,6 @@
      sidebar-active bar idiom, calmer 2px weight; the badge stays as
      redundant confirmation, not the signal). Tokens only; both
      resolve per theme. Opt-in: only callers passing unread paint it. */
-  .alert.unread {
-    background: var(--surface-2);
-    border-inline-start: 2px solid var(--accent);
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  AVATAR                                                        ║
@@ -1006,12 +734,6 @@
   }
   /* R313 (D16): the FILLED state — autofilled fields carry the accent
      hairline (the reference's filled → #FA3600). */
-  .input:autofill,
-  input:autofill,
-  .input:-webkit-autofill,
-  input:-webkit-autofill {
-    border-color: var(--accent);
-  }
   .input::placeholder, input::placeholder, textarea::placeholder { color: var(--text-faint); }
 
   /* ── Disabled text controls ──────────────────────────────────────
@@ -1023,16 +745,6 @@
      in BOTH themes (checkbox/radio already carried this via
      polish.css's forms block). Pointer-events stay on so the
      not-allowed cursor renders; focus is already blocked by the UA. */
-  .input:disabled,
-  input:disabled, textarea:disabled, select:disabled,
-  .input[aria-disabled="true"],
-  input[aria-disabled="true"],
-  textarea[aria-disabled="true"],
-  select[aria-disabled="true"] {
-    opacity: var(--state-input-disabled-opacity);
-    cursor: not-allowed;
-    background: var(--surface-2);
-  }
 
   /* ── Topbar search pill (wave 2-b — audit 0-c P0-1) ──────────────────
      The input itself is the pill: surface-1 ground, hairline --border,
@@ -1066,7 +778,6 @@
      tight end; the clear button and the ⌘K/Ctrl+K hint — mutually
      exclusive, marked via .has-clear / .has-shortcut on the wrapper —
      each get their own run-out. */
-  .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-2)); }
   .topbar-search.has-shortcut input { padding-inline-end: calc(var(--sp-9) + var(--sp-4)); }
   @media (hover: hover) and (pointer: fine) {
     .topbar-search input:hover { border-color: var(--state-card-hover-border); }
@@ -1081,16 +792,12 @@
     .topbar-search input { block-size: 44px; }
     /* …and the clear button grows with it (44px at inset-inline-end
        sp-1) — widen the reserved zone so text never runs under it. */
-    .topbar-search.has-clear input { padding-inline-end: calc(var(--sp-8) + var(--sp-4)); }
   }
 
   /* r149 (R3-A1 #2): داخل شريط تصفية، حبة البحث تمتد لارتفاع مدخلات
      الاختيار المجاورة (44px) — كانت 38px بجانب 44px في ExamAuthor
      (شريطان) والمكتبة. خارج أشرطة التصفية تبقى الحبة 38px كروم ترويسة. */
-  .filter-bar .topbar-search input { block-size: 44px; }
 
-  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
-  @media (max-width: 640px) { .form-grid-2 { grid-template-columns: 1fr; } }
   .form-label {
     display: block;
     font-size: var(--type-label-size-sm);
@@ -1117,68 +824,15 @@
      ║  (r294 polish v8 fold: the whole family lived only in the     ║
      ║  polish bundle — sole definition, clean move)                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  input[type="checkbox"],
-  input[type="radio"] {
-    appearance: none;
-    -webkit-appearance: none;
-    inline-size: 18px;
-    block-size: 18px;
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    /* R313 (D16): 1px hairline (--rule-strong = #B3B3AF), transparent
-       ground — square checkbox (radius rung is 0), circle radio (the
-       one sanctioned 50% primitive). */
-    border: 1px solid var(--rule-strong, var(--rule));
-    cursor: pointer;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--t-clean);
-    position: relative;
-  }
-  input[type="checkbox"] { border-radius: var(--r-xs); }
-  input[type="radio"]    { border-radius: 50%; }
 
   @media (hover: hover) and (pointer: fine) {
-    input[type="checkbox"]:hover,
-    input[type="radio"]:hover {
-      border-color: var(--accent);
-    }
   }
 
-  input[type="checkbox"]:checked,
-  input[type="radio"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
 
   /* Checkmark — drawn with a clip-path triangle (no SVG, no font) */
-  input[type="checkbox"]:checked::after {
-    content: "";
-    inline-size: 10px;
-    block-size: 6px;
-    border: solid var(--accent-fg, white);
-    border-width: 0 0 2px 2px;
-    transform: rotate(-45deg) translate(1px, -1px);
-    margin-block-start: calc(-1 * var(--sp-0-5));
-  }
 
   /* Radio dot */
-  input[type="radio"]:checked::after {
-    content: "";
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 50%;
-    background: var(--accent-fg, white);
-  }
 
-  input[type="checkbox"]:disabled,
-  input[type="radio"]:disabled {
-    opacity: var(--state-input-disabled-opacity);
-    cursor: not-allowed;
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TABLE                                                         ║
@@ -1190,93 +844,21 @@
      ║  polish (zebra shift + leading dot) lives in polish v13/v17 and  ║
      ║  keeps winning — this is the base.                              ║
      ╚════════════════════════════════════════════════════════════════╝ */
-  .table-wrap {
-    border: 1px solid var(--rule);
-    /* r304 fold (ex «final-visual-system»): the r-lg workspace corner —
-       one step calmer than the old r-xl hero-frame, matching the
-       RowList/pf-rowlist containers. The bolt-on's `overflow: clip` is
-       NOT folded: it silently killed the ≤640 horizontal scroll rung
-       (wide tables clipped their trailing columns on phones — the
-       craft floor is «scroll or stack», never clip). */
-    border-radius: var(--r-lg);
-    /* wave 2-b: overflow-x auto (was clip) — wide tables scroll on
-       narrow viewports instead of losing columns to a clip (craft
-       floor: mobile tables scroll or stack). overflow-y stays clipped
-       at the radius box; the .sticky opt-in below turns it into the
-       capped vertical scrollport. */
-    overflow-x: auto;
-    overflow-y: clip;
-    background: var(--surface);
-  }
-  table.table, .table {
-    inline-size: 100%;
-    border-collapse: collapse;
-    font-size: var(--type-label-size);
-  }
-  .table thead th {
-    text-align: start;
-    padding: var(--sp-3) var(--sp-4);
-    /* r166b (E2 #4): 11px → --fs-xs (12px). The old rung made headers
-       SMALLER than the 13px body cells — an inverted hierarchy
-       (DOM-verified on /admin/students: th 11 vs td 13). 12 keeps the
-       muted/600 de-emphasis while never reading smaller than the data
-       it labels; DESIGN.md's table canon line matches. */
-    font-size: var(--fs-xs);
-    /* R313 (D16): the header row rides the MONO voice — Latin labels
-       render Geist Mono uppercase (the reference's micro-index
-       register); Arabic labels fall to the sans inside --font-mono and
-       carry the hierarchy via weight 600 instead. */
-    font-family: var(--font-mono);
-    font-weight: var(--fw-semibold);
-    text-transform: uppercase; /* no-op for Arabic — Latin-only device */
-    /* R313 (D16): NO header fill — paper + hairlines only. */
-    background: transparent;
-    color: var(--text-secondary);
-    /* R313 (D16): the section rule — #B3B3AF strong hairline under the
-       header block (row hairlines below stay --border #E0E0DA). */
-    border-block-end: 1px solid var(--border-strong);
-    white-space: nowrap;
-  }
-  .table tbody td {
-    padding: var(--sp-3) var(--sp-4);
-    color: var(--text);
-    /* R313 (D16): the ruled hairline grid — 1px #E0E0DA row borders. */
-    border-block-end: 1px solid var(--border);
-    vertical-align: middle;
-  }
-  .table tbody tr:last-child td { border-block-end: 0; }
   /* R313 (D16): the zebra-on-hover wash is RETIRED — paper + hairlines
      only; hover affordance stays with the row-action reveal below. */
 
   /* Emphasized cell — the leading name/title column of the tables
      (9 live usages; was referenced but undefined → silent no-op). */
-  .tbl-strong { font-weight: var(--fw-semibold); color: var(--text); }
 
   /* Opt-in sticky header: the wrap becomes the capped scroll container
      so the pinned header never slides under the sticky topbar. */
-  .table-wrap.sticky {
-    max-block-size: min(60vh, 480px);
-    overflow-y: auto;
-  }
-  .table-wrap.sticky thead th {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: 1; /* local paint-order above scrolling rows — not a --z-* layer */
-  }
 
   /* CSS-only action reveal: actions parked in the last cell (e.g. a
      .table-row-actions cluster of icon buttons) stay hidden until the
      row is hovered — or focused, so keyboard paths stay visible.
      Touch devices (hover: none) show them persistently. */
-  .table-row-actions {
-    opacity: 0;
-    transition: opacity var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .table tbody tr:hover .table-row-actions,
-    .table tbody tr:focus-within .table-row-actions { opacity: 1; }
   }
-  @media (hover: none) { .table-row-actions { opacity: 1; } }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  MOBILE — the .table fallback ladder (≤640)                    ║
@@ -1299,191 +881,36 @@
   @media (max-width: 640px) {
     /* r304 fold (ex «final-visual-system»): phones get the tighter
        r-md container corner on the same box the desktop gives r-lg. */
-    .table-wrap { border-radius: var(--r-md); }
-    .tbl-stack { display: block; }
-    .tbl-stack thead { display: none; }
-    .tbl-stack tbody, .tbl-stack tr { display: block; }
-    .tbl-stack tr {
-      border: 1px solid var(--rule);
-      border-radius: var(--r-md);
-      padding: var(--sp-3);
-      margin-block-end: var(--sp-3);
-      background: var(--surface);
-    }
     /* Cards don't zebra — parity with the old overrides-layer home
        (the wrap-scroller's hover never applied to stacked cards). */
     @media (hover: hover) and (pointer: fine) {
-      .table.tbl-stack tbody tr:hover { background: var(--surface); }
     }
-    .tbl-stack td {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: var(--sp-3);
-      padding: var(--sp-2) 0;
-      border-block-end: 1px dashed var(--rule);
-    }
-    .tbl-stack td:last-child { border-block-end: 0; }
-    .tbl-stack td[data-label]::before {
-      content: attr(data-label);
-      flex-shrink: 0;
-      color: var(--text-muted);
-      font-size: var(--fs-xs);
-      font-weight: var(--fw-medium);
-    }
-    .table:not(.tbl-stack) {
-      display: block;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      max-inline-size: 100%;
-    }
-    .table:not(.tbl-stack) thead { display: table-header-group; }
-    .table:not(.tbl-stack) tbody { display: table-row-group; }
   }
 
   /* Pagination footer of the table system. NOTE (13-17): OwnerUsersPage
      finished the ruling-#5 migration — it renders .table-pagination with
      ChevronLeft/ChevronRight icons, and the legacy .owner-pagination
      block (owner.css) was deleted with the rest of the dead sweep. */
-  .table-pagination {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    border-block-start: 1px solid var(--rule);
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-  }
-  .table-pagination-actions { display: flex; align-items: center; gap: var(--sp-2); }
-  .table-pagination-actions button {
-    min-inline-size: 36px;
-    block-size: 36px;
-    padding-inline: var(--sp-2);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    background: transparent;
-    color: var(--text-muted);
-    font-size: var(--type-label-size);
-    font-variant-numeric: tabular-nums;
-    cursor: pointer;
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .table-pagination-actions button:hover:not(:disabled) {
-      background: var(--surface-2);
-      color: var(--text);
-      border-color: var(--border-strong);
-    }
   }
-  .table-pagination-actions button.active,
-  .table-pagination-actions button[aria-current="page"] {
-    background: var(--accent-soft);
-    color: var(--accent-ink, var(--accent));
-    border-color: var(--accent);
-    font-weight: var(--fw-semibold);
-  }
-  .table-pagination-actions button:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
   @media (max-width: 640px) {
     /* 44px touch targets on phones (craft floor). */
-    .table-pagination-actions button { min-inline-size: 44px; min-block-size: 44px; }
     /* r151b (R5-A4 probe): the 7×44px button cluster (25 pages of the
        papers roster) measured 329px wide inside a 274px wrap at 360 —
        «التالي» was cut off the RTL leading edge. Wrap the cluster so
        the buttons reflow onto a second line instead of overflowing. */
-    .table-pagination-actions { flex-wrap: wrap; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SECTION TITLE                                                 ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .section-title {
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-md);
-    /* r325 Y4 — 600, the §R324 weight law: the div-rendered section
-       heading rode --fw-black/700 outside every h* sweep. */
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    /* r149 (R3-A4 F2): ‎--ls-snug → --ls-normal — عنوان عربي بلا تتبع
-       عند المنبع (كان محروسًا فقط في overrides). */
-    letter-spacing: var(--ls-normal);
-    line-height: 1.2;
-    margin-block-end: var(--sp-4);
-    display: flex; align-items: center; gap: var(--sp-3);
-    position: relative;
-    /* r294 (polish v8 fold): the 3px accent stripe reads the
-       hierarchy at a glance alongside the ::after underline. */
-    padding-inline-start: var(--sp-3);
-  }
-  .section-title::after {
-    content: '';
-    position: absolute;
-    inset-block-end: -6px;
-    inset-inline-start: 0;
-    inline-size: 48px;
-    block-size: 3px;
-    background: linear-gradient(90deg, var(--accent), transparent);
-    /* 3px gradient bar — micro-radius below the --r-xs floor */
-    border-radius: 2px; /* radius-gate: allow — 3px gradient bar micro-radius below the --r-xs floor */
-  }
-  [dir="rtl"] .section-title::after {
-    inset-inline-start: auto;
-    inset-inline-end: 0;
-    background: linear-gradient(-90deg, var(--accent), transparent);
-  }
   /* r294 (polish v8 fold): the ::before accent stripe — the
      inline-start edge marker for section headings. */
-  .section-title::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-start: 4px;
-    inset-block-end: 4px;
-    inline-size: 3px;
-    background: var(--accent);
-    /* r184 (A3 §F8 twin): logical corners — the inline-END pair faces
-     * the content in both directions (physical `0 2px 2px 0` rounded
-     * the sidebar-edge side under RTL); LTR is pixel-identical. */
-    border-start-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
-    border-end-end-radius: 2px; /* radius-gate: allow — section-title 3px stripe micro (r184 F8 twin, logical) */
-    opacity: 0.7;
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  DASH AGENDA / GPA / TERM                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
   
-  .dash-section-title {
-    font-family: var(--font-display);
-    /* r325 Y4 — no live consumer today (the r220 dashboards retired the
-       class; polish.css:lang(ar) still lists it for tracking), but the
-       pinned grammar stays on the law for any revival: the app-density
-       H2 rung at 600 (was --fs-h2 40px @1440 / 47.6px @390 at 700). */
-    font-size: var(--fs-app-h2);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    letter-spacing: 0; /* r148 (AUDIT-3 M8): عناوين عربية — لا تتبّع سالب */
-    margin-block-end: var(--sp-4);
-    position: relative;
-  }
-  .dash-section-title::after {
-    content: "";
-    display: block;
-    inline-size: 48px;
-    block-size: 3px;
-    background: linear-gradient(90deg, var(--accent) 0%, transparent 100%);
-    border-radius: var(--r-full);
-    margin-block-start: var(--sp-2);
-    opacity: 0.85;
-  }
   
   /* r155d: 1100 → 1024 — same fold as the grid-helpers block above
      (r152i ladder; 1024 is the documented rung, 1100 had no other
@@ -1549,24 +976,11 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LIST ROW                                                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .list-row {
-    display: flex; align-items: center; gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    border-block-end: 1px solid var(--rule);
-    /* R329 (gate:clean): the row transition is polish.css's overrides
-       rule (background+transform) — this copy was inert. */
-  }
-  .list-row:last-child { border-block-end: 0; }
   /* r148 (AUDIT-2 L3): التمييز التفاعلي للصفوف القابلة للنقر فقط
      (label/button/a داخل ExamAuthorPages) — الصفوف الساكنة
      (TemplateRow/QuestionBankRow/المحاولات) لا تُضاء كاذبة. */
   @media (hover: hover) and (pointer: fine) {
-    label.list-row:hover, button.list-row:hover, a.list-row:hover { background: var(--surface-2); }
   }
-  .list-row-body { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; }
-  .list-row-title { font-weight: var(--fw-semibold); font-size: var(--type-label-size); color: var(--text); }
-  .list-row-sub   { font-size: var(--type-label-size-sm); color: var(--text-muted); }
-  .list-row-meta  { font-size: var(--type-label-size-sm); color: var(--text-muted); flex-shrink: 0; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  5-B6 — TEACHER GRADING QUEUE + ANSWER + LECTURE REORDER       ║
@@ -1576,56 +990,15 @@
      a header line (title · ceiling chip · count chip) and the student
      rows riding the plain .list-row grammar inside. Elevation is the
      surface-2 fill alone — no border+shadow double declaration. */
-  .queue-group {
-    padding: var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    display: flex; flex-direction: column; gap: var(--sp-2);
-  }
-  .queue-group-head {
-    display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap;
-  }
-  .queue-group-main { display: flex; flex-direction: column; gap: var(--sp-0-5); flex: 1; min-inline-size: 0; } /* r149 (R3-A2 R6): 1px → 2px — قاعدة رصة التسمية الموحدة */
-  .queue-group-title {
-    font-weight: var(--fw-semibold);
-    font-size: var(--type-label-size);
-    color: var(--text);
-  }
-  .queue-group-sub { font-size: var(--type-label-size-sm); color: var(--text-muted); }
   @media (max-width: 640px) {
-    .queue-group-head { align-items: flex-start; }
-    .queue-group-main { flex-basis: 100%; }
   }
 
   /* The student's answer inside GradeSubmissionModal (5-A7 P1-2): the
      PendingAnswerCard grammar — surface-2 well, pre-wrap text, one
      hairline. Text on pastel/surface-2 stays --text (body ink). */
-  .grade-answer {
-    display: flex; flex-direction: column; gap: var(--sp-2);
-    margin-block-end: var(--sp-4);
-    padding: var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-  }
-  .grade-answer-head {
-    display: inline-flex; align-items: center; gap: var(--sp-1);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text-muted);
-  }
-  .grade-answer-text {
-    margin: 0;
-    font-size: var(--type-body-size);
-    line-height: var(--type-body-line-height);
-    color: var(--text);
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
   /* Long answers scroll inside the well instead of stretching the
      modal past the viewport (max-block-size keeps the score field in
      view while the teacher reads). */
-  .grade-answer-text { max-block-size: min(38vh, 320px); overflow-y: auto; }
 
   /* 5-B6 messages craft (A7 «messages 7.5»): the read-only log clamps
      each body to one line — 30 rows of arbitrary prose otherwise rag
@@ -1636,11 +1009,6 @@
      valid — a clamp with no touch-readable path is a regression).
      Works because .list-row-body is min-inline-size: 0. */
   @media (hover: hover) and (pointer: fine) {
-    .msg-body {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
   }
 
   /* r173a — messages day-group headers (the r171 VLM deferred note):
@@ -1652,60 +1020,22 @@
      dark — the same AA step the ProgressBar % readout consumes); the
      trailing hairline is --rule, the canonical hairline family. No
      new colors. */
-  .msg-day-group {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-1);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text-secondary);
-    /* the label must never be sheared by the hairline at any width */
-    min-inline-size: 0;
-  }
-  .msg-day-group:first-child { margin-block-start: 0; }
-  .msg-day-group::after {
-    content: '';
-    flex: 1;
-    block-size: 1px;
-    background: var(--rule);
-    flex-shrink: 1;
-  }
 
   /* Lecture reorder pair (5-A7 P2-3, curriculum authoring): a compact
      vertical chevron stack at the row's inline-start edge — the handle
      position. Buttons ride the shared .btn.ghost.sm grammar; the pair
      only tightens its own geometry (square targets, hairline rules). */
-  .lec-move {
-    display: flex; flex-direction: column;
-    flex-shrink: 0;
-  }
-  .lec-move-btn { padding-inline: var(--sp-1); }
-  .lec-move-btn + .lec-move-btn { border-block-start: 1px solid var(--rule); }
 
   /* Chapter reorder pair (5-D3 — 5-B6 hand-off #2, the ordinal landed
      in wave 26): same neighbor-swap grammar as .lec-move but HORIZONTAL —
      chapter rows are single-line compact rows (~36px), a vertical chevron
      stack would double their height. Same .btn.ghost.sm base, square
      targets, hairline divider between the pair. */
-  .ch-move {
-    display: flex;
-    flex-shrink: 0;
-  }
-  .ch-move-btn { padding-inline: var(--sp-1); }
-  .ch-move-btn + .ch-move-btn { border-inline-start: 1px solid var(--rule); }
 
   /* 5-B6 (A7 P2-2): the grading modal wraps body + footer in one
      <form> so Enter submits. The form is the card's flex item besides
      the header — stretch it and let the body scroll exactly like the
      unwrapped layout (footer stays pinned above the fold). */
-  .modal-card > form {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-block-size: 0;
-  }
-  .modal-card > form > .modal-body { min-block-size: 0; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STATES                                                        ║
@@ -1742,20 +1072,10 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  STATE VARIANTS                                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .state.state-inline { padding: var(--sp-7) var(--sp-5); }
   /* (r151c: .state.state-page / .state.state-card deleted — the only
      state-variant constructor is LoadingState's `state-${variant}` and
      no call site passes "page" or "card" (default inline + one
      minimal); the LoadingVariant union was narrowed with them.) */
-  .state.state-error .state-icon {
-    background: var(--danger-soft);
-    /* 5-D1 (A11 P2-3): --danger on --danger-soft measured 2.59:1 light
-       (non-text floor is 3:1). The -deep ink pair mirrors the
-       .state-icon-success grammar (components.css) and the base
-       .state-icon's own -deep pairing; dark's -ink maps to the same
-       value the base token already resolves to (no dark change). */
-    color: var(--danger-ink, var(--danger));
-  }
   .state.state-empty .state-icon {
     background: var(--surface-2);
     color: var(--text-muted);
@@ -1772,7 +1092,6 @@
 
   /* Spinner size variants (wave 9-b: .spinner-lg deleted — zero TSX
      consumers; only spinner-sm is rendered by the States primitive.) */
-  .spinner.spinner-sm { inline-size: 14px; block-size: 14px; border-width: 2px; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LOADINGSTATE — calmer fallback when wrapped in cards          ║
@@ -1780,43 +1099,6 @@
      ║  show a soft skeleton-bar pattern alongside the spinner so    ║
      ║  users see content shape forming, not just a spinner.         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .card > .state.state-loading,
-  .card > .state.state-inline {
-    padding: var(--sp-6) var(--sp-4);
-  }
-  .card > .state.state-loading::before,
-  .card > .state.state-inline::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(180deg,
-        transparent 0%,
-        transparent 35%,
-        var(--surface-2) 35%,
-        var(--surface-2) 38%,
-        transparent 38%,
-        transparent 50%,
-        var(--surface-2) 50%,
-        var(--surface-2) 53%,
-        transparent 53%,
-        transparent 65%,
-        var(--surface-2) 65%,
-        var(--surface-2) 68%,
-        transparent 68%
-      );
-    border-radius: inherit;
-    opacity: 0.35;
-    pointer-events: none;
-    z-index: -1; /* decorative layer behind content — local paint-order, not a --z-* layer */
-    animation: madarek-loadingstate-pulse var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
-  }
-  .card > .state.state-loading,
-  .card > .state.state-inline {
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-  }
   @keyframes madarek-loadingstate-pulse {
     0%, 100% { opacity: 0.25; }
     50%      { opacity: 0.45; }
@@ -1829,17 +1111,6 @@
      ║  the page hasn't booted yet), don't just spin — also show a   ║
      ║  faint skeleton block so the layout doesn't feel broken.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .page > .state.state-loading,
-  .page > .state.state-inline {
-    padding: var(--sp-9) var(--sp-6);
-    border-radius: var(--r-xl);
-    background: linear-gradient(
-      135deg,
-      color-mix(in srgb, var(--surface-2) 80%, transparent) 0%,
-      color-mix(in srgb, var(--surface) 90%, transparent) 100%
-    );
-    border: 1px solid var(--rule);
-  }
 
   .state-icon {
     inline-size: 56px; block-size: 56px;
@@ -1874,29 +1145,6 @@
      tile, no motion: static texture, the RM belt has nothing to
      collapse. Same 56px footprint as the default icon well (44px on
      the ≤640 rung below). */
-  .state-hatch-cell {
-    inline-size: 56px;
-    block-size: 56px;
-    border: 1px solid var(--rule-strong);
-    border-radius: 0; /* raw-css: permitted zero — the sheet-cell register */
-    background: repeating-linear-gradient(
-      45deg,
-      transparent 0 6px,        /* hatch pitch — the drafting-hatch rhythm, not a spacing rung */
-      var(--grid-line) 6px 7px
-    );
-    margin-block-end: var(--sp-2);
-  }
-  .state-hatch-label {
-    margin: 0;
-    margin-block-end: var(--sp-2);
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-medium);
-    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
-    text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-faint);
-  }
   /* r166b (E2 #6 — oversized empty states on phones): the desktop
      breathing (sp-9/sp-6 + sp-7 block + 56px well) measured 303px on
      /teacher/assignments at 390×844 (~36% of the viewport) and 375px
@@ -1908,7 +1156,6 @@
   @media (max-width: 640px) {
     .state { padding: var(--sp-6) var(--sp-4); }
     .state-icon { inline-size: 44px; block-size: 44px; }
-    .state-hatch-cell { inline-size: 44px; block-size: 44px; }
     .state-illustration { inline-size: 120px; block-size: 120px; }
     .state-illustration .illustration > svg { max-inline-size: 120px; max-block-size: 120px; }
   }
@@ -1921,28 +1168,7 @@
      while v6's min-block floor survives; both polish copies deleted.
      The real empty/error anatomy is the States primitive above —
      this container remains for the four legacy student surfaces. */
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-3);
-    padding: var(--sp-6) var(--sp-4);
-    text-align: center;
-    color: var(--text-muted);
-    min-block-size: 240px;
-  }
 
-  .spinner {
-    inline-size: 22px; block-size: 22px;
-    /* r294 (polish v8 fold): the soft text-tint track + accent leading
-       edge were the rendered truth (the polish copy beat this base). */
-    border: 2px solid color-mix(in srgb, var(--text) 8%, transparent);
-    border-block-start-color: var(--accent);
-    border-radius: 50%;
-    animation: madarek-spin var(--motion-duration-stat) var(--ease-linear) infinite;
-  }
-  [data-theme="dark"] .spinner { border-block-start-color: var(--accent); }
   @keyframes madarek-spin { to { transform: rotate(360deg); } }
 
   /* r150b: the `.skeleton` redefinition + `madarek-shimmer` keyframes
@@ -1973,9 +1199,8 @@
   .flex { display: flex; }
   .flex-1 { flex: 1; min-inline-size: 0; }
   .flex-col { display: flex; flex-direction: column; }
-  .flex-wrap { flex-wrap: wrap; }
   .items-center { align-items: center; }
-  .items-start { align-items: flex-start; }
+  .items-baseline { align-items: baseline; }
   /* 13-17 dead-selector sweep (11-g P2-7): .items-end, .gap-6 and
      .mt-3/.mt-4/.mt-5 deleted — zero TSX consumers (the neighboring
      utilities are all live). */
@@ -1990,31 +1215,17 @@
      - .items-baseline: ExamAuthorPages' label/leader/value row — its
        own comment says "Baseline-aligned" but the rule never existed,
        so the dotted-leader scan line rendered stretch-aligned. */
-  .justify-end { justify-content: flex-end; }
-  .items-baseline { align-items: baseline; }
-  .justify-between { justify-content: space-between; }
-  .gap-1 { gap: var(--sp-1); }
   .gap-2 { gap: var(--sp-2); }
   .gap-3 { gap: var(--sp-3); }
-  .gap-4 { gap: var(--sp-4); }
-  .gap-5 { gap: var(--sp-5); }
-  .shrink-0 { flex-shrink: 0; }
   .font-mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
   /* Tabular numerals — apply to KPIs, table number columns, counters,
      percentages, dates with shifting digits. Lining figures keep
      numerals on the same baseline as caps. */
-  .tabular-nums {
-    font-variant-numeric: tabular-nums lining-nums;
-    font-feature-settings: 'tnum' 1, 'lnum' 1;
-  }
   /* 13-17 dead-selector sweep (11-g P2-7): .body-cap / .prose-cap
      (body-measure cap) deleted — zero TSX consumers. */
-  .font-medium { font-weight: var(--fw-medium); }
   .font-semibold { font-weight: var(--fw-semibold); }
-  .font-bold { font-weight: var(--fw-bold); }
   .text-xs { font-size: var(--fs-xs); }
   .text-sm { font-size: var(--fs-sm); }
-  .text-md { font-size: var(--fs-body); }
   /* wave 2-b (audits 0-d/0-e): the utilities below were referenced
      1–126× each but never defined — every consumer silently rendered
      at inherited size/color. */
@@ -2024,19 +1235,11 @@
     /* No letter-spacing: consumers are Arabic meta lines and tracking
        breaks cursive joining (orchestrator ruling #2). */
   }
-  .text-2xl {
-    /* Backed by the wave 1-a token --text-2xl (= --fs-2xl = 30px). */
-    font-size: var(--text-2xl);
-    font-weight: var(--type-headline-weight);
-    line-height: var(--type-headline-line-height);
-    /* No letter-spacing — Arabic headline (ruling #2). */
-  }
   .text-muted { color: var(--text-muted); }
   /* 16-E8 (15-f FE-8): the .text-secondary class was never applied by
      any component — only the --text-secondary token is consumed. */
   .text-subtle { color: var(--text-subtle); }
   /* Status text colors — text-safe -ink tokens (guardrail #3). */
-  .text-red { color: var(--danger-ink); }
   /* Inline text link — used on bare <button>s that must read as links
      (e.g. the CollegesPopover retry). Native underline, not the v19
      animated ::after (that path targets anchors only). */
@@ -2058,13 +1261,6 @@
      مطابقة (صافي صفر)، وmin-block يضمن الأرضية في الوضع المكدّس.
      يقيس على: اسم الطالب في قائمة الأستاذ (كان 21px)، وروابط
      الخلايا الأخرى. عائلة الجداول هنا .table (و.tbl-* معدّلات خلايا). */
-  .table td a.text-link {
-    display: inline-flex;
-    align-items: center;
-    min-block-size: 44px;
-    padding-block: var(--sp-2-5);
-    margin-block: calc(-1 * var(--sp-2-5));
-  }
   .hide-on-mobile { display: revert; }
   @media (max-width: 640px) { .hide-on-mobile { display: none; } }
 
@@ -2085,12 +1281,6 @@
      remaps, so one rule serves both themes:
      light #FCF1CD ground + #6B4C0B ink = 6.98:1 ✓ AA (4.5:1);
      dark  #3A3017 ground + #F8E5B5 ink = 10.44:1 ✓ AA. */
-  mark {
-    background: var(--c-yellow-bg);
-    color: var(--c-yellow-deep);
-    border-radius: var(--r-xs);
-    padding-inline: var(--sp-1);
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  MODAL                                                         ║
@@ -2129,9 +1319,10 @@
      RETIRED — no gradients on overlays; the header's own hairline
      (border-block-end --rule) is the section rule.) */
   @keyframes madarek-pop { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
-  .modal-header { padding: var(--sp-5) var(--sp-6); border-block-end: 1px solid var(--rule); display: flex; align-items: center; justify-content: space-between; gap: var(--sp-4); }
-  .modal-title  { font-family: var(--font-display); font-size: var(--type-headline-size-md); font-weight: var(--type-headline-weight); color: var(--text); letter-spacing: var(--type-headline-letter-spacing); }
-  .modal-body   { padding: var(--sp-6); overflow-y: auto; overscroll-behavior: contain; } /* r149 (R3-A5 #1): آخر سطح تمريري بلا احتواء — الإصبع كان يسلّس التمرير للخلف عند قاع المودال */
+
+  /* r167/PI-08: .modal-footer restored verbatim from the 8efb5a9a base
+     (the working tree lost it in the batch-A sweep) — the flex-end
+     action-cluster convention .justify-end mirrors. */
   .modal-footer { padding: var(--sp-4) var(--sp-6); border-block-start: 1px solid var(--rule); display: flex; align-items: center; justify-content: flex-end; gap: var(--sp-2); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2139,107 +1330,17 @@
      ║  Slides in from a viewport edge. --elev-4 + --z-sheet +        ║
      ║  --r-2xl on the leading edge.                                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .sheet-overlay {
-    position: fixed; inset: 0;
-    background: var(--overlay-veil);
-    /* R313 (D16): no backdrop-filter — solid veil + solid panel. */
-    display: flex;
-    z-index: var(--z-sheet, 300);
-    animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .sheet-overlay-bottom { align-items: flex-end; }
-  .sheet-overlay-end    { justify-content: flex-end; }
-  .sheet-overlay-start  { justify-content: flex-start; }
 
-  .sheet-panel {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    box-shadow: var(--elev-4, var(--shadow-modal));
-    overflow: clip;
-    display: flex; flex-direction: column;
-  }
-  .sheet-panel-end {
-    block-size: 100%;
-    inline-size: min(420px, 100%);
-    border-start-start-radius: var(--r-2xl);
-    border-end-start-radius: var(--r-2xl);
-    animation: madarek-sheet-slide-end var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .sheet-panel-start {
-    block-size: 100%;
-    inline-size: min(420px, 100%);
-    border-start-end-radius: var(--r-2xl);
-    border-end-end-radius: var(--r-2xl);
-    animation: madarek-sheet-slide-start var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .sheet-panel-bottom {
-    inline-size: 100%;
-    /* Desktop resize-while-open: a full-bleed bottom sheet on a 1440px
-       viewport is a wall — cap + center it (mobile, the variant's home,
-       is unaffected: 100% < 640px). */
-    max-inline-size: 640px;
-    margin-inline: auto;
-    max-block-size: min(85dvh, 720px);
-    border-start-start-radius: var(--r-2xl);
-    border-start-end-radius: var(--r-2xl);
-    animation: madarek-sheet-slide-bottom var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-    /* A10 P2-2: home-indicator clearance on the bottom presentation
-       (.bottom-nav / .toast-stack parity). Sits under header/body/
-       footer alike, so footer-less sheets clear it too. */
-    padding-block-end: env(safe-area-inset-bottom, 0px);
-  }
 
   /* ── Sheet package slots (A10 P2-2) — the .modal-header/-body/-footer
      grammar on the sheet panel: the BODY is the scrolling region, so a
      consumer whose content exceeds the panel scrolls instead of being
      silently clipped by the panel's overflow: clip (the latent bug the
      audit filed against the old raw-children API). ── */
-  .sheet-header {
-    flex: 0 0 auto;
-    display: flex; align-items: center; justify-content: space-between;
-    gap: var(--sp-3);
-    padding: var(--sp-4) var(--sp-5) var(--sp-3);
-  }
-  .sheet-title {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-sm);
-    font-weight: var(--type-headline-weight);
-    color: var(--text);
-  }
-  .sheet-body {
-    flex: 1 1 auto;
-    min-block-size: 0; /* flex column: lets the region shrink + scroll */
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    padding: var(--sp-4) var(--sp-5);
-  }
-  .sheet-footer {
-    flex: 0 0 auto;
-    display: flex; align-items: center; justify-content: flex-end;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-5) var(--sp-4);
-    border-block-start: 1px solid var(--rule);
-  }
   /* Drag affordance (bottom sheets) — visual only; the drag-to-dismiss
      gesture is wired in Sheet.tsx on this element. --neutral-400 is the
      palette's documented ≥3:1 non-text step (tokens.css) — a divider-tone
      bar would vanish on the cream surface. */
-  .sheet-grabber {
-    flex: 0 0 auto;
-    display: flex; align-items: center; justify-content: center;
-    block-size: 24px;
-    margin-block-start: var(--sp-1);
-    cursor: grab;
-    touch-action: none; /* the drag gesture owns these touches */
-  }
-  .sheet-grabber:active { cursor: grabbing; }
-  .sheet-grabber::before {
-    content: '';
-    inline-size: 40px; block-size: 4px;
-    border-radius: var(--r-full);
-    background: var(--neutral-400);
-  }
 
   /* ── Drag-to-dismiss cascade fix (5-C4) — the entrance animation's
      `both` fill keeps applying `transform: none` after it finishes,
@@ -2252,7 +1353,6 @@
      drag back. The state persists after a cancelled drag (removing it
      would REPLAY the entrance keyframes); the exit animations
      (0,3,0) outspecify the suspension (0,2,0). ── */
-  .sheet-panel[data-dragging] { animation: none; }
   .sheet-panel[data-dragging][data-drag-phase='active'] { transition: none; }
   .sheet-panel[data-dragging][data-drag-phase='release'] {
     /* --ease-spring-soft: the raw spring family (the semantic
@@ -2308,86 +1408,15 @@
      ║  the old 4px leading stripe is gone; polish v18 owns the 1px   ║
      ║  border + entrance and v22 re-asserts the variant colors.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .toast {
-    position: fixed;
-    inset-block-end: var(--sp-6);
-    inset-inline-end: var(--sp-6);
-    z-index: var(--z-toast, 500);
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    min-inline-size: 280px;
-    max-inline-size: 420px;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    /* r297 (polish v18 fold): r-md — the overrides-layer v18 value
-       beat this base r-lg as the rendered truth; single owner now.
-       ([role="status"][data-toast] in the group always paired with
-       .toast on the same markup — one selector suffices.) */
-    border-radius: var(--r-md);
-    box-shadow: var(--elev-3, var(--shadow-card-h));
-    pointer-events: auto;
-  }
   /* R313 (D16): the toast signal rules step up to the 2px accent
      leading rule (was 1px) — the reference's overlay signal grammar. */
-  .toast-info     { border-inline-start: 2px solid var(--info, var(--accent)); }
-  .toast-success  { border-inline-start: 2px solid var(--success); }
-  .toast-warning  { border-inline-start: 2px solid var(--warning); }
-  .toast-error    { border-inline-start: 2px solid var(--danger); }
-  .toast-body {
-    flex: 1;
-    min-inline-size: 0;
-    color: var(--text);
-    font-size: var(--type-body-size);
-    line-height: 1.45;
-  }
-  .toast-close {
-    background: transparent;
-    border: 0;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 0 var(--sp-1);
-    font-size: 18px; /* type-gate: allow — text-glyph close button (× rides the glyph ladder, not the text ladder) */
-    line-height: 1;
-    /* r149 (R3-A3 §4): transform ينضم — سجل الضغط 0.97 (v13). */
-    transition:
-      color var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
-    /* r148 (AUDIT-3 C1): الهدف الفعلي كان ~22×14px — أصغر من بصمة إصبع،
-       وتوستات الأخطاء لا تُغلق تلقائيًا أبدًا (Toast.tsx:91) فالزر هو
-       المخرج الوحيد. نفس أرضية 44px التي حصل عليها .toast-action
-       (notifications.css:451-453) — الشفافية تجعل التوسيع غير مرئي. */
-    min-block-size: 44px;
-    min-inline-size: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
   @media (hover: hover) and (pointer: fine) {
-    .toast-close:hover { color: var(--text); }
-  }
-  .toast-close:focus-visible {
-    outline: var(--state-focus-ring);
   }
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  POPOVER — 012-design-graphics-uplift T062.                    ║
      ║  Anchored overlay; --elev-3 + --r-lg + --z-popover, subtle     ║
      ║  glass. NO focus trap, NO scroll lock.                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .popover {
-    position: fixed;
-    z-index: var(--z-popover, 200);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    box-shadow: var(--elev-3, var(--shadow-card-h));
-    min-inline-size: 200px;
-    max-inline-size: min(420px, calc(100vw - var(--sp-6) * 2));
-    padding: var(--sp-2);
-    overflow: clip;
-    animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
-  }
   @keyframes madarek-popover-in {
     from { opacity: 0; transform: translateY(-4px); }
     to   { opacity: 1; transform: none; }
@@ -2444,10 +1473,6 @@
     outline: var(--state-focus-ring);
     outline-offset: -2px;
   }
-  .dropdown-item[aria-disabled="true"] {
-    color: var(--text-muted);
-    cursor: not-allowed;
-  }
   .dropdown-separator {
     block-size: 1px;
     background: var(--rule);
@@ -2458,21 +1483,6 @@
      ║  TOOLTIP — 012-design-graphics-uplift T068.                    ║
      ║  --elev-2 + --r-sm + --z-tooltip. No glass. Tight padding.     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .tooltip {
-    position: fixed;
-    z-index: var(--z-tooltip, 250);
-    background: var(--surface);
-    color: var(--text);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-sm);
-    box-shadow: var(--elev-2, var(--shadow-card-h));
-    padding: var(--sp-2) var(--sp-3);
-    font-size: var(--type-label-size);
-    line-height: 1.4;
-    max-inline-size: 280px;
-    pointer-events: none;
-    animation: madarek-tooltip-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
-  }
   @keyframes madarek-tooltip-in {
     from { opacity: 0; transform: translateY(2px); }
     to   { opacity: 1; transform: none; }
@@ -2504,172 +1514,20 @@
      paint order. Known edge (documented, out of A9 scope): an
      anchored layer opened from inside a LIGHTBOX (600) still paints
      under it. */
-  body.mdrk-scroll-locked .dropdown { z-index: calc(var(--z-modal, 400) + 10); }
-  body.mdrk-scroll-locked .popover  { z-index: calc(var(--z-modal, 400) + 15); }
-  body.mdrk-scroll-locked .tooltip  { z-index: calc(var(--z-modal, 400) + 20); }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LIGHTBOX — 012-design-graphics-uplift T067.                   ║
      ║  --elev-5 + --z-lightbox. Heavy backdrop scrim, no glass.      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .lightbox-overlay {
-    position: fixed; inset: 0;
-    background: color-mix(in srgb, var(--black) 85%, transparent);
-    display: flex; align-items: center; justify-content: center;
-    z-index: var(--z-lightbox, 600);
-    animation: madarek-fade var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-    padding: var(--sp-4);
-  }
-  .lightbox-content {
-    position: relative;
-    max-inline-size: 100%;
-    max-block-size: calc(100dvh - var(--sp-9));
-    box-shadow: var(--elev-5);
-    animation: madarek-pop var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .lightbox-close {
-    position: absolute;
-    inset-block-start: -36px;
-    inset-inline-end: 0;
-    background: transparent;
-    border: 0;
-    color: var(--text-on-dark); /* r148 (AUDIT-2 L6): توكن بدل حرفي */
-    cursor: pointer;
-    padding: var(--sp-1);
-    font-size: 22px; /* type-gate: allow — text-glyph close button (×) */
-    line-height: 1;
-    /* r148 (AUDIT-3 M4): كان ~30×30 — عارض الصور على الهاتف. */
-    min-block-size: 44px;
-    min-inline-size: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: color var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .lightbox-close:hover { color: var(--text-on-dark); }
-  }
-  .lightbox-close:focus-visible {
-    outline: 2px solid var(--text-on-dark);
-    outline-offset: 2px;
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  ONBOARDING FLOW — 012-design-graphics-uplift T121.            ║
      ║  Lives inside a Modal; layout-only styling here.               ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .onboarding-flow {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-4);
-    padding: var(--sp-3) var(--sp-6) var(--sp-6);
-    text-align: center;
-  }
-  .onboarding-flow-skip-row {
-    display: flex;
-    justify-content: flex-end;
-  }
-  .onboarding-flow-skip {
-    background: transparent;
-    border: 0;
-    color: var(--text-muted);
-    cursor: pointer;
-    font: inherit;
-    padding: var(--sp-1) var(--sp-2);
-    /* r148 (AUDIT-3 M5): كان ~26px — أول تجربة مستخدم جديد على الهاتف. */
-    min-block-size: 44px;
-    border-radius: var(--r-sm);
-    transition: color var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .onboarding-flow-skip:hover { color: var(--text); }
   }
-  .onboarding-flow-skip:focus-visible {
-    outline: var(--state-focus-ring);
-  }
-  .onboarding-flow-illustration {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    block-size: 200px;
-  }
-  .onboarding-flow-illustration .illustration > svg {
-    max-inline-size: 280px;
-    max-block-size: 200px;
-  }
-  .onboarding-flow-copy {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    padding-inline: var(--sp-2);
-  }
-  .onboarding-flow-headline {
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-md);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600 (was 700); the size rides the re-keyed clamped d2 role */
-    color: var(--text);
-    line-height: 1.25;
-  }
-  .onboarding-flow-body {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: var(--type-body-size);
-    line-height: 1.5;
-  }
-  .onboarding-flow-dots {
-    display: flex;
-    justify-content: center;
-    gap: var(--sp-2);
-    padding-block: var(--sp-2);
-  }
-  .onboarding-flow-dot {
-    /* 5-C1 (A2 §1c #27 — layout-property debt cleared): the dot box
-       is FIXED at the active pill's 22×8 so activating a step never
-       reflows the strip (the old 8→22px inline-size transition
-       re-laid-out every sibling per frame). The shapes ride two
-       paint-only pseudos: ::before = the fixed 8px ring/dot (never
-       transforms), ::after = the 22px pill scaling 0→1 from the
-       reading edge (transform-origin flips under [dir=rtl], the
-       23-b .progress-fill pattern). */
-    position: relative;
-    inline-size: 22px;
-    block-size: 8px;
-  }
-  .onboarding-flow-dot::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 8px;
-    border-radius: 50%;
-    border: 1px solid var(--rule);
-    background: transparent;
-    transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease);
-  }
-  .onboarding-flow-dot::after {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 22px;
-    border-radius: var(--r-full);
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform var(--t-fast) var(--ease);
-  }
-  [dir="rtl"] .onboarding-flow-dot::after { transform-origin: right center; }
-  .onboarding-flow-dot.is-active::after { transform: scaleX(1); }
-  .onboarding-flow-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    padding-block-start: var(--sp-3);
-    border-block-start: 1px solid var(--rule);
-  }
-  .onboarding-flow-actions > .btn { min-inline-size: 96px; }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  SIDEBAR TOUR REPLAY TRIGGER — 012-design-graphics-uplift T124.║
@@ -2741,20 +1599,6 @@
      ║  NOTIFICATION PANEL — 012-design-graphics-uplift T065.         ║
      ║  --elev-3 + --r-xl + --z-popover, glass.                       ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .notification-panel {
-    position: fixed;
-    z-index: var(--z-popover, 200);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    /* R329 (gate:clean): the corner radii + elevation are
-       notifications.css's unlayered seat (r-2xl + elev-2) — these
-       components-layer copies were inert. */
-    inline-size: min(380px, calc(100vw - var(--sp-6) * 2));
-    max-block-size: min(540px, 80dvh);
-    overflow: clip;
-    display: flex; flex-direction: column;
-    animation: madarek-popover-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
-  }
   /* (R313 D16: the notification-panel @supports glass block is
      RETIRED — solid --surface + hairline, no backdrop-filter.) */
 
@@ -2778,118 +1622,25 @@
     max-block-size: 200px;
   }
 
-  .filter-bar {
-    /* ── Filter-bar input width budget (23-b, A6 P2) ─────────────────
-       The exam-authoring filter rows (question bank hub + builder-modal
-       picker) used to carry eight drifting inline magic-number widths.
-       The shared budget lives here as scoped tokens so every filter row
-       renders identically: the search pill grows to its cap and fills
-       the row on wrap, the selects cap at the label-safe width. */
-    --w-input-filter-search: 260px;
-    --w-input-filter-select: 170px;
-    display: flex; align-items: center; flex-wrap: wrap;
-    /* r152h: 6px — the v10 polish twin's only live declaration, merged
-       home as the sanctioned half-step token (the twin retired; the
-       computed value is unchanged). */
-    gap: var(--sp-1-5);
-    padding: var(--sp-3) var(--sp-4);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    /* r152i (A3): the bar reads ITSELF — full-page rows AND narrow
-       containers (modals, side columns) get the right layout without
-       the viewport guessing for them. */
-    container: filterbar / inline-size;
-  }
-  .filter-bar .topbar-search {
-    /* .topbar-search is inline-size:100% by default (layout.css) — the
-       cap keeps it a pill beside the selects instead of a full row. */
-    max-inline-size: var(--w-input-filter-search);
-  }
   @container filterbar (max-width: 480px) {
     /* Narrow bar: the search pill takes the whole first row and the
        selects wrap after it (flex-wrap already owns the wrapping).
        Sits AFTER the cap on purpose — same specificity, later source. */
-    .filter-bar .topbar-search { max-inline-size: none; }
-  }
-  .filter-bar > .input {
-    max-inline-size: var(--w-input-filter-select);
   }
   /* Chrome-less variant for filter rows nested inside an already-boxed
     surface (the builder modal's question picker) — keeps the wrap +
     width-budget grammar, drops the toolbar box. */
-  .filter-bar.flush {
-    padding: 0;
-    border: 0;
-    background: none;
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  THUMB CARD — course / lab / mooc tile                         ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .thumb-card {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    /* R329 (gate:clean): overflow + transition are polish.css's
-       overrides seat — these copies were inert. */
-    box-shadow: var(--shadow-card);
-    color: inherit;
-    text-decoration: none;
-    min-inline-size: 0;
-  }
   @media (hover: hover) and (pointer: fine) {
-    .thumb-card:hover {
-      border-color: var(--border-strong);
-      box-shadow: var(--shadow-card-premium-h);
-    }
   }
   /* 5-C1 (A2 P2-8): the hover LIFT rides the hover-capable gate —
      with it ungated, iOS sticky-hover pinned the −2px lift on every
      card after the first tap. Color/shadow hovers stay ungated
      (sticky paint is harmless; the stuck TRANSFORM was the tell). */
   @media (hover: hover) and (pointer: fine) {
-    .thumb-card:hover { transform: translateY(-2px); }
-  }
-  .thumb-card-image {
-    block-size: 110px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-block-end: 1px solid var(--rule);
-    flex-shrink: 0;
-  }
-  .thumb-card-body {
-    padding: var(--sp-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .thumb-card-title {
-    font-family: var(--font-display);
-    font-size: var(--fs-h3);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
-    color: var(--text);
-    /* r149 (R3-A4 F2): ‎--ls-snug → --ls-normal — مثل سابقيه عند المنبع. */
-    letter-spacing: var(--ls-normal);
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
-  .thumb-card-sub {
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -2924,7 +1675,6 @@
      to the source — polish's universal ::after selectors carry
      :not(.track-card) since r151e. The v22 focus border cue stays
      (training.css declares neither). */
-  .track-card:focus-visible { border-color: var(--accent); }
 
   /* ── Track hero — per-course detail header (TeacherIntelligence) ──
      OWNERSHIP NOTE (wave 3-c): owned by training.css §track-detail
@@ -2937,104 +1687,12 @@
   /* ── Teacher feed — toolbar + rows (TeacherDashboard flagship,
      Competitions index; layout only — the entrance stagger and hover
      shift are owned by polish v8/v17 and keep winning). ───────────── */
-  .feed-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--sp-3);
-  }
-  .feed { display: flex; flex-direction: column; gap: var(--sp-3); }
-  .feed-item {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-4);
-    padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-  }
-  .feed-item-avatar {
-    /* matches the UserAvatar size rendered in the same row */
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--r-full);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: var(--c-grey-bg);
-    color: var(--c-grey-deep);
-  }
   /* sticker language: pastel ground + -deep ink (WCAG-pinned pairs) */
-  .feed-item-avatar.green  { background: var(--c-mint-bg);     color: var(--c-mint-deep); }
-  .feed-item-avatar.amber  { background: var(--c-yellow-bg);   color: var(--c-yellow-deep); }
-  .feed-item-avatar.red    { background: var(--c-rose-bg);     color: var(--c-rose-deep); }
-  .feed-item-avatar.purple { background: var(--c-lavender-bg); color: var(--c-lavender-deep); }
-  .feed-item-avatar.gold   { background: var(--gold-soft);   color: var(--gold-ink); }
 
   /* ── Risk rows — at-risk students (TeacherIntelligence, 15 usages).
      The 3px leading stripe is still painted by TSX inline styles
      (physical borderRight) until waves 5-6 normalize it to a logical
      1px rule (ruling #4); this chrome reads correctly either way. ── */
-  .risk-row {
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-  }
-  .risk-row-name {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .risk-row-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1) var(--sp-2);
-    margin-block-start: var(--sp-0-5);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-  }
-  .risk-row-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-  }
-  .risk-row-suggestion {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    margin-block-start: var(--sp-2);
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--gold-soft);
-    border-radius: var(--r-sm);
-    font-size: var(--fs-xs);
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
-  .risk-row-score {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--sp-0-5);
-    margin-inline-start: auto; /* wraps under on narrow screens, stays end-aligned */
-    text-align: end;
-    flex-shrink: 0;
-  }
-  .risk-row-pct {
-    font-family: var(--font-display);
-    font-size: var(--type-metric-size);
-    font-weight: var(--type-metric-weight);
-    line-height: var(--type-metric-line-height);
-    letter-spacing: var(--type-metric-letter-spacing);
-    font-variant-numeric: tabular-nums;
-  }
 
   /* ── Run rows — live sessions (TeacherLive) + sync history (AdminSync) ── */
   .run-row {
@@ -3063,77 +1721,12 @@
   }
 
   /* ── Teacher rows — selectable list buttons (AdminGovernance) ───── */
-  .teacher-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    inline-size: 100%;
-    min-block-size: 48px;
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-    font: inherit;
-    color: inherit;
-    text-align: start;
-    cursor: pointer;
-    transition: background var(--t-fast) var(--ease),
-                border-color var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .teacher-row:hover { background: var(--surface-2); border-color: var(--border-strong); }
   }
-  .teacher-row:active { background: var(--surface-3); }
-  .teacher-row:focus-visible { border-color: var(--accent); }
-  .teacher-row.selected {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-  }
-  .teacher-row-name {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .teacher-row-email { font-size: var(--fs-xxs); color: var(--text-muted); }
 
   /* ── Permissions grid — capability editor (AdminGovernance) ────── */
-  .perm-row {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-  }
   /* Quiet state tint — the semantics live in the Badge text; the 1px
      border edge is reinforcement only (ruling #4 hairline). */
-  .perm-row.state-granted { border-color: color-mix(in srgb, var(--success) 30%, var(--border)); }
-  .perm-row.state-revoked { border-color: color-mix(in srgb, var(--warning) 30%, var(--border)); }
-  .perm-row-info {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-0-5);
-    min-inline-size: 0;
-  }
-  .perm-row-title {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--text);
-  }
-  .perm-row-key {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    color: var(--text-faint);
-  }
-  .perm-row-state {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1);
-    margin-block-start: var(--sp-1);
-  }
-  .perm-row-actions { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
 
   /* ── Scan bar — plagiarism/AI verdict cells. Shared by the teacher
      review modal (0-e) and the student research page (0-d); the
@@ -3142,114 +1735,16 @@
      .scan-bar by a misplaced closing div — full-span everything that is
      not a scan cell so today's markup lays out correctly. Remove this
      rule together with the TSX re-parent in waves 5-6. */
-  .scan-bar > :not(.scan-cell) { grid-column: 1 / -1; }
   /* text-safe status inks (guardrail #3): deep shades clear AA on the
      neutral cell ground in both themes */
-  .scan-cell-value.ok   { color: var(--success-ink); }
-  .scan-cell-value.warn { color: var(--warning-ink); }
-  .scan-cell-value.bad  { color: var(--danger-ink); }
 
   /* ── Category + fact rows — sync data preview (AdminSync) ───────── */
-  .category-row {
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-    overflow: clip;
-  }
-  .category-row-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    inline-size: 100%;
-    min-block-size: 44px; /* touch target (craft floor) */
-    padding: var(--sp-2) var(--sp-4);
-    background: transparent;
-    border: 0;
-    font: inherit;
-    color: inherit;
-    text-align: start;
-    cursor: pointer;
-    transition: background var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .category-row-head:hover { background: var(--surface-2); }
-  }
-  .category-row-head:active { background: var(--surface-3); }
-  .category-row-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    padding: var(--sp-2) var(--sp-4) var(--sp-4);
-    border-block-start: 1px solid var(--rule);
-  }
-  .fact-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--sp-1) var(--sp-3);
-    padding: var(--sp-1) 0;
-  }
-  .fact-key {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    color: var(--accent-ink, var(--accent));
-    flex-shrink: 0;
-  }
-  .fact-value { font-size: var(--fs-sm); color: var(--text); flex: 1; min-inline-size: 0; }
-  .fact-source {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    color: var(--text-faint);
   }
 
   /* ── Trend rows — paper pipeline bars (AdminReports). Counts smaller
      than the bar stay clipped; the TSX title attribute carries them
      (no truncation without a tooltip — craft floor). ───────────────── */
-  .trend-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-1) 0;
-  }
-  .trend-label {
-    flex-shrink: 0;
-    min-inline-size: 56px;
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-  }
-  .trend-bars {
-    display: flex;
-    flex-direction: column;
-    gap: 3px; /* spacing-gate: allow — trend sparkline hairline bar separation */
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .trend-bar {
-    /* 5-C1 (A2 §1c #28 — layout-property debt cleared): the bar paints
-       at FULL track width and the VALUE rides a reading-direction
-       clip-path wipe — paint-only, no reflow (the old inline-size
-       transition re-laid-out the row per frame). The count text stays
-       a child and clips with the same window, exactly like the old
-       width cut; `inset(… round …)` keeps BOTH edges capped (the old
-       width-cut end edge was square). The page sets --trend-scale
-       (0..1) inline; the [dir=rtl] fork wipes from the reading edge
-       (right), mirroring how a %-width bar anchored itself in RTL. */
-    position: relative;
-    block-size: 14px;
-    inline-size: 100%;
-    border-radius: var(--r-xs);
-    display: flex;
-    align-items: center;
-    overflow: clip;
-    white-space: nowrap;
-    clip-path: inset(0 calc(100% - var(--trend-scale, 0) * 100%) 0 0 round var(--r-xs));
-    transition: clip-path var(--t-slow) var(--ease-out);
-  }
-  [dir="rtl"] .trend-bar {
-    clip-path: inset(0 0 0 calc(100% - var(--trend-scale, 0) * 100%) round var(--r-xs));
-  }
-  .trend-submitted { background: var(--accent); }
   /* 5-D1 (A11 P2-4): the "مقيَّمة" series rode --gold — #D6A330 =
      2.30:1 on the white reports card (non-text floor 3:1), and in
      DARK --gold resolves to var(--accent), collapsing this bar onto
@@ -3257,188 +1752,29 @@
      series tier chartColors().gold/.warning already resolve through
      (light #A67A22 = 3.87:1 / dark #F2C766 = distinct from accent) —
      the CSS-bar sibling of the same series the audit filed. */
-  .trend-graded    { background: var(--chart-6); }
-  .trend-published { background: var(--success); }
-  .trend-bar-val {
-    padding-inline: var(--sp-2);
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-semibold);
-    font-variant-numeric: tabular-nums;
-    /* dark-on-mid-bright ink clears AA on all three bar fills in both
-       themes (light: #1A0F06 on copper/gold/mint ≈ 5-9:1; dark:
-       #191918 on the brightened fills ≈ 7-10:1) */
-    color: var(--accent-fg);
-  }
 
   /* ── AI curriculum outline — suggested chapters (TeacherIntelligence) ── */
-  .curriculum-chapter {
-    padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-  }
-  .curriculum-chapter-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    margin-block-end: var(--sp-2);
-  }
-  .curriculum-topics {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-  .curriculum-topics li {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    font-size: var(--fs-sm);
-    color: var(--text-secondary);
-    line-height: 1.5;
-  }
 
   /* ── Profile list rows — certifications / publications / suggested
      courses (TeacherProfile, AdminGovernance) + quiet kv lines. The
      .comp-entry-row language: soft rows on surface-2 inside a Card. ── */
-  .cert-row,
-  .publication-row,
-  .suggested-course-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
-  .cert-row > :first-child,
-  .publication-row > :first-child,
-  .suggested-course-row > :first-child { flex-shrink: 0; }
-  .suggested-course-row { flex-wrap: wrap; }
-  .kv-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    font-size: var(--fs-sm);
-    color: var(--text);
-  }
 
   /* ── Teacher profile header (TeacherProfile) ────────────────────── */
-  .teacher-header {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-5);
-  }
-  .teacher-name {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-md);
-    font-weight: var(--type-headline-weight);
-    color: var(--text);
-  }
-  .teacher-verified {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    padding: 3px var(--sp-2); /* spacing-gate: allow — verified-badge micro grade 3/8 vertical hairline */
-    border-radius: var(--r-full);
-    background: var(--success-soft);
-    color: var(--success-ink);
-    font-family: var(--font-sans);
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-semibold);
-  }
-  .teacher-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-2);
-    margin-block-start: var(--sp-1);
-    font-size: var(--fs-sm);
-    color: var(--text-secondary);
-  }
-  .teacher-contact {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-1);
-    color: var(--text-muted);
-  }
 
   /* ── Moderation queue rows (quality exam review) ────────────────── */
-  .moderation-title {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
 
   /* ── EXAM TAKER (OnlineExamsPages — audit 0-e P0: the entire chrome
      was unstyled and the selected answer was INVISIBLE). The bar sticks
      under the app topbar so the countdown stays visible while the
      student scrolls questions; question cards are .card (existing). ── */
-  .exam-timer {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-4);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-full);
-    color: var(--text);
-    font-weight: var(--fw-semibold);
-    transition: background var(--t-base) var(--ease),
-                border-color var(--t-base) var(--ease),
-                color var(--t-base) var(--ease);
-  }
   /* < 2 minutes left — danger chip. WCAG: --danger-ink on --danger-soft
      ≈ 9.4:1 light / 7.2:1 dark. Color coding only, no pulse — a
      flashing timer mid-exam is anxiety, not affordance. */
-  .exam-timer.urgent {
-    background: var(--danger-soft);
-    border-color: color-mix(in srgb, var(--danger) 40%, transparent);
-    color: var(--danger-ink);
-  }
-  .exam-prompt {
-    font-size: var(--type-body-size-lg); /* the question text — 17px */
-    font-weight: var(--fw-medium);
-    color: var(--text);
-    line-height: var(--lh-base);
-    /* authored line breaks survive, long space runs collapse */
-    white-space: pre-line;
-  }
-  .exam-choice {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    min-block-size: 44px; /* touch target — the label wraps the radio (craft floor) */
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    cursor: pointer;
-    transition: background var(--t-fast) var(--ease),
-                border-color var(--t-fast) var(--ease),
-                box-shadow var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .exam-choice:hover { background: var(--surface-2); border-color: var(--border-strong); }
   }
-  .exam-choice:active { background: var(--surface-3); }
   /* The selected answer — was completely invisible (audit 0-e P0).
      Accent border + soft accent wash + a 1px inset ring edge (a state
      indicator in the kpi-icon/metric-icon rim family, not elevation). */
-  .exam-choice.selected {
-    background: var(--accent-soft);
-    border-color: var(--accent);
-    box-shadow: inset 0 0 0 1px var(--accent);
-  }
   .exam-choice input[type='radio'] {
     accent-color: var(--accent);
     inline-size: 16px;
@@ -3450,28 +1786,15 @@
   /* Row-level focus cue: the v22 universal ring lands on the radio
      input; this ties the surrounding row to it (same accent border cue
      the card wrappers get). */
-  .exam-choice:has(input:focus-visible) { border-color: var(--accent); }
   /* The post-submit reveal replaces the whole question list with the
      result screen, so nothing disables the radios today — this state
      future-proofs reveal-style reviews (craft floor: every interactive
      element ships a disabled state). */
-  .exam-choice:has(input:disabled) {
-    cursor: default;
-    opacity: 0.7;
-  }
   @media (hover: hover) and (pointer: fine) {
-    .exam-choice:has(input:disabled):hover {
-      background: var(--surface);
-      border-color: var(--border);
-    }
   }
 
   /* ── State icon variant — success (teacher feed empty state). The
      polish v10 family styles .state-error/-empty; this completes it. ── */
-  .state-icon-success {
-    background: var(--success-soft);
-    color: var(--success-ink);
-  }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  wave 5-c: exams / quality / competitions                     ║
@@ -3489,26 +1812,6 @@
      migrated off .auth-input (audit 0-e P1-31) had no class to render
      validation/mutation errors with. Shared by exams moderation +
      competitions forms; consumes the status ink tokens both themes. ── */
-  .form-error {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    background: var(--danger-soft);
-    color: var(--danger-ink);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    line-height: var(--lh-base);
-  }
-  .form-error .btn { flex-shrink: 0; }
-  .form-error-msg { flex: 1 1 auto; }
-  .form-field-error {
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    color: var(--danger-ink);
-    line-height: 1.4;
-  }
 
   /* ── FormField primitive (21-b, A9 P2-4) — the shared label +
      control + hint/error row the primitives/Form.tsx FormField
@@ -3539,13 +1842,6 @@
      --c-mint-ink #82CB99 so the foreground flips to ink #191918
      (9.10:1). R313 (D4): the brighten pair moves onto the wipe vars
      (same mixes, colour-swap grammar). ── */
-  .btn.success {
-    --_btn-bg: var(--success-ink);
-    --_btn-fg: var(--white);
-    --_btn-bd: var(--success-ink);
-    --_btn-wipe: color-mix(in oklab, var(--success-ink) 86%, var(--neutral-0));
-    --_btn-wipe-fg: var(--white);
-  }
   [data-theme='dark'] .btn.success {
     --_btn-fg: var(--warm-ink);
     --_btn-wipe: color-mix(in oklab, var(--success-ink) 86%, var(--white));
@@ -3556,21 +1852,11 @@
      wave 3-c above) ────────────────────────────────────────────── */
 
   /* Compact h1 inside the sticky .exam-bar (was an inline style). */
-  .exam-bar-title {
-    margin: 0;
-    font-size: var(--fs-md);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
 
   /* End-aligned submit area under the question list (was inline).
      R329 (gate:clean): the row-wrap layout (flex-direction/align/gap)
      is student.css's pages-layer rule — these components-layer copies
      were inert. */
-  .exam-submit-bar {
-    display: flex;
-    margin-block-start: var(--sp-4);
-  }
 
   /* Shape-matched loading tile for the exam card grid — icon well +
      title/meta lines, mirroring the .track-card anatomy (the real
@@ -3590,20 +1876,11 @@
      container family is colleges.css .comp-score-input; this row is
      wave 5-c TSX (was an inline flex). Input capped narrow: it holds
      0–100. */
-  .comp-score-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-  }
-  .comp-score-row .input { max-inline-size: 110px; }
 
   /* The queue's authored moment: a one-shot confirmation ring pulse
      on the approve/reject button while the mutation is in flight
      (currentColor = the variant's foreground, so success/danger read
      in their own ink). One animation per click, never idle. */
-  .moderation-pulse {
-    animation: madarek-moderation-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
   @keyframes madarek-moderation-pulse {
     from { box-shadow: 0 0 0 0 color-mix(in srgb, currentColor 45%, transparent); }
     to { box-shadow: 0 0 0 10px transparent; }
@@ -3615,9 +1892,6 @@
      the board (or a fresh score lands), the moved row flashes its
      accent wash once: ring ping + highlight sweep, fill-mode none so
      the row settles back to its normal background. ──────────────── */
-  .leaderboard-row.rank-pulse {
-    animation: madarek-rank-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
   @keyframes madarek-rank-pulse {
     from {
       background: var(--accent-soft);
@@ -3633,61 +1907,14 @@
 
   /* Professors table compliance cell — progress bar + badge cluster
      (was an inline min-width flex). */
-  .q-compliance {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    min-inline-size: 130px;
-  }
 
   /* Department summary line above each curriculum heatmap (course
      count + mean completion — tabular numerals for scan-ability). */
-  .q-dept-stat {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-3);
-    margin-block: var(--sp-1) var(--sp-3);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
 
   /* Curriculum heatmap legend — key dots mirror the .matrix-cell
      level washes (the heatmap grid itself reuses .matrix-cells /
      .matrix-cell + .lvl-* from student.css (migrated r151i) — one heatmap language
      across the student matrix and the quality oversight view). */
-  .heat-legend {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-2) var(--sp-4);
-    margin-block-start: var(--sp-2);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-  }
-  .heat-legend-key {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-  }
-  .heat-legend-dot {
-    inline-size: 10px;
-    block-size: 10px;
-    flex-shrink: 0;
-    border-radius: var(--r-xs);
-  }
-  .heat-legend-dot.lvl-strong {
-    background: color-mix(in srgb, var(--success) 14%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--success) 26%, transparent);
-  }
-  .heat-legend-dot.lvl-weak {
-    background: color-mix(in srgb, var(--warning) 14%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--warning) 28%, transparent);
-  }
-  .heat-legend-dot.lvl-poor {
-    background: color-mix(in srgb, var(--danger) 12%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--danger) 24%, transparent);
-  }
 
   /* ── Mobile touch floor (craft floor: ≥44px) for the competitions
      modal controls. (r151d: the .btn.sm !important pins retired —
@@ -3697,16 +1924,12 @@
      their noise. The non-.btn pair below stays: colleges.css pins
      .comp-icon-btn at 36×36 and min-* composes over it.) ── */
   @media (max-width: 640px) {
-    .comp-icon-btn,
-    .comp-modal-close { min-inline-size: 44px; min-block-size: 44px; }
   }
 
   /* ── Reduced-motion off-switches (guardrail #6 — the global token
      belts already zero the durations; these kill the keyframes
      outright so the pulses never paint a frame). ────────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .moderation-pulse,
-    .leaderboard-row.rank-pulse { animation: none; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3722,235 +1945,41 @@
      every .table/.tbl header in the app is Arabic, where uppercase is
      a no-op and 0.06em letter-spacing breaks cursive joining. Same
      specificity as the base rule above, later source order wins. ── */
-  .table thead th {
-    text-transform: none;
-    letter-spacing: normal;
-  }
 
   /* ── Centered numeric cells for the admin .table tables. A scoped
      class rather than .tbl-num (whose consumers in teacher/quality
      tables keep their start alignment). ──────────────────────────── */
-  .table th.admin-table-num,
-  .table td.admin-table-num { text-align: center; }
 
   /* ── Dashboard quick indicators (the "مؤشرات سريعة" card). ────── */
-  .admin-stat-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
-  }
-  .admin-stat-value { color: var(--text); }
 
   /* ── Faculty cards (AdminFaculties — was ~40 lines of inline styles
      per card, audit 0-e P2-49). The DESIGN_POLISH_PLAN phase-3 hover
      lift: same language as .metric / .thumb-card (hairline border +
      soft card shadow baseline, stronger shadow + 2px lift on hover). ── */
-  .admin-faculty-card {
-    padding: var(--sp-4);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    background: var(--surface-1);
-    /* R329 (gate:clean): admin.css retires the card shadow on this
-     surface (pages layer beats components) — the copy here was inert. */
-    transition:
-      transform var(--t-base) var(--ease),
-      border-color var(--t-base) var(--ease),
-      box-shadow var(--t-base) var(--ease);
-  }
   /* R329 (gate:clean): the faculty-card hover LIFT is retired on this
      surface — admin.css's guarded rule (pages layer: transform none +
      shadow none, "the card is paper, it does not bounce") owns the
      hover state; this components-layer copy's transform/box-shadow
      were inert and its border-color half is the identical twin.
      Deleted whole (one seat per selector+context). */
-  .admin-faculty-head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-  }
-  .admin-faculty-head.has-depts { margin-block-end: var(--sp-3); }
-  .admin-faculty-icon {
-    inline-size: 44px;
-    block-size: 44px;
-    border-radius: var(--r-md);
-    background: var(--accent-soft);
-    color: var(--accent-ink, var(--accent));
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .admin-faculty-body { flex: 1 1 auto; min-inline-size: 0; }
-  .admin-faculty-titles {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-2);
-  }
-  .admin-faculty-name {
-    font-size: var(--fs-md);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .admin-faculty-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-4);
-    margin-block-start: var(--sp-1);
-    font-size: var(--fs-xs);
-    color: var(--text-subtle);
-  }
-  .admin-faculty-depts {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--sp-2);
-  }
-  .admin-faculty-dept {
-    padding: var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-sm);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-  .admin-faculty-dept-name {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .admin-faculty-dept-meta {
-    font-size: var(--fs-xxs);
-    color: var(--text-subtle);
-    font-variant-numeric: tabular-nums;
-  }
 
   /* ── Reports trend legend (was an inline-styled LegendDot). ────── */
-  .trend-legend {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2) var(--sp-4);
-    margin-block-start: var(--sp-4);
-    font-size: var(--fs-xxs);
-    color: var(--text-subtle);
-  }
-  .trend-legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-  }
-  .trend-legend-dot {
-    inline-size: 10px;
-    block-size: 10px;
-    flex-shrink: 0;
-    border-radius: var(--r-full);
-    display: inline-block;
-  }
 
   /* ── Course theme-color chip (AdminCourses name column; the color is
      per-row data and stays inline, the shape is the class). ───────── */
-  .admin-course-tint {
-    inline-size: 6px;
-    block-size: 24px;
-    border-radius: var(--r-xs);
-    display: inline-block;
-    flex-shrink: 0;
-  }
 
   /* ── Governance profile tiles (AdminGovernance FactRow, was inline
      styles) + the eligibility note + scope card shell + shared form
      action row. ──────────────────────────────────────────────────── */
-  .gov-fact {
-    padding: var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    min-inline-size: 0;
-  }
-  .gov-fact-label { font-size: var(--fs-xxs); color: var(--text-subtle); }
-  .gov-fact-value {
-    font-size: var(--fs-sm);
-    color: var(--text);
-    overflow-wrap: anywhere;
-  }
-  .gov-keywords { margin-block-start: var(--sp-3); }
-  .gov-keywords-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1);
-  }
-  .gov-eligibility {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-3);
-    padding: var(--sp-3);
-    background: var(--accent-soft);
-    border-radius: var(--r-md);
-    color: var(--accent-ink, var(--accent));
-    font-size: var(--fs-xs);
-  }
-  .gov-scope-card {
-    margin-block: var(--sp-3);
-    padding: var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-card);
-    transition: box-shadow var(--t-base) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .gov-scope-card:hover {
-      box-shadow: var(--shadow-card-premium-h);
-    }
-  }
-  .gov-scope-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-end: var(--sp-2);
-  }
-  .gov-scope-note {
-    margin: 0;
-    margin-block-end: var(--sp-3);
-    font-size: var(--fs-xxs);
-    color: var(--text-subtle);
-  }
-  .gov-form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-3);
   }
   /* Score column of a suggested-course row (end-aligned badge+reason). */
-  .suggested-course-score {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--sp-1);
-  }
 
   /* ── Permissions confirm pulse — the governance authored moment:
      when a grant / revoke / reset lands, the changed row flashes its
      tone wash once (success for grants, warning for revokes/resets)
      with an outward ring ping, then settles back. Same language as
      wave 5-c's moderation / rank pulses. ─────────────────────────── */
-  .perm-row.confirm-pulse {
-    animation: madarek-perm-confirm var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
-  .perm-row.confirm-pulse.pulse-ok {
-    --pulse-wash: var(--success-soft);
-    --pulse-ring: color-mix(in srgb, var(--success) 40%, transparent);
-  }
-  .perm-row.confirm-pulse.pulse-neutral {
-    --pulse-wash: var(--warning-soft);
-    --pulse-ring: color-mix(in srgb, var(--warning) 40%, transparent);
-  }
   @keyframes madarek-perm-confirm {
     from {
       background: var(--pulse-wash);
@@ -3966,10 +1995,6 @@
      the runs stream in top-to-bottom on first mount (one-shot; the
      30s poll refetches without remounting, so it never re-plays).
      Delay rides --run-i capped at --motion-stagger-cap. ───────────── */
-  .admin-sync-runs tbody tr {
-    animation: madarek-sync-run-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
-    animation-delay: calc(var(--motion-stagger-step) * min(var(--run-i, 0), var(--motion-stagger-cap)));
-  }
   @keyframes madarek-sync-run-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to { opacity: 1; transform: none; }
@@ -3982,8 +2007,6 @@
 
   /* ── Reduced-motion off-switches (guardrail #6). ───────────────── */
   @media (prefers-reduced-motion: reduce) {
-    .perm-row.confirm-pulse,
-    .admin-sync-runs tbody tr { animation: none; }
   }
 }
 
@@ -4011,19 +2034,10 @@
   /* Filter pills inside the feed toolbar hit the 44px touch floor on
      phones (shared class — Competitions' toolbar benefits equally). */
   @media (max-width: 640px) {
-    .feed-toolbar .pill { min-block-size: 44px; }
   }
 
   /* ── KPI delta chip — pulses once on every value change (keyed
      remount in the TSX). One-shot scale settle, never idle. */
-  .compact-kpi-delta {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-inline-start: var(--sp-1);
-    border-radius: var(--r-full);
-    animation: madarek-kpi-delta var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
-  }
   .compact-kpi-delta[data-dir='up'] { color: var(--success-ink); }
   .compact-kpi-delta[data-dir='dn'] { color: var(--danger-ink); }
   @keyframes madarek-kpi-delta {
@@ -4036,97 +2050,26 @@
      matching rows keep their shade (the fade-between-shades moment,
      matrix-cell grammar from wave 4-a). 3-c owns the .risk-row chrome;
      this adds the state + the transition it rides. */
-  .risk-row {
-    transition:
-      opacity var(--motion-duration-medium) var(--motion-ease-standard),
-      filter var(--motion-duration-medium) var(--motion-ease-standard);
-  }
-  .risk-row.is-dim { opacity: 0.38; filter: saturate(0.25); }
 
   /* ── Compact inline retry — secondary data surfaces (analytics strip,
      curriculum suggest, modal annotations) get a quiet one-line error +
      retry instead of a full ErrorState. */
-  .inline-retry {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-  }
 
   /* ── AI curriculum panels — per-course accent rides --track-accent and
      is only consumed through color-mix (never raw under text). */
-  .ai-rationale {
-    padding: var(--sp-3);
-    background: color-mix(in srgb, var(--track-accent, var(--accent)) 8%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--track-accent, var(--accent)) 22%, transparent);
-    border-radius: var(--r-md);
-    margin-block-end: var(--sp-3);
-  }
-  .ai-next-steps {
-    margin-block-start: var(--sp-4);
-    padding: var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
-  .ai-steps-list {
-    margin: 0;
-    padding-inline-start: var(--sp-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
 
   /* ── Form feedback banner — save success/failure shared by the profile
      save, attendance save, live form errors, lifecycle errors and the
      grading done state (replaces 4 different inline style blocks). */
-  .form-feedback {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    font-size: var(--fs-sm);
-  }
-  .form-feedback.ok {
-    background: var(--success-soft);
-    border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
-    color: var(--success-ink);
-  }
-  .form-feedback.fail {
-    background: var(--danger-soft);
-    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    color: var(--danger-ink);
-  }
-  .form-feedback .flex-1 { min-inline-size: 180px; }
 
   /* ── Attendance toggles — class-based selected state (was an inline
      style block with no aria-pressed, audit 0-e P1-32). Text uses the
      -ink tokens (guardrail #3); the wash is the matching -soft token. */
-  .att-toggle {
-    min-block-size: 32px;
-    padding-inline: var(--sp-3);
-    border-radius: var(--r-full);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-secondary);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-semibold);
-    font-family: inherit;
-    cursor: pointer;
-    transition:
-      background var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .att-toggle:hover { background: var(--surface-2); border-color: var(--border-strong); }
   }
   /* r132-G5: raw 0.97 (register-correct value, pre-token spelling — a 4th
      F6-class straggler the audit's oddball-value sweep didn't surface);
      controls press register via the token, r130-W2-7 ladder. */
-  .att-toggle:active { transform: scale(var(--press-scale)); }
-  .att-toggle:focus-visible { outline: var(--state-focus-ring); outline-offset: var(--state-focus-ring-offset, 1px); }
   .att-toggle[aria-pressed='true'][data-tone='success'] {
     background: var(--success-soft);
     border-color: transparent;
@@ -4153,55 +2096,20 @@
     color: var(--accent-ink);
   }
   @media (max-width: 640px) {
-    .att-toggle { min-block-size: 44px; min-inline-size: 44px; }
   }
 
   /* ── Teacher form scaffolding — one-off layout classes replacing the
      inline style blocks the audit counted (~230 across staff pages). */
-  .form-row-3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--sp-3);
-  }
   /* r152i (A3): 900→920 — joins the shell band (the sidebar collapse)
      instead of floating 20px below it. */
   @media (max-width: 920px) {
-    .form-row-3 { grid-template-columns: 1fr; }
-  }
-  .course-select { max-inline-size: 360px; }
-  .input-narrow { max-inline-size: 200px; }
-  .notice-paragraph {
-    padding: var(--sp-3) 0;
-    line-height: 1.7;
-    /* 5-C2 (A3 P1-2): full-width lead-in paragraphs measured 145.4ch
-       (1134px) on teacher-grades — cap prose at the body-role measure
-       token like .page-subtitle (taste floor 45–75ch). */
-    max-inline-size: var(--type-body-max-measure);
   }
   /* ── Profile rows — title line inside .cert-row/.publication-row
      (3-c owns the row chrome), plus the bio paragraph. */
-  .cert-row-title {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .profile-bio {
-    margin: 0;
-    font-size: var(--fs-sm);
-    color: var(--text);
-    line-height: 1.85;
-  }
 
   /* ── Labs + profile — the subtle entrance staggers (the only authored
      motion on these two pages). fill backwards so finished animations
      never pin transforms (the 4-b lesson). */
-  .page-labs .track-grid > *,
-  .page-profile > * {
-    animation: madarek-section-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
-    animation-delay: calc(
-      var(--motion-stagger-step) * min(var(--lab-i, 0), var(--motion-stagger-cap))
-    );
-  }
   .page-profile > *:nth-child(1) { --lab-i: 0; }
   .page-profile > *:nth-child(2) { --lab-i: 1; }
   .page-profile > *:nth-child(3) { --lab-i: 2; }
@@ -4215,15 +2123,7 @@
   }
   /* Lab cards are informational (no navigation) — the shared .track-card
      cursor promises a link that never happens. */
-  .track-card.is-static { cursor: default; }
   @media (hover: hover) and (pointer: fine) {
-    .track-card.is-static:hover { transform: none; }
-  }
-  .track-card-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-3);
   }
 
   /* ── Live sessions — action cluster on run rows (3-c owns the row).
@@ -4243,42 +2143,11 @@
 
   /* ── Research review — the scan-metric meta line on paper rows
      (student.css owns the .paper-row card family). */
-  .review-row-meta {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-3);
-    font-size: var(--fs-xs);
-  }
-  .review-row-meta > span { display: inline-flex; align-items: center; gap: var(--sp-1); }
 
   /* ── Annotation rows — margin notes inside the review modal. THE
      authored moment of the research page: the newest annotation lands
      with a one-shot gold highlight that fades to the quiet row (a fresh
      note written in the reader pulses the moment the modal shows it). */
-  .annotation-row {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
-  .annotation-row-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 28px;
-    block-size: 28px;
-    flex-shrink: 0;
-    margin-block-start: var(--sp-0-5);
-    border-radius: var(--r-sm);
-    background: var(--gold-soft);
-    color: var(--gold-ink);
-  }
-  .annotation-row.is-newest {
-    animation: madarek-annotation-hl var(--motion-duration-skeleton) var(--motion-ease-decelerate) backwards;
-  }
   @keyframes madarek-annotation-hl {
     0%   { background: var(--gold-soft); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent); }
     70%  { background: var(--gold-soft); }
@@ -4288,15 +2157,6 @@
   /* ── Reduced-motion off-switches for every keyframe in this wave
      (guardrail #6 — belt-and-braces over the global token belts). */
   @media (prefers-reduced-motion: reduce) {
-    .feed .feed-item,
-    .compact-kpi-delta,
-    .risk-row,
-    .page-labs .track-grid > *,
-    .page-profile > *,
-    .annotation-row.is-newest {
-      animation: none;
-      transition: none;
-    }
   }
 }
 
@@ -4328,34 +2188,18 @@
   .notification-panel {
     transform-origin: center top;
   }
-  .dropdown[data-side="above"],
-  .popover[data-side="above"],
-  .notification-panel[data-side="above"] {
-    transform-origin: center bottom;
-  }
 
   /* ── Anchored-panel exit: scale-out fade. The component stays
      mounted (data-closing, useDelayedUnmount) until this ends.
      Duration is the token nearest the requested ~120ms — guardrail #1
      forbids raw values, and --motion-duration-short (160ms) reads
      cleanly at menu scale. */
-  .dropdown[data-closing="true"],
-  .popover[data-closing="true"],
-  .notification-panel[data-closing="true"] {
-    animation: madarek-popover-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
   @keyframes madarek-popover-out {
     from { opacity: 1; transform: none; }
     to   { opacity: 0; transform: scale(0.97); }
   }
 
   /* ── Modal exit: scrim fades, card settles down + fades. */
-  .modal-overlay[data-closing="true"] {
-    animation: madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
-  .modal-overlay[data-closing="true"] .modal-card {
-    animation: madarek-modal-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
   @keyframes madarek-overlay-out {
     from { opacity: 1; }
     to   { opacity: 0; }
@@ -4369,18 +2213,6 @@
      Direction-aware — `end` docks inline-end (right in LTR, left in
      RTL), so the exit multiplies by --motion-direction. Bottom
      sheets slide fully down. */
-  .sheet-overlay[data-closing="true"] {
-    animation: madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
-  .sheet-overlay[data-closing="true"] .sheet-panel-end {
-    animation: madarek-sheet-out-end var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
-  .sheet-overlay[data-closing="true"] .sheet-panel-start {
-    animation: madarek-sheet-out-start var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
-  .sheet-overlay[data-closing="true"] .sheet-panel-bottom {
-    animation: madarek-sheet-out-bottom var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
   @keyframes madarek-sheet-out-end {
     to { opacity: 0; transform: translateX(calc(var(--motion-direction) * 8%)); }
   }
@@ -4393,12 +2225,6 @@
 
   /* ── Lightbox exit: the media surface fades (scrim + content),
      content scaling down a hair so the close reads as "release". */
-  .lightbox-overlay[data-closing="true"] {
-    animation: madarek-lightbox-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
-  .lightbox-overlay[data-closing="true"] .lightbox-content {
-    animation: madarek-lightbox-content-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
   @keyframes madarek-lightbox-out {
     from { opacity: 1; }
     to   { opacity: 0; }
@@ -4415,26 +2241,6 @@
      outward edge pair is PHYSICAL geometry (border-right +
      border-bottom for a downward point), so physical borders are
      correct under [dir="rtl"] too. */
-  .tooltip::after {
-    content: '';
-    position: absolute;
-    left: var(--tip-arrow-x, 50%);
-    inset-block-end: -4px;
-    inline-size: 8px;
-    block-size: 8px;
-    background: var(--surface);
-    border-right: 1px solid var(--rule);
-    border-bottom: 1px solid var(--rule);
-    transform: rotate(45deg);
-  }
-  .tooltip[data-side="below"]::after {
-    inset-block-end: auto;
-    inset-block-start: -4px;
-    border-right: 0;
-    border-bottom: 0;
-    border-left: 1px solid var(--rule);
-    border-top: 1px solid var(--rule);
-  }
 
   /* ── Reduced-motion off-switches for every keyframe in this wave
      (guardrail #6). Durations collapse via the tokens — kept as
@@ -4442,19 +2248,6 @@
      the delayed unmount in useDelayedUnmount; the base.css belt
      (0.01ms !important) guarantees they effectively never play. */
   @media (prefers-reduced-motion: reduce) {
-    .dropdown[data-closing="true"],
-    .popover[data-closing="true"],
-    .notification-panel[data-closing="true"],
-    .modal-overlay[data-closing="true"],
-    .modal-overlay[data-closing="true"] .modal-card,
-    .sheet-overlay[data-closing="true"],
-    .sheet-overlay[data-closing="true"] .sheet-panel-end,
-    .sheet-overlay[data-closing="true"] .sheet-panel-start,
-    .sheet-overlay[data-closing="true"] .sheet-panel-bottom,
-    .lightbox-overlay[data-closing="true"],
-    .lightbox-overlay[data-closing="true"] .lightbox-content {
-      animation-duration: var(--motion-duration-short);
-    }
   }
 }
 
@@ -4477,16 +2270,6 @@
          CTA rises.
      The skip row and dot strip persist outside the keyed body so the
      dots' fill transition animates BETWEEN frames. */
-  .onboarding-flow-frame {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-4);
-    animation: onboarding-frame-in
-      var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .onboarding-flow-frame[data-frame-direction="back"] {
-    animation-name: onboarding-frame-in-back;
-  }
 
   @keyframes onboarding-frame-in {
     from {
@@ -4514,22 +2297,7 @@
   }
 
   /* Beat 1 — the illustration settles (subtle scale, no travel). */
-  .onboarding-flow-frame > .onboarding-flow-illustration {
-    animation: onboarding-beat-settle
-      var(--motion-duration-long) var(--motion-ease-decelerate) both;
-  }
   /* Beats 2 + 3 — copy, then CTA. */
-  .onboarding-flow-frame > .onboarding-flow-copy,
-  .onboarding-flow-frame > .onboarding-flow-actions {
-    animation: onboarding-beat-rise
-      var(--motion-duration-short) var(--motion-ease-decelerate) both;
-  }
-  .onboarding-flow-frame > .onboarding-flow-copy {
-    animation-delay: var(--motion-stagger-step);
-  }
-  .onboarding-flow-frame > .onboarding-flow-actions {
-    animation-delay: calc(var(--motion-stagger-step) * 2);
-  }
 
   @keyframes onboarding-beat-settle {
     from {
@@ -4558,38 +2326,15 @@
      across the keyed frame body. (5-C1: the shapes live on the
      pseudos now — see the anatomy block above; these rules only
      re-skin them per state, no size animation anywhere.) */
-  .onboarding-flow-dot::before {
-    border-color: var(--rule);
-  }
-  .onboarding-flow-dot.is-done::before {
-    background: var(--onboarding-accent);
-    border-color: var(--onboarding-accent);
-  }
-  .onboarding-flow-dot.is-active::after {
-    background: var(--onboarding-accent);
-  }
 
   /* ── Role-accent tint on the role-intro frame (frame 3) ──────────
      body[data-role] (useRoleAccent) resolves --role-accent per theme;
      the modal portal lives under body, so the token inherits. The
      copper default stays for the three generic frames. */
-  .onboarding-flow {
-    --onboarding-accent: var(--accent);
-  }
-  .onboarding-flow[data-frame="3"] {
-    --onboarding-accent: var(--role-accent, var(--accent));
-  }
 
   /* Illustration halo: a soft role-tinted ground behind the scene (a
      wash, not a shadow — the craft floor's halo ban is about
      box-shadow glows). */
-  .onboarding-flow[data-frame="3"] .onboarding-flow-illustration {
-    background: radial-gradient(
-      closest-side,
-      color-mix(in srgb, var(--onboarding-accent) 12%, transparent),
-      transparent 74%
-    );
-  }
 
   /* CTA: the primary button keeps its ink identity but takes a
      role-hued cast. Contrast math (light text on the mixed ground):
@@ -4597,12 +2342,6 @@
      luminance ≤ ~0.035 → ≥ 12:1 for light theme text and ≥ 9:1 in
      dark (worst cases: department-head #BF6A2A light, faculty
      #3CC2B0 dark) — AA-safe for every role × theme pair. */
-  .onboarding-flow[data-frame="3"] .onboarding-flow-actions .btn.primary {
-    --_btn-bg: color-mix(in srgb, var(--onboarding-accent) 30%, var(--neutral-900));
-    --_btn-bd: color-mix(in srgb, var(--onboarding-accent) 46%, var(--neutral-900));
-    --_btn-bg-hover: color-mix(in srgb, var(--onboarding-accent) 40%, var(--neutral-700));
-    --_btn-bd-hover: color-mix(in srgb, var(--onboarding-accent) 56%, var(--neutral-700));
-  }
 
   /* ── Milestone celebration beat ───────────────────────────────────
      One authored moment (MilestoneScene): the illustration POPS with
@@ -4610,20 +2349,6 @@
      in last. The auto-dismiss hold (4s) covers the entrance + reading
      time; a queued milestone waits out the onboarding exit window in
      the component before this beat ever plays (no double flash). */
-  .onboarding-flow--milestone .onboarding-flow-illustration {
-    animation: milestone-pop
-      var(--motion-duration-long) var(--motion-ease-decelerate) both;
-  }
-  .onboarding-flow--milestone .onboarding-flow-copy {
-    animation: onboarding-beat-rise
-      var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-    animation-delay: calc(var(--motion-stagger-step) * 2);
-  }
-  .onboarding-flow--milestone .onboarding-flow-actions {
-    animation: onboarding-beat-rise
-      var(--motion-duration-short) var(--motion-ease-decelerate) both;
-    animation-delay: calc(var(--motion-stagger-step) * 3);
-  }
 
   @keyframes milestone-pop {
     from {
@@ -4645,15 +2370,6 @@
      element renders in its natural, fully-visible state). The dots'
      fill transition collapses automatically via the duration tokens. */
   @media (prefers-reduced-motion: reduce) {
-    .onboarding-flow-frame,
-    .onboarding-flow-frame > .onboarding-flow-illustration,
-    .onboarding-flow-frame > .onboarding-flow-copy,
-    .onboarding-flow-frame > .onboarding-flow-actions,
-    .onboarding-flow--milestone .onboarding-flow-illustration,
-    .onboarding-flow--milestone .onboarding-flow-copy,
-    .onboarding-flow--milestone .onboarding-flow-actions {
-      animation: none;
-    }
   }
 
   /* ── prefers-contrast: display strokes keep their authored weight ─
@@ -4685,11 +2401,6 @@
      block lives here because components.css is this wave's append
      surface — 96px keeps the scene inside the 540px panel without
      dwarfing the copy. */
-  .notif-empty-illustration {
-    inline-size: 96px;
-    block-size: 96px;
-    margin-block-start: var(--sp-1);
-  }
 }
 
 /* ╔═══════════════════════════════════════════════════════════════╗
@@ -4727,12 +2438,6 @@
      attribute the useDelayedUnmount contract renders, so the rule
      stays dormant (zero visual delta) until CommandPalette wires the
      delayed unmount on the component side. */
-  .cmd-palette-overlay[data-closing="true"] {
-    animation: madarek-overlay-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
-  .cmd-palette-overlay[data-closing="true"] .cmd-palette-card {
-    animation: madarek-modal-out var(--motion-duration-short) var(--motion-ease-accelerate) both;
-  }
 
   /* Reduced-motion off-switch (guardrail #6) — kept as an animation
      (never `animation: none`): the duration token collapses under
@@ -4740,10 +2445,6 @@
      and the base.css belt (0.01ms !important) guarantees the
      frames effectively never paint. Mirrors the wave 7-a block. */
   @media (prefers-reduced-motion: reduce) {
-    .cmd-palette-overlay[data-closing="true"],
-    .cmd-palette-overlay[data-closing="true"] .cmd-palette-card {
-      animation-duration: var(--motion-duration-short);
-    }
   }
 }
 
@@ -4764,39 +2465,6 @@
 
 
   /* ── 1 · The ledger panel — the bordered data surface ────────── */
-  .ledger {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    overflow: hidden;
-  }
-  .ledger-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-2-5) var(--sp-5);
-    border-block-end: 1px solid var(--rule);
-    background: var(--surface-2);
-    color: var(--text);
-  }
-  .ledger-title {
-    font-size: var(--type-body-size);
-    font-weight: var(--fw-semibold);
-  }
-  .ledger-aux { margin-inline-start: auto; }
-  .ledger-tag {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    /* P-G3b (Q-7 contrast) — was var(--accent): #FA3600 measured 3.04:1
-       on the rose zone head (#F9E3DC) at the 13px tag seat and ~3.6:1
-       on the base surface-2 — both under the 4.5:1 text floor. The
-       strong accent tier clears both (≈6.1:1 light on rose-bg); dark
-       already pinned this tier. Zone heads re-ink the tag to their own
-       family-deep pairing below (inherit via the head's color). */
-    color: var(--accent-strong);
-  }
   /* r191 a11y (axe catch): on elevated night surfaces (#121a36) the
      11px tag's --accent (#9A5CFF) lands at 4.36:1 — just under AA.
      The strong accent tier (#B085FF, 7.14:1 on night) clears it. */
@@ -4804,16 +2472,6 @@
   /* zone tinting — the ONE place pastel families become section
      bands (the VLM trial's stolen tinted-head, both-theme-safe via
      the -bg/-deep pair of each family). */
-  .ledger.zone-sky > .ledger-head {
-    background: var(--c-sky-bg);
-    color: var(--c-sky-deep);
-    border-block-end-color: color-mix(in srgb, var(--c-sky-ink) 25%, transparent);
-  }
-  .ledger.zone-rose > .ledger-head {
-    background: var(--c-rose-bg);
-    color: var(--c-rose-deep);
-    border-block-end-color: color-mix(in srgb, var(--c-rose-ink) 25%, transparent);
-  }
   /* P-G3b (Q-7 contrast) — the zone head's tag follows its family's
      deep ink (the axe-flagged 3.04:1 pair was exactly this tag on the
      rose band): rose-deep on rose-bg ≈ 8.6:1, and every other zone
@@ -4823,24 +2481,6 @@
   .ledger.zone-sky > .ledger-head .ledger-tag { color: var(--c-sky-deep); }
   .ledger.zone-mint > .ledger-head .ledger-tag { color: var(--c-mint-deep); }
   .ledger.zone-lavender > .ledger-head .ledger-tag { color: var(--c-lavender-deep); }
-  .ledger.zone-mint > .ledger-head {
-    background: var(--c-mint-bg);
-    color: var(--c-mint-deep);
-    border-block-end-color: color-mix(in srgb, var(--c-mint-ink) 25%, transparent);
-  }
-  .ledger.zone-copper > .ledger-head {
-    /* r306: the copper zone reaches the accent through the semantic
-       aliases — the ZoneTone union keeps its name (a live primitive
-       vocabulary), the paint contract reads canonical. */
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    border-block-end-color: color-mix(in srgb, var(--accent) 25%, transparent);
-  }
-  .ledger.zone-lavender > .ledger-head {
-    background: var(--c-lavender-bg);
-    color: var(--c-lavender-deep);
-    border-block-end-color: color-mix(in srgb, var(--c-lavender-ink) 25%, transparent);
-  }
 
   /* ── 2 · The ledger row — the app's repeating data atom ─────────
      grid: [lead | body | status/actions] — the lead column is mono
@@ -4857,11 +2497,8 @@
     text-decoration: none;
   }
   .ledger-row:last-child { border-block-end: 0; }
-  .ledger-row-link { cursor: pointer; }
   @media (hover: hover) and (pointer: fine) {
-    .ledger-row-link:hover { background: var(--surface-2); }
   }
-  .ledger-row-link:active { background: var(--surface-3); }
   .ledger-lead {
     font-family: var(--font-mono);
     font-size: var(--fs-xs);
@@ -4876,170 +2513,29 @@
     color: var(--text);
   }
   .ledger-what { font-size: var(--type-body-size); min-inline-size: 0; }
-  .ledger-what strong { font-weight: var(--fw-semibold); }
-  .ledger-what small {
-    display: block;
-    color: var(--text-muted);
-    font-size: var(--fs-sm);
-    margin-block-start: var(--sp-0-5);
-  }
-  .ledger-tail {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    flex: none;
-  }
 
   /* ── 3 · The stat strip — the typographic KPI replacement ───────
      label (mono) over value (metric role) over trend note. No icon
      wells, no accent boxes, no 132px tiles — the printed stat line. */
-  .stat-strip {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    overflow: hidden;
-  }
-  .stat-cell {
-    padding: var(--sp-4) var(--sp-5);
-    border-inline-start: 1px solid var(--rule);
-    min-inline-size: 0;
-  }
-  .stat-cell:first-child { border-inline-start: 0; }
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    color: var(--text-muted);
-    margin-block-end: var(--sp-1);
-  }
-  .stat-value {
-    font-size: var(--type-metric-size);
-    font-weight: var(--type-metric-weight);
-    line-height: var(--type-metric-line-height);
-    font-variant-numeric: tabular-nums;
-  }
-  .stat-trend {
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-medium);
-    color: var(--text-muted);
-    margin-block-start: var(--sp-1);
-  }
-  .stat-trend.up { color: var(--c-mint-deep); }
-  .stat-trend.down { color: var(--c-rose-deep); }
   /* phone reflow — 2×2 with honest borders (the grid4 content
      container owns the query, same ancestor .grid-4 flips on) */
   @container grid4 (max-width: 640px) {
-    .stat-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .stat-cell { border-inline-start: 0; border-block-start: 1px solid var(--rule); }
     .stat-cell:nth-child(even) { border-inline-start: 1px solid var(--rule); }
     .stat-cell:nth-child(-n + 2) { border-block-start: 0; }
-    .stat-cell { padding: var(--sp-3) var(--sp-4); }
   }
 
   /* ── 4 · Momentum — the continue-learning ring row ───────────── */
-  .momentum {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-5);
-    padding: var(--sp-5) var(--sp-6);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-  }
-  .momentum-ring {
-    position: relative;
-    inline-size: var(--ring-size, 112px);
-    block-size: var(--ring-size, 112px);
-    flex: none;
-  }
-  .momentum-ring .ring-track { stroke: var(--surface-3); }
-  .momentum-ring .ring-fill {
-    stroke: var(--accent);
-    transition: stroke-dasharray var(--t-slow) var(--ease-decelerate);
-  }
-  .momentum-center {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-content: center;
-    text-align: center;
-    gap: var(--sp-0-5);
-  }
-  .momentum-center b {
-    font-size: var(--type-metric-size);
-    font-weight: var(--type-metric-weight);
-    line-height: var(--type-metric-line-height);
-    font-variant-numeric: tabular-nums;
-  }
-  .momentum-center small { font-size: var(--fs-xxs); color: var(--text-muted); }
-  .momentum-info { flex: 1; min-inline-size: 0; }
-  .momentum-title {
-    font-size: var(--type-headline-size-sm);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (no live consumer; pinned for revival) */
-    margin: 0 0 var(--sp-1);
-  }
-  .momentum-sub { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); }
-  .momentum-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-3);
-  }
-  .momentum-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-4);
-  }
   @container grid4 (max-width: 720px) {
-    .momentum { flex-direction: column; align-items: flex-start; }
   }
 
   /* ── 5 · The week ledger — day-anchored rows ──────────────────── */
-  .week-row {
-    display: grid;
-    grid-template-columns: 56px minmax(0, 1fr);
-    gap: var(--sp-3);
-    padding: var(--sp-2-5) var(--sp-4);
-    border-block-end: 1px solid color-mix(in srgb, var(--rule) 55%, transparent);
-    align-items: baseline;
-  }
-  .week-row:last-child { border-block-end: 0; }
-  .week-day {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-  }
-  .week-day b {
-    display: block;
-    font-family: var(--font-sans);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--text);
-  }
-  .week-what { font-size: var(--fs-sm); min-inline-size: 0; }
 
   /* ── 6 · Sparkline — the data-bearing trend mark ────────────────
      pure SVG polyline (a chart, not an icon: ChartFrame canvases are
      the same class of media); the visible stroke is the data, the
      text alternative rides role="img" + aria-label. */
-  .spark { display: inline-flex; flex: none; }
-  .spark svg { display: block; }
 
   /* ── 7 · Meta chip — outlined factual token (momentum chips) ─── */
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-medium);
-    padding: var(--sp-0-5) var(--sp-2-5);
-    border-radius: var(--r-full);
-    border: 1px solid var(--rule);
-    color: var(--text-secondary);
-    background: var(--surface);
-  }
 
 
   /* ── 8 · Ledger internals: week items + empty + link cells ──────
@@ -5055,7 +2551,6 @@
     text-decoration: none;
     min-inline-size: 0;
   }
-  .week-item + .week-item { border-block-start: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
   @media (hover: hover) and (pointer: fine) {
     .week-item:hover .week-item-title { color: var(--accent-strong); }
   }
@@ -5070,11 +2565,6 @@
     color: var(--text-muted);
     margin-inline-start: auto;
     flex: none;
-  }
-  .ledger-empty { padding: var(--sp-5); }
-  .stat-cell-link { text-decoration: none; color: inherit; }
-  @media (hover: hover) and (pointer: fine) {
-    .stat-cell-link:hover { background: var(--surface-2); }
   }
 
   /* ledger-row-flat — the honest zero-state row (one line, no well) */
@@ -5119,62 +2609,15 @@
   /* the zone heads keep their tinted bands — on the void they ride a
      translucent family wash so the luminosity step still reads
      through (the family INK at 14% over the void) */
-  [data-theme="dark"] .ledger.zone-sky > .ledger-head      { background: color-mix(in srgb, var(--c-sky-ink) 14%, transparent); }
-  [data-theme="dark"] .ledger.zone-rose > .ledger-head     { background: color-mix(in srgb, var(--c-rose-ink) 14%, transparent); }
-  [data-theme="dark"] .ledger.zone-mint > .ledger-head     { background: color-mix(in srgb, var(--c-mint-ink) 14%, transparent); }
-  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { background: color-mix(in srgb, var(--accent) 14%, transparent); }
-  [data-theme="dark"] .ledger.zone-lavender > .ledger-head { background: color-mix(in srgb, var(--c-lavender-ink) 14%, transparent); }
-  [data-theme="dark"] .ledger.zone-sky > .ledger-head      { border-block-end-color: color-mix(in srgb, var(--c-sky-ink) 30%, transparent); }
-  [data-theme="dark"] .ledger.zone-rose > .ledger-head     { border-block-end-color: color-mix(in srgb, var(--c-rose-ink) 30%, transparent); }
-  [data-theme="dark"] .ledger.zone-mint > .ledger-head     { border-block-end-color: color-mix(in srgb, var(--c-mint-ink) 30%, transparent); }
-  [data-theme="dark"] .ledger.zone-copper > .ledger-head   { border-block-end-color: color-mix(in srgb, var(--accent) 30%, transparent); }
-  [data-theme="dark"] .ledger.zone-lavender > .ledger-head { border-block-end-color: color-mix(in srgb, var(--c-lavender-ink) 30%, transparent); }
 
   /* ── 2 · Telemetry markers — the 7px violet square ──────────────
      (r284: .page-header-meta::before retired — the in-page meta line
      is date/week context, not telemetry; r197's mono-for-IDs-only
      contract takes the square and the mono voice with it) */
-  .stat-label::before,
-  .ledger-tag::before {
-    content: "";
-    display: inline-block;
-    inline-size: 7px;
-    block-size: 7px;
-    margin-inline-end: var(--sp-1-5);
-    background: var(--accent);
-    /* vertical alignment against 11px mono text */
-    vertical-align: 0.06em;
-    border-radius: 0;   /* raw-css: permitted zero */
-  }
-  .ledger-tag::before { background: currentColor; }
 
   /* ── 3 · Row hover — the violet orbit edge ────────────────────── */
-  .ledger-row-link { position: relative; }
-  .ledger-row-link::before {
-    content: "";
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 2px;
-    background: var(--accent);
-    opacity: 0;
-    transition: opacity var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .ledger-row-link:hover { background: color-mix(in srgb, var(--accent) 7%, transparent); }
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .ledger-row-link:hover::before { opacity: 1; }
-  }
-  .ledger-row-link:active { background: color-mix(in srgb, var(--accent) 12%, transparent); }
-  @media (hover: hover) and (pointer: fine) {
-    .stat-cell-link:hover { background: color-mix(in srgb, var(--accent) 6%, transparent); }
-  }
 
   /* ── 4 · The momentum aura + orbit node on the masthead ───────── */
-  .momentum-ring .ring-fill {
-    filter: drop-shadow(0 0 6px color-mix(in srgb, var(--accent) 45%, transparent));
-  }
   .page-header { position: relative; }
   .page-header::after {
     /* the orbit node — where the masthead rule terminates */
@@ -5215,10 +2658,6 @@
   }
 
   /* ── 6 · Reduced motion — the aura and edges respect the switch ── */
-  @media (prefers-reduced-motion: reduce) {
-    .ledger-row-link::before { transition: none; }
-    .momentum-ring .ring-fill { filter: none; }
-  }
 
 /* ═══════════════════════════════════════════════════════════════
    §CP ROWS — لغة الصفوف العائلية فوق عقد patterns (عائلة 4E، r267)
@@ -5239,43 +2678,9 @@
    نفسها لا في صندوق نص العنوان. */
 /* وصف المسابقة: سطران بحدّ أقصى والنصّ الكامل في title (أرضية
    الحِرفة: لا قصّ بلا تلميح). */
-.cp-clamp2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 /* عمود الطرف للبطاقات المصغّرة: شارة الحالة ثم سطرا الجائزة/المشاركين. */
-.cp-trail {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--sp-1);
-}
-.cp-inline {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
 /* الجوال: إجراءات RSVP تهبط سطرًا كاملًا تحت العنوان (بدل سحق
    العمود الرئيسي) — :has يُبقي العقد بلا className. */
-@media (max-width: 720px) {
-  .pf-row-line:has(.cp-rsvp) { flex-wrap: wrap; }
-  .cp-rsvp {
-    order: 9;
-    flex-basis: 100%;
-    justify-content: flex-start;
-    padding-block-start: var(--sp-2);
-  }
-}
-.cp-clamp1 {
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
 
 /* r264 — صفوف الكليات: سطر ثانوي يحمل الاسم الإنجليزي والعدادات نصًّا
    هادئًا (بدل شارات ثقيلة في الطرف) — الصف سطر واحد على كل عرض. */
@@ -5573,33 +2978,6 @@
      hover-capable gate like every other rule in this section;
      :focus-visible is ungated (keyboard parity). Pairing: carrying
      .text-link too steps the static native underline aside. */
-  .link-underline-motion:not(a) {
-    position: relative;
-  }
-  .link-underline-motion:not(a)::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 0;
-    inset-block-end: -2px;
-    inline-size: 100%;
-    block-size: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: calc(50% - 50% * var(--motion-direction, 1)) 50%;
-    transition: transform var(--t-base) var(--ease-out);
-    pointer-events: none;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .link-underline-motion:not(a):hover::before {
-      transform: scaleX(1);
-    }
-  }
-  .link-underline-motion:not(a):focus-visible::before {
-    transform: scaleX(1);
-  }
-  .text-link.link-underline-motion {
-    text-decoration: none;
-  }
 }
 
 /* ── r323 B3.6 — the pilot feedback loop («أبلغ عن مشكلة / اقتراح»)
@@ -5665,9 +3043,6 @@
 .fb-head { display: flex; align-items: center; justify-content: space-between; }
 .fb-title { margin: 0; font-size: 1.0625rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ font-weight: 700; }
 .fb-close { background: none; border: 0; cursor: pointer; color: var(--text-secondary); padding: var(--sp-1); }
-.fb-done { display: grid; justify-items: center; gap: var(--sp-2-5); padding: 26px var(--sp-2); /* spacing-gate: allow — reviewed authored literal (r-round sheet) */ color: var(--text); }
-.fb-done svg { color: var(--success); }
-.fb-done p { margin: 0; text-align: center; }
 
 .fb-body { display: grid; gap: var(--sp-3); }
 .fb-kinds { display: flex; gap: var(--sp-2); }
@@ -5689,32 +3064,115 @@
 }
 
 .fb-shot-row { display: flex; align-items: center; gap: var(--sp-2-5); flex-wrap: wrap; }
-.fb-shot-name { display: inline-flex; align-items: center; gap: var(--sp-1-5); font-size: 0.75rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ color: var(--text-secondary); }
-.fb-shot-x { background: none; border: 0; cursor: pointer; color: var(--text-secondary); padding: var(--sp-0-5); }
 
 .fb-meta { margin: 0; font-size: 0.75rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ line-height: 1.6; color: var(--text-muted); }
-.fb-error { margin: 0; font-size: 0.8125rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ font-weight: 600; color: var(--danger); }
 .fb-actions { display: flex; justify-content: flex-end; gap: var(--sp-2); }
 
 /* ── the registrar/owner inbox (the feedback page seat) ────────── */
-.fb-inbox { display: grid; gap: 0; }
-.fb-row { display: grid; gap: var(--sp-2); padding: 14px 0; /* spacing-gate: allow — reviewed authored literal (r-round sheet) */ border-bottom: 1px solid var(--border); }
-.fb-row:last-child { border-bottom: 0; }
-.fb-row-head { display: flex; align-items: center; gap: var(--sp-2-5); flex-wrap: wrap; }
-.fb-chip {
-  display: inline-flex; align-items: center; min-block-size: 22px; padding: var(--sp-0-5) 9px; /* spacing-gate: allow — reviewed authored literal (r-round sheet) */
-  font-size: 0.6875rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ font-weight: 700; letter-spacing: 0.02em;
-  border: 1px solid var(--border);
-}
 .fb-chip[data-kind='BUG'] { color: var(--danger); border-color: currentColor; }
 .fb-chip[data-kind='IDEA'] { color: var(--success); border-color: currentColor; }
 .fb-chip[data-status='open'] { color: var(--text); }
 .fb-chip[data-status='triage'] { color: var(--warning); border-color: currentColor; }
 .fb-chip[data-status='fixed'] { color: var(--success); }
 .fb-chip[data-status='dismissed'] { color: var(--text-muted); }
-.fb-row-route { font-size: 0.75rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ color: var(--text-secondary); font-family: var(--font-mono, monospace); }
-.fb-row-note { margin: 0; font-size: 0.875rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ line-height: 1.7; white-space: pre-wrap; }
-.fb-row-user { font-size: 0.75rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ color: var(--text-muted); }
-.fb-console { margin: 0; padding: var(--sp-2) var(--sp-2-5); background: color-mix(in srgb, var(--ink) 3%, transparent); font-size: 0.6875rem; /* type-gate: allow — reviewed authored literal (r-round sheet) */ line-height: 1.6; overflow: auto; max-block-size: 140px; font-family: var(--font-mono, monospace); color: var(--text-secondary); }
-.fb-shot { max-inline-size: 320px; border: 1px solid var(--border); display: block; }
-.fb-status-actions { display: flex; gap: var(--sp-1-5); flex-wrap: wrap; margin-inline-start: auto; }
+
+/* ══════════════════════════════════════════════════════════════════
+   R333 PI-08 RESTORATION — the source-contract pins (tests are law).
+   The coverage sweep never probed these states (unread rows, tone
+   variants, coarse pointers, day-group labels); their rules are
+   load-bearing by contract. Restored verbatim from the 8efb5a9a base
+   at recipe-complete cascade positions (their competitors are gone,
+   so end-placement preserves every original relationship).
+   ══════════════════════════════════════════════════════════════════ */
+
+  .metric {
+    /* r166b (E2 #3): the icon glyph rides the BOTH-THEME-SAFE accent
+       ink (light-well 3:1 fix, restored by R333 PI-08 reconciliation). */
+    --_metric-color: var(--accent-ink);
+    --_metric-bg:    var(--accent-soft);
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-xl);
+    padding: var(--sp-6);
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--sp-4);
+    transition: border-color var(--t-base) var(--ease),
+                box-shadow var(--t-base) var(--ease),
+                transform var(--t-base) var(--ease-out);
+    min-block-size: 132px;
+    box-shadow: var(--elev-1, var(--shadow-card));
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .metric.metric-link:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
+      box-shadow:
+        0 1px 2px color-mix(in srgb, var(--black) 3%, transparent),
+        0 4px 16px -4px color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+  }
+
+/* r166b (E2 #3) — the metric tone family rides the both-theme-safe
+   ink/soft token pairs; purple's dark tier is the one explicit
+   override (no status-* twin). */
+.metric.green  { --_metric-color: var(--success-ink); --_metric-bg: var(--success-soft); }
+.metric.amber  { --_metric-color: var(--warning-ink); --_metric-bg: var(--warning-soft); }
+.metric.red    { --_metric-color: var(--danger-ink);  --_metric-bg: var(--danger-soft); }
+.metric.purple { --_metric-color: var(--c-lavender-deep); --_metric-bg: var(--c-lavender-bg); }
+[data-theme="dark"] .metric.purple { --_metric-color: var(--c-lavender-ink); }
+.metric.gold   { --_metric-color: var(--gold-ink);     --_metric-bg: var(--gold-soft); }
+
+/* r173a — the .msg-day-group recipe: AA label ink + canonical hairline. */
+.msg-day-group {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-block-start: var(--sp-1);
+  font-size: var(--type-label-size-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+  min-inline-size: 0;
+}
+.msg-day-group:first-child { margin-block-start: 0; }
+.msg-day-group::after {
+  content: '';
+  flex: 1;
+  block-size: 1px;
+  background: var(--rule);
+  flex-shrink: 1;
+}
+
+/* r166a — the unread alert's opt-in state: surface-2 wash + accent bar. */
+.alert.unread {
+  background: var(--surface-2);
+  border-inline-start: 2px solid var(--accent);
+}
+
+/* r167 — the two revived utilities (justify-between was consumed by
+   the same hand-rolled set). */
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+
+/* r168a — the destructive ghost variant rides the semantic rose tokens. */
+.btn.ghost.danger {
+  --_btn-fg: var(--danger-ink);
+  --_btn-wipe: var(--danger-soft);
+  --_btn-wipe-fg: var(--danger-ink);
+}
+
+/* Premium-polish (semantic card headings) — the Card heading path
+   resets UA styles so <h2>/<h3> titles are pixel-identical. */
+.card-title-text {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  margin: 0;
+}
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: var(--sp-5); container: grid4 / inline-size; }
+  @container grid4 (max-width: 860px) {
+    .grid-4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
