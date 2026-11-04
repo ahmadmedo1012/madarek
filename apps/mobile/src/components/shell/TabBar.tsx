@@ -289,7 +289,19 @@ function TabButton({
       <T
         variant="xs"
         weight={active ? "bold" : "medium"}
-        style={{ color: active ? p.accentInk : p.textMuted, marginTop: 2 }}
+        numberOfLines={1}
+        maxFontSizeMultiplier={1.25}
+        style={{
+          color: active ? p.accentInk : p.textMuted,
+          marginTop: 2,
+          // R334 review fix — Arabic labels clipped mid-word at 360–430dp
+          // (VLM-verified on RN-web captures): 11/14 fits every role's
+          // longest label («الإشعارات») inside a 5-slot row.
+          fontSize: 11,
+          lineHeight: 14,
+          paddingHorizontal: 1,
+          textAlign: "center",
+        }}
       >
         {tab.label}
       </T>
