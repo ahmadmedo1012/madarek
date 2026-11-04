@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useCallback, useState, type ReactNode } from "react";
 import { View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Bookmark from "lucide-react-native/icons/bookmark";
@@ -15,7 +15,6 @@ import Users from "lucide-react-native/icons/users";
 import { socialApi } from "@/api/social";
 import type { StudyRoom } from "@/api/social";
 import type { Announcement, CampusEvent, Post } from "@/api/types";
-import { ApiError } from "@/api/client";
 import { useSession } from "@/auth/session";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
@@ -26,9 +25,10 @@ import { T } from "@/components/ui/text";
 import { Badge, Card, Sheet } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { Field, Segmented } from "@/components/ui/fields";
-import { Avatar, RowList, LedgerRow } from "@/components/ui/data";
+import { Avatar, DataList, LedgerRow, RowList, makeRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
+import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import {
   SignInPrompt,
@@ -57,12 +57,17 @@ const SCOPE_TONE: Record<string, "copper" | "mint" | "lavender" | "sky"> = {
  * announcements · events · study rooms). The backend routes are
  * auth-walled, so a guest gets the honest sign-in prompt per tab instead
  * of fake data. Web twin: CommunityPage + CommunitySocialPanels.
+ *
+ * R334 L2 sweep: the posts feed is the unbounded one — it renders through
+ * DataList (FlashList v2, pull-to-refresh, the states.tsx triad) and IS
+ * the tab's scroller; announcements/events/rooms stay short ledgers on
+ * Screen scroll (bounded, admin/authored rows — TODO only if they grow).
  */
 export default function Community() {
   const [tab, setTab] = useState<Tab>("posts");
 
-  return (
-    <Screen scroll>
+  const header = (
+    <>
       <StackHeader title="المجتمع الجامعي" kicker="الحياة الأكاديمية" />
       <T variant="body" color="secondary">
         إعلانات الجامعة · مسابقات وفعاليات · أنشطة طلابية. المساحة الرسمية للحياة الأكاديمية اليومية.
@@ -75,9 +80,25 @@ export default function Community() {
           { id: "rooms", label: "غرف الدراسة" },
         ]}
         selectedId={tab}
-        onSelect={(id) => setTab(id as Tab)}
+        onSelect={(id) => {
+          if (id !== tab) haptics.selection();
+          setTab(id as Tab);
+        }}
       />
-      {tab === "posts" ? <PostsPanel /> : null}
+    </>
+  );
+
+  if (tab === "posts") {
+    return (
+      <Screen scroll={false} padded={false}>
+        <PostsPanel header={header} />
+      </Screen>
+    );
+  }
+
+  return (
+    <Screen scroll>
+      {header}
       {tab === "announcements" ? <AnnouncementsPanel /> : null}
       {tab === "events" ? <EventsPanel /> : null}
       {tab === "rooms" ? <RoomsPanel /> : null}
@@ -107,7 +128,7 @@ function reactionCounts(post: Post): { like: number; save: number } {
   };
 }
 
-function PostsPanel() {
+function PostsPanel({ header }: { header: ReactNode }) {
   const p = usePalette();
   const qc = useQueryClient();
   const scope = useInstitutionScope();
@@ -136,6 +157,7 @@ function PostsPanel() {
       qc.invalidateQueries({ queryKey: ["community", "posts", scope] });
       setDraft("");
       setComposing(false);
+      haptics.notify("success");
       toast.success("تم نشر منشورك.");
     },
     onError: (e) => toast.error(apiMessage(e, "تعذّر نشر المنشور — نصّك ما زال محفوظًا.")),
@@ -143,36 +165,53 @@ function PostsPanel() {
 
   const posts = q.data ?? [];
 
-  if (q.isLoading) return <SkeletonList rows={4} rowHeight={84} />;
-  if (q.isError) {
-    if (isUnauthError(q.error)) return <SignInPrompt />;
-    return <ErrorState message={apiMessage(q.error)} onRetry={() => q.refetch()} />;
-  }
+  /* Stable row handler (makeRow contract): (post, kind, on) → mutate. */
+  const onReact = useCallback(
+    (post: Post, kind: "like" | "save", on: boolean) => react.mutate({ postId: post.id, kind, on }),
+    [react],
+  );
 
   return (
-    <View style={{ gap: sp[12] }}>
-      {user ? (
-        <Button
-          label="اكتب منشورًا جديدًا"
-          kind="ghost"
-          icon={<Plus size={16} color={p.text} />}
-          onPress={() => setComposing(true)}
-        />
-      ) : null}
-
-      {posts.length === 0 ? (
-        <EmptyState
-          title="لا منشورات بعد"
-          message="كن أول من يشارك تجربته أو سؤاله."
-          icon={<MessageCircle size={20} color={p.textMuted} />}
-          actionLabel={user ? "اكتب منشورًا" : undefined}
-          onAction={user ? () => setComposing(true) : undefined}
-        />
-      ) : (
-        posts.map((post) => (
-          <PostCard key={post.id} post={post} onReact={(kind, on) => react.mutate({ postId: post.id, kind, on })} />
-        ))
-      )}
+    <View style={{ flex: 1 }}>
+      <DataList
+        data={posts}
+        renderItem={({ item }) => <PostCard item={item} onReact={onReact} />}
+        keyExtractor={(post) => post.id}
+        ListHeaderComponent={
+          <View style={{ paddingHorizontal: sp[20], paddingTop: sp[8], gap: sp[16] }}>
+            {header}
+            {user ? (
+              <Button
+                label="اكتب منشورًا جديدًا"
+                kind="ghost"
+                icon={<Plus size={16} color={p.text} />}
+                onPress={() => setComposing(true)}
+              />
+            ) : null}
+          </View>
+        }
+        isLoading={q.isLoading}
+        isError={q.isError}
+        errorSlot={
+          q.isError && isUnauthError(q.error) ? (
+            <SignInPrompt />
+          ) : (
+            <ErrorState message={q.isError ? apiMessage(q.error) : undefined} onRetry={() => q.refetch()} />
+          )
+        }
+        emptySlot={
+          <EmptyState
+            title="لا منشورات بعد"
+            message="كن أول من يشارك تجربته أو سؤاله."
+            icon={<MessageCircle size={20} color={p.textMuted} />}
+            actionLabel={user ? "اكتب منشورًا" : undefined}
+            onAction={user ? () => setComposing(true) : undefined}
+          />
+        }
+        refetch={q.refetch}
+        isRefetching={q.isRefetching}
+        contentPadding={{ bottom: 24 }}
+      />
 
       <Sheet
         open={composing}
@@ -205,7 +244,7 @@ function PostsPanel() {
         />
         {publish.isError ? (
           <T variant="sm" color="danger">
-            {(publish.error as ApiError)?.message ?? "تعذّر نشر المنشور."}
+            {apiMessage(publish.error, "تعذّر نشر المنشور.")}
           </T>
         ) : null}
       </Sheet>
@@ -213,74 +252,79 @@ function PostsPanel() {
   );
 }
 
-function PostCard({ post, onReact }: { post: Post; onReact: (kind: "like" | "save", on: boolean) => void }) {
+const PostCard = makeRow<
+  Post,
+  { onReact: (post: Post, kind: "like" | "save", on: boolean) => void }
+>(function PostCard({ item: post, onReact }) {
   const p = usePalette();
   const tones = useStatusTones();
   const counts = reactionCounts(post);
   const my = post.myReaction ?? null;
 
   return (
-    <Card style={{ gap: sp[8] }}>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
-        <Avatar
-          initials={initials(post.author.firstName, post.author.lastName)}
-          color={post.author.avatarColor ?? null}
-          size={36}
-        />
-        <View style={{ flex: 1, gap: 1 }}>
-          <T variant="body" weight="bold">
-            {`${post.author.firstName} ${post.author.lastName}`}
-          </T>
-          <T variant="xs" color="faint">
-            {fromNow(post.createdAt)}
-          </T>
-        </View>
-      </View>
-      <T variant="body" color="secondary">
-        {post.body}
-      </T>
-      {post.hashtags && post.hashtags.length > 0 ? (
-        <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
-          {post.hashtags.map((t) => (
-            <T key={t} variant="xs" color="accentInk">
-              {`#${t}`}
+    <View style={{ paddingHorizontal: sp[20] }}>
+      <Card style={{ gap: sp[8] }}>
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+          <Avatar
+            initials={initials(post.author.firstName, post.author.lastName)}
+            color={post.author.avatarColor ?? null}
+            size={36}
+          />
+          <View style={{ flex: 1, gap: 1 }}>
+            <T variant="body" weight="bold">
+              {`${post.author.firstName} ${post.author.lastName}`}
             </T>
-          ))}
+            <T variant="xs" color="faint">
+              {fromNow(post.createdAt)}
+            </T>
+          </View>
         </View>
-      ) : null}
-      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[4] }}>
-        <Button
-          label={counts.like > 0 ? latn(counts.like) : "أعجبني"}
-          kind="ghost"
-          small
-          icon={
-            <Heart
-              size={18}
-              color={my === "like" ? p.accentInk : p.textMuted}
-              fill={my === "like" ? p.accentInk : "none"}
-            />
-          }
-          onPress={() => onReact("like", my !== "like")}
-          accessibilityLabel={my === "like" ? "إزالة الإعجاب" : "أعجبني بهذا المنشور"}
-        />
-        <Button
-          label={counts.save > 0 ? latn(counts.save) : "حفظ"}
-          kind="ghost"
-          small
-          icon={
-            <Bookmark
-              size={18}
-              color={my === "save" ? tones.mint.ink : p.textMuted}
-              fill={my === "save" ? tones.mint.ink : "none"}
-            />
-          }
-          onPress={() => onReact("save", my !== "save")}
-          accessibilityLabel={my === "save" ? "إلغاء الحفظ" : "حفظ المنشور"}
-        />
-      </View>
-    </Card>
+        <T variant="body" color="secondary">
+          {post.body}
+        </T>
+        {post.hashtags && post.hashtags.length > 0 ? (
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[6] }}>
+            {post.hashtags.map((t) => (
+              <T key={t} variant="xs" color="accentInk">
+                {`#${t}`}
+              </T>
+            ))}
+          </View>
+        ) : null}
+        <View style={{ flexDirection: "row", alignItems: "center", gap: sp[4] }}>
+          <Button
+            label={counts.like > 0 ? latn(counts.like) : "أعجبني"}
+            kind="ghost"
+            small
+            icon={
+              <Heart
+                size={18}
+                color={my === "like" ? p.accentInk : p.textMuted}
+                fill={my === "like" ? p.accentInk : "none"}
+              />
+            }
+            onPress={() => onReact(post, "like", my !== "like")}
+            accessibilityLabel={my === "like" ? "إزالة الإعجاب" : "أعجبني بهذا المنشور"}
+          />
+          <Button
+            label={counts.save > 0 ? latn(counts.save) : "حفظ"}
+            kind="ghost"
+            small
+            icon={
+              <Bookmark
+                size={18}
+                color={my === "save" ? tones.mint.ink : p.textMuted}
+                fill={my === "save" ? tones.mint.ink : "none"}
+              />
+            }
+            onPress={() => onReact(post, "save", my !== "save")}
+            accessibilityLabel={my === "save" ? "إلغاء الحفظ" : "حفظ المنشور"}
+          />
+        </View>
+      </Card>
+    </View>
   );
-}
+});
 
 /* ═══════════ Tab: announcements ═══════════ */
 
@@ -359,6 +403,7 @@ function EventsPanel() {
   const rsvp = useMutation({
     mutationFn: ({ eventId, status }: { eventId: string; status: "GOING" | "MAYBE" | "NO" }) =>
       socialApi.rsvp(eventId, status),
+    onMutate: () => haptics.selection(),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["community", "events", scope] }),
     onError: (e) => toast.error(apiMessage(e, "تعذّر تسجيل ردّك.")),
   });
@@ -507,6 +552,7 @@ function RoomsPanel() {
     mutationFn: (id: string) => socialApi.joinRoom(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["community", "rooms", scope] });
+      haptics.notify("success");
       toast.success("انضممت إلى الغرفة.");
     },
     onError: (e) => toast.error(apiMessage(e, "تعذّر الانضمام إلى الغرفة.")),
@@ -515,6 +561,7 @@ function RoomsPanel() {
     mutationFn: (id: string) => socialApi.leaveRoom(id),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["community", "rooms", scope] });
+      haptics.selection();
       toast.info("غادرت الغرفة.");
     },
     onError: (e) => toast.error(apiMessage(e, "تعذّرت مغادرة الغرفة.")),
@@ -526,6 +573,7 @@ function RoomsPanel() {
       setCreating(false);
       setName("");
       setTopic("");
+      haptics.notify("success");
       toast.success("أُنشئت غرفتك الدراسية.");
     },
     onError: (e) => toast.error(apiMessage(e, "تعذّر إنشاء الغرفة.")),
@@ -609,7 +657,7 @@ function RoomsPanel() {
           />
           {create.isError ? (
             <T variant="sm" color="danger">
-              {(create.error as ApiError)?.message ?? "تعذّر إنشاء الغرفة."}
+              {apiMessage(create.error, "تعذّر إنشاء الغرفة.")}
             </T>
           ) : null}
         </View>
