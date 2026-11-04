@@ -1,55 +1,58 @@
 #!/usr/bin/env node
 /**
- * run.mjs — R335 A-Conform conformance suite.
+ * run.mjs — R336 conformance suite runner (v2 — honest instrument).
  *
  * Compares OUR landing page (http://localhost:5173, React/Vite, RTL Arabic)
  * against the FROZEN Heron specs in docs/redesign/r335/heron-spec/ —
  * deterministic, machine-checkable, NO live Heron dependency, NO screenshots.
  *
- * Pipeline per breakpoint:
- *   1. open page (viewport per bp), wait network-idle + 1.5s
- *   2. seat-scroll walk (lenis.scrollTo immediate → window.scrollTo fallback)
- *      recording per-section top/height in vh → pin spans + section heights
- *      (same columnar shape as _page.<bp>.json)
- *   3. per section: the SAME measurement walk as scripts/spec/extract-heron.mjs
- *   4. match Heron elements → our elements: explicit mapping (mapping/*.json)
- *      then heuristic fallback (same tag + same text-class + ordinal position)
- *   5. run the tolerance assertions (tolerances.mjs), apply Arabic exceptions
- *      (exceptions.json), count exception usage
+ * v2 (the R336 instrument fix — a pass-rate built on unmatched elements and
+ * waivers is a self-graded metric):
+ *   · MATCHING: explicit-first. (a) data-spec hooks: our elements carrying
+ *     data-spec="<section>.<role>" map to the spec role path via the
+ *     mapping's "spec" field; (b) legacy explicit selectors; (c) heuristic
+ *     (tag+tc ordinal) ONLY for elements the mapping marks heuristic-ok.
+ *     Every UNMATCHED spec element is reported as a FAIL row of kind
+ *     `no-counterpart` (with its role path) unless the mapping lists it in
+ *     "noCounterpart" with a reason (then it is counted as excused and
+ *     reported by name — never silently dropped).
+ *   · TOLERANCES: transformed expectations (tolerances.mjs v2) — the Arabic
+ *     adaptations assert, they do not waive. exceptions.json keeps only
+ *     true waivers (tc ±1 class today), capped <5%.
+ *   · MATRIX: one report covers every section × every breakpoint requested
+ *     (default all 9 sections × all 5 bps); results.json carries the full
+ *     per-cell detail plus mapping quality (explicit/heuristic/unmatched/
+ *     excused counts per cell).
+ *   · GATE: `--gate` compares the overall pass-rate against the RATCHET file
+ *     (ratchet.json, committed) — the run fails if the rate is below the
+ *     ratchet; after a green run with `--ratchet` the file updates to the
+ *     new rate (monotonic — the number may never drop).
  *
  * Usage:
- *   node scripts/conformance/run.mjs                            # all sections × all bps
+ *   node scripts/conformance/run.mjs                            # 9 sections × 5 bps
  *   node scripts/conformance/run.mjs --sections home-hero-wrap,footer --bps 1440,390
- *   node scripts/conformance/run.mjs --gate                     # CI: exit 1 below 90%
- *   node scripts/conformance/run.mjs --url http://localhost:5174/  # another dev-server seat
+ *   node scripts/conformance/run.mjs --gate                     # CI: exit 1 below ratchet
+ *   node scripts/conformance/run.mjs --ratchet                  # raise ratchet to current rate
+ *   node scripts/conformance/run.mjs --url http://localhost:5174/
  *
- * Output: console table (section × bp) + scripts/conformance/results.json.
- * Exit 0 always (report-only) unless --gate and pass-rate < 90.
+ * Output: console matrix + scripts/conformance/results.json.
  */
 import { createRequire } from "node:module";
-import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as T from "./tolerances.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = join(__dirname, "..", "..");
-// playwright is a pinned devDependency of frontend/ — resolve from the main
-// checkout if this worktree has no node_modules yet (same pattern as the extractor).
 let chromium;
 try {
   ({ chromium } = createRequire(join(WORKTREE, "frontend", "package.json"))("playwright"));
 } catch {
-  ({ chromium } = createRequire("/home/z/madarek/frontend/package.json")("playwright"));
+  ({ chromium } = createRequire("/home/z/madarek/frontend/package.json"))("playwright");
 }
 
 const SPEC_DIR = join(WORKTREE, "docs", "redesign", "r335", "heron-spec");
-// P2-0 (r335 split): the mapping lives as ONE FILE PER SECTION in
-// mapping/ (named with the exact our-section key run.mjs uses) — merge
-// every *.json in the directory into the same in-memory shape the old
-// single mapping.json had ({ ourSection, heronPageKey, scaleFactor,
-// explicit }). Deterministic order (sorted) keeps the section list
-// stable across runs.
 const MAPPING = readdirSync(join(__dirname, "mapping"))
   .filter((f) => f.endsWith(".json"))
   .sort()
@@ -60,9 +63,10 @@ const MAPPING = readdirSync(join(__dirname, "mapping"))
       Object.assign(acc.heronPageKey ?? (acc.heronPageKey = {}), part.heronPageKey);
       Object.assign(acc.scaleFactor ?? (acc.scaleFactor = {}), part.scaleFactor);
       acc.explicit.push(...(part.explicit ?? []));
+      acc.noCounterpart.push(...(part.noCounterpart ?? []));
       return acc;
     },
-    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [] },
+    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [], noCounterpart: [] },
   );
 const EXCEPTIONS = JSON.parse(readFileSync(join(__dirname, "exceptions.json"), "utf8"));
 const SECTIONS = Object.keys(MAPPING.ourSection);
@@ -79,15 +83,17 @@ const arg = (n, d) => (process.argv.indexOf(`--${n}`) > 0 ? process.argv[process
 const SECTIONS_WANTED = arg("sections", null)?.split(",").map((s) => s.trim()) ?? SECTIONS;
 const BPS_WANTED = arg("bps", null)?.split(",").map((b) => b.trim()) ?? BPS.map((b) => b.name);
 const GATE = process.argv.includes("--gate");
+const RATCHET_UPDATE = process.argv.includes("--ratchet");
+const RATCHET_FILE = join(__dirname, "ratchet.json");
 const OUT = arg("out", join(__dirname, "results.json"));
-// P2-0: optional dev-server seat override (default unchanged — the
-// shared :5173 seat). Unknown keys in ourSection are validated below.
 const URL = arg("url", "http://localhost:5173/");
 const unknown = SECTIONS_WANTED.filter((s) => !MAPPING.ourSection[s]);
 if (unknown.length) {
   console.error(`unknown section key(s): ${unknown.join(", ")} — known: ${SECTIONS.join(", ")}`);
   process.exit(2);
 }
+// The noCounterpart reasons are per spec-path suffix; pre-compile.
+const NO_COUNTERPART = MAPPING.noCounterpart; // [{section, heron, reason}]
 
 // ── the in-page measurement walk (SAME shape as scripts/spec/extract-heron.mjs) ──
 const WALK_JS = String.raw`
@@ -115,9 +121,6 @@ const WALK_JS = String.raw`
       segs.unshift(n.tagName.toLowerCase() + "[" + idx + "]");
       n = n.parentElement;
     }
-    // the wrap-root segment is normalized to [1]: the section container's own
-    // sibling position is layout-accidental on our side (Heron's wraps are all
-    // first children) and must not break path equality with the frozen spec.
     if (segs.length) segs[0] = segs[0].replace(/\[\d+\]$/, "[1]");
     return wrapKey + " > " + segs.join(" > ");
   }
@@ -132,6 +135,7 @@ const WALK_JS = String.raw`
         tag: el.tagName.toLowerCase(),
         tc: textClass(el),
         leaf: el.children.length === 0,
+        ds: el.getAttribute("data-spec") || null,
         vr: { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height) },
         sr: { x: Math.round(r.left - wr.left), y: Math.round(r.top - wr.top), w: Math.round(r.width), h: Math.round(r.height) },
         fs: px(cs.fontSize), lh: px(cs.lineHeight), fw: cs.fontWeight, ls: px(cs.letterSpacing),
@@ -189,19 +193,35 @@ async function SCROLL_WALK_JS(sectionSelectors) {
   return { vh, scrollHeight: document.documentElement.scrollHeight, keys: sectionSelectors, rows };
 }
 
-// ── matching ─────────────────────────────────────────────────────────────────
-function matchPairs(heronEls, ourEls, explicitIdx) {
+// ── matching v2 ───────────────────────────────────────────────────────────────
+// specRole: the role key of a spec path within a section —
+// "home-why-wrap > div[1] > section[1] > div[2] > h2[1]" → "div.section.div.h2"
+// (tag chain, drop indices, drop the wrap key). data-spec values carry the
+// same grammar: "why.title", "why.stage.1" … the mapping's "spec" field
+// binds a spec path (exact or suffix) to a data-spec key.
+function specPathMatches(specPath, pattern) {
+  return specPath === pattern || specPath.endsWith(" > " + pattern) || pattern.endsWith(" > " + specPath);
+}
+function findNoCounterpartReason(section, specPath) {
+  for (const nc of NO_COUNTERPART) {
+    if (nc.section === section && specPathMatches(specPath, nc.heron)) return nc.reason;
+  }
+  return null;
+}
+
+function matchPairs(heronEls, ourEls, explicitIdx, section) {
   const pairs = [];
   const usedOurs = new Set();
-  // (a) explicit: heronPath → {idx, skip}
+  // (a) explicit (legacy selectors + data-spec resolved by the page walk)
   for (const h of heronEls) {
     const ex = explicitIdx[h.p];
     if (ex && ourEls[ex.idx] && !usedOurs.has(ex.idx)) {
       usedOurs.add(ex.idx);
-      pairs.push({ h, o: ourEls[ex.idx], mode: "explicit", skip: new Set(ex.skip) });
+      pairs.push({ h, o: ourEls[ex.idx], mode: ex.ds ? "data-spec" : "explicit", skip: new Set(ex.skip) });
     }
   }
-  // (b) heuristic: same tag + same tc, ordinal within group (document order)
+  // (b) heuristic: same tag + same tc, ordinal within group — allowed only
+  // as a fallback; every heuristic pair is reported so the debt is visible.
   const byKey = new Map();
   ourEls.forEach((o, i) => {
     if (usedOurs.has(i)) return;
@@ -220,16 +240,20 @@ function matchPairs(heronEls, ourEls, explicitIdx) {
       heuristic++;
     }
   }
-  return { pairs, heuristic, explicit: pairs.length - heuristic, unmatched: heronEls.length - pairs.length };
+  const unmatched = [];
+  for (const h of heronEls) {
+    if (pairs.some((p) => p.h === h)) continue;
+    unmatched.push({ h, reason: findNoCounterpartReason(section, h.p) });
+  }
+  return { pairs, heuristic, explicit: pairs.length - heuristic, unmatched };
 }
 
 // ── runner ───────────────────────────────────────────────────────────────────
 const browser = await chromium.launch({ headless: true });
-const results = { generatedAt: new Date().toISOString(), url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [] };
-const failCount = {};
+const results = { generatedAt: new Date().toISOString(), url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [] };
 let totalPass = 0, totalFail = 0, exceptionUses = 0;
 const exRules = {};
-const matrix = {}; // section -> bp -> {pass,n,rate,explicit,heuristic,unmatched,missing}
+const matrix = {}; // section -> bp -> cell
 
 try {
   for (const bp of BPS.filter((b) => BPS_WANTED.includes(b.name))) {
@@ -249,7 +273,7 @@ try {
     const vh = heronPage?.vh || bp.height;
     const yToVhHeron = (y) => Math.round((y / vh) * 1000) / 1000;
 
-    // 3) per-section DOM walk
+    // 3) per-section DOM walk (now records data-spec)
     const ours = {};
     for (const key of SECTIONS_WANTED) {
       const sel = MAPPING.ourSection[key];
@@ -261,12 +285,21 @@ try {
         const out = [];
         makeWalk(el, key, out)(el);
         const explicitIdx = {};
+        // legacy selector mappings
         for (const m of explicit) {
+          if (m.spec) continue; // data-spec bindings handled below
           const t = m.scope === "page" ? document.querySelector(m.ours) : el.querySelector(m.ours) || (el.matches(m.ours) ? el : null);
           if (!t) continue;
           const p = t === el ? key + " > " + t.tagName.toLowerCase() + "[1]" : pathOf(t, el, key);
           const i = out.findIndex((e) => e.p === p);
           if (i >= 0) explicitIdx[m.heron] = { idx: i, skip: m.skip || [] };
+        }
+        // data-spec bindings: mapping "spec" = spec path (exact/suffix),
+        // "ours" = the data-spec key ("why.title")
+        for (const m of explicit) {
+          if (!m.spec) continue;
+          const i = out.findIndex((e) => e.ds === m.ours || (e.ds && e.ds === key + "." + m.ours));
+          if (i >= 0) explicitIdx[m.heron] = { idx: i, skip: m.skip || [], ds: true };
         }
         return { elements: out, rectVh: Math.round((el.getBoundingClientRect().height / window.innerHeight) * 1000) / 1000, explicitIdx };
       }, { key, sel, explicit, WALK: WALK_JS });
@@ -280,13 +313,17 @@ try {
       let spec;
       try { spec = JSON.parse(readFileSync(join(SPEC_DIR, `${key}.${bp.name}.json`), "utf8")); } catch { spec = null; }
       const o = ours[key];
-      const cell = (matrix[key] ??= {})[bp.name] ??= { pass: 0, fail: 0, exceptions: 0, explicit: 0, heuristic: 0, unmatched: 0, missing: null };
+      const cell = (matrix[key] ??= {})[bp.name] ??= { pass: 0, fail: 0, exceptions: 0, explicit: 0, dataSpec: 0, heuristic: 0, unmatched: 0, excused: 0, missing: null };
 
       if (!spec || spec.missing) { cell.missing = "no-heron-spec"; continue; }
       if (o.missing) { cell.missing = `no-our-container:${o.missing}`; continue; }
 
-      const { pairs, heuristic, explicit, unmatched } = matchPairs(spec.elements, o.elements, o.explicitIdx);
-      cell.heuristic = heuristic; cell.explicit = explicit; cell.unmatched = unmatched;
+      const { pairs, heuristic, explicit, unmatched } = matchPairs(spec.elements, o.elements, o.explicitIdx, key);
+      cell.heuristic = heuristic;
+      cell.explicit = pairs.filter((p) => p.mode === "explicit").length;
+      cell.dataSpec = pairs.filter((p) => p.mode === "data-spec").length;
+      cell.unmatched = unmatched.filter((u) => !u.reason).length;
+      cell.excused = unmatched.filter((u) => !!u.reason).length;
 
       const run = (h, oEl, skip, heronPath, oursSel) => {
         const checks = [];
@@ -314,13 +351,25 @@ try {
           if (c.pass) cell.pass++;
           else {
             cell.fail++;
-            results.failures.push({ section: key, bp: bp.name, kind: c.kind, heronPath, oursSelector: oursSel, mode: oursSel.startsWith("#hm:") ? "heuristic" : "explicit", expected: c.expected, actual: c.actual, delta: Math.round(c.delta * 100) / 100 });
+            results.failures.push({ section: key, bp: bp.name, kind: c.kind, heronPath, oursSelector: oursSel, mode: oursSel.startsWith("#hm:") ? "heuristic" : (oursSel.startsWith("#ds:") ? "data-spec" : "explicit"), expected: c.expected, actual: c.actual, delta: Math.round(c.delta * 100) / 100 });
           }
           if (c.exception) { cell.exceptions++; exceptionUses++; if (c.rule) exRules[c.rule] = (exRules[c.rule] || 0) + 1; }
         }
       };
       for (const { h, o: oEl, mode, skip } of pairs) {
-        run(h, oEl, skip, h.p, mode === "heuristic" ? `#hm:${h.tag}.${h.tc}` : (oEl.p || MAPPING.ourSection[key]));
+        run(h, oEl, skip, h.p, mode === "heuristic" ? `#hm:${h.tag}.${h.tc}` : mode === "data-spec" ? `#ds:${oEl.ds}` : (oEl.p || MAPPING.ourSection[key]));
+      }
+
+      // v2: every unmatched spec element is a FAILURE by default — either a
+      // real gap (kind no-counterpart, fix by adding the element + mapping)
+      // or excused with a written reason (counted, reported, never silent).
+      for (const { h, reason } of unmatched) {
+        if (reason) {
+          results.unmatchedReport.push({ section: key, bp: bp.name, heronPath: h.p, excused: true, reason });
+        } else {
+          cell.fail++;
+          results.failures.push({ section: key, bp: bp.name, kind: "no-counterpart", heronPath: h.p, oursSelector: "(none)", mode: "unmatched", expected: "an element conforming to the spec role", actual: "no counterpart element", delta: 0 });
+        }
       }
 
       // page-level: section height vh + pin spans
@@ -339,6 +388,7 @@ try {
           const n = Math.max(hSpans.length, oSpans.length);
           for (let i = 0; i < n; i++) {
             const c = T.aPinSpan(hSpans[i] || null, oSpans[i] || null);
+            if (!c) continue;
             c.pass ? cell.pass++ : (cell.fail++, results.failures.push({ section: key, bp: bp.name, kind: c.kind, heronPath: `${MAPPING.heronPageKey[key]}#pin${i}`, oursSelector: MAPPING.ourSection[key], expected: JSON.stringify(c.expected), actual: JSON.stringify(c.actual), delta: Math.round(c.delta * 100) / 100 }));
           }
         }
@@ -355,10 +405,27 @@ try {
 const total = totalPass + totalFail;
 const rate = total ? Math.round((totalPass / total) * 1000) / 10 : 0;
 const exRate = total ? Math.round((exceptionUses / total) * 1000) / 10 : 0;
+
+// ratchet (gate mode): the committed floor; --ratchet raises it to the
+// current rate (monotonic — write only if higher).
+let ratchetValue = null;
+if ((GATE || RATCHET_UPDATE) && existsSync(RATCHET_FILE)) {
+  try { ratchetValue = JSON.parse(readFileSync(RATCHET_FILE, "utf8")).rate ?? null; } catch { ratchetValue = null; }
+}
+let gateVerdict = "report-only";
+if (GATE) {
+  gateVerdict = ratchetValue == null ? `PASS(no-ratchet-yet,${rate}%)` : (rate >= ratchetValue ? "PASS" : "FAIL");
+}
+if (RATCHET_UPDATE && (ratchetValue == null || rate > ratchetValue)) {
+  writeFileSync(RATCHET_FILE, JSON.stringify({ rate, total, pass: totalPass, fail: totalFail, updatedAt: new Date().toISOString() }, null, 2) + "\n");
+  console.log(`ratchet ${ratchetValue == null ? "created" : `${ratchetValue}→${rate}`}`);
+}
+
 results.summary = {
   total, pass: totalPass, fail: totalFail, passRate: rate,
   exceptionUses, exceptionRate: exRate, exceptionCap: "<5%", exceptionRules: exRules,
-  gate: GATE ? (rate >= 90 ? "PASS" : "FAIL") : "report-only",
+  unmatchedFailures: results.failures.filter((f) => f.kind === "no-counterpart").length,
+  gate: gateVerdict, ...(ratchetValue != null ? { ratchet: ratchetValue } : {}),
 };
 for (const key of SECTIONS_WANTED) {
   results.sections[key] = {};
@@ -369,12 +436,12 @@ for (const key of SECTIONS_WANTED) {
     results.sections[key][bpName] = { passRate: n ? Math.round((c.pass / n) * 1000) / 10 : 0, n, ...c };
   }
 }
-results.failures.sort((a, b) => b.delta - a.delta).splice(600);
+results.failures.sort((a, b) => b.delta - a.delta).splice(800);
 
-// console table
+// console matrix
 const col = (s) => String(s).padEnd(9);
-console.log("\nR335 conformance — OUR page vs frozen Heron spec (" + URL + ")");
-console.log(col("section") + BPS_WANTED.map(col).join("") + " mapping(e/h/u)");
+console.log("\nR336 conformance v2 — OUR page vs frozen Heron spec (" + URL + ")");
+console.log(col("section") + BPS_WANTED.map(col).join("") + " mapping(e/d/h/u/x)");
 for (const key of SECTIONS_WANTED) {
   let line = col(key.slice(0, 8)), counts = "";
   for (const bpName of BPS_WANTED) {
@@ -386,15 +453,16 @@ for (const key of SECTIONS_WANTED) {
     counts += col(`${c.pass}/${n}`);
   }
   const c0 = Object.values(matrix[key] || {})[0] || {};
-  console.log(line + col("") + ` e=${c0.explicit ?? 0} h=${c0.heuristic ?? 0} u=${c0.unmatched ?? 0}`);
+  console.log(line + col("") + ` e=${c0.explicit ?? 0} d=${c0.dataSpec ?? 0} h=${c0.heuristic ?? 0} u=${c0.unmatched ?? 0} x=${c0.excused ?? 0}`);
 }
 console.log("-".repeat(70));
-console.log(`TOTAL ${totalPass}/${total} = ${rate}%  ·  exceptions ${exceptionUses} (${exRate}%, cap 5%)  ·  failures listed: ${results.failures.length}`);
+console.log(`TOTAL ${totalPass}/${total} = ${rate}%  ·  exceptions ${exceptionUses} (${exRate}%, cap 5%)  ·  no-counterpart FAILs ${results.summary.unmatchedFailures}  ·  failures listed: ${results.failures.length}`);
 const topKinds = {};
 for (const f of results.failures) topKinds[f.kind] = (topKinds[f.kind] || 0) + 1;
-console.log("top failure kinds:", Object.entries(topKinds).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([k, v]) => `${k}:${v}`).join("  "));
-console.log("exception rules used:", Object.entries(exRules).map(([k, v]) => `${k}:${v}`).join("  ") || "none");
+console.log("top failure kinds:", Object.entries(topKinds).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => `${k}:${v}`).join("  "));
+console.log("exception rules used (true waivers only):", Object.entries(exRules).map(([k, v]) => `${k}:${v}`).join("  ") || "none");
+if (ratchetValue != null) console.log(`ratchet floor: ${ratchetValue}%  ·  gate: ${gateVerdict}`);
 
 writeFileSync(OUT, JSON.stringify(results, null, 1));
 console.log("results → " + OUT);
-process.exit(GATE ? (rate >= 90 ? 0 : 1) : 0);
+process.exit(GATE && gateVerdict === "FAIL" ? 1 : 0);

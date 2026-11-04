@@ -1,0 +1,8 @@
+{
+  "rate": 39.6,
+  "total": 25554,
+  "pass": 10117,
+  "fail": 15437,
+  "updatedAt": "2026-11-04T21:00:00.000Z",
+  "_readme": "R336 honest baseline (v2 instrument: transformed expectations, unmatched=FAIL). Monotonic floor — --gate fails below this; --ratchet raises it after green runs. Never allowed to drop."
+}

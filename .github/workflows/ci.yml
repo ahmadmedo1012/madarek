@@ -336,6 +336,41 @@ jobs:
       # Dependency-free (node:fs only).
       - run: node scripts/r321/rename-ledger-scan.mjs
 
+  conform-gate:
+    name: Conformance gate (frozen Heron spec, ratchet)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - run: npm ci
+      # R336 — the honest conformance gate. Full 9-section x 5-bp matrix
+      # against the frozen Heron specs; --gate fails below the committed
+      # ratchet (scripts/conformance/ratchet.json — monotonic, may never
+      # drop). Baseline set at the HONEST v2 instrument reading (39.6%:
+      # transformed expectations assert, unmatched elements FAIL as
+      # no-counterpart instead of being silently dropped).
+      - name: Install Playwright chromium
+        working-directory: frontend
+        run: npx playwright install chromium --with-deps
+      - name: Boot Vite dev server
+        working-directory: frontend
+        run: nohup npx vite --port 5173 --strictPort > /tmp/vite.log 2>&1 &
+      - name: Wait for dev server
+        run: npx --yes wait-on http://localhost:5173/ --timeout 60000
+      - name: Conformance matrix vs ratchet
+        run: node scripts/conformance/run.mjs --gate
+      - name: Upload results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-results
+          path: scripts/conformance/results.json
+          retention-days: 14
+
   surface-drift:
     name: Surface drift
     # R320 CI fix: same ubuntu-latest → 26.04 roll — the audit sweep's

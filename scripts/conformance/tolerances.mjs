@@ -1,23 +1,38 @@
 /**
- * tolerances.mjs — R335 A-Conform comparison functions (EXACT contract).
+ * tolerances.mjs — R336 conformance comparison functions (v2 —
+ * TRANSFORMED EXPECTATIONS, not waivers).
  *
- * Geometry        ±2px or ±2% of viewport (whichever larger; x is MIRRORED —
- *                 our page is RTL, Heron LTR — so compare distance-from-center).
- * fontSize/lh     ±0.5px × mapping.scaleFactor (per section, default 1.0).
- * fontWeight      ±1 step (100 in the numeric scale).
- * letterSpacing   Arabic joins forbid positive tracking → Heron tracking
- *                 (negative OR positive) is treated as "0 required"; ours must
- *                 be ≈0 (|ls| ≤ 0.05em). Every use records an exception.
- * colors          text/accent: exact computed rgb; bg: rgb distance ≤ 8.
- * borderRadius    ±2px.   opacity ±0.05.   durations ±10%.
- * easings         gsap ease names → cubic-bezier via EASE_TABLE; curves compared
- *                 by sampling 12 points, mean distance < 0.05.
- * triggers/pins   start/end within ±5% of viewport height (0.05 vh).
- * section height  ±2% of viewport height (0.02 vh).
+ * The R335 lesson (exceptionRate 20.4% against a <5% cap): the three
+ * Arabic adaptations were encoded as *exceptions* — assertions that
+ * pass by waving a flag. A pass-rate built on waivers is a self-graded
+ * metric (the R329 fidelity-score failure mode). v2 encodes them as
+ * expectations that are TRANSFORMED before comparison, so they assert
+ * exactly as strongly as the raw fields did:
  *
- * Arabic exceptions (exceptions.json) are applied by the assertions themselves:
- * aLs (tracking zeroed), aLh (line-height floor 1.35), aTc (length class ±1),
- * aX (mirrored x — counted as exception use by the runner).
+ *   x-geometry   MIRRORED by construction: the expected value IS the
+ *                distance-from-viewport-center (our page is RTL,
+ *                Heron LTR — the axis is flipped by design). Compared
+ *                like any other number, same ±2px/±2% tolerance.
+ *   letterSpacing  Arabic joins forbid tracking → the EXPECTED value
+ *                is 0 by definition of the adaptation; ours must be
+ *                |ls| ≤ 0.05em. Not an exception — the transformed
+ *                spec itself.
+ *   lineHeight   Arabic ascenders/descenders need ≥1.35 metric box:
+ *                expected = max(heronLh, 1.35 × fs); ours must be
+ *                within ±0.5px of that (or ≥ the floor when Heron's
+ *                own box is already taller — then normal comparison).
+ *
+ * What REMAINS a real exception (exceptions.json, capped <5%): only
+ * true waivers — today just ar-text-length-class (Arabic copy is more
+ * compact; ±1 length class) — each with a reason, counted and
+ * reported so the rate stays visible.
+ *
+ * All other tolerances unchanged from R335:
+ *   geometry ±2px or ±2% of viewport (whichever larger)
+ *   fontSize/lh ±0.5px × mapping.scaleFactor · fontWeight ±1 step (100)
+ *   colors text exact rgb; bg distance ≤ 8 · radius ±2px · opacity ±0.05
+ *   durations ±10% · easings cubic-bezier sample distance <0.05
+ *   triggers/pins ±5% vh · section height ±2% vh
  */
 
 // ── gsap ease → cubic-bezier lookup (~12 common eases) ──────────────────────
@@ -56,7 +71,6 @@ export function parseEase(spec) {
   const kw = { ease: [0.25, 0.1, 0.25, 1], "ease-in": [0.42, 0, 1, 1], "ease-out": [0, 0, 0.58, 1], "ease-in-out": [0.42, 0, 0.58, 1] };
   if (kw[s]) return kw[s];
   if (EASE_TABLE[s]) return EASE_TABLE[s];
-  // gsap shorthand: "power2" == "power2.out" etc.
   if (EASE_TABLE[s + ".out"]) return EASE_TABLE[s + ".out"];
   return null;
 }
@@ -67,7 +81,7 @@ export function sampleCurve(curve, n = 12) {
   const [x1, y1, x2, y2] = curve;
   const bx = (t) => 3 * (1 - t) ** 2 * t * x1 + 3 * (1 - t) * t ** 2 * x2 + t ** 3;
   const by = (t) => 3 * (1 - t) ** 2 * t * y1 + 3 * (1 - t) * t ** 2 * y2 + t ** 3;
-  const solve = (x) => { // x is monotonic in t for standard eases — bisection
+  const solve = (x) => {
     let lo = 0, hi = 1, t = x;
     for (let i = 0; i < 24; i++) {
       t = (lo + hi) / 2;
@@ -107,8 +121,10 @@ export const sameRgb = (a, b) => {
   return A[0] === B[0] && A[1] === B[1] && A[2] === B[2] && Math.abs(A[3] - B[3]) <= 0.02;
 };
 
-// ── assertions: each returns {pass, exception?, kind, expected, actual, delta}
+// ── assertions: each returns {pass, exception?, kind, expected, actual}
 //    or null when not applicable (skipped, uncounted). ────────────────────────
+//    v2: `exception: true` marks ONLY true waivers (exceptions.json);
+//    transformed expectations pass/fail like any raw field. ──────────────────
 const R = (kind, pass, expected, actual, exception = false) => ({
   pass, exception, kind,
   expected, actual,
@@ -117,11 +133,13 @@ const R = (kind, pass, expected, actual, exception = false) => ({
 
 const geomTol = (v, view) => Math.max(2, 0.02 * view);
 
+// x — TRANSFORMED EXPECTATION (RTL mirror): both sides are expressed as
+// distance-from-viewport-center; same tolerance as any geometry number.
 export function aX(h, o, vw) {
-  const exp = Math.abs((h.sr.x + h.sr.w / 2) - vw / 2); // mirrored: distance-from-center
+  const exp = Math.abs((h.sr.x + h.sr.w / 2) - vw / 2);
   const act = Math.abs((o.sr.x + o.sr.w / 2) - vw / 2);
   const d = Math.abs(exp - act);
-  return { ...R("x-mirror", d <= geomTol(o.sr.w, vw), Math.round(exp), Math.round(act), true), rule: "rtl-x-mirror", delta: d };
+  return { ...R("x-mirror", d <= geomTol(o.sr.w, vw), Math.round(exp), Math.round(act)), rule: "rtl-x-mirror(transformed)", delta: d };
 }
 export function aY(h, o, vh) {
   const d = Math.abs(h.sr.y - o.sr.y);
@@ -139,10 +157,11 @@ export function aTag(h, o) {
   return R("tag", h.tag === o.tag, h.tag, o.tag);
 }
 const TC_ORDER = ["none", "short", "medium", "long"];
+// tc — the ONE remaining true waiver (Arabic is more compact; ±1 class).
 export function aTc(h, o) {
   const i = TC_ORDER.indexOf(h.tc), j = TC_ORDER.indexOf(o.tc);
   if (i === j) return R("tc", true, h.tc, o.tc);
-  const ok = Math.abs(i - j) === 1; // ±1 length class — Arabic is more compact
+  const ok = Math.abs(i - j) === 1;
   return { ...R("tc", ok, h.tc, o.tc, ok), rule: ok ? "ar-text-length-class" : null };
 }
 export function aFs(h, o, scale = 1) {
@@ -151,14 +170,16 @@ export function aFs(h, o, scale = 1) {
   const d = Math.abs(hv - ov);
   return { ...R("fontSize", d <= 0.5 * scale, hv, ov), delta: d };
 }
+// lh — TRANSFORMED EXPECTATION (Arabic metric floor): the expected value is
+// max(heronLh, 1.35 × heronFs) — the taller box Arabic ascenders need — and
+// ours must be within ±0.5px × scale of it. No waiver flag.
 export function aLh(h, o, scale = 1) {
   const hv = num(h.lh), ov = num(o.lh);
   if (Number.isNaN(hv) || Number.isNaN(ov) || hv === 0 || ov === 0) return null;
-  if (hv / num(h.fs) < 1.35 && ov / num(o.fs) >= 1.35) {
-    return { ...R("lineHeight", true, hv, ov, true), rule: "ar-line-height-floor" }; // Arabic ascender/descender floor
-  }
-  const d = Math.abs(hv - ov);
-  return { ...R("lineHeight", d <= 0.5 * scale, hv, ov), delta: d };
+  const hfs = num(h.fs) || 16;
+  const exp = Math.max(hv, 1.35 * hfs);
+  const d = Math.abs(exp - ov);
+  return { ...R("lineHeight", d <= 0.5 * scale, Math.round(exp * 100) / 100, ov), rule: "ar-line-height-floor(transformed)", delta: d };
 }
 export function aFw(h, o) {
   const step = (w) => (String(w).toLowerCase() === "bold" ? 700 : String(w).toLowerCase() === "normal" ? 400 : num(w));
@@ -166,13 +187,13 @@ export function aFw(h, o) {
   if (Number.isNaN(hv) || Number.isNaN(ov)) return null;
   return R("fontWeight", Math.abs(hv - ov) <= 100, hv, ov);
 }
+// ls — TRANSFORMED EXPECTATION (Arabic letter joins): the expected value is
+// 0 by definition of the adaptation; ours must satisfy |ls| ≤ 0.05em.
 export function aLs(h, o) {
-  const hf = num(h.fs) || 16, of = num(o.fs) || 16;
-  const hls = h.ls === "normal" ? 0 : pxNum(h.ls);
+  const of = num(o.fs) || 16;
   const ols = o.ls === "normal" ? 0 : pxNum(o.ls);
-  // Arabic adaptation: Heron tracking (neg or pos) ⇒ required 0; ours ≤0.05em
   const ok = Math.abs(ols) <= 0.05 * of;
-  return { ...R("letterSpacing", ok, 0, ols, true), rule: "ar-letter-spacing-zero" };
+  return { ...R("letterSpacing", ok, 0, ols), rule: "ar-letter-spacing-zero(transformed)", delta: Math.abs(ols) };
 }
 export function aColor(h, o) {
   return R("color", sameRgb(h.color, o.color), h.color, o.color);
@@ -224,7 +245,6 @@ export function aSectionVh(heronHvh, ourHvh) {
   return { ...R("sectionHeightVh", d <= 0.02, heronHvh, ourHvh), delta: d * 1000 };
 }
 export function aPinSpan(hSpan, oSpan) {
-  // spans in scroll-y vh: [startVh, endVh]; matched within ±5% vh
   if (!hSpan && !oSpan) return null;
   if (!hSpan || !oSpan) return R("pinRange", false, hSpan || "none", oSpan || "none");
   const d = Math.max(Math.abs(hSpan[0] - oSpan[0]), Math.abs(hSpan[1] - oSpan[1]));
@@ -232,7 +252,7 @@ export function aPinSpan(hSpan, oSpan) {
 }
 
 /** Pin spans from columnar marks: consecutive rows where topVh[key] stays
- *  constant (|Δ| < 0.003) and non-null → [[startYvh, endYvh], …]. */
+ * constant (|Δ| < 0.003) and non-null → [[startYvh, endYvh], …]. */
 export function pinSpans(marks, keyIdx, yToVh) {
   const rows = marks.rows || [];
   const spans = [];
@@ -249,5 +269,5 @@ export function pinSpans(marks, keyIdx, yToVh) {
     prevTop = t;
   }
   if (cur) spans.push(cur);
-  return spans.filter(([a, b]) => b - a >= 0.02); // ≥ one step of scroll
+  return spans.filter(([a, b]) => b - a >= 0.02);
 }
