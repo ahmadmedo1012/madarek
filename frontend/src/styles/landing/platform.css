@@ -573,6 +573,7 @@
 }
 
 .pr-shot-media {
+  position: relative; /* the tick layer's positioning context */
   overflow: clip;
   border: 1px solid var(--rule);
   border-radius: 0;
@@ -587,22 +588,28 @@
   object-position: top; /* the UI chrome (bars/headers) leads the crop */
 }
 
-/* the drafting frame layer — four 1px corner ticks inside the box
-   (vector-effect on the paths keeps the stroke 1px at every scale) */
-.pr-shot-frame {
+/* the drafting frame layer — four corner registration marks inside
+   the hairline box. R333: they ride the repo's proven CSS plus-mark
+   grammar (hero.css .bp-plus — the glyph is pseudo-element content,
+   mono, tokenized ink; no icon import, no raw svg under the icon
+   gate). Anchored to .pr-shot-media (its positioning context). */
+.pr-shot-tick {
   position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
   color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  line-height: 1;
   pointer-events: none;
 }
 
-.pr-shot-frame path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1;
-}
+/* the glyph is pseudo-element content — out of innerText (R321 §A6,
+   the .bp-plus note in hero.css) */
+.pr-shot-tick::before { content: '+'; }
+
+.pr-shot-tick-tl { inset-block-start: 3px; inset-inline-start: 4px; }
+.pr-shot-tick-tr { inset-block-start: 3px; inset-inline-end: 4px; }
+.pr-shot-tick-bl { inset-block-end: 3px; inset-inline-start: 4px; }
+.pr-shot-tick-br { inset-block-end: 3px; inset-inline-end: 4px; }
 
 /* the caption chip — the shared .prf-idxchip grammar (product-frame.css)
    widened for the index + label pair. The chip IS content here

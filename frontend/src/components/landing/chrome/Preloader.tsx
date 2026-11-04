@@ -31,9 +31,14 @@ import '../../../styles/landing/preloader.css';
 
 /* The clock is the r309-pinned measured window (heron-craft row 1 /
  * introGate V14): the counter is ASSET-GATED — 100% lands between
- * ~2.5s (assets resolved early) and the 4.9s fallback cap, then the
+ * ~2.75s (assets resolved early) and the 4.9s fallback cap, then the
  * 700ms completed-state hold, then the 835ms sheet-exit wipe. */
-const RELEASE_FLOOR_MS = 2600; /* the counter never resolves before 2.5s */
+const RELEASE_FLOOR_MS = 2750; /* the counter never resolves before 2.5s —
+ * r333: 2600→2750; the r309 spec's tMount starts AFTER waitForSelector
+ * ('.pl') resolves, so the ~120-150ms mount→visible latency ate the
+ * 100ms floor margin (CI runners measured doneAt 2471/2481ms < the
+ * spec's 2500ms floor). 2750 keeps the release inside the r309
+ * 2.5-4.9s window with runner-latency margin. */
 const MAX_RUN_MS = 4900; /* the hard cap — readiness races this timer */
 const EXIT_HOLD_MS = 700; /* the 100% beat before the wipe opens */
 const ENTRY_DONE_EVENT = 'mdrk:entry-done';
@@ -153,7 +158,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
       shown += (target - shown) * 0.14;
       if (Math.abs(target - shown) < 0.4) shown = target;
       /* the DISPLAY never rounds to 100 before the measured release
-       * floor (r309: 100% lands between ~2.5s and 4.9s) — the eased
+       * floor (r309: 100% lands between ~2.75s and 4.9s) — the eased
        * value crawls at 99 until the floor opens, then the exit's own
        * setPct(100) lands the terminal readout. */
       const next = t < RELEASE_FLOOR_MS ? Math.min(99, Math.round(shown)) : Math.round(shown);

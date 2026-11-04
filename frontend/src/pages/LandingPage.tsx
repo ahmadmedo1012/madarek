@@ -396,21 +396,15 @@ function PlatformShots() {
               width={1440}
               height={870}
             />
-            {/* the drafting frame layer — four 1px corner ticks inside
-                the hairline box (vector-effect keeps them 1px at every
-                scale); pure chrome, aria-hidden */}
-            <svg
-              className="pr-shot-frame"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path d="M0 7 L0 0 L7 0" vectorEffect="non-scaling-stroke" />
-              <path d="M93 0 L100 0 L100 7" vectorEffect="non-scaling-stroke" />
-              <path d="M100 93 L100 100 L93 100" vectorEffect="non-scaling-stroke" />
-              <path d="M7 100 L0 100 L0 93" vectorEffect="non-scaling-stroke" />
-            </svg>
+            {/* the drafting frame layer — four corner registration
+                marks riding the repo's CSS plus-mark grammar (the
+                hero's .bp-plus: pseudo-content glyph, no icon import,
+                no raw svg under the icon gate); pure chrome,
+                aria-hidden */}
+            <span aria-hidden="true" className="pr-shot-tick pr-shot-tick-tl" />
+            <span aria-hidden="true" className="pr-shot-tick pr-shot-tick-tr" />
+            <span aria-hidden="true" className="pr-shot-tick pr-shot-tick-bl" />
+            <span aria-hidden="true" className="pr-shot-tick pr-shot-tick-br" />
           </div>
           <figcaption className="prf-idxchip pr-shot-chip">
             <span className="fo-mono" dir="ltr">{s.chip}</span>
