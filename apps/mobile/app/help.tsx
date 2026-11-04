@@ -11,6 +11,7 @@ import { T, MonoLabel } from "@/components/ui/text";
 import { Card } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { RowList, LedgerRow } from "@/components/ui/data";
+import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { FAQS, HELP_LEDE } from "@/features/common/helpData";
 
@@ -43,7 +44,10 @@ export default function Help() {
             <LedgerRow
               key={f.q}
               last={i === FAQS.length - 1}
-              onPress={() => setOpen(expanded ? null : i)}
+              onPress={() => {
+                haptics.selection();
+                setOpen(expanded ? null : i);
+              }}
               accessibilityLabel={`${f.q}${expanded ? " — مفتوح" : " — انقر للعرض"}`}
             >
               <View style={{ gap: sp[6] }}>

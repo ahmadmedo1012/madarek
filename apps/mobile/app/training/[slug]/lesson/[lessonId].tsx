@@ -17,6 +17,7 @@ import { Field } from "@/components/ui/fields";
 import { Markdown } from "@/components/ui/markdown";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
+import { haptics } from "@/haptics";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import {
   SignInPrompt,
@@ -58,8 +59,10 @@ export default function TrainingLesson() {
       if (r?.newlyCompleted === false) {
         toast.info("تم احتساب هذا الدرس مسبقًا.");
       } else if (r?.pointsAwarded && r.pointsAwarded > 0) {
+        haptics.notify("success");
         toast.success(`أحسنت! حصلت على ${pointsAr(r.pointsAwarded)}.`, "درس مكتمل");
       } else {
+        haptics.notify("success");
         toast.success("تمّ احتساب الدرس.", "درس مكتمل");
       }
       router.back();
