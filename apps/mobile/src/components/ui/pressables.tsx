@@ -6,7 +6,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from "react-native";
-import * as Haptics from "expo-haptics";
+import { haptics } from "@/haptics";
 import { usePalette } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
 import { T } from "./text";
@@ -59,7 +59,8 @@ export function Button({
       disabled={busy}
       onPress={() => {
         if (busy) return;
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+        // R334 review-3 T1 — through the gated, throttled module (kill-switch + spam guard)
+        haptics.impact("light");
         onPress?.();
       }}
       style={({ pressed }) => [
@@ -114,7 +115,8 @@ export function IconButton({
       accessibilityLabel={accessibilityLabel ?? label}
       disabled={disabled}
       onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
+        // R334 review-3 T1 — through the gated, throttled module (kill-switch + spam guard)
+        haptics.impact("light");
         onPress?.();
       }}
       hitSlop={6}
