@@ -94,4 +94,96 @@ all student/teacher core; RTL-first shell), but three systemic gaps recur —
 coverage on governance/registry surfaces, (3) motion + empty-state composition debt on
 teacher tools and long-tail. Each is a small fix multiplied by 30 screens.
 
-<!-- TICKETS -->
+## 3 — Tickets (every point under 9, consolidated)
+
+### P0 — systemic, blocks "9" anywhere they touch
+
+1. **[RTL] No bidi isolation for mixed Arabic↔Latin runs.** Data strings like
+   «مخططات UML — Use Case», «SE301»، «د. سلام البوسعيدي» render as weak-direction
+   runs; VLM confirmed dash/period placement flips at run boundaries on dashboard
+   (360/430) and courses (dark + 390). Fix: wrap Latin fragments in Unicode FSI/PDI
+   isolates (or a `BidiText` primitive) at `LedgerRow` sublines
+   (`src/components/ui/data.tsx`) + dashboard agenda rows. Affects #4, #5, #13, #6.
+2. **[a11y] Governance/registry surfaces are screen-reader-silent on rows.**
+   `quality/(tabs)/dashboard.tsx` has **0** `accessibilityLabel`; `admin/(tabs)/students.tsx`
+   **1**; `results.tsx` **1**. Fix: label every MetricTile/KPI row and result row
+   (subject + value + unit), matching the student-core pattern. Affects #13, #25, #26.
+
+### P1 — real UX defects
+
+3. **[motion] Teacher tools motion debt:** `intelligence.tsx` and `exams.tsx`(+detail)
+   have zero haptics/PressableScale/entrance — reads web-panel (teacher.md TODO
+   admits it). Fix: adopt `haptics.selection` + `PressableScale` rows minimum.
+   Affects #21, #23.
+4. **[composition] Empty/sparse states leave a 40–70% dead band below content** —
+   VLM flagged on welcome, exams list, grades («لا مقرّرات»), live («لا توجد جلسات
+   قادمة»), teacher dashboard first-run (3 stacked empty sections). Fix: vertically
+   center `EmptyState` in the remaining viewport or add quiet guidance footer.
+   Affects #1, #11, #18, #19, #20.
+5. **[hierarchy] Exams list: the «متاح الآن» accent chip out-shouts the real «ابدأ»
+   action** (VLM, `r-student-online-exams.png`). Fix: demote chip to soft tone,
+   promote start action. Affects #11.
+6. **[polish] Live screen CTA competition:** orange «جلسة جديدة» vs white
+   «إدارة البث المباشر» card fight for the accent moment (VLM, `r-teacher-live.png`).
+   Fix: one accent — make the primary lifecycle action own it. Affects #20.
+7. **[a11y] Muted `sm`/`xs` text on paper (#F6F6EE) likely < 4.5:1** — VLM flagged
+   repeatedly (inactive segments, captions, footer). Fix: audit muted ink tokens in
+   `src/design/theme.ts` for AA at real sizes. Cross-cutting.
+8. **[a11y/polish] Login `SecretField`: eye toggle crowds the placeholder hint**
+   (VLM, `02-login-filled.png`) — verify padding/hitbox at 200% font
+   (`src/components/ui/fields.tsx`). Affects #2.
+9. **[polish] Tab-bar unread badge dot sits close enough to «الإشعارات» label to read
+   as collision** (VLM, courses-dark). Verify post no-wrap fix; nudge badge inset
+   (`src/components/shell/TabBar.tsx`). Affects all 5 student tabs.
+
+### P2 — polish & consistency
+
+10. **Welcome footer legal line near-illegible + floor callouts use Latin digits 1–6**
+    in the plan drawing; also dead band (→ P1-4). `app/index.tsx`.
+11. **Profile menu = 30 flat `LedgerRow`s, no section grouping/virtualization**
+    (`app/student/(tabs)/profile.tsx`) — scannability cost.
+12. **Admin dashboard papers preview pinned to page 1** (`useState(1)`, no pagination
+    UI) (`app/admin/(tabs)/dashboard.tsx`).
+13. **Teacher exams authoring still `RowList.map` + `SelectField` sheets** —
+    DataList/AppSheet migration owed (`app/teacher/exams.tsx`, 462 ln).
+14. **Grades empty state is a dead end** — no CTA back to offerings
+    (`app/teacher/grades.tsx`).
+15. **SectionBar `[01]` mono Latin indices** — deliberate token, but consider
+    Arabic-Indic rendering when the user's numerals preference is `arabic-indic`
+    (`src/components/ui/screen.tsx`); also document the choice in theming.md.
+16. **Register keeps local per-field validation** (documented compromise vs zod
+    adapter) — same error seat but a second validation dialect. `app/auth/register.tsx`.
+17. **Report route mounts sheet via `setState` after push** — fine on device per doc,
+    but the 1-frame flash of empty `Screen` is unverified (no capture exists).
+
+## 4 — Reviewer-2 process log (honesty)
+
+- Fresh `z-ai vision` calls: **13 succeeded** (welcome, login ×2, dashboard ×4 incl.
+  360/430/768/dark… note: base+360+430+768 are 4 of the 13; courses-dark, courses-390
+  fix, exams, teacher-grades, teacher-live, admin-teachers→rendered the welcome screen
+  (signed-out walk capture — provenance defect of that capture, not the app)).
+- **21 calls were rejected with HTTP 429** (quota shared with sibling review sessions);
+  retried with 15–25 s backoff across 3 waves — still throttled. Screens affected are
+  labeled `[code+doc]` in the table; **their visual scores are inference, not sight.**
+- One capture (`r-admin-teachers.png`) shows the welcome screen, not admin teachers —
+  the walk was signed out; flagged so the lead re-captures.
+- `r-student-dashboard-768.png` shows the pre-fix stat overflow; commit `0abea65`
+  (CountUp input-neutralizing) + dev artifact `vlm-fix2.json` claim it fixed —
+  credited, but reviewer-2 did not see a fresh post-fix 768 capture.
+- Numerals: verified `useNumerals()` gives one script per preference app-wide
+  (`src/lib/format.ts` + 20 call sites); VLM "mixed ٥/5" claims discarded as glyph
+  misreads. The only true Latin-digit constants are SectionBar `[01]` (P2-15) and the
+  welcome plan-drawing callouts (P2-10).
+- Empty-vs-error honesty: dashboard's failed-agenda path was verified to render
+  `ErrorState`, not the «استرح» empty note (student-home doc §D7, code confirmed) —
+  no fake-empty found anywhere in the 30; this axis is genuinely strong.
+
+## 5 — Verdict summary
+
+**Overall average 8.73 · PASS 2/30 (#7 lecture player, #12 exam runner — both
+CODE-ONLY, i.e. the two most instrumented screens in the codebase pass on
+construction; their visual verification is still owed).** The brand system, state
+triad discipline, and Arabic-first copy are excellent and consistent. The distance
+to a 9+ fleet is: bidi isolation (P0-1), governance a11y labels (P0-2), teacher-tool
+motion (P1-3), and empty-state composition (P1-4) — all mechanical fixes.
+
