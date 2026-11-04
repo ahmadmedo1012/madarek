@@ -53,39 +53,39 @@ brand-token consistency · **P** polish. `*` = code-review-only (no capture).
 
 | # | Screen | C | T | S | H | I | M | N | St | A | R | B | P | Avg | Verdict |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | `/` boot → welcome (`auth/index`) | 7 | 8 | 6.5 | 8 | 8 | 7 | 8 | 8 | 8 | 8 | 8.5 | 7.5 | **7.6** | FAIL |
+| 1 | `/` boot → welcome (`auth/index`) | 7 | 8 | 6.5 | 8 | 8 | 7 | 8 | 8 | 8 | 8 | 8.5 | 7.5 | **7.7** | FAIL |
 | 2 | `/auth` login | 8 | 8 | 7.5 | 8 | 8 | 7.5 | 8.5 | 9 | 8.5 | 8.5 | 8.5 | 8 | **8.2** | FAIL |
-| 3 | `/auth/register` * | 7.5 | 7.5 | 7.5 | 7.5 | 7.5 | 7 | 7.5 | 8 | 8 | 8 | 8 | 7.5 | **7.7** | FAIL |
-| 4 | `/student/dashboard` | 7.5 | 8 | 7 | 8 | 8 | 9 | 8.5 | 9.5 | 9 | 8.5 | 8 | 8 | **8.2** | FAIL |
+| 3 | `/auth/register` * | 7.5 | 7.5 | 7.5 | 7.5 | 7.5 | 7 | 7.5 | 8 | 8 | 8 | 8 | 7.5 | **7.6** | FAIL |
+| 4 | `/student/dashboard` | 7.5 | 8 | 7 | 8 | 8 | 9 | 8.5 | 9.5 | 9 | 8.5 | 8 | 8 | **8.3** | FAIL |
 | 5 | `/student/courses` | 7.5 | 7.5 | 7.5 | 7.5 | 7.5 | 8.5 | 8.5 | 9.5 | 9 | 8.5 | 8 | 8 | **8.1** | FAIL |
 | 6 | `/student/courses/[offeringId]` * | 8.5 | 8 | 8 | 8 | 8 | 8.5 | 8.5 | 9 | 9 | 8.5 | 8.5 | 8 | **8.4** | FAIL |
 | 7 | `/student/lectures/[lectureId]` * | 8.5 | 8 | 8 | 8.5 | 8 | 8 | 8.5 | 8.5 | 8.5 | 8 | 8.5 | 8 | **8.3** | FAIL |
-| 8 | `/student/ai` (Assistant) | 6.5 | 7 | 6.5 | 7 | 6.5 | 8.5 | 7.5 | 8.5 | 8 | 7.5 | 7.5 | 7 | **7.4** | FAIL |
-| 9 | `/student/alerts` (NotificationsScreen) | 6.5 | 7.5 | 6.5 | 7.5 | 8 | 7 | 7 | 8.5 | 8 | 8 | 8 | 7 | **7.4** | FAIL |
+| 8 | `/student/ai` (Assistant) | 6.5 | 7 | 6.5 | 7 | 6.5 | 8.5 | 7.5 | 8.5 | 8 | 7.5 | 7.5 | 7 | **7.3** | FAIL |
+| 9 | `/student/alerts` (NotificationsScreen) | 6.5 | 7.5 | 6.5 | 7.5 | 8 | 7 | 7 | 8.5 | 8 | 8 | 8 | 7 | **7.5** | FAIL |
 | 10 | `/student/profile` * | 8 | 8 | 8 | 8 | 8 | 8 | 8.5 | 9 | 9 | 8.5 | 8.5 | 8 | **8.3** | FAIL |
 | 11 | `/student/online-exams` | 7 | 7.5 | 7 | 7 | 7.5 | 5.5 | 7.5 | 8.5 | 8 | 8 | 7 | 7 | **7.3** | FAIL |
-| 12 | `/student/online-exams/[templateId]` * | 8.5 | 8 | 8 | 8.5 | 8 | 8.5 | 8.5 | 9 | 8.5 | 8 | 8.5 | 8 | **8.4** | FAIL |
+| 12 | `/student/online-exams/[templateId]` * | 8.5 | 8 | 8 | 8.5 | 8 | 8.5 | 8.5 | 9 | 8.5 | 8 | 8.5 | 8 | **8.3** | FAIL |
 | 13 | `/student/results` | 7.5 | 8 | 7.5 | 8 | 8 | 8 | 8 | 9 | 8.5 | 8 | 8 | 8 | **8.0** | FAIL |
 | 14 | `/student/schedule` | 8 | 8 | 8 | 8 | 8 | 7 | 8 | 9 | 8.5 | 8.5 | 8 | 8 | **8.1** | FAIL |
 | 15 | `/student/messages` (MessagesUI) | 7 | 7.5 | 7 | 7.5 | 8 | 8 | 8 | 8.5 | 8 | 8 | 8 | 7.5 | **7.8** | FAIL |
 | 16 | `/student/assignments` * | 8 | 8 | 8 | 8 | 8 | 7 | 8.5 | 8.5 | 8.5 | 8.5 | 8 | 8 | **8.1** | FAIL |
-| 17 | `/student/calendar` * | 7.5 | 8 | 7.5 | 8 | 7.5 | 5.5 | 8 | 8.5 | 8 | 8 | 8 | 7.5 | **7.6** | FAIL |
+| 17 | `/student/calendar` * | 7.5 | 8 | 7.5 | 8 | 7.5 | 5.5 | 8 | 8.5 | 8 | 8 | 8 | 7.5 | **7.8** | FAIL |
 | 18 | `/teacher/dashboard` | 7 | 7.5 | 7 | 7.5 | 7.5 | 8.5 | 8 | 8.5 | 8.5 | 8 | 8 | 7.5 | **7.8** | FAIL |
-| 19 | `/teacher/grades` | 6.5 | 7 | 6.5 | 7.5 | 7.5 | 7 | 7.5 | 8.5 | 8 | 8 | 7.5 | 7 | **7.4** | FAIL |
+| 19 | `/teacher/grades` | 6.5 | 7 | 6.5 | 7.5 | 7.5 | 7 | 7.5 | 8.5 | 8 | 8 | 7.5 | 7 | **7.5** | FAIL |
 | 20 | `/teacher/live` | 7 | 7 | 7 | 7.5 | 7.5 | 7 | 8 | 8.5 | 8 | 8.5 | 7.5 | 7 | **7.5** | FAIL |
 | 21 | `/teacher/intelligence` * | 7.5 | 7.5 | 7.5 | 7.5 | 7.5 | 5.5 | 8 | 8.5 | 8 | 8 | 8 | 7.5 | **7.6** | FAIL |
-| 22 | `/teacher/students` | 7 | 7.5 | 7 | 7.5 | 7.5 | 5.5 | 8 | 7 | 8 | 8 | 7.5 | 7 | **7.4** | FAIL |
-| 23 | `/teacher/exams` + `[templateId]` * | 7 | 7.5 | 7 | 7.5 | 7 | 5.5 | 7.5 | 8.5 | 8 | 8 | 7.5 | 7 | **7.4** | FAIL |
+| 22 | `/teacher/students` | 7 | 7.5 | 7 | 7.5 | 7.5 | 5.5 | 8 | 7 | 8 | 8 | 7.5 | 7 | **7.1** | FAIL |
+| 23 | `/teacher/exams` + `[templateId]` * | 7 | 7.5 | 7 | 7.5 | 7 | 5.5 | 7.5 | 8.5 | 8 | 8 | 7.5 | 7 | **7.2** | FAIL |
 | 24 | `/admin/dashboard` | 7.5 | 8 | 7.5 | 8 | 7.5 | 5.5 | 8 | 8.5 | 8.5 | 8 | 8 | 7.5 | **7.7** | FAIL |
 | 25 | `/admin/students` * | 7.5 | 8 | 7.5 | 8 | 7.5 | 5.5 | 8 | 8.5 | 8.5 | 8 | 8 | 7.5 | **7.7** | FAIL |
-| 26 | `/quality/dashboard` | 6.5 | 7 | 6.5 | 7 | 7 | 5.5 | 7 | 8 | 7.5 | 7.5 | 7 | 6.5 | **7.0** | FAIL |
-| 27 | `/owner/dashboard` | 6.5 | 7 | 7 | 7.5 | 7 | 5.5 | 7.5 | 8 | 8 | 7 | 7.5 | 7 | **7.3** | FAIL |
+| 26 | `/quality/dashboard` | 6.5 | 7 | 6.5 | 7 | 7 | 5.5 | 7 | 8 | 7.5 | 7.5 | 7 | 6.5 | **6.9** | FAIL |
+| 27 | `/owner/dashboard` | 6.5 | 7 | 7 | 7.5 | 7 | 5.5 | 7.5 | 8 | 8 | 7 | 7.5 | 7 | **7.1** | FAIL |
 | 28 | `/settings` * | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8.5 | 8.5 | 8.5 | 8 | **8.1** | FAIL |
 | 29 | `/report` (AppSheet route) * | 7.5 | 8 | 7.5 | 8 | 7.5 | 7.5 | 8 | 8 | 8 | 8 | 8 | 7.5 | **7.8** | FAIL |
 | 30 | `/select-institution` * | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 9 | 8.5 | 8.5 | 8.5 | 8 | **8.3** | FAIL |
 
-**Overall average: 7.83 / 10 — 0 of 30 PASS** (best: course detail & exam runner, 8.4;
-worst: quality dashboard, 7.0). Every screen is at least structurally sound (no
+**Overall average: 7.78 / 10 — 0 of 30 PASS** (best: course detail 8.4;
+worst: quality dashboard 6.9). Every screen is at least structurally sound (no
 criterion below 5.5 anywhere); the gap to 9 is craft, not correctness.
 
 ### What the scores reward (verified in code)
@@ -162,9 +162,42 @@ criterion below 5.5 anywhere); the gap to 9 is craft, not correctness.
 | P2-5 | `r-quality-dashboard` capture | Tab labels show kashida-like stretching («اللـوجـة») — likely RN-web justify artifact, unverifiable here | Verify on device; if real, drop `textAlign: justify`-style stretching on tab labels |
 | P2-6 | Captures vs code drift | 4 stale-capture disagreements (AI model id, owner audit codes, results/schedule layouts) — reviewers downstream may re-flag fixed issues | Re-capture after the fix commits; version captures in `docs/mobile/screens/captures/` |
 
-## 5 — Verdict
+## 6 — Per-screen evidence notes (one line each)
 
-**Overall average 7.83 / 10 · 0/30 PASS · 5 P0 · 8 P1 · 6 P2.** The engineering
+1. `/`→welcome — stagger entrance (120/90ms) + Button press state ✓, but ~300px dead gap above CTA and dimension-annotation illustration reads wireframe-ish at capture scale (VLM welcome-390).
+2. `/auth` — staggered form entrance, 429/lockout honesty, demo gate; capture not VLM-inspected this round (code-scored).
+3. `/auth/register` — haptics + web-parity fields; code-review-only, 297 ln; no capture.
+4. `/student/dashboard` — best-in-app motion (CountUp/Ring/stagger/PressableScale/haptics, six-state triad); VLM: 4-KPI strip + ring crams ≤390dp, 3 competing orange anchors in hero, `[01]` brackets.
+5. `/student/courses` — DataList + FilterSheet + stagger ✓; VLM: flat title/meta hierarchy, dead gutter beside ring, badge dot grazes label.
+6. `/student/courses/[offeringId]` — per-tab DataList + EmptyState rooms + posters; code-only (no capture) — highest score on structural evidence.
+7. `/student/lectures/[lectureId]` — immersive player, checkpoint sheet, chapters, VTT search; transcript = 200 mapped cues in ScrollView (P1-4); no haptic on checkpoint reveal; code-only.
+8. `/student/ai` — bubbles/shimmer/haptics in code ✓; capture (pre-fix) shows raw model id (now dropped), 300px void, header 3-axis crowding, icon stroke clash.
+9. `/student/alerts` — haptics + building-room empty ✓; VLM: empty state top-stuck over 40% void, banner touches header, tab label crowding.
+10. `/student/profile` — 3 SectionBar groups + identity card + prefs seat (recomposed); code-only.
+11. `/student/online-exams` — DataList tri-state ✓ but ZERO motion/haptics; VLM: 4 accent uses, outlined web-ish segments, 60% void.
+12. `/student/online-exams/[templateId]` — runner: timer, sheets, motion, haptics, immersive hide; code-only.
+13. `/student/results` — CountUp + RingProgress + share; capture predates EmptyState recompose (VLM saw bare title in void) — scored on code.
+14. `/student/schedule` — recomposed day-filter + sticky DataList + live chips + haptics; capture predates recompose (VLM saw old rotated-tabs layout) — scored on code.
+15. `/student/messages` — MessagesUI: entrance + haptics + keyboard-controller composer; VLM: empty state top-stuck, thin caption/body contrast.
+16. `/student/assignments` — DataList + submit sheet + haptics + humanized errors; capture exists but not VLM-inspected (code-scored).
+17. `/student/calendar` — Tripoli month grid + triad; zero motion/haptics on a press-heavy grid (P1-8); code-only.
+18. `/teacher/dashboard` — motion + skeletons + grading queue ✓; VLM: cramped 4-tile quick actions, empty-state paragraph dump.
+19. `/teacher/grades` — haptics + skeletons + DataList roster; VLM: helper line clipped at screen edge (P0-5), dead space, no accent anywhere.
+20. `/teacher/live` — states + ConfirmSheet + haptics; VLM: 3 KPI tiles dashboard-y, cramped micro-labels; its "arrow direction" complaint is a FALSE positive (StackHeader ArrowRight is correct RTL back).
+21. `/teacher/intelligence` — full kit + risk panel; no motion/haptics (P0-3); code-only.
+22. `/teacher/students` — OfferingRoster + DataList; ad-hoc triad grammar (P1-7), no motion; VLM: header baseline drift.
+23. `/teacher/exams` ×2 — triad present, no motion; dense authoring forms (461/555 ln) remain the most web-panel-feeling student-facing surfaces; code-only.
+24. `/admin/dashboard` — MetricHero/Tiles + DataList + skeletons; no motion; capture not VLM-inspected (rate-limited).
+25. `/admin/students` — registry with triad + virtualization; no motion; code-only.
+26. `/quality/dashboard` — untyped `Record<string, unknown>` ×3 (P1-1); VLM: bracketed indices, cramped intro, cut-off bottom row — worst screen.
+27. `/owner/dashboard` — typed OwnerStatsRow now imported; VLM capture (pre-sweep) showed raw `APP_INTERNAL` codes — code has Arabic fallback; blank stat cards (P1-2).
+28. `/settings` — recomposed SectionBar groups + PressableScale + ConfirmSheet + haptics seat; code-only.
+29. `/report` — route IS the AppSheet (ReportProblem: PressableScale + haptics + humanized failure); code-only.
+30. `/select-institution` — PressableScale picker rows + blueprint-room empty + SkeletonList@72px; code-only.
+
+## 7 — Verdict
+
+**Overall average 7.78 / 10 · 0/30 PASS · 5 P0 · 8 P1 · 6 P2.** The engineering
 foundations (shell, motion kit, haptics policy, states kit, RTL discipline,
 palette-only theming) are genuinely strong and honestly labeled — the shell's three
 headline claims all hold in code. What keeps the mission below its own 9-bar is
