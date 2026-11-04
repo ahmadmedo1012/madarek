@@ -64,7 +64,9 @@ function arg(name, dflt) {
 }
 const sectionsArg = arg("sections", null);
 const bpsArg = arg("bps", null);
-const OUT = join(REPO, arg("out", "docs/redesign/r335/heron-spec"));
+const outArg = arg("out", "docs/redesign/r335/heron-spec");
+// absolute --out must win over REPO (path.join would concatenate, not reset)
+const OUT = outArg.startsWith("/") ? outArg : join(REPO, outArg);
 const SECTIONS_WANTED = sectionsArg ? sectionsArg.split(",").map((s) => s.trim()) : SECTIONS;
 const BPS_WANTED = bpsArg ? bpsArg.split(",").map((b) => b.trim()) : BPS.map((b) => b.name);
 
