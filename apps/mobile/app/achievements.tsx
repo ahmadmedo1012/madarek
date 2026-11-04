@@ -22,9 +22,10 @@ import { Segmented } from "@/components/ui/fields";
 import { Avatar, RowList, LedgerRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { StackHeader } from "@/components/shell/AppTopBar";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 import {
   SignInPrompt,
-  apiMessage,
   countAr,
   isUnauthError,
 } from "@/features/common/components";
@@ -37,6 +38,14 @@ const RARITY_LABEL: Record<string, string> = {
   RARE: "نادر",
   EPIC: "ملحمي",
   LEGENDARY: "أسطوري",
+};
+
+/** Certificate status → Arabic (unknown statuses never leak raw enums). */
+const CERT_STATUS_LABEL: Record<string, string> = {
+  COMPLETED: "مكتملة",
+  ISSUED: "صادرة",
+  PENDING: "قيد الإصدار",
+  REVOKED: "ملغاة",
 };
 
 /**
@@ -78,7 +87,10 @@ export default function Achievements() {
           { id: "leaderboard", label: "المتصدرون" },
         ]}
         selectedId={tab}
-        onSelect={(id) => setTab(id as Tab)}
+        onSelect={(id) => {
+          haptics.selection();
+          setTab(id as Tab);
+        }}
       />
 
       {tab === "badges" ? (
@@ -88,7 +100,7 @@ export default function Achievements() {
           isUnauthError(badges.error) ? (
             <SignInPrompt message="أوسمتك وإنجازاتك تحتاج حسابًا — سجّل الدخول لعرضها." />
           ) : (
-            <ErrorState message={apiMessage(badges.error)} onRetry={() => badges.refetch()} />
+            <ErrorState message={humanizeError(badges.error)} onRetry={() => badges.refetch()} />
           )
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
@@ -114,7 +126,7 @@ export default function Achievements() {
           isUnauthError(certs.error) ? (
             <SignInPrompt message="شهاداتك تحتاج حسابًا — سجّل الدخول لعرضها." />
           ) : (
-            <ErrorState message={apiMessage(certs.error)} onRetry={() => certs.refetch()} />
+            <ErrorState message={humanizeError(certs.error)} onRetry={() => certs.refetch()} />
           )
         ) : (certs.data ?? []).length === 0 ? (
           <EmptyState
@@ -144,7 +156,7 @@ export default function Achievements() {
                   </View>
                 </View>
                 <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[8] }}>
-                  {c.status ? <Badge label={c.status === "COMPLETED" ? "مكتملة" : c.status} tone="mint" /> : <Badge label="مكتملة" tone="mint" />}
+                  {c.status ? <Badge label={CERT_STATUS_LABEL[c.status] ?? "قيد الإصدار"} tone="mint" /> : <Badge label="مكتملة" tone="mint" />}
                   {c.issuedAt ? (
                     <Badge label={fullDate(c.issuedAt)} tone="grey" />
                   ) : null}
@@ -168,7 +180,7 @@ export default function Achievements() {
           isUnauthError(board.error) ? (
             <SignInPrompt message="لوحة المتصدّرين تحتاج حسابًا — سجّل الدخول لعرضها." />
           ) : (
-            <ErrorState message={apiMessage(board.error)} onRetry={() => board.refetch()} />
+            <ErrorState message={humanizeError(board.error)} onRetry={() => board.refetch()} />
           )
         ) : (board.data ?? []).length === 0 ? (
           <EmptyState
@@ -243,7 +255,7 @@ function BadgeTile({ badge }: { badge: TrainingBadge }) {
   const p = usePalette();
   const earned = !!badge.earnedAt;
   const rarity = badge.rarity ?? "COMMON";
-  const label = RARITY_LABEL[rarity] ?? rarity;
+  const label = RARITY_LABEL[rarity] ?? "تصنيف خاص";
 
   return (
     <View
