@@ -137,8 +137,13 @@ describe('landing funnel — source contract (r164b → r331)', () => {
     const actionsBlock = finaleLive.slice(actions, finaleLive.indexOf('fo-cta-meta', actions));
     expect(actionsBlock).toContain('to="/auth/register"');
     // The returning-visitor ghost sits AFTER the primary inside the
-    // actions row, never inside the lede.
-    expect(actionsBlock).toContain('تسجيل الدخول');
+    // actions row, never inside the lede. R336: the copy lives in
+    // components/landing/copy.ts (LOGIN) — the section wires the
+    // constant, so the source pin accepts either the literal or the
+    // constant reference (same story, one source of truth).
+    expect(
+      actionsBlock.includes('تسجيل الدخول') || actionsBlock.includes('{LOGIN}'),
+    ).toBe(true);
     expect(actionsBlock).toContain('to="/auth"');
   });
 
@@ -157,7 +162,7 @@ describe('landing funnel — source contract (r164b → r331)', () => {
     const menuAt = navTsx.indexOf('fo-mobile-menu');
     expect(menuAt).toBeGreaterThanOrEqual(0);
     const menu = navTsx.slice(menuAt, navTsx.indexOf('fo-mb-cta', menuAt));
-    expect(menu).toContain('تسجيل الدخول');
+    expect(menu.includes('تسجيل الدخول') || menu.includes('{LOGIN}')).toBe(true);
     expect(navTsx.slice(menuAt)).toContain('to="/auth/register"');
   });
 });

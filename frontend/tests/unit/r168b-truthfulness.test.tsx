@@ -95,7 +95,10 @@ describe('r168b — landing copy claims only what ships', () => {
       stripJsx(read('src/pages/LandingPage.tsx')) +
       stripJsx(read('src/components/landing/sections/Vision.tsx')) +
       stripJsx(read('src/components/landing/sections/Footer.tsx'));
-    expect(page).toContain('aria-label="مدارك — منصّة التعليم الذكي"');
+    expect(
+      page.includes('aria-label="مدارك — منصّة التعليم الذكي"') ||
+        page.includes('aria-label={BRAND_LABEL}'),
+    ).toBe(true);
     expect(page).toContain('aria-label="ابدأ رحلتك — أنشئ حسابك"');
     // The old duplicate pair must not reappear.
     const dupe = page.match(/aria-label="ابدأ رحلتك"/g);

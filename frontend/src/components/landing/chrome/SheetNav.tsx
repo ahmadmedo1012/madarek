@@ -59,6 +59,7 @@ import { acquireScrollLock, releaseScrollLock } from '../../../lib/scrollLock';
  * the block ships with the component that owns it (the R331
  * file-ownership contract — landing.css keeps nothing header-shaped). */
 import '../../../styles/landing/nav.css';
+import { BRAND_LABEL, LOGIN, START_NOW, WORKS_TODAY } from '../copy';
 
 /* ── r309 (§3): the mobile menu's scroll-lock holder key — the open menu
  * owns the viewport via the ref-counted body lock (lib/scrollLock). */
@@ -85,7 +86,7 @@ const NAV_SEATS: readonly NavSeat[] = [
 /* r170d — «ما يعمل اليوم» stays reachable from the MOBILE menu (the
  * honesty-ledger pin) after the desktop dropdown grammar retired with
  * the flat R331 seat register. */
-const MOBILE_LEDGER_ROW = { label: 'ما يعمل اليوم', href: '/capabilities' } as const;
+const MOBILE_LEDGER_ROW = { label: WORKS_TODAY, href: '/capabilities' } as const;
 
 /* ── The dual-label roll (the reference's .btn-fill-label top/bot pair —
  * label swap 0.48s cubic-bezier(.625,.05,0,1), measured): the live row
@@ -337,7 +338,7 @@ export function SheetNav() {
       <div className="fo-header-inner">
         {/* the brand cell — mark + «مدارك» wordmark (the guest-landing
             e2e reads the wordmark; the display voice seats it). */}
-        <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
+        <Link to="/" className="fo-brand" aria-label={BRAND_LABEL}>
           <Logo variant="mark" size={26} className="fo-brand-mark" />
           <span className="fo-brand-name">مدارك</span>
         </Link>
@@ -346,9 +347,9 @@ export function SheetNav() {
 
         <div className="fo-header-actions">
           <ThemeToggle />
-          <Link to="/auth" className="fo-actions-login">تسجيل الدخول</Link>
+          <Link to="/auth" className="fo-actions-login">{LOGIN}</Link>
           <Link to="/auth/register" className="fo-actions-cta" data-spec="nav.cta">
-            <RollLabel text="ابدأ الآن" />
+            <RollLabel text={START_NOW} />
             <Icon icon={ArrowLeft} size={14} className="fo-actions-cta-arrow" aria-hidden />
           </Link>
         </div>
@@ -459,13 +460,13 @@ export function SheetNav() {
             className="btn ghost fo-mb-login"
             style={rowStyle(NAV_SEATS.length + 2)}
           >
-            <span className="fo-mb-txt">تسجيل الدخول</span>
+            <span className="fo-mb-txt">{LOGIN}</span>
           </Link>
           {/* the CTA row — the reference's own early seat: delay 0.2,
               BEFORE the link rows (measured), the 51px register row. */}
           <Link to="/auth/register" className="btn primary fo-mb-cta">
             <span className="fo-mb-txt">
-              ابدأ الآن
+              {START_NOW}
               <Icon icon={ArrowLeft} size={14} className="fo-mb-cta-arrow" aria-hidden />
             </span>
           </Link>

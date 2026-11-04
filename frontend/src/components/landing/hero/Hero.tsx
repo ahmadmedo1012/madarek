@@ -56,6 +56,7 @@ import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
 import { HeroInspect } from '../cursor/HeroInspect';
 import '../../../styles/landing/hero-mechanics.css';
+import { BRAND_LABEL, LOGIN, REGISTER } from '../copy';
 
 /* The display title — 3 authored lines (the reference's h1 wraps to 9
  * mask lines inside its narrow title-wrap; Arabic carries the same
@@ -82,7 +83,7 @@ const DECO_CARDS = [
 
 export function Hero() {
   return (
-    <section className="fo-hero hro" aria-label="مدارك — منصّة التعليم الذكي">
+    <section className="fo-hero hro" aria-label={BRAND_LABEL}>
       {/* ══ [1] THE ART BAND — the drafting stage (the reference's
           home-hero-img layer stack, ONE physical frame for the ink,
           the inspection instrument and the drafting chrome). ══ */}
@@ -174,11 +175,11 @@ export function Hero() {
               with the login secondary the reference's sub-wrap carries. */}
           <div className="hro-actions fo-hero-actions">
             <Link to="/auth/register" className="btn accent lg hro-cta fo-hero-cta">
-              أنشئ حسابك الجامعي
+              {REGISTER}
               <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
             </Link>
             <Link to="/auth" className="hro-alt">
-              تسجيل الدخول
+              {LOGIN}
             </Link>
           </div>
         </div>

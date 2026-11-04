@@ -145,8 +145,19 @@ test.describe('R309 hero — drag-reveal geometry (the audit failures)', () => {
   test('the drag selection box is VISIBLE while dragging (R308 wrote vars no rule read)', async ({ page }) => {
     await page.setViewportSize(VW.desktop);
     await page.goto('/');
-    const sb = await page.locator('div.bp-stage').boundingBox();
+    /* R336 belt hardening — the same mount flake the :75 spec already
+     * guards against (the R312 D4 lesson): this spec went straight to
+     * boundingBox after goto, so under CI's parallel-suite load the
+     * drag could land before the stage mounted/relaid out, .hi-box
+     * never turned on, and the spec burned its whole 45s budget (both
+     * attempts, CI red at e1ecedb6). Same two gates as :75 — visible
+     * stage + the marker mapping landed; the drag geometry itself was
+     * never the failure. */
+    const stage = page.locator('div.bp-stage');
+    await expect(stage).toBeVisible({ timeout: 30_000 });
+    const sb = await stage.boundingBox();
     expect(sb).not.toBeNull();
+    await waitForMapping(page);
     await page.mouse.move(sb!.x + sb!.width * 0.8, sb!.y + sb!.height * 0.5);
     await page.mouse.down();
     await page.mouse.move(sb!.x + sb!.width * 0.2, sb!.y + sb!.height * 0.6, { steps: 8 });

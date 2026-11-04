@@ -17,6 +17,7 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '../../../brand';
 import { FooterLens } from '../footer/FooterLens';
+import { BRAND_LABEL, LOGIN } from '../copy';
 
 export function Footer({ year }: { year: number }) {
   return (
@@ -51,7 +52,7 @@ export function Footer({ year }: { year: number }) {
               removed entirely — the honest-copy rule: dropping the
               seat is the approved option, no fake opt-in remains. */}
           <div className="fo-fcell fo-fcell-tagline">
-            <Link to="/" className="fo-brand" aria-label="مدارك — منصّة التعليم الذكي">
+            <Link to="/" className="fo-brand" aria-label={BRAND_LABEL}>
               <Logo variant="mark" size={26} className="fo-brand-mark" />
               <span className="fo-brand-stack">
                 <span className="fo-brand-name">مدارك</span>
@@ -86,7 +87,7 @@ export function Footer({ year }: { year: number }) {
           <nav className="fo-fcell fo-fcell-links" aria-label="الحساب">
             <div className="fo-footer-heading">الحساب</div>
             <Link to="/auth/register" className="fo-footer-link">إنشاء حساب جامعي</Link>
-            <Link to="/auth" className="fo-footer-link">تسجيل الدخول</Link>
+            <Link to="/auth" className="fo-footer-link">{LOGIN}</Link>
           </nav>
 
           {/* [06] the address cell — the reference's Sydney seat becomes

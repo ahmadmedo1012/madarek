@@ -16,6 +16,7 @@ import { Icon } from '../../Icon';
 import { colleges } from '../../../data/colleges.config';
 import { LIVE_COUNT } from '../../../data/landing-ledger';
 import { formatInt } from '../../../utils/numbers';
+import { LOGIN, REGISTER } from '../copy';
 
 /* ── Computed truths (BLUEPRINT §6 sources): 25 colleges in 3 campuses
  * from the real registry. R315 (K-E): the training-track, quality-board
@@ -36,10 +37,10 @@ export function Vision({ year }: { year: number }) {
         </p>
         <div className="fo-cta-actions" data-mdrk-reveal="item" id="cta">
           <Link to="/auth/register" className="btn accent lg">
-            أنشئ حسابك الجامعي
+            {REGISTER}
             <Icon icon={ArrowLeft} size={16} />
           </Link>
-          <Link to="/auth" className="btn ghost lg">تسجيل الدخول</Link>
+          <Link to="/auth" className="btn ghost lg">{LOGIN}</Link>
         </div>
         <p className="fo-cta-meta" data-mdrk-reveal="item">
           <Icon icon={Check} size={13} />

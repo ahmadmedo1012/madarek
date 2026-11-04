@@ -421,9 +421,10 @@ describe('r306 hygiene — the sheet stays clean', () => {
     const ALLOWED = new Set([
       'hi-pulse', // the inspection stations' idle pulse
       'fo-ticker-rtl', // the capabilities crawl
-      'sl-scan', // the loader's scan sweep
       'wy-snap', // R313: the why-stage verb snap (the 74%-hold plateau — supersedes vs-tag-snap, which moved to campus.css with the status rows)
       'hro-fade-loop', // R331: the hero deco ledger cards' idle fade (the reference's own deco loop, 1.5s, ≥992 only) — collapsed by the hero RM belt
+      // r335 W-chrome: 'sl-scan' retired with the R313 SheetLoader sheet
+      // (dead .sl-* rules deleted; the preloader's own RM gates are JS-side).
     ]);
     for (const n of names) {
       expect(ALLOWED.has(n ?? ''), `unexpected @keyframes ${n}`).toBe(true);
@@ -434,7 +435,6 @@ describe('r306 hygiene — the sheet stays clean', () => {
     const RM_COLLAPSED = [
       '.hi-marker-dot', // hi-pulse
       '.fo-ticker-track', // fo-ticker-rtl
-      '.sl-scan', // sl-scan
       '.jt-plan .bp-drawable', // R310: the plan's staged build collapses to the complete plan
       '.pl-zone', // R310: the zone wash highlight
       '.pm-art .pm-draw', // R313: the pain cards' draw-in collapses to the complete drawing
