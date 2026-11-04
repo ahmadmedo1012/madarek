@@ -50,6 +50,20 @@ const AnimatedTextInput = Animated.createAnimatedComponent(
 /** Latin digits, rounded — the default face. */
 const defaultFormatter = (n: number): string => String(Math.round(n));
 
+/**
+ * Input-neutralizing defaults — a bare TextInput carries intrinsic
+ * padding/border/background AND an intrinsic width that overflows narrow
+ * stat cells on RN-web at wide layouts (R334 review finding on the 768dp
+ * capture). Merged BEFORE the caller's style so it stays overridable.
+ */
+const inputBaseStyle: TextStyle = {
+  padding: 0,
+  borderWidth: 0,
+  backgroundColor: "transparent",
+  textAlign: "center",
+  width: "100%",
+};
+
 export interface CountUpProps {
   /** the number to count to (changes re-animate from the current value). */
   value: number;
@@ -123,7 +137,7 @@ export function CountUp({
         editable={false}
         pointerEvents="none"
         value={mirror}
-        style={style}
+        style={[inputBaseStyle, style]}
       />
     );
   }
@@ -133,7 +147,7 @@ export function CountUp({
     accessibilityLabel: label,
     editable: false,
     pointerEvents: "none",
-    style,
+    style: [inputBaseStyle, style],
   };
 
   return (
