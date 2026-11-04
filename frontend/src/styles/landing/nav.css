@@ -94,6 +94,26 @@
   transition: transform 0.4s ease; /* the reference: .header-inner{transition:transform .4s} */
 }
 
+/* ── the nav reveal (r335 · W-chrome) — the recorded header entrance:
+ * _motion.1440/390.json record the masthead seats entering from
+ * opacity 0 (`fromTo {opacity:0}` on the .header-menu-item-wrap
+ * rows + `fromTo {scaleY:0}` on their mask bars) right as the
+ * preloader's paper split opens (revealed at ~85ms after the 0.8s
+ * exit completes). The whole BLOCK fades — the Arabic whole-block
+ * rule: no per-row/letter split, the bar is one instrument. The
+ * landing root flips intro-draw → intro-done at the reveal; the fade
+ * runs 0.4s on the house decel (power2.out-equivalent) delayed half
+ * the exit so it resolves as the paper bands land. Non-intro visits
+ * (RM · return sessions) mount intro-done and the bar simply stands. */
+.landing.intro-draw .fo-header {
+  opacity: 0;
+}
+
+.landing.intro-done .fo-header {
+  opacity: 1;
+  transition: opacity var(--motion-duration-page) var(--ease-out) var(--motion-duration-page); /* 400ms fade · 400ms delay — resolves with the 835ms paper split */
+}
+
 .fo-header.on-hide .fo-header-inner {
   transform: translateY(-101%);
 }
@@ -582,6 +602,11 @@
  * the bar stays pinned (the reference's own GSAP collapse), the menu
  * opens without the wipe, the labels stand in place. ═══ */
 @media (prefers-reduced-motion: reduce) {
+  .fo-header {
+    opacity: 1; /* the reveal never plays — the bar stands from mount */
+    transition: none;
+  }
+
   .fo-header-inner {
     transition: none;
   }

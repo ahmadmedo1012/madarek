@@ -295,7 +295,7 @@ export function SheetCursor() {
   return (
     <>
       <canvas ref={canvasRef} className="sc-canvas" aria-hidden="true" />
-      <div ref={ringRef} className="sc-ring" data-on="off" data-pressed="off" aria-hidden="true" />
+      <div ref={ringRef} className="sc-ring" data-spec="cursor.dot" data-on="off" data-pressed="off" aria-hidden="true" />
     </>
   );
 }

@@ -112,19 +112,10 @@ body:has(.cb-banner) .landing {
   padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's 7px seat + 7px seam, measured chrome */
 }
 
-/* The four separate 1px ink rules — the drafting frame, painted as
-   four lines (the reference's construction, not a border box), inset
-   3px like the sheet frame's own rules. var(--text) = #282828 light /
-   #F6F8FA dark — the ink, theme-reactive. */
-.cb-rule {
-  position: absolute;
-  background: var(--text);
-  pointer-events: none;
-}
-.cb-rule-t { inset-block-start: 3px; inset-inline: 3px; block-size: 1px; }
-.cb-rule-b { inset-block-end: 3px; inset-inline: 3px; block-size: 1px; }
-.cb-rule-r { inset-inline-end: 3px; inset-block: 3px; inline-size: 1px; }
-.cb-rule-l { inset-inline-start: 3px; inset-block: 3px; inline-size: 1px; }
+/* The four separate 1px ink rules are DELETED (r335 W-chrome): the
+ * R332 W8 rebuild removed the .cb-rule spans from the JSX and consent.css
+ * draws the ONE 1px var(--rule) hairline box — these rules rendered
+ * nothing since then. */
 
 /* The ONE honest sentence — wraps to at most two short rows inside
    the card (13.33px @1440 --fs-body, muted ink; the R315 K-C single

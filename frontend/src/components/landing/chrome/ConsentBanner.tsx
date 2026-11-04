@@ -367,6 +367,7 @@ export function ConsentBanner() {
     <div
       ref={setRoot}
       className="cb-banner"
+      data-spec="consent.banner"
       role="region"
       aria-label="الموافقة على التخزين المحلي"
     >

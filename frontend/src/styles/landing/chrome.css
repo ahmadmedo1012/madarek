@@ -1,5 +1,17 @@
 /* R332 — split VERBATIM from src/styles/landing.css · chrome = R1 sheet chrome/frame/grain/labels/skip/mobile-menu (1-370) + R308 sc pointer (3933-4027) + R308 sl loader (4454-4854)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+   full map + proof: docs/redesign/r332/css-split-landing.md
+
+   r335 (W-chrome) — the retired chrome is GONE from this sheet:
+     · the R313 SheetLoader (.sl-*) — the mount retired with R333 P-D,
+       the preloader (.pl, preloader.css) replaced it; the dead rules
+       + the @keyframes sl-scan are deleted;
+     · the .fo-burger/.fo-mobile-menu/.fo-mb-* cascade-losing
+       duplicates — nav.css (loaded later by SheetNav) owns every
+       header/menu rule since R331; the stale copies here could only
+       shadow future nav.css changes.
+   Everything here is LIVE chrome: the sheet frame, the grain film,
+   the band measure, the section labels, the skip link and the RM
+   belt for the surviving movers.
 
 /* ════════════════════════════════════════════════════════════════════
    مدارك — LANDING (r306) · «لوحة مدارك» — the Heron-only drawing
@@ -247,111 +259,11 @@ html[data-theme='dark'] body.mdrk-grain::before {
   block-size: 44px;
 }
 
-/* ── <992px: r324 X8 — the phone header is [logo | 44×44 button] ────
- * The R323 wide 18.8rem cell (label + hairline + 1-px bars at the far
- * edge) is retired: ONE compact square button, icon-only, the visible
- * «القائمة» label living INSIDE the overlay (`.fo-mb-head`) — never a
- * tiny word stranded above a hairline at the bar's edge. */
-.fo-burger {
-  display: none;
-  place-items: center;
-  inline-size: 44px;   /* the a11y touch floor — the button IS the seat */
-  block-size: 44px;
-  flex: 0 0 auto;
-  background: none;
-  border: 0;
-  color: var(--text);
-  cursor: pointer;
-}
-
-/* the icon rides the Lucide glyph itself (the .fo-burger-ic class is
-   ON the svg): a 20px Menu/X that stays optically centered in the seat.
-   PI-B2: the .fo-burger-label sr-only seat is GONE — the SheetNav
-   markup carries a visible «القائمة» label (.fo-burger-txt), no
-   sr-only twin. */
-.fo-burger-ic {
-  inline-size: 1.25rem;
-  block-size: 1.25rem;
-}
-
-/* the open state rides the Lucide X glyph swap in JSX (menuOpen ?
-   X : Menu) — the old CSS bar-fold spans are retired with them. */
-
-/* ── The mobile overlay — the reference's full-bleed paper panel
- * under the bar: hairline-ruled rows (40px measured; our 44px
- * target floor), the register CTA row 51px, its own scroll (r309
- * §3.2 — never chains a wheel past its ends back to the locked
- * page). 100% = the fixed header's height (the containing block). */
-.fo-mobile-menu {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: 100%;
-  z-index: 70;
-  display: grid;
-  align-content: start;
-  background: var(--bg);
-  border-block-end: 1px solid var(--border-strong);
-  max-block-size: calc(100dvh - 100%);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-}
-
-.fo-mb-row {
-  display: flex;
-  align-items: center;
-  min-block-size: max(44px, 4rem); /* the reference's 40px rows, lifted to the 44px target floor */
-  padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure (33px − 7px inset), shared with .fo-header-inner */
-  font-size: var(--fs-body);
-  font-weight: 600;
-  color: var(--text);
-  text-decoration: none;
-  border-block-end: 1px solid var(--rule);
-}
-
-/* PI-B2 — the .fo-mb-head overlay head row is GONE (r324 X8's visible
-   «القائمة» label seat): the R331 SheetNav rewrite carries no head row
-   (the .fo-mb-row list is the menu's first band) — class markup-dead. */
-
-.fo-mb-sub {
-  border-block-end: 1px solid var(--rule);
-}
-
-.fo-mb-sub-row {
-  min-block-size: max(44px, 3.4rem);
-  padding-inline-start: calc(26px + var(--sp-5)); /* spacing-gate: allow — the sub-index indents one seat from the row padding */
-  font-family: var(--font-mono);
-  font-size: max(13px, var(--fs-mono-md));
-  font-weight: 400;
-  color: var(--text-secondary);
-  border-block-end: 0;
-}
-
-.fo-mb-sub .fo-mb-sub-row + .fo-mb-sub-row {
-  border-block-start: 1px solid var(--rule);
-}
-
-/* the register seat inside the overlay (the reference's
-   .header-cta.only-mb — 51px measured @390) */
-.fo-mb-cta {
-  min-block-size: max(44px, 5.15rem);
-  margin-block-start: var(--sp-2);
-}
-
-.fo-mobile-theme {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--sp-4);
-  padding: var(--sp-2) 26px; /* spacing-gate: allow — the shared 26px header seat padding */
-  border-block-end: 1px solid var(--rule);
-}
-
-.fo-mobile-theme-label {
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--text-muted);
-}
+/* r335 (W-chrome): the .fo-burger / .fo-mobile-menu / .fo-mb-* rules
+ * that lived here are DELETED — every header/menu seat is owned by
+ * styles/landing/nav.css since R331 (imported later by SheetNav.tsx,
+ * so these copies were cascade-dead). Nothing header-shaped remains
+ * in this sheet. */
 
 /* ════════════════════════════════════════════════════════════════════
    R308 — THE INTERACTION LAYER (docs/redesign/r308/parity-matrix.md)
@@ -371,356 +283,17 @@ html[data-theme='dark'] body.mdrk-grain::before {
    The 4 documented cursor !important rules retired with it — the
    ladder re-authors without !important (author > UA cascade). */
 
-.sl {
-  position: fixed;
-  inset: 0;
-  z-index: 300;
-  direction: ltr; /* the instrument chrome is Latin-mono; Arabic text
-                     inside keeps its own dir on the relevant spans */
-}
-
-.sl-main {
-  position: absolute;
-  inset: 0;
-  background: var(--bg);
-  display: grid;
-  grid-template-rows: 1fr auto 1fr;
-  padding: 7px; /* spacing-gate: allow — the loader's measured 7px sheet inset (reference §2) */
-}
-
-.sl-frame {
-  position: absolute;
-  inset: 7px;
-  border: 1px solid var(--rule);
-  pointer-events: none;
-}
-
-.sl-cross {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  opacity: 0.55;
-  pointer-events: none;
-}
-
-.sl-cross-h,
-.sl-cross-v {
-  position: absolute;
-  background: var(--grid-line);
-}
-
-.sl-cross-h {
-  inset-block-start: -1px;
-  inset-inline: -28px;
-  block-size: 1px;
-}
-
-.sl-cross-v {
-  inset-inline-start: -1px;
-  inset-block: -28px;
-  inline-size: 1px;
-}
-
-.sl-coord {
-  position: absolute;
-  inset-block-start: 14px;
-  inset-inline-end: 16px;
-  color: var(--text-muted);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.04em;
-}
-
-/* R310 — the entrance draws the elevation itself: the wrap hosts the
-   shared ElevationDrawing (entrance variant) + the scan datum span.
-   The window is wider than R309's — the elevation needs the width. */
-.sl-draw-wrap {
-  grid-row: 1;
-  align-self: end;
-  justify-self: center;
-  position: relative;
-  inline-size: min(1040px, 88vw);
-  padding-block-end: var(--sp-4);
-}
-
-.sl-draw-wrap .bp-svg {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-}
-
-/* the staged construction — the elevation's [data-ink] layer groups
-   draw in DRAFTING ORDER against the R314 asset-gated counter (the
-   fallback run reaches 100% at ~5.65s; the earliest released finish
-   is ~4.5s — the layers resolve by ~4.8s so every legal run shows the
-   complete drawing before the exit): frame → grid → ground → masses →
-   secondary → openings → detail → dims → journey → labels.
-   pathLength-normalized; every layer resolves before the scan datum
-   sweeps. */
-.sl-draw-wrap .bp-svg .bp-drawable {
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: 1;
-  fill-opacity: 0;
-  transition:
-    stroke-dashoffset 700ms var(--ease),
-    fill-opacity 450ms var(--ease);
-}
-
-.sl-draw-wrap .bp-svg text {
-  opacity: 0;
-  transition: opacity 450ms var(--ease);
-}
-
-/* R314 cycle-2 (V14) retune — the drawing now spreads across the
-   WHOLE run, the reference's own frame-sequence beat (its line-drawn
-   wordmark constructs itself until ≈5.0s of the 5.65s counter — 88%
-   of the run; the R313 schedule finished ours at 77%). The last layer
-   resolves at 4.8s: ~0.85s of standing-complete before the fallback
-   100%, and still ahead of the earliest released exit (~5.2s). */
-.sl-draw-wrap .bp-svg [data-ink='1'] .bp-drawable { transition-delay: 110ms; }
-.sl-draw-wrap .bp-svg [data-ink='2'] .bp-drawable { transition-delay: 420ms; }
-.sl-draw-wrap .bp-svg [data-ink='3'] .bp-drawable { transition-delay: 820ms; }
-.sl-draw-wrap .bp-svg [data-ink='4'] .bp-drawable { transition-delay: 1300ms; }
-.sl-draw-wrap .bp-svg [data-ink='5'] .bp-drawable { transition-delay: 1850ms; }
-.sl-draw-wrap .bp-svg [data-ink='6'] .bp-drawable { transition-delay: 2400ms; }
-.sl-draw-wrap .bp-svg [data-ink='7'] .bp-drawable { transition-delay: 2950ms; }
-.sl-draw-wrap .bp-svg [data-ink='8'] .bp-drawable { transition-delay: 3450ms; }
-.sl-draw-wrap .bp-svg [data-ink='9'] .bp-drawable { transition-delay: 3850ms; }
-.sl-draw-wrap .bp-svg [data-ink='10'] .bp-drawable { transition-delay: 4100ms; }
-.sl-draw-wrap .bp-svg [data-ink='10'] text { transition-delay: 4250ms; }
-
-/* the mounted state (the layers draw themselves in) */
-.sl-mounted .sl-draw-wrap .bp-svg .bp-drawable {
-  stroke-dashoffset: 0;
-  fill-opacity: 1;
-}
-
-.sl-mounted .sl-draw-wrap .bp-svg text {
-  opacity: 1;
-}
-
-/* the scan datum — one horizontal sweep after the structures resolve
-   (a positioned span over the drawing window now; R314 cycle-2 retune
-   — the draw completes by ~4.8s, the sweep runs 4.2–5.3s, the tail's
-   own beat before the 100% hold) */
-.sl-scan {
-  position: absolute;
-  inset-block-start: var(--sp-4);
-  inset-inline: var(--sp-2);
-  block-size: 1.5px;
-  background: var(--accent);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.sl-mounted .sl-scan {
-  animation: sl-scan 1100ms var(--ease) 4200ms 1 both;
-}
-
-@keyframes sl-scan {
-  0% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-  12% {
-    opacity: 0.9;
-  }
-  88% {
-    opacity: 0.9;
-  }
-  100% {
-    opacity: 0;
-    transform: translateY(300px);
-  }
-}
-
-/* the progress instrument — R313 (D10): the reference's 1px rail
-   grammar (loading-progress): the NN% counter (Geist Mono 10px
-   #FA3600 — --fs-mono-sm/--accent) sits ON the orange centre band,
-   which wipes LEFT→RIGHT across the full sheet width; two 1px
-   #B3B3AF rails (the loading-progress-item pair) translate in
-   opposite directions with the counter. All motion is JS-driven
-   transform (the tick writes scaleX / translate3d). */
-.sl-progress {
-  grid-row: 2;
-  position: relative;
-  block-size: 13px;
-  margin-block: var(--sp-7);
-}
-
-/* the orange centre band — the counter's own rule, full width */
-.sl-band {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: 6px;
-  block-size: 1px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  will-change: transform;
-}
-
-/* the two translating #B3B3AF rails above/below the band */
-.sl-rail {
-  position: absolute;
-  inset-inline: 0;
-  block-size: 1px;
-  background: var(--grid-line);
-  will-change: transform;
-}
-
-.sl-rail-top {
-  inset-block-start: 0;
-}
-
-.sl-rail-bot {
-  inset-block-start: 12px;
-}
-
-/* the counter — ON the band at the sheet's leading edge (the band
-   passes behind the glyphs, exactly like the reference's txt).
-   R328 (H7 · panel D2): the TEXT-safe accent rung (raw --accent
-   measured 3.93:1 on dark — under AA for mono-sm text). */
-.sl-pct {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  color: var(--accent-ink);
-  font-size: var(--fs-mono-sm);
-  line-height: 13px;
-  letter-spacing: 0.04em;
-}
-
-/* the honest init log */
-.sl-log {
-  grid-row: 3;
-  align-self: start;
-  justify-self: start;
-  display: grid;
-  gap: 3px; /* spacing-gate: allow — instrument-tuned log row hairline (r308 loader) */
-  margin: 0;
-  padding: var(--sp-4) var(--sp-5);
-  list-style: none;
-}
-
-.sl-log li {
-  display: flex;
-  align-items: baseline;
-  gap: var(--sp-3);
-  direction: rtl;
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  opacity: 0;
-  transform: translateY(4px);
-  transition:
-    opacity var(--t-fast) var(--ease),
-    transform var(--t-fast) var(--ease);
-}
-
-.sl-log li[data-on='on'] {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.sl-log li .fo-mono {
-  color: var(--accent-ink);
-  font-size: var(--fs-xxs);
-}
-
-/* the title block + skip */
-.sl-meta {
-  position: absolute;
-  inset-block-end: 18px;
-  inset-inline-end: 20px;
-  display: grid;
-  gap: var(--sp-0-5);
-  justify-items: end;
-  direction: rtl;
-  text-align: end;
-}
-
-.sl-meta-title {
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  color: var(--text);
-}
-
-.sl-meta-row {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.05em;
-}
-
-.sl-skip {
-  position: absolute;
-  inset-block-end: 18px;
-  inset-inline-start: 20px;
-  border: 1px solid var(--rule);
-  border-radius: var(--r-xs);
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
-  color: var(--text-secondary);
-  font-size: var(--fs-xxs);
-  padding: var(--sp-1-5) var(--sp-3);
-  cursor: pointer;
-  transition:
-    color var(--t-fast) var(--ease),
-    border-color var(--t-fast) var(--ease);
-}
-
-@media (hover: hover) {
-  .sl-skip:hover {
-    color: var(--accent-ink);
-    border-color: var(--accent);
-  }
-}
-
-.sl-sr {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-/* ── R313 (D10) — the exit state: the instrument's content dissolves
-   as the two-band split opens (the reference's .loading.loaded keeps
-   the element with inner opacity 0 while the clip plays). The clip
-   itself is WAAPI (SheetLoader owns it); this fade rides the same
-   moment via the .is-exiting root class. */
-.sl.is-exiting .sl-main > * {
-  opacity: 0;
-  transition: opacity 300ms var(--ease);
-}
-
-/* ── R308/R309 responsive re-composition ──────────────────────────── */
-/* (The pointer instrument is JS-gated below 992px; the dots stay as
-   the touch path and the hint text swaps to the tap affordance.) */
-
-@media (max-width: 767px) {
-  .sl-draw-wrap {
-    inline-size: 88vw;
-  }
-
-  .sl-log {
-    display: none; /* the log is an instrument flourish — the paper
-                      breathes on small viewports */
-  }
-
-  .sl-meta {
-    inset-block-end: 14px;
-    inset-inline-end: 14px;
-  }
-
-  .sl-skip {
-    inset-block-end: 14px;
-    inset-inline-start: 14px;
-  }
-}
+/* r335 (W-chrome): the retired R313 SheetLoader's whole sheet (.sl-*,
+ * including @keyframes sl-scan and the ≤767 loader re-composition) is
+ * DELETED — the mount retired with R333 P-D and the preloader
+ * (styles/landing/preloader.css) replaced it; these were dead rules
+ * rendering nothing. */
 
 /* ── R308 reduced motion: the complete static sheet ─────────────────
    Every continuous instrument settles to its resolved state; nothing
-   hides content. The pointer instrument + loader already refuse to
-   run under RM (JS gates) — this belt covers the CSS-side effects. */
+   hides content. The pointer instrument + the preloader already refuse
+   to run under RM (JS gates) — this belt covers the CSS-side effects
+   (r335 W-chrome: the retired loader's RM entries are deleted with it). */
 @media (prefers-reduced-motion: reduce) {
   .fo-ticker-track {
     animation: none;
@@ -730,27 +303,6 @@ html[data-theme='dark'] body.mdrk-grain::before {
   .hi-marker-dot {
     animation: none;
     opacity: 0.9;
-  }
-
-  .sl-draw-wrap .bp-svg .bp-drawable,
-  .sl-draw-wrap .bp-svg text {
-    transition: none;
-    stroke-dashoffset: 0;
-    fill-opacity: 1;
-    opacity: 1;
-  }
-
-  .sl-mounted .sl-scan {
-    animation: none;
-    opacity: 0;
-  }
-
-  .sl-log li,
-  .sl-band,
-  .sl-rail {
-    transition: none;
-    opacity: 1;
-    transform: none;
   }
 
   .sc-ring {
