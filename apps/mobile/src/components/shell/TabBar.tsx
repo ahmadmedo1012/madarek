@@ -46,6 +46,25 @@ const DOT_SIZE = 6;
 const BAR_HEIGHT_FALLBACK = 84;
 
 /**
+ * The dot's physical X translate for a slot (pure — unit-tested).
+ *
+ * The dot is anchored at the row's START edge; under RTL `start` means the
+ * RIGHT edge, so the physical translate flips sign to reach the same visual
+ * slot. Guards keep the un-measured first frame at 0 (no jump on layout).
+ */
+export function indicatorOffset(
+  barWidth: number,
+  slot: number,
+  slotCount: number,
+  isRTL: boolean,
+): number {
+  if (barWidth <= 0 || slot < 0 || slotCount <= 0) return 0;
+  const slotWidth = barWidth / slotCount;
+  const fromStart = (slot + 0.5) * slotWidth - DOT_SIZE / 2;
+  return isRTL ? -fromStart : fromStart;
+}
+
+/**
  * RoleTabBar — THE shell's bottom bar (R331 A-App-Shell). Rendered ONCE
  * per role by the `(tabs)` layout via the `tabBar` prop of expo-router's
  * `Tabs`, OUTSIDE every screen — it never re-mounts or slides with screen
@@ -54,8 +73,9 @@ const BAR_HEIGHT_FALLBACK = 84;
  * R334 3-a upgrades (motion + haptics foundations adopted):
  *  · selection indicator — a single orange dot that springs to the active
  *    tab on the UI THREAD (reanimated, transform-only; reduced-motion =
- *    instant). It replaces the old `borderBottomWidth: active ? 2 : 0`
- *    underline, which mutated a LAYOUT property on every switch.
+ *    instant). It retires the old per-tab underline, whose border-bottom
+ *    width toggled with the active flag (a layout-property mutation that
+ *    re-laid-out the whole row on every switch).
  *  · icon morph outline → filled — the active icon fills with the accent
  *    (lucide's `fill` prop) and pops with a scale spring; inactive icons
  *    stay ink outlines.
@@ -99,12 +119,7 @@ export function RoleTabBar({ state, navigateToTab, insets, role, hidden = false 
 
   useEffect(() => {
     if (barWidth <= 0 || activeSlot < 0) return;
-    const slotWidth = barWidth / entries.length;
-    // Center of the active slot measured from the row's START edge…
-    const fromStart = (activeSlot + 0.5) * slotWidth - DOT_SIZE / 2;
-    // …but `start` anchors the dot at the RIGHT edge under RTL, so the
-    // physical translate flips sign to reach the same visual slot.
-    const target = isRTL ? -fromStart : fromStart;
+    const target = indicatorOffset(barWidth, activeSlot, entries.length, isRTL);
     dotX.value = reduced ? target : withSpring(target, springs.snappy);
   }, [barWidth, activeSlot, entries.length, isRTL, reduced, dotX]);
 
@@ -162,8 +177,10 @@ export function RoleTabBar({ state, navigateToTab, insets, role, hidden = false 
             }}
           />
         ))}
-        {/* The single orange dot — start-anchored, springs between slots. */}
+        {/* The single orange dot — start-anchored, springs between slots.
+            Exactly ONE instance (test-pinned); a11y-hidden + untouchable. */}
         <Animated.View
+          testID="tab-indicator-dot"
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
           pointerEvents="none"

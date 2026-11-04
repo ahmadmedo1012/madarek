@@ -18,8 +18,10 @@ import { heron } from "@/design/tokens";
  */
 export default function AdminLayout() {
   const { name } = useTheme();
+  // R334 3-a audit fix — the round-2 edit's casing regression broke
+  // typecheck AND the runtime gate (allow.includes("ADMIN") is exact).
   return (
-    <RoleGate allow={["Admin"]}>
+    <RoleGate allow={["ADMIN"]}>
       <Stack
         screenOptions={{
           headerShown: false,
