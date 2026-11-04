@@ -280,6 +280,12 @@ const FALLBACK = {
 export function chartColors() {
   return {
     text: cssVar('--chart-text', FALLBACK.chartText),
+    /* P-G3b — the STRONG text tier (--text, ~15:1 on the paper): the
+       radial legend's label seat. The old --chart-text muted tier
+       (5.74:1) passed AA numerically but read faint at the 12px canvas
+       legend — the owner dashboard's donut legend was the flagged
+       surface (P-G2 Q-3: legend labels ≥4.5:1, readable). */
+    strongText: cssVar('--text', FALLBACK.text),
     grid: cssVar('--chart-grid', FALLBACK.chartGrid),
     accent: cssVar('--accent', FALLBACK.accent),
     surface: cssVar('--surface-1', FALLBACK.surface1),
@@ -739,7 +745,10 @@ export function radialOptions(opts?: {
               rtl: true,
               textDirection: 'rtl',
               labels: {
-                color: c.text,
+                /* P-G3b — the strong text tier: legend labels must read
+                   at every zoom (the owner donut was the flagged
+                   surface); the muted chart-text tier stays for axes. */
+                color: c.strongText,
                 font: { family: fontSans(), size: 12 },
                 padding: 14,
                 usePointStyle: true,

@@ -240,6 +240,28 @@
   block-size: auto;
 }
 
+/* R333 P-G3a (T-G1-04) — the aspect LOCK. The band and the mosaic are
+   composed collages: every box gets an intentional ratio and the photo
+   covers it, so no variant depends on its source's intrinsic shape and
+   no surface-colored dead area can open under a portrait frame (the
+   P-G1 capture read the gap as a broken image). Ratios are chosen per
+   slot from each photo's own crop (the panorama stays intrinsic — it
+   is the full-width band leader and needs no lock). */
+.cu-band .mf-photo,
+.um-mosaic .mf-photo {
+  aspect-ratio: 4 / 3;
+}
+
+.cu-band .mf--hero-lead .mf-photo { aspect-ratio: 16 / 9; }
+.cu-band .mf--hero-tall .mf-photo { aspect-ratio: 3 / 4; }
+.um-mosaic .mf--large .mf-photo { aspect-ratio: 16 / 9; }
+
+.cu-band .mf-photo img,
+.um-mosaic .mf-photo img {
+  block-size: 100%;
+  object-fit: cover;
+}
+
 .mf-caption {
   display: grid;
   gap: var(--sp-0-5);
@@ -453,7 +475,21 @@
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: var(--sp-5);
-  align-items: start;
+  /* R333 P-G3a (T-G1-04): stretch (not start) — the two facade cards
+     share one row height, the secondary frame absorbs the difference
+     (its poster/iframe are absolute compositions, so stretching is
+     free), and both caption blocks pin to the same bottom edge. */
+  align-items: stretch;
+}
+
+.vd-grid .vc--secondary {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.vd-grid .vc--secondary .vc-frame {
+  aspect-ratio: auto;
+  block-size: 100%;
+  min-block-size: 0;
 }
 
 /* ═══ lv — the capability matrix: a hairline TABLE (moved verbatim) ══
@@ -725,6 +761,8 @@
     position: static;
     padding: var(--sp-3) var(--sp-1) 0;
     background: none; /* the desktop gradient wash is a poster floor */
+    flex-direction: column;
+    align-items: stretch;
   }
   .vc-poster-lines {
     inset-inline: var(--sp-4);
@@ -738,11 +776,6 @@
   .cu-band .mf--hero-lead,
   .um-mosaic .mf--large {
     grid-column: auto;
-  }
-
-  .vc-actions {
-    flex-direction: column;
-    align-items: stretch;
   }
 
   .lv-row,

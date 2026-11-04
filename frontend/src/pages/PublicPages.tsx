@@ -141,7 +141,8 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'ما المتصفحات المدعومة؟',
     a: (
       <>
-        المتصفحات الحديثة بإصداراتها الأخيرة (Chrome وEdge وFirefox وSafari) مع تشغيل الجافاسكربت — وإن
+        المتصفحات الحديثة بإصداراتها الأخيرة (<bdi>Chrome</bdi> و<bdi>Edge</bdi> و<bdi>Firefox</bdi>
+        و<bdi>Safari</bdi>) مع تشغيل الجافاسكربت — وإن
         كانت معطلة فستقابلك رسالة عربية واحدة تطلب تفعيلها وإعادة التحميل.
       </>
     ),
@@ -214,17 +215,28 @@ export function HelpPage() {
       lede="تسعة أسئلة هي ما يسأله الزوار فعلًا — وكل جواب يستند إلى ما يعمل اليوم في المنصّة، بلا تجميل."
       updated={LEGAL_UPDATED}
     >
+      {/* R333 P-G3a (T-G1-03): the FAQ is a real accordion now — native
+          details/summary (keyboard + print + no-JS for free), the [nn]
+          mono index stays on the summary row, and a hairline chevron at
+          the inline end carries the open state (legal.css). The first
+          question opens by default so the affordance is discoverable,
+          not nine identical closed slabs.
+          PI-REC reconciliation: the question text keeps its heading
+          outline (R320 §D pins nine level-2 headings on this page) —
+          the h2 rides INSIDE the summary (valid: summary = one optional
+          heading), so the accordion and the document outline coexist. */}
       <div className="lg-faq">
         {faqList.map((f, i) => (
-          <div className="lg-faq-item" key={f.q}>
-            <h2 className="lg-faq-q">
+          <details className="lg-faq-item" key={f.q} open={i === 0}>
+            <summary className="lg-faq-q">
               <span className="lg-mono" dir="ltr" aria-hidden="true">
                 [{String(i + 1).padStart(2, '0')}]
               </span>
-              {f.q}
-            </h2>
+              <h2 className="lg-faq-q-text">{f.q}</h2>
+              <span className="lg-faq-caret" aria-hidden="true" />
+            </summary>
             <p className="lg-faq-a">{f.a}</p>
-          </div>
+          </details>
         ))}
       </div>
     </LegalSheet>

@@ -388,6 +388,16 @@ a.pf-row-link {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-2);
+  /* R333 P-G3a (T-G1-02): the slot is itself a flex item of the wrapping
+     .pf-filterbar, so min-width:auto made its min-content (= a whole
+     scroll-strip of chips, measured 559px on /colleges at 390) drag the
+     page 189px wide. Zeroing the automatic minimum lets the slot shrink
+     to the bar; a child that is a scroll container (overflow-x:auto —
+     .gallery-chip-strip's phone recipe) then scrolls INSIDE the
+     container instead of pushing the page. Rows of plain pills are
+     unaffected: they either fit (no-op) or wrap per the r299 rule
+     below. */
+  min-inline-size: 0;
 }
 /* r299 (final-shell): consumer `.flex` rows wrap inside the bar — both
    of the pattern's own levels declare flex-wrap, but the filters slot

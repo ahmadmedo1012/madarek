@@ -16,16 +16,8 @@
      .list-row language, and the checkpoint quiz inside the shared
      Modal (.modal-card supplies surface + elevation + focus trap;
      these classes style the quiz body only). */
-
-  .lecture-shell {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
-    gap: var(--sp-6);
-    align-items: start;
-  }
   @media (max-width: 1024px) {
     /* Sidebar collapses below the player on narrow screens. */
-    .lecture-shell { grid-template-columns: 1fr; }
   }
 
   /* r220 — the attachments panel: interaction points + chapters in ONE
@@ -38,105 +30,12 @@
     gap: var(--sp-4);
     min-inline-size: 0;
   }
-  .lecture-panel {
-    position: sticky;
-    top: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    /* R313 (WP-E): flat paper panel — hairline carries the surface. */
-    max-block-size: calc(100vh - var(--sp-12));
-    overflow-y: auto;
-    scrollbar-width: thin;
-  }
-  @media (max-width: 1024px) {
-    .lecture-panel { position: static; max-block-size: none; overflow: visible; }
-  }
-  .lecture-panel-title {
-    margin: 0;
-    padding: var(--sp-4) var(--sp-4) var(--sp-2);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (no live consumer; pinned for revival) */
-    color: var(--text);
-  }
-  .lecture-panel-sec {
-    padding: var(--sp-3) var(--sp-4) var(--sp-3);
-    border-block-start: 1px solid var(--surface-divider);
-  }
-  .lecture-panel-sec-title {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--sp-2);
-    margin: 0 0 var(--sp-1);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text-secondary);
-  }
-  .lecture-panel-sec-meta {
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .lecture-panel-empty {
-    margin: 0;
-    padding: 0 var(--sp-4) var(--sp-4);
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-  }
   /* Interaction-point rows — the chapter-row grammar with a question
      body; unanswered rows carry the alert ink, answered rows go quiet
      green (state = word + icon + position, never hue alone: the time
      chip + the answered count in the section head carry the same truth). */
-  .cp-list { display: flex; flex-direction: column; }
-  .cp-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    inline-size: 100%;
-    min-block-size: 44px;
-    padding: var(--sp-2-5) var(--sp-2);
-    background: transparent;
-    border: 0;
-    text-align: start;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-    border-radius: var(--r-sm);
-    transition: background var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  .cp-row + .cp-row { border-block-start: 1px solid var(--surface-divider); }
-  @media (hover: hover) and (pointer: fine) {
-    .cp-row:hover { background: var(--surface-2); }
-  }
-  .cp-row:active { background: var(--surface-3); }
-  .cp-row-q {
-    flex: 1;
-    min-inline-size: 0;
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    line-height: 1.45;
-    color: var(--text);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .cp-row.done .cp-row-q { color: var(--text-secondary); font-weight: var(--fw-normal); }
-  .cp-row.done .chapter-state { color: var(--success-ink); }
-  .cp-row:not(.done) .chapter-state { color: var(--warning-ink); }
-
   /* Video column — one flex rhythm for meta / progress / description,
      no per-child margins. */
-  .lecture-main {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-4);
-    min-inline-size: 0;
-  }
-
   /* Fixed 16:9 frame: no layout shift before video metadata lands;
      the element letterboxes inside it (object-fit: contain). */
   .lecture-video-wrap {
@@ -171,15 +70,7 @@
        never tint the bars. Documented raw value per brief §3.4. */
     background: #000;  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */  /* color-gate: allow — true letterbox matte (documented §3.4): the theme ramp must never tint video bars */
   }
-
   /* ── Meta block under the player ── */
-  .lecture-meta { display: flex; flex-direction: column; gap: var(--sp-0-5); }
-  .lecture-meta-badges {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-end: var(--sp-1);
-  }
   .lecture-meta-title {
     font-family: var(--font-display);
     font-size: var(--type-headline-size-md);
@@ -192,215 +83,34 @@
        pixel-identical to the old <div>. */
     margin: 0;
   }
-  .lecture-meta-sub {
-    font-size: var(--type-label-size);
-    font-weight: var(--type-body-weight);
-    line-height: var(--lh-base);
-    color: var(--text-muted);
-  }
-  .lecture-desc {
-    font-size: var(--type-label-size);
-    line-height: var(--lh-loose);
-    color: var(--text-secondary);
-  }
-
   /* ── Completion-report retry notice (r152a A4 P3) ──
      Surfaces a failed end-of-video watch report with a one-tap retry —
      same visual grammar as the inline error banners (soft danger
      surface + ink), 44px button per the touch-floor canon. */
-  .lecture-report-retry {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    border: 1px solid var(--danger);
-    background: var(--danger-soft);
-    color: var(--danger-ink);
-    font-size: var(--type-label-size);
-  }
-  .lecture-report-retry .btn { min-block-size: 44px; }
   /* r157 (W2-F7): the two CTAs (retry + «اذهب إلى مقرّراتك») sit side by
      * side and wrap under the copy on narrow screens — the dashboard's
      * ResumeHero error card reuses this grammar. */
-  .lecture-report-retry-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    flex-shrink: 0;
-  }
-
   /* ── Watch progress ──
      Plain-block fill anchors at inline-start → the fill direction is
      RTL-correct by construction (same anatomy as .progress-track). */
-  .lecture-progress { display: flex; flex-direction: column; gap: var(--sp-2); }
-  .lecture-progress-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-  }
-  .lecture-progress-value {
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: var(--type-metric-feature-settings);
-  }
-  .lecture-progress-track {
-    position: relative;
-    block-size: 8px;
-    background: var(--surface-3);
-    border-radius: var(--r-full);
-    overflow: clip;
-  }
-  .lecture-progress-fill {
-    display: block;
-    block-size: 100%;
-    /* 5-C1 (A2 §1c #25 — layout-property debt cleared, 23-b
-       .progress-fill pattern): the fill paints at full track width
-       and the VALUE rides transform: scaleX() — the page sets the
-       scale inline (LecturePlayerPage), transform-origin follows the
-       reading direction, and the stat-duration transition (the
-       satisfying "section complete" fill) moves to transform. The
-       old inline-size transition re-laid-out the track per frame. */
-    inline-size: 100%;
-    background: var(--neutral-900);
-    border-radius: inherit;
-    transform-origin: left center;
-    transform: scaleX(var(--fill-scale, 0));
-    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
-  [dir="rtl"] .lecture-progress-fill { transform-origin: right center; }
-  [data-theme="dark"] .lecture-progress-fill { background: var(--accent); }
   /* Checkpoint notches on the track (decorative — the note below and
      the quiz itself carry the information accessibly). inset-inline-
      start keeps them direction-correct in RTL. */
-  .lecture-progress-mark {
-    position: absolute;
-    inset-block-start: 0;
-    block-size: 8px;
-    inline-size: 8px;
-    border-radius: var(--r-full);
-    background: var(--accent);
-    /* R313 (WP-E): the 1px cutout that separates the notch from the
-       fill under it rides an inset outline (zero box-shadows on the
-       surface sweep). */
-    outline: 1px solid var(--surface);
-    outline-offset: -1px;
-  }
-  .lecture-progress-mark.done { background: var(--success); }
-  .lecture-progress-note {
-    font-size: var(--type-label-size-sm);
-    line-height: 1.5;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .lecture-progress-note.done { color: var(--success-ink); }
-
   /* ── Prev / next lecture bar (PP-X2, audit P1-7) ─────────────────
      The watch loop's exit ramp: prev (ghost) · next (primary — the
      dominant action, becomes «عُد إلى المقرّر» on the last lecture).
      Space-between keeps prev at the reading start (right in RTL) and
      next at the forward edge. */
-  .lecture-nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-    flex-wrap: wrap;
-  }
   /* End-of-lecture pulse — ONE iteration announcing the next action.
      R313 (WP-E): opacity breath — glow rings are retired system-wide. */
-  .lecture-nav-next.pulse {
-    animation: lecture-next-pulse var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
   @keyframes lecture-next-pulse {
     from { opacity: 0.55; }
     to { opacity: 1; }
   }
 
   /* ── Chapter sidebar rows (the .list-row language, button edition) ── */
-  .chapter-list { display: flex; flex-direction: column; }
-  .chapter-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    inline-size: 100%;
-    min-block-size: 44px; /* touch target */
-    padding: var(--sp-3) var(--sp-2);
-    background: transparent;
-    border: 0;
-    text-align: start;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-    transition: background var(--motion-duration-short) var(--motion-ease-standard);
-    /* list entrance stagger — capped at --motion-stagger-cap in CSS */
-    animation: lecture-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
-    animation-delay: calc(
-      var(--motion-stagger-step) * min(var(--ch-i, 0), var(--motion-stagger-cap))
-    );
-  }
-  .chapter-row + .chapter-row { border-block-start: 1px solid var(--surface-divider); }
-  @media (hover: hover) and (pointer: fine) {
-    .chapter-row:hover { background: var(--surface-2); }
-  }
-  .chapter-row:active { background: var(--surface-3); }
-  .chapter-time {
-    flex-shrink: 0;
-    padding: var(--sp-0-5) var(--sp-1);
-    border-radius: var(--r-xs);
-    background: var(--surface-2);
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-    white-space: nowrap;
-    font-variant-numeric: tabular-nums;
-  }
-  .chapter-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-0-5);
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .chapter-title {
-    font-size: var(--type-label-size);
-    font-weight: var(--fw-semibold);
-    line-height: 1.35;
-    color: var(--text);
-  }
-  .chapter-concept {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-size: var(--type-label-size-sm);
-    line-height: 1.4;
-    color: var(--text-faint);
-  }
   /* quiet leading dot marks the concept link — hairline/dot language,
      no colored stripes (orchestrator ruling #4) */
-  .chapter-concept::before {
-    content: '';
-    inline-size: 4px;
-    block-size: 4px;
-    border-radius: var(--r-full);
-    background: currentColor;
-    flex-shrink: 0;
-  }
-  .chapter-state {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 20px;
-    flex-shrink: 0;
-    color: var(--text-faint);
-  }
   /* active chapter — accent-soft ground + accent-strong ink
      (8.62:1 on --accent-soft, documented in tokens.css) */
   .chapter-row.on { background: var(--accent-soft); }
@@ -418,188 +128,23 @@
      staying one rank quieter than the --accent-strong title — the
      row keeps its hierarchy and passes 1.4.3. */
   .chapter-row.on .chapter-concept { color: var(--text-secondary); }
-  .chapter-row.on .chapter-state { color: var(--accent-strong); }
-  .chapter-row.watched .chapter-state { color: var(--success-ink); }
 
+  .chapter-row.on .chapter-state { color: var(--accent-strong); }
+
+  .chapter-row.watched .chapter-state { color: var(--success-ink); }
   /* ── Checkpoint quiz (body only — the Modal owns chrome + trap) ── */
-  .checkpoint-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-4);
-    padding: var(--sp-6);
-  }
-  .checkpoint-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    align-self: flex-start;
-    padding: var(--sp-1) var(--sp-3);
-    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
-    border-radius: var(--r-sm);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    line-height: 1.5;
-    /* no letter-spacing — Arabic cursive joins (ruling #2) */
-  }
-  .checkpoint-question {
-    font-size: var(--type-headline-size-sm);
-    font-weight: var(--type-headline-weight);
-    /* 1.4 — Arabic-comfortable wrap over 2–3 lines; the headline
-       role's 1.20 is too tight for running question text */
-    line-height: 1.4;
-    color: var(--text);
-  }
-  .checkpoint-options {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-  }
-  .checkpoint-option {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    inline-size: 100%;
-    min-block-size: 48px; /* ≥44px touch target */
-    padding: var(--sp-3) var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    color: var(--text);
-    font-size: var(--type-body-size);
-    line-height: 1.5;
-    text-align: start;
-    cursor: pointer;
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard),
-      opacity var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .checkpoint-option:hover:not(:disabled) {
-      background: var(--surface-2);
-      border-color: var(--border-strong);
-    }
-  }
-  .checkpoint-option:active:not(:disabled) { transform: translateY(1px); }
-  .checkpoint-option:disabled { cursor: default; opacity: 0.55; }
   /* picked + answer in flight — the shared selected-ring state token
      (inset ring, not border+borders stacking) */
-  .checkpoint-option.picked { box-shadow: var(--state-card-selected-ring); }
-  .checkpoint-option-text { flex: 1; min-inline-size: 0; }
   /* radio-style letter marker */
-  .checkpoint-mark {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 24px;
-    block-size: 24px;
-    flex-shrink: 0;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-full);
-    background: var(--surface);
-    color: var(--text-muted);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    line-height: 1;
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard),
-      color var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  .checkpoint-option.picked .checkpoint-mark {
-    background: var(--neutral-900);
-    border-color: var(--neutral-900);
-    color: var(--neutral-50);
-  }
-  [data-theme="dark"] .checkpoint-option.picked .checkpoint-mark {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--accent-fg);
-  }
   /* revealed states — full opacity beats the :disabled dim so the
      outcome stays readable (intentionally ordered after :disabled) */
-  .checkpoint-option.correct {
-    background: var(--success-soft);
-    border-color: color-mix(in srgb, var(--success) 45%, transparent);
-    opacity: 1;
-    /* THE authored moment: confirmation ripple on the correct answer —
-       state-ring language (0 0 0 spread like the focus ring), not
-       elevation */
-    animation: lecture-correct-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) both;
-  }
-  .checkpoint-option.correct .checkpoint-mark {
-    background: var(--surface);
-    border-color: var(--success);
-    color: var(--success-ink);
-  }
-  .checkpoint-option.incorrect {
-    background: var(--danger-soft);
-    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
-    opacity: 1;
-  }
-  .checkpoint-option.incorrect .checkpoint-mark {
-    background: var(--surface);
-    border-color: var(--danger);
-    color: var(--danger-ink);
-  }
-  .checkpoint-option-icon { flex-shrink: 0; }
-  .checkpoint-option.correct .checkpoint-option-icon,
-  .checkpoint-option.incorrect .checkpoint-option-icon {
-    animation: lecture-pop var(--motion-duration-medium) var(--ease-spring) both;
-  }
-  .checkpoint-option.correct .checkpoint-option-icon { color: var(--success-ink); }
-  .checkpoint-option.incorrect .checkpoint-option-icon { color: var(--danger-ink); }
-
   /* feedback banners */
-  .checkpoint-result,
-  .checkpoint-error {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    padding: var(--sp-4);
-    border-radius: var(--r-md);
-    font-size: var(--type-label-size);
-    line-height: var(--lh-base);
-    animation: lecture-result-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .checkpoint-result {
-    background: var(--success-soft);
-    border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
-  }
-  .checkpoint-result.incorrect {
-    background: var(--danger-soft);
-    border-color: color-mix(in srgb, var(--danger) 45%, transparent);
-  }
-  .checkpoint-result strong { color: var(--success-ink); font-weight: var(--fw-semibold); }
-  .checkpoint-result.incorrect strong { color: var(--danger-ink); }
-  .checkpoint-result-note { color: var(--text-secondary); }
-  .checkpoint-error {
-    background: var(--danger-soft);
-    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    color: var(--danger-ink);
-    font-weight: var(--fw-medium);
-  }
-  .checkpoint-actions {
-    display: flex;
-    /* r157 (W2-F7): «تخطّي» (always visible) at the inline-start edge,
-       «متابعة المحاضرة» (only after an answer) at the inline-end — the
-       primary verb keeps the corner, the quiet escape gets the other. */
-    justify-content: space-between;
-    align-items: center;
-    gap: var(--sp-2);
-  }
   /* Touch floor (44px) for BOTH quiz actions — «تخطّي» was a 32px sm
      ghost chip before, under the WCAG 2.5.5 target the rest of the
      player chrome honors. */
-  .checkpoint-actions .btn { min-block-size: 44px; }
   /* Quiet ghost ink: the skip CTA reads as text-secondary on the
      transparent ghost base (via --_btn-fg, the button family's ink
      channel) — present, honest, never competing with the primary. */
-  .btn.checkpoint-skip { --_btn-fg: var(--text-secondary); }
-  .checkpoint-actions:empty { display: none; }
-
   /* ── Keyframes (reduced-motion off-switch below — guardrail #6) ── */
   @keyframes lecture-row-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
@@ -620,20 +165,9 @@
   }
   @media (prefers-reduced-motion: reduce) {
     /* same-or-higher specificity as the rules above, so the kill wins */
-    .chapter-row,
-    .checkpoint-option.correct,
-    .checkpoint-option.correct .checkpoint-option-icon,
-    .checkpoint-option.incorrect .checkpoint-option-icon,
-    .checkpoint-result,
-    .checkpoint-error { animation: none; }
   }
 
   /* ── Phone tuning ── */
-  @media (max-width: 640px) {
-    .lecture-video-wrap { border-radius: var(--r-lg); }  /* R313: resolves 0 — square frame (kept for the ≤640 geometry pin) */
-    .lecture-meta-title { font-size: var(--type-headline-size-sm); }
-    .checkpoint-card { padding: var(--sp-5); }
-  }
 
   /* ── TrainingPages (tracks / lessons / badges / leaderboard) ────── */
 
@@ -668,9 +202,6 @@
 
   /* Arabic labels never take letter-spacing/uppercase — both break the
      cursive join (ruling #2; the shared rules predate it). */
-  
-  .student-dashboard .metric-label { letter-spacing: normal; text-transform: none; }
-
   /* Agenda tone wells — the TSX always carried data-tone but Card never
      spread it to the DOM (silently dead); the tone now rides the icon
      well. Text/icons on pastel use the -deep WCAG-pinned inks. */
@@ -691,15 +222,6 @@
      overrides below (cursor: default + rest-only hover) are reverted —
      the pointer + surface-2 hover + chevron now tell the truth. Focus
      rides the platform's global :focus-visible ring. */
-  
-  
-  .agenda-row-chevron {
-    flex-shrink: 0;
-    color: var(--text-muted);
-    transition:
-      color var(--motion-duration-short) var(--motion-ease-standard),
-      transform var(--motion-duration-short) var(--motion-ease-standard);
-  }
   /* The chevron nudges toward FORWARD (inline-end): --motion-direction
      is −1 in RTL, so the translate lands leftward — the reading
      direction's "next". */
@@ -734,12 +256,6 @@
     display: flex;
     flex-direction: column;
     gap: var(--sp-1);
-  }
-  .dash-resume-course {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    flex-wrap: wrap;
   }
   .dash-resume-course-name {
     font-family: var(--font-display);
@@ -917,84 +433,6 @@
   /* The selected-day event list — same row anatomy/affordances as the
      dashboard agenda rows (icon well + text + forward chevron). */
   .cal-detail { border-block-start: 1px solid var(--border-faint); }
-  .cal-detail-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-5);
-  }
-  .cal-detail-date {
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    color: var(--text);
-  }
-  .cal-detail-list { display: flex; flex-direction: column; padding: 0 var(--sp-3) var(--sp-3); }
-  .cal-event-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-2) var(--sp-2);
-    /* R329 (gate:clean): radius 0 is r305-student-schedule.css's seat
-     (same pages layer, later chunk import — it renders only on the
-     schedule pages, the only pages that use this row) — the r-lg copy
-     here was inert. */
-    text-decoration: none;
-    color: var(--text);
-    transition: background var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .cal-event-row:hover { background: var(--surface-2); }
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .cal-event-row:hover .cal-event-chevron { color: var(--accent-ink, var(--accent)); }
-  }
-  .cal-event-icon {
-    display: grid;
-    place-items: center;
-    inline-size: 38px;
-    block-size: 38px;
-    border-radius: var(--r-lg);
-    flex-shrink: 0;
-  }
-  .cal-event-icon[data-kind='class'] {
-    background: color-mix(in srgb, var(--accent) 10%, var(--surface));
-    color: var(--accent-ink, var(--accent));
-  }
-  .cal-event-icon[data-kind='assignment'] { background: var(--gold-soft); color: var(--gold-ink); }
-  .cal-event-icon[data-kind='exam'] { background: var(--danger-soft); color: var(--danger-ink); }
-  .cal-event-icon[data-kind='live'] {
-    background: color-mix(in srgb, var(--chart-5) 12%, var(--surface));
-    color: var(--chart-5);
-  }
-  .cal-event-time {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-    flex-shrink: 0;
-    min-inline-size: 44px;
-    text-align: center;
-  }
-  .cal-event-title {
-    flex: 1;
-    min-inline-size: 0;
-    font-size: var(--fs-sm);
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    flex-wrap: wrap;
-  }
-  .cal-event-phase {
-    font-size: var(--fs-xs);
-    color: var(--danger-ink);
-    background: var(--danger-soft);
-    /* R313 (WP-E · D16): square chip — 0 radius. */
-    border-radius: var(--r-sm);
-    padding: 1px var(--sp-2); /* spacing-gate: allow — calendar phase chip hairline vertical inset */
-  }
-  .cal-event-chevron { flex-shrink: 0; color: var(--text-muted); }
-
   /* ── r170-e: coarse-pointer 44px floor for the calendar nav ────── */
   /* Measured at 390 (touch emulation): the month-nav buttons render
      42×44 — 2px under the 44 floor on the inline axis — and above
@@ -1020,178 +458,39 @@
     .cal-day-num { min-inline-size: 24px; min-block-size: 24px; }
     .cal-head, .cal-legend, .cal-detail-head { padding-inline: var(--sp-3); }
     .cal-grid, .cal-dow-row { padding-inline: var(--sp-1); }
-    .cal-event-time { display: none; }
   }
 
   /* ═══ Matrix — the heatmap filter signature ═══ */
 
   /* Count chip inside the shared .filter-pill (training.css owns the
      pill family; the chip is additive so no layer fight). */
-  .filter-pill-count {
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    font-variant-numeric: tabular-nums;
-    color: var(--text-subtle);
-  }
-  .filter-pill[aria-pressed='true'] .filter-pill-count { color: inherit; }
   /* 21-c (A12 P1-4): the teacher dashboard renders the count inside
      the SHARED .pill.on (not .filter-pill) — the aria-pressed rule
      never matched, so the light-tuned muted met neither inverted
      ground (3.35 on neutral-900 light / 1.32 on copper dark).
      Inheriting the pill's own AA pair fixes both (17.4 / 7.87). */
-  .pill.on .filter-pill-count { color: inherit; }
-
   /* THE signature: on a filter change, non-matching cells recede (shade
      desaturates + fades) while the matching level keeps its color — the
      map stays whole and the filter reads instantly. The shade movement
      rides .matrix-cell's existing transition (owned here since r151i). */
-  .matrix-cell.is-dim {
-    opacity: 0.38;
-    filter: saturate(0.25);
-  }
-
   /* 22-c (A4 P3-7): one quiet summary line for courses with no mapped
      concepts yet (was: N identical empty-state cards). Dashed rule =
      "pending", matching the colleges announce-row separators. */
-  .matrix-unmapped-note {
-    margin: 0;
-    padding: var(--sp-3) var(--sp-4);
-    border: 1px dashed color-mix(in srgb, var(--border-strong) 45%, var(--rule));
-    border-radius: var(--r-lg);
-    font-size: var(--type-label-size);
-    line-height: var(--lh-base);
-    color: var(--text-muted);
-    text-align: center;
-  }
-
   /* ═══ AiAssistant — typing indicator + gap cards + error rows ═══ */
 
   /* Gap starter cards — replaced ~15 lines of inline styles + a JS
      mouseenter border swap (no focus parity) with the card recipe. */
-  .ai-gap-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    min-block-size: 44px; /* touch target */
-    padding: var(--sp-4);
-    text-align: start;
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    cursor: pointer;
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard),
-      transform var(--motion-duration-micro) var(--motion-ease-standard);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .ai-gap-card:hover:not(:disabled) {
-      background: var(--surface);
-      border-color: var(--border-strong);
-    }
-  }
-  .ai-gap-card:active:not(:disabled) { transform: translateY(1px); }
-  .ai-gap-card:disabled { cursor: default; }
-  .ai-gap-head { display: flex; align-items: center; gap: var(--sp-2); }
   /* 21-c: same -ink pairing as .ai-gap-pct — the 14px warning glyph is
      the card's gap marker (non-text 3:1 floor; --warning was 2.13 on
      the light card ground). */
-  .ai-gap-warn { color: var(--warning-ink); flex-shrink: 0; }
-  .ai-gap-pct {
-    margin-inline-start: auto;
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    /* 21-c (A5 P1-2): --warning gold measured 2.13:1 on the card's
-       surface-2 ground in light (the one number each gap card exists
-       to show). --warning-ink keeps the hue family and clears AA
-       both themes: 7.29:1 light / 9.90:1 dark (dark value identical
-       to the old token, so dark is a no-op). */
-    color: var(--warning-ink);
-    font-variant-numeric: tabular-nums;
-  }
-  .ai-gap-name {
-    font-size: var(--type-body-size);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .ai-gap-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-  }
-
   /* Typing indicator — the authored moment while a reply is in flight
      (bot-bubble silhouette, calm wave, sr text for the live region). */
-  .chat-typing {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px; /* spacing-gate: allow — typing-dots cadence gap for the three-dot animation */
-    /* r149 (R3-A2 R8): نفس حشو فقاعة الدردشة 10/14 (كانت 12/14 درجة أعلى) */
-    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
-    border-radius: var(--r-xl);
-    /* R313 (WP-E): square bubbles — the 4px tail-corner detail is
-       retired with the radius-0 canon. */
-    background: var(--surface-2);
-    border: 1px solid var(--border-faint);
-  }
-  .chat-typing-dot {
-    inline-size: 6px;
-    block-size: 6px;
-    border-radius: var(--r-full);
-    background: var(--text-subtle);
-    animation: ai-typing-bob var(--motion-duration-stat) var(--motion-ease-standard) infinite;
-  }
-  .chat-typing-dot:nth-child(2) { animation-delay: calc(var(--motion-stagger-step) * 2); }
-  .chat-typing-dot:nth-child(3) { animation-delay: calc(var(--motion-stagger-step) * 4); }
   @keyframes ai-typing-bob {
     0%, 60%, 100% { transform: none; opacity: 0.45; }
     30% { transform: translateY(-3px); opacity: 1; }
   }
 
   /* Failed exchange — stays in the log, recoverable via retry. */
-  .chat-error {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--sp-2);
-    max-inline-size: min(640px, 78%);
-    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat error bubble compact grade 10/14 — r149 R3-A2 R8 message density */
-    border-radius: var(--r-xl);
-    background: var(--danger-soft);
-    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    color: var(--danger-ink);
-    font-size: var(--type-body-size);
-    line-height: var(--lh-base);
-    animation: ai-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .chat-retry {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    min-block-size: 36px;
-    padding-inline: var(--sp-3);
-    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    /* R313 (WP-E): square control. */
-    border-radius: var(--r-sm);
-    background: transparent;
-    color: var(--danger-ink);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    cursor: pointer;
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .chat-retry:hover {
-      background: color-mix(in srgb, var(--danger) 10%, var(--surface));
-      border-color: var(--danger);
-    }
-  }
-  .chat-retry:active { transform: translateY(1px); }
   @keyframes ai-row-in {
     from { opacity: 0; transform: translateY(4px); }
     to { opacity: 1; transform: none; }
@@ -1200,25 +499,13 @@
   /* Phone: 44px touch floor for the compact chat controls (min-* sizes
      coexist with the shared 40px boxes — min wins, desktop unchanged). */
   @media (max-width: 640px) {
-    .ai-quick-chip {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-block-size: 44px;
-    }
-    .chat-input { min-block-size: 44px; }
-    .chat-send { min-inline-size: 44px; min-block-size: 44px; }
     /* r164g: the conversations rows' compact actions hit the same 44px
        touch floor on phones (min-* coexists with .btn.sm's 32px box —
        min wins, desktop unchanged). */
-    .ai-conv-row .btn { min-block-size: 44px; }
   }
 
   /* Guardrail #6 — keyframe off-switches (the base.css token belt
      handles the duration-based rules; these kill the keyframes). */
-  @media (prefers-reduced-motion: reduce) {
-    
-  }
 
   /* ── §lists — Courses · CourseDetail · Exams · Mooc · Webinars · Jobs (wave 4-b) ── */
 
@@ -1293,57 +580,24 @@
     align-items: center;
     gap: var(--sp-3);
   }
-  .courses-row-progress .progress { inline-size: 150px; }
   .courses-row-go { flex-shrink: 0; }
   @media (max-width: 640px) {
     /* Phone rows: the chip is decorative (the row's title is the
        link) — it yields to the text; the bar keeps the honest % only. */
     .courses-row-go { display: none; }
-    .courses-row-progress .progress { inline-size: 96px; }
-    .courses-row-progress .progress-head span:first-child { display: none; }
   }
   /* (r151f: bang retired — the v6 stagger's five selectors carry
      :not(.courses-grid):not(.mooc-grid) at the source now, so this
      rule fights nothing; kept as the documented belt that pins the
      page's authored entrance order below.) */
-  .courses-grid > .thumb-card { animation: none; }
-  .courses-grid[data-stagger] > .thumb-card {
-    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
-    animation-delay: calc(
-      var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
-    );
-  }
-  .courses-grid-empty { grid-column: 1 / -1; }
   /* API course tint rides on --course-tint (set inline by TSX) and is
      only consumed through color-mix washes over var(--surface) — the
      invalid `${tint}10` hex-alpha inline pattern is gone. */
-  .courses-grid .thumb-card-image {
-    background: color-mix(in srgb, var(--course-tint, var(--accent)) 12%, var(--surface));
-    color: var(--course-tint, var(--accent));
-  }
   /* PP-X2 (audit P2-9) — course-card scent: the code chip + counted
      lecture noun above the title (the track-card-cat grammar — the
      exams cards' category line), and the progress row gains a named
      CTA so six same-teacher same-% cards are told apart and answer
      "what happens when I click". */
-  .thumb-card-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    flex-wrap: wrap;
-  }
-  .thumb-card-count {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-  }
-  .thumb-card-cta {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-1);
-  }
-  .thumb-card-cta .progress { flex: 1; min-inline-size: 0; }
-  .thumb-card-go { flex-shrink: 0; }
   @keyframes courses-card-in {
     from { opacity: 0; transform: translateY(8px) scale(0.985); }
     to { opacity: 1; transform: none; }
@@ -1353,149 +607,20 @@
      home's ONE next action with its progress riding beside it. The
      old tinted hero card (course-hero family) retires; the tint now
      washes only this strip's icon-side border and progress fill. */
-  .course-continue {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-5);
-    flex-wrap: wrap;
-    padding: var(--sp-5) var(--sp-6);
-    background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
-    border-radius: var(--r-lg);
-  }
-  [data-theme="dark"] .course-continue {
-    background: color-mix(in srgb, var(--course-tint) 12%, var(--surface));
-    border-color: color-mix(in srgb, var(--course-tint) 35%, var(--rule));
-  }
-  .course-continue-progress {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1-5);
-    flex: 1;
-    min-inline-size: min(240px, 100%);
-  }
-  .course-continue-next {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--sp-1-5);
-    max-inline-size: 100%;
-  }
-  @media (max-width: 640px) {
-    .course-continue { padding: var(--sp-4); }
-    .course-continue-next { inline-size: 100%; }
-    .course-continue-next .btn { inline-size: 100%; justify-content: center; min-block-size: 44px; }
-  }
 
   /* ═══ CourseDetailPage — tinted hero + curriculum progress ═══
      Same anatomy as the training track-hero: hierarchy via tint wash +
      hairline, never a colored side-stripe (ruling #4). --course-tint
      is set inline on the .course-page root and simply inherits here —
      no class-level default (it would beat the inherited value). */
-  .course-hero {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-4);
-    padding: var(--sp-6);
-    background: color-mix(in srgb, var(--course-tint) 7%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--course-tint) 22%, var(--rule));
-    border-radius: var(--r-xl);
-  }
   /* 21-c (A3 P2-7): the 7% tint wash read near-invisible in dark —
      measured dark hero rgb(34,39,45) vs card rgb(31,31,30) vs page
      rgb(25,25,24): ~3 RGB points of separation, the hero survived on
      its border alone (VLM: "card edges dissolve"). Dark raises the
      wash to 12% + border to 35% per the audit's sketch. */
-  [data-theme="dark"] .course-hero {
-    background: color-mix(in srgb, var(--course-tint) 12%, var(--surface));
-    border-color: color-mix(in srgb, var(--course-tint) 35%, var(--rule));
-  }
-  .course-hero-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-5);
-    flex-wrap: wrap;
-  }
-  .course-hero-icon {
-    inline-size: 64px;
-    block-size: 64px;
-    border-radius: var(--r-lg);
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--course-tint) 14%, var(--surface));
-    color: var(--course-tint);
-    /* R313 (WP-E): the tinted hairline rides a real border (the old
-       inset box-shadow ring reads as a shadow in the surface sweep). */
-    border: 1.5px solid color-mix(in srgb, var(--course-tint) 30%, transparent);
-  }
-  .course-hero-main {
-    flex: 1;
-    min-inline-size: 240px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-  .course-hero-badges {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-  .course-hero-title {
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-md);
-    font-weight: var(--type-headline-weight);
-    line-height: var(--type-headline-line-height);
-    letter-spacing: var(--type-headline-letter-spacing);
-    color: var(--text);
-    margin: 0;
-  }
-  .course-hero-sub {
-    font-size: var(--type-body-size);
-    line-height: var(--lh-base);
-    color: var(--text-muted);
-  }
   /* progress panel — hosts the count-up readout (authored moment #2:
      the % value animates in JS over --motion-duration-stat; CSS pins
      the metric role + tabular numerals so digits never shift width) */
-  .course-hero-progress {
-    margin-inline-start: auto;
-    flex: 0 1 240px;
-    min-inline-size: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    padding: var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-  }
-  .course-hero-progress-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: var(--sp-2);
-  }
-  .course-hero-progress-label {
-    font-size: var(--type-label-size);
-    color: var(--text-muted);
-  }
-  .course-hero-progress-value {
-    font-family: var(--font-mono);
-    font-size: var(--type-metric-size);
-    font-weight: var(--type-metric-weight);
-    line-height: var(--type-metric-line-height);
-    color: var(--text);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: var(--type-metric-feature-settings);
-  }
-  .course-hero-progress-note {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-secondary);
-    font-variant-numeric: tabular-nums;
-  }
   /* lecture icon wells (was ~10 lines of inline style per row) —
      inherits --course-tint from the .course-page root */
   .course-lec-well {
@@ -1522,25 +647,7 @@
      hairline, with a stronger inline-start edge marking the reading
      entry point. Same color-mix recipe, --course-tint inherited from
      the .course-page root. */
-  .course-lec-row.next {
-    border-radius: var(--r-md);
-    border-block-end-color: transparent;
-    background: color-mix(in srgb, var(--course-tint, var(--accent)) 6%, var(--surface));
-    border-inline-start: 3px solid color-mix(in srgb, var(--course-tint, var(--accent)) 45%, transparent);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .course-lec-row.next:hover {
-      background: color-mix(in srgb, var(--course-tint, var(--accent)) 10%, var(--surface));
-    }
-  }
-  .course-lec-row.next .course-lec-well {
-    background: color-mix(in srgb, var(--course-tint, var(--accent)) 14%, var(--surface));
-    /* R313 (WP-E): tinted hairline as a border, not an inset shadow. */
-    border: 1px solid color-mix(in srgb, var(--course-tint, var(--accent)) 30%, transparent);
-  }
   /* durations / counts in the curriculum rows stay digit-stable */
-  .course-lectures .list-row-sub { font-variant-numeric: tabular-nums; }
-
   /* r169a: mobile lecture-row wrap — the row's flex children were
      [well 36px] + [body flex:1 min-0] + up to 3 fixed badges
      (~232px). At 390px the only shrinkable child (the body) collapsed
@@ -1548,15 +655,6 @@
      row (measured: .list-row-title rect w=0, recovers ≥640px). The
      body now takes its own full line next to the well and the badges
      wrap onto a line beneath, indented to the title column. */
-  @media (max-width: 639px) {
-    .course-lec-row { flex-wrap: wrap; }
-    .course-lec-row .list-row-body {
-      /* well (36px) + row gap (var(--sp-3)) — keeps the title block
-         on the well's line, deterministic regardless of title length. */
-      flex-basis: calc(100% - 36px - var(--sp-3));
-    }
-    .course-lec-row > .badge { margin-inline-start: calc(36px + var(--sp-3)); } /* spacing-gate: allow — aligns the badge past the 36px icon well (geometry constant) */
-  }
 
   /* ═══ Exam grade emphasis (PP-X2 note: the /student/exams hub that
      hosted this block's first consumer was deleted — audit P3-25 —
@@ -1565,26 +663,6 @@
      The real cumulative average lands as the visual anchor: metric
      scale + one-shot rise and a state-ring pulse (0 0 0 spread — the
      focus-ring language, never elevation). */
-  .exam-grade {
-    display: inline-flex;
-    align-items: baseline;
-    padding: var(--sp-3) var(--sp-5);
-    border-radius: var(--r-lg);
-    background: var(--accent-soft);
-    animation:
-      exam-grade-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards,
-      exam-grade-ring var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
-  }
-  .exam-grade-value {
-    font-family: var(--font-mono);
-    font-size: var(--type-metric-size-lg);
-    font-weight: var(--type-metric-weight);
-    line-height: var(--type-metric-line-height);
-    /* 8.62:1 on --accent-soft (WCAG math in tokens.css) */
-    color: var(--accent-strong);
-    font-variant-numeric: tabular-nums;
-    font-feature-settings: var(--type-metric-feature-settings);
-  }
   @keyframes exam-grade-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); } /* r153h: 6px → --motion-distance-small */
     to { opacity: 1; transform: none; }
@@ -1601,59 +679,14 @@
      pages layer overrides the components-layer .grid-3 at every
      width; phone collapses to one column like the recipe's own
      mobile clause. */
-  .mooc-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--sp-5);
-  }
-  @media (max-width: 640px) {
-    .mooc-grid { grid-template-columns: 1fr; gap: var(--sp-3); }
-  }
   /* Same opt-out as the courses grid: escape the global mount stagger's
      fill:both transform pin (restores the thumb-card hover lift), then
      re-own the incumbent mount entrance with the same keyframe so the
      visual behavior is unchanged. The page's AUTHORED moment remains
      the CTA confirmation pulse below. */
-  .mooc-grid > .thumb-card {
-    animation: courses-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
-    animation-delay: calc(
-      var(--motion-stagger-step) * min(var(--cc-i, 0), var(--motion-stagger-cap))
-    );
-  }
-  .mooc-card-image {
-    block-size: 96px;
-    background: var(--accent-soft);
-    /* r134 (audit R134-W1-M P2): was var(--accent) — 3.06:1 on the
-       copper soft well, borderline under WCAG 1.4.11. Hardened like the
-       sibling wells (chapter-row / uni-accredit / exam-grade): light
-       resolves the deep copper (8.62:1 on --accent-soft, tokens.css). */
-    color: var(--accent-strong);
-  }
-  .mooc-card-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    margin-block-start: var(--sp-2);
-    font-size: var(--type-label-size-sm);
-    color: var(--text-subtle);
-    font-variant-numeric: tabular-nums;
-  }
-  .mooc-card-meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-  }
   /* enrollment CTA confirmation pulse (the authored moment): a one-shot
      state-ring acknowledgment when the student opens the external
      registration page — pure feedback, no state is faked */
-  .mooc-cta {
-    inline-size: 100%;
-    justify-content: center;
-    margin-block-start: var(--sp-3);
-  }
-  .mooc-cta.confirmed {
-    animation: mooc-cta-pulse var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
-  }
   @keyframes mooc-cta-pulse {
     /* R313 (WP-E): the confirmation pulse keeps its keyframe seat but
        breathes OPACITY (glow rings are gone from the system — the
@@ -1663,92 +696,18 @@
   }
 
   /* ═══ WebinarsPage — live-vs-upcoming distinction ═══ */
-  .webinar-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    min-block-size: 44px; /* touch target */
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--surface);
-    border: 1px solid transparent;
-    /* R313 (WP-E): flat row — hairline hover only, no elevation. */
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      border-color var(--t-base) var(--ease);
-  }
   /* r157 (F8): the hover belongs to rows that DO something —
      LIVE rows carry the join action (WebinarsPage.tsx); passive
      upcoming rows keep their quiet rest state (an affordance the row
      cannot deliver is a dead promise). */
-  @media (hover: hover) and (pointer: fine) {
-    .webinar-row.live:hover {
-      background: var(--surface-2);
-      border-color: var(--border-strong);
-    }
-  }
-  .webinar-row.live {
-    /* quiet broadcast-red wash — the same family as the LIVE badge */
-    background: color-mix(in srgb, var(--danger) 6%, var(--surface));
-  }
-  .webinar-live-dot {
-    inline-size: 10px;
-    block-size: 10px;
-    flex-shrink: 0;
-    border-radius: var(--r-full);
-    background: var(--danger);
-    /* THE page's single pulse — LIVE rows only, never scattered */
-    animation: webinar-live-pulse var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
-  }
-  .webinar-row-icon {
-    inline-size: 20px;
-    flex-shrink: 0;
-    display: inline-flex;
-    justify-content: center;
-    color: var(--text-faint);
-  }
-  .webinar-row-body {
-    flex: 1;
-    min-inline-size: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-0-5);
-  }
-  .webinar-row-title {
-    font-size: var(--type-label-size);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .webinar-row-sub {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
   @keyframes webinar-live-pulse {
     /* R313 (WP-E): opacity breath — glow rings are retired. */
     0% { opacity: 1; }
     70%, 100% { opacity: 0.4; }
   }
   /* destination tiles (was inline-styled) */
-  .webinar-dest-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--sp-3);
-    padding-block: var(--sp-3);
-  }
   /* r152i (A3): 680→640 — joins the dominant phone band (nothing else
      uses 680; nearest ladder rungs are 640/768). */
-  @media (max-width: 640px) {
-    .webinar-dest-grid { grid-template-columns: 1fr; }
-  }
-  .webinar-dest {
-    padding: var(--sp-4);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
   .webinar-dest-title {
     display: flex;
     align-items: center;
@@ -1770,16 +729,6 @@
   }
 
   /* ═══ JobsPage — table rows + hover-revealed actions ═══ */
-  .jobs-count {
-    margin: 0;
-    font-size: var(--type-label-size);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-    /* r148 (VLM-A VA-6): العدّاد عنصر flex مستقل داخل .page{gap:sp-8=40px}
-       فيتضاعف الفاصل. الهامش السالب المضاد يلصقه بالجدول كتسمية توضيحية:
-       الفعلي تحت العدّاد 8px بدل 40px. */
-    margin-block-end: calc(var(--sp-2) - var(--sp-8));
-  }
   /* r155d (integrity F1): this was the unscoped `.table-wrap` override
      sitting in @layer pages — it beat components.css's shared scroll
      contract (overflow-x: auto, the .sticky scrollport) for EVERY
@@ -1791,52 +740,6 @@
      flat system — the rule body is gone; the .jobs-table-wrap class
      survives in JobsPage.tsx as the page's scoping hook (zero CSS
      needed on top of the shared base). */
-  .job-title-cell {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    min-inline-size: 0;
-  }
-  .job-icon-well {
-    inline-size: 36px;
-    block-size: 36px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--r-sm);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-  }
-  .job-title-block {
-    display: flex;
-    flex-direction: column;
-    gap: 1px; /* spacing-gate: allow — title-to-subtitle hairline stacking gap */
-    min-inline-size: 0;
-  }
-  .job-title,
-  .job-company {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    max-inline-size: 320px;
-  }
-  .job-title {
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .job-company {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-  }
-  .job-apply-error {
-    margin: 0;
-    padding: var(--sp-2) var(--sp-4);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-medium);
-    color: var(--danger-ink);
-  }
-
   /* ── §lists touch floor + reduced-motion off-switches ── */
   @media (max-width: 920px) {
     /* PP-X2 (audit P2-14): the floor was 640px — a landscape phone
@@ -1867,14 +770,6 @@
        without one. base.css's canonical belt still wins the cross-layer
        !important race for durations/delays — animation-name:none here
        is what actually freezes the pieces. */
-    .courses-grid > .thumb-card,
-    .courses-grid[data-stagger] > .thumb-card,
-    .mooc-grid > .thumb-card,
-    .exam-grade,
-    .lecture-nav-next.pulse,
-    .mooc-cta.confirmed,
-    .webinar-live-dot { animation: none; }
-    .webinar-row { transition: none; }
     /* The agenda chevron nudge is a hover garnish, not information. */
     
   }
@@ -1888,120 +783,16 @@
      paper row cards, the in-flight scan states (.scan-pulse + the
      indeterminate .scan-cell-run sweep), the upload dropzone (inside
      the shared Modal) and the process explainer tiles. */
-
-  .paper-row {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface-1);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-  }
-  .paper-row-head {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--sp-3);
-  }
-  .paper-row-main {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-inline-size: 0;
-  }
-  .paper-row-side {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: var(--sp-2);
-    flex-shrink: 0;
-  }
-  .paper-row-title {
-    font-size: var(--fs-md);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    line-height: 1.35;
-  }
-  .paper-row-course { font-size: var(--fs-xs); color: var(--text-subtle); }
-  .paper-row-abstract {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-    margin-block-start: var(--sp-2);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
   /* full-width pre-scan CTA — .btn.outline supplies the control look */
-  .paper-row-cta { inline-size: 100%; }
-
   /* status banners (success-graded / failed-checks) — soft ground +
      status ink + 45% color-mix hairline, same recipe as the checkpoint
      result banners in §LecturePlayerPage */
-  .paper-row-grade,
-  .paper-row-failed {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    font-size: var(--fs-sm);
-  }
-  .paper-row-grade {
-    background: var(--success-soft);
-    border: 1px solid color-mix(in srgb, var(--success) 45%, transparent);
-    color: var(--success-ink);
-  }
-  .paper-row-grade-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    font-weight: var(--fw-semibold);
-    color: var(--success-ink);
-  }
-  .paper-row-grade-note {
-    font-size: var(--fs-xs);
-    color: var(--text-secondary);
-    line-height: var(--lh-base);
-  }
-  .paper-row-failed {
-    background: var(--danger-soft);
-    border: 1px solid color-mix(in srgb, var(--danger) 45%, transparent);
-    color: var(--danger-ink);
-    font-weight: var(--fw-medium);
-  }
   /* published note — lavender is the "library" voice; -deep keeps the
      text AA on the card ground in both themes */
-  .paper-row-published {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    font-size: var(--fs-xs);
-    color: var(--c-lavender-deep);
-  }
-
   /* ── In-flight scan ──
      Honest indeterminate progress: the scan endpoint is a single POST
      with no increments, so the cells show a sweeping bar + step copy,
      never a fake percentage. */
-  .scan-pulse {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-2);
-    font-size: var(--fs-xs);
-    color: var(--accent-strong);
-  }
-  .scan-pulse-dot {
-    inline-size: 8px;
-    block-size: 8px;
-    flex-shrink: 0;
-    border-radius: var(--r-full);
-    background: var(--accent);
-    animation: scan-dot-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite;
-  }
   @keyframes scan-dot-ping {
     /* R313 (WP-E): opacity breath — glow rings are retired system-wide. */
     from { opacity: 1; }
@@ -2010,22 +801,6 @@
   /* indeterminate sweep inside a scanning cell — THE authored moment
      of the research page. Direction flips with --motion-direction so
      the sweep always travels inline-start → inline-end. */
-  .scan-cell-run {
-    position: relative;
-    block-size: 8px;
-    border-radius: var(--r-full);
-    background: var(--surface-3);
-    overflow: clip;
-  }
-  .scan-cell-run::after {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inline-size: 40%;
-    border-radius: inherit;
-    background: var(--accent);
-    animation: scan-sweep var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
-  }
   @keyframes scan-sweep {
     /* percentages are of the 40%-wide sweep itself: -110% parks it
        fully before the inline-start edge, +260% carries it fully past
@@ -2043,100 +818,12 @@
      MaterialFormModal file mode); the .upload-file-* family below
      styles what replaced it. The .upload-error alert below stays live
      — ResearchPage.tsx.) */
-  .upload-file-input {
-    /* the .input recipe (components.css) already frames the control; the
-       file input only needs the affordance cursor on top of it. */
-    cursor: pointer;
-  }
-
   /* P3: the picked-file row — the file's name sits in a surface-2 chip
      beside a 44px remove target (the touch floor; .btn.sm alone renders
      below it). Shared by the student upload modal and the teacher
      material modal's file mode. */
-  .upload-file-field {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-  }
-  .upload-file-name {
-    flex: 1;
-    min-inline-size: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-  }
-  .upload-file-remove {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-1);
-    min-inline-size: 44px;
-    min-block-size: 44px;
-  }
-
-  .upload-error {
-    font-size: var(--fs-xs);
-    color: var(--danger-ink);
-  }
-
   /* ── Process explainer tiles ── */
-  .process-step {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    padding: var(--sp-4);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-    /* R313 (WP-E): flat paper tile — no elevation, no lift; hover is a
-       hairline step only. */
-    transition: border-color var(--t-base) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .process-step:hover {
-      border-color: var(--border-strong);
-    }
-  }
-  .process-step-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-  .process-step-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 28px;
-    block-size: 28px;
-    flex-shrink: 0;
-    /* R313 (WP-E): number tiles are SQUARE (the reference's
-       map-number grammar) — mono index, hairline, 0 radius. */
-    border-radius: var(--r-sm);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-bold);
-    font-variant-numeric: tabular-nums;
-  }
-  .process-step-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); }
-  .process-step-desc { font-size: var(--fs-xs); color: var(--text-muted); line-height: var(--lh-base); }
-
   /* ═══ Library — research cards, search-stagger, skeletons ═══ */
-
-  .lib-count {
-    font-size: var(--fs-xs);
-    color: var(--text-subtle);
-    font-variant-numeric: tabular-nums;
-  }
-
   /* ── r186: typographic book jackets ─────────────────────────────
      The library's own deterministic cover: composed from the book's
      data (title, author, category tint) — no upload path, no binary
@@ -2147,179 +834,28 @@
      Ink recipes reuse the icon tile's contrast family — field 12%
      over --surface, spine 45%, ink 70% over --text — so both themes
      resolve the data tint the same way the old tile did. */
-  .lib-book-cover {
-    position: relative;
-    block-size: 140px;
-    display: flex;
-    flex-direction: column;
-    border-block-end: 1px solid var(--rule);
-    flex-shrink: 0;
-  }
   /* the spine rides the inline-start edge — in RTL that is the
      physical RIGHT, where an Arabic book's spine lives (logical
      properties, no mirroring needed) */
-  .lib-book-cover::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: var(--sp-1-5);
-    background: color-mix(in srgb, var(--book-tint) 52%, var(--surface));
-    border-inline-end: 1px solid color-mix(in srgb, var(--book-tint) 26%, var(--rule));
-  }
-  .lib-cover-mark {
-    position: absolute;
-    inset-block-start: var(--sp-2);
-    inset-inline-end: var(--sp-2);
-    display: flex;
-    color: color-mix(in srgb, var(--book-tint) 38%, transparent);
-  }
-  .lib-cover-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    gap: var(--sp-1);
-    padding: var(--sp-3);
-    /* clear the spine strip + its border */
-    padding-inline-start: calc(var(--sp-1-5) + var(--sp-2));
-  }
-  .lib-cover-title {
-    font-family: var(--font-display);
-    font-size: var(--fs-md);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (no live consumer; pinned for revival) */
-    line-height: 1.3;
-    color: color-mix(in srgb, var(--book-tint) 70%, var(--text));
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .lib-cover-author {
-    font-size: var(--fs-xxs);
-    color: var(--text-muted);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
   /* the publisher strip: full-width category band at the foot.
      r186 tuning: the mixes are strong enough to carry the band's
      structure on the LIGHT surface too (the first cut washed out —
      band 14% vs field 12% was a ~2% luminance delta, invisible); the
      label ink is tint-dyed so the strip reads even where the wash
      is subtle. */
-  .lib-cover-band {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
-    padding: var(--sp-1) var(--sp-3);
-    padding-inline-start: calc(var(--sp-1-5) + var(--sp-2));
-    background: color-mix(in srgb, var(--book-tint) 24%, var(--surface));
-    border-block-start: 1px solid color-mix(in srgb, var(--book-tint) 32%, var(--rule));
-    color: color-mix(in srgb, var(--book-tint) 60%, var(--text));
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-semibold);
-  }
   /* research cards — one-shot entrance stagger, THE authored moment of
      the library page (results cascade in as the search resolves) */
-  .research-card {
-    padding: var(--sp-4);
-    background: var(--surface-1);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    /* R313 (WP-E): flat paper tile — hairline hover only, no shadow. */
-    transition: border-color var(--motion-duration-short) var(--motion-ease-standard);
-    animation: research-card-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
-    animation-delay: calc(
-      var(--motion-stagger-step) * min(var(--rs-i, 0), var(--motion-stagger-cap))
-    );
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .research-card:hover {
-      border-color: var(--border-strong);
-    }
-  }
-  .research-card-head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    margin-block-end: var(--sp-3);
-  }
-  .research-card-title {
-    font-size: var(--fs-md);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    line-height: 1.35;
-  }
-  .research-card-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-1);
-    font-size: var(--fs-xs);
-    color: var(--text-subtle);
-  }
-  .research-card-stats {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-end: var(--sp-3);
-    font-size: var(--fs-xxs);
-    color: var(--text-subtle);
-  }
-  .research-snippet { margin-block-end: var(--sp-2); }
   @keyframes research-card-in {
     from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
     to   { opacity: 1; transform: none; }
   }
   /* shape-matched loading skeletons (books shelf + research rows) */
-  .lib-skel-tile {
-    display: flex;
-    flex-direction: column;
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-xl);
-    overflow: clip;
-  }
-  .lib-skel-row {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface-1);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-  }
-
   /* ═══ Live — LIVE indicator + tinted course well on run rows ═══
      .run-row itself is owned by components.css (wave 3-c). */
 
   /* THE authored moment of the live page — and its only idle motion:
      the LIVE chip dot breathes a danger ping; everything else sits
      still. */
-  .live-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px; /* spacing-gate: allow — live-chip dot-to-label micro gap */
-    padding: 3px var(--sp-2); /* spacing-gate: allow — live-chip hairline vertical inset */
-    /* R313 (WP-E · D16): square chip — 0 radius. */
-    border-radius: var(--r-sm);
-    background: var(--danger-soft);
-    color: var(--danger-ink);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    line-height: 1.5;
-  }
-  .live-dot {
-    inline-size: 7px;
-    block-size: 7px;
-    flex-shrink: 0;
-    border-radius: var(--r-full);
-    background: var(--danger);
-    animation: live-ping var(--motion-duration-skeleton) var(--motion-ease-decelerate) infinite;
-  }
   @keyframes live-ping {
     /* R313 (WP-E): opacity breath — glow rings are retired system-wide. */
     from { opacity: 1; }
@@ -2327,69 +863,12 @@
   }
   /* tinted course well — replaces the old 3px inline-start stripe
      (ruling #4): hierarchy rides on the leading icon tint, not a bar */
-  .live-row-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 40px;
-    block-size: 40px;
-    flex-shrink: 0;
-    /* R313 (WP-E): square icon well — matches the shared metric-icon
-       grammar (r-* ladder at 0). */
-    border-radius: var(--r-md);
-    background: color-mix(in srgb, var(--row-accent, var(--accent)) 14%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--row-accent, var(--accent)) 25%, var(--border));
-  }
-  .live-row-title {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    margin-block-end: var(--sp-0-5);
-  }
   /* live rows keep the 1px hairline language but tint it toward the
      danger accent — status coding without a stripe */
-  .run-row.is-live { border-color: color-mix(in srgb, var(--danger) 30%, var(--rule)); }
-
   /* ═══ Labs — simulator terminal + stepper + hero band ═══ */
 
   /* tinted hero band (API themeColor rides on --lab-accent and is only
      ever consumed through color-mix — never raw under text) */
-  .lab-hero {
-    padding: var(--sp-5);
-    background: color-mix(in srgb, var(--lab-accent, var(--accent)) 8%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--lab-accent, var(--accent)) 20%, var(--border));
-    border-radius: var(--r-xl);
-  }
-  .lab-hero-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    margin-block-end: var(--sp-2);
-  }
-  .lab-hero-title {
-    font-family: var(--font-display);
-    /* r325 Y4 — the app-density H2 rung (20 @1440 · 18 @390): the hero
-       h2 rode --fs-xl → the unclamped --fs-h2 alias (40px @1440,
-       47.6px @390 — off every rung on the phone band, above the 28px
-       masthead). §R324 app density: H2 20. */
-    font-size: var(--fs-app-h2);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    line-height: 1.3;
-    margin-block-end: var(--sp-1);
-  }
-  .lab-done-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-6);
-    background: var(--gold-soft);
-    color: var(--gold-ink);
-    border-radius: var(--r-md);
-    font-family: var(--font-mono);
-    font-weight: var(--fw-bold);
-  }
-
   /* ── Terminal — an always-dark physical console ──
      The neutral ramp is theme-flipped (dark theme's "ink" is sand), so
      no theme token can express "dark ground in BOTH themes". (r150a:
@@ -2397,85 +876,15 @@
      fixed token; the ground below consumes it.) Text uses
      --text-on-dark which is light in both themes
      (#FBFAF9 ≈ 15:1 / #F2EAD8 ≈ 13:1 on it). */
-  .terminal {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    background: var(--warm-ink);
-    border: 1px solid color-mix(in srgb, var(--text-on-dark) 14%, transparent);
-    border-radius: var(--r-lg);
-    overflow: clip;
-  }
   /* static CRT scanline texture — 3% light lines, no animation, so no
      reduced-motion switch is required (it is texture, not motion) */
-  .terminal::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: repeating-linear-gradient(
-      to bottom,
-      transparent 0 3px,
-      color-mix(in srgb, var(--text-on-dark) 3%, transparent) 3px 4px
-    );
-    pointer-events: none;
-  }
-  .terminal-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-2) var(--sp-4);
-    background: color-mix(in srgb, var(--text-on-dark) 6%, var(--warm-ink));
-    border-block-end: 1px solid color-mix(in srgb, var(--text-on-dark) 10%, transparent);
-  }
-  .terminal-dots { display: flex; gap: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
-  .terminal-dot { inline-size: 10px; block-size: 10px; border-radius: var(--r-full); }
-  .terminal-dot.r { background: var(--danger); }
-  .terminal-dot.y { background: var(--warning); }
-  .terminal-dot.g { background: var(--success); }
-  .terminal-title {
-    margin-inline-start: auto;
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    color: color-mix(in srgb, var(--text-on-dark) 55%, var(--warm-ink));
-  }
-  .terminal-body {
-    block-size: 280px;
-    overflow-y: auto;
-    padding: var(--sp-4);
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    line-height: 1.75;
-    color: var(--text-on-dark);
-  }
   /* per-line auto direction: the same console mixes LTR command lines
      with Arabic result lines — unicode-bidi: plaintext resolves each
      line by its first strong character, so neither copy is forced */
-  .terminal-line {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    unicode-bidi: plaintext;
-    animation: terminal-line-in var(--motion-duration-short) var(--motion-ease-decelerate) both;
-  }
   /* success lines (✔-prefixed) — mint ink clears AA on the dark
      ground in both themes (light #4FA66D ≈ 5.6:1, dark #82CB99 ≈ 9:1) */
-  .terminal-line.terminal-prompt { color: var(--c-mint-ink); }
   /* system notices (%LINK…, Verification…) — sky ink, same math */
-  .terminal-line.terminal-info { color: var(--c-sky-ink); }
   /* idle hint line — the quiet system voice, centered */
-  .terminal-hint {
-    text-align: center;
-    color: color-mix(in srgb, var(--text-on-dark) 55%, var(--warm-ink));
-  }
-  .terminal-cursor {
-    display: inline-block;
-    inline-size: 8px;
-    block-size: 1.05em;
-    margin-inline-start: var(--sp-0-5);
-    background: var(--text-on-dark);
-    vertical-align: text-bottom;
-    animation: terminal-blink var(--motion-duration-skeleton) var(--motion-ease-standard) infinite;
-  }
   @keyframes terminal-blink {
     0%, 45%  { opacity: 1; }
     50%, 95% { opacity: 0; }
@@ -2487,106 +896,14 @@
   }
 
   /* ── Stepper — done / current / upcoming with an RTL-correct spine ── */
-  .steps {
-    list-style: none; /* ol semantics without UA markers/padding */
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-  }
-  .step {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-  }
   /* vertical spine segment on the well axis — inset-inline-start keeps
      it on the inline-start edge in RTL; hidden on the last step */
-  .step:not(:last-child)::before {
-    content: '';
-    position: absolute;
-    inset-inline-start: 15px; /* well center (32/2) − 1px */
-    inset-block-start: 38px;
-    inset-block-end: -16px;
-    inline-size: 2px;
-    /* R313 (WP-E): square spine end — radius 0 canon. */
-    background: color-mix(in srgb, var(--border-strong) 60%, var(--surface-3));
-  }
-  .step.done:not(:last-child)::before {
-    background: color-mix(in srgb, var(--success) 35%, var(--surface-3));
-  }
-  .step-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 32px;
-    block-size: 32px;
-    flex-shrink: 0;
-    /* R313 (WP-E): number tiles are SQUARE — the mono index register
-       (the reference's map-number grammar). */
-    border-radius: var(--r-sm);
-    border: 1px solid var(--border-strong);
-    background: var(--surface-2);
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    font-variant-numeric: tabular-nums;
-  }
-  .step.done .step-num {
-    background: var(--success-soft);
-    border-color: var(--success);
-    color: var(--success-ink);
-  }
   /* current step — accent-soft wash + accent hairline (the shared
      selected-control language, not a stripe) */
-  .step.on .step-num {
-    background: var(--accent-soft);
-    border-color: var(--accent);
-    color: var(--accent-strong);
-  }
-  .step-body {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-0-5);
-    flex: 1;
-    min-inline-size: 0;
-    padding-block-start: 5px; /* optically centers on the 32px well */ /* spacing-gate: allow — optical centering on the 32px step well (documented in place) */
-  }
-  .step-title { font-size: var(--fs-sm); font-weight: var(--fw-semibold); color: var(--text); line-height: 1.4; }
-  .step.on .step-title { color: var(--accent-strong); }
-  .step-desc {
-    font-size: var(--fs-xxs);
-    color: var(--text-muted);
-    line-height: 1.5;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
   /* ── Keyframe off-switches (guardrail #6 — infinite animations MUST
      die under reduced motion, not strobe at 0.01ms) ── */
-  @media (prefers-reduced-motion: reduce) {
-    .scan-pulse-dot,
-    .scan-cell-run::after,
-    .research-card,
-    .live-dot,
-    .terminal-cursor,
-    .terminal-line { animation: none; }
-  }
 
   /* ── Phone tuning (44px touch floor for small controls) ── */
-  @media (max-width: 640px) {
-    .lib-tabs .tab { min-block-size: 44px; }
-    .lib-filters .pill { min-block-size: 44px; }
-    .run-row .btn.sm,
-    .paper-row .btn.sm,
-    .research-card .btn.sm { block-size: 44px; }
-    .terminal-body { block-size: 220px; }
-    .lab-hero { padding: var(--sp-4); }
-  }
 
   /* ── §misc — CampusMap · Payment · Profile · More · Community (wave 4-d) ── */
 
@@ -2666,20 +983,7 @@
      dark. */
   .campus-city-row.on .campus-city-count { color: var(--accent-strong); }
   /* skeleton rows share the band's grid so the loading shape matches */
-  .campus-skel-row {
-    display: grid;
-    grid-template-columns: minmax(84px, max-content) 1fr max-content;
-    align-items: center;
-    gap: var(--sp-3);
-    min-block-size: 44px;
-  }
   /* link-reset layer for .list-row faculty links */
-  .campus-faculty-link {
-    text-align: start;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-  }
   .campus-map-note {
     margin-block-start: var(--sp-3);
     padding: var(--sp-3);
@@ -2701,227 +1005,25 @@
      (flex row, gap sp-1/sp-3, transparent) and the pages layer won
      globally, silently restyling AdminSyncPage's rows. Same recipe,
      new collision-free name. ═══ */
-  .fact-tile {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-    padding: var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-    min-inline-size: 0;
-  }
   /* inline variant — leading icon + label/value column (ProfilePage) */
-  .fact-tile--field {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--sp-3);
-  }
   /* quiet supplementary-data failure note (audit 0-d P2: never a
      silent dash — but not a full alarm either; the page still works) */
-  .fact-error {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    color: var(--text-muted);
-    font-size: var(--type-label-size);
-    line-height: var(--lh-base);
-  }
-  .fact-error .btn { flex-shrink: 0; }
-
   /* ═══ Payment — the fees-status panel + today's-steps checklist.
      Clarity over decoration: flat surface with subtle depth, no invented figures. ═══ */
-  .payment-panel {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    padding: var(--sp-4);
-    background: var(--surface-2);
-    border: 1px solid var(--border);
-    border-radius: var(--r-lg);
-    /* R313 (WP-E): flat paper panel — no elevation. */
-  }
-  .payment-checklist {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .payment-checklist li {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-2);
-    font-size: var(--type-label-size);
-    color: var(--text-secondary);
-    line-height: var(--lh-base);
-  }
-  .payment-checklist svg {
-    color: var(--success-ink);
-    flex-shrink: 0;
-    margin-block-start: var(--sp-0-5);
-  }
-
   /* ═══ Profile — academic-link rows (extracted from ~40 lines of
      inline styles) + the save-feedback flash. ═══ */
-  .profile-link-row {
-    padding: var(--sp-4);
-    border: 1px solid var(--border);
-    border-radius: var(--r-md);
-    background: var(--surface-1);
-  }
-  .profile-link-head {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-  }
-  .profile-link-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 40px;
-    block-size: 40px;
-    flex-shrink: 0;
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    color: var(--text-muted);
-    transition:
-      background var(--motion-duration-short) var(--motion-ease-standard),
-      color var(--motion-duration-short) var(--motion-ease-standard);
-  }
-  .profile-link-row.linked .profile-link-icon {
-    background: var(--success-soft);
-    color: var(--success-ink);
-  }
-  .profile-link-title-row {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-end: var(--sp-0-5);
-  }
-  .profile-link-title {
-    font-size: var(--type-body-size);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .profile-link-desc {
-    font-size: var(--type-label-size);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-  }
-  .profile-link-value {
-    margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    color: var(--accent-strong);
-    overflow-wrap: anywhere;
-  }
-  .profile-link-actions {
-    display: flex;
-    gap: var(--sp-2);
-    flex-shrink: 0;
-  }
-  .profile-link-edit {
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-3);
-  }
-  .profile-link-error {
-    color: var(--danger-ink);
-    font-size: var(--type-label-size-sm);
-    line-height: var(--lh-base);
-  }
   /* save feedback — the page's authored moment: a transient, polite
      confirmation that rises in and self-clears (TSX timer) */
-  .profile-link-saved {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    color: var(--success-ink);
-    font-size: var(--type-label-size-sm);
-    animation: profile-save-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-
   /* ═══ Social feed (MorePages SocialPage) — composer + like
      feedback + derived trending list. ═══ */
-  .social-composer {
-    /* deltas over the shared global textarea recipe (components.css) */
-    flex: 1;
-    min-block-size: 64px;
-    block-size: auto;
-    padding: var(--sp-2) var(--sp-3);
-    /* R313 (WP-E · D16): transparent ground — the paper IS the field
-       (the shared recipe; the old surface-2 well is retired). */
-    background: transparent;
-    /* 21-c (A5 P2-X / A10 P1): was var(--type-label-size) 13px — iOS
-       Safari zooms on any <16px control focus. 16px floor. */
-    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
-    line-height: var(--lh-base);
-    font-family: inherit;
-    color: var(--text);
-  }
-  .social-compose-error {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    background: var(--danger-soft);
-    color: var(--danger-ink);
-    font-size: var(--type-label-size);
-    line-height: var(--lh-base);
-  }
-  .social-compose-error .btn { flex-shrink: 0; }
-  .post-like-fail {
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-2);
-    align-self: flex-start;
-    padding: var(--sp-1) var(--sp-2);
-    border-radius: var(--r-sm);
-    background: var(--danger-soft);
-    color: var(--danger-ink);
-    font-size: var(--type-label-size-sm);
-  }
-  .post-count {
-    display: inline-block;
-    font-variant-numeric: tabular-nums;
-  }
   /* reaction burst — plays ONLY when the .pop class rides in on the
      reacted counter (on-interaction, never idle) */
-  .post-count.pop {
-    animation: social-count-pop var(--motion-duration-stat) var(--ease-spring) both;
-  }
-  .post-action:disabled { cursor: default; }
-  .post-action:active:not(:disabled) { transform: translateY(1px); }
   /* trending rows — derived from the loaded feed (never hardcoded) */
-  .trend-list {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
   /* r155d (integrity F7, lead-integrated): renamed `.trend-row` →
      `.trend-item` — the old name collided with components.css's
      AdminReports `.trend-row` (paper pipeline bars) and the pages
      layer won globally, silently re-densifying the admin rows.
      Same recipe, collision-free name. */
-  .trend-item {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    min-block-size: 40px;
-  }
-  .trend-item + .trend-item { border-block-start: 1px solid var(--surface-divider); }
   .trend-rank {
     flex-shrink: 0;
     min-inline-size: 18px;
@@ -2956,57 +1058,10 @@
     border-radius: var(--r-sm);
   }
   /* alerts-page skeleton rows (dot + two lines) */
-  .alert-skel {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-3);
-    padding: var(--sp-3);
-  }
-
   /* ═══ UniversityInfo — degree cards (leading icon chip replaces the
      old 3px borderRight stripe — orchestrator ruling #4) + faculty
      chip emoji wells. ═══ */
-  .degree-card {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-md);
-  }
-  .degree-card-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    inline-size: 32px;
-    block-size: 32px;
-    flex-shrink: 0;
-    border-radius: var(--r-sm);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-  }
-  .faculty-chip-emoji {
-    display: inline-flex;
-    flex-shrink: 0;
-    color: var(--accent);
-  }
-
   /* ═══ Community — RSVP action row + failure note. ═══ */
-  .event-actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    margin-block-start: var(--sp-3);
-  }
-  .event-rsvp-fail {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    color: var(--danger-ink);
-    font-size: var(--type-label-size-sm);
-  }
-
   /* ═══ Community — announcement feed cards (22-c, A5 P1-1).
      The family had NO CSS anywhere: the DEFAULT tab of /community
      rendered as unstyled HTML (no surface, head display:block so the
@@ -3017,106 +1072,13 @@
      group, overrides layer); this block adds the surface, the head
      row, the icon well, the pin state, the meta line and the reading
      width. ═══ */
-  .announcement-card {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    padding: var(--sp-5);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    /* R329 (gate:clean): radius + transition are polish.css's
-     overrides seat (.post group — r-lg + the transform/box-shadow
-     lift) — these pages-layer copies were inert. R313 (WP-E): flat
-     paper tile, hairline hover only. */
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .announcement-card:hover {
-      border-color: var(--border-strong);
-    }
-  }
   /* Pinned — the platform's "on" grammar (tinted ground + accent-mixed
      border), scannable without the craft-floor-banned >1px side stripe. */
-  .announcement-card.pinned {
-    background: color-mix(in srgb, var(--accent) 5%, var(--surface));
-    border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
-  }
-  .announcement-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: var(--sp-3);
-  }
-  .announcement-head-main {
-    flex: 1;
-    min-inline-size: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-  }
   /* leading icon well — .job-icon-well grammar, 40px for the 20px glyph */
-  .announcement-icon {
-    inline-size: 40px;
-    block-size: 40px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: var(--r-md);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-  }
   /* headline-role tokens (A5 P3-5: was five inline style props on the
      demoted title div — the treatment belongs in CSS, not in TSX) */
-  .announcement-title {
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-sm);
-    font-weight: var(--type-headline-weight);
-    line-height: var(--type-headline-line-height);
-    letter-spacing: var(--type-headline-letter-spacing);
-    color: var(--text);
-    overflow-wrap: anywhere;
-  }
-  .announcement-meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--sp-1) var(--sp-2);
-  }
-  .announcement-meta-item {
-    font-size: var(--type-label-size-sm);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-  }
   /* pin chip — badge grammar (soft ground + strong ink), anchored to
      the head's inline-end corner */
-  .announcement-pin {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    flex-shrink: 0;
-    margin-inline-start: auto;
-    padding: 3px var(--sp-3); /* spacing-gate: allow — announcement pin chip hairline vertical inset */
-    /* R313 (WP-E · D16): square chip — 0 radius. */
-    border-radius: var(--r-sm);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-semibold);
-    white-space: nowrap;
-  }
-  .announcement-body {
-    margin: 0;
-    color: var(--text-secondary);
-    font-size: var(--type-body-size);
-    line-height: var(--lh-base);
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-    /* craft floor body measure (65–75ch): the feed column already sits
-       inside that band; the cap only binds if the card ever lands on a
-       wider track, keeping prose scannable instead of stretched */
-    max-inline-size: 70ch;
-  }
-
   /* ── Keyframes (wave 4-d; reduced-motion off-switch below) ── */
   @keyframes campus-fill-in {
     /* 5-C1 (A2 §1c #26): width-only growth became a scaleX reveal —
@@ -3145,18 +1107,6 @@
      controls this section owns (the shared .btn.sm is 32px — a
      global fix belongs to the primitives wave, these bumps are
      scoped to my components only). ── */
-  @media (max-width: 640px) {
-    .post-action {
-      min-block-size: 44px;
-      min-inline-size: 44px;
-      justify-content: center;
-    }
-    .social-compose-error .btn,
-    .post-like-fail .btn,
-    .fact-error .btn,
-    .profile-link-edit .btn,
-    .event-actions .btn { min-block-size: 44px; }
-  }
 
   /* ═══════════════════════════════════════════════════════════════
      5-B3 — exam-taker ergonomics + student mobile order
@@ -3173,123 +1123,27 @@
      bar wraps at 320px — 5-A5 measured the slot). Pagination-button
      grammar: 36px desktop, 44px phone floor (the .table-pagination
      precedent, components.css). ── */
-  .exam-qmap {
-    flex-basis: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1);
-  }
-  .exam-qmap-dot {
-    min-inline-size: 36px;
-    min-block-size: 36px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    border: 1px solid var(--border);
-    border-radius: var(--r-sm);
-    background: var(--surface-2);
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    font-variant-numeric: tabular-nums;
-    cursor: pointer;
-    transition:
-      background var(--t-fast) var(--ease),
-      color var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .exam-qmap-dot:hover {
-      background: var(--surface-3);
-      color: var(--text);
-      border-color: var(--border-strong);
-    }
-  }
   /* Answered — accent-soft ground + accent-strong ink (8.62:1, the
      WCAG math pinned in tokens.css; same pairing as .exam-choice.selected
      and the pagination active page). */
-  .exam-qmap-dot.answered {
-    background: var(--accent-soft);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    color: var(--accent-strong);
-  }
   /* Save-failed — warning chip pairing (.exam-save-warn family). */
-  .exam-qmap-dot.failed {
-    background: var(--warning-soft);
-    border-color: color-mix(in srgb, var(--warning) 45%, transparent);
-    color: var(--warning-ink);
-  }
   /* Current position (P2-2) — the question on screen wears a ring so a
      long paper always shows where you are. Offset ring (focus-grammar),
      not a shadow: the dot already carries its state in ground + ink. */
-  .exam-qmap-dot.current {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
   /* ── Time-consumed hairline (plan-6): the attempt window draining
      from the inline-start edge along the sticky bar's bottom rule.
      Color-only urgency — the no-pulse timer decision is documented. ── */
-  .exam-time-rail {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: 0;
-    block-size: 2px;
-    background: color-mix(in srgb, var(--accent) 16%, transparent);
-    border-end-start-radius: var(--r-lg);
-    border-end-end-radius: var(--r-lg);
-    overflow: clip;
-    pointer-events: none;
-  }
-  .exam-time-rail > span {
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 100%;
-    background: var(--accent);
-    transform-origin: left center;
-  }
-  [dir='rtl'] .exam-time-rail > span { transform-origin: right center; }
-  .exam-time-rail[data-urgent] { background: color-mix(in srgb, var(--danger) 16%, transparent); }
-  .exam-time-rail[data-urgent] > span { background: var(--danger); }
-
   /* ── Question wrapper (P2-2 jump target): the map scrolls here and
      moves focus; scroll-margin lands the card clear of the sticky bar
      (the bar carries the map row — measured heights: 113px bar at
      ≥768, 162px at 390 with the 44px dots; +8px optical gap). ── */
-  .exam-q { scroll-margin-block-start: 124px; } /* spacing-gate: allow — exam sticky-header clearance 124px (header stack, desktop) */
-  @media (max-width: 768px) { .exam-q { scroll-margin-block-start: 136px; } } /* spacing-gate: allow — exam sticky-header clearance 136px (header stack, ≤768px) */
-  @media (max-width: 640px) { .exam-q { scroll-margin-block-start: 176px; } } /* spacing-gate: allow — exam sticky-header clearance 176px (header stack, ≤640px) */
   /* Programmatic focus lands here (tabIndex -1) — the universal
      motion.css ring excludes tabindex=-1 by design, so the landing
      cue is declared here: the ring shows while the jumped card owns
      focus and leaves when the student clicks elsewhere. */
-  .exam-q:focus {
-    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
-    outline-offset: var(--state-focus-ring-offset);
-    border-radius: var(--r-lg);
-  }
-
   /* ── Save-state chip at the question footer (P2-3) — the positive
      half of the autosave honesty pair; tone-mapped to the sticky
      failure chip's inks. ── */
-  .exam-q-foot {
-    display: flex;
-    justify-content: flex-end;
-    margin-block-start: var(--sp-2);
-  }
-  .exam-q-state {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px; /* spacing-gate: allow — exam question-state chip micro gap */
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    animation: exam-save-in var(--motion-duration-micro) var(--motion-ease-standard);
-  }
-  .exam-q-state.saved { color: var(--success-ink); }
-  .exam-q-state.saving { color: var(--text-muted); }
-  .exam-q-state.failed { color: var(--danger-ink); }
   @keyframes exam-save-in { from { opacity: 0; } }
 
   /* ── Submit bar (P2-2): the unanswered count rides inline next to
@@ -3297,134 +1151,19 @@
      the bar is bottom-sticky above the fixed bottom-nav so a long
      paper never hides the way out. Overrides the components.css
      end-aligned block via the pages layer (later in cascade order). ── */
-  .exam-submit-bar {
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sp-3);
-  }
-  .exam-submit-bar .form-error { flex-basis: 100%; }
-  .exam-submit-status {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-  }
-  .exam-submit-status.ok { color: var(--success-ink); }
-  .exam-submit-status.warn { color: var(--warning-ink); }
-  @media (max-width: 920px) {
-    .exam-submit-bar {
-      position: sticky;
-      /* Chromium measures the sticky inset from the scroller's padded
-         edge. 641–920px: .content has no bottom padding, so the full
-         nav clearance (≈72px + safe area) is declared here; the fixed
-         bottom-nav shows across this whole range (polish v22 @920). */
-      bottom: calc(72px + env(safe-area-inset-bottom) + var(--sp-2));
-      z-index: 20;
-      padding: var(--sp-2) var(--sp-3);
-      background: var(--surface);
-      border: 1px solid var(--rule);
-      border-radius: var(--r-lg);
-      /* R313 (WP-E): flat sticky bar — the hairline is the surface. */
-    }
-  }
   /* ≤640px: notifications.css reserves the nav clearance as the
      scroller's own bottom padding (max(80px, 72px + safe area)) — the
      sticky reference already sits at the nav's top edge, so 0 docks
      the bar a hairline above it (measured: 8px gap, no overlap). */
-  @media (max-width: 640px) {
-    .exam-submit-bar { bottom: 0; }
-    .exam-qmap { flex-wrap: nowrap; overflow-x: auto; }
-    .exam-qmap-dot { min-inline-size: 44px; min-block-size: 44px; }
-  }
 
   /* ── Verdict lockup (plan-7): icon → title → grade → badge read as
      one tight group inside .empty-state's rhythm; the note and the
      action get the breathing room instead. ── */
-  .exam-result .exam-result-title { margin: 0; }
-  .exam-result-lockup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-  .exam-result-note {
-    margin: 0;
-    max-inline-size: 52ch;
-    color: var(--text-muted);
-  }
-
   /* ── Post-grading review (5-D3 — 5-B3 hand-off #1): the student's
      own questions + verdicts + released key, collapsed behind one
      toggle — the verdict stays the moment; the detail is opt-in. The
      section lives inside .empty-state's centered column, so the list
      re-asserts start alignment and a readable measure. ── */
-  .exam-review {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--sp-3);
-    inline-size: 100%;
-  }
-  .exam-review-chevron { transition: rotate var(--motion-duration-micro) var(--motion-ease-standard); }
-  .exam-review-chevron.is-open { rotate: 180deg; }
-  .exam-review-list {
-    inline-size: min(100%, 640px);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    text-align: start;
-  }
-  .exam-review-q {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-    padding: var(--sp-3);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-  }
-  .exam-review-head {
-    display: flex;
-    align-items: baseline;
-    gap: var(--sp-2);
-  }
-  .exam-review-num {
-    flex-shrink: 0;
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-  }
-  .exam-review-prompt {
-    flex: 1;
-    min-inline-size: 0;
-    font-weight: var(--fw-semibold);
-  }
-  .exam-review-head .badge { flex-shrink: 0; }
-  .exam-review-meta {
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-  }
-  .exam-review-label { color: var(--text-muted); font-size: var(--fs-sm); }
-  .exam-review-ans, .exam-review-key, .exam-review-feedback {
-    font-size: var(--fs-sm);
-    line-height: 1.6;
-  }
-  .exam-review-text { overflow-wrap: anywhere; }
-  .exam-review-missed { color: var(--text-muted); font-style: normal; }
-  .exam-review-key {
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-sm);
-    color: var(--success-ink);
-  }
-  .exam-review-feedback {
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--surface-2);
-    border-radius: var(--r-sm);
-  }
-
   /* ── Student mobile order (P2-9/P2-10, 5-A6 plan): .page is a flex
      column (base.css) — order moves whole sections without touching
      the TSX. Desktop order stays authored. ── */
@@ -3436,10 +1175,6 @@
      calibrated on desktop only, so every PHONE resolve pushed the KPI
      row 48px down. The pending section carries the block-size; the
      Skeleton bar fills it (height 100% from the TSX). */
-  .dash-resume-pending { block-size: 176px; }
-  @media (max-width: 640px) {
-    .dash-resume-pending { block-size: 224px; }
-  }
 
   /* r174 — the dash-hero-row PENDING pair, per breakpoint (live
      measurements): the resolved pair is [218, 218] >1024, [156, 218]
@@ -3448,13 +1183,6 @@
      r172b's flat 168-inner boxes (210/226 painted) matched only the
      desktop pair and overshot the compact GPA card by 54px on every
      tablet/phone resolve. */
-  .dash-hero-slot { block-size: 218px; }
-  @media (max-width: 1024px) {
-    .dash-hero-slot-gpa { block-size: 156px; }
-  }
-  @media (max-width: 640px) {
-    .dash-hero-slot-progress { block-size: 302px; }
-  }
 
   /* P2-10 — the dashboard's morning-first agenda: today's classes and
      the nearest deadlines move to slot 2 (right after the welcome) on
@@ -3462,11 +1190,6 @@
      and keeps its desktop depth. PP-X2 (P0-3): the resume hero is the
      FIRST thing on phone — the page's primary action sits above the
      greeting, agenda second, KPIs after. */
-  @media (max-width: 640px) {
-    .student-dashboard .dash-resume { order: -3; }
-    
-    
-  }
 
   /* P2-9 — results: the page's one data visualization leads on phone
      instead of starting below three stacked KPI cards (measured: chart
@@ -3484,32 +1207,14 @@
      pair). The ≤640px stacked layout re-asserts its centered column —
      this block's higher specificity would otherwise beat components.css. */
   
-  @media (max-width: 640px) {
-    
-  }
 
   /* ── University accreditation chip (P2-7, page 7.5): the inline
      style overrode the muted text utility with --accent on
      --accent-soft (measured 3.06:1 at 11px). The class restores the
      text-on-pastel rule — accent-strong holds 8.62:1 — and moves the
      treatment into CSS where it belongs. ── */
-  .uni-accredit {
-    display: inline-block;
-    margin-block-start: var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    border-radius: var(--r-sm);
-    font-size: var(--type-label-size-sm);
-    font-weight: var(--fw-medium);
-  }
-
   /* Reduced-motion off-switch for the one keyframe added above
      (guardrail #6 — joins the wave-4d block at the top of this list). */
-  @media (prefers-reduced-motion: reduce) {
-    .exam-q-state { animation: none; }
-  }
-
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  polish v10 page systems — migrated home (r151i, R5-A2 m1)    ║
@@ -3527,155 +1232,14 @@
   /* ═══════════════════════════════════════════════════════════════
      AI ASSISTANT — chat bubbles + quick actions
      ═══════════════════════════════════════════════════════════════ */
-  .chat-area {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    min-block-size: 320px;
-    max-block-size: 480px;
-    overflow-y: auto;
-    padding: var(--sp-4) var(--sp-2) var(--sp-3);
-    scroll-behavior: smooth;
-  }
-
-  .chat-msg {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--sp-2);
-  }
-  .chat-msg.bot { justify-content: flex-start; }
-  .chat-msg.user { flex-direction: row-reverse; }
-
-  .chat-avatar {
-    inline-size: 28px;
-    block-size: 28px;
-    border-radius: var(--r-full);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: var(--accent-soft);
-    color: var(--accent-ink); /* r148 (AUDIT-1 H3): --accent كان 3.06:1 — حافة 3:1 هشة */
-  }
-
-  .chat-bubble {
-    max-inline-size: min(640px, 78%);
-    padding: var(--sp-2-5) 14px; /* spacing-gate: allow — chat bubble compact grade 10/14 — r149 R3-A2 R8 message density */
-    border-radius: var(--r-xl);
-    font-size: var(--fs-sm);
-    line-height: var(--lh-base);
-    color: var(--text);
-    background: var(--surface-2);
-    border: 1px solid var(--border-faint);
-    /* subtle entrance */
-    animation: chat-in var(--motion-duration-medium) var(--ease-out) both;
-  }
   @keyframes chat-in {
     from { opacity: 0; transform: translateY(4px); }
     to   { opacity: 1; transform: translateY(0); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .chat-bubble { animation: none; }
   }
 
   /* R313 (WP-E): both bubbles are SQUARE — the 4px tail-corner details
      are retired with the radius-0 canon (the bot bubble needs no
      override at all now). */
-  .chat-msg.user .chat-bubble {
-    /* R313 (WP-E): FLAT accent fill — the reference's white-on-#FA3600
-       slab (gradients are retired system-wide); square corners. */
-    background: var(--accent);
-    color: var(--accent-fg);
-    border-color: transparent;
-  }
-
-  .chat-bubble p { margin: 0; }
-  .chat-bubble p + p { margin-block-start: var(--sp-1-5); } /* r153h: 6px → --sp-1-5 */
-
-  .ai-quick-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    padding: var(--sp-3) var(--sp-2) var(--sp-2);
-    border-block-start: 1px solid var(--rule);
-    margin-block-start: var(--sp-1);
-  }
-  .ai-quick-chip {
-    padding: var(--sp-1-5) var(--sp-3); /* r153h: 6px → --sp-1-5 */
-    /* R313 (WP-E · D16): square chip — hairline frame, 0 radius. */
-    border-radius: var(--r-sm);
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text-muted);
-    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
-    font-weight: var(--fw-medium);
-    cursor: pointer;
-    transition: var(--t-clean);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .ai-quick-chip:hover {
-      border-color: var(--accent);
-      color: var(--accent-strong);
-      background: var(--accent-soft);
-    }
-  }
-
-  .chat-input-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-3) var(--sp-2) var(--sp-1);
-  }
-  .chat-input {
-    flex: 1;
-    min-inline-size: 0;
-    block-size: 40px;
-    padding-inline: var(--sp-3);
-    /* R313 (WP-E · D16): the Heron input recipe — transparent ground,
-       1px #B3B3AF hairline, square corners (the old surface-2 well +
-       pill radius are retired). */
-    border-radius: var(--r-md);
-    border: 1px solid var(--border-strong);
-    background: transparent;
-    color: var(--text);
-    font-family: inherit;
-    /* 21-c (A5 P2-X / A10 P1): was var(--fs-sm) 13px — iOS Safari
-       zooms the viewport on any <16px input focus. 16px floor
-       (components.css's shared .input takes the same fix from 21-b). */
-    font-size: 16px; /* type-gate: allow — iOS-zoom floor (21-c) */
-    transition: var(--t-clean);
-  }
-  .chat-input:focus {
-    outline: none;
-    background: transparent;
-    /* R313 (WP-E · D16): focus = the reference's #ED4C1F signal border
-       (the shared input recipe's measured literal — no halo). */
-    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (matches the shared input recipe in components.css) */
-  }
-  .chat-send {
-    inline-size: 40px;
-    block-size: 40px;
-    /* R313 (WP-E): square control — the accent slab. */
-    border-radius: var(--r-sm);
-    border: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--accent);
-    color: var(--accent-fg);
-    cursor: pointer;
-    transition: var(--t-clean);
-    flex-shrink: 0;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .chat-send:hover:not(:disabled) {
-      /* R313 (WP-E): flat hover — the brightened accent tier, no scale,
-         no glow. */
-      background: var(--accent-hover);
-    }
-  }
-  .chat-send:disabled { opacity: var(--state-btn-disabled-opacity); cursor: not-allowed; }
-
   /* ═══════════════════════════════════════════════════════════════
      AI ASSISTANT — conversations sidebar (r164g)
      The row rides the shared .list-row grammar; the OPEN target is a
@@ -3683,66 +1247,9 @@
      row itself cannot be the button). Tokens only — no new motion, no
      raw colors.
      ═══════════════════════════════════════════════════════════════ */
-  .ai-conv-row[aria-current='true'] {
-    /* current-conversation indicator: the soft accent wash, paired
-       with the «الحالية» badge + aria-current for non-visual axes. */
-    background: var(--accent-soft);
-  }
-  .ai-conv-open {
-    /* button reset on top of .list-row-body (flex column, flex:1,
-       min-inline-size:0 — the grammar the ellipsis needs). */
-    padding: 0;
-    border: 0;
-    background: transparent;
-    text-align: start;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-    border-radius: var(--r-sm);
-  }
-  .ai-conv-open:disabled { cursor: default; }
-  .ai-conv-title {
-    /* one line — the server already caps titles at 60 chars, but a
-       narrow sidebar must ellipsis rather than wrap the row tall. */
-    max-inline-size: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .ai-conv-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-1);
-    flex-shrink: 0;
-  }
-
   /* ═══════════════════════════════════════════════════════════════
      MATRIX (knowledge map) — courses + cells + legend
      ═══════════════════════════════════════════════════════════════ */
-  .matrix-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-3);
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    margin-block-end: var(--sp-4);
-  }
-  .matrix-legend-item {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    font-weight: var(--fw-medium);
-  }
-  .matrix-legend-dot {
-    inline-size: 10px;
-    block-size: 10px;
-    border-radius: var(--r-full);
-    flex-shrink: 0;
-  }
   /* (R313 WP-E: the legend dot stays a circle — dots/avatars are the
      reference's only rounded primitives.) */
 
@@ -3766,214 +1273,28 @@
   }
   .pill.on .matrix-filter-count { color: inherit; }
   .matrix-filter .pill:disabled { opacity: 0.55; }
-
   /* (Wave 6-c dead-selector sweep: .matrix-grid deleted — its only
      consumer (MatrixPage concept grid) switched to the designed
      .matrix-cells in wave 4-a; rg over frontend/src = 0 hits since.
      See worklog 4-a follow-up #1.) */
-
-  .matrix-course {
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    background: var(--surface);
-    padding: var(--sp-4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    transition: var(--t-clean);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .matrix-course:hover {
-      /* R313 (WP-E): data maps do not bounce — hairline step only (the
-       r305-student-schedule.css override already pinned this; the base
-       follows). */
-      border-color: var(--border-strong);
-    }
-  }
-  .matrix-course-head {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-  }
-  .matrix-course-icon {
-    inline-size: 36px;
-    block-size: 36px;
-    border-radius: var(--r-md);
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .matrix-name {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    line-height: 1.25;
-  }
-  .matrix-meta {
-    display: flex;
-    align-items: center;
-    /* R329 (gate:clean): gap is r305-student-schedule.css's seat
-     (same pages layer, later chunk import — .matrix-meta renders only
-     on MatrixPage, which imports that sheet) — the sp-1 copy here
-     was inert. */
-    margin-block-start: var(--sp-0-5);
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-  .matrix-meta-pct {
-    color: var(--text);
-    font-weight: var(--fw-semibold);
-    font-family: var(--font-mono);
-  }
-
   /* Per-concept tile (r220: wider min cell = long Arabic concept names
      stop ellipsising; status word + tabular % mean the state never
      rides on hue alone). */
-  .matrix-cells {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-  }
-  .matrix-cell {
-    padding: var(--sp-2-5) var(--sp-3);
-    border-radius: var(--r-sm);
-    font-size: var(--fs-xs);
-    color: var(--text);
-    background: var(--surface-2);
-    border: 1px solid var(--rule);
-    text-align: start;
-    cursor: default;
-    line-height: 1.4;
-    transition: var(--t-clean);
-    min-inline-size: 0;
-  }
   /* r220: the non-link cells join the keyboard order — focusable, with
      the system focus ring so the grid is traversable without a pointer. */
-  .matrix-cell:focus-visible {
-    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
-    outline-offset: var(--state-focus-ring-offset);
-  }
-
   /* r220 — mobile recomposition: the dense grid becomes a concept list
      with the SAME data (name + status word + %), one honest row per
      concept — no sideways scroll, no clipped tiles. */
-  @media (max-width: 640px) {
-    .matrix-cells { grid-template-columns: 1fr; }
-    .matrix-cell {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--sp-3);
-    }
-    .matrix-name {
-      flex: 1;
-      min-inline-size: 0;
-    }
-    .matrix-meta {
-      margin-block-start: 0;
-      flex-shrink: 0;
-    }
-  }
-  .matrix-cell.lvl-strong   { background: color-mix(in srgb, var(--success) 14%, var(--surface)); border-color: color-mix(in srgb, var(--success) 26%, transparent); color: var(--c-mint-deep); }
-  .matrix-cell.lvl-good     { background: color-mix(in srgb, var(--accent) 12%, var(--surface)); border-color: color-mix(in srgb, var(--accent) 24%, transparent); color: var(--accent-strong); }
-  .matrix-cell.lvl-weak     { background: color-mix(in srgb, var(--warning) 14%, var(--surface)); border-color: color-mix(in srgb, var(--warning) 28%, transparent); color: var(--c-yellow-deep); }
-  .matrix-cell.lvl-poor     { background: color-mix(in srgb, var(--danger) 12%, var(--surface)); border-color: color-mix(in srgb, var(--danger) 24%, transparent); color: var(--c-rose-deep); }
-  .matrix-cell.lvl-untouched { color: var(--text-subtle); border-style: dashed; }
-  @media (hover: hover) and (pointer: fine) {
-    .matrix-cell:hover {
-      /* R313 (WP-E): flat tile — the hover reads through the level wash
-       itself; no lift, no elevation. */
-      border-color: var(--border-strong);
-    }
-  }
 
   /* ═══════════════════════════════════════════════════════════════
      POSTS (social feed)
      ═══════════════════════════════════════════════════════════════ */
-  .post {
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    background: var(--surface);
-    padding: var(--sp-4);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-2);
-  }
-  .post-header {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-  }
-  .post-author {
-    font-weight: var(--fw-semibold);
-    font-size: var(--fs-sm);
-    color: var(--text);
-  }
-  .post-time {
-    font-size: var(--fs-xxs); /* r184: literal → token (11px = --fs-xxs), zero visual change */
-    color: var(--text-subtle);
-  }
-  .post-body {
-    color: var(--text);
-    font-size: var(--fs-sm);
-    line-height: var(--lh-base);
-    white-space: pre-wrap;
-  }
-  .post-actions {
-    display: flex;
-    gap: var(--sp-3);
-    margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    padding-block-start: var(--sp-2);
-    border-block-start: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
-  }
-  .post-action {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    background: transparent;
-    border: 0;
-    padding: var(--sp-1) var(--sp-2);
-    border-radius: var(--r-sm);
-    font-size: var(--fs-xs); /* r184: literal → token (12px = --fs-xs), zero visual change */
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: var(--t-clean);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .post-action:hover { background: var(--surface-2); color: var(--text); }
-  }
-  .post-action.on {
-    color: var(--accent-strong);
-    background: var(--accent-soft);
-  }
   /* 22-c (A5 P2-2): a reacted heart is a STATE, not an available
      action (the backend cannot un-react) — the pointer cursor would
      keep promising the click the handler refuses. */
-  .post-action[aria-disabled="true"] { cursor: default; }
-
   /* ═══════════════════════════════════════════════════════════════
      Faculty / city chips inside University Info
      ═══════════════════════════════════════════════════════════════ */
-  .faculty-chip-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-sm);
-    background: var(--surface-2);
-    border: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
-    transition: var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .faculty-chip-row:hover {
-      border-color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 6%, var(--surface));
-    }
-  }
 
   /* ═══════════════════════════════════════════════════════════════
      WELCOME CARD — the student dashboard greeting hero (r153f)
@@ -4011,13 +1332,6 @@
      inline-end corner, opaque at the edge, fading toward the content —
      `to left` for LTR (inline-end = right), `to right` for RTL. */
 
-
-  @media (max-width: 640px) {
-
-
-
-  }
-
   /* ═══════════════════════════════════════════════════════════════
      r220 (4A redesign — Superlist direction) — dashboard TodayList
      anatomy. All values ride tokens; overrides scope under
@@ -4027,21 +1341,7 @@
   /* The continue-learning item inside the TodayList: the small momentum
      ring rides the leading slot; the chip CTA stays visual (the row is
      the link — the agenda-row contract). */
-  .student-dashboard .dash-resume-ring {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding-inline: var(--sp-1);
-  }
-  .student-dashboard .dash-resume-ring .momentum-ring {
-    inline-size: 56px;
-    block-size: 56px;
-  }
-  .student-dashboard .dash-resume-ring .momentum-center { display: none; }
   /* The visual action chips riding list rows (never the only link). */
-  .student-dashboard .pf-chip { white-space: nowrap; }
-  .student-dashboard .text-warning-ink { color: var(--warning-ink); }
-
   /* The week ledger day bands inside the pattern RowList. */
   .dash-week-group {
     display: flex;
@@ -4077,10 +1377,6 @@
     padding: var(--sp-6);
     border-radius: var(--r-xl);
   }
-  .stu-hero .dash-resume-ring {
-    flex-shrink: 0;
-    align-self: flex-start;
-  }
   /* The hero's classification line — real state, not decoration:
      «أكمل من حيث توقفت» / «الخطوة التالية» / the track arms. */
   .dash-resume-eyebrow {
@@ -4110,7 +1406,6 @@
   /* The pending hero slot (loading-closure mirror): same band, no
      interaction, no flex-col utility classes (the mirror's slot count
      belongs to the ListSkeleton placeholders only). */
-  .stu-hero-skel { pointer-events: none; }
   @media (max-width: 640px) {
     .stu-hero-side { inline-size: 100%; }
     .stu-hero-side .btn { inline-size: 100%; justify-content: center; }
@@ -4125,37 +1420,9 @@
     align-items: center;
     gap: var(--sp-3);
   }
-  .stu-course-progress .progress { inline-size: 120px; }
-  .stu-course-pct {
-    font-family: var(--font-mono);
-    font-size: var(--type-label-size-sm);
-    font-variant-numeric: tabular-nums;
-    color: var(--text-secondary);
-  }
-  @media (max-width: 640px) {
-    .stu-course-progress .progress { inline-size: 84px; }
-  }
 
   /* ── R304 · Lecture player page additions ───────────────────────
      The contents anchor (≤1024px only — desktop's panel sits beside
      the video) and the keyboard-contract legend that closes the side
      panel. Both ride the existing lecture-* surface; no colors. */
-  .stu-panel-jump { display: none; }
-  @media (max-width: 1024px) {
-    .stu-panel-jump { display: inline-flex; align-self: flex-start; }
-  }
-  .lecture-keys {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-1) var(--sp-4);
-    color: var(--text-muted);
-  }
-  .lecture-keys-row {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5);
-    font-size: var(--fs-xs);
-  }
-  .lecture-keys .kbd { font-size: var(--fs-xxs); }
-
 }

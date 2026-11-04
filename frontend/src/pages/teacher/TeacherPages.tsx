@@ -188,15 +188,32 @@ export function TeacherSchedulePage() {
         /* 4C-c Superlist recomposition: calm day sections in a grid —
             each day a header (الاسم + «اليوم» marker) over its lecture
             rows; ≤920px the grid folds into the day-by-day vertical
-            list (same DOM, source order = day order). */
+            list (same DOM, source order = day order). P-G3b: auto-fit
+            (was auto-fill) so a short week's sections expand to the
+            full content measure instead of hugging one 240px track at
+            the inline-start edge; day heads carry the [nn] weekday
+            index + the lecture count, and the Latin course code demotes
+            from the chip voice to the row's mono meta line. */
         <div className="tpg-sched">
           {days.map((d) => (
             <section key={d.dow} className="tpg-day" data-today={d.dow === todayDow ? 'true' : undefined} aria-label={WEEKDAY_NAMES_AR[d.dow]}>
               <div className="tpg-day-head">
-                <span className="tpg-day-title">{WEEKDAY_NAMES_AR[d.dow]}</span>
-                {/* R305 Heron: today is THE ember signal of the page —
-                    the marker chip rides the ember tone. */}
-                {d.dow === todayDow && <span className="hr-chip" data-tone="ember">اليوم</span>}
+                <span className="tpg-day-title">
+                  {/* P-G3b — the [nn] weekday index: Libyan week,
+                      الأحد = [01]; mono gutter voice, aria-hidden (the
+                      day name is the section's accessible name). */}
+                  <span className="tpg-day-index" dir="ltr" aria-hidden="true">[{String(d.dow + 1).padStart(2, '0')}]</span>
+                  {WEEKDAY_NAMES_AR[d.dow]}
+                </span>
+                <span className="tpg-day-aux">
+                  {/* R305 Heron: today is THE ember signal of the page —
+                      the marker chip rides the ember tone. */}
+                  {d.dow === todayDow && <span className="hr-chip" data-tone="ember">اليوم</span>}
+                  <span className="tpg-day-count">
+                    {/* 22-c counted nouns. */}
+                    <bdi>{d.items.length}</bdi> {countAr(d.items.length, ['محاضرة واحدة', 'محاضرتان', 'محاضرات', 'محاضرة'])}
+                  </span>
+                </span>
               </div>
               {d.items.map((it, i) => (
                 <div key={i} className="tpg-lecture">
@@ -205,7 +222,10 @@ export function TeacherSchedulePage() {
                       tabular so the ranges scan as one block. */}
                   <bdi className="tpg-lecture-time">{it.startTime} — {it.endTime}</bdi>
                   <div className="tpg-lecture-body">
-                    <div className="tpg-lecture-name">{it.courseName}</div>
+                    {/* P-G3b — truncate-with-affordance: two lines max,
+                        the full name rides the title attribute (A4 P3-8:
+                        no truncation without a tooltip). */}
+                    <div className="tpg-lecture-name" title={it.courseName}>{it.courseName}</div>
                     <div className="list-row-sub">
                       {it.room ? `${it.room} · ` : ''}
                       {/* P2-1 (5-A7): a scheduled slot with no enrollments
@@ -214,6 +234,9 @@ export function TeacherSchedulePage() {
                       {it.enrolled === 0 ? 'لا طلاب مسجَّلين' : countAr(it.enrolled, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])}
                     </div>
                   </div>
+                  {/* Latin course code inside an RTL line — bdi isolates
+                      it on the row's trailing chip (5-B6: the sub-line is
+                      room + enrollment reality only). */}
                   <span className="hr-chip"><bdi>{it.courseCode}</bdi></span>
                 </div>
               ))}

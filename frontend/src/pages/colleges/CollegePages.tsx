@@ -999,6 +999,13 @@ export function CollegesLeaderboardPage() {
     return map;
   }, [q.data]);
 
+  /* R333 P-G3a (T-G1-01): the all-zero wall — when every metric column
+   * is dead, a 25-row table of «0»s is empty scaffolding, not a
+   * leaderboard. Guests (the public sheet) get a designed zero-state
+   * band instead; authed roles keep the full honest table (FR-010 —
+   * the people who run the university still see genuine zeros). */
+  const allZero = METRICS.every((m) => maxByMetric[m.key] === 0);
+
   const sorted = useMemo(() => {
     if (!q.data) return [];
     return q.data.colleges
@@ -1044,7 +1051,32 @@ export function CollegesLeaderboardPage() {
         />
       )}
 
-      {q.data && q.data.colleges.length > 0 && (
+      {/* R333 P-G3a (T-G1-01): the zero-state BAND — the honest answer to
+          «من يتصدّر؟» when nobody has scored yet: the blueprint motif
+          (mono [00] index on a hairline cell), one plain sentence, and
+          the one action the page still owns — browsing the colleges
+          themselves. Replaces the 25-row wall of zeros for guests. */}
+      {q.data && q.data.colleges.length > 0 && allZero && isGuest && (
+        <section className="leaderboard-zero" aria-labelledby="leaderboard-zero-title">
+          <span className="leaderboard-zero-index font-mono" dir="ltr" aria-hidden="true">[00]</span>
+          <div className="leaderboard-zero-body">
+            <h2 className="leaderboard-zero-title" id="leaderboard-zero-title">اللوحة تنتظر أول نقطة</h2>
+            <p className="leaderboard-zero-desc">
+              نقاط المنافسة تُحتسب من نشاط الطلاب المسجّلين — الاختبارات، المعامل،
+              والأبحاث. لا كلّيّة جمعت نقاطًا بعد هذا الفصل، لذا يقف الجميع على خط
+              الانطلاق: أول نشاط مسجّل يفتح الترتيب.
+            </p>
+          </div>
+          <div className="leaderboard-zero-actions">
+            <Link to="/colleges" className="btn ghost">
+              <Icon icon={Users} size={14} />
+              تصفّح الكلّيّات
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {q.data && q.data.colleges.length > 0 && !(allZero && isGuest) && (
         <Card title="لوحة المتصدّرين" icon={Trophy}>
           <div className="leaderboard-table-wrap">
             {/* tbl-stack (A8 P2-5): collapses to labelled cards on phones
@@ -1085,10 +1117,26 @@ export function CollegesLeaderboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {sorted.map((c) => (
-                  <tr key={c.id}>
+                {sorted.map((c, i) => {
+                  /* R333 P-G3a (T-G1-01): the podium — the top-3 of the
+                     ACTIVE metric in its descending reading (the default
+                     view) get a distinct visual register: a mono [01]
+                     rank chip (bidi-isolated, aria-hidden — the position
+                     is already conveyed by the sorted row order) with a
+                     scale jump over body type, and a hairline edge on
+                     the row. A dead column (all zeros) crowns nobody. */
+                  const podiumAlive = maxByMetric[sort.key] > 0 && sort.dir === -1;
+                  const podiumRank = sort.dir === -1 ? i + 1 : sorted.length - i;
+                  const podium = podiumAlive && podiumRank <= 3 ? podiumRank : null;
+                  return (
+                    <tr key={c.id} className={podium ? `leaderboard-row-top leaderboard-row-${podium}` : undefined}>
                     <td className="leaderboard-college" data-label="الكلّيّة">
                       <Link to={`/colleges/${c.id}`} className="leaderboard-college-link">
+                        {podium && (
+                          <span className="leaderboard-rank font-mono" dir="ltr" aria-hidden="true">
+                            {`[0${podium}]`}
+                          </span>
+                        )}
                         <span className="leaderboard-emoji" aria-hidden><EmojiIcon emoji={c.iconEmoji ?? '🏛️'} size={20} /></span>
                         <div>
                           <div className="leaderboard-college-name">{c.name}</div>
@@ -1132,8 +1180,9 @@ export function CollegesLeaderboardPage() {
                         </td>
                       );
                     })}
-                  </tr>
-                ))}
+                    </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </div>

@@ -295,6 +295,11 @@
 
 
 
+  /* R333 P-G3a (T-G1-02): the strip must never exceed the frame — the
+     scroll ITSELF is the design (the fade mask below is the affordance),
+     the page never widens. max-inline-size clamps the shrink-to-fit
+     line inside .pf-filterbar-filters (whose own min-inline-size:0 —
+     patterns.css — lets the slot reach this clamp). */
   .gallery-chip-strip {
     flex-wrap: nowrap;
     overflow-x: auto;
@@ -303,16 +308,19 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
     padding-block-end: var(--sp-1); /* leave room for the snap */
+    max-inline-size: 100%;
+    -webkit-mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
+    mask-image: linear-gradient(to left, transparent 0, var(--surface) 24px);
   }
   .gallery-chip-strip::-webkit-scrollbar { display: none; }
   .gallery-chip { scroll-snap-align: start; flex-shrink: 0; }
 
-  /* r183-B8 (A10 finding 4): the hidden-scrollbar AFFORDANCE. The strip
-     above hides its scrollbar entirely (scrollbar-width:none +
-     ::-webkit-scrollbar display:none), so at 320-390 the only
+  /* r183-B8 (A10 finding 4) — the mask's rationale, kept with the rule
+     it styles: the strip hides its scrollbar entirely (scrollbar-width:
+     none + ::-webkit-scrollbar display:none), so at 320-390 the only
      continuation cue was a 9px sliver of the next campus chip — 3 of 7
-     filters were effectively undiscoverable. An inline-end edge fade
-     now hints the scroll: a mask (not paint) ramps alpha transparent →
+     filters were effectively undiscoverable. The inline-end edge fade
+     hints the scroll: a mask (not paint) ramps alpha transparent →
      opaque across the first 24px of the inline end, over the scrolled
      content. Physical `to left` IS inline-end under the app-wide RTL
      (the same documented physical↔logical coupling as base.css
@@ -880,6 +888,98 @@ a.comp-card {
 .leaderboard-medal .medal-1 { color: var(--gold-ink, var(--gold)); }
 .leaderboard-medal .medal-2 { color: var(--text-muted); }
 .leaderboard-medal .medal-3 { color: var(--accent); }
+
+/* R333 P-G3a (T-G1-01) — the podium register. The reference
+   (/auth/register [01]/[02] cards) reads rank as a MONO BRACKETED INDEX
+   on a hairline cell, so the top-3 chip is exactly that voice at a
+   larger grade (scale jump over the fs-sm body): a bordered square,
+   tabular mono, with the medal inks already on the page (gold/silver/
+   the orange accent) — no new colors enter the sheet. Rank 1 is the
+   ink fill (the .gallery-chip-on grammar: dark rect, light label);
+   2–3 stay outlined. The row keeps its own hairline edge so the
+   hierarchy survives a fast scan down the table. */
+.leaderboard-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 30px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.leaderboard-row-top.leaderboard-row-1 .leaderboard-rank {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-fg);
+  font-weight: var(--fw-semibold);
+}
+.leaderboard-row-top.leaderboard-row-2 .leaderboard-rank { color: var(--text-secondary); }
+.leaderboard-row-top.leaderboard-row-3 .leaderboard-rank {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  color: var(--accent-ink);
+}
+.leaderboard-row-top.leaderboard-row-1 .leaderboard-college-name { font-weight: var(--fw-bold); }
+
+/* The zero-state BAND — the honest «لوحة تنتظر أول نقطة» that replaces
+   the 25-row all-zero wall for guests (the blueprint motif: mono [00]
+   index + hairline frame + one plain sentence + the page's one real
+   action). Grid collapses to a column on phones; the band uses the
+   section cadence (--sp-6 padding, no one-off gaps). */
+.leaderboard-zero {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-6) var(--sp-5);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+}
+.leaderboard-zero-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  color: var(--text-muted);
+  font-size: var(--fs-body);
+  letter-spacing: 0.04em;
+}
+.leaderboard-zero-body { display: grid; gap: var(--sp-2); min-inline-size: 0; }
+.leaderboard-zero-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-semibold);
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+.leaderboard-zero-desc {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.8;
+  color: var(--text-secondary);
+  max-inline-size: 62ch;
+}
+.leaderboard-zero-actions { display: flex; align-items: center; }
+@media (max-width: 640px) {
+  .leaderboard-zero {
+    grid-template-columns: auto 1fr;
+    padding: var(--sp-5) var(--sp-4);
+  }
+  .leaderboard-zero-actions {
+    grid-column: 1 / -1;
+    justify-content: start;
+  }
+}
 
 /* A8 P2-5: the leaderboard joins the shared .tbl-stack collapse — on
    phones the 720px floor would still force the stacked cards wide. */

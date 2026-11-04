@@ -106,20 +106,6 @@
   }
 
   /* My-summary level band (catalog). */
-  .level-band {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-    flex-wrap: wrap;
-  }
-  .level-band-main {
-    flex: 1;
-    min-inline-size: 220px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  §track-detail — back link, hero, lesson rows, lesson prose    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
@@ -164,312 +150,24 @@
 
   /* Track hero — tinted band. Hierarchy via tint + hairline, not a
      colored side-stripe (the 3px borderRight is gone — ruling #4). */
-  .track-hero {
-    --track-accent: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: var(--sp-5);
-    flex-wrap: wrap;
-    padding: var(--sp-6);
-    background: color-mix(in srgb, var(--track-accent) 7%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--track-accent) 22%, var(--rule));
-    border-radius: var(--r-xl);
-  }
-  .track-hero-icon {
-    inline-size: 64px;
-    block-size: 64px;
-    border-radius: var(--r-2xl);
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--track-accent) 14%, var(--surface));
-    color: var(--track-accent);
-    /* r313: the icon well's edge is a real hairline border — the inset
-       box-shadow ring retired with the shadow sweep. */
-    border: 1px solid color-mix(in srgb, var(--track-accent) 30%, transparent);
-  }
-  .track-hero-main {
-    flex: 1;
-    min-inline-size: 240px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-  .track-hero-cat {
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-semibold);
-    color: var(--text-muted);
-    line-height: var(--type-label-line-height);
-  }
-  .track-hero-title {
-    font-family: var(--font-display);
-    /* r305 (2-c): سلّم ترويسة المنتج — 24px (--type-headline-size-md)،
-       نفس صوت .pf-page-title و.lesson-title (عقد r304 في patterns.css:
-       عنوان الإطار يقود دون أن يسيطر). كان --type-headline-size-lg
-       (30px — صوت الأرضية التعريفية). يصعد القاعدة لأرضيّتي track-hero:
-       صفحة المسار وهبوط المقرّر لدى الأستاذ (المستهلكان الحيّان). */
-    font-size: var(--type-headline-size-md);
-    font-weight: var(--type-headline-weight);
-    line-height: var(--lh-snug);
-    color: var(--text);
-    margin: 0;
-  }
-  .track-hero-summary {
-    /* r305 (2-c): صوت الوصف في العائلة 16px (--fs-body، كما في
-       pf-page-desc) — كان 13px (fs-sm) فيقرأ وصف المسار كلحظة كروم
-       لا كلحظة متن. المستهلكة الوحيدة صفحة المسار (هبوط الأستاذ
-       لا يرسم هذا الصنف). */
-    font-size: var(--fs-body);
-    color: var(--text-secondary);
-    line-height: var(--lh-base);
-    max-inline-size: 64ch;
-  }
-  .track-hero-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-2);
-    font-variant-numeric: tabular-nums;
-  }
-
   /* Themed primary CTA — tinted ground + neutral ink, never a raw API
      hex under white text (0-d P2 contrast fix). Used on the track hero
      and the lesson completion actions. */
-  .track-hero .btn.primary,
-  .lesson-actions .btn.primary {
-    background: color-mix(in srgb, var(--track-accent) 16%, var(--surface));
-    border-color: color-mix(in srgb, var(--track-accent) 45%, var(--border-strong));
-    color: var(--text);
-  }
-  @media (hover: hover) and (pointer: fine) {
-  .track-hero .btn.primary:hover,
-    .lesson-actions .btn.primary:hover {
-      background: color-mix(in srgb, var(--track-accent) 22%, var(--surface));
-      color: var(--text);
-    }
-  }
-  .track-hero .btn.primary:disabled,
-  .lesson-actions .btn.primary:disabled { color: var(--text); }
-  @media (max-width: 640px) {
-    .track-hero { padding: var(--sp-5); }
-    .track-hero-icon { inline-size: 56px; block-size: 56px; }
-    .track-hero > .btn { inline-size: 100%; }
-  }
 
   /* Lesson rows — locked / next (available) / done states. */
-  .lesson-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    min-block-size: 56px;
-    padding: var(--sp-3) var(--sp-4);
-    border-radius: var(--r-md);
-    border: 1px solid transparent;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    transition:
-      background var(--t-fast) var(--ease),
-      border-color var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-  .lesson-row:hover { background: var(--surface-2); }
-  }
-  .lesson-row:active { background: var(--surface-3); }
   /* first uncompleted lesson — the "continue here" affordance */
-  .lesson-row.next {
-    background: color-mix(in srgb, var(--track-accent, var(--accent)) 6%, var(--surface));
-    border-color: color-mix(in srgb, var(--track-accent, var(--accent)) 28%, transparent);
-  }
-  @media (hover: hover) and (pointer: fine) {
-  .lesson-row.next:hover {
-      background: color-mix(in srgb, var(--track-accent, var(--accent)) 10%, var(--surface));
-    }
-  }
-  .lesson-row.done .lesson-row-title { color: var(--text-secondary); }
-  .lesson-row.locked {
-    cursor: not-allowed;
-  }
-  @media (hover: hover) and (pointer: fine) {
-  .lesson-row.locked:hover { background: transparent; }
-  }
-  .lesson-row.locked .lesson-row-title,
-  .lesson-row.locked .lesson-row-sub,
-  .lesson-row.locked .lesson-row-meta { color: var(--text-muted); }
-
-  .lesson-row-num {
-    inline-size: 36px;
-    block-size: 36px;
-    border-radius: var(--r-full);
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--surface-3);
-    color: var(--text-secondary);
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold);
-    font-variant-numeric: tabular-nums;
-  }
-  .lesson-row.done .lesson-row-num {
-    background: var(--success-soft);
-    color: var(--success-ink);
-  }
-  .lesson-row.next .lesson-row-num {
-    background: color-mix(in srgb, var(--track-accent, var(--accent)) 14%, var(--surface));
-    color: color-mix(in srgb, var(--track-accent, var(--accent)) 60%, var(--text));
-    /* r313: hairline border, not an inset shadow ring. */
-    border: 1px solid color-mix(in srgb, var(--track-accent, var(--accent)) 30%, transparent);
-  }
-  .lesson-row.locked .lesson-row-num {
-    background: transparent;
-    border: 1px dashed var(--border-strong);
-    color: var(--text-faint);
-  }
-
-  .lesson-row-body {
-    flex: 1;
-    min-inline-size: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-0-5);
-  }
-  .lesson-row-title {
-    /* r305 (2-c): عنوان الصف بصوت عقد الصفوف (pf-row-title = 16px/
-       600) — كان 13px فيقرأ الدرس أسفل من أقرانه في قوائم العائلة
-       رغم أنه محتوى الصفحة نفسه. */
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .lesson-row-sub {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-  }
-  .lesson-row-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    flex-shrink: 0;
-    font-variant-numeric: tabular-nums;
-  }
-
   /* Lesson prose — measured reading column. */
-  .lesson-content {
-    max-inline-size: 68ch;
-    font-size: var(--fs-body);
-    line-height: var(--lh-base);
-    color: var(--text);
-    margin-block: var(--sp-4) var(--sp-5);
-  }
-  .lesson-content p + p { margin-block-start: var(--sp-4); }
-
-  .lesson-kicker {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-2);
-    font-size: var(--fs-xxs);
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-    margin-block-end: var(--sp-2);
-  }
-  .lesson-title {
-    font-family: var(--font-display);
-    font-size: var(--type-headline-size-md);
-    font-weight: var(--type-headline-weight);
-    line-height: 1.3;
-    color: var(--text);
-    margin: 0 0 var(--sp-2);
-  }
-
   /* Checkpoint quiz — tinted panel (the 3px borderRight stripe is gone,
      ruling #4; hierarchy via tint + hairline + icon chip). */
-  .lesson-quiz {
-    --track-accent: var(--accent);
-    background: color-mix(in srgb, var(--track-accent) 6%, var(--surface));
-    border: 1px solid color-mix(in srgb, var(--track-accent) 22%, var(--rule));
-    border-radius: var(--r-lg);
-    padding: var(--sp-5);
-    margin-block-start: var(--sp-5);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-  }
-  .lesson-quiz-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-semibold);
-    color: color-mix(in srgb, var(--track-accent) 55%, var(--text));
-    line-height: var(--type-label-line-height);
-    /* functional label (سؤال التحقق) — not a marketing eyebrow; no
-       letter-spacing (Arabic cursive, ruling #2) */
-  }
-  .lesson-quiz-q {
-    font-size: var(--type-body-size-lg);
-    font-weight: var(--fw-semibold);
-    line-height: var(--lh-base);
-    color: var(--text);
-  }
-  .lesson-quiz input:disabled {
-    opacity: var(--state-input-disabled-opacity);
-    cursor: not-allowed;
-  }
-
   /* Lesson page action row (completion CTA + next-lesson ghost). */
-  .lesson-actions {
-    --track-accent: var(--accent);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-4);
-  }
-
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  §lesson-reward — completion feedback + badge-earned pulse     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-
-  .reward-feedback {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--sp-2);
-    margin-block-start: var(--sp-5);
-    padding: var(--sp-4);
-    border-radius: var(--r-lg);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    animation: madarek-reward-in var(--motion-duration-medium) var(--motion-ease-decelerate) both;
-  }
-  .reward-feedback.ok {
-    background: var(--success-soft);
-    border: 1px solid color-mix(in srgb, var(--success) 30%, transparent);
-    color: var(--success-ink);
-  }
-  .reward-feedback.fail {
-    background: var(--danger-soft);
-    border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent);
-    color: var(--danger-ink);
-  }
   /* pills sit on the card surface inside the tinted banner so both
      badge + point chips stay legible */
-  .reward-feedback .reward-pill {
-    background: var(--surface);
-    color: var(--success-ink);
-    font-variant-numeric: tabular-nums;
-  }
-
   /* THE authored moment — a one-shot scale + ring pulse on newly
      earned badges only (the class renders exclusively on the reward
      feedback of a fresh completion; no idle glow anywhere). */
-  .badge-pop {
-    animation: madarek-badge-earned var(--motion-duration-stat) var(--motion-ease-emphasized) both;
-    animation-delay: calc(var(--motion-stagger-step) * var(--badge-i, 0));
-  }
-
   @keyframes madarek-badge-earned {
     0% {
       transform: scale(0.6);
@@ -502,42 +200,8 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  §achievements — badge tiles + leaderboard                    ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-
-  .badge-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-    gap: var(--sp-4);
-  }
-  @media (max-width: 640px) {
-    .badge-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: var(--sp-3); }
-  }
-
-  .badge-tile {
-    --rarity: var(--gold);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: var(--sp-2);
-    padding: var(--sp-5) var(--sp-4);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-lg);
-    transition:
-      border-color var(--t-fast) var(--ease),
-      box-shadow var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
-  }
   /* earned — full color + subtle lift */
-  @media (hover: hover) and (pointer: fine) {
-  .badge-tile.earned:hover {
-      transform: translateY(-2px);
-      border-color: color-mix(in srgb, var(--rarity) 40%, var(--rule));
-      box-shadow: var(--shadow-card-h);
-    }
-  }
   /* locked — desaturated tile, ghost icon well */
-  .badge-tile.locked .badge-tile-title { color: var(--text-muted); }
   /* r171c (WCAG 1.4.3): was var(--text-faint) — the 12px fs-xs
      description on the tile surface sat marginal for the AA floor.
      --text-muted keeps it comfortably (measured 5.26:1 light on the
@@ -546,49 +210,6 @@
      rests on size+weight, not a sub-AA color. --text-faint itself
      keeps its other consumers. */
   .badge-tile.locked .badge-tile-desc { color: var(--text-muted); }
-
-  .badge-tile-icon {
-    inline-size: 56px;
-    block-size: 56px;
-    border-radius: var(--r-lg);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .badge-tile.earned .badge-tile-icon {
-    background: color-mix(in srgb, var(--rarity) 14%, var(--surface));
-    /* mix the rarity hue toward the theme ink so both light pastels
-       and dark grounds keep ≥3:1 for the glyph */
-    color: color-mix(in srgb, var(--rarity) 60%, var(--text));
-    /* r313: hairline border, not an inset shadow ring. */
-    border: 1.5px solid color-mix(in srgb, var(--rarity) 30%, transparent);
-  }
-  .badge-tile.locked .badge-tile-icon {
-    background: transparent;
-    border: 1px dashed var(--border-strong);
-    color: var(--text-faint);
-  }
-
-  .badge-tile-title {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    line-height: 1.4;
-  }
-  .badge-tile-desc {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-  }
-  .badge-tile-rarity {
-    display: inline-flex;
-    align-items: center;
-    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 */
-    border-radius: var(--r-full);
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-semibold);
-  }
   .badge-tile.earned .badge-tile-rarity {
     background: color-mix(in srgb, var(--rarity) 12%, var(--surface));
     /* r171c (WCAG 1.4.3, browser-measured): the text mix was 60%
@@ -607,33 +228,9 @@
     background: var(--surface-3);
     color: var(--text-muted);
   }
-
   /* Leaderboard — ranked list. Rank chips for the top 3 use the
      existing pastel families (no new colors): gold = --c-yellow-*,
      silver = --c-grey-*, bronze = --c-peach-*. */
-  .leaderboard-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-  .leaderboard-row {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-2) var(--sp-3);
-    border-radius: var(--r-md);
-    transition: background var(--t-fast) var(--ease);
-    /* authored entrance — rows stagger in via --lb-i (capped in TSX
-       at --motion-stagger-cap) */
-    animation: madarek-lb-row-in var(--motion-duration-reveal) var(--motion-ease-decelerate) both;
-    animation-delay: calc(var(--motion-stagger-step) * var(--lb-i, 0));
-  }
-  @media (hover: hover) and (pointer: fine) {
-  .leaderboard-row:hover { background: var(--surface-2); }
-  }
 
   @keyframes madarek-lb-row-in {
     from {
@@ -645,7 +242,6 @@
       transform: translateY(0);
     }
   }
-
   .leaderboard-rank {
     inline-size: 30px;
     block-size: 30px;
@@ -686,40 +282,8 @@
   .leaderboard-rank.rank-3 {
     color: var(--text-secondary);
   }
-
-  .leaderboard-name {
-    flex: 1;
-    min-inline-size: 0;
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .leaderboard-tier {
-    flex-shrink: 0;
-    font-size: var(--fs-xxs);
-    color: var(--text-muted);
-    /* r313: tier codes are mono micro-labels (Latin digits). */
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-  }
-  .leaderboard-points {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--gold-ink);
-    /* r313: scores are mono micro-labels (Latin digits, tabular). */
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-  }
   @media (max-width: 640px) {
     /* protect name + points on narrow screens */
-    .leaderboard-tier { display: none; }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -734,137 +298,20 @@
      RTL via the [dir] override) — compositor-only, no per-frame
      reflow (previously the same mechanism class as .progress-fill's
      width transition). */
-  .xp-track {
-    display: block;
-    block-size: 10px;
-    background: var(--surface-3);
-    border-radius: var(--r-full);
-    overflow: clip;
-  }
-  .xp-fill {
-    display: block;
-    block-size: 100%;
-    inline-size: 100%;
-    border-radius: var(--r-full);
-    background: var(--gold);
-    transform-origin: left center;
-    transform: scaleX(0);
-    transition: transform var(--motion-duration-stat) var(--motion-ease-decelerate);
-  }
-  [dir="rtl"] .xp-fill { transform-origin: right center; }
-
   /* Tier orb — level medallion. The tier hex rides on --tier-color
      (set inline by TSX) and is only consumed through color-mix. */
-  .tier-orb {
-    --tier-color: var(--accent);
-    --tier-orb-size: 48px;
-    inline-size: var(--tier-orb-size);
-    block-size: var(--tier-orb-size);
-    border-radius: 50%;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-size: calc(var(--tier-orb-size) * 0.38);
-    font-weight: var(--fw-bold);
-    font-variant-numeric: tabular-nums;
-    background: color-mix(in srgb, var(--tier-color) 12%, var(--surface));
-    color: color-mix(in srgb, var(--tier-color) 60%, var(--text));
-    border: 2px solid color-mix(in srgb, var(--tier-color) 45%, var(--border));
-  }
-  .tier-orb.lg { --tier-orb-size: 72px; }
-  .tier-orb:where([data-empty]) {
-    background: var(--surface-2);
-    color: var(--text-muted);
-    border-color: var(--border);
-  }
-
   /* Achievement rows (GamificationPage "الإنجازات المحققة",
      ProfilePage achievements) — same list-row grammar as the training
      module: hairline row, gold icon well, tabular XP chip. */
-  .achievement {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-    padding: var(--sp-3);
-    background: var(--surface);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-md);
-    /* r313: flat — no card shadow, no hover lift (the reference's
-       cards sit on hairlines; depth is the border step). */
-    transition: border-color var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-  .achievement:hover {
-      border-color: var(--border-strong);
-    }
-  }
-  .achievement-icon {
-    inline-size: 40px;
-    block-size: 40px;
-    border-radius: var(--r-md);
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--gold-soft);
-    color: var(--gold-ink);
-  }
-  .achievement-name {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-  }
-  .achievement-desc {
-    font-size: var(--fs-xs);
-    color: var(--text-muted);
-    line-height: var(--lh-base);
-  }
-
   /* Certificate icon well (AchievementsPage certificates tab). */
-  .cert-icon {
-    inline-size: 56px;
-    block-size: 56px;
-    border-radius: var(--r-md);
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: color-mix(in srgb, var(--cert-accent, var(--accent)) 12%, var(--surface));
-    color: color-mix(in srgb, var(--cert-accent, var(--accent)) 60%, var(--text));
-    /* r313: hairline border, not an inset shadow ring. */
-    border: 1px solid color-mix(in srgb, var(--cert-accent, var(--accent)) 22%, transparent);
-  }
-
   /* ── Reduced-motion off-switches (guardrail #6 — the global token
      belts already collapse the durations/delays; these kill the
      keyframe animations outright so nothing loops or slides) ────── */
-  @media (prefers-reduced-motion: reduce) {
-    .badge-pop,
-    .reward-feedback,
-    .leaderboard-row {
-      animation: none;
-    }
-    .xp-fill { transition: none; }
-  }
   /* r265 — صفوف المسارات: شريط التقدّم المضغوط داخل عمود الطرف
      (عرض مضبوط لا يشدّ الصف) والسطر الثانوي عمودٌ من سطرين — البقية
      من عقد patterns (§CP ROWS في components.css). G: القواعد تعود
      داخل @layer pages (كانت خارجها — شذوذ وزن مقابل §CP في
      components.css). */
-  .cp-progress {
-    inline-size: 150px;
-  }
-  @media (max-width: 720px) {
-    .cp-progress { inline-size: 120px; }
-  }
-  .cp-meta-col {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-1);
-  }
-
   /* ── G النهائية — وصفات كانت سطرية في TrainingPages ─────────────── */
 
   /* بطاقة الشهادة (بطاقة الإنجازات): أيقونة + جسم — القيم نفسها التي
@@ -890,13 +337,11 @@
     margin-block-start: var(--sp-2);
     flex-wrap: wrap;
   }
-
   /* زرّ توسيع/طيّ الترتيب (الهاتف): عرض كامل فوق القائمة. */
   .ach-lb-toggle {
     inline-size: 100%;
     margin-block-start: var(--sp-3);
   }
-
   /* ملخّص الدرس تحت عنوانه — المسافة كانت inline. */
   .lesson-summary {
     margin-block-end: var(--sp-3);

@@ -32,9 +32,13 @@
   display: flex;
   align-items: flex-start;
   gap: var(--sp-3);
-  padding: var(--sp-3) 0;
+  padding: var(--sp-3) var(--sp-2);
   position: relative;
   border-bottom: 1px solid var(--border);
+  animation: owner-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
+  animation-delay: calc(
+    var(--motion-stagger-step) * min(var(--owner-row-i, 0), var(--motion-stagger-cap))
+  );
   /* R329 (gate:clean): the row transition is polish.css's overrides
      seat (.list-row/.feed-item/.owner-timeline-item — background+
      transform) — this pages-layer copy was inert. */
@@ -52,21 +56,6 @@
 }
 
 /* ── Event Icon ────────────────────────────────────────────── */
-.owner-event-icon {
-  width: 32px;
-  height: 32px;
-  /* R313 (WP-F · D16): circular primitive — the one radius the system
-     keeps (var(--r-full)). */
-  border-radius: var(--r-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  position: relative;
-  /* local paint-order above the timeline spine — not a --z-* layer */
-  z-index: 1;
-}
-
 .owner-event-icon.green {
   background: var(--success-soft);
   /* R131-F12 (audit A7 §5-1, WCAG 1.4.11 advisory): light --success
@@ -85,19 +74,16 @@
   background: var(--accent-soft);
   color: var(--accent-ink);
 }
-
 .owner-event-icon.purple {
   background: var(--c-lavender-bg);
   color: var(--c-lavender-deep);
 }
-
 .owner-event-icon.amber {
   background: var(--warning-soft);
   /* R131-F12: 2.04:1 light (worst well pair) → 6.98:1 via -ink; dark
      --warning-ink ≡ --warning (#ECC97D) — pixel-identical. */
   color: var(--warning-ink);
 }
-
 .owner-event-icon.red {
   background: var(--danger-soft);
   /* R131-F12: 2.57:1 light → 9.02:1 via -ink; dark --danger-ink ≡
@@ -114,72 +100,6 @@
    ring tokens (ruling #13 — polish v22's universal [tabindex] selector
    already covers this element; the explicit rule guards against
    selector drift). */
-.owner-toggle-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
-  border-bottom: 1px solid var(--border);
-}
-
-.owner-toggle-row:last-child {
-  border-bottom: none;
-}
-
-.owner-toggle-track {
-  position: relative;
-  /* 44×44 hit area; painted track = 40×22 via the ::before inset */
-  inline-size: 44px;
-  block-size: 44px;
-  border-radius: var(--r-full);
-  background: transparent;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.owner-toggle-track::before {
-  content: '';
-  position: absolute;
-  /* painted track: 44−2×11 = 22 tall, 44−2×2 = 40 wide
-     R313 (WP-F · D16): square track on the hairline well — the thumb
-     keeps its circle (circular primitive). */
-  inset-block: 11px;
-  inset-inline: 2px;
-  border-radius: var(--r-xs);
-  background: var(--surface-3);
-  /* r149 (R3-A3 M5): 240ms → 160ms — قلب المفتاح كان يقرأ كسولًا
-     (3× أبطأ من سجل الضغط 80ms في بقية المنصة). */
-  transition: background var(--motion-duration-short) var(--ease);
-}
-
-.owner-toggle-track.on::before {
-  background: var(--accent);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .owner-toggle-track:not(.disabled):hover::before {
-    background: var(--neutral-300);
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .owner-toggle-track.on:not(.disabled):hover::before {
-    background: var(--accent-hover);
-  }
-}
-
-.owner-toggle-track.disabled {
-  opacity: var(--state-input-disabled-opacity);
-  cursor: not-allowed;
-}
-
-.owner-toggle-track:focus-visible {
-  outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
-  outline-offset: var(--state-focus-ring-offset);
-}
-
 .owner-toggle-thumb {
   inline-size: 16px;
   block-size: 16px;
@@ -214,35 +134,11 @@
 .owner-toggle-track.on .owner-toggle-thumb {
   transform: translateX(calc(var(--motion-direction) * 18px));
 }
+
 /* r149 (R3-A3 M5): لمسة الضغط — الخاصية المستقلة scale تتراكب مع
    translateX دون تعارض (لا تحتاج معرفة حالة on/off). */
 .owner-toggle-track:not(.disabled):active .owner-toggle-thumb {
   scale: 0.88;
-}
-
-.owner-toggle-label {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-0-5);
-  flex: 1;
-  /* the label text toggles too (ToggleSwitch.tsx wave 3-c) — native
-     label-for behavior for a switch row */
-  cursor: pointer;
-}
-
-.owner-toggle-row:has(.owner-toggle-track.disabled) .owner-toggle-label {
-  cursor: not-allowed;
-}
-
-.owner-toggle-label-text {
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--text);
-}
-
-.owner-toggle-label-desc {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
 }
 
 /* ── Confirm Dialog (inside the shared <Modal> primitive) ──── */
@@ -253,33 +149,6 @@
    classes were referenced but undefined (0-e P0-13) — authored here
    with .modal-header/.modal-body/.modal-footer rhythm so the dialog
    reads as a modal instead of floating unpadded text. */
-.owner-confirm-title {
-  padding: var(--sp-5) var(--sp-6) 0;
-  font-family: var(--font-display);
-  font-size: var(--type-headline-size-md);
-  font-weight: var(--type-headline-weight);
-  color: var(--text);
-  margin: 0;
-}
-
-.owner-confirm-message {
-  padding: var(--sp-3) var(--sp-6) var(--sp-2);
-  font-size: var(--fs-body);
-  color: var(--text-secondary);
-  line-height: var(--lh-base);
-  margin: 0;
-}
-
-.owner-confirm-actions {
-  display: flex;
-  gap: var(--sp-2);
-  justify-content: flex-end;
-  /* modal-card is a flex column — pin the footer down and give it the
-     .modal-footer chrome */
-  margin-block-start: auto;
-  padding: var(--sp-4) var(--sp-6);
-  border-block-start: 1px solid var(--rule);
-}
 
 /* ── Action Bar ────────────────────────────────────────────── */
 .owner-action-bar {
@@ -302,144 +171,18 @@
    rg over src = 0 hits.) */
 
 /* ── Key-Value Row ─────────────────────────────────────────── */
-.owner-kv-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
-  border-bottom: 1px solid var(--border);
-  /* r148 (AUDIT-3 M7): على 360px كان code (min-width:160) + input بلا
-     min-width:0 يفيضان أفقياً — الالتفاف مع تصغير حد الـ code. */
-  flex-wrap: wrap;
-}
-
-.owner-kv-row:last-child {
-  border-bottom: none;
-}
-
-.owner-kv-row code {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  color: var(--accent-ink, var(--accent));
-  min-width: 160px;
-  flex-shrink: 0;
-}
-
-@media (max-width: 480px) {
-  .owner-kv-row code { min-width: 120px; }
-}
-
-.owner-kv-row input {
-  flex: 1;
-  min-width: 0;
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  /* r149 (R3-A2 #12): على السلم — كانت 6/10 خامًا */
-  padding: var(--sp-2) var(--sp-4);
-  /* 5-C2 (A3 1d, 21-b pattern): was var(--fs-sm) 13px — iOS Safari
-     zooms the whole page on any <16px control focus (the components.css
-     global input recipe already floors at 16; this pages-layer override
-     re-introduced the zoom for owner surfaces). */
-  font-size: max(16px, var(--type-body-size));
-  color: var(--text);
-}
 
 /* ── Error Entry ───────────────────────────────────────────── */
-.owner-error-entry {
-  padding: var(--sp-3) 0; /* r149 (R3-A2 R2): صفوف مالكة 12px مثل بقية الصفوف المحدودة */
-  border-bottom: 1px solid var(--border);
-}
-
-.owner-error-entry:last-child {
-  border-bottom: none;
-}
-
-.owner-error-entry-head {
-  /* 22-b (4-A7 P1-2): now a real <button> (was a click-only div —
-     WCAG 2.1.1). Full-row hit target, UA button chrome reset, and
-     the rotating chevron reuses the activity feed's disclosure
-     motion language. */
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  cursor: pointer;
-  font-size: var(--fs-sm);
-  inline-size: 100%;
-  padding: var(--sp-0-5) 0;
-  background: none;
-  border: none;
-  border-radius: var(--r-xs);
-  color: inherit;
-  font-family: inherit;
-  text-align: start;
-  transition: color var(--t-fast) var(--ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .owner-error-entry-head:hover .message {
-    color: var(--danger-ink, var(--danger));
-    text-decoration: underline;
-    text-underline-offset: 0.18em;
-  }
-}
-
-.owner-error-entry-head:focus-visible {
-  outline: 2px solid var(--state-focus-ring-color);
-  outline-offset: 2px;
-}
-
-.owner-error-entry-head .owner-detail-chevron {
-  color: var(--text-subtle);
-  flex-shrink: 0;
-  transition: transform var(--t-fast) var(--ease);
-}
-
-.owner-error-entry-head[aria-expanded='true'] .owner-detail-chevron {
-  transform: rotate(180deg);
-}
 
 /* r299 (the 22-b P3-3 family, third member): the mono stack came off —
    these timestamps are ar-LY dates + Arabic day-periods («ص/م») and
    Plex Mono has no Arabic glyphs, so every Arabic run fell to a
    per-glyph system fallback mid-line. Tabular numerals stay so the
    digits align; mono belongs to identifiers, not dates. */
-.owner-error-entry-head .timestamp {
-  font-size: var(--fs-xs);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-subtle);
-  flex-shrink: 0;
-}
-
-.owner-error-entry-head .message {
-  color: var(--danger-ink, var(--danger));
-  flex: 1;
-  font-weight: var(--fw-medium);
-}
-
-.owner-error-entry-stack {
-  margin-top: var(--sp-2);
-  padding: var(--sp-2) var(--sp-3);
-  background: var(--surface-2);
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
-  white-space: pre-wrap;
-  word-break: break-all;
-}
 
 /* 22-b (4-A7 P3-7): the stack's structural spacing de-inlined from
    per-node style props (the classes the 6-b section reserved for
    exactly this). */
-.owner-stack-field {
-  margin-block-end: var(--sp-2);
-}
-
-.owner-error-entry-stack pre {
-  margin-block-start: var(--sp-2);
-}
 
 /* ── Table enhancements ────────────────────────────────────── */
 /* (r150d): the .owner-table family RETIRED onto the canonical .table —
@@ -458,13 +201,6 @@
 /* r252: the users directory's inline-expansion body (the .pf-row-body
    child) — the actions row: joined date, role picker, status toggle.
    Wraps on phones; controls keep the 44px craft floor via .btn/.input. */
-.owner-row-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  padding-block-start: var(--sp-2);
-}
 
 /* ── r254: the empty-faculties rollup (OwnerInstitutionDetailPage) ──
    The 25× empty-card wall dies here: the content faculties render as
@@ -472,61 +208,6 @@
    whose body lists the bare rows (name · city · duplicate annotation)
    each with its own add-department affordance. Surface-step styling
    only — no new borders, no walls. */
-.owner-empty-rollup {
-  border-radius: var(--r-lg);
-  background: var(--surface-2);
-  padding: var(--sp-2) var(--sp-3);
-}
-.owner-empty-rollup-head {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  inline-size: 100%;
-  min-block-size: 44px;
-  padding: var(--sp-2);
-  border: 0;
-  background: none;
-  color: var(--text-secondary, var(--text));
-  font: inherit;
-  font-size: var(--fs-sm);
-  text-align: start;
-  cursor: pointer;
-  border-radius: var(--r-md);
-}
-.owner-empty-rollup-head .owner-detail-chevron {
-  flex-shrink: 0;
-  color: var(--text-muted);
-}
-@media (hover: hover) and (pointer: fine) {
-  .owner-empty-rollup-head:hover {
-    background: var(--surface-3);
-  }
-}
-.owner-empty-rollup-body {
-  display: flex;
-  flex-direction: column;
-  padding-block-start: var(--sp-1);
-}
-.owner-empty-rollup-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  padding-block: var(--sp-1-5);
-  border-block-end: 1px dashed var(--border);
-}
-.owner-empty-rollup-row:last-child {
-  border-block-end: none;
-}
-.owner-empty-rollup-name {
-  font-weight: var(--fw-medium);
-  color: var(--text);
-}
-.owner-empty-rollup-meta {
-  color: var(--text-muted);
-  font-size: max(var(--fs-xxs), 13px); /* 13px Arabic floor */
-  margin-inline-end: auto;
-}
 
 /* ── Pagination ────────────────────────────────────────────── */
 /* 13-17 dead-selector sweep (11-g P2-7): .owner-pagination deleted —
@@ -572,16 +253,16 @@
   flex-shrink: 0;
 }
 
-.owner-health-dot.green { background: var(--success); }
+.owner-health-dot.green {
+  background: var(--success);
+  position: relative;
+  animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
+}
 
 /* (r153e: the green dot's half of the v17 heartbeat family moved
    home from polish.css — the same authored moment as
    .owner-live-pulse in the Live Pulse section, declarations
    verbatim; the keyframes live there.) */
-.owner-health-dot.green {
-  position: relative;
-  animation: madarek-heartbeat var(--motion-duration-ambient) var(--motion-ease-standard) infinite;
-}
 
 .owner-health-dot.green::after {
   content: '';
@@ -627,25 +308,8 @@
 }
 
 /* ── Filter pills row ──────────────────────────────────────── */
-.owner-filter-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-2);
-}
 
 /* ── Metadata preview ──────────────────────────────────────── */
-.owner-meta-preview {
-  /* r153h: 6px → --sp-1-5 (الـ10px خارج السلم — دين منفصل) */
-  margin-top: var(--sp-1-5);
-  padding: var(--sp-1-5) var(--sp-2-5);
-  background: var(--surface-2);
-  border-radius: var(--r-sm);
-  font-family: var(--font-mono);
-  font-size: var(--fs-xxs);
-  color: var(--text-subtle);
-  max-height: 80px;
-  overflow: auto;
-}
 
 /* ── Command Center: Live Pulse ────────────────────────────── */
 /* (r153e: the v17 heartbeat family moved home from polish.css's
@@ -720,27 +384,6 @@
    hairline — severity keeps its color on the leading edge plus the
    soft wash below. Hover was a border+shadow ghost card; elevation is
    now declared once (quiet border shift). */
-.owner-alert-card {
-  padding: var(--sp-4);
-  background: var(--surface-1);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  margin-bottom: var(--sp-3);
-  /* R313 (WP-F · D16): flat card — the hairline carries the depth;
-     the shadow pair + its transition track retired. */
-  transition: border-color var(--t-fast) var(--ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .owner-alert-card:hover {
-    border-color: var(--border-strong);
-  }
-}
-
-.owner-alert-card.critical {
-  border-inline-start-color: var(--danger);
-  background: color-mix(in srgb, var(--danger) 3%, var(--surface-1));
-}
 
 /* r299: severity 'error' — the second member of the critical pair
    (ownerLabels.isCriticalAlert) — had NO edge/wash rule, so the most
@@ -751,49 +394,9 @@
   background: color-mix(in srgb, var(--danger) 3%, var(--surface-1));
 }
 
-.owner-alert-card.warning {
-  border-inline-start-color: var(--warning);
-  background: color-mix(in srgb, var(--warning) 3%, var(--surface-1));
-}
-
-.owner-alert-card.info {
-  border-inline-start-color: var(--accent);
-}
-
-.owner-alert-card-header {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin-bottom: var(--sp-2);
-}
-
-.owner-alert-card-header .title {
-  flex: 1;
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-sm);
-  color: var(--text);
-}
-
 /* r299 (the 22-b P3-3 family): mono off the container — the stamp
    is an ar-LY date + Arabic day-period; the digits keep tabular
    numerals (mono belongs to identifiers, not dates). */
-.owner-alert-card-header .time {
-  font-size: var(--fs-xs);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-subtle);
-}
-
-.owner-alert-card .message {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
-  margin-bottom: var(--sp-3);
-}
-
-.owner-alert-card .actions {
-  display: flex;
-  gap: var(--sp-2);
-}
 
 /* ── Command Center: Stat Highlight ───────────────────────── */
 /* 13-17 dead-selector sweep (11-g P2-7): .owner-stat-highlight and
@@ -909,6 +512,7 @@
 .owner-live-status.has-alerts {
   border-color: color-mix(in srgb, var(--warning) 40%, var(--border));
   background: color-mix(in srgb, var(--warning) 6%, var(--surface-1));
+  animation: none;
 }
 
 .owner-live-status.has-alerts .owner-live-pulse {
@@ -919,9 +523,6 @@
    system, no glow paint. The has-alerts state keeps its wash (the
    dark rebase below) and the honest frozen states; the pulse dot's
    own animation stays the truth carrier. */
-.owner-live-status.has-alerts {
-  animation: none;
-}
 
 /* Trailing tools (retry chip + "آخر تحديث" stamp) pinned to the
    inline-end edge; one auto margin instead of one per child so the
@@ -992,11 +593,6 @@
   50% { opacity: 0.55; transform: scale(1.35); }
 }
 
-.owner-value-tick {
-  display: inline-block;
-  animation: owner-value-in var(--motion-duration-short) var(--motion-ease-decelerate) backwards;
-}
-
 @keyframes owner-value-in {
   from { opacity: 0; transform: translateY(3px); }
   to { opacity: 1; transform: none; }
@@ -1009,35 +605,10 @@
    mobile floor for the resolve action (the old inline
    fontSize/padding shrank it below the craft floor, audit 0-e
    P2-36). */
-.owner-alert-skel {
-  padding: var(--sp-4);
-  border: 1px solid var(--border);
-  border-radius: var(--r-lg);
-  margin-block-end: var(--sp-3);
-}
-
-.owner-alert-skel-head {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-3);
-}
-
-.owner-alert-card {
-  animation: owner-alert-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(
-    var(--motion-stagger-step) * min(var(--owner-alert-i, 0), var(--motion-stagger-cap))
-  );
-}
 
 @keyframes owner-alert-in {
   from { opacity: 0; transform: translateY(var(--motion-distance-small)); } /* r153h: 6px → --motion-distance-small */
   to { opacity: 1; transform: none; }
-}
-
-.owner-alert-error {
-  color: var(--danger-ink, var(--danger));
-  font-size: var(--fs-xs);
 }
 
 /* (r151d: the alert-actions mobile floor deleted — polish's
@@ -1053,14 +624,6 @@
    inline-styled button, audit 0-e P1-27), the meta-line anatomy,
    and the pagination footer class (was .admin-pagination +
    inline styles — out-of-surface CSS coupling). */
-.owner-timeline-item {
-  padding: var(--sp-3) var(--sp-2);
-  animation: owner-row-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(
-    var(--motion-stagger-step) * min(var(--owner-row-i, 0), var(--motion-stagger-cap))
-  );
-}
-
 @keyframes owner-row-in {
   /* r130-W2-7: this definition governs again — the users-table's
      same-name keyframes (later in this file, translateY 4px) used to
@@ -1116,56 +679,10 @@
 
 /* r148 (AUDIT-1 C1): 12px نص بلون --accent = 3.80:1 — يفشل AA للنص الصغير.
    --accent-ink هو الحل الموثق أصلًا (base.css:66) — 10.29:1 فاتح / 10.39 داكن. */
-.owner-detail-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1);
-  margin-block-start: var(--sp-1);
-  padding: var(--sp-0-5) var(--sp-1);
-  background: none;
-  border: none;
-  border-radius: var(--r-xs);
-  cursor: pointer;
-  color: var(--accent-ink);
-  font-size: var(--fs-xs);
-  font-weight: var(--fw-medium);
-  transition: color var(--t-fast) var(--ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .owner-detail-toggle:hover {
-    color: var(--accent-hover);
-    text-decoration: underline;
-    text-underline-offset: 0.18em;
-  }
-}
-
-.owner-detail-toggle:active {
-  color: var(--accent-strong);
-}
-
-.owner-detail-chevron {
-  transition: transform var(--t-fast) var(--ease);
-}
-
-.owner-detail-toggle[aria-expanded='true'] .owner-detail-chevron {
-  transform: rotate(180deg);
-}
-
-@media (max-width: 640px) {
-  .owner-detail-toggle {
-    min-block-size: 44px;
-    align-items: flex-start;
-  }
-}
 
 /* wave 6-a: pretty-printed JSON has newlines — without pre-wrap the
    metadata preview collapses into a single run-on line. dir is set
    per-instance in the TSX (audit 0-e P1-27). */
-.owner-meta-preview {
-  white-space: pre-wrap;
-  word-break: break-all;
-}
 
 /* (r299 dead-selector sweep: the .owner-activity-footer family
    died — the audit log's footer rides the canonical .table-pagination
@@ -1214,9 +731,6 @@
     animation: none;
   }
 
-  .owner-detail-chevron {
-    transition: none;
-  }
 }
 }
 
@@ -1235,11 +749,6 @@
    stack + tabular numerals so columns stay optically aligned. Status
    variants read through the -ink tokens (WCAG-pinned, guardrail #3).
    (The legacy .owner-table family's td.num lives in wave 6-a above.) */
-.owner-num {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: var(--fs-xs);
-}
 
 .owner-num-success { color: var(--success-ink); }
 
@@ -1262,50 +771,19 @@
    timeline's authored entrance document-wide. */
 
 /* joined-date cell: "joined this week" dot + date on one line */
-.owner-joined {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
 
 /* r299: the recent-join marker — a quiet STATIC dot. The old marker
    reused .owner-health-dot green, whose heartbeat pulses forever and
    whose grammar means "system health"; a join date never carried
    that status. */
-.owner-joined-dot {
-  inline-size: 8px;
-  block-size: 8px;
-  border-radius: var(--r-full);
-  background: var(--success);
-  flex-shrink: 0;
-}
-
-.owner-joined .owner-joined-dot { flex-shrink: 0; }
 
 /* r299: the memberships chips row (was a utility class + inline-style
    pair that fought each other — .flex said display:flex, the inline
    style said inline-flex). One class owns the anatomy now. */
-.owner-membership-chips {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-1);
-}
 
 /* ellipsis run between windowed page numbers (bounded pagination,
    audit 0-e P1-25); sized to sit on the .table-pagination-actions
    button rhythm (36px desktop / 44px phones). */
-.owner-page-gap {
-  min-inline-size: 36px;
-  block-size: 36px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-subtle);
-  user-select: none;
-}
 
 /* search icon tint (de-inlined from the TSX)
    (r299 dead-selector sweep: .owner-search-bar > svg died with the
@@ -1313,9 +791,6 @@
 
 /* the inline action-error alert sits above the table — give it the
    card's rhythm (the .alert primitive itself is margin-free) */
-.owner-users-card .alert {
-  margin-block-end: var(--sp-4);
-}
 
 /* ── Institutions console (r178 multi-institution) ──────────── */
 /* The r178 owner institutions page (OwnerInstitutionsPage) reuses the
@@ -1396,131 +871,31 @@
 }
 
 /* ── Meters (Education workload + AI token share) ──────────── */
-.owner-workload {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
 
 /* The fill grows out of its inline-start edge on load: the keyframe's
    implicit `to` composes with the ProgressBar's inline scaleX (23-b:
    the value rides transform, so later value changes keep the
    .progress-fill transform transition) and the transform-origin tracks
    the reading direction. Staggered via --meter-i, capped 8. */
-.owner-meter .progress-fill {
-  animation: owner-meter-in var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(min(var(--meter-i, 0), 8) * var(--motion-stagger-step));
-  transform-origin: left center;
-}
-
-[dir="rtl"] .owner-meter .progress-fill { transform-origin: right center; }
 
 @keyframes owner-meter-in {
   from { transform: scaleX(0); }
 }
 
 /* in-table token-share meter (AI page) — the same grow language */
-.owner-share {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  min-inline-size: 140px;
-}
-
-.owner-share-track {
-  flex: 1;
-  block-size: 6px;
-  border-radius: var(--r-full);
-  background: var(--surface-3);
-  overflow: clip;
-}
-
-.owner-share-fill {
-  display: block;
-  block-size: 100%;
-  border-radius: inherit;
-  background: var(--accent);
-  animation: owner-meter-in var(--motion-duration-stat) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(min(var(--meter-i, 0), 8) * var(--motion-stagger-step));
-  transform-origin: left center;
-}
-
-[dir="rtl"] .owner-share-fill { transform-origin: right center; }
 
 /* ── Content page: de-inlined identity card ────────────────── */
-.owner-card-lead {
-  margin: 0 0 var(--sp-3) 0;
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-  line-height: var(--lh-base);
-}
-
-.owner-brand-notice {
-  padding: var(--sp-3);
-  background: var(--accent-soft);
-  color: var(--accent-ink);
-  border-radius: var(--r-md);
-  display: flex;
-  align-items: flex-start;
-  gap: var(--sp-2);
-  font-size: var(--fs-xs);
-  line-height: var(--lh-base);
-}
-
-.owner-brand-notice > svg {
-  flex-shrink: 0;
-  margin-block-start: var(--sp-0-5);
-}
-
-.owner-swatch-grid {
-  margin-block-start: var(--sp-3);
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--sp-2);
-}
-
-.owner-swatch {
-  padding: var(--sp-3);
-  background: var(--surface-2);
-  border-radius: var(--r-md);
-}
-
-.owner-swatch-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-block-start: var(--sp-1);
-}
 
 /* Brand chip — the raw hex on it is displayed DATA (see the TSX
    docblock); the hairline keeps the pale chip (#a3c9ff) readable on
    cream. The one-shot settle is the page's authored moment. */
-.owner-swatch-chip {
-  inline-size: 20px;
-  block-size: 20px;
-  border-radius: var(--r-xs);
-  border: 1px solid var(--border);
-  flex-shrink: 0;
-  animation: owner-swatch-in var(--motion-duration-medium) var(--motion-ease-decelerate) backwards;
-  animation-delay: calc(var(--swatch-i, 0) * var(--motion-stagger-step));
-}
 
 @keyframes owner-swatch-in {
   from { transform: scale(0.6); opacity: 0; }
 }
 
-.owner-swatch-hex {
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
-  font-size: var(--fs-xs);
-  color: var(--text);
-}
-
 /* stacked cards below the grid-2 (the grid children already ride the
    global mount stagger in polish.css) */
-.owner-card-settle {
-  animation: owner-card-rise var(--motion-duration-reveal) var(--motion-ease-decelerate) backwards;
-}
 
 @keyframes owner-card-rise {
   from { opacity: 0; transform: translateY(8px); }
@@ -1531,11 +906,6 @@
    overrides block owns those floors. The .pill / spacer / swatch
    lines below are non-.btn elements polish never touches — they
    stay.) */
-@media (max-width: 640px) {
-  .owner-filter-pills .pill { min-block-size: 44px; }
-  .owner-page-gap { min-inline-size: 44px; block-size: 44px; }
-  .owner-swatch-grid { grid-template-columns: 1fr; }
-}
 
 /* ── wave 6-b reduced-motion off-switches (guardrail #6) ───── */
 /* The global belts zero the duration tokens, but these entrances carry
@@ -1543,12 +913,6 @@
    waits invisible through a delay that no longer resolves.
    (r299: the .owner-users-table tbody tr entry died with the rule —
    zero consumers, rg-verified.) */
-@media (prefers-reduced-motion: reduce) {
-  .owner-meter .progress-fill,
-  .owner-share-fill,
-  .owner-swatch-chip,
-  .owner-card-settle { animation: none; }
-}
 }
 
 /* ═════════════════════════════════════════════════════════════
@@ -1558,31 +922,6 @@
    squeeze). Value tweaks on pre-existing rules (spine tint, amber
    dot mix, health-value mono split) were edited in place above.
    ═════════════════════════════════════════════════════════════ */
-@layer pages {
-
-/* System page list sections (flags / alerts / settings) — the shared
-   vertical rhythm the three cards used to carry as per-wrapper inline
-   styles (4-A7 P3-7). */
-.owner-list-pad {
-  padding: var(--sp-2) 0;
-}
-
-/* The settings save row (was an inline padding-block-start). */
-.owner-save-row {
-  padding-block-start: var(--sp-4);
-}
-
-/* (r149 R3-A1 #9: حُذف — grid-4 الكنونية تكسر عندها بنفسها؛
-   تعليق 4-A7 P3-9 القديم كان يخص الشبكة الخاصة.) */
-
-/* 4-A7 P1-2 touch floor: the alert disclosure is now a real button —
-   it gets the console's 44px mobile floor like every other control. */
-@media (max-width: 640px) {
-  .owner-error-entry-head {
-    min-block-size: 44px;
-  }
-}
-}
 
 /* ═════════════════════════════════════════════════════════════
    wave r190-D4 — «مدار المعرفة» mission-control telemetry
@@ -1701,4 +1040,3 @@
 }
 
 }
-

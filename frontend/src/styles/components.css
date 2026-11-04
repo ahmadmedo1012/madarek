@@ -4789,7 +4789,13 @@
   .ledger-tag {
     font-family: var(--font-mono);
     font-size: var(--fs-xxs);
-    color: var(--accent);
+    /* P-G3b (Q-7 contrast) — was var(--accent): #FA3600 measured 3.04:1
+       on the rose zone head (#F9E3DC) at the 13px tag seat and ~3.6:1
+       on the base surface-2 — both under the 4.5:1 text floor. The
+       strong accent tier clears both (≈6.1:1 light on rose-bg); dark
+       already pinned this tier. Zone heads re-ink the tag to their own
+       family-deep pairing below (inherit via the head's color). */
+    color: var(--accent-strong);
   }
   /* r191 a11y (axe catch): on elevated night surfaces (#121a36) the
      11px tag's --accent (#9A5CFF) lands at 4.36:1 — just under AA.
@@ -4808,6 +4814,15 @@
     color: var(--c-rose-deep);
     border-block-end-color: color-mix(in srgb, var(--c-rose-ink) 25%, transparent);
   }
+  /* P-G3b (Q-7 contrast) — the zone head's tag follows its family's
+     deep ink (the axe-flagged 3.04:1 pair was exactly this tag on the
+     rose band): rose-deep on rose-bg ≈ 8.6:1, and every other zone
+     keeps the same family-pairing logic. The ::before square rides
+     currentColor, so the marker is fixed with the text. */
+  .ledger.zone-rose > .ledger-head .ledger-tag { color: var(--c-rose-deep); }
+  .ledger.zone-sky > .ledger-head .ledger-tag { color: var(--c-sky-deep); }
+  .ledger.zone-mint > .ledger-head .ledger-tag { color: var(--c-mint-deep); }
+  .ledger.zone-lavender > .ledger-head .ledger-tag { color: var(--c-lavender-deep); }
   .ledger.zone-mint > .ledger-head {
     background: var(--c-mint-bg);
     color: var(--c-mint-deep);

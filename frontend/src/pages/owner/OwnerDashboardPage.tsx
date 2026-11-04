@@ -256,14 +256,18 @@ export function OwnerDashboardPage() {
   // themeKey participates because chartPalette()/radialOptions() resolve
   // CSS custom properties at call time, and the remounted canvas must
   // re-resolve them for the new theme.
-  const segments = useMemo(() => statsData ? [
+  // P-G3b — the segments sort by VALUE DESCENDING: the donut draws and
+  // its legend reads in data order (largest first), so the chart's
+  // visual order and the legend order can never disagree (the QA
+  // donut finding: legend legibility, ordered).
+  const segments = useMemo(() => statsData ? ([
     { label: 'طلاب', value: statsData.students },
     { label: 'أساتذة', value: statsData.teachers },
     { label: 'إداريون', value: statsData.admins },
     // Person-group noun — «جودة» alone is the function, not the people
     // (15-j P1-8; matches the aria-label's «فريق جودة» phrasing).
     { label: 'فريق جودة', value: statsData.quality },
-  ] : [], [statsData]);
+  ] as Array<{ label: string; value: number }>).sort((a, b) => b.value - a.value) : [], [statsData]);
 
   const chartData = useMemo(() => ({
     labels: segments.map((s) => s.label),
@@ -378,7 +382,7 @@ export function OwnerDashboardPage() {
         ? formatRelativeAr(lastEventAt)
         : '—';
 
-  const topSegment = segments.reduce((a, b) => (b.value > a.value ? b : a));
+  const topSegment = segments.reduce((a, b) => (b.value > a.value ? b : a), segments[0] ?? { label: '', value: 0 });
   const chartSummary = data.totalUsers === 0
     ? 'لا مستخدمين مسجَّلين بعد.'
     : `${topSegment.label} الفئة الأكبر من مستخدمي المنصّة.`;
@@ -404,6 +408,18 @@ export function OwnerDashboardPage() {
             ? countAr(alerts.length, OPEN_ALERT_FORMS)
             : 'النظام يعمل بشكل طبيعي'}
       </span>
+      {/* P-G3b — the band carries REAL status content, not a lone dot:
+          the live session count (mono, from the realtime query) and the
+          last recorded activity — the two facts an owner scanning the
+          band actually wants (the QA finding: a near-empty strip). */}
+      <span className="owner-live-meta">
+        <span className="owner-live-meta-cell">
+          الجلسات النشطة <bdi className="font-mono">{formatNum(realtimeData.activeSessions)}</bdi>
+        </span>
+        <span className="owner-live-meta-cell">
+          آخر نشاط <bdi className="font-mono">{lastActivityLabel}</bdi>
+        </span>
+      </span>
     </div>
   );
 
@@ -412,7 +428,7 @@ export function OwnerDashboardPage() {
       <PatternsPageHeader
         title="لوحة التحكم الرئيسية"
         description="نظرة شاملة وإحصائيات حيّة عن المنصة"
-        meta={formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' }) + ' · قياس مباشر من قاعدة البيانات'}
+        meta={formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}
       />
 
       {/* Live Status — never claims "normal" unless the alerts query

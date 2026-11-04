@@ -390,10 +390,15 @@
     border-radius: var(--r-sm); /* 0 */
   }
 
+  /* R333 P-G3a (T-G1-03): the item is a native <details> — the accordion
+     affordance IS the summary row: full-width, 44px+ touch floor, the
+     [nn] index on the inline start, and a hairline caret on the inline
+     end that rotates with the open state (the motion ladder's short
+     token). The native marker retires; the print belt below forces the
+     answers visible on paper regardless of open state. */
   .lg-faq-item {
-    display: grid;
-    gap: var(--sp-2);
-    padding: var(--sp-4) var(--sp-5);
+    display: block;
+    padding: 0;
   }
 
   .lg-faq-item + .lg-faq-item { border-block-start: 1px solid var(--rule); }
@@ -403,10 +408,17 @@
     display: flex;
     align-items: baseline;
     gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-5);
+    min-block-size: 44px;
+    box-sizing: border-box;
     font-size: var(--fs-body);
     font-weight: var(--fw-semibold);
     color: var(--text);
+    cursor: pointer;
+    list-style: none; /* the hairline caret replaces the native marker */
   }
+
+  .lg-faq-q::-webkit-details-marker { display: none; }
 
   .lg-faq-q .lg-mono {
     color: var(--accent-ink);
@@ -415,11 +427,48 @@
     letter-spacing: 0.06em;
   }
 
+  /* the question text takes the remaining measure; the caret pins to
+     the inline end whatever the question's length. PI-REC: the text is
+     an <h2> now (the R320 §D nine-heading outline law) — the UA heading
+     font/margin reset rides here so the summary row is pixel-identical
+     to the span it replaced. */
+  .lg-faq-q-text { flex: 1 1 auto; min-inline-size: 0; margin: 0; font: inherit; }
+
+  .lg-faq-caret {
+    flex: 0 0 auto;
+    align-self: center;
+    inline-size: 7px;
+    block-size: 7px;
+    border-inline-end: 1.5px solid currentColor;
+    border-block-end: 1.5px solid currentColor;
+    /* physical rotate is deliberate: the caret is a glyph, not a
+       layout box — it points DOWN closed, UP open, in both reading
+       directions (border-inline-end mirrors with the direction, keeping
+       the v-shape anchored to the inline end in RTL and LTR alike). */
+    transform: rotate(45deg);
+    transition: transform var(--motion-duration-short) var(--motion-ease-standard);
+  }
+
+  .lg-faq-item[open] .lg-faq-caret { transform: rotate(225deg); }
+
+  @media (hover: hover) and (pointer: fine) {
+    /* the B1 pair discipline: color AND background always together */
+    .lg-faq-q:hover { color: var(--accent-ink); background: transparent; }
+  }
+
+  /* the answer indents to the question's text edge (past the [nn]
+     index) and keeps the 1.8 prose leading */
   .lg-faq-a {
     margin: 0;
+    padding: 0 var(--sp-5) var(--sp-4);
+    padding-inline-start: calc(var(--sp-5) + var(--sp-3) + 2.6em);
     font-size: var(--fs-body);
     line-height: 1.8;
     color: var(--text-secondary);
+  }
+
+  @media (max-width: 640px) {
+    .lg-faq-a { padding-inline-start: var(--sp-5); }
   }
 
   /* ══ 7 · THE COLOPHON — identity line + آخر تحديث ══════════════ */
@@ -490,6 +539,7 @@
       max-inline-size: none;
       padding: 0;
       gap: var(--sp-6);
+      break-after: page;
     }
 
     .lg-title,
@@ -504,6 +554,17 @@
     .lg-colophon-stamp .lg-mono {
       color: #000000; /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
     }
+
+    /* R333 P-G3a (T-G1-03): the FAQ accordion prints as a DOCUMENT —
+       every answer on paper regardless of its screen open-state (the
+       ::details-content slot is what hides closed answers; browsers
+       without the pseudo simply print the open items). */
+    .lg-faq-item::details-content {
+      content-visibility: visible;
+      display: contents;
+    }
+
+    .lg-faq-caret { display: none; }
 
     .lg-cell,
     .lg-faq {
@@ -543,10 +604,6 @@
     .lg-faq-item,
     .lg-colophon {
       break-inside: avoid;
-    }
-
-    .lg-main {
-      break-after: page;
     }
   }
 }

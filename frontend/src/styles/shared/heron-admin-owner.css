@@ -121,11 +121,6 @@
 
 /* Eyebrow — the section tag above a title: tiny semibold accent-ink
    label (the AA-safe accent TEXT tier, never the raw fill tone). */
-.r305ao .pf-eyebrow {
-  font-size: var(--fs-xxs);
-  font-weight: var(--fw-semibold);
-  color: var(--accent-ink);
-}
 
 /* Breadcrumbs — 13px floor, quiet trail, current page in full ink. */
 .r305ao .pf-breadcrumbs li {
@@ -140,28 +135,11 @@
 
 /* Back link (governance drill-downs) — a quiet navigational control
    with the 44px touch floor. */
-.r305ao .back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--sp-1-5);
-  min-block-size: 44px;
-  font-size: var(--fs-sm);
-  font-weight: var(--fw-medium);
-  color: var(--accent-ink);
-  text-decoration: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .r305ao .back-link:hover { color: var(--accent-strong); }
-}
 
 /* Section headers — 18px semibold display (patterns.css pins size/weight
    already; the display face + ink are restated as the Heron voice).
    Card titles step DOWN to 16px semibold: page 24 → section 18 → card
    16 keeps one scan ladder inside the console column. */
-.r305ao .pf-section-title {
-  font-family: var(--font-display);
-  color: var(--text);
-}
 .r305ao .card-title {
   font-size: var(--fs-body);
   font-weight: var(--fw-semibold);
@@ -190,25 +168,7 @@
   border-radius: var(--r-lg);
   border-color: var(--rule);
 }
-.r305ao .stat-label {
-  font-size: var(--fs-xxs);
-  font-weight: var(--fw-medium);
-  color: var(--text-muted);
-}
-.r305ao .stat-value {
-  font-family: var(--font-display);
-  font-weight: var(--fw-bold);
-  font-variant-numeric: tabular-nums;
-  color: var(--text);
-}
-.r305ao .stat-trend {
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  font-variant-numeric: tabular-nums;
-}
 /* Honest trend inks — the -ink (text-safe) tiers, not raw fills. */
-.r305ao .stat-trend.up   { color: var(--success-ink); }
-.r305ao .stat-trend.down { color: var(--danger-ink); }
 
 /* Navigable stat cells answer their follow-up: pointer cursor comes
    from the anchor; hover quiets onto the surface step. */
@@ -223,11 +183,6 @@
 
 /* Admin legacy stat row (reports/analysis header figures) — columnar
    gap + tabular bold values (the only voice change it needs). */
-.r305ao .admin-stat-row { gap: var(--sp-2) var(--sp-5); }
-.r305ao .admin-stat-value {
-  font-variant-numeric: tabular-nums;
-  font-weight: var(--fw-bold);
-}
 
 /* Owner mono numerics: owner.css's .owner-num/.owner-cell-muted family
    already ships the exact grammar — no restatement. */
@@ -241,7 +196,6 @@
 
 /* Meters & share bars — the fill keeps the accent guarantee even when
    a caller forgets the color prop; the track is canonical surface-3. */
-.r305ao .owner-meter .progress-fill { background: var(--accent); }
 
 /* ════════════════════════════════════════════════════════════════
    §3 · Toolbars, filter rails, bulk actions
@@ -253,21 +207,9 @@
    ════════════════════════════════════════════════════════════════ */
 
 /* Generic toolbar rail — new opt-in for pages composing loose rows. */
-.r305ao .r305ao-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-}
 
 /* Rosters toolbar — the pill search + selects keep their compact
    chrome; the surface well reads as an input, not a button. */
-.r305ao .admin-students-toolbar { gap: var(--sp-2); }
-.r305ao .admin-students-search {
-  background: var(--surface);
-  border-color: var(--border);
-  border-radius: var(--r-md);
-}
 .r305ao .admin-students-input {
   background: var(--surface);
   border-color: var(--border);
@@ -296,41 +238,15 @@
 .r305ao .pf-filterbar-search-icon { color: var(--text-muted); }
 
 /* Shared .filter-bar consumers — one height, hairline controls. */
-.r305ao .filter-bar { gap: var(--sp-2); }
-.r305ao .filter-bar > .input { background: var(--surface); }
 
 /* Filter pills (owner consoles) — outline-first chips.
    R313 (WP-F · D16): square chips on the structural hairline (no pill
    radius — the data-dense chip grammar). */
-.r305ao .owner-filter-pills { gap: var(--sp-2); }
-.r305ao .pill {
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  color: var(--text-secondary);
-  border-radius: var(--r-xs);
-}
-@media (hover: hover) and (pointer: fine) {
-  .r305ao .pill:hover {
-    background: var(--surface-2);
-    border-color: var(--border-strong);
-    color: var(--text);
-    transform: none;
-  }
-}
 /* The selected chip is the ONE accent moment on a filter rail:
    accent-soft ground + accent-ink label + accent hairline. */
-.r305ao .pill.on {
-  background: var(--accent-soft);
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  color: var(--accent-ink);
-  font-weight: var(--fw-semibold);
-}
 
 /* Tabs — the segmented control rides the canonical underline; the
    active label carries the accent ink. */
-.r305ao .tab { color: var(--text-muted); }
-.r305ao .tab.on,
-.r305ao .tab[aria-selected='true'] { color: var(--text); }
 
 /* Owner action bar — quiet rail, buttons grouped trailing. */
 .r305ao .owner-action-bar { gap: var(--sp-2); }
@@ -339,34 +255,6 @@
    Opt-in bar for table selection: count + apply/clear. Sticky so it
    stays reachable over long rosters; the count is the accent moment,
    actions trail. Pair with `.r305ao .btn` clusters in -actions. */
-.r305ao .r305ao-bulkbar {
-  position: sticky;
-  inset-block-end: 0;
-  z-index: 2; /* local paint-order above table rows — not a --z-* layer */
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-3);
-  padding: var(--sp-2-5) var(--sp-4);
-  /* R313 (WP-F · D16): solid paper on the hairline — the glass blur
-     + the --shadow-sm tail retired (flat overlay grammar). */
-  background: var(--surface);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-md);
-}
-.r305ao .r305ao-bulkbar-count {
-  font-size: var(--fs-xxs);
-  font-weight: var(--fw-semibold);
-  color: var(--accent-ink);
-  font-variant-numeric: tabular-nums;
-}
-.r305ao .r305ao-bulkbar-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-2);
-  margin-inline-start: auto;
-}
 
 /* ════════════════════════════════════════════════════════════════
    §4 · Data tables
@@ -462,7 +350,6 @@
   color: var(--accent-ink);
   font-weight: var(--fw-semibold);
 }
-.r305ao .owner-page-gap { color: var(--text-faint); }
 
 /* Institutions console cells: owner.css owns name/sub/admin identity
    voices; this sheet adds only the hairline BETWEEN admin entries. */
@@ -475,15 +362,6 @@
 
 /* Permission rows (components.css family) + the govx matrix — faint
    outlines, mono keys in the accent ink tier. */
-.r305ao .perm-row { border-color: var(--border-faint); }
-.r305ao .perm-row-key {
-  font-family: var(--font-mono);
-  color: var(--accent-ink);
-}
-.r305ao .govx-group-head { border-block-end-color: var(--border-faint); }
-.r305ao .govx-group-count {
-  font-variant-numeric: tabular-nums;
-}
 
 /* ════════════════════════════════════════════════════════════════
    §5 · Forms
@@ -522,40 +400,18 @@
   line-height: var(--lh-base);
 }
 /* Validation — the danger INK (AA on every ground), not raw --danger. */
-.r305ao .form-field-error {
-  font-size: var(--fs-xxs);
-  font-weight: var(--fw-medium);
-  color: var(--danger-ink);
-}
-.r305ao .form-error-msg,
-.r305ao .form-error {
-  font-size: var(--fs-xxs);
-  color: var(--danger-ink);
-}
 
 /* Settings rows — one change: solid faint hairlines (the dashed rhythm
    reads drafty in a technical console). Labels/values/links ride the
    admin.css voices verbatim. */
-.r305ao .settings-row {
-  border-block-end: 1px solid var(--border-faint);
-  gap: var(--sp-4);
-}
 
 /* Owner key/value rows — one change: the faint divider. Keys/inputs
    keep owner.css's mono-accent + well recipe verbatim. */
-.r305ao .owner-kv-row {
-  border-block-end: 1px solid var(--border-faint);
-}
 
 /* Institution create form: owner.css pins the 30rem measure and gap;
    auth-row-2 keeps the auth.css two-column grid — no restatement. */
 
 /* Governance form actions — a footer rail with a top hairline. */
-.r305ao .gov-form-actions {
-  border-block-start: 1px solid var(--border-faint);
-  padding-block-start: var(--sp-4);
-  gap: var(--sp-2);
-}
 
 /* Toggle switches (owner/system flags): the canonical track already
    rides surface-3 → accent → accent-hover with the token ring — no
@@ -579,42 +435,12 @@
 
    The card — hairline edge, flat sheet (R313 WP-F · D16: the modal
    shadow retired; the border IS the outline). */
-body:has(.r305ao) .modal-card {
-  border-radius: var(--r-lg);
-  border-color: var(--rule);
-}
 /* The decorative top bar: flat accent tick instead of the gradient. */
-body:has(.r305ao) .modal-card::before {
-  background: var(--accent);
-  opacity: 0.9;
-}
 
 /* Chrome — display title, hairline header/footer rules. */
-body:has(.r305ao) .modal-title {
-  font-family: var(--font-display);
-  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
-  color: var(--text);
-}
-body:has(.r305ao) .modal-header { border-block-end-color: var(--border-faint); }
-body:has(.r305ao) .modal-footer { border-block-start-color: var(--border-faint); }
 
 /* ConfirmDialog surfaces — the title steps DOWN from the generic
    modal register: a confirm is a question, not a headline. */
-body:has(.r305ao) .owner-confirm-title {
-  font-family: var(--font-display);
-  font-size: var(--fs-h3);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-}
-body:has(.r305ao) .owner-confirm-message {
-  font-size: var(--fs-body);
-  color: var(--text-secondary);
-  line-height: var(--lh-base);
-}
-body:has(.r305ao) .owner-confirm-actions {
-  gap: var(--sp-2);
-  border-block-start-color: var(--border-faint);
-}
 /* Danger confirmation — the destructive verb rides the danger fill
    (contrast contract owned by .btn.danger's --danger-fg ink). Flat:
    no glow, no lift — the color alone says "irreversible". */
@@ -654,12 +480,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
    (R313 WP-F · D16: --border ≡ #E0E0DA, the reference's row rule;
    the dot anatomy, title/desc/time voices and the unread bar are
    canonical components.css — no restatement). */
-.r305ao .alert {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  gap: var(--sp-3);
-}
 
 /* Owner live status band — honest ops readout: the row hairline
    (R313 WP-F · D16: --border ≡ #E0E0DA) + the restrained corner.
@@ -674,35 +494,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
    leading edge (R313 WP-F · D16: the row-rule #E0E0DA carries the
    frame; the 2px severity rules stay on the leading edge). Critical
    pair keeps the danger wash. */
-.r305ao .owner-alert-card {
-  background: var(--surface);
-  border-color: var(--border);
-  border-radius: var(--r-md);
-  box-shadow: none;
-}
-@media (hover: hover) and (pointer: fine) {
-  .r305ao .owner-alert-card:hover {
-    border-color: var(--border-strong);
-    box-shadow: none;
-  }
-}
-.r305ao .owner-alert-card.critical,
-.r305ao .owner-alert-card.error {
-  border-inline-start-color: var(--danger);
-  background: color-mix(in srgb, var(--danger-soft) 55%, var(--surface));
-}
-.r305ao .owner-alert-card.warning {
-  border-inline-start-color: var(--warning);
-  background: color-mix(in srgb, var(--warning-soft) 55%, var(--surface));
-}
-.r305ao .owner-alert-card.info {
-  border-inline-start-color: var(--accent);
-}
-.r305ao .owner-alert-card-header .time {
-  font-size: var(--fs-xxs);
-  color: var(--text-faint);
-  font-variant-numeric: tabular-nums;
-}
 
 /* Event icons, inline resolve errors, live labels/meta: owner.css
    already pairs the -soft grounds with the -ink glyphs (R131-F12) and
@@ -710,10 +501,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 
 /* Brand notice (content page) — the accent-soft info moment gains a
    hairline in the accent's own family. */
-.r305ao .owner-brand-notice {
-  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-  color: var(--accent-strong);
-}
 
 /* ════════════════════════════════════════════════════════════════
    §8 · Empty / error / loading refinement
@@ -828,22 +615,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 /* ── The panel primitive (NEW — opt in for settings groups, ops
    blocks, flag boards): one flat fine-outline surface + a mono-ish
    label head. Composes with .settings-*, .owner-toggle-row, tables. */
-.r305ao .r305ao-panel {
-  background: var(--surface);
-  border: 1px solid var(--border-faint);
-  border-radius: var(--r-md);
-  padding: var(--sp-4) var(--sp-5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
-}
-.r305ao .r305ao-panel-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--fs-body);
-  font-weight: var(--fw-semibold);
-  color: var(--text);
-}
 /* The gap owns the panel's rhythm — a prose/list child that follows
    the title hands its default margin over. */
 .r305ao .r305ao-panel > .r305ao-panel-title + :is(p, ul, ol) {
@@ -856,10 +627,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 /* Error entries (system page) — one change: the faint divider. The
    danger-ink message, tabular timestamp and mono stack well are
    canonical owner.css (mono stays OFF the ar-LY timestamp per 22-b). */
-.r305ao .owner-error-entry {
-  border-block-end: 1px solid var(--border-faint);
-}
-.r305ao .owner-error-entry:last-child { border-block-end: 0; }
 
 /* Activity timeline — the spine stays owner.css's tinted accent
    hairline; rows gain only the hover-gated quiet step. Title/meta/id
@@ -876,57 +643,19 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 
 /* Metadata preview (pretty-printed JSON) — the canonical mono well
    gains a hairline frame. */
-.r305ao .owner-meta-preview {
-  border: 1px solid var(--border-faint);
-}
 
 /* Empty rollups (realtime ops honesty) — dashed frame reads "no data
    yet", not "broken". Names/metas keep owner.css voices. */
-.r305ao .owner-empty-rollup {
-  border: 1px dashed var(--border-strong);
-  border-radius: var(--r-md);
-}
 
 /* Fact rows (reports/analysis) — the mono accent keys and faint mono
    sources are canonical (components.css); this sheet adds the row
    hairline and the semibold tabular value voice. */
-.r305ao .fact-row {
-  border-block-end: 1px solid var(--border-faint);
-}
-.r305ao .fact-value {
-  font-weight: var(--fw-semibold);
-  font-variant-numeric: tabular-nums;
-}
 
 /* Category expansion rows + certificates + suggested courses — the
    quiet hairline rows; the head keeps its canonical hover. */
-.r305ao .category-row-head {
-  border-radius: var(--r-sm);
-}
-.r305ao .category-row-body {
-  border-block-start: 1px solid var(--border-faint);
-}
-.r305ao .cert-row,
-.r305ao .suggested-course-row {
-  border-block-end: 1px solid var(--border-faint);
-}
-.r305ao .suggested-course-score {
-  font-variant-numeric: tabular-nums;
-  font-weight: var(--fw-semibold);
-  color: var(--accent-ink);
-}
 
 /* Brand swatches (content page) — documented data: hairline chips,
    mono hex stepped down to the muted tier. */
-.r305ao .owner-swatch {
-  border: 1px solid var(--border-faint);
-  border-radius: var(--r-md);
-}
-.r305ao .owner-swatch-chip {
-  border: 1px solid var(--border-faint);
-  border-radius: var(--r-sm);
-}
-.r305ao .owner-swatch-hex { color: var(--text-muted); }
 
 /* Chart containers — hairline well, restrained corner. */
 .r305ao .owner-chart-container {
@@ -946,11 +675,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
    (List padding, save rows, users-card alert rhythm and the settle
    animation are canonical owner.css — no restatement.)
    ════════════════════════════════════════════════════════════════ */
-
-.r305ao .owner-workload { color: var(--text-muted); font-size: var(--fs-xxs); }
-.r305ao .owner-card-lead { color: var(--text-secondary); }
-.r305ao .owner-row-actions { gap: var(--sp-1); }
-.r305ao .owner-workload + .owner-meter { margin-block-start: var(--sp-1); }
 
 /* ════════════════════════════════════════════════════════════════
    §12 · Responsive pass — ≤640 / ≤400 / ≤360
@@ -996,16 +720,12 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   .r305ao .admin-students-input,
   .r305ao .admin-students-search { min-block-size: 44px; }
   .r305ao .pf-filterbar-search input { block-size: 44px; }
-  .r305ao .owner-filter-pills .pill { min-block-size: 44px; }
   .r305ao .table-pagination-actions button {
     min-inline-size: 44px;
     min-block-size: 44px;
   }
-  .r305ao .owner-page-gap { min-inline-size: 44px; block-size: 44px; }
 
   /* Dialogs — full-width cards, tighter veil padding. */
-  body:has(.r305ao) .modal-overlay { padding: var(--sp-2-5); }
-  body:has(.r305ao) .modal-card { inline-size: 100%; }
 
   /* Headers stack; the actions rail follows the title block. */
   .r305ao .pf-page-header-main { align-items: stretch; }
@@ -1014,16 +734,13 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   .r305ao .pf-filterbar-filters,
   .r305ao .pf-filterbar-sort,
   .r305ao .pf-filterbar-trailing { flex-wrap: wrap; }
-  .r305ao-bulkbar { inset-block-end: var(--sp-2); }
 }
 
 @media (max-width: 400px) {
   /* The 2×2 stat grid tightens: labels and values keep their pairing. */
   .r305ao .stat-cell { padding: var(--sp-3); }
-  .r305ao .stat-value { font-size: var(--fs-metric-md); }
 
   /* Key/value rows shrink the mono key well before wrapping. */
-  .r305ao .owner-kv-row code { min-inline-size: 96px; }
 
   /* Health rows wrap label/value onto stacked lines instead of
      truncating the label at 360. */
@@ -1041,7 +758,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   .r305ao .stat-cell:first-child { border-block-start: 0; }
 
   /* The bulkbar stacks: count line, then actions full-width. */
-  .r305ao-bulkbar-actions .btn { flex: 1 1 auto; }
 
   /* Pagination centers its 44px cluster; page-gap shrinks to the
      canonical 36px chrome again (touch floor already met by buttons). */
@@ -1093,15 +809,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
 /* Print — the console is a screen product; keep printers honest by
    dropping the veil/blur machinery rather than pretending to be paper.
    (Tables and flows print via the platform print light-lock.) */
-@media print {
-  .r305ao .pf-filterbar.sticky,
-  .r305ao-bulkbar {
-    position: static;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-  }
-}
 
 }
 /* ═══ end r305-admin-owner.css — all rules scoped to .r305ao ═══ */
@@ -1110,33 +817,6 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
  * One implementation of «استيراد طلاب من ملف»: template actions, the
  * CSV paste seat, the per-line verdict table (hairline, mono verdicts),
  * and the one-time temp-password sheet. Tokens only, dark-correct. */
-.bimp { display: grid; gap: var(--sp-3); }
-
-.bimp-lede { margin: 0; font-size: 13px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ color: var(--text-muted); }
-
-.bimp-actions { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
-.bimp-file { font-size: 12px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ color: var(--text-muted); }
-
-.bimp-area {
-  font-family: var(--font-mono, monospace);
-  font-size: 12px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */
-  line-height: 1.7;
-  resize: vertical;
-  min-block-size: 140px;
-}
-
-.bimp-summary {
-  display: flex;
-  gap: var(--sp-4);
-  align-items: center;
-  font-size: 13px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */
-  font-weight: 600;
-  color: var(--text-strong);
-}
-.bimp-summary span { display: inline-flex; align-items: center; gap: var(--sp-1); }
-.bimp-summary svg { color: var(--accent); }
-.bimp-summary .bimp-bad { color: var(--danger); }
-.bimp-summary .bimp-bad svg { color: var(--danger); }
 
 .bimp-table-wrap {
   border: 1px solid var(--rule);
@@ -1162,15 +842,4 @@ body:has(.r305ao) .owner-confirm-actions .btn.danger {
   vertical-align: top;
 }
 .bimp-table tr[data-status='error'] td { color: var(--danger); }
-.bimp-verdict { font-size: 12px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ }
-.bimp-pass { font-family: var(--font-mono, monospace); font-weight: 600; letter-spacing: 0.04em; }
 
-.bimp-error { margin: 0; font-size: 12.5px; /* type-gate: allow — the r305 Heron overlay admin rungs (authored literals, reviewed) */ font-weight: 600; color: var(--danger); }
-
-.bimp-foot {
-  display: flex;
-  justify-content: flex-end;
-  gap: var(--sp-2);
-  padding-block-start: var(--sp-2);
-  border-block-start: 1px solid var(--rule);
-}

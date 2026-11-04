@@ -25,7 +25,7 @@ import { Icon } from '../../components/Icon';
 import { Illustration as MkIllustration } from '../../components/illustrations/Illustration';
 import { Skeleton, ListSkeleton, ErrorState, EmptyState } from '../../components/primitives/States';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
-import { useReducedMotion } from '../../components/motion';
+import { Reveal, useReducedMotion } from '../../components/motion';
 import { courseIcon } from '../../lib/courseMeta';
 import {
   useMyExams, useStartExam, useSubmitAnswer, useFinishExam, useExamReview,
@@ -1201,8 +1201,19 @@ export function ExamTakerPage() {
     );
   }
 
-  // Initial state — show "Begin" prompt
+  // Initial state — the staged exam-paper cover (Q-1, P-G2). The old
+  // begin moment was one centered .empty-state in ~80% dead whitespace:
+  // the action label did the h1's job («متابعة الاختبار» rendered twice
+  // — heading AND button), the exam's own name appeared nowhere on the
+  // page (only in the tab), and the start verb floated alone. The cover
+  // seats the real data the list payload already carries: the state
+  // line as the eyebrow, the exam's title as the ONE h1 (the
+  // .oex-result-title inner-rung seat), a hairline spec row (duration /
+  // questions / passing score / window — the mono instrument voice),
+  // and the begin verb in a real action bar. The begin/resume state
+  // machine (start guards, pending disables, error copy) is untouched.
   if (!attempt && !result) {
+    const win = listedExam ? examWindowState(listedExam) : null;
     return (
       <div className="r321x-page r321x-taker">
         <PageFrame width="default">
@@ -1210,39 +1221,108 @@ export function ExamTakerPage() {
             <Icon icon={ChevronRight} size={14} />
             العودة إلى الاختبارات
           </Link>
-          {/* R321 B1b — the begin moment joins the sheet paper (the
-              Card wall is gone); the h1 takes the same .oex-result-title
-              inner-rung seat the belt pins on the result moments. */}
-          <div className="empty-state">
-            <Icon icon={ClipboardCheck} size={32} style={{ color: 'var(--accent)' }} />
-            <h1 className="oex-result-title">
-              {hasLiveAttempt ? 'متابعة الاختبار' : 'هل أنت مستعد للبدء؟'}
-            </h1>
-            <p className="text-sm text-muted oex-begin-note">
-              {hasLiveAttempt
-                ? 'لديك محاولة قيد التقدم لهذا الاختبار — الوقت لم يتوقف منذ البدء، وإجاباتك المحفوظة ستظهر كما تركتها.'
-                : 'بمجرد الضغط على «بدء الاختبار» سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل — ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت.'}
-            </p>
-            {startError && (
-              <div className="form-error oex-begin-error" role="alert">
-                <Icon icon={AlertTriangle} size={14} />
-                <span className="form-error-msg">{startError}</span>
+          <Reveal as="section" className="oex-cover" aria-labelledby="oex-cover-title">
+            <header className="oex-cover-head">
+              <p className="oex-cover-eyebrow">
+                {hasLiveAttempt ? 'لديك محاولة قيد التقدم' : 'هل أنت مستعد للبدء؟'}
+              </p>
+              {/* PI-REC contract reconciliation: the D5 resume contract
+                  pins the begin screen's h1 as the honest resume/ready
+                  verb («متابعة الاختبار» when the list knows the attempt
+                  is live — getByText(selector:'h1')) — the original
+                  6A6-finding-3 h1-page-title law. A live attempt keeps
+                  that pinned shape; a fresh begin keeps the exam's own
+                  title as the h1 (the P-G2 cover seats it). */}
+              <h1 id="oex-cover-title" className="oex-result-title">
+                {hasLiveAttempt ? 'متابعة الاختبار' : (listedExam?.title ?? 'اختبار إلكتروني')}
+              </h1>
+              {listedExam && (
+                <p className="oex-cover-course">
+                  {listedExam.courseName && <span>{listedExam.courseName}</span>}
+                  <span
+                    className="oex-cover-kind"
+                    style={{ ['--kind' as never]: KIND_COLOR[listedExam.kind] ?? 'var(--accent)' }}
+                  >
+                    {KIND_LABEL[listedExam.kind] ?? 'اختبار'}
+                  </span>
+                </p>
+              )}
+            </header>
+            {listedExam ? (
+              <dl className="oex-cover-meta">
+                <div className="oex-cover-cell">
+                  <dt>المدة</dt>
+                  <dd><bdi className="font-mono">{listedExam.durationMin}</bdi> دقيقة</dd>
+                </div>
+                <div className="oex-cover-cell">
+                  <dt>الأسئلة</dt>
+                  {/* 22-c counted nouns — the same grammar the list rows
+                      and the sticky bar speak. */}
+                  <dd>{countAr(listedExam.questionCount, ['سؤال', 'سؤالان', 'أسئلة', 'سؤالاً'])}</dd>
+                </div>
+                <div className="oex-cover-cell">
+                  <dt>درجة الاجتياز</dt>
+                  <dd>≥ <bdi className="font-mono">{listedExam.passingScore}%</bdi></dd>
+                </div>
+                <div className="oex-cover-cell">
+                  <dt>نافذة التسليم</dt>
+                  {/* 15-h P1-5 — the window state the start route enforces,
+                      spoken here before the verb offers it. */}
+                  <dd className="oex-cover-window" data-state={win ?? undefined}>
+                    {win === 'open'
+                      ? (listedExam.closeAt ? <>يغلق {formatDateTimeAr(listedExam.closeAt)}</> : 'مفتوحة الآن')
+                      : win === 'upcoming' && listedExam.openAt
+                        ? <>يفتح {formatDateTimeAr(listedExam.openAt)}</>
+                        : 'أُغلق باب التسليم'}
+                  </dd>
+                </div>
+              </dl>
+            ) : (
+              /* Hard deep link before the list resolves — the spec row
+                 holds its shape with skeleton cells so the resolved
+                 handoff moves nothing (the r176f loading discipline). */
+              <div className="oex-cover-meta" aria-busy="true">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="oex-cover-cell">
+                    <Skeleton width={64} height={11} />
+                    <Skeleton width={96} height={22} />
+                  </div>
+                ))}
               </div>
             )}
-            {/* While the list payload is still in flight we cannot yet
-                know whether this exam is finished — the begin control
-                waits instead of offering a start the server may refuse
-                (the P1-1 pre-empt needs the list truth; cached lists
-                resolve instantly, so this only guards hard deep links). */}
-            <button
-              type="button"
-              className="btn primary hr-cta oex-begin-actions"
-              onClick={onStart}
-              disabled={start.isPending || examsQ.isPending}
-            >
-              {start.isPending ? 'جارٍ التحضير…' : examsQ.isPending ? 'جارٍ التحقق…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
-            </button>
-          </div>
+            <p className="oex-cover-note text-sm text-muted">
+              {hasLiveAttempt
+                ? 'الوقت لم يتوقف منذ البدء، وإجاباتك المحفوظة ستظهر كما تركتها.'
+                : 'بمجرد الضغط على «بدء الاختبار» سيبدأ المؤقت ولا يمكنك إيقافه. اقرأ كل سؤال جيداً قبل الإجابة. تُسجَّل إجابات الاختيار فور اختيارها، والإجابات النصية عند مغادرة الحقل — ويُسلَّم الاختبار تلقائياً عند انتهاء الوقت.'}
+            </p>
+            <footer className="oex-cover-actions">
+              {startError && (
+                <div className="form-error oex-begin-error" role="alert">
+                  <Icon icon={AlertTriangle} size={14} />
+                  <span className="form-error-msg">{startError}</span>
+                </div>
+              )}
+              {/* While the list payload is still in flight we cannot yet
+                  know whether this exam is finished — the begin control
+                  waits instead of offering a start the server may refuse
+                  (the P1-1 pre-empt needs the list truth; cached lists
+                  resolve instantly, so this only guards hard deep links). */}
+              <button
+                type="button"
+                className="btn primary hr-cta oex-begin-actions"
+                onClick={onStart}
+                disabled={start.isPending || examsQ.isPending}
+              >
+                {start.isPending ? 'جارٍ التحضير…' : examsQ.isPending ? 'جارٍ التحقق…' : hasLiveAttempt ? 'متابعة الاختبار' : 'بدء الاختبار'}
+              </button>
+              {win === 'open' && listedExam && !start.isPending && !examsQ.isPending && (
+                <span className="oex-cover-hint" data-state="open">
+                  <Icon icon={Clock} size={13} />
+                  <bdi className="font-mono">{listedExam.durationMin}:00</bdi> عدّاد ينطلق مع البدء
+                </span>
+              )}
+            </footer>
+          </Reveal>
         </PageFrame>
       </div>
     );

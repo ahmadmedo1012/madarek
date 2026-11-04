@@ -39,21 +39,7 @@
      The base .card already lifts on hover for `.interactive` and
      `.bordered`. Make every clickable card feel that way without the
      opt-in class. Anchors and buttons that wrap a card naturally count. */
-  a > .card,
-  button.card {
-    cursor: pointer;
-    transition:
-      border-color var(--t-fast) var(--ease),
-      box-shadow var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    a:hover > .card:not(.flush),
-    button.card:hover {
-      transform: translateY(-1px);
-      border-color: var(--rule-strong, var(--rule));
-      box-shadow: var(--shadow-sm);
-    }
   }
   /* (Wave 1-a focus consolidation: `outline: none` + the 32%-alpha
      --focus-ring halo (≈1.5:1 on cream — WCAG fail) deleted. The accent
@@ -123,16 +109,14 @@
      `.modal-overlay` + `.modal-card` (components.css owns their
      entrance), so these never matched. Only the sidebar drawer
      backdrop still rides the backdrop-enter keyframes.) */
-  .sidebar-backdrop.show {
-    animation: polish-backdrop-enter var(--motion-duration-short) var(--ease-out) both;
-  }
   @keyframes polish-backdrop-enter {
     from { opacity: 0; }
     to   { opacity: 1; }
   }
 
-  /* ── Tabs — animated indicator transition ─────────────────────── */
+  /* ── Tabs — pointer + animated indicator transition ───────────── */
   .tab {
+    cursor: pointer;
     transition:
       color var(--t-fast) var(--ease),
       background var(--t-fast) var(--ease);
@@ -142,10 +126,6 @@
      it starved every form control of the AA-safe ring. v22 owns the ring.) */
 
   /* ── Number entrance — subtle "count-up reveal" feel ─────────── */
-  [data-numeric="true"] {
-    animation: polish-rise var(--motion-duration-long) var(--ease-out) both;
-    animation-delay: 120ms;
-  }
 
   /* ── Mobile refinements ───────────────────────────────────────── */
   @media (max-width: 640px) {
@@ -174,10 +154,8 @@
     /* Cards lose some inner padding on phones so 1-column grids
        don't feel like cards-inside-a-card. */
     .card { padding: var(--sp-4); }
-    .card.compact { padding: var(--sp-3); }
 
     /* Tables overflow horizontally instead of squishing. */
-    table { font-size: var(--fs-xs); }
   }
 
   /* ── Wide screens — looser breathing room ─────────────────────── */
@@ -199,10 +177,6 @@
       animation: none;
     }
     @media (hover: hover) and (pointer: fine) {
-      a:hover > .card:not(.flush),
-      button.card:hover {
-        transform: none;
-      }
     }
     .btn:active:not(:disabled) { transform: none; }
   }
@@ -230,22 +204,11 @@
   label[tabindex] { cursor: pointer; }
 
   /* ── Card & surface-card: press feedback ────────────────────── */
-  .card.interactive:active,
-  a > .card:active,
-  button > .card:active {
-    /* r130-W2-7: 0.995 hardcode → the card press token (0.99), the
-       same register polish.css v9's overrides-layer rule paints. */
-    transform: scale(var(--state-card-pressed-scale)) translateY(0);
-    transition-duration: var(--t-micro);
-  }
 
   /* ── Metric & KPI: press feedback ───────────────────────────── */
   /* r130-W2-7: .metric joins the card register at the token value —
      was the last live 0.995 straggler (v6 hardcoded it before the
      card press token existed). */
-  .metric:active {
-    transform: scale(var(--state-card-pressed-scale));
-  }
 
   /* ── Nav items: active press ────────────────────────────────── */
   .nav-item:active {
@@ -259,10 +222,6 @@
      tool buttons) showed only its hover bg while pressed. Joins the
      .btn/.tab/.pill press family at the scale(0.97) register; the
      snap-back rides the micro duration like .nav-item/.pill. */
-  .icon-btn:active:not(:disabled) {
-    transform: scale(0.97);
-    transition-duration: var(--motion-duration-micro);
-  }
 
   /* ── Row-action controls: press feedback ─────────────────────
      r149 (R3-A3 §3/§4): صفوف القوائم المنسدلة وبحث الأوامر وزر إغلاق
@@ -270,28 +229,15 @@
      بلا ردّ ضغط. السجل كان موجودًا فقط على .btn/.card/.pill/.nav-item/
      .icon-btn. الصفوف تأخذ 0.985 مثل nav؛ الأزرار المنفردة 0.97 مثل
      icon-btn. */
-  .dropdown-item:active,
-  .search-row:active {
-    transform: scale(0.985);
-    transition-duration: var(--motion-duration-micro);
-  }
-  .table-pagination-actions button:active:not(:disabled),
-  .toast-close:active,
-  .vpc-menu-item:active {
-    transform: scale(0.97);
-    transition-duration: var(--motion-duration-micro);
-  }
 
   /* ── Sidebar collapse btn: icon-only 44px touch target ───────── */
   /* (Wave 9-b dead-selector sweep: .topbar-icon-btn + .sidebar-toggle-btn
      deleted — zero TSX consumers; the toggles render .icon-btn /
      .topbar-mobile-toggle.) */
   @media (max-width: 640px) {
-    .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
   }
 
-  /* ── Tab items: pointer + hover underline ───────────────────── */
-  .tab { cursor: pointer; }
+  /* ── Tab items: pointer (folded into the base .tab above) + hover underline ── */
   @media (hover: hover) and (pointer: fine) {
     .tab:hover { color: var(--text); }
   }
@@ -320,11 +266,6 @@
      not the card, is the focused element.) */
 
   /* ── Disabled interactive cards ─────────────────────────────── */
-  .card.disabled,
-  .metric.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
 
   /* ── Empty state CTA: centered, friendly ──────────────────────
      r296: consolidated into components.css STATE — the v10 overrides
@@ -389,6 +330,8 @@
       grid-template-columns: 22px;
       padding: var(--sp-2);
       justify-content: center;
+      /* Tooltip anchor — the title-attribute ::after below. */
+      position: relative;
     }
     .sidebar.collapsed .nav-icon {
       margin-inline: auto;
@@ -416,9 +359,6 @@
 
     /* Tooltip on hover when collapsed — uses the title attribute via
        a positioned ::after. Lightweight; no JS portal. */
-    .sidebar.collapsed .nav-item {
-      position: relative;
-    }
     @media (hover: hover) and (pointer: fine) {
       .sidebar.collapsed .nav-item:hover::after {
         content: attr(title);
@@ -552,6 +492,15 @@
     background: var(--surface);
     border-block-end: 1px solid var(--rule);
     z-index: var(--z-dropdown);
+    /* SWITCH from grid to flex. Grid + auto-placement was producing huge
+       gaps between the title (which slid to far inline-start because
+       col 1 was empty when the mobile toggle is hidden) and the search +
+       actions block. Flex with a single 1fr spacer gives a stable layout:
+         [title-block] [flexible spacer] [search] [actions]
+       that reads correctly in both LTR and RTL. */
+    display: flex;
+    align-items: center;
+    gap: var(--sp-3);
   }
   [data-theme="dark"] .topbar {
     /* R313 (D16): solid surface, both themes. */
@@ -563,17 +512,8 @@
      history there). layout.css is the documented topbar owner; the
      overrides-layer twin painted nothing it didn't already paint.) */
 
-  /* SWITCH from grid to flex. Grid + auto-placement was producing huge
-     gaps between the title (which slid to far inline-start because
-     col 1 was empty when the mobile toggle is hidden) and the search +
-     actions block. Flex with a single 1fr spacer gives a stable layout:
-       [title-block] [flexible spacer] [search] [actions]
-     that reads correctly in both LTR and RTL. */
-  .topbar {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-3);
-  }
+  /* SWITCH from grid to flex — see the .topbar rule above. */
+
   /* Actions cluster + search are non-shrinking; title can ellipsize on
      extremely narrow viewports rather than push everything else off-screen. */
   .topbar > .topbar-mobile-toggle,
@@ -629,11 +569,6 @@
   }
   /* (Wave 1-a focus consolidation: outline suppression + weak halo deleted;
      the bell button takes the single AA-safe ring from v22.) */
-  .topbar-notif[aria-expanded="true"] {
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-    border-color: color-mix(in srgb, var(--accent) 24%, transparent);
-  }
   .topbar-notif-badge {
     position: absolute;
     inset-block-start: 2px;
@@ -669,139 +604,26 @@
      ═══════════════════════════════════════════════════════════════ */
   /* (WS-D2 orphan sweep: the .notif-panel container override was dead —
      the NotificationPanel primitive owns the container surface.) */
-  .notif-panel-head {
-    padding: 14px var(--sp-4); /* spacing-gate: allow — panel head compact band grade 14/16 */
-    background: linear-gradient(180deg,
-      var(--surface) 0%,
-      color-mix(in srgb, var(--surface) 96%, var(--accent-soft)) 100%);
-    border-block-end: 1px solid var(--rule);
-  }
-  .notif-panel-title {
-    font-family: var(--font-display);
-    font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law (was 700) */
-    font-size: var(--fs-chrome); /* r157: 14px → --fs-chrome (exact) */
-    letter-spacing: var(--ls-normal); /* 21-c ruling #2 — Arabic joins */
-    color: var(--text);
-  }
 
   /* Items get tighter padding + a subtle hairline between rows so the panel
      reads as a stack rather than a wall of buttons */
-  .notif-item {
-    padding: var(--sp-3) var(--sp-4);
-    border-block-end: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
-    /* (4-A11 P2-10: the hover affordance used to grow
-       padding-inline-start 16→18px — text reflow on every hover of
-       every notification row. The row now stays put; the icon nudges
-       toward the content instead, compositor-only.) */
-    transition: background var(--t-fast) var(--ease);
-  }
-  .notif-item:last-child { border-block-end: 0; }
   @media (hover: hover) and (pointer: fine) {
-    .notif-item:hover .notif-item-icon {
-      transform: translateX(calc(2px * var(--motion-direction)));
-    }
   }
 
-  .notif-item-icon {
-    transition: transform var(--t-fast) var(--ease);
-    inline-size: 32px;
-    block-size: 32px;
-    border-radius: var(--r-md);
-    flex-shrink: 0;
-    align-self: flex-start;
-    margin-block-start: var(--sp-0-5);
-  }
-  .notif-item-title {
-    font-size: var(--fs-sm); /* r157: 13px → --fs-sm (exact) */
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    line-height: 1.35;
-  }
-  .notif-item-desc {
-    color: var(--text-muted);
-    font-size: var(--fs-xs); /* r157: 12px → --fs-xs (exact) */
-    line-height: 1.5;
-    margin-block-start: var(--sp-0-5);
-    /* Clamp to 2 lines so a noisy notification doesn't blow up the panel */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-  .notif-item-time {
-    color: var(--text-subtle);
-    font-size: var(--fs-xxs); /* r157: 11px → --fs-xxs (exact) */
-    margin-block-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    font-variant-numeric: tabular-nums;
-  }
 
   /* Unread state — soft accent stripe on the inline-start edge */
-  .notif-item.unread {
-    background: color-mix(in srgb, var(--accent) 4%, transparent);
-    position: relative;
-  }
   /* (Wave 1-a craft-floor sweep, orchestrator ruling #4: the 3px accent
      edge stripe on unread rows deleted — the leading .notif-item-dot
      (with its accent halo) already codes "unread", so the stripe was
      decoration-only duplication. See 0-a P0-5.) */
-  .notif-item-dot {
-    position: absolute;
-    inset-block-start: 16px;
-    inset-inline-end: 16px;
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    /* accent halo ring around the unread dot — not elevation */
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
-  }
 
   /* Empty state — centred, calmer */
-  .notif-empty {
-    padding: var(--sp-8) var(--sp-5); /* r157: 40px/20px → --sp-8/--sp-5 (exact rungs) */
-    text-align: center;
-  }
-  .notif-empty-icon {
-    inline-size: 44px;
-    block-size: 44px;
-    border-radius: var(--r-full);
-    background: var(--surface-2);
-    color: var(--text-subtle);
-    margin: 0 auto var(--sp-3);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
   /* (r155d dead-twin sweep: `.notif-empty-text` deleted here — identical
      to notifications.css's rule (13px/muted/margin 0); the toast/bottom-
      nav sheet is the documented owner. The -icon rule above stays: it
      is the overrides-layer winner for the well's geometry/radius.) */
 
-  .notif-panel-foot {
-    padding: var(--sp-2-5) var(--sp-4);
-    border-block-start: 1px solid var(--rule);
-    background: var(--surface-2);
-  }
-  .notif-panel-viewall {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-1); /* r157: 4px → --sp-1 */
-    font-size: var(--fs-xs); /* r157: 12.5px → --fs-xs (تقريب نصف بكسل مقصود) */
-    font-weight: var(--fw-semibold);
-    color: var(--accent-strong);
-    text-decoration: none;
-    /* (4-A11 P2-10: the "view all" link used to transition gap 4→8px
-       on hover — layout on every hover. The chevron now translates
-       away from the label instead, compositor-only.) */
-  }
-  .notif-panel-viewall svg {
-    transition: transform var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .notif-panel-viewall:hover svg {
-      transform: translateX(calc(4px * var(--motion-direction)));
-    }
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -828,38 +650,10 @@
      ═══════════════════════════════════════════════════════════════ */
   /* (Wave 9-b dead-selector sweep: .invoice-card, .speaker-chip and
      .webinar-card removed from the group — zero TSX consumers.) */
-  .post,
-  .announcement-card {
-    border-radius: var(--r-lg);
-    transition: transform var(--t-fast) var(--ease),
-                box-shadow var(--t-fast) var(--ease);
-  }
   @media (hover: hover) and (pointer: fine) {
-    .post:hover,
-    .announcement-card:hover {
-      transform: translateY(-1px);
-      /* Off-token by design: soft diffuse hover shadow — composite sits
-         between --elev-2 and --elev-3 (16px blur exceeds the ±2px band). */
-      box-shadow: 0 1px 2px color-mix(in srgb, var(--black) 3%, transparent), 0 4px 16px -4px color-mix(in srgb, var(--black) 6%, transparent);
-    }
   }
 
   /* Tab counts get a calm pill style instead of inline numbers */
-  .tab-count {
-    margin-inline-start: var(--sp-1-5); /* r153h: 6px → --sp-1-5 */
-    font-size: var(--fs-xxs); /* r157: 10px → --fs-xxs (تقريب مقصود لأرقام العدّاد) */
-    font-weight: var(--fw-bold);
-    background: var(--surface-2);
-    color: var(--text-muted);
-    padding: var(--sp-0-5) var(--sp-2); /* r149 (R3-A2 R7): سلم الرقائق 2/8 (كانت 1/6) */
-    border-radius: var(--r-full);
-    font-variant-numeric: tabular-nums;
-  }
-  .tab.on .tab-count,
-  .tab[aria-selected="true"] .tab-count {
-    background: var(--accent-soft);
-    color: var(--accent-strong);
-  }
 
   /* ═══════════════════════════════════════════════════════════════
      WELCOME CARD — keep the title above the dot pattern + title sizing
@@ -1072,25 +866,10 @@
        تفاعلية — كل بطاقة في كل شبكة (12+ في المقررات، 30 صف معلم) تحتجز
        طبقة GPU دائمة — قاتل الذاكرة على أندرويد الضعيف. الحصر الآن
        على حالة hover فقط: الطبقة تُنشأ عند الحاجة وتُحرّر بعدها. */
-    .card.interactive:hover,
-    a > .card:hover,
-    button > .card:hover {
-      will-change: transform;
-    }
-    .card.interactive:hover,
-    a > .card:hover,
-    button > .card:hover {
-      transform: translateY(-2px);
-    }
   }
   /* never lift-hover on touch — it lingers awkwardly after tap */
   @media (hover: none) {
     @media (hover: hover) and (pointer: fine) {
-      .card.interactive:hover,
-      a > .card:hover,
-      button > .card:hover {
-        transform: none;
-      }
     }
   }
 
@@ -1142,11 +921,8 @@
   @media (hover: none) and (pointer: coarse) {
     .btn { min-block-size: 44px; }
     .btn.sm { min-block-size: 44px; }
-    .icon-btn { min-inline-size: 44px; min-block-size: 44px; }
     /* أزرار التقسيم (36px ثابتة) وصفوف المؤشرات القابلة للنقر في
        لوحة المسجل العام (37px) — أرضية اللمس على الجهاز اللمسي. */
-    .table-pagination-actions button { min-inline-size: 44px; block-size: 44px; }
-    a.admin-stat-row { min-block-size: 44px; }
   }
 
 
@@ -1339,13 +1115,6 @@
      moment keep it (e.g. CoursesPage's filter re-stagger opts out
      via student.css). `backwards` fill stays — the wave-5 fix that
      keeps hover-lifts alive after the entrance. */
-  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260):not(.courses-grid):not(.mooc-grid) > * {
-    animation: madarek-stagger-up var(--motion-duration-medium) var(--ease-out) backwards;
-  }
-  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260):not(.courses-grid):not(.mooc-grid) > *:nth-child(2) { animation-delay: 50ms; }
-  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260):not(.courses-grid):not(.mooc-grid) > *:nth-child(3) { animation-delay: 100ms; }
-  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260):not(.courses-grid):not(.mooc-grid) > *:nth-child(4) { animation-delay: 150ms; }
-  .page > :nth-child(1 of .grid-2, .grid-3, .grid-4, .grid-auto-200, .grid-auto-260):not(.courses-grid):not(.mooc-grid) > *:nth-child(n+5) { animation-delay: 150ms; }
   @keyframes madarek-stagger-up {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: none; }
@@ -1359,9 +1128,6 @@
      into components.css METRIC — the overrides-layer winners, with
      the v8 touch-path hover kept beside them. The .metric-value
      pop-in below still lives here until the v13 section folds.) */
-  .metric-value {
-    animation: madarek-pop-in var(--t-slower) var(--ease-spring) both;
-  }
   @keyframes madarek-pop-in {
     from { opacity: 0; transform: scale(0.92); }
     to   { opacity: 1; transform: none; }
@@ -1389,13 +1155,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  CLICKABLE CARDS — subtle press                                ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  a > .card:active,
-  button > .card:active,
-  .card.interactive:active {
-    transform: scale(var(--state-card-pressed-scale));
-    transition-duration: var(--motion-duration-micro);
-  }
-
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  NAV ITEM — accent indicator slides in on hover                ║
@@ -1472,18 +1231,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LIST ROWS — gentle background shift on hover                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .list-row,
-  .feed-item,
-  .owner-timeline-item {
-    transition:
-      background var(--t-fast) var(--ease),
-      transform var(--t-fast) var(--ease);
-  }
   @media (hover: hover) {
-    .list-row:hover,
-    .feed-item:hover {
-      background: var(--surface-2);
-    }
   }
 
 
@@ -1817,35 +1565,12 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  METRIC CARD — accent leading edge                             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .metric {
-    position: relative;
-    overflow: hidden;
-  }
-  .metric::before {
-    content: '';
-    position: absolute;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 3px;
-    background: var(--_metric-color, var(--accent));
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform var(--motion-duration-page) var(--ease-spring-soft);
-  }
   /* r149 (R3-A3 M2): ذيل r148 المتبقي — القضيب الرئيس كان يضيء على
      162 بلاطة KPI غير قابلة للنقر. الآن محصور على .metric-link
      مثل .metric:hover نفسه (حكم r148 H1). */
   @media (hover: hover) and (pointer: fine) {
-    .metric.metric-link:hover::before { transform: scaleY(1); }
   }
   /* Numeric values get tabular alignment globally */
-  .metric-value {
-    font-variant-numeric: tabular-nums;
-    /* r134 (audit R134-W1-M P2): raw -0.02em → the tracking token
-       (tokens.css --ls-tight = -0.022em) so the ladder has one source. */
-    letter-spacing: var(--ls-tight);
-  }
-
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  PILL & TAB — soft active glow + transition smoothing          ║
@@ -2010,18 +1735,6 @@
     .sidebar {
       transition: transform var(--motion-duration-long) var(--ease-spring-soft);
     }
-    .sidebar.open .nav-item {
-      animation: madarek-drawer-item-in var(--motion-duration-long) var(--ease-out) both;
-    }
-    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(1) { animation-delay: 60ms; }
-    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(2) { animation-delay: 90ms; }
-    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(3) { animation-delay: 120ms; }
-    .sidebar.open .nav-group:nth-of-type(1) .nav-item:nth-child(4) { animation-delay: 150ms; }
-    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(1) { animation-delay: 180ms; }
-    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(2) { animation-delay: 210ms; }
-    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(3) { animation-delay: 240ms; }
-    .sidebar.open .nav-group:nth-of-type(2) .nav-item:nth-child(4) { animation-delay: 270ms; }
-    .sidebar.open .nav-group:nth-of-type(3) .nav-item { animation-delay: 300ms; }
     @keyframes madarek-drawer-item-in {
       from {
         opacity: 0;
@@ -2043,10 +1756,6 @@
        veil; only opacity animates. */
     transition: opacity var(--motion-duration-medium) var(--ease);
   }
-  .sidebar-backdrop.show {
-    /* R313 (D16): no blur — the solid veil only. */
-  }
-
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TOPBAR — scroll-aware shadow                                  ║
@@ -2076,9 +1785,6 @@
      transition, and its hover/expanded rules retire the elevation
      (box-shadow: none) — the copies here lost the unlayered race and
      are deleted (ONE seat per selector+context per sheet). */
-  .topbar-user-trigger[aria-expanded="true"] {
-    background: var(--surface-2);
-  }
   /* Chevron in user trigger flips when menu opens */
   /* (Wave 9-b dead-selector sweep: the chevron-flip rule deleted —
      .icon-chevron has zero TSX consumers and the user trigger renders
@@ -2103,12 +1809,6 @@
       border-color var(--motion-duration-medium) var(--ease),
       transform var(--motion-duration-medium) var(--ease);
   }
-  .topbar .global-search:focus-within {
-    /* R313 (D16): the search shell joins the hairline-only focus
-       recipe — #ED4C1F border, no halo, no elevation, no scale. */
-    border-color: #ED4C1F; /* color-gate: allow — R313 D16: Heron's measured input-focus orange (same seat as the .input focus rule) */
-  }
-
 
   /* (5-C1 entrance diet, A2 P1-1): the title-block spring is GONE.
      `madarek-page-title-in` (520ms + 80ms delay, off-token spring)
@@ -2210,16 +1910,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  TEACHER FEED — items glide in from the start side             ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .feed .feed-item {
-    animation: madarek-feed-in var(--motion-duration-long) var(--ease-out) both;
-  }
-  .feed .feed-item:nth-child(1) { animation-delay: 60ms; }
-  .feed .feed-item:nth-child(2) { animation-delay: 120ms; }
-  .feed .feed-item:nth-child(3) { animation-delay: 180ms; }
-  .feed .feed-item:nth-child(4) { animation-delay: 240ms; }
-  .feed .feed-item:nth-child(5) { animation-delay: 300ms; }
-  .feed .feed-item:nth-child(6) { animation-delay: 360ms; }
-  .feed .feed-item:nth-child(n+7) { animation-delay: 420ms; }
   @keyframes madarek-feed-in {
     /* (r151f: the direction merge — components.css's wave-5
        madarek-feed-slide keyframes + its animation-name !important
@@ -2280,25 +1970,6 @@
      families — the canonical .table hover is the quiet zebra the canon
      documents; the leaderboard keeps its own dot identity.) */
   @media (hover: hover) {
-    .leaderboard-table tbody tr {
-      position: relative;
-    }
-    .leaderboard-table tbody tr td:first-child {
-      position: relative;
-    }
-    .leaderboard-table tbody tr:hover td:first-child::before {
-      content: '';
-      position: absolute;
-      inset-block: 12px;
-      inset-inline-start: 0;
-      inline-size: 3px;
-      background: var(--accent);
-      border-radius: 0 var(--r-xs) var(--r-xs) 0;
-      animation: madarek-row-bar-in var(--motion-duration-medium) var(--ease-spring-bounce) both;
-    }
-    [dir="rtl"] .leaderboard-table tbody tr:hover td:first-child::before {
-      border-radius: var(--r-xs) 0 0 var(--r-xs);
-    }
     @keyframes madarek-row-bar-in {
       from { transform: scaleY(0); }
       to   { transform: scaleY(1); }
@@ -2309,23 +1980,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  LIST ROWS — leading dot color flush on hover                  ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .list-row {
-    position: relative;
-    overflow: hidden;
-  }
   @media (hover: hover) {
-    .list-row::before {
-      content: '';
-      position: absolute;
-      inset-block: 0;
-      inset-inline-start: 0;
-      inline-size: 3px;
-      background: var(--accent);
-      transform: scaleY(0);
-      transform-origin: center;
-      transition: transform var(--motion-duration-medium) var(--ease-spring-soft);
-    }
-    .list-row:hover::before { transform: scaleY(0.7); }
   }
 
 
@@ -2392,29 +2047,7 @@
      ║  THUMB CARDS — image zoom on hover, lift, accent border tip   ║
      ║  Used by Library, MOOC, Courses, Labs, Webinars.              ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .thumb-card {
-    overflow: hidden;
-    transition:
-      border-color var(--motion-duration-medium) var(--ease),
-      box-shadow var(--motion-duration-page) var(--ease-spring-soft),
-      transform var(--motion-duration-page) var(--ease-spring-soft);
-  }
-  .thumb-card-image {
-    overflow: hidden;
-    position: relative;
-  }
-  .thumb-card-image > * {
-    transition: transform var(--t-slower) var(--ease-out);
-  }
   @media (hover: hover) {
-    .thumb-card:hover {
-      transform: translateY(-3px);
-      box-shadow: var(--elev-3);
-      border-color: color-mix(in srgb, var(--accent) 35%, var(--rule));
-    }
-    .thumb-card:hover .thumb-card-image > * {
-      transform: scale(1.08);
-    }
   }
   /* 5-C1 (A2 P2-4): cards-as-links press DOWN, not up. The hover lift
      (−3px) used to persist through the press — live-measured
@@ -2423,11 +2056,6 @@
      resting plane with a 0.99 compression, deliberately UNGATED so
      touch presses (which never build a :hover) feel it; the snap-back
      rides the micro duration like the rest of the press family. */
-  .thumb-card:active {
-    transform: translateY(0) scale(var(--state-card-pressed-scale));
-    transition-duration: var(--motion-duration-micro);
-  }
-
 
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  EMPTY STATE — idle wiggle on the icon every 6s                ║
@@ -2447,9 +2075,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  ERROR STATE — icon throbs gently, retry button bounces in     ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .state.state-error .state-icon {
-    animation: madarek-error-throb var(--motion-duration-ambient-pulse) var(--motion-ease-standard) infinite;
-  }
   @keyframes madarek-error-throb {
     0%, 100% { transform: scale(1); }
     50%      { transform: scale(1.05); }
@@ -2487,12 +2112,6 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  VISION DETAIL — hero image zoom on hover                      ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .vision-card,
-  .vision-detail-hero {
-    overflow: hidden;
-    transition: transform var(--motion-duration-page) var(--ease-spring-soft), box-shadow var(--t-base) var(--ease);
-    box-shadow: var(--shadow-card);
-  }
   /* (r285: the .vision-card half of this pair retired — the r266 vision
      gallery renders rows; .vision-detail-hero keeps the zoom-on-hover
      contract. The dead .vision-card:hover wave deleted with it.) */
@@ -2513,21 +2132,7 @@
   /* ╔═══════════════════════════════════════════════════════════════╗
      ║  ANNOUNCEMENT / EVENT ROWS — leading sticker bobbles on hover ║
      ╚═══════════════════════════════════════════════════════════════╝ */
-  .announce-emoji,
-  .event-emoji,
-  .announcement-icon {
-    transition: transform var(--motion-duration-medium) var(--ease-spring-bounce);
-  }
   @media (hover: hover) {
-    .announce-row:hover .announce-emoji,
-    .event-row:hover .event-emoji,
-    /* 22-c (A5 P1-1): the old `li:hover > .announcement-icon` never
-       fired — the community feed cards are <article>s, not list items.
-       Keyed to the card itself now that the family has a real surface. */
-    .announcement-card:hover .announcement-icon,
-    li:hover > .announcement-icon {
-      transform: scale(1.15) rotate(-6deg);
-    }
   }
 
 
@@ -2605,14 +2210,8 @@
     .pdf-toolbar {
       animation: none !important;
     }
-    .thumb-card-image > *,
-    .vision-card img,
-    .vision-detail-hero img {
-      transition: none !important;
-    }
     /* 22-c: the announcement icon's hover bobble (block above) is a
        pure-decoration transform — off under reduced motion. */
-    .announcement-icon { transition: none !important; }
   }
 }
 
@@ -2703,15 +2302,6 @@
   /* Per-component re-assertions that used to lose to the deleted
      `outline: none` rules — the ring, plus the accent border cue the
      old recipes carried. */
-  .chat-input:focus-visible {
-    outline: var(--state-focus-ring-width) solid var(--state-focus-ring-color);
-    outline-offset: var(--state-focus-ring-offset);
-  }
-  a:focus-visible > .card,
-  button.card:focus-visible,
-  .sidebar-collapse-btn:focus-visible {
-    border-color: var(--accent);
-  }
   /* NOTE: v20's `prefers-contrast: more` block (3px outline, !important)
      and `forced-colors: active` block still win over this section —
      that escape hatch is intentional and untouched. */
@@ -2802,14 +2392,6 @@
     /* Glass surfaces get an opaque light ground instead of the scrim.
        (Wave 9-b dead-selector sweep: .card.glass + .navbar.glass
        removed — zero TSX consumers.) */
-    .modal-overlay,
-    .sheet-overlay,
-    .lightbox-overlay,
-    .cmd-palette-overlay,
-    .popover,
-    .notification-panel {
-      background: var(--surface) !important;
-    }
     /* Decorative pseudo-layers (cursor-follow highlight, gradient border
        glow) would print as empty ink — drop them. */
     .card:not(.flush)::before,
@@ -2825,7 +2407,6 @@
       opacity: 1 !important;
       transform: none !important;
     }
-    .parallax { --parallax-y: 0px !important; }
 
     /* D6. Links: underline (v19's animated ::after underline is frozen
        at scaleX(0) — invisible), and expand external targets after the
@@ -2851,7 +2432,6 @@
       break-inside: avoid;
       page-break-inside: avoid;
     }
-    thead { display: table-header-group; }
     h1, h2, h3, h4, h5, h6, .page-title { break-after: avoid; }
 
     /* D8. Illustrations: capped and crisp on paper. */
@@ -2945,7 +2525,6 @@
     grid-template-columns: repeat(5, 1fr);
     transition: transform var(--t-base) var(--ease);
   }
-  .bottom-nav.is-hidden { transform: translateY(110%); }
   @media (max-width: 920px) {
     .bottom-nav { display: grid; }
   }
@@ -2969,21 +2548,11 @@
      1px border, but v18's `border` shorthand also wiped the status
      coloring — re-assert it so the (soon-to-be-wired, ruling #3) toast
      codes its variant on a 1px colored hairline. */
-  .toast-info    { border-inline-start-color: var(--info); }
-  .toast-success { border-inline-start-color: var(--success); }
-  .toast-warning { border-inline-start-color: var(--warning); }
-  .toast-error   { border-inline-start-color: var(--danger); }
 
   /* Animated leading-edge rails on cards/list rows: 3–4px → 2px
      (0-a P0-5 allows hover rails up to 2px). The motion is preserved —
      only the stroke weight changes. */
-  .metric::before { inline-size: 2px; }
-  .search-row::before { inline-size: 2px; }
-  .college-hero::before,
-  .comp-hero::before { inline-size: 2px; }
   @media (hover: hover) {
-    .list-row::before { inline-size: 2px; }
-    .leaderboard-table tbody tr:hover td:first-child::before { inline-size: 2px; }
   }
   /* Deliberately KEPT at 3px as standalone accent BAR elements (not card
      edge stripes): .section-title::before (heading hierarchy marker) and
@@ -3046,9 +2615,6 @@
     }
     /* The portaled tooltip supersedes the v8 pseudo entirely on
        focus-visible too (defense against attr(title) leftovers). */
-    .sidebar.collapsed .nav-item:not(.on):focus-visible::after {
-      content: none;
-    }
   }
 
   /* ╔═══════════════════════════════════════════════════════════════╗
@@ -3282,31 +2848,7 @@
      className إلى .metric-wrapper الظرفية) — الصنف لم يكن يطابق أبدًا
      فبطاقتا GPA/التقدم تسقطان على dash-gpa-card العادية. أضيف المرآة
      بصنف TSX الفعلي وأصلح الحد الخام أيضًا ( AUDIT-5 K2 عائلة). */
-  .card.glass-premium,
-  .card-glass-premium {
-    /* R313 (D16): the premium glass card goes solid — surface +
-       hairline, no backdrop-filter, no shadow (the token ladder is
-       none; the raw 20px blur is retired with it). */
-    background: var(--surface);
-    border: 1px solid var(--glass-border);
-    position: relative;
-    overflow: hidden;
-  }
-  .card.glass-premium::before,
-  .card-glass-premium::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--white) 8%, transparent) 0%, transparent 60%);
-    pointer-events: none;
-  }
   @media (hover: hover) and (pointer: fine) {
-    .card.glass-premium:hover,
-    .card-glass-premium:hover {
-      box-shadow: var(--shadow-card-glow);
-      border-color: color-mix(in srgb, var(--glass-border) 60%, var(--border-strong));
-    }
   }
 
   /* r297 hazard fix: a stray `/` preceded this media block — the
