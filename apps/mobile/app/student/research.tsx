@@ -11,7 +11,6 @@ import { researchApi } from "@/api/research";
 import { learningApi } from "@/api/learning";
 import { pickPdf, uploadRawPdf, validatePdf } from "@/api/pdf";
 import type { ResearchPaper } from "@/api/types";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
@@ -25,6 +24,8 @@ import { LedgerRow, RowList, ProgressBar } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { fullDate, latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
 import { PAPER_STATUS_LABEL, PAPER_STATUS_TONE, SectionNote, scanLine } from "@/features/student/more";
 
 /**
@@ -52,7 +53,7 @@ export default function ResearchScreen() {
       void qc.invalidateQueries({ queryKey: ["research"] });
       toast.success("اكتمل الفحص — النتائج معروضة على البحث.", "فحص النزاهة");
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذَّر إجراء الفحص"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر إجراء الفحص"),
   });
 
   return (
@@ -71,7 +72,7 @@ export default function ResearchScreen() {
       {mine.isLoading ? (
         <SkeletonList rows={4} />
       ) : mine.isError ? (
-        <ErrorState message={(mine.error as Error | null)?.message} onRetry={() => mine.refetch()} />
+        <ErrorState message={humanizeError(mine.error)} onRetry={() => mine.refetch()} />
       ) : papers.length === 0 ? (
         <EmptyState
           icon={<FileText size={24} color={p.textFaint} />}
@@ -91,7 +92,7 @@ export default function ResearchScreen() {
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
                 <Badge
-                  label={PAPER_STATUS_LABEL[paper.status] ?? String(paper.status)}
+                  label={PAPER_STATUS_LABEL[paper.status] ?? "حالة غير معروفة"}
                   tone={PAPER_STATUS_TONE[paper.status] ?? "grey"}
                 />
                 {paper.plagiarismPct != null || paper.aiContentPct != null ? <SimulatedBadge /> : null}
@@ -152,7 +153,7 @@ function DetailSheet({
       <View style={{ gap: sp[12] }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
           <Badge
-            label={PAPER_STATUS_LABEL[paper.status] ?? String(paper.status)}
+            label={PAPER_STATUS_LABEL[paper.status] ?? "حالة غير معروفة"}
             tone={PAPER_STATUS_TONE[paper.status] ?? "grey"}
           />
           <SimulatedBadge note="الفحص" />
@@ -285,7 +286,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       setFile(picked);
     } catch (e) {
       setFile(null);
-      setFileError((e as ApiError).message ?? "تعذَّر اختيار الملف.");
+      setFileError(humanizeError(e));
     }
   };
 
@@ -324,7 +325,7 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
       setFile(null);
       onDone();
     } catch (e) {
-      setError((e as ApiError).message ?? "تعذَّر رفع البحث — تحقّق من اتصالك وحاول مرة أخرى.");
+      setError(humanizeError(e));
     } finally {
       setBusy(false);
       setProgress(null);
@@ -383,7 +384,10 @@ function UploadSheet({ open, onClose, onDone }: { open: boolean; onClose: () => 
           label="المقرّر الأكاديمي المرتبط (اختياري)"
           value={selectedOffering}
           options={offeringOptions}
-          onSelect={setOfferingId}
+          onSelect={(id) => {
+            haptics.selection();
+            setOfferingId(id);
+          }}
           loading={enrollments.isLoading}
           sheetTitle="مقرراتك المسجَّلة"
           emptyLabel="لا توجد مقررات مسجَّلة"
