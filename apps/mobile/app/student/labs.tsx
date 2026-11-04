@@ -5,7 +5,6 @@ import FlaskConical from "lucide-react-native/icons/flask-conical";
 import Microscope from "lucide-react-native/icons/microscope";
 import { catalogApi } from "@/api/catalog";
 import { studentApi, type LabSession } from "@/api/student";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
@@ -19,6 +18,7 @@ import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { toast } from "@/components/ui/toast";
 import { fromNow, latn, num } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 
 type LabRow = Awaited<ReturnType<typeof catalogApi.labs>>[number];
@@ -56,7 +56,7 @@ export default function LabsScreen() {
       setExpSheet(null);
       setLabSheet(null);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذَّر تسجيل الجلسة"),
+    onError: (e) => toast.error(humanizeError(e), "تعذَّر تسجيل الجلسة"),
   });
 
   return (
@@ -81,7 +81,7 @@ export default function LabsScreen() {
       {feed.isLoading ? (
         <SkeletonList rows={3} rowHeight={80} />
       ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
+        <ErrorState message={humanizeError(feed.error)} onRetry={() => feed.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<FlaskConical size={24} color={p.textFaint} />}
