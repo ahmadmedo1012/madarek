@@ -176,7 +176,6 @@ function PrevNextButton({
   concept: VisionConcept | null;
   side: "prev" | "next";
 }) {
-  const p = usePalette();
   if (!concept) return <View style={{ flex: 1 }} />;
   return (
     <Card
