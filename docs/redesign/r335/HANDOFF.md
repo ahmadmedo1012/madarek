@@ -48,7 +48,9 @@ VLM ceremonies. Most time goes into code.
 | OTA (verified, run 41853500404) | ✅ production iOS group `1995b95a-756c-4dd2-a506-5103e3ab72ed` (update `01a1a71b-019f-74f8-b1c6-d51fa598ac17`); preview iOS group `9dd70372-683c-4009-8f7c-4a58cf6a93a9`; preview Android group `449c6060-16a1-4bac-b6a4-7c14de54211b` |
 | Branches | ✅ all r335/* deleted (content merged); `feat/mobile-r334-pro` kept — tip is a stale rebase snapshot, main is strictly ahead |
 
-**Conformance instrument gaps (fix BEFORE trusting any pass-rate):**
+**R336 instrument fix — DONE @ 1a402d74:** tolerances v2 (transformed expectations: mirror-x / ls→0 / lh-floor assert, never waive; exceptions = true waivers only, 0 uses at baseline), run.mjs v2 (data-spec hooks recorded + bound, unmatched → no-counterpart FAIL unless excused with reason, full 9×5 matrix, per-cell e/d/h/u/x), ratchet.json honest baseline **39.6%** (10,117/25,554; was 66.6% self-graded), ci.yml `conform-gate` job (dev server + full matrix + --gate vs ratchet, never allowed to drop). Weakest first queue: usecase 10–13% → intro 24–31% → problem/footer/why ~35–45% → platform/map/cta/hero → (chrome spec files don't exist yet — cells read `missing`, zero assertions, no drift).
+
+**Original instrument gaps (historical):**
 1. `exceptionRate` 20.4% vs cap <5% — the Arabic rules (rtl-x-mirror 70, ar-letter-spacing-zero 69, ar-line-height-floor 62) become TRANSFORMED EXPECTATIONS: assert mirrored x, |ls|≤0.05em, lh-floor directly — they stop counting as exceptions because they are the spec, not waivers.
 2. Mapping mostly heuristic (hero @1440: 1 explicit / 41 heuristic / 278 unmatched of 597) — explicit `data-spec` keys for every spec element with a counterpart; `unmatched` reported as FAIL (or named no-counterpart with reason).
 3. Full 9×5 matrix in one report (last results.json = 2 sections @1440), then `--gate` in CI at the honest baseline + ratchet file (rate may never drop).
