@@ -16,6 +16,7 @@ import { Badge, Card, Hairline } from "@/components/ui/surfaces";
 import { Avatar, LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { latn, num } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import {
   RARITY_LABEL,
   RARITY_TONE,
@@ -64,7 +65,7 @@ export default function GamificationScreen() {
       {profile.isLoading ? (
         <SkeletonList rows={2} rowHeight={72} />
       ) : profile.isError ? (
-        <ErrorState message={(profile.error as Error | null)?.message} onRetry={() => profile.refetch()} />
+        <ErrorState message={humanizeError(profile.error)} onRetry={() => profile.refetch()} />
       ) : (
         <Card style={{ gap: sp[10] }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
@@ -110,7 +111,7 @@ export default function GamificationScreen() {
         {leaderboard.isLoading ? (
           <SkeletonList rows={5} rowHeight={56} />
         ) : leaderboard.isError ? (
-          <ErrorState message={(leaderboard.error as Error | null)?.message} onRetry={() => leaderboard.refetch()} compact />
+          <ErrorState message={humanizeError(leaderboard.error)} onRetry={() => leaderboard.refetch()} compact />
         ) : (leaderboard.data ?? []).length === 0 ? (
           <SectionNote>لا يوجد ترتيب بعد — اكسب النقاط بإكمال الدروس والمسارات.</SectionNote>
         ) : (
@@ -161,7 +162,7 @@ export default function GamificationScreen() {
         {badges.isLoading ? (
           <SkeletonList rows={3} rowHeight={64} />
         ) : badges.isError ? (
-          <ErrorState message={(badges.error as Error | null)?.message} onRetry={() => badges.refetch()} compact />
+          <ErrorState message={humanizeError(badges.error)} onRetry={() => badges.refetch()} compact />
         ) : (badges.data ?? []).length === 0 ? (
           <EmptyState
             title="لا أوسمة بعد"
@@ -185,7 +186,7 @@ export default function GamificationScreen() {
                   </T>
                 ) : null}
                 <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
-                  <Badge label={RARITY_LABEL[b.rarity] ?? b.rarity} tone={RARITY_TONE[b.rarity] ?? "grey"} />
+                  <Badge label={RARITY_LABEL[b.rarity] ?? "تصنيف خاص"} tone={RARITY_TONE[b.rarity] ?? "grey"} />
                   {b.earnedAt ? (
                     <T variant="xs" color="faint">
                       {`مُنح ${new Date(b.earnedAt).getFullYear() > 1970 ? latn(new Date(b.earnedAt).getFullYear()) : ""}`}

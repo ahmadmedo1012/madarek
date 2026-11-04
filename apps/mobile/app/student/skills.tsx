@@ -12,6 +12,7 @@ import { Card } from "@/components/ui/surfaces";
 import { ProgressBar } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { clamp01, latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 
 /**
@@ -37,7 +38,7 @@ export default function SkillsScreen() {
       {skills.isLoading ? (
         <SkeletonList rows={4} rowHeight={72} />
       ) : skills.isError ? (
-        <ErrorState message={(skills.error as Error | null)?.message} onRetry={() => skills.refetch()} />
+        <ErrorState message={humanizeError(skills.error)} onRetry={() => skills.refetch()} />
       ) : rows.length === 0 ? (
         <EmptyState
           icon={<Gauge size={24} color={p.textFaint} />}

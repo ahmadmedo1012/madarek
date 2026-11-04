@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
@@ -16,9 +16,10 @@ import { Screen } from "@/components/ui/screen";
 import { useNow } from "@/hooks/useNow";
 import { Badge } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
-import { LedgerRow, RowList } from "@/components/ui/data";
-import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { DataList, LedgerRow } from "@/components/ui/data";
+import { EmptyState } from "@/components/ui/states";
 import { dateTime, num, weekdayOf } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { LIVE_STATUS, SectionNote, countAr } from "@/features/student/more";
 
 /**
@@ -45,35 +46,51 @@ export default function WebinarsScreen() {
   );
 
   return (
-    <Screen scroll>
+    <Screen scroll={false} padded={false}>
       <StackHeader title="ندوات قادمة" kicker="الندوات وورش العمل" />
-      <SectionNote>
-        جدول البثّ المباشر لمقرّراتك — المباشرة منها تجري في صفحة البثّ مع زر الانضمام.
-      </SectionNote>
+      <DataList
+        data={upcoming}
+        renderItem={({ item }) => <UpcomingRow session={item} />}
+        keyExtractor={(s) => s.id}
+        isLoading={feed.isLoading}
+        isError={feed.isError}
+        errorMessage={feed.isError ? humanizeError(feed.error) : null}
+        onRetry={() => feed.refetch()}
+        refetch={feed.refetch}
+        isRefetching={feed.isRefetching}
+        emptySlot={
+          <EmptyState
+            icon={<CalendarClock size={24} color={p.textFaint} />}
+            title="لا توجد جلسات مباشرة مجدولة الآن"
+            message="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
+            actionLabel="زيارة صفحة البثّ"
+            onAction={() => router.push("/student/live" as never)}
+          />
+        }
+        ListHeaderComponent={
+          <View style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[8] }}>
+            <SectionNote>
+              جدول البثّ المباشر لمقرّراتك — المباشرة منها تجري في صفحة البثّ مع زر الانضمام.
+            </SectionNote>
+          </View>
+        }
+        contentPadding={{ horizontal: 16, bottom: 24 }}
+        style={{ flex: 1 }}
+      />
 
-      {feed.isLoading ? (
-        <SkeletonList rows={3} rowHeight={72} />
-      ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
-      ) : upcoming.length === 0 ? (
-        <EmptyState
-          icon={<CalendarClock size={24} color={p.textFaint} />}
-          title="لا توجد جلسات مباشرة مجدولة الآن"
-          message="عندما يبدأ أستاذك بثّاً مباشراً ستجده هنا وفي صفحة البثّ — مع التسجيلات بعد انتهاء الجلسة."
-          actionLabel="زيارة صفحة البثّ"
-          onAction={() => router.push("/student/live" as never)}
-        />
-      ) : (
-        <RowList>
-          {upcoming.map((s, i) => (
-            <UpcomingRow key={s.id} session={s} last={i === upcoming.length - 1} />
-          ))}
-        </RowList>
-      )}
+      {/* Pinned action row — the live-page link stays reachable without scrolling. */}
       {upcoming.length > 0 ? (
-        <View style={{ gap: sp[8] }}>
+        <View
+          style={{
+            paddingHorizontal: sp[16],
+            paddingVertical: sp[10],
+            gap: sp[8],
+            borderTopWidth: StyleSheet.hairlineWidth,
+            borderTopColor: p.rule,
+          }}
+        >
           <T variant="xs" color="faint">
-            {countAr(upcoming.length, ["جلسة واحدة", "جلستان", "جلسات", "جلسة"])}
+            {`${countAr(upcoming.length, ["جلسة واحدة", "جلستان", "جلسات", "جلسة"])} · فعاليّات قادمة: ${num(upcoming.length)}`}
           </T>
           <Button
             label="فتح صفحة البثّ"
@@ -84,19 +101,16 @@ export default function WebinarsScreen() {
           />
         </View>
       ) : null}
-      <T variant="xs" color="faint">
-        {`فعاليّات قادمة: ${num(upcoming.length)}`}
-      </T>
     </Screen>
   );
 }
 
-function UpcomingRow({ session, last }: { session: LiveSession; last: boolean }) {
+function UpcomingRow({ session }: { session: LiveSession }) {
   const p = usePalette();
-  const status = LIVE_STATUS[session.status] ?? { label: session.status, tone: "grey" as const };
+  const status = LIVE_STATUS[session.status] ?? { label: "حالة غير معروفة", tone: "grey" as const };
   const course = session.offering?.course;
   return (
-    <LedgerRow last={last} accessibilityLabel={`جلسة قادمة: ${session.title}`}>
+    <LedgerRow accessibilityLabel={`جلسة قادمة: ${session.title}`}>
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6], flexWrap: "wrap" }}>
         <Badge label={status.label} tone={status.tone} />
         {session.topic ? <Badge label={session.topic} tone="grey" /> : null}
