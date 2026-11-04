@@ -10,9 +10,14 @@
  *   · quick actions (تصحيح/حضور/بث/بحوث) on PressableScale;
  *   · wire extras parsed structurally (src/features/teacher/wire.ts —
  *     no more `as unknown as Wire*` double casts).
+ *  R334 review-panel fixes: staggered entrance, haptics.selection on
+ *  the segment filter + quick actions + today slots, an Arabic
+ *  accessibilityLabel on the attendance RingProgress, and kit
+ *  EmptyState rooms for the true-empty sections.
  */
 import { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
+import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import CalendarDays from "lucide-react-native/icons/calendar-days";
@@ -35,7 +40,8 @@ import { Badge, Card, Hairline } from "@/components/ui/surfaces";
 import { LedgerRow, RowList, StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { Segmented } from "@/components/ui/fields";
-import { CountUp, PressableScale, RingProgress } from "@/motion";
+import { CountUp, PressableScale, RingProgress, useStaggerEntrance } from "@/motion";
+import { haptics } from "@/haptics";
 import { arCount, useTeacherOfferings } from "@/features/teacher/components";
 import { parseFeed, parsePendingGroups, parseTrend } from "@/features/teacher/wire";
 
@@ -101,6 +107,8 @@ export default function TeacherDashboard() {
   const p = usePalette();
   const scope = useInstitutionScope();
   const [filter, setFilter] = useState<FeedFilter>("all");
+  /* Entrance stagger — base 40, step 60 → 7th block lands at 400ms (cap). */
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
 
   const dash = useQuery({
     queryKey: ["teacher", "dashboard", scope],
@@ -159,15 +167,18 @@ export default function TeacherDashboard() {
       {/* إحصاءات الفصل — hierarchy: one hero card, no card grid.
           The attendance RingProgress carries the screen's ONE accent. */}
       {emptySemester ? (
-        <Card>
-          <EmptyState
-            icon={<ClipboardCheck size={22} color={p.textMuted} />}
-            title="لا بيانات فصلية بعد"
-            message="لا طلاب مسجّلين لديك حاليًا — عند تسجيل الطلاب في شُعَبك ستظهر هنا معدلات الدرجات ونسب الحضور أسبوعًا بعد أسبوع."
-          />
-        </Card>
+        <Animated.View entering={entering(0)}>
+          <Card>
+            <EmptyState
+              icon={<ClipboardCheck size={22} color={p.textMuted} />}
+              title="لا بيانات فصلية بعد"
+              message="لا طلاب مسجّلين لديك حاليًا — عند تسجيل الطلاب في شُعَبك ستظهر هنا معدلات الدرجات ونسب الحضور أسبوعًا بعد أسبوع."
+            />
+          </Card>
+        </Animated.View>
       ) : (
-        <Card>
+        <Animated.View entering={entering(0)}>
+          <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[16] }}>
             <View style={{ flex: 1 }}>
               <T variant="sm" color="muted">
@@ -181,6 +192,11 @@ export default function TeacherDashboard() {
               progress={kpi?.attendancePct != null ? Math.min(1, Math.max(0, kpi.attendancePct / 100)) : 0}
               color={p.accent}
               trackColor={p.border}
+              accessibilityLabel={
+                kpi?.attendancePct != null
+                  ? `نسبة الحضور ${pct(kpi.attendancePct)}`
+                  : "لا بيانات حضور بعد"
+              }
             >
               <T variant="sm" weight="bold">
                 {kpi?.attendancePct != null ? pct(kpi.attendancePct) : "—"}
@@ -198,10 +214,11 @@ export default function TeacherDashboard() {
             <StatLine label="بحوث بانتظار المراجعة" value={kpi?.needsReview ?? 0} />
           </View>
         </Card>
+      </Animated.View>
       )}
 
       {/* إجراءات سريعة — one tap into the heavy workflows. */}
-      <View style={{ flexDirection: "row", gap: sp[8] }}>
+      <Animated.View entering={entering(1)} style={{ flexDirection: "row", gap: sp[8] }}>
         {QUICK_ACTIONS.map((a) => {
           const Icon = a.icon;
           return (
@@ -209,7 +226,10 @@ export default function TeacherDashboard() {
               key={a.key}
               accessibilityRole="button"
               accessibilityLabel={a.label}
-              onPress={() => router.push(a.to as never)}
+              onPress={() => {
+                haptics.selection();
+                router.push(a.to as never);
+              }}
               style={{
                 flex: 1,
                 minHeight: 72,
@@ -228,10 +248,11 @@ export default function TeacherDashboard() {
             </PressableScale>
           );
         })}
-      </View>
+      </Animated.View>
 
       {/* طابور التصحيح — count in the header, one row per group. */}
-      <SectionBar
+      <Animated.View entering={entering(2)} style={{ gap: sp[8] }}>
+        <SectionBar
         index={1}
         title="طابور التصحيح"
         action={
@@ -248,27 +269,7 @@ export default function TeacherDashboard() {
           ) : undefined
         }
       />
-      {pendingGroups === null ? (
-        <Card>
-          <T variant="body" color="muted">
-            {pendingTotal === 0
-              ? "لا انتظار — كل التسليمات مُقيَّمة"
-              : arCount(pendingTotal, [
-                  "تسليم واحد بانتظار درجتك",
-                  "تسليمان بانتظار درجتك",
-                  "تسليمات بانتظار درجتك",
-                  "تسليماً بانتظار درجتك",
-                ])}
-          </T>
-        </Card>
-      ) : pendingGroups.length === 0 ? (
-        <Card>
-          <T variant="body" weight="bold">لا انتظار — كل التسليمات مُقيَّمة</T>
-          <T variant="sm" color="muted">
-            ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك.
-          </T>
-        </Card>
-      ) : (
+      {pendingGroups !== null && pendingGroups.length > 0 ? (
         <RowList>
           {pendingGroups.map((g, i) => (
             <LedgerRow
@@ -295,20 +296,46 @@ export default function TeacherDashboard() {
             </LedgerRow>
           ))}
         </RowList>
-      )}
-
-      {/* طابور اليوم — horizontal strip of today's slots. */}
-      <SectionBar index={2} title="طابور اليوم" />
-      {offs.isLoading ? (
-        <SkeletonList rows={2} rowHeight={48} />
-      ) : offs.isError ? (
-        <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
-      ) : slots.length === 0 ? (
+      ) : pendingGroups === null && pendingTotal > 0 ? (
+        /* count-only wire: pending work exists but the payload carries no
+           group detail — render the honest count, never a fake list. */
         <Card>
-          <T variant="body" weight="bold">لا محاضرات اليوم</T>
-          <T variant="sm" color="muted">جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ.</T>
+          <T variant="body" color="muted">
+            {arCount(pendingTotal, [
+              "تسليم واحد بانتظار درجتك",
+              "تسليمان بانتظار درجتك",
+              "تسليمات بانتظار درجتك",
+              "تسليماً بانتظار درجتك",
+            ])}
+          </T>
         </Card>
       ) : (
+        <EmptyState
+          room="exam-hall"
+          title="لا انتظار — كل التسليمات مُقيَّمة"
+          message="ستظهر هنا التسليمات الجديدة فور وصولها بانتظار درجتك."
+          actionLabel="فتح التكاليف"
+          onAction={() => router.push("/teacher/assignments" as never)}
+        />
+      )}
+      </Animated.View>
+
+      {/* طابور اليوم — horizontal strip of today's slots. */}
+      <Animated.View entering={entering(3)} style={{ gap: sp[8] }}>
+        <SectionBar index={2} title="طابور اليوم" />
+        {offs.isLoading ? (
+          <SkeletonList rows={2} rowHeight={48} />
+        ) : offs.isError ? (
+          <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} compact />
+        ) : slots.length === 0 ? (
+          <EmptyState
+            room="lecture-hall"
+            title="لا محاضرات اليوم"
+            message="جدول اليوم فارغ — استرح أو راجع الجدول الأسبوعيّ."
+            actionLabel="الجدول الأسبوعيّ"
+            onAction={() => router.push("/teacher/schedule" as never)}
+          />
+        ) : (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -321,7 +348,10 @@ export default function TeacherDashboard() {
                 key={s.key}
                 accessibilityRole="button"
                 accessibilityLabel={`محاضرة ${s.courseName} ${s.startTime} — ${s.endTime}`}
-                onPress={() => router.push("/teacher/schedule" as never)}
+                onPress={() => {
+                  haptics.selection();
+                  router.push("/teacher/schedule" as never);
+                }}
                 style={{
                   width: 200,
                   gap: sp[6],
@@ -353,10 +383,12 @@ export default function TeacherDashboard() {
           })}
         </ScrollView>
       )}
+      </Animated.View>
 
       {/* Trend — SVG-free View bars, honestly floored at ≥2 points. */}
-      <SectionBar index={3} title="اتجاه الأداء والحضور" />
-      <Card>
+      <Animated.View entering={entering(4)} style={{ gap: sp[8] }}>
+        <SectionBar index={3} title="اتجاه الأداء والحضور" />
+        <Card>
         <T variant="sm" color="muted">
           متوسط أداء وحضور طلابك خلال الأسابيع الستة الماضية
         </T>
@@ -379,10 +411,12 @@ export default function TeacherDashboard() {
             ))}
           </View>
         )}
-      </Card>
+        </Card>
+      </Animated.View>
 
       {/* Feed — filter + rows. */}
-      <SectionBar
+      <Animated.View entering={entering(5)} style={{ gap: sp[8] }}>
+        <SectionBar
         index={4}
         title="تيار المتابعة"
         action={
@@ -404,13 +438,17 @@ export default function TeacherDashboard() {
           { id: "attendance", label: "حضور" },
         ]}
         selectedId={filter}
-        onSelect={(id) => setFilter(id as FeedFilter)}
+        onSelect={(id) => {
+          haptics.selection();
+          setFilter(id as FeedFilter);
+        }}
       />
       {visible.length === 0 ? (
-        <Card>
-          <T variant="body" weight="bold">لا متطلبات الآن — أحسنت!</T>
-          <T variant="sm" color="muted">سيظهر هنا أي عنصر جديد فور وصوله.</T>
-        </Card>
+        <EmptyState
+          room="building"
+          title="لا متطلبات الآن — أحسنت!"
+          message="سيظهر هنا أي عنصر جديد يحتاج متابعتك فور وصوله."
+        />
       ) : (
         <RowList>
           {visible.map((f, i) => {
@@ -446,14 +484,18 @@ export default function TeacherDashboard() {
           })}
         </RowList>
       )}
+      </Animated.View>
 
       {/* مقرّراتي — one tap into each offering's roster. */}
-      <SectionBar index={5} title="مقرّراتي" />
-      {offerings.length === 0 ? (
-        <Card>
-          <T variant="body" color="muted">لم تُسند إليك مقرّرات بعد</T>
-        </Card>
-      ) : (
+      <Animated.View entering={entering(6)} style={{ gap: sp[8] }}>
+        <SectionBar index={5} title="مقرّراتي" />
+        {offerings.length === 0 ? (
+          <EmptyState
+            room="library"
+            title="لم تُسند إليك مقرّرات بعد"
+            message="ستظهر مقرّراتك وشُعَبك هنا فور إسنادها من إدارة شؤون الأساتذة."
+          />
+        ) : (
         <RowList>
           {offerings.map((o, i) => (
             <LedgerRow
@@ -479,6 +521,7 @@ export default function TeacherDashboard() {
         </RowList>
       )}
       <Hairline />
+      </Animated.View>
     </Screen>
   );
 }

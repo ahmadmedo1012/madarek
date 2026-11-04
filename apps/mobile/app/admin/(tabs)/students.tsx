@@ -239,7 +239,14 @@ function EnrollmentManager({
         ) : (
           <View style={{ gap: 8 }}>
             {(enrollments.data ?? []).map((e) => (
-              <LedgerRow key={e.id}>
+              <LedgerRow
+                key={e.id}
+                accessibilityLabel={`تسجيل في ${e.offering?.course?.name ?? "مقرّر"}${
+                  typeof e.progressPct === "number"
+                    ? ` — التقدُّم ${latn(Math.round(e.progressPct))}%`
+                    : ""
+                }`}
+              >
                 <View style={{ gap: 4 }}>
                   <T variant="body" weight="medium">
                     {e.offering?.course?.name ?? "—"}

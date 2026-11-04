@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import BookOpen from "lucide-react-native/icons/book-open";
@@ -12,7 +13,9 @@ import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { DataList, LedgerRow, makeRow, usePagedList } from "@/components/ui/data";
 import { SimulatedBadge } from "@/components/ui/surfaces";
-import { Skeleton, EmptyState } from "@/components/ui/states";
+import { Skeleton, ErrorState } from "@/components/ui/states";
+import { useStaggerEntrance } from "@/motion";
+import { haptics } from "@/haptics";
 import { adminApi } from "@/api/admin";
 import { useSession, ROLE_LABELS } from "@/auth/session";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
@@ -28,9 +31,13 @@ import {
 } from "@/features/governance/components";
 
 /** (tabs) Admin dashboard — «لوحة المسجل العام» (web AdminDashboardPage parity).
- *  Metric hierarchy: ONE hero (students) + supporting tiles — not a flat grid. */
+ *  Metric hierarchy: ONE hero (students) + supporting tiles — not a flat grid.
+ *  R334 review-panel fixes: staggered entrance, haptics.selection on the
+ *  menu rows, and stats failures render ErrorState (never EmptyState). */
 export default function AdminDashboard() {
   const p = usePalette();
+  /* Entrance stagger — base 40, step 60 → 5th block lands at 280ms (cap 400). */
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
   const scope = useInstitutionScope();
   const user = useSession((s) => s.user);
   const stats = useQuery({
@@ -50,18 +57,18 @@ export default function AdminDashboard() {
     <Screen scroll>
       <AppTopBar alertsPath="/admin/alerts" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
+        <Animated.View entering={entering(0)}>
           <T variant="h2" weight="bold">
             لوحة {ROLE_LABELS[user?.role ?? "ADMIN"] ?? "المسجل العام"}
           </T>
           <T variant="body" color="muted">
             إحصائيات حيّة عن طلاب وأساتذة المنصّة.
           </T>
-        </View>
+        </Animated.View>
 
         {stats.isLoading ? (
           /* skeleton with real geometry: hero slab + 2×2 tiles */
-          <View style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
             <Skeleton h={132} />
             <View style={{ flexDirection: "row", gap: 8 }}>
               <Skeleton h={72} />
@@ -71,16 +78,18 @@ export default function AdminDashboard() {
               <Skeleton h={72} />
               <Skeleton h={72} />
             </View>
-          </View>
+          </Animated.View>
         ) : stats.isError ? (
-          <EmptyState
-            title="تعذّر تحميل الإحصائيات"
-            message={humanizeError(stats.error)}
-            actionLabel="إعادة المحاولة"
-            onAction={() => stats.refetch()}
-          />
+          /* Honesty: a failed stats fetch is an ERROR, not an empty —
+             ErrorState + retry (review T5: never masquerade as EmptyState). */
+          <Animated.View entering={entering(1)}>
+            <ErrorState
+              message={humanizeError(stats.error)}
+              onRetry={() => stats.refetch()}
+            />
+          </Animated.View>
         ) : s ? (
-          <View style={{ gap: 8 }}>
+          <Animated.View entering={entering(1)} style={{ gap: 8 }}>
             <MetricHero
               label="الطلاب المسجَّلون"
               value={s.totalStudents ?? null}
@@ -94,10 +103,10 @@ export default function AdminDashboard() {
               <MetricTile label="الشُّعب" value={s.totalOfferings ?? null} />
               <MetricTile label="الكلّيات والأقسام" value={(s.totalFaculties ?? 0) + (s.totalDepartments ?? 0)} />
             </View>
-          </View>
+          </Animated.View>
         ) : null}
 
-        <View>
+        <Animated.View entering={entering(2)}>
           <SectionBar
             index={1}
             title="سجلّ البحوث"
@@ -136,9 +145,9 @@ export default function AdminDashboard() {
               <Button label="تقرير البحوث الكامل" kind="ghost" small onPress={() => router.push("/admin/reports" as never)} />
             </View>
           ) : null}
-        </View>
+        </Animated.View>
 
-        <View>
+        <Animated.View entering={entering(3)}>
           <SectionBar index={2} title="صفحات المسجل العام" />
           <View style={{ gap: 8 }}>
             {(
@@ -152,7 +161,10 @@ export default function AdminDashboard() {
             ).map(([Icon, title, sub, href], i, arr) => (
               <LedgerRow
                 key={href}
-                onPress={() => router.push(href as never)}
+                onPress={() => {
+                  haptics.selection();
+                  router.push(href as never);
+                }}
                 accessibilityLabel={title}
                 last={i === arr.length - 1}
               >
@@ -170,11 +182,13 @@ export default function AdminDashboard() {
               </LedgerRow>
             ))}
           </View>
-        </View>
+        </Animated.View>
 
-        <T variant="xs" color="faint" style={{ paddingBottom: sp[8] }}>
-          الكلّيات والأقسام في تبويب «الكلّيات» · الطلاب والأساتذة والتقارير في تبويبات الشريط السفلي.
-        </T>
+        <Animated.View entering={entering(4)}>
+          <T variant="xs" color="faint" style={{ paddingBottom: sp[8] }}>
+            الكلّيات والأقسام في تبويب «الكلّيات» · الطلاب والأساتذة والتقارير في تبويبات الشريط السفلي.
+          </T>
+        </Animated.View>
       </View>
     </Screen>
   );

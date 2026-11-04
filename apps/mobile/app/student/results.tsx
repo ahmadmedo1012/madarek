@@ -169,7 +169,15 @@ export default function ResultsScreen() {
                 {c.breakdown.length > 0 ? (
                   <RowList>
                     {c.breakdown.map((b, i) => (
-                      <LedgerRow key={`${c.offeringId}-${i}`} last={i === c.breakdown.length - 1}>
+                      <LedgerRow
+                        key={`${c.offeringId}-${i}`}
+                        last={i === c.breakdown.length - 1}
+                        accessibilityLabel={`${gradeKindLabel(b.kind)} في ${c.courseName}: ${
+                          b.score !== null && b.maxScore !== null
+                            ? `${latn(b.score)} من ${latn(b.maxScore)}`
+                            : "غير مُقيَّم"
+                        }${b.weight != null ? ` — الوزن ${latn(Math.round(b.weight))}%` : ""}`}
+                      >
                         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                           <T variant="body" weight="medium" style={{ flex: 1 }}>
                             {gradeKindLabel(b.kind)}

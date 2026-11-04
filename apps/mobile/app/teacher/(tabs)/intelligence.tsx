@@ -210,7 +210,15 @@ export default function TeacherIntelligence() {
             {riskRows.map((r, i) => {
               const info = riskInfo(r.risk);
               return (
-                <LedgerRow key={r.key || i} last={i === riskRows.length - 1} accessibilityLabel={`طالب ${r.name}`}>
+                <LedgerRow
+                  key={r.key || i}
+                  last={i === riskRows.length - 1}
+                  accessibilityLabel={`طالب ${r.name}${
+                    r.courseName ? ` في ${r.courseName}` : ""
+                  }${info ? ` — ${info.label}` : ""}${
+                    r.riskScore !== null ? ` — درجة الخطر ${pct(r.riskScore)}` : ""
+                  }`}
+                >
                   <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                     <Avatar
                       initials={r.avatarInitials ?? r.name.slice(0, 2)}
