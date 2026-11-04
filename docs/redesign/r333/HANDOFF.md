@@ -58,4 +58,33 @@ Red-main events: cf5c5adf+e424f1a2+7637d334 — every root fixed (bundle, select
 - P-I: 929 lines deleted (PI-B1/2/3, 45/46) → PI-00 coverage sweep + batch A PENDING
 - Rubric blind panel: machinery ready → first full run PENDING
 
+## Round close
+### Commit ledger — waves 5-7
+| sha | gates | CI | note |
+|---|---|---|---|
+| d58a29eb | local ✅ | CI ❌ (Design gates: raw `<svg>` @ LandingPage.tsx:402 — rest cancelled) | WAVE 5 (P-A2 wired, WebKit sweep, P-G2 authed, PI-00 coverage) |
+| ca5a5ad0 | local ✅ | CI ❌ (Design gates: same icon root; all other jobs ✅ incl. E2E) | WAVE 6 (batch-A −7.0k net, inner-public rebuilt) |
+| a584543c | local ✅ | CI ❌ (Design gates same icon root + E2E: r309 clock 2481/2471ms < 2500 floor ×2, 1 flaky drag-box, 155 passed) | WAVE 7 (components.css dead-pool deleted, authed worst rebuilt) |
+
+Close verdict: CI RED at a584543c — 2 open roots: (1) icon-discipline raw `<svg>` .pr-shot-frame, introduced W5, unfixed; (2) E2E r309 entrance-clock floor breach ~20-30ms on CI runners. All other 9 jobs green. Not fixed at close (close-only instruction).
+
+### Blind panel (partial — honest)
+- Reviewer-1: INVALIDATED (vision-backend 429 after 5/45 reads; metric-only baselines — not counted).
+- Reviewer-2 (full vision, 8 strips): A 89.6 vs B 89.1 — near-tie; B wins motion/type on showcase sections; A wins footer + all mobile staging + RTL by construction.
+- Reviewer-3 (full vision, 8 complementary strips): A wins 7/8 (statement 92/74, why 92/60, roles 79/57); Heron calibration 78/120.
+- Forms: `/home/z/evidence-r333/judge/r333-matrix/forms/` (reviewer-1/2/3, +filled). Reviewers never scored the same section set (budget caps); dark/WebKit/360 NOT_EVALUATED.
+
+### Exit criteria at close (honest)
+- heron-craft: ✅ (24 rows/20 tickets; INV-01/05/08/12 closed, INV-07 partial) — OPEN: section motion in pains/why/roles, why/roles imagery depth.
+- Rubric ≥9 motion/typography/polish gates: NOT MET (strict reading) — consensus: parity on composition/spacing/consistency; behind on motion richness + media depth.
+- Signature scene: ✅ (72.4% @1440, labels ≥13.9px, no blank frames). Inner ≥8: rebuilt pages re-score owed. CSS: 43,555/33k, !important 105, IN PROGRESS by design. CI green last 30: ❌ (see verdict above).
+
+### Remaining gaps (tickets)
+1. Motion grammar for pains/why/roles scroll strips (reveals fire once, then hold — read static in filmstrips).
+2. why/roles imagery depth (Heron before/after pair + role portraits equivalents).
+3. Re-run blind panel with FULL section coverage per reviewer + dark/WebKit sheets.
+4. CI reds: .pr-shot-frame `<svg>` → Lucide Icon; r309 clock-floor breach on runners.
+5. owner.css deletion (2 agent deaths) + colleges.css re-deletion + batch C + PI-Z !important → 0.
+6. App parity (P-H) — untouched. 7. 55fps@4× host-unreachable (r332 attribution stands). 8. Re-score rebuilt pages (exam-taking, schedule, leaderboard, help, campus).
+
 Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>
