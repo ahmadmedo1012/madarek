@@ -79,7 +79,21 @@ describe('r177 — public metadata is platform-neutral (index.html)', () => {
 
 describe('r177 — landing/auth copy is affiliation-free', () => {
   it('landing presents the independent identity and labels showcase data', () => {
-    const landing = read('src/pages/LandingPage.tsx');
+    /* P2-0 (r335 split): the guest surface = LandingPage + the nine
+     * section bands (the copy moved verbatim into sections/*.tsx —
+     * the contract reads the surface, not the file layout). */
+    const landing = [
+      'src/pages/LandingPage.tsx',
+      'src/components/landing/sections/Hero.tsx',
+      'src/components/landing/sections/Statement.tsx',
+      'src/components/landing/sections/Live.tsx',
+      'src/components/landing/sections/Chapters.tsx',
+      'src/components/landing/sections/Product.tsx',
+      'src/components/landing/sections/Why.tsx',
+      'src/components/landing/sections/Roles.tsx',
+      'src/components/landing/sections/Vision.tsx',
+      'src/components/landing/sections/Footer.tsx',
+    ].map(read).join('\n');
     for (const claim of OFFICIAL_CLAIMS) {
       // comments document the OLD wording on purpose — strip them first
       const code = landing.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');

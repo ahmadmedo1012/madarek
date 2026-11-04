@@ -1,0 +1,13 @@
+{
+  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: pains band — section#live.pm-section (sections/Live.tsx).]",
+  "ourSection": {
+    "home-problem-wrap": "section#live.pm-section"
+  },
+  "heronPageKey": {
+    "home-problem-wrap": "div.home-problem-wrap"
+  },
+  "scaleFactor": {
+    "home-problem-wrap": 1
+  },
+  "explicit": []
+}

@@ -382,7 +382,9 @@ describe('R320 §D — the real facts (every sentence from real code)', () => {
   });
 
   it('about: the landing independence paragraph VERBATIM (nothing added)', () => {
-    const landing = read('src/pages/LandingPage.tsx');
+    /* P2-0 (r335 split): the independence paragraph lives in the
+     * footer band — sections/Footer.tsx. */
+    const landing = read('src/components/landing/sections/Footer.tsx');
     // extract the honest identity paragraph from the landing source
     const m = landing.match(/منصّة تعليمية تقنية مستقلّة، عربية أولًا\.[^<]+/);
     expect(m).toBeTruthy();
@@ -485,7 +487,9 @@ describe('sheet-code residue — the PublicSheetKey map (r324 X10)', () => {
 
 describe('R320 §D — every wiring point', () => {
   it('the landing footer legal row: nine links, hairline-separated, riding the © bar (R321 §A2)', () => {
-    const src = read('src/pages/LandingPage.tsx');
+    /* P2-0 (r335 split): the colophon (strip → bottom bar → legal row)
+     * lives in sections/Footer.tsx. */
+    const src = read('src/components/landing/sections/Footer.tsx');
     const row = src.match(/<nav className="fo-legal-row"[\s\S]*?<\/nav>/);
     expect(row).toBeTruthy();
     const expected = [
@@ -519,7 +523,8 @@ describe('R320 §D — every wiring point', () => {
   });
 
   it('the footer contact cell is a /contact link now (the honest prose moved onto the page)', () => {
-    const src = read('src/pages/LandingPage.tsx');
+    /* P2-0 (r335 split): the contact cell lives in sections/Footer.tsx. */
+    const src = read('src/components/landing/sections/Footer.tsx');
     // locate the contact cell by its heading, then read the cell region
     const idx = src.indexOf('>التواصل<');
     expect(idx).toBeGreaterThan(0);

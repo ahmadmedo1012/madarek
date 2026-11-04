@@ -12,7 +12,7 @@
  *      recording per-section top/height in vh → pin spans + section heights
  *      (same columnar shape as _page.<bp>.json)
  *   3. per section: the SAME measurement walk as scripts/spec/extract-heron.mjs
- *   4. match Heron elements → our elements: explicit mapping (mapping.json)
+ *   4. match Heron elements → our elements: explicit mapping (mapping/*.json)
  *      then heuristic fallback (same tag + same text-class + ordinal position)
  *   5. run the tolerance assertions (tolerances.mjs), apply Arabic exceptions
  *      (exceptions.json), count exception usage
@@ -21,12 +21,13 @@
  *   node scripts/conformance/run.mjs                            # all sections × all bps
  *   node scripts/conformance/run.mjs --sections home-hero-wrap,footer --bps 1440,390
  *   node scripts/conformance/run.mjs --gate                     # CI: exit 1 below 90%
+ *   node scripts/conformance/run.mjs --url http://localhost:5174/  # another dev-server seat
  *
  * Output: console table (section × bp) + scripts/conformance/results.json.
  * Exit 0 always (report-only) unless --gate and pass-rate < 90.
  */
 import { createRequire } from "node:module";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as T from "./tolerances.mjs";
@@ -43,8 +44,26 @@ try {
 }
 
 const SPEC_DIR = join(WORKTREE, "docs", "redesign", "r335", "heron-spec");
-const URL = "http://localhost:5173/";
-const MAPPING = JSON.parse(readFileSync(join(__dirname, "mapping.json"), "utf8"));
+// P2-0 (r335 split): the mapping lives as ONE FILE PER SECTION in
+// mapping/ (named with the exact our-section key run.mjs uses) — merge
+// every *.json in the directory into the same in-memory shape the old
+// single mapping.json had ({ ourSection, heronPageKey, scaleFactor,
+// explicit }). Deterministic order (sorted) keeps the section list
+// stable across runs.
+const MAPPING = readdirSync(join(__dirname, "mapping"))
+  .filter((f) => f.endsWith(".json"))
+  .sort()
+  .reduce(
+    (acc, f) => {
+      const part = JSON.parse(readFileSync(join(__dirname, "mapping", f), "utf8"));
+      Object.assign(acc.ourSection, part.ourSection);
+      Object.assign(acc.heronPageKey ?? (acc.heronPageKey = {}), part.heronPageKey);
+      Object.assign(acc.scaleFactor ?? (acc.scaleFactor = {}), part.scaleFactor);
+      acc.explicit.push(...(part.explicit ?? []));
+      return acc;
+    },
+    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [] },
+  );
 const EXCEPTIONS = JSON.parse(readFileSync(join(__dirname, "exceptions.json"), "utf8"));
 const SECTIONS = Object.keys(MAPPING.ourSection);
 const BPS = [
@@ -61,6 +80,14 @@ const SECTIONS_WANTED = arg("sections", null)?.split(",").map((s) => s.trim()) ?
 const BPS_WANTED = arg("bps", null)?.split(",").map((b) => b.trim()) ?? BPS.map((b) => b.name);
 const GATE = process.argv.includes("--gate");
 const OUT = arg("out", join(__dirname, "results.json"));
+// P2-0: optional dev-server seat override (default unchanged — the
+// shared :5173 seat). Unknown keys in ourSection are validated below.
+const URL = arg("url", "http://localhost:5173/");
+const unknown = SECTIONS_WANTED.filter((s) => !MAPPING.ourSection[s]);
+if (unknown.length) {
+  console.error(`unknown section key(s): ${unknown.join(", ")} — known: ${SECTIONS.join(", ")}`);
+  process.exit(2);
+}
 
 // ── the in-page measurement walk (SAME shape as scripts/spec/extract-heron.mjs) ──
 const WALK_JS = String.raw`

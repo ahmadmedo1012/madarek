@@ -84,10 +84,22 @@ describe('landing funnel — source contract (r164b → r331)', () => {
    * (the header pair + the mobile menu) + hero/Hero (the hero cell).
    * The funnel counts are computed over the WHOLE guest surface — the
    * contract is about the page, not the file layout. */
+  /* P2-0 (r335 split): the bands moved verbatim into
+   * components/landing/sections/ — the surface list grows with them,
+   * same contract, same counts. */
   const surface = [
     'src/pages/LandingPage.tsx',
     'src/components/landing/chrome/SheetNav.tsx',
     'src/components/landing/hero/Hero.tsx',
+    'src/components/landing/sections/Hero.tsx',
+    'src/components/landing/sections/Statement.tsx',
+    'src/components/landing/sections/Live.tsx',
+    'src/components/landing/sections/Chapters.tsx',
+    'src/components/landing/sections/Product.tsx',
+    'src/components/landing/sections/Why.tsx',
+    'src/components/landing/sections/Roles.tsx',
+    'src/components/landing/sections/Vision.tsx',
+    'src/components/landing/sections/Footer.tsx',
   ].map(read).join('\n');
   const tsx = read('src/pages/LandingPage.tsx');
   const live = stripComments(surface);
@@ -113,7 +125,8 @@ describe('landing funnel — source contract (r164b → r331)', () => {
     // الجامعي» label + /auth destination in one section. Comments are
     // stripped so the r164b tombstone (which quotes the old lede) can't
     // satisfy the pin from beyond the grave.
-    const finaleLive = stripComments(tsx);
+    /* P2-0 (r335 split): the finale band lives in sections/Vision.tsx. */
+    const finaleLive = stripComments(read('src/components/landing/sections/Vision.tsx'));
     const lede = finaleLive.indexOf('fo-cta-lede');
     expect(lede).toBeGreaterThanOrEqual(0);
     const actions = finaleLive.indexOf('fo-cta-actions', lede);

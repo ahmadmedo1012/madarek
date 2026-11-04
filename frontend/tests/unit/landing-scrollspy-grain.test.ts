@@ -49,9 +49,25 @@ const LANDING_FAMILY = [
 ] as const;
 const readLanding = () => stripComments(LANDING_FAMILY.map(read).join('\n'));
 
+/* P2-0 (r335 split): the nine bands moved verbatim into
+ * components/landing/sections/ — the guest surface is the composer +
+ * the sections now (same contract: the page, not the file layout). */
+const LANDING_TSX_SURFACE = [
+  'src/pages/LandingPage.tsx',
+  'src/components/landing/sections/Hero.tsx',
+  'src/components/landing/sections/Statement.tsx',
+  'src/components/landing/sections/Live.tsx',
+  'src/components/landing/sections/Chapters.tsx',
+  'src/components/landing/sections/Product.tsx',
+  'src/components/landing/sections/Why.tsx',
+  'src/components/landing/sections/Roles.tsx',
+  'src/components/landing/sections/Vision.tsx',
+  'src/components/landing/sections/Footer.tsx',
+].map(read).join('\n');
+
 describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', () => {
   const live = readLanding();
-  const tsx = read('src/pages/LandingPage.tsx');
+  const tsx = LANDING_TSX_SURFACE;
 
   it('no data-active-section consumer exists in CSS or TSX', () => {
     expect(live).not.toContain('data-active-section');
@@ -87,7 +103,7 @@ describe('r188 — the scroll-spy system is retired with the Orbit-Ink world', (
 
 describe('r188 — the folio chrome that ships', () => {
   const live = readLanding();
-  const tsx = read('src/pages/LandingPage.tsx');
+  const tsx = LANDING_TSX_SURFACE;
   /* R331 split: the masthead lives in chrome/SheetNav.tsx + landing/nav.css. */
   const navTsx = read('src/components/landing/chrome/SheetNav.tsx');
   const navCss = stripComments(read('src/styles/landing/nav.css'));
