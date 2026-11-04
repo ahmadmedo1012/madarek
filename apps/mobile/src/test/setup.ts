@@ -119,6 +119,19 @@ jest.mock("expo-local-authentication", () => ({
 jest.mock("react-native-reanimated", () => require("react-native-reanimated/mock"));
 jest.mock("react-native-worklets", () => require("react-native-worklets/src/mock"));
 
+/* ── netinfo: no native runtime under jest — the real module throws inside
+      its TurboModule lazy getters the moment addEventListener/fetch run,
+      which took down any net mounting useNetworkStatus (R334: flagged by
+      the exams + courses + shell workstreams). Always-online stub. ───── */
+jest.mock("@react-native-community/netinfo", () => ({
+  addEventListener: (cb: (state: unknown) => void) => {
+    cb({ isConnected: true, isInternetReachable: true, type: "unknown" });
+    return () => undefined;
+  },
+  fetch: async () => ({ isConnected: true, isInternetReachable: true, type: "unknown" }),
+  useNetInfo: () => ({ isConnected: true, isInternetReachable: true, type: "unknown" }),
+}));
+
 /* ── safe-area: the REAL provider only renders children after the native
       onInsetsChange event — which NEVER fires under jest, silently
       hollowing every mount. The official mock is a passthrough context
