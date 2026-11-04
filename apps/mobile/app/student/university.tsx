@@ -21,6 +21,7 @@ import { Badge, Card } from "@/components/ui/surfaces";
 import { StatLine } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { SectionNote, countAr } from "@/features/student/more";
 import { PushFrame } from "@/features/student/components";
 
@@ -67,8 +68,13 @@ const CATEGORY_LABEL: Record<string, string> = {
   programs: "البرامج والدرجات",
 };
 
+/** Server categories may arrive in Arabic already — pass those verbatim. */
+const HAS_ARABIC = /[\u0600-\u06FF]/;
+
 function categoryLabel(category: string): string {
-  return CATEGORY_LABEL[category] ?? category;
+  if (CATEGORY_LABEL[category]) return CATEGORY_LABEL[category];
+  if (HAS_ARABIC.test(category)) return category;
+  return "معلومات إضافية";
 }
 
 /**
@@ -187,7 +193,7 @@ export default function UniversityScreen() {
       {facts.isLoading ? (
         <SkeletonList rows={6} rowHeight={56} />
       ) : facts.isError ? (
-        <ErrorState message={(facts.error as Error | null)?.message} onRetry={() => facts.refetch()} />
+        <ErrorState message={humanizeError(facts.error)} onRetry={() => facts.refetch()} />
       ) : !sheet || sheet.sections.length === 0 ? (
         <EmptyState
           icon={<Building2 size={22} color={p.textMuted} />}
@@ -242,7 +248,7 @@ export default function UniversityScreen() {
         <StatLine label="المعرّف على المنصّة" value={institution?.slug ?? "—"} />
         <StatLine
           label="دورك في المؤسّسة"
-          value={membershipRole ? ROLE_LABELS[membershipRole] ?? membershipRole : "—"}
+          value={membershipRole ? ROLE_LABELS[membershipRole] ?? "عضو" : "—"}
         />
         {user?.memberships && user.memberships.length > 0 ? (
           <StatLine
