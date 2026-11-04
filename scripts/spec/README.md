@@ -21,7 +21,7 @@ Method rules:
   each, capped at 5% of assertions.
 - Extracted 2026-11-04 (R335 A-Spec-1..4).
 
-Files:
+Files (minified JSON — indent=1 blew the size gate; parsers don't care):
 - `<section>.<bp>.json` — element tree (p/path, tag, tc/textClass, vr viewport-rect, sr
   section-rect, fs/lh/fw/ls/ff type, color/bg/border/radius/pad/margin/gap, opacity,
   transform (decomposed), interactive flag, transition/anim computed, hovers[] with
