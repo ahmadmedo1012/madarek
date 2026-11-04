@@ -1,0 +1,33 @@
+{
+  "_readme": "R335 A-Conform pre-seeded exceptions — the DOCUMENTED Arabic adaptations. The runner counts every assertion resolved through one of these rules; they must cover <5% of all assertions (reported as exceptionUsage). pathPattern is a regex matched against the Heron role path (empty pattern = applies to every element).",
+  "exceptions": [
+    {
+      "id": "ar-letter-spacing-zero",
+      "pathPattern": "",
+      "field": "ls",
+      "rule": "Heron tracking (negative or positive) is treated as '0 required'; our computed letter-spacing must satisfy |ls| ≤ 0.05em (Arabic script joins letters — positive tracking breaks the joins, Heron's negative Latin tracking is meaningless in Arabic).",
+      "reason": "Arabic letter-join preservation"
+    },
+    {
+      "id": "ar-line-height-floor",
+      "pathPattern": "",
+      "field": "lh",
+      "rule": "When Heron's line-height is < 1.35 × its font-size and ours is ≥ 1.35 × ours, the assertion passes via exception (Arabic ascenders/descenders need the taller metric box; exact px equality is not required).",
+      "reason": "Arabic ascender/descender clipping"
+    },
+    {
+      "id": "rtl-x-mirror",
+      "pathPattern": "",
+      "field": "sr.x",
+      "rule": "x-geometry is compared MIRRORED: distance-from-viewport-center of Heron vs ours (our page is RTL, Heron LTR — the axis is flipped by design). Counts as exception use so the mirror rate stays visible.",
+      "reason": "RTL layout mirrors Heron's LTR x-axis"
+    },
+    {
+      "id": "ar-text-length-class",
+      "pathPattern": "",
+      "field": "tc",
+      "rule": "Text-length class may differ by ±1 class (none↔short↔medium↔long) where the Arabic copy is more compact than the English source.",
+      "reason": "Arabic copy is more compact than English"
+    }
+  ]
+}
