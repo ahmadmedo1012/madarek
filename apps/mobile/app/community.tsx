@@ -173,23 +173,23 @@ function PostsPanel({ header }: { header: ReactNode }) {
 
   return (
     <View style={{ flex: 1 }}>
+      {/* The tab strip stays pinned (native feed anatomy): header +
+          compose door above the virtualized feed, DataList IS the scroller. */}
+      <View style={{ paddingHorizontal: sp[20], paddingTop: sp[8], gap: sp[16] }}>
+        {header}
+        {user ? (
+          <Button
+            label="اكتب منشورًا جديدًا"
+            kind="ghost"
+            icon={<Plus size={16} color={p.text} />}
+            onPress={() => setComposing(true)}
+          />
+        ) : null}
+      </View>
       <DataList
         data={posts}
         renderItem={({ item }) => <PostCard item={item} onReact={onReact} />}
         keyExtractor={(post) => post.id}
-        ListHeaderComponent={
-          <View style={{ paddingHorizontal: sp[20], paddingTop: sp[8], gap: sp[16] }}>
-            {header}
-            {user ? (
-              <Button
-                label="اكتب منشورًا جديدًا"
-                kind="ghost"
-                icon={<Plus size={16} color={p.text} />}
-                onPress={() => setComposing(true)}
-              />
-            ) : null}
-          </View>
-        }
         isLoading={q.isLoading}
         isError={q.isError}
         errorSlot={
