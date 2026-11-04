@@ -384,7 +384,7 @@ export default function StudentDashboard() {
               compact
             />
           ) : (
-            <GapList gaps={gaps.data ?? []} max={3} fallbackToMatrix />
+            <GapList gaps={Array.isArray(gaps.data) ? gaps.data : []} max={3} fallbackToMatrix />
           )}
         </Animated.View>
 

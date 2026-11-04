@@ -647,20 +647,34 @@ export function nextStep(
   resume: ResumeCard | null | undefined,
   now = Date.now(),
 ): NextStep | null {
-  if (resume) {
-    const pctDone = resume.progressPct ?? 0;
+  /* Shape-guard before trusting the payload: a hostile/partial /me/resume
+     (truthy but missing `lecture`/`course` — the poisoned-net contract and
+     the owner's real-device crash class) must fall through to the next
+     priority, never crash the dashboard render. */
+  const lecture = resume?.lecture;
+  if (lecture && lecture.course) {
+    const pctDone = resume!.progressPct ?? 0;
     return {
       kind: "lecture",
-      title: resume.lecture.course.name,
-      subline: `المحاضرة ${latn(resume.lecture.ordinal)} · ${resume.lecture.title}`,
-      actionLabel: resume.mode === "continue" ? "متابعة المحاضرة" : "ابدأ المحاضرة",
-      href: `/student/lectures/${resume.lecture.id}`,
+      title: lecture.course.name,
+      subline: `المحاضرة ${latn(lecture.ordinal)} · ${lecture.title}`,
+      actionLabel: resume!.mode === "continue" ? "متابعة المحاضرة" : "ابدأ المحاضرة",
+      href: `/student/lectures/${lecture.id}`,
       progressPct: pctDone,
-      a11y: `${resume.mode === "continue" ? "أكمل من حيث توقفت" : "الخطوة التالية"}: ${resume.lecture.course.name}، المحاضرة ${latn(resume.lecture.ordinal)}، ${pctDone > 0 ? `مكتملة بنسبة ${pct(pctDone)}` : "لم تبدأ بعد"}`,
+      a11y: `${resume!.mode === "continue" ? "أكمل من حيث توقفت" : "الخطوة التالية"}: ${lecture.course.name}، المحاضرة ${latn(lecture.ordinal)}، ${pctDone > 0 ? `مكتملة بنسبة ${pct(pctDone)}` : "لم تبدأ بعد"}`,
     };
   }
 
-  const assignments = dash?.agenda.assignments ?? [];
+  /* Hostile-shape hardening: the poison envelope can hand us `dash` = truthy
+     junk ({}, null, missing agenda…) — every nested read stays optional and
+     every collection re-checks Array.isArray before sort/filter. */
+  const agenda = dash?.agenda;
+  const asArray = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : []);
+  type Assignment = StudentDashboard["agenda"]["assignments"][number];
+  type Exam = StudentDashboard["agenda"]["exams"][number];
+  type AgendaClass = StudentDashboard["agenda"]["classes"][number];
+
+  const assignments = asArray<Assignment>(agenda?.assignments);
   const soonest = [...assignments].sort(
     (a, b) => (a.dueAt ? new Date(a.dueAt).getTime() : Number.POSITIVE_INFINITY) - (b.dueAt ? new Date(b.dueAt).getTime() : Number.POSITIVE_INFINITY),
   )[0];
@@ -676,7 +690,7 @@ export function nextStep(
     };
   }
 
-  const exams = dash?.agenda.exams ?? [];
+  const exams = asArray<Exam>(agenda?.exams);
   const nextExam = [...exams].sort(
     (a, b) => (a.openAt ? new Date(a.openAt).getTime() : Number.POSITIVE_INFINITY) - (b.openAt ? new Date(b.openAt).getTime() : Number.POSITIVE_INFINITY),
   )[0];
@@ -696,7 +710,7 @@ export function nextStep(
     };
   }
 
-  const firstClass = (dash?.agenda.classes ?? []).find((c) => c.when === "today");
+  const firstClass = asArray<AgendaClass>(agenda?.classes).find((c) => c.when === "today");
   if (firstClass) {
     return {
       kind: "class",

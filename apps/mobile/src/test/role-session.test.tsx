@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { POISON, type PoisonKind } from "./poison";
 import { useSession } from "@/auth/session";
+
 import type { AppRole, AuthUser } from "@/api/types";
 
 // R331 A-App-Shell — the role homes moved INTO each role's `(tabs)` group
@@ -109,13 +110,30 @@ function routeModule(rel: string): React.ComponentType {
   return mod.default as React.ComponentType;
 }
  
+/* The route modules are required at FILE scope, not inside test bodies:
+   the first mount pays the whole app-graph require (expo modules,
+   reanimated/worklets, every shared screen). Under Node 22 that cold
+   load alone crosses jest's 30s per-test timeout (the CI Mobile-gates
+   red of 2026-11-04) even though the scenario itself runs in <100 ms
+   warm. File-evaluation time is outside every per-test clock. */
+const ROUTE_COMPONENTS: Record<string, React.ComponentType> = Object.fromEntries(
+  [...new Set([...ROLES.map((r) => r.home), "index", "auth/index", "select-institution"])].map(
+    (rel) => [rel, routeModule(rel)],
+  ),
+);
+const routeComponent = (rel: string): React.ComponentType => ROUTE_COMPONENTS[rel]!;
 
 describe("A2 — post-login survival, per role (hostile /me and everything else)", () => {
   let spy: jest.SpyInstance;
   let warnSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    jest.useFakeTimers(); // refetchInterval must never leak real handles
+    // refetchInterval must never leak real handles — but the scheduler
+    // primitives stay real: faking setImmediate/queueMicrotask makes the
+    // React/notifyManager drain pathological under Node 22 (the CI
+    // Mobile-gates red of 2026-11-04 — 18–30 s IDLE wall-clock waits per
+    // test while every assert itself runs in <1 ms).
+    jest.useFakeTimers({ doNotFake: ["setImmediate", "queueMicrotask"] });
     POISON.kind = "ok";
     spy = jest.spyOn(console, "error").mockImplementation(() => undefined);
     warnSpy = jest.spyOn(console, "warn").mockImplementation(() => undefined);
@@ -139,20 +157,20 @@ describe("A2 — post-login survival, per role (hostile /me and everything else)
     async (role, kind) => {
       POISON.kind = kind;
       const home = ROLES.find((r) => r.role === role)!.home;
-      const tree = await mountSignedIn(routeModule(home), role);
+      const tree = await mountSignedIn(routeComponent(home), role);
       expectNotWhiteScreen(tree);
     },
   );
 
   test.each(POISONS)("entry / (welcome with session) × poison %s — renders, never white", async (kind) => {
     POISON.kind = kind;
-    const tree = await mountSignedIn(routeModule("index"), "STUDENT");
+    const tree = await mountSignedIn(routeComponent("index"), "STUDENT");
     expectNotWhiteScreen(tree);
   });
 
   test.each(POISONS)("/auth screen × poison %s — renders, never white", async (kind) => {
     POISON.kind = kind;
-    const tree = await mountSignedIn(routeModule("auth/index"), "STUDENT");
+    const tree = await mountSignedIn(routeComponent("auth/index"), "STUDENT");
     expectNotWhiteScreen(tree);
   });
 
@@ -168,7 +186,7 @@ describe("A2 — post-login survival, per role (hostile /me and everything else)
         accessToken: "t",
         isHydrated: true,
       });
-      const Picker = routeModule("select-institution");
+      const Picker = routeComponent("select-institution");
       const tree = await render(
         <QueryClientProvider client={queryClient}>
           <SafeAreaProvider>

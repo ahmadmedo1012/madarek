@@ -48,6 +48,19 @@ expect(routes.length).toBeGreaterThan(100);
 
 const POISONS: PoisonKind[] = ["null-data", "missing-fields", "empty-list", "401", "500"];
 
+/* Every route module is required at FILE scope, not inside test bodies:
+   the first tests of the walk otherwise pay the whole app-graph require
+   (expo modules, reanimated/worklets, every shared screen) inside jest's
+   30s per-test timeout — under Node 22 that cold load alone exceeds it
+   (the CI Mobile-gates red of 2026-11-04) while the warm scenario runs
+   in <100 ms. File-evaluation time is outside every per-test clock. */
+const ROUTE_COMPONENTS: ReadonlyMap<string, unknown> = new Map(
+  routes.map((r) => {
+    const mod = require(r.file) as { default?: unknown };
+    return [r.name, mod.default];
+  }),
+);
+
 /* ── the harness ────────────────────────────────────────────────────── */
 
 /** Microtask-only flush — fake timers keep refetchInterval from leaking. */
@@ -85,7 +98,12 @@ async function mountAndFlush(Component: React.ComponentType): Promise<void> {
 
 describe("every route survives hostile API responses (the poisoned net)", () => {
   beforeEach(() => {
-    jest.useFakeTimers(); // refetchInterval must never leak real handles
+    // refetchInterval must never leak real handles — but the scheduler
+    // primitives stay real: faking setImmediate/queueMicrotask makes the
+    // React/notifyManager drain pathological under Node 22 (the CI
+    // Mobile-gates red of 2026-11-04 — 18–30 s IDLE wall-clock waits per
+    // test while every assert itself runs in <1 ms).
+    jest.useFakeTimers({ doNotFake: ["setImmediate", "queueMicrotask"] });
     POISON.kind = "ok";
     useSession.setState({
       user: null,
@@ -104,10 +122,7 @@ describe("every route survives hostile API responses (the poisoned net)", () => 
     "route %s × poison %s",
     async (route, kind) => {
        
-      const mod = require(
-        routes.find((r) => r.name === route)!.file,
-      ) as { default?: unknown };
-      const Component = mod.default;
+      const Component = ROUTE_COMPONENTS.get(route);
       expect(typeof Component).toBe("function");
       POISON.kind = kind;
       const spy = jest.spyOn(console, "error").mockImplementation(() => undefined);
