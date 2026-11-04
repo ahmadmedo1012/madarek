@@ -1,5 +1,5 @@
-# Dependencies
-node_modules/
+# Dependencies (no trailing slash: also matches symlinked installs in worktrees)
+node_modules
 .pnp/
 .pnp.js
 
