@@ -26,7 +26,8 @@ Files:
   section-rect, fs/lh/fw/ls/ff type, color/bg/border/radius/pad/margin/gap, opacity,
   transform (decomposed), interactive flag, transition/anim computed, hovers[] with
   before/after computed styles).
-- `_page.<bp>.json` — scrollHeight, maxScroll, vh, per-step section tops/heights in vh
-  (marks: pin detection = constant topVh across scroll), Lenis params, wrap diagnostics.
+- `_page.<bp>.json` — scrollHeight, maxScroll, vh, marks in columnar form
+  (keys[] + rows=[y, topVh[], hVh[]]; pin detection = constant topVh across
+  scroll steps), Lenis params, wrap diagnostics.
 - `_motion.<bp>.json` — triggers[] (start/end/pin/scrub/toggleActions/anticipatePin,
   animation duration), tweens[] (method, target role path, kept vars, timestamp).

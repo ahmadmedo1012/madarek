@@ -403,15 +403,24 @@ try {
       wrapErr: res.motionSetup.wrapErr,
       hasTriggerTable: res.motionSetup.hasTriggerTable,
     };
-    // RLE the marks: consecutive steps with identical section layouts carry no
-    // pin-transition information and blow the 500KB/file size gate.
-    const rleMarks = [];
-    for (const m of pageJson.marks) {
-      const sig = JSON.stringify(m.sections);
-      if (rleMarks.length === 0 || rleMarks[rleMarks.length - 1].sig !== sig) rleMarks.push({ ...m, sig });
-    }
-    pageJson.marks = rleMarks.map(({ sig, ...rest }) => rest);
-    pageJson.marksCompressed = true;
+    // Columnar marks (schema v2): rows=[y, topVh[], hVh[]] aligned to `keys` —
+    // object-per-step rows blew the 500KB/file size gate (513KB @1440). Same
+    // data, ~6x smaller; null = zero-height wrap at that step.
+    const keys = [...new Set(pageJson.marks.flatMap((m) => m.sections.map((s) => s.key)))].sort();
+    const kidx = new Map(keys.map((k, i) => [k, i]));
+    pageJson.marks = {
+      keys,
+      rows: pageJson.marks.map((m) => {
+        const tops = Array(keys.length).fill(null);
+        const hs = Array(keys.length).fill(null);
+        for (const s of m.sections) {
+          tops[kidx.get(s.key)] = s.topVh;
+          hs[kidx.get(s.key)] = s.hVh;
+        }
+        return [m.y, tops, hs];
+      }),
+      format: "columnar-v2: rows=[y, topVh[], hVh[]] aligned to keys; null = zero-height at that step",
+    };
     writeFileSync(join(OUT, `_page.${bp.name}.json`), JSON.stringify(pageJson, null, 1));
     const seen = new Set();
     const tweens = [];
