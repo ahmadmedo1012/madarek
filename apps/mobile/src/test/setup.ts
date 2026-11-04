@@ -294,9 +294,9 @@ jest.mock("react-native-keyboard-controller", () => {
       global so every route renders. A per-file jest.mock still wins over
       this (last registration), so sheet.test.tsx is unaffected. ─────── */
 jest.mock("react-native-gesture-handler", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
+   
   const React = require("react");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
+   
   const { View } = require("react-native");
   return {
     GestureHandlerRootView: ({ children, style }: { children?: React.ReactNode; style?: unknown }) =>
@@ -305,9 +305,9 @@ jest.mock("react-native-gesture-handler", () => {
 });
 
 jest.mock("@gorhom/bottom-sheet", () => {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load React lazily (jest hoists the mock above real imports)
+   
   const React = require("react");
-  // eslint-disable-next-line @typescript-eslint/no-require-imports -- factory must load RN primitives lazily (jest hoists the mock above real imports)
+   
   const { View, TextInput, ScrollView } = require("react-native");
 
   /** The ref contract AppSheet drives (present/dismiss + no-op nav). */
