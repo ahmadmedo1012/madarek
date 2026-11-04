@@ -73,12 +73,12 @@
  * frame — never for the shorter content fade. ══ */
 .pl--exit::before {
   transform: translateY(-101%);
-  transition: transform var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+  transition: transform var(--motion-duration-sheet-exit) var(--motion-ease-band); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
 }
 
 .pl--exit::after {
   transform: translateY(101%);
-  transition: transform var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+  transition: transform var(--motion-duration-sheet-exit) var(--motion-ease-band); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
 }
 
 .pl--exit .pl-inner {

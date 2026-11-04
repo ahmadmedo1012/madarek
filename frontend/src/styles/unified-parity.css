@@ -235,6 +235,10 @@
     --motion-ease-decelerate:  var(--ease-out);
     --motion-ease-accelerate:  var(--ease-in);
     --motion-ease-emphasized:  var(--ease-soft);
+    /* R335 W-chrome: the recorded preloader band curve, measured live from
+       the reference (two-band paper split, bands ∓0.8s). Named, not raw —
+       the motion-token gate forbids inline cubic-bezier literals. */
+    --motion-ease-band:        cubic-bezier(1, 0, 0.44, 1);
 
     --motion-distance-small:   6px;
     --motion-distance-medium:  16px;
