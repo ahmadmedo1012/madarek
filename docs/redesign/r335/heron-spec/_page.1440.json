@@ -2,7 +2,7 @@
  "meta": {
   "bp": "1440",
   "url": "https://heronaiapp.com/",
-  "extractedAt": "2026-11-04T11:52:19.937Z"
+  "extractedAt": "2026-11-04T12:00:16.171Z"
  },
  "scrollHeight": 14144,
  "maxScroll": 11468,
@@ -788,27 +788,27 @@
     },
     {
      "key": "div.header-menu-wrap",
-     "topVh": -0.007,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.007,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.007,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.007,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.007,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
@@ -1173,27 +1173,27 @@
     },
     {
      "key": "div.header-menu-wrap",
-     "topVh": -0.04,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.04,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.04,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.04,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.04,
+     "topVh": 0.007,
      "hVh": 0.063
     },
     {
@@ -1558,27 +1558,27 @@
     },
     {
      "key": "div.header-menu-wrap",
-     "topVh": -0.054,
+     "topVh": -0.04,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.054,
+     "topVh": -0.04,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.054,
+     "topVh": -0.04,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.054,
+     "topVh": -0.04,
      "hVh": 0.063
     },
     {
      "key": "div.header-menu-item-wrap",
-     "topVh": -0.054,
+     "topVh": -0.04,
      "hVh": 0.063
     },
     {
@@ -2048,7 +2048,7 @@
     },
     {
      "key": "div.home-intro-logo-list",
-     "topVh": 0.778,
+     "topVh": 0.765,
      "hVh": 0.106
     },
     {
@@ -2433,7 +2433,7 @@
     },
     {
      "key": "div.home-intro-logo-list",
-     "topVh": 0.582,
+     "topVh": 0.574,
      "hVh": 0.106
     },
     {
@@ -2818,7 +2818,7 @@
     },
     {
      "key": "div.home-intro-logo-list",
-     "topVh": 0.393,
+     "topVh": 0.392,
      "hVh": 0.106
     },
     {
@@ -2878,17 +2878,17 @@
     },
     {
      "key": "div.home-map-main-img-sub-label-wrap",
-     "topVh": 0.721,
+     "topVh": 1.706,
      "hVh": 0.018
     },
     {
      "key": "div.home-map-main-img-sub-label-wrap",
-     "topVh": 1.037,
+     "topVh": 2.022,
      "hVh": 0.018
     },
     {
      "key": "div.home-map-main-img-sub-label-wrap",
-     "topVh": 0.951,
+     "topVh": 1.936,
      "hVh": 0.018
     },
     {
@@ -3203,7 +3203,7 @@
     },
     {
      "key": "div.home-intro-logo-list",
-     "topVh": 0.207,
+     "topVh": 0.204,
      "hVh": 0.106
     },
     {
@@ -3588,7 +3588,7 @@
     },
     {
      "key": "div.home-intro-logo-list",
-     "topVh": 0.024,
+     "topVh": 0.023,
      "hVh": 0.106
     },
     {
@@ -3890,11 +3890,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -4277,11 +4272,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -1.995,
      "hVh": 0.985
@@ -4418,17 +4408,17 @@
     },
     {
      "key": "div.home-map-main-img-sub-label-wrap",
-     "topVh": 0.367,
+     "topVh": 0.185,
      "hVh": 0.018
     },
     {
      "key": "div.home-map-main-img-sub-label-wrap",
-     "topVh": 0.683,
+     "topVh": 0.501,
      "hVh": 0.018
     },
     {
      "key": "div.home-map-main-img-sub-label-wrap",
-     "topVh": 0.597,
+     "topVh": 0.415,
      "hVh": 0.018
     },
     {
@@ -4660,11 +4650,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -5047,11 +5032,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -2.359,
      "hVh": 0.985
@@ -5430,11 +5410,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -5817,11 +5792,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -2.723,
      "hVh": 0.985
@@ -6200,11 +6170,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -6587,11 +6552,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -3.087,
      "hVh": 0.985
@@ -6970,11 +6930,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -7357,11 +7312,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -3.451,
      "hVh": 0.985
@@ -7740,11 +7690,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -8127,11 +8072,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -3.815,
      "hVh": 0.985
@@ -8510,11 +8450,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -8897,11 +8832,6 @@
      "hVh": 0.063
     },
     {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
-    },
-    {
      "key": "div.home-hero-wrap",
      "topVh": -4.179,
      "hVh": 0.985
@@ -9280,11 +9210,6 @@
      "key": "div.header-menu-item-wrap",
      "topVh": -0.056,
      "hVh": 0.063
-    },
-    {
-     "key": "div.loading-progress-item-wrap",
-     "topVh": 0.499,
-     "hVh": 0.001
     },
     {
      "key": "div.home-hero-wrap",
@@ -20903,7 +20828,7 @@
     },
     {
      "key": "div.home-why-item-img-box-wrap",
-     "topVh": 0.918,
+     "topVh": 0.986,
      "hVh": 0.015
     },
     {
@@ -20924,11 +20849,11 @@
     {
      "key": "div.home-usecase-title-wrap",
      "topVh": 1.355,
-     "hVh": 0.341
+     "hVh": 0.343
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 1.807,
+     "topVh": 1.811,
      "hVh": 0.024
     },
     {
@@ -21264,7 +21189,7 @@
     {
      "key": "div.home-why-wrap",
      "topVh": 0.397,
-     "hVh": 1.769
+     "hVh": 1.273
     },
     {
      "key": "div.home-why-title-wrap",
@@ -21279,11 +21204,11 @@
     {
      "key": "div.home-why-main-wrap",
      "topVh": 0.696,
-     "hVh": 1.471
+     "hVh": 0.974
     },
     {
      "key": "div.home-why-item-img-box-wrap",
-     "topVh": 0.964,
+     "topVh": 1.033,
      "hVh": 0.015
     },
     {
@@ -21293,122 +21218,122 @@
     },
     {
      "key": "div.home-why-item-img-box-wrap",
-     "topVh": 1.505,
+     "topVh": 1.38,
      "hVh": 0.015
     },
     {
      "key": "div.home-usecase-wrap",
-     "topVh": 2.166,
+     "topVh": 1.67,
      "hVh": 0.985
     },
     {
      "key": "div.home-usecase-title-wrap",
-     "topVh": 2.166,
-     "hVh": 0.334
+     "topVh": 1.67,
+     "hVh": 0.329
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.606,
+     "topVh": 2.099,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.692,
+     "topVh": 2.195,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.761,
+     "topVh": 2.264,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.829,
+     "topVh": 2.333,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.898,
+     "topVh": 2.401,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.967,
+     "topVh": 2.47,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 3.036,
+     "topVh": 2.539,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 3.105,
+     "topVh": 2.608,
      "hVh": 0.024
     },
     {
      "key": "div.cta-wrap",
-     "topVh": 3.152,
+     "topVh": 2.655,
      "hVh": 0.776
     },
     {
      "key": "div.footer-wrap",
-     "topVh": 3.927,
+     "topVh": 3.431,
      "hVh": 0.79
     },
     {
      "key": "footer.footer",
-     "topVh": 3.927,
+     "topVh": 3.431,
      "hVh": 0.79
     },
     {
      "key": "div.footer-title-wrap",
-     "topVh": 3.927,
+     "topVh": 3.431,
      "hVh": 0.225
     },
     {
      "key": "div.footer-form-wrap",
-     "topVh": 4.152,
+     "topVh": 3.655,
      "hVh": 0.17
     },
     {
      "key": "div.input-wrap",
-     "topVh": 4.307,
+     "topVh": 3.81,
      "hVh": 0.044
     },
     {
      "key": "div.footer-menu-item-link-wrap",
-     "topVh": 3.983,
+     "topVh": 3.486,
      "hVh": 0.087
     },
     {
      "key": "div.footer-menu-item-link-wrap",
-     "topVh": 3.983,
+     "topVh": 3.486,
      "hVh": 0.087
     },
     {
      "key": "div.footer-menu-item-link-wrap",
-     "topVh": 3.983,
+     "topVh": 3.486,
      "hVh": 0.087
     },
     {
      "key": "div.footer-info-wrap",
-     "topVh": 4.153,
+     "topVh": 3.656,
      "hVh": 0.169
     },
     {
      "key": "div.footer-info-item-title-wrap",
-     "topVh": 4.219,
+     "topVh": 3.722,
      "hVh": 0.087
     },
     {
      "key": "div.footer-img-wrap",
-     "topVh": 4.321,
+     "topVh": 3.825,
      "hVh": 0.349
     },
     {
      "key": "div.footer-copyright-wrap",
-     "topVh": 4.671,
+     "topVh": 4.174,
      "hVh": 0.046
     }
    ]
@@ -24684,7 +24609,7 @@
     {
      "key": "div.home-why-wrap",
      "topVh": -1.241,
-     "hVh": 2.763
+     "hVh": 2.266
     },
     {
      "key": "div.home-why-title-wrap",
@@ -24699,7 +24624,7 @@
     {
      "key": "div.home-why-main-wrap",
      "topVh": -0.942,
-     "hVh": 2.464
+     "hVh": 1.967
     },
     {
      "key": "div.home-why-item-img-box-wrap",
@@ -24718,117 +24643,117 @@
     },
     {
      "key": "div.home-usecase-wrap",
-     "topVh": 1.522,
+     "topVh": 1.026,
      "hVh": 0.985
     },
     {
      "key": "div.home-usecase-title-wrap",
-     "topVh": 1.522,
+     "topVh": 1.026,
      "hVh": 0.329
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 1.952,
+     "topVh": 1.455,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.048,
+     "topVh": 1.551,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.116,
+     "topVh": 1.62,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.185,
+     "topVh": 1.688,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.254,
+     "topVh": 1.757,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.323,
+     "topVh": 1.826,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.392,
+     "topVh": 1.895,
      "hVh": 0.024
     },
     {
      "key": "div.home-usecase-faq-item-title-wrap",
-     "topVh": 2.461,
+     "topVh": 1.964,
      "hVh": 0.024
     },
     {
      "key": "div.cta-wrap",
-     "topVh": 2.508,
+     "topVh": 2.011,
      "hVh": 0.776
     },
     {
      "key": "div.footer-wrap",
-     "topVh": 3.283,
+     "topVh": 2.786,
      "hVh": 0.79
     },
     {
      "key": "footer.footer",
-     "topVh": 3.283,
+     "topVh": 2.786,
      "hVh": 0.79
     },
     {
      "key": "div.footer-title-wrap",
-     "topVh": 3.283,
+     "topVh": 2.786,
      "hVh": 0.225
     },
     {
      "key": "div.footer-form-wrap",
-     "topVh": 3.508,
+     "topVh": 3.011,
      "hVh": 0.17
     },
     {
      "key": "div.input-wrap",
-     "topVh": 3.663,
+     "topVh": 3.166,
      "hVh": 0.044
     },
     {
      "key": "div.footer-menu-item-link-wrap",
-     "topVh": 3.338,
+     "topVh": 2.842,
      "hVh": 0.087
     },
     {
      "key": "div.footer-menu-item-link-wrap",
-     "topVh": 3.338,
+     "topVh": 2.842,
      "hVh": 0.087
     },
     {
      "key": "div.footer-menu-item-link-wrap",
-     "topVh": 3.338,
+     "topVh": 2.842,
      "hVh": 0.087
     },
     {
      "key": "div.footer-info-wrap",
-     "topVh": 3.509,
+     "topVh": 3.012,
      "hVh": 0.169
     },
     {
      "key": "div.footer-info-item-title-wrap",
-     "topVh": 3.575,
+     "topVh": 3.078,
      "hVh": 0.087
     },
     {
      "key": "div.footer-img-wrap",
-     "topVh": 3.677,
+     "topVh": 3.181,
      "hVh": 0.349
     },
     {
      "key": "div.footer-copyright-wrap",
-     "topVh": 4.026,
+     "topVh": 3.53,
      "hVh": 0.046
     }
    ]

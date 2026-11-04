@@ -19,6 +19,7 @@ Method rules:
   distance <0.05; triggers ±5% viewport. Arabic adaptations (letter-spacing 0, line-height
   for ascenders, RTL mirroring) live in `scripts/conformance/exceptions.json` with a reason
   each, capped at 5% of assertions.
+- Extracted 2026-11-04 (R335 A-Spec-1..4).
 
 Files:
 - `<section>.<bp>.json` — element tree (p/path, tag, tc/textClass, vr viewport-rect, sr
