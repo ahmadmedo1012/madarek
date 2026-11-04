@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "expo-image";
@@ -6,7 +6,6 @@ import Heart from "lucide-react-native/icons/heart";
 import Plus from "lucide-react-native/icons/plus";
 import type { Post } from "@/api/types";
 import { socialApi } from "@/api/social";
-import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
@@ -16,10 +15,10 @@ import { Screen } from "@/components/ui/screen";
 import { Card, Sheet } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { Field } from "@/components/ui/fields";
-import { Avatar } from "@/components/ui/data";
-import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
+import { Avatar, DataList } from "@/components/ui/data";
 import { toast } from "@/components/ui/toast";
 import { fromNow, latn } from "@/lib/format";
+import { humanizeError } from "@/lib/errors";
 import { ChipRow } from "@/features/student/more";
 
 /** Reactions arrive as a counter map or a reaction rows list — read the like count honestly. */
@@ -30,17 +29,103 @@ function likeCount(post: Post): number {
   return r.filter((x) => (x as { kind?: string }).kind === "like").length;
 }
 
+/** Feed card gap — DataList ItemSeparator (cards no longer sit in a gap View). */
+function FeedSeparator() {
+  return <View style={{ height: sp[10] }} />;
+}
+
+/** One feed card — module scope so FlashList rows stay cheap to re-render. */
+function PostCard({
+  post,
+  reacted,
+  count,
+  disabled,
+  onToggle,
+}: {
+  post: Post;
+  reacted: boolean;
+  count: number;
+  disabled: boolean;
+  onToggle: (post: Post) => void;
+}) {
+  const p = usePalette();
+  const tones = useStatusTones();
+  return (
+    <Card style={{ gap: sp[8] }}>
+      <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
+        <Avatar
+          size={36}
+          initials={post.author.avatarInitials ?? `${post.author.firstName?.[0] ?? "؟"}${post.author.lastName?.[0] ?? ""}`}
+          color={post.author.avatarColor ?? null}
+        />
+        <View style={{ flex: 1 }}>
+          <T variant="body" weight="bold">
+            {`${post.author.firstName} ${post.author.lastName}`}
+          </T>
+          <T variant="xs" color="muted">
+            {fromNow(post.createdAt)}
+          </T>
+        </View>
+      </View>
+      <T variant="body" color="secondary">
+        {post.body}
+      </T>
+      {post.imageUrl ? (
+        <Image
+          source={{ uri: post.imageUrl }}
+          contentFit="cover"
+          accessibilityLabel={`صورة مرفقة بمنشور ${post.author.firstName}`}
+          style={{ height: 180, borderWidth: StyleSheet.hairlineWidth, borderColor: p.border }}
+        />
+      ) : null}
+      {post.hashtags && post.hashtags.length > 0 ? (
+        <ChipRow>
+          {post.hashtags.map((t) => (
+            <T key={t} variant="xs" color="accentInk">
+              {`#${t}`}
+            </T>
+          ))}
+        </ChipRow>
+      ) : null}
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={reacted ? "إزالة الإعجاب" : "أعجبني بهذا المنشور"}
+          accessibilityState={{ selected: reacted }}
+          onPress={() => onToggle(post)}
+          disabled={disabled}
+          style={({ pressed }) => ({
+            minHeight: touchFloor,
+            minWidth: touchFloor,
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            gap: sp[6],
+            opacity: pressed ? 0.6 : 1,
+          })}
+        >
+          <Heart size={16} color={reacted ? tones.rose.ink : p.textMuted} fill={reacted ? tones.rose.ink : "none"} />
+          <T variant="sm" weight="bold" style={{ color: reacted ? tones.rose.deep : p.textMuted }}>
+            {latn(count)}
+          </T>
+        </Pressable>
+      </View>
+    </Card>
+  );
+}
+
 /**
  * /student/social — المنشورات (web SocialPage parity): the institution
  * feed with optimistic like toggles (react/unreact against the real
  * routes), an honest compose sheet (body + comma-separated hashtags)
- * and post images via expo-image when the server sends one.
+ * and post images via expo-image when the server sends one. The feed
+ * rides DataList (FlashList v2) — image cards recycle instead of all
+ * mounting at once in a ScrollView.
  */
 export default function SocialScreen() {
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const p = usePalette();
-  const tones = useStatusTones();
 
   const feed = useQuery({
     queryKey: ["posts", scope],
@@ -59,7 +144,7 @@ export default function SocialScreen() {
       void qc.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (e) => {
-      toast.error((e as ApiError).message, "تعذّر تسجيل الإعجاب");
+      toast.error(humanizeError(e), "تعذّر تسجيل الإعجاب");
     },
   });
   const unreact = useMutation({
@@ -68,18 +153,21 @@ export default function SocialScreen() {
       void qc.invalidateQueries({ queryKey: ["posts"] });
     },
     onError: (e) => {
-      toast.error((e as ApiError).message, "تعذّر إلغاء الإعجاب");
+      toast.error(humanizeError(e), "تعذّر إلغاء الإعجاب");
     },
   });
 
-  const toggleLike = (post: Post) => {
-    const serverReacted = post.myReaction === "like";
-    const current = optimistic[post.id] ?? serverReacted;
-    const next = !current;
-    setOptimistic((prev) => ({ ...prev, [post.id]: next }));
-    if (next) react.mutate(post.id);
-    else unreact.mutate(post.id);
-  };
+  const toggleLike = useCallback(
+    (post: Post) => {
+      const serverReacted = post.myReaction === "like";
+      const current = optimistic[post.id] ?? serverReacted;
+      const next = !current;
+      setOptimistic((prev) => ({ ...prev, [post.id]: next }));
+      if (next) react.mutate(post.id);
+      else unreact.mutate(post.id);
+    },
+    [optimistic, react, unreact],
+  );
 
   const isReacted = (post: Post) => optimistic[post.id] ?? post.myReaction === "like";
   const displayed = (post: Post) => {
@@ -99,95 +187,47 @@ export default function SocialScreen() {
       toast.success("تم نشر منشورك.", "تمّ النشر");
       setComposerOpen(false);
     },
-    onError: (e) => toast.error((e as ApiError).message, "تعذّر نشر المنشور"),
+    onError: (e) => toast.error(humanizeError(e), "تعذّر نشر المنشور"),
   });
 
-  return (
-    <View style={{ flex: 1, backgroundColor: p.bg }}>
-    <Screen scroll>
-      <StackHeader title="المنشورات" kicker="الشبكة الاجتماعية" />
-      <T variant="sm" color="muted">
-        تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع.
-      </T>
+  const likeBusy = react.isPending || unreact.isPending;
 
-      {feed.isLoading ? (
-        <SkeletonList rows={4} rowHeight={96} />
-      ) : feed.isError ? (
-        <ErrorState message={(feed.error as Error | null)?.message} onRetry={() => feed.refetch()} />
-      ) : posts.length === 0 ? (
-        <EmptyState title="لا منشورات بعد" message="كن أول من يشارك تجربته أو سؤاله." />
-      ) : (
-        <View style={{ gap: sp[10] }}>
-          {posts.map((post) => {
-            const reacted = isReacted(post);
-            return (
-              <Card key={post.id} style={{ gap: sp[8] }}>
-                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                  <Avatar
-                    size={36}
-                    initials={post.author.avatarInitials ?? `${post.author.firstName?.[0] ?? "؟"}${post.author.lastName?.[0] ?? ""}`}
-                    color={post.author.avatarColor ?? null}
-                  />
-                  <View style={{ flex: 1 }}>
-                    <T variant="body" weight="bold">
-                      {`${post.author.firstName} ${post.author.lastName}`}
-                    </T>
-                    <T variant="xs" color="muted">
-                      {fromNow(post.createdAt)}
-                    </T>
-                  </View>
-                </View>
-                <T variant="body" color="secondary">
-                  {post.body}
-                </T>
-                {post.imageUrl ? (
-                  <Image
-                    source={{ uri: post.imageUrl }}
-                    contentFit="cover"
-                    accessibilityLabel={`صورة مرفقة بمنشور ${post.author.firstName}`}
-                    style={{ height: 180, borderWidth: StyleSheet.hairlineWidth, borderColor: p.border }}
-                  />
-                ) : null}
-                {post.hashtags && post.hashtags.length > 0 ? (
-                  <ChipRow>
-                    {post.hashtags.map((t) => (
-                      <T key={t} variant="xs" color="accentInk">
-                        {`#${t}`}
-                      </T>
-                    ))}
-                  </ChipRow>
-                ) : null}
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={reacted ? "إزالة الإعجاب" : "أعجبني بهذا المنشور"}
-                    accessibilityState={{ selected: reacted }}
-                    onPress={() => toggleLike(post)}
-                    disabled={react.isPending || unreact.isPending}
-                    style={({ pressed }) => ({
-                      minHeight: touchFloor,
-                      minWidth: touchFloor,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexDirection: "row",
-                      gap: sp[6],
-                      opacity: pressed ? 0.6 : 1,
-                    })}
-                  >
-                    <Heart size={16} color={reacted ? tones.rose.ink : p.textMuted} fill={reacted ? tones.rose.ink : "none"} />
-                    <T variant="sm" weight="bold" style={{ color: reacted ? tones.rose.deep : p.textMuted }}>
-                      {latn(displayed(post))}
-                    </T>
-                  </Pressable>
-                </View>
-              </Card>
-            );
-          })}
-        </View>
-      )}
+  return (
+    <Screen scroll={false} padded={false}>
+      <StackHeader title="المنشورات" kicker="الشبكة الاجتماعية" />
+      <DataList
+        data={posts}
+        renderItem={({ item }) => (
+          <PostCard
+            post={item}
+            reacted={isReacted(item)}
+            count={displayed(item)}
+            disabled={likeBusy}
+            onToggle={toggleLike}
+          />
+        )}
+        keyExtractor={(post) => post.id}
+        extraData={{ optimistic, likeBusy }}
+        isLoading={feed.isLoading}
+        isError={feed.isError}
+        errorMessage={feed.isError ? humanizeError(feed.error) : null}
+        onRetry={() => feed.refetch()}
+        refetch={feed.refetch}
+        isRefetching={feed.isRefetching}
+        emptyTitle="لا منشورات بعد"
+        emptyMessage="كن أول من يشارك تجربته أو سؤاله."
+        ListHeaderComponent={
+          <View style={{ paddingHorizontal: sp[16], paddingVertical: sp[8] }}>
+            <T variant="sm" color="muted">
+              تواصل مع زملائك وأساتذتك حول المقرّرات والمشاريع.
+            </T>
+          </View>
+        }
+        ItemSeparatorComponent={FeedSeparator}
+        contentPadding={{ horizontal: 16, bottom: 96 }}
+      />
 
       <ComposeSheet open={composerOpen} onClose={() => setComposerOpen(false)} onSubmit={(payload) => create.mutate(payload)} pending={create.isPending} />
-    </Screen>
 
       {/* Compose FAB — overlay on the viewport (never inside the scroller). */}
       <Pressable
@@ -210,7 +250,7 @@ export default function SocialScreen() {
       >
         <Plus size={24} color={p.accentFg} />
       </Pressable>
-    </View>
+    </Screen>
   );
 }
 
