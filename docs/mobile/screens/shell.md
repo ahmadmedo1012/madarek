@@ -18,8 +18,8 @@ owner's EAS preview pass.
 |---|---|
 | Gesture root | `GestureHandlerRootView` now wraps the whole tree at the TRUE root (inside the root `ErrorBoundary`, outside `QueryClientProvider`). Static import — jest never imports `_layout` files (render-net skips them), so the RNGH v3 import-time install that the sheet lazy-load fix guards against cannot regress the nets. |
 | Keyboard | `KeyboardProvider` kept where it was (above every screen) — keyboard-controller is consumed by `FormScreen`, the messages composer, and `AppSheet`'s interactive keyboard tracking. |
-| BottomSheetModalProvider | **Left self-contained in `ui/sheet.tsx`** (2-c's file). It guarantees availability for every AppSheet consumer; hoisting it to the root would put `@gorhom/bottom-sheet` → RNGH into the app's startup module graph and break the lazy-load regression fix unless the per-sheet provider is dropped in the SAME change (2-c's call — lead follow-up #1 below). |
-| Network banner | `<NetworkBanner />` mounted once inside `SafeAreaProvider` (it pads `insets.top` itself and self-wires NetInfo → TanStack `onlineManager`, so queries pause/resume honestly with the banner's promise). |
+| BottomSheetModalProvider | **Mounted at the root (audit round 2)** via `src/components/shell/SheetModalHost.tsx` — `RootSheetModalProvider` wraps the navigator subtree inside `SafeAreaProvider`. It requires `@gorhom/bottom-sheet` LAZILY (first root render — the same pattern as `ui/sheet.tsx`), so the render-net lazy-load fix stays intact and jest (which never imports `_layout` files) is unaffected. `AppSheet` keeps its per-sheet provider (2-c's file, untouched): gorhom v5 modals bind to the NEAREST provider, so AppSheet behavior is unchanged; the root provider serves any DIRECT `BottomSheetModal` consumer. Remaining follow-up: drop the per-sheet copy in 2-c's file (§8). |
+| Network banner | `<NetworkBanner />` mounted once inside `SafeAreaProvider` (it pads `insets.top` itself and self-wires NetInfo → TanStack `onlineManager`, so queries pause/resume honestly with the banner's promise). **NetInfo-under-jest note (parallel-agent known issue):** `useNetworkStatus`/NetInfo crashes only when jest imports it without a mock — here the root mount is in `_layout.tsx`, which the render net explicitly SKIPS, and the resilience suite (`src/lib/resilience/__tests__/network.test.tsx`) drives the banner under a controlled multi-listener NetInfo mock. No `Platform`/test guard needed; if a future test imports the root layout, add a mock there first. |
 | Query-cache persistence | `QueryCacheBoot` (null-rendering component inside `QueryClientProvider`): one-time `persistQueryClientRestore()` + the session-long save subscription (module guard survives remounts; root never tears down). 24h maxAge / buster-gated — see `docs/mobile/foundations/resilience.md`. |
 | Status bar | `<StatusBar style="auto" />` → `<AppStatusBar />` (theming foundation): style derived from the EFFECTIVE user theme; Android root-view tinted to the page ground via `expo-system-ui` (no white overscroll flashes in dark). |
 | Haptics | `void haptics.hydrate()` once at root mount — the persisted kill-switch is exact for the session. |
@@ -37,7 +37,10 @@ R334 upgrades:
   slots on the UI thread (`withSpring(springs.snappy)`, transform only).
   Replaces the old `borderBottomWidth: active ? 2 : 0` underline, which
   mutated a LAYOUT property on every switch. The dot is start-anchored;
-  its physical translate sign flips under `I18nManager.isRTL`.
+  its physical translate sign flips under `I18nManager.isRTL`. The slot
+  math lives in the exported pure helper `indicatorOffset()` — unit-tested
+  (slot centering, RTL sign flip, un-measured guards) alongside the
+  one-dot / a11y-hidden / transform-only contracts.
 - **Icon morph outline → filled** — active icons fill their glyph body
   with the accent (lucide `fill` prop; the `RoleTab.icon` contract in
   `roleTabs.ts` now includes `fill`) plus a scale pop (`1 → 1.12`
@@ -110,21 +113,31 @@ honest; no changes needed.
 
 ## 7. Checklist (verification)
 
-- [x] `npm run typecheck` → 0 errors
+Audit round 2 note: the round-2 commit shipped a role-casing regression
+(`allow={["Admin"]}` etc. in 4 role layouts) that broke `tsc` AND would
+have bounced every admin/teacher/quality/owner at the RoleGate at runtime
+(`allow.includes(user.role)` is exact-match). Found by re-running the
+gates; fixed and re-verified below.
+
+- [x] `npm run typecheck` → 0 errors (re-run after the casing fix)
 - [x] `npx jest --no-cache --runInBand src/test/render-net.test.tsx
-      src/test/navigation-stability.test.tsx` → green
-- [x] new tests: immersive route matchers, layouts-only wiring, bar
+      src/test/navigation-stability.test.tsx
+      src/test/role-session.test.tsx` → green
+- [x] tests: immersive route matchers, layouts-only wiring, bar
       never-unmounts-while-hidden, a11y preserved, compact top bar
-      source contract
+      source contract, **selection-indicator suite (one dot, a11y-hidden,
+      RTL slot math, no layout-prop mutation)**
 - [x] `npm run lint` — no new errors on owned files
 - [ ] device pass (EAS preview): dot spring feel, RTL dot direction,
       immersive slide, keyboard-hide on /student/ai, edge-swipe RTL,
-      dark-mode transition grounds
+      dark-mode transition grounds, nested root+per-sheet provider
+      (gorhom v5 binds to the nearest — asserted by source read, device pass owed)
 
 ## 8. Lead follow-ups
 
-1. Hoist `BottomSheetModalProvider` (+ drop the per-sheet copy) — needs a
-   same-change edit in `ui/sheet.tsx` (2-c's file).
+1. Drop the per-sheet `BottomSheetModalProvider`/`GestureHandlerRootView`
+   copies in `ui/sheet.tsx` now that the root hosts both (2-c's file —
+   same-change edit, keeps AppSheet on the single root host).
 2. Predictive back / edge-to-edge config decision (`app.config.ts`).
 3. `expo-navigation-bar` (Android gesture-scrim contrast) — new dep.
 4. If `/student/messages` or teacher composers want the same

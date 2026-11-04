@@ -18,8 +18,10 @@ import { heron } from "@/design/tokens";
  */
 export default function TeacherLayout() {
   const { name } = useTheme();
+  // R334 3-a audit fix — the round-2 edit's casing regression broke
+  // typecheck AND the runtime gate (allow.includes("TEACHER") is exact).
   return (
-    <RoleGate allow={["Teacher"]}>
+    <RoleGate allow={["TEACHER"]}>
       <Stack
         screenOptions={{
           headerShown: false,

@@ -32,6 +32,10 @@ import { AppStatusBar } from "@/design/statusbar";
 //   · persistQueryClient — one-time query-cache restore + session save
 import { NetworkBanner } from "@/lib/resilience/network";
 import { persistQueryClient } from "@/lib/resilience/persistence";
+// R334 3-a (audit round 2) — BottomSheetModalProvider available at the root
+// for direct consumers, via the same lazy-require pattern as ui/sheet.tsx
+// (the render-net fix stays intact; jest never imports _layout files).
+import { RootSheetModalProvider } from "@/components/shell/SheetModalHost";
 // R334 2-b — hydrate the persisted haptics preference once at boot.
 import { haptics } from "@/haptics";
 import { ToastHost } from "@/components/ui/toast";
@@ -172,6 +176,10 @@ export default function RootLayout() {
         <KeyboardProvider>
         <ThemeProvider>
           <SafeAreaProvider>
+            {/* R334 3-a (audit round 2) — sheet modals hosted from the root:
+                BottomSheetModalProvider for any DIRECT BottomSheetModal
+                consumer (AppSheet keeps its local provider — 2-c's file). */}
+            <RootSheetModalProvider>
             {/* R327 C3 — the optional cold-start biometric lock. Off by
                 default; renders nothing until the SecureStore flag says
                 otherwise. Web: hasHardware=false → permanent no-op. */}
@@ -190,6 +198,7 @@ export default function RootLayout() {
             {/* R331 A-App-Shell — no floating FeedbackSheetHost FAB here anymore:
                 «الإبلاغ عن مشكلة» is a real route (/report) from the Profile
                 menu and /settings; nothing overlays screen content now. */}
+            </RootSheetModalProvider>
           </SafeAreaProvider>
         </ThemeProvider>
         </KeyboardProvider>

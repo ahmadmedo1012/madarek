@@ -18,8 +18,10 @@ import { heron } from "@/design/tokens";
  */
 export default function QualityLayout() {
   const { name } = useTheme();
+  // R334 3-a audit fix — the round-2 edit's casing regression broke
+  // typecheck AND the runtime gate (allow.includes("QUALITY") is exact).
   return (
-    <RoleGate allow={["Quality"]}>
+    <RoleGate allow={["QUALITY"]}>
       <Stack
         screenOptions={{
           headerShown: false,

@@ -28,7 +28,7 @@ import { join } from "node:path";
 import React from "react";
 import { render, fireEvent } from "@testing-library/react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { RoleTabBar } from "@/components/shell/TabBar";
+import { RoleTabBar, indicatorOffset } from "@/components/shell/TabBar";
 import { ROLE_TABS } from "@/components/shell/roleTabs";
 import { isImmersiveRoute, isComposerRoute } from "@/components/shell/immersive";
 
@@ -229,7 +229,48 @@ describe("RoleTabBar — one persistent bar per role", () => {
   });
 });
 
-/* ── 3b. R334 3-a — the immersive-hide policy ───────────────────────── */
+/* ── 3b. R334 3-a — the selection indicator (sliding orange dot) ────── */
+
+describe("selection indicator — ONE transform-only dot per bar", () => {
+  test("exactly one dot renders, hidden from a11y and untouchable", async () => {
+    const bar = await mountBar("STUDENT", 0);
+    // The dot is decorative (accessibilityElementsHidden) — queries must opt
+    // into hidden elements or RNTL filters it out by design.
+    expect(bar.queryAllByTestId("tab-indicator-dot", { hidden: true })).toHaveLength(1);
+    const dot = bar.getByTestId("tab-indicator-dot", { hidden: true });
+    // decorative: the tab's own label/state carry the semantics
+    expect(dot.props.accessibilityElementsHidden).toBe(true);
+    expect(dot.props.pointerEvents).toBe("none");
+    await bar.unmount();
+  });
+
+  test("slot math centers the dot in each slot; RTL flips the sign (not the slot)", () => {
+    // 5 slots over a 300dp row → 60dp per slot; the 6dp dot centers at
+    // slot*60 + 30 - 3 from the START edge.
+    expect(indicatorOffset(300, 0, 5, false)).toBe(27);
+    expect(indicatorOffset(300, 4, 5, false)).toBe(267);
+    // RTL anchors `start` at the RIGHT edge → mirrored translate reaches
+    // the same VISUAL slot (slot 0 is still the first/leading tab).
+    expect(indicatorOffset(300, 0, 5, true)).toBe(-27);
+    expect(indicatorOffset(300, 4, 5, true)).toBe(-267);
+    // guards: un-measured bar / no active slot → stay put (no first-frame jump)
+    expect(indicatorOffset(0, 2, 5, false)).toBe(0);
+    expect(indicatorOffset(300, -1, 5, false)).toBe(0);
+    expect(indicatorOffset(300, 2, 0, false)).toBe(0);
+  });
+
+  test("the indicator never mutates a LAYOUT property (source contract)", () => {
+    const src = readFileSync(join(ROOT, "src", "components", "shell", "TabBar.tsx"), "utf8");
+    // the retired defect: a per-tab underline whose WIDTH toggled on switch
+    // (layout prop mutation → re-layout of the whole row on every switch)
+    expect(src).not.toMatch(/borderBottomWidth:\s*active/);
+    expect(src).not.toContain("borderBottomWidth: active ?");
+    // the dot's animated style is transform-only (UI thread, no layout pass)
+    expect(src).toContain("transform: [{ translateX: dotX.value }]");
+  });
+});
+
+/* ── 3c. R334 3-a — the immersive-hide policy ───────────────────────── */
 
 describe("immersive-hide policy (route-driven; the bar NEVER unmounts)", () => {
   test("lecture player + exam RUNNER hide; exam LIST keeps the bar", () => {
@@ -285,7 +326,7 @@ describe("immersive-hide policy (route-driven; the bar NEVER unmounts)", () => {
   });
 });
 
-/* ── 3c. R334 3-a — the compact top bar policy ──────────────────────── */
+/* ── 3d. R334 3-a — the compact top bar policy ──────────────────────── */
 
 describe("AppTopBar — compact policy (identity moved to Profile)", () => {
   test("identity/institution left the top bar (source contract)", () => {
