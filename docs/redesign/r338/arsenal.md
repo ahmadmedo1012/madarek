@@ -14,3 +14,7 @@ T-02c | conformance/run.mjs --sections home-usecase-wrap --url http://localhost:
 T-03c | scripts/conformance/run.mjs --sections/--url + build-intro-mapping.py | intro word-census bindings regen + residue diagnosis (2 measured runs)
 T-08 | node+playwright(dev-server dump + conformance run.mjs) | platform baseline census, explicit-binding structural pass
 T-08b | playwright (chromium-1200 symlinked as 1223 via /tmp/pw-browsers) + conformance run.mjs --url | baseline+re-measure platform bp matrix
+L-7 | git merge --no-ff train | bundle-neutral land: t02+t03+t08 merged; t05(3c647923) dropped — its TSX added 0.9KB gz (776.4→777.3>777)
+L-7 | vite build + check-bundle-size.mjs | per-stage bundle truth: main 776.4 / +t02 776.1 / +t03 776.4 / +t05 777.3 offender / +t08 777.3
+L-7 | scripts/verify.sh --fast | landing gate on final train before push to main
+L-7 | GitHub Actions API via curl | post-landing triggered-run status check
