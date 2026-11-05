@@ -188,9 +188,10 @@
   color: var(--text);
   transition: transform 0.48s var(--ease-in);
 }
-.st-pill-ink-b .st-pill-t {
+.st-pill-t-b {
   position: absolute;
   inset-block-start: 100%;
+  inset-inline-start: 0;
 }
 @media (hover: hover) and (pointer: fine) {
   .st-pill:hover .st-pill-t-in { transform: translateY(-2.05rem); }
@@ -464,7 +465,7 @@
 /* ═══ reduced motion: the crawl stands, the roll pair rests ═══ */
 @media (prefers-reduced-motion: reduce) {
   .st-crawl-track { animation: none; } /* rides the fo-ticker grammar — the shared RM belt collapses it */
-  .st-pill-ink-b { display: none; }
+  .st-pill-t-b { display: none; }
   .st-pill-t-in,
   .st-pill-glyph,
   .st-parrow-in { transition: none; }

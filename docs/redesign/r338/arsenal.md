@@ -19,3 +19,4 @@ L-7 | vite build + check-bundle-size.mjs | per-stage bundle truth: main 776.4 / 
 L-7 | scripts/verify.sh --fast | landing gate on final train before push to main
 L-7 | GitHub Actions API via curl | post-landing triggered-run status check
 T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-char scaffold mirror bindings (intro.wchar.N.M) + 5-bp measurement
+T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification

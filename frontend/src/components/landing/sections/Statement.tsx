@@ -208,9 +208,9 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                     <div className="st-pill-t" data-spec="intro.ctaspanin">
                       <div className="st-pill-t-in" data-spec="intro.ctatext">شاهد التحديات</div>
                     </div>
-                  </div>
-                  <div className="st-pill-ink st-pill-ink-b" aria-hidden="true" data-spec="intro.ctaspan2">
-                    <div className="st-pill-t" data-spec="intro.ctatext2">شاهد التحديات</div>
+                    <div className="st-pill-t st-pill-t-b" aria-hidden="true" data-spec="intro.ctaspan2">
+                      <div className="st-pill-t-in" data-spec="intro.ctatext2">شاهد التحديات</div>
+                    </div>
                   </div>
                   <div className="st-pill-icons" data-spec="intro.ctaicons">
                     <div className="st-pill-icon" data-spec="intro.ctaicon">
