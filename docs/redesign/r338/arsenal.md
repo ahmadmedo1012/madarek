@@ -39,3 +39,4 @@ T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect ex
 T-99 | vite build + check-bundle-size.mjs + node zlib gz census + node codemod | bundle diet: per-module sourcemap ranking, dead data-spec/class audit, exact gz byte measurement (777.6→777.5 clean; 578→~500B residual, landing blocked)
 T-02c | python3 census over scripts/conformance/results.json + heron-spec/home-usecase-wrap.*.json | color/lh family decomposition (39 color = rowink/h2box opaque-ink seats; 26 lh = 1.35 floor), spec seat lookup by heron path
 T-02c | conformance/run.mjs --sections home-usecase-wrap --url http://localhost:5302 (own vite) + PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers symlink fallback | baseline 90.8 + post-fix measurement
+T-06e | conformance/run.mjs --dark + mapping plumbing-skip + own vite :5306 + private pw-browsers symlink dir (headless-shell-1223→1200) | dark opt-in baseline (68.5%) + plumbing-skip seed for svg defs/filter pairs

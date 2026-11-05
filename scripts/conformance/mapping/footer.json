@@ -1708,5 +1708,31 @@
       "heron": "(our authored brow index rows)",
       "reason": "T-06d: heron c1-top (footer.1440/390.json) has exactly 2 children (brand block + the 1px hairline) — our brow index rows are Madarek-authored honest-platform content with no heron counterpart"
     }
+  ],
+  "plumbing": [
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "SVG defs/filter plumbing inside the reference grayscale twin (fe* filter graph, 0x1 scaffolding boxes) — geometry checks not meaningful; our counterpart is a plain inline-SVG. t14a plumbing-skip: skipped checks counted, never silent."
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "SVG defs/filter plumbing inside the reference grayscale twin (fe* filter graph, 0x1 scaffolding boxes) — geometry checks not meaningful; our counterpart is a plain inline-SVG. t14a plumbing-skip: skipped checks counted, never silent."
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "SVG defs/filter plumbing inside the reference grayscale twin (fe* filter graph, 0x1 scaffolding boxes) — geometry checks not meaningful; our counterpart is a plain inline-SVG. t14a plumbing-skip: skipped checks counted, never silent."
+    }
   ]
 }
