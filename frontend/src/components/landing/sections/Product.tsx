@@ -50,6 +50,42 @@ const PLATFORM_ITEMS = [
   },
 ] as const;
 
+export function Product() {
+  return (
+    <section id="product" className="pr-section" aria-labelledby="pr-title" data-spec="platform.section">
+      {/* the sheet's top rule (heron section div[1]) */}
+      <div className="pr-sheet-rule" data-spec="platform.sheetruleA" aria-hidden="true" />
+
+      <div className="pr-grid" data-spec="platform.grid">
+        {/* the two row copies — ≥992 same rects (the cross-fade
+            marquee), ≤991 the two stacked item rows */}
+        <div className="pr-rows" data-spec="platform.rows">
+          <PlatformRow item={PLATFORM_ITEMS[0]} idx={1} />
+          <PlatformRow item={PLATFORM_ITEMS[1]} idx={2} hidden />
+        </div>
+
+        {/* ≥992 the central image column — two stacked captures
+            (473+473 @1920) flanked by hairlines; ≤991 display:none
+            (heron's own 0×0 census at 768/390) */}
+        <div className="pr-imgs" data-spec="platform.imgs" aria-hidden="true">
+          <div className="pr-imgs-vrule" data-spec="platform.imgsvruleA" aria-hidden="true" />
+          <div className="pr-img" data-spec="platform.img1">
+            <img src={PLATFORM_ITEMS[0].img} data-spec="platform.img1img" alt="" loading="lazy" decoding="async" width={1440} height={870} />
+          </div>
+          <div className="pr-imgs-hrule" data-spec="platform.imghruleA" aria-hidden="true" />
+          <div className="pr-img" data-spec="platform.img2">
+            <img src={PLATFORM_ITEMS[1].img} data-spec="platform.img2img" alt="" loading="lazy" decoding="async" width={1440} height={870} />
+          </div>
+          <div className="pr-imgs-vrule" data-spec="platform.imgsvruleB" aria-hidden="true" />
+        </div>
+      </div>
+
+      {/* the sheet's bottom rule (heron section div[2]) */}
+      <div className="pr-sheet-rule pr-sheet-rule-end" data-spec="platform.sheetruleB" aria-hidden="true" />
+    </section>
+  );
+}
+
 /* one platform item — heron's row copy: head cell (label · title on
  * the body-voice wrappers, ruled top/end), side cell (the text box +
  * the CTA strip with its dual circular arrows and the dark hover
@@ -121,41 +157,5 @@ function PlatformRow({ item, idx, hidden }: { item: typeof PLATFORM_ITEMS[number
         <div className="pr-rowimg-rule" data-spec={ds('rowimgrule')} aria-hidden="true" />
       </div>
     </div>
-  );
-}
-
-export function Product() {
-  return (
-    <section id="product" className="pr-section" aria-labelledby="pr-title" data-spec="platform.section">
-      {/* the sheet's top rule (heron section div[1]) */}
-      <div className="pr-sheet-rule" data-spec="platform.sheetruleA" aria-hidden="true" />
-
-      <div className="pr-grid" data-spec="platform.grid">
-        {/* the two row copies — ≥992 same rects (the cross-fade
-            marquee), ≤991 the two stacked item rows */}
-        <div className="pr-rows" data-spec="platform.rows">
-          <PlatformRow item={PLATFORM_ITEMS[0]} idx={1} />
-          <PlatformRow item={PLATFORM_ITEMS[1]} idx={2} hidden />
-        </div>
-
-        {/* ≥992 the central image column — two stacked captures
-            (473+473 @1920) flanked by hairlines; ≤991 display:none
-            (heron's own 0×0 census at 768/390) */}
-        <div className="pr-imgs" data-spec="platform.imgs" aria-hidden="true">
-          <div className="pr-imgs-vrule" data-spec="platform.imgsvruleA" aria-hidden="true" />
-          <div className="pr-img" data-spec="platform.img1">
-            <img src={PLATFORM_ITEMS[0].img} data-spec="platform.img1img" alt="" loading="lazy" decoding="async" width={1440} height={870} />
-          </div>
-          <div className="pr-imgs-hrule" data-spec="platform.imghruleA" aria-hidden="true" />
-          <div className="pr-img" data-spec="platform.img2">
-            <img src={PLATFORM_ITEMS[1].img} data-spec="platform.img2img" alt="" loading="lazy" decoding="async" width={1440} height={870} />
-          </div>
-          <div className="pr-imgs-vrule" data-spec="platform.imgsvruleB" aria-hidden="true" />
-        </div>
-      </div>
-
-      {/* the sheet's bottom rule (heron section div[2]) */}
-      <div className="pr-sheet-rule pr-sheet-rule-end" data-spec="platform.sheetruleB" aria-hidden="true" />
-    </section>
   );
 }

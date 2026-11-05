@@ -427,6 +427,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       'fo-ticker-rtl', // the capabilities crawl
       'wy-snap', // R313: the why-stage verb snap (the 74%-hold plateau — supersedes vs-tag-snap, which moved to campus.css with the status rows)
       'hro-fade-loop', // R331: the hero deco ledger cards' idle fade (the reference's own deco loop, 1.5s, ≥992 only) — collapsed by the hero RM belt
+      'pr-item-fade', // r338 T-08: the platform rows' cross-fade marquee (heron's row pair, 14s, ≥992 only) — collapsed by the platform RM belt
       // r335 W-chrome: 'sl-scan' retired with the R313 SheetLoader sheet
       // (dead .sl-* rules deleted; the preloader's own RM gates are JS-side).
     ]);
@@ -445,6 +446,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       '.wy-capture', // R313: the why cross-fade collapses to the fully readable stack
       '.wy[data-wy-stage=\'0\'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb', // R313: the wy-snap
       '.hro-deco', // R331: the hero deco fade-loop collapses to the static ledger card
+      '.pr-row', // r338 T-08: pr-item-fade collapses to the first row (the pairmate stays hidden)
     ];
     for (const sel of RM_COLLAPSED) {
       expect(rmBelt, `RM belt must collapse ${sel}`).toContain(sel);

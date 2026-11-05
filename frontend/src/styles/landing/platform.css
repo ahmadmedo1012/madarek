@@ -234,7 +234,7 @@ html[data-theme='dark'] .pr-section {
 }
 
 .pr-section .pr-cta:hover .pr-menu,
-.pr-cta:focus-visible .pr-menu {
+.pr-cta:focus-within .pr-menu {
   opacity: 1;
   visibility: visible;
 }
