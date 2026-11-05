@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-05T22:15:03.094Z",
+ "generatedAt": "2026-11-05T22:35:17.042Z",
  "url": "http://localhost:5311",
  "specDir": "/home/z/wt/t11/docs/redesign/r335/heron-spec",
  "summary": {
@@ -19,9 +19,9 @@
   "skippedOmitted": 178,
   "totalSkipped": 1915,
   "dark": {
-   "pass": 1361,
-   "fail": 174,
-   "passRate": 88.7,
+   "pass": 1391,
+   "fail": 144,
+   "passRate": 90.6,
    "contrastChecked": 49,
    "contrastFloor": 3,
    "theme": "dark",
@@ -44,9 +44,9 @@
     "skipped": 351,
     "missing": null,
     "dark": {
-     "pass": 236,
-     "fail": 42,
-     "flips": 38,
+     "pass": 242,
+     "fail": 36,
+     "flips": 44,
      "contrastChecked": 8,
      "contrastSkipped": 37,
      "themeApplied": true
@@ -66,9 +66,9 @@
     "skipped": 361,
     "missing": null,
     "dark": {
-     "pass": 254,
-     "fail": 28,
-     "flips": 39,
+     "pass": 260,
+     "fail": 22,
+     "flips": 45,
      "contrastChecked": 8,
      "contrastSkipped": 38,
      "themeApplied": true
@@ -88,9 +88,9 @@
     "skipped": 401,
     "missing": null,
     "dark": {
-     "pass": 287,
-     "fail": 38,
-     "flips": 43,
+     "pass": 293,
+     "fail": 32,
+     "flips": 49,
      "contrastChecked": 11,
      "contrastSkipped": 41,
      "themeApplied": true
@@ -110,9 +110,9 @@
     "skipped": 401,
     "missing": null,
     "dark": {
-     "pass": 295,
-     "fail": 30,
-     "flips": 43,
+     "pass": 301,
+     "fail": 24,
+     "flips": 49,
      "contrastChecked": 11,
      "contrastSkipped": 41,
      "themeApplied": true
@@ -132,9 +132,9 @@
     "skipped": 401,
     "missing": null,
     "dark": {
-     "pass": 289,
-     "fail": 36,
-     "flips": 43,
+     "pass": 295,
+     "fail": 30,
+     "flips": 49,
      "contrastChecked": 11,
      "contrastSkipped": 41,
      "themeApplied": true
@@ -3408,204 +3408,6 @@
   },
   {
    "section": "home-hero-wrap",
-   "bp": "1920",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1920",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1440",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1440",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1440",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1440",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1440",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1440",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1024",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1024",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1024",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1024",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1024",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "1024",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
    "bp": "768",
    "kind": "no-counterpart",
    "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
@@ -3624,138 +3426,6 @@
    "mode": "unmatched",
    "expected": "an element conforming to the spec role",
    "actual": "no counterpart element",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "768",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "768",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "768",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "768",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "768",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "768",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "390",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "390",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "390",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "390",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "390",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
-   "delta": 0
-  },
-  {
-   "section": "home-hero-wrap",
-   "bp": "390",
-   "kind": "dark-contrast",
-   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
-   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
-   "mode": "dark",
-   "expected": "contrast ≥ 3.0 vs effective background (dark internal consistency)",
-   "actual": "1 — rgba(40, 40, 40, 0.72) on rgb(40, 40, 40)",
    "delta": 0
   }
  ],

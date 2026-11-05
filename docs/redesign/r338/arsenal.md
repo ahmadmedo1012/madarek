@@ -87,3 +87,4 @@ T-22 | knip@5.88.1 + jscpd@5.4.2 + dependency-cruiser@18.7.2 (temp-prefix instal
 L-c | verify.sh --fast | landing gate tsc+vitest+bundle
 L-c | vite build + scripts/check-bundle-size.mjs | bundle ceiling check <=777 gz
 L-c | npm install --package-lock-only | lockfile sync after t22 devDep removal
+T-11d | conformance run.mjs --dark + vite:5311 | hero dark-contrast baseline/after (30 strip ink seats)
