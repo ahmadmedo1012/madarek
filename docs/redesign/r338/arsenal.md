@@ -27,3 +27,10 @@ T-08c2 | conformance/run.mjs (--sections home-platform-wrap --url :5308, light+d
 ||||||| 0188bf2f
 T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-char scaffold mirror bindings (intro.wchar.N.M) + 5-bp measurement
 L-8 | verify.sh --fast + vite build/check-bundle-size.mjs + vitest/tsc + curl GitHub API | landed t02+t08+t03 (3 gate fixes), runner pin ubuntu-24.04
+||||||| 37705268
+T-04a | python census over scripts/conformance/results.json (check-kind × element-family grouping) | top-family failure census
+T-04a | playwright probe (repo node_modules; PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-t04 chromium-1200→1223 symlink fallback) | root fs + pm-frame/head/bandinner geometry sanity
+T-04b | python3 (json census diffing of heron-spec vs results.json) | decomposed the height/y residuals into per-bp rem targets
+T-04b | node scripts/conformance/run.mjs --url :5304 | measured problem 84.6→88.8
+T-04c | playwright chromium (/tmp/pw-browsers symlink fallback) + scripts/conformance/run.mjs --url :5304 + vitest r306 + check-colors --strict | 390 DOM forensics (phantom 56px section pad), pm-meta border restore, conformance re-measure, CI test verify
+T-04c | curl+jq Actions API + vitest/eslint/tsc/size-gate.sh/design-gates local mirrors + conformance run.mjs --url | CI forensics (fleet-wide red) + 90.5% re-measure

@@ -1,245 +1,414 @@
-/* R332 — split VERBATIM from src/styles/landing.css · pains = R322 2-d pains band (1277-1587)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+/* R337 A-problem — التحديات, REBUILT against the frozen Heron spec
+   (docs/redesign/r335/heron-spec/home-problem-wrap.{390,768,1024,
+   1440,1920}.json). The R322 open-column transplant is RETIRED with
+   this rewrite; every rule below is new. The DOM (Live.tsx) mirrors
+   the spec census — a RULED LEDGER of four columns:
 
-/* ═══ التحديات (R322 · 2-d) — the four pains on Heron's OPEN
-   COLUMN grammar: a head row (kicker + H2 at the reading-start
-   content line, sub note at the far column's edge, bottoms aligned)
-   over four UNBOXED columns — mono keyword + ghost 2-digit index
-   meta row, dashed rule, the drawing in its centered art zone,
-   title + body + the honest live-capability answer. V8 closed: the
-   head and the columns share ONE grid (the old boxed .pm-cards and
-   the 217px orphan lede die). @768 wraps 2×2; ≤767 becomes the snap
-   carousel with the reference's dot rail. ═══ */
+     section.pm-section[problem.wrap] > toprule · frame
+     frame > head(titleblock(kicker·h2) · subwrap>sub) · band(bandrule
+       · cols · dots) · cols > col×4 > colrule · meta(pad box >
+       keyroll>keytext · indexroll>indextext · cue) · metarule ·
+       bodyzone > artzone(artcolor > artin > svg) · textzone(pad box
+       > tgrid > titlebox>itemtitle · anszone>bodytext) · zonerule
+
+   Measured spec, ALL VALUES rem ON THE FLUID ROOT (identical to
+   Heron's: ≥992 0.5787037vw · ≤991 1.1990407674vw · ≤767
+   2.5445292621vw — spec-px ÷ root-px, bp-exact by construction):
+
+   ≥992 (1920/1440/1024)
+     head pad 3.2/3.2/6.6/3.2 · grid 1fr/1fr · kicker 1.4rem/1.96rem
+     m-block-end 1.6rem · h2 4.8rem·600/1 · sub m-top 3.2rem
+     meta pad 1.6/3.2 · cue 9px @3.2rem inset · art 20rem in pad 2.4
+     textzone pad 3.2 · item title 2.8rem·600/1 · body 1.6/2.08·400
+     cols 4-up butt + 1px rules · art 20rem square
+   768–991
+     head pad 4/1.5/3/1.5 · kicker m-block-end 1.5rem · h2 4rem·600/1
+     sub m-top 3.2rem · meta pad 0.75/1.5 · cue 7px · artzone pad 1.5
+     textzone pad 3/1.5/1.5/1.5 · item title 2.4rem·600/1.2
+     cols 2×2 butt + 1px rules (row 1.5px rule) · art 16.5rem
+   ≤767
+     head pad 6.4/1.6/3.2/1.6 single col · kicker m-block-end 1.2rem
+     h2 3.2rem·600/1 · sub m-top 2rem · meta pad 0.8/1.6 · cue 8px
+     artzone pad 2.4 · textzone pad 2.4/1.6 · item title 2rem·600/1.2
+     body 1.6/2.08·400 · cols = snap carousel (83.4% slides) + dots
+
+   Colors: the rules var(--rule-strong) (the spec's own
+   rgb(179,179,175)), the ghost index var(--neutral-400) (the spec's
+   rgb(180,180,176)), the cue dot var(--accent) (rgb(250,54,0)); the
+   soft 72%-ink text rides the spec-exact rgba (a documented
+   color-gate allow — color-mix() renders as a color() function the
+   conformance twin cannot equate).
+
+   Transitions (the spec's own census): keyword roll 0.4s ease, cue
+   dot 0.4s ease, art color 0.4s ease, column fade 0.2s ease, the
+   tgrid 0.4s ease. This sheet is motion-gate wholesale (landing
+   family contract, R332). */
+
+/* ═══ the wrap ═══ */
 .pm-section {
-  padding-block: var(--space-8xl);
-  border-block-start: 1px solid var(--rule-strong);
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+  font-family: var(--font-sans);
+  font-size: 1.6rem;
+  line-height: 2.16rem; /* ar-line-height floor (1.35×, transformed expectation) */
+  font-weight: 500;
+}
+.pm-section *,
+.pm-section *::before,
+.pm-section *::after { box-sizing: border-box; }
+
+.pm-toprule {
+  block-size: 1px;
+  background: var(--rule-strong);
 }
 
 .pm-frame {
-  display: grid;
-  gap: var(--space-6xl);
+  display: block;
+}
+.pm-inner {
+  display: block;
 }
 
-/* the head — title-wrap at the reading start (7 cols), sub at the
-   far edge (5 cols), BOTTOMS aligned like the reference's head row. */
+/* ═══ the head — title block at the start, sub at the far edge ═══ */
 .pm-head {
   display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  align-items: end;
-  gap: var(--space-4xl);
-  margin: 0;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  padding: 3.2rem 3.2rem 6.6rem;
 }
 
-.pm-title-wrap {
+.pm-titleblock {
   min-inline-size: 0;
-  display: grid;
-  gap: var(--space-lg);
-  justify-items: start;
+  color: var(--text); /* the spec's head title block is full-ink (the soft 72% rides the sub note only) */
 }
 
+.pm-kicker {
+  margin-block-end: 1.6rem;
+  inline-size: fit-content; /* the spec's own census: the kicker box rides its text (72px @1920), not the column */
+  transition: transform 0.4s ease;
+}
+.pm-kicker-text {
+  display: inline;
+  color: inherit;
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
+}
+
+.pm-titlebox {
+  color: var(--text);
+}
 .pm-title {
   margin: 0;
   font-family: var(--font-display);
-  /* R322 (1-d): joins the D2 rung (the problem/pains H2 — Heron's
-     own 4.8rem h2 @1440; weight 600, lh 1.10, balance). */
-  font-size: var(--fs-d2);
+  font-size: 4.8rem;
+  line-height: 1.35; /* ar-line-height floor (transformed expectation) */
+  padding-block-end: 3.15rem; /* ar-floor compensation: the spec's h2 = 2 lines × lh-1 (107px @1920); our 1 line × floor-lh + this pad = the same measured box at every ≥992 bp (107/80/57) */
   font-weight: 600;
-  line-height: 1.1;
-  text-wrap: balance;
   color: var(--text);
+  text-wrap: balance;
 }
 
-.pm-title em {
-  font-style: normal;
-  color: var(--accent-ink);
+.pm-subwrap {
+  min-inline-size: 0;
 }
-
 .pm-sub {
-  /* the far-edge note — the body band's --fs-body-lg rung, natural
-     width, no max-ch box (the reference's sub sits on the column's
-     own measure, not a reading-measure island).
-     R333 (P-C): +1 rung — 16.7px @1440 (max(floor, Nrem) convention,
-     13px floor-gated); the band's lead must read at the column
-     bodies' new register, not under it. */
   margin: 0;
-  font-size: max(14px, 2rem);
-  line-height: 1.7;
-  color: var(--text-secondary);
+  margin-block-start: 3.2rem;
+  padding-block-end: 1rem; /* toward the spec's 3-line sub measure (69px @1920) */
+  color: inherit;
+  font: inherit;
+}
+.pm-sub .fo-text-link {
+  color: inherit;
 }
 
-/* the four open columns — one 4-up hairline grammar, no boxes. */
+/* ═══ the columns band ═══ */
+.pm-band {
+  position: relative;
+}
+.pm-bandinner {
+  display: block;
+}
+.pm-bandrule {
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
 .pm-cols {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-3xl);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .pm-col {
+  position: relative;
   min-inline-size: 0;
-  display: grid;
-  align-content: start;
+  transition: opacity 0.2s ease;
 }
 
-/* the meta row — mono keyword + ghost index + the orange dot, closed
-   by the dashed rule (the reference's own meta grammar). */
+/* the column's own start-edge rule (all but the first — the band's
+   rule already rides the start edge) */
+.pm-colrule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--rule-strong);
+}
+.pm-colrule-first {
+  background: transparent;
+}
+
+/* ═══ the meta row — the padded box over its own dashed rule ═══ */
 .pm-meta {
+  position: relative;
   display: flex;
-  align-items: baseline;
-  gap: var(--space-sm);
-  padding-block-end: var(--space-md);
-  border-block-end: 1px dashed var(--rule-strong);
+  align-items: flex-start;
+  gap: 1.6rem;
+  padding: 1.6rem 3.2rem calc(1.6rem - 1px); /* the −1px pays for the border so the measured box holds */
+  border-block-end: 1px dashed var(--rule-strong); /* the ruled-row contract: the meta row's own dashed rule (the source contract's seat) */
+  color: var(--text); /* the keyword + index seat: the spec's full-ink meta strip */
+}
+.pm-meta .pm-keyword {
+  color: var(--text);
 }
 
-.pm-keyword {
-  color: var(--text-secondary);
-  font-size: var(--fs-xxs);
+.pm-keyword-roll {
+  transition: transform 0.4s ease;
 }
-
-.pm-index {
+.pm-index-roll {
   margin-inline-start: auto;
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
+  color: var(--neutral-400); /* the ghost index seat (rgb(180,180,176)) — the reference's index box carries it, not the indextext alone */
+}
+.pm-keyword {
+  color: inherit;
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
 }
 
-.pm-dot {
-  inline-size: 6px;
-  block-size: 6px;
+.pm-index-roll {
+  margin-inline-start: auto;
+}
+.pm-index {
+  color: var(--neutral-400);
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
+}
+
+.pm-cue {
+  position: absolute;
+  inset-inline-start: 3.2rem;
+  inset-block-start: 2.4rem;
+  inline-size: 9px;
+  block-size: 9px;
   background: var(--accent);
-  flex: none;
-  translate: 0 -1px;
+  opacity: 0;
+  transition: opacity 0.4s ease;
 }
 
-/* the drawing zone — the reference's 36rem art cell holding the
-   centered 20×20rem drawing (PainArt's own 200×200 viewBox). */
+.pm-metarule {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  /* the dash itself rides .pm-meta's border-block-end now (one
+     rule, not two); this seat keeps the mapped 1px window for the
+     spec pairing — same box, no double line */
+  background: none;
+}
+
+/* ═══ the body zone — art over text ═══ */
+.pm-bodyzone {
+  display: block;
+}
+
 .pm-artzone {
   display: grid;
   place-items: center;
-  min-block-size: 24rem;
-  padding-block: var(--space-xl) 0;
+  padding-block: 2.4rem;
+  min-block-size: 36rem; /* the spec's own art frame: 400/300/213px at 1920/1440/1024 — the 222px art centers in it with the census slack */
 }
-
-.pm-art {
+.pm-artcolor {
+  transition: color 0.4s ease;
+  color: var(--rule-strong);
+}
+.pm-artin {
+  color: inherit;
+}
+.pm-artin .pm-art {
   display: block;
   inline-size: 20rem;
   block-size: 20rem;
 }
-
-/* the draw-in: pathLength-normalized strokes resolve with the
-   column's reveal (staggered per column); RM collapses to the
-   complete drawing (the RM belt below). */
-.pm-art .pm-draw {
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: 1;
-  transition: stroke-dashoffset var(--t-cinema) var(--ease);
+.pm-artin .pm-art path,
+.pm-artin .pm-art circle,
+.pm-artin .pm-art ellipse,
+.pm-artin .pm-art line,
+.pm-artin .pm-art rect {
+  stroke: currentColor;
 }
 
-.pm-col.in-view .pm-art .pm-draw {
-  stroke-dashoffset: 0;
+/* ═══ the text zone ═══ */
+.pm-textzone {
+  position: relative;
+  padding: 3.2rem;
 }
 
-.pm-cols .pm-col:nth-child(2).in-view .pm-art .pm-draw { transition-delay: var(--t-micro); }
-.pm-cols .pm-col:nth-child(3).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 2); }
-.pm-cols .pm-col:nth-child(4).in-view .pm-art .pm-draw { transition-delay: calc(var(--t-micro) * 3); }
-
-.pm-content {
+.pm-tgrid {
   display: grid;
-  gap: var(--space-md);
+  grid-template-rows: auto auto;
+  transition: grid-template-rows 0.4s ease;
 }
 
+.pm-item-titlebox {
+  color: var(--text);
+}
 .pm-item-title {
-  margin: 0;
   font-family: var(--font-display);
-  /* R322 (1-d): the item title joins the D3 rung — Heron's own
-     item-title 2.8rem (23.33px @1440), weight 500, lh 1.15, balance. */
-  font-size: var(--fs-d3);
-  font-weight: 500;
-  line-height: 1.15;
+  font-size: 2.8rem;
+  line-height: 1.35; /* ar-line-height floor (transformed expectation) */
+  padding-block-end: 4.4rem; /* toward the spec's 3-line titlebox (93px @1920) — our 1 line × floor-lh + pad */
+  font-weight: 600;
+  color: var(--text);
   text-wrap: balance;
+}
+.pm-item-titlebox {
+  margin-block-end: 4.5rem; /* the spec's tgrid row rhythm: 50px between titlebox and answer @1920 */
+}
+
+.pm-anszone {
+  display: block;
+}
+.pm-answrap {
+  padding-block-start: 1.6rem;
+  color: var(--text); /* the spec's answer wrap is full-ink; the body text below re-seats the soft ink */
+}
+.pm-item-sub {
+  margin: 0;
+  font-weight: 400;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+}
+.pm-ans {
+  font-weight: 500;
   color: var(--text);
 }
 
-.pm-item-sub {
-  margin: 0;
-  /* R333 (P-C — the «pains body text small» defect): the column body
-     leaves the fixed 13px sm rung for the 16px @1440 body register
-     (max(floor, Nrem): 16px @1440 → 19px @390 — the ladder's own
-     body-lg mobile drift; 13px floor-gated). */
-  font-size: max(13px, 1.92rem);
-  line-height: 1.7;
-  color: var(--text-secondary);
+/* the text zone's own dashed rule (the spec's bg-image dash) */
+.pm-zonerule {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  background-image: repeating-linear-gradient(
+    to inline-end,
+    var(--rule-strong) 0 6px,
+    transparent 6px 12px
+  );
 }
 
-/* the honest answer — the live-capability line every pain keeps
-   (non-negotiable): the dashed top rule mirrors the meta row. */
-.pm-item-answer {
-  margin: 0;
-  /* the VLM review's one spacing note: a full --space-lg of air
-     before the answer rule (the head's generous rhythm carries down
-     the column — the answer is the column's terminal anchor).
-     R333 (P-C): rides the body rung now (--fs-body equiv 13.3px
-     @1440) — the honest answer keeps its weight-600 accent-ink voice
-     (5.06:1 — AA) at the bodies' new 16px register. */
-  padding-block-start: var(--space-lg);
-  border-block-start: 1px dashed var(--rule-strong);
-  font-size: max(13px, 1.6rem);
-  font-weight: 600;
-  color: var(--accent-ink);
-}
-
-/* ≤767 — the reference's swiper: the columns become the snap
-   carousel, the dot rail follows the snap position (the JS above
-   drives .is-active; a tap centers its column). Dots 2.02×0.2rem. */
+/* ═══ ≤767 — the reference's swiper: the columns become the snap
+   carousel, the dot rail follows the snap position (the JS belt
+   drives .is-active; a tap centers its column). Dots 2.02×0.2rem. ═══ */
 .pm-dots {
   display: none;
 }
 
 @media (max-width: 767px) {
+  /* the (0,2,0) belt guard (statement.css r337 precedent): a
+     ≤767 belt sheet pads the section 56px (the phone header
+     reserve) — the frozen spec's phone band carries NO section pad
+     (kicker window y=64 = toprule 1 + head pad 63.5), so the guard
+     restores the measured 0/0 box. */
+  .pm-section.pm-section {
+    padding-block: 0;
+  }
+
   .pm-head {
     grid-template-columns: minmax(0, 1fr);
-    align-items: start;
+    padding: 6.4rem 1.6rem 3.2rem; /* census 63.51/15.88/31.76/15.88px ✓ */
+  }
+  .pm-kicker {
+    margin-block-end: 1.2rem;
+  }
+  .pm-title {
+    font-size: 3.2rem;
+    padding-block-end: 4.16rem; /* 2 lines × floor-lh + pad = the census 127px 4-line box */
+  }
+  .pm-sub {
+    margin-block-start: 2rem;
+    padding-block-end: 0.8rem; /* toward the census 83px subwrap */
   }
 
   .pm-cols {
-    /* R332 W3 (twin run-001 · 390 defect): the desktop's explicit
-       4-track template MUST die here — with 4 explicit tracks in force,
-       auto-flow: column seats every item in row 1 and grid-auto-columns
-       (which sizes IMPLICIT tracks only) never applies: the four cards
-       squeezed into one 74.5px-per-column row (mono labels, titles and
-       «الجواب:» overprinting across columns). `none` hands the track
-       list to the implicit carousel columns below — Heron's own mobile
-       anatomy (swiper 11, problem list) as a snap carousel. */
+    /* R332 W3 (twin run-001 · 390 defect, kept): `none` hands the
+       track list to the implicit carousel columns — Heron's own
+       mobile anatomy (swiper 11, problem list) as a snap carousel.
+       Slides 312/374 = 83.4% of the band, butt + 1px rules. */
     grid-template-columns: none;
     grid-auto-flow: column;
-    grid-auto-columns: 82%;
-    gap: var(--space-lg);
+    grid-auto-columns: 83.4%;
+    gap: 1px;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    scroll-padding-inline: var(--space-lg);
-    padding-block-end: var(--space-md);
+    scroll-padding-inline: 1.2rem;
+    padding-block-end: 0.8rem;
     scrollbar-width: thin;
   }
 
   .pm-col {
     scroll-snap-align: center;
   }
-
-  .pm-artzone {
-    min-block-size: 0;
-    padding-block: var(--space-lg) 0;
+  .pm-colrule {
+    inset-inline-start: auto;
+    inset-inline-end: 0;
   }
 
-  .pm-art {
-    inline-size: 16rem;
-    block-size: 16rem;
+  .pm-meta {
+    padding: 0.8rem 1.6rem calc(0.8rem - 1px);
+    gap: 0.8rem;
+  }
+  .pm-cue {
+    inset-inline-start: 1.6rem;
+    inset-block-start: 1.2rem;
+    inline-size: 8px;
+    block-size: 8px;
+  }
+  .pm-artin .pm-art {
+    inline-size: 16.5rem;
+    block-size: 16.5rem;
+  }
+  .pm-artzone {
+    min-block-size: 27.8rem; /* census 276px @390 */
+  }
+  .pm-textzone {
+    padding: 2.4rem 1.6rem; /* census 23.82/15.88px ✓ */
+  }
+  .pm-item-title {
+    font-size: 2rem;
+    line-height: 1.35;
+    padding-block-end: 0; /* census titlebox = 1 line (24px) */
+  }
+  .pm-item-titlebox {
+    margin-block-end: 2.4rem; /* census 24px gap */
+  }
+  .pm-anszone {
+    padding-block-start: 1.2rem;
   }
 
   .pm-dots {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--space-sm);
+    padding: 2rem 1.2rem; /* census 19.85/0/19.85/11.91px */
   }
 
   .pm-dot-btn {
@@ -261,7 +430,7 @@
     inline-size: 2.02rem;
     block-size: 0.2rem;
     background: var(--rule-strong);
-    transition: background var(--t-fast) var(--ease);
+    transition: background 0.4s ease;
   }
 
   .pm-dot-btn.is-active .pm-dot-bar {
@@ -269,65 +438,73 @@
   }
 }
 
-/* R322 (2-d) — the ≤479 pocket (the 360 belt rides +2.6% over
-   Heron without it): the phone item-title takes Heron's own 390 rung
-   (2rem — the d3 floor's 23.33px is the 390+ belt), and the section
-   bands/artzone step one rung down the scale. All values measured
-   from problem-390.md: item-title 2rem lh1.2 · art 16.5rem ·
-   slide 31.45rem wide. */
-@media (max-width: 479px) {
-  .pm-section {
-    padding-block: var(--space-6xl);
-  }
-
-  .pm-frame {
-    gap: var(--space-3xl);
-  }
-
-  .pm-head {
-    gap: var(--space-3xl);
-  }
-
-  .pm-item-title {
-    font-size: 2rem;
-    line-height: 1.2;
-  }
-
-  .pm-artzone {
-    padding-block: 0;
-  }
-
-  .pm-content {
-    gap: var(--space-sm);
-  }
-
-  .pm-cols {
-    grid-auto-columns: 88%;
-  }
-
-  .st-section {
-    padding-block: var(--space-6xl);
-  }
-
-  .st-body-col {
-    padding-block-start: var(--space-3xl);
-  }
-}
-
+/* ═══ 768–991 — the 2×2 wrap (the spec's own 768 census) ═══ */
 @media (min-width: 768px) and (max-width: 991px) {
+  /* the 768 census (root 9.2088px): head pad 58.94/22.1/44.2/22.1px,
+     kicker gap 14.73px, h2 4 lines × 36.83px — the r337 guess (4/1.5/3)
+     was 87px short, cascading −85…−325px down the whole section */
+  .pm-head {
+    padding: 6.4rem 2.4rem 4.8rem;
+  }
+  .pm-kicker {
+    margin-block-end: 1.6rem;
+  }
+  .pm-title {
+    font-size: 4rem;
+    padding-block-end: 5.2rem; /* 2 lines × floor-lh + pad = the spec's 147px 4-line box */
+  }
+
   .pm-cols {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-4xl) var(--space-3xl);
+    gap: 0;
+  }
+  /* the row-2 first cell rides the band's start edge — no rule; the
+     row separator is the cell's own top-of-textzone dash + the
+     columns' start-edge rules carry the verticals */
+  .pm-col:nth-child(3) .pm-colrule {
+    background: transparent;
   }
 
+  .pm-meta {
+    padding: 1.2rem 2.4rem calc(1.2rem - 1px); /* census 11.05/22.1px + the border's own 1px */
+  }
+  .pm-cue {
+    inset-inline-start: 2.4rem;
+    inset-block-start: 1.74rem; /* census 16px */
+    inline-size: 7px;
+    block-size: 7px;
+  }
   .pm-artzone {
-    min-block-size: 0;
+    padding-block: 2.4rem; /* census 22.1px */
+    min-block-size: 30.4rem; /* census 280px */
   }
-
-  .pm-art {
-    inline-size: 16rem;
-    block-size: 16rem;
+  .pm-artin .pm-art {
+    inline-size: 16.5rem;
+    block-size: 16.5rem;
+  }
+  .pm-textzone {
+    padding: 4.8rem 2.4rem 2.4rem; /* census 44.2/22.1/22.1/22.1px */
+  }
+  .pm-item-title {
+    font-size: 2.4rem;
+    line-height: 1.35;
+    padding-block-end: 5.45rem; /* toward the census 80px 3-line titlebox */
+  }
+  .pm-item-titlebox {
+    margin-block-end: 2.06rem; /* census 19px row gap */
   }
 }
 
-
+/* ═══ the hover register (fine pointers only — the spec's own cue):
+   the keyword roll nudges, the cue dot lights, the art warms. ═══ */
+@media (hover: hover) and (pointer: fine) {
+  .pm-col:hover .pm-kicker {
+    transform: translateY(-1.6rem);
+  }
+  .pm-col:hover .pm-cue {
+    opacity: 1;
+  }
+  .pm-col:hover .pm-artcolor {
+    color: var(--text);
+  }
+}
