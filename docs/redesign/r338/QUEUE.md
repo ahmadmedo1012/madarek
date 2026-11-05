@@ -12,15 +12,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 6
+- [~] T-14a instrument: dark measurement path in run.mjs + plumbing-skip mechanism (ONLY agent allowed to touch run.mjs). Base origin/main (wordset rule already landed).
+- [~] T-04c problem: .pm-meta spec rule + 390 dip + exclusions + color/lh → ≥90 + branch CI green.
+- [~] T-05d why: bundle cut 0.4KB + head geometry + stage full-bleed (+mobile re-seat if time).
+- [~] T-06d footer: token-ize colors + wordmark pseudo fix + bg model + mobile y-stack.
+
 ## WAVE 5
-- [~] T-05c why counterparts+bindings: explicit side-rail bindings (depth-6 collision), add counterparts for ~52/bp no-counterpart elements + data-spec bindings.
-- [~] T-06c footer bindings+geometry: hand-bind remaining ~35 hooks from census geometry, fix y/x-mirror/w/h + bg families.
+- [x] T-05c DONE: r338/t05-why @110aec55 — 61.8→62.2%; T-05d residual: bundle cut 0.4KB (CI blocker), .wy-head grid (heron 1427x269), stage full-bleed 1427 (ours inset x33/w1380), mobile re-seat 768/390 (ours 8591/7221 vs heron 1882/808), ~55/bp counterparts, mk1/mk2 path-collisions ·
+- [x] T-06c DONE: r338/t06-footer @501ce2f8 — 66/63/79/70/71%; T-06d residual: token-ize raw colors (CI blocker), .fo-wordmark-reg::before 4≠5 (CI blocker), bg model inverted (transparent vs rgb(179,179,175)), mobile y-stack col2/col3/mark/striptwin 1-10k px, 132 plumbing paths (~560 fails) need T-14a skip mechanism ·
 
 ## WAVE 4
-- [~] L-4b Lander (respawn: agent died; land t02+t03+t04 (+t05 ddd02990, t06 e313f3e2 — monotonic improvements), branch-CI evidence, ONE combined verify, watch CI)
+- [x] L-4b DONE: t02+t03 landed main 850ce6fa..0bd158ba (verify PASS, bundle 776.4≤777, Size gate SUCCESS); EXCLUDED: t04 (.pm-meta spec rule), t05 (bundle 777.4>777), t06 (raw colors + wordmark pseudo 4≠5) — fix tasks queued
 - [x] T-05b DONE: r338/t05-why @ddd02990 — measured 61.2→61.8% (rewrite honestly below target); T-05c residual: side-rail unbindable (depth-6 collision, 6 bindings dropped), ~52/bp no-counterpart elements (mini-capture imgs, player defs/mask, row-4 map paths, caption clusters), y:505/x-mirror:120/w:111 mass
 - [x] T-06b DONE: r338/t06-footer @e313f3e2 — 45.4/34.9/38.8/36.2/43.1 → 64.1/62.6/75.3/66.7/68.2%; T-06c residual: hand-bind form/input/go/legal/biglink/socials/bgroups/brow.2-3, fix y323/x-mirror185/w148/h42 + bg94
-- [~] T-04b problem (agent died wave-4; respawn wave-5 — HEIGHT family ×0.751, 768 y-shift cascade, dup-window rebinds, color:90/lh:18) ·
+- [x] T-04b DONE: r338/t04-problem @60d67bf1 — 84.6→88.8% avg (93/93/93/89/78); T-04c residual: .pm-meta spec rule (CI blocker), 390 dip 78 (.pm-dots pad/artzone 27.8rem), ~276 heuristic x-pairs + dup-window/swiper-rail/svg exclusions, color 95 (soft-ink rgba vs color-mix), lh 13, copy line-counts (Live.tsx → T-08) ·
 
 ## WAVE 3 additions
 - [x] L-3 Lander DONE: main GREEN a362bcb5→850ce6fa (Size gate SUCCESS ×2, verify --fast PASS ×2, bundle 776.1-776.3≤777); scroll cells + feel on main; ratchet SKIPPED (in-tree results.json is scoped subset; full re-measure needed)
@@ -51,9 +57,15 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 6
+- [~] T-14a instrument: dark measurement path in run.mjs + plumbing-skip mechanism (ONLY agent allowed to touch run.mjs). Base origin/main (wordset rule already landed).
+- [~] T-04c problem: .pm-meta spec rule + 390 dip + exclusions + color/lh → ≥90 + branch CI green.
+- [~] T-05d why: bundle cut 0.4KB + head geometry + stage full-bleed (+mobile re-seat if time).
+- [~] T-06d footer: token-ize colors + wordmark pseudo fix + bg model + mobile y-stack.
+
 ## WAVE 5
-- [~] T-05c why counterparts+bindings: explicit side-rail bindings (depth-6 collision), add counterparts for ~52/bp no-counterpart elements + data-spec bindings.
-- [~] T-06c footer bindings+geometry: hand-bind remaining ~35 hooks from census geometry, fix y/x-mirror/w/h + bg families.
+- [x] T-05c DONE: r338/t05-why @110aec55 — 61.8→62.2%; T-05d residual: bundle cut 0.4KB (CI blocker), .wy-head grid (heron 1427x269), stage full-bleed 1427 (ours inset x33/w1380), mobile re-seat 768/390 (ours 8591/7221 vs heron 1882/808), ~55/bp counterparts, mk1/mk2 path-collisions ·
+- [x] T-06c DONE: r338/t06-footer @501ce2f8 — 66/63/79/70/71%; T-06d residual: token-ize raw colors (CI blocker), .fo-wordmark-reg::before 4≠5 (CI blocker), bg model inverted (transparent vs rgb(179,179,175)), mobile y-stack col2/col3/mark/striptwin 1-10k px, 132 plumbing paths (~560 fails) need T-14a skip mechanism ·
 
 ## WAVE 4
 - [ ] L-4 Lander.
@@ -64,6 +76,12 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-41 about page · same loop. Acc: ≥90%. 25m.
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
+
+## WAVE 6
+- [~] T-14a instrument: dark measurement path in run.mjs + plumbing-skip mechanism (ONLY agent allowed to touch run.mjs). Base origin/main (wordset rule already landed).
+- [~] T-04c problem: .pm-meta spec rule + 390 dip + exclusions + color/lh → ≥90 + branch CI green.
+- [~] T-05d why: bundle cut 0.4KB + head geometry + stage full-bleed (+mobile re-seat if time).
+- [~] T-06d footer: token-ize colors + wordmark pseudo fix + bg model + mobile y-stack.
 
 ## WAVE 5
 - [ ] L-5 Lander.

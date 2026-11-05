@@ -66,3 +66,10 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 ## ENV ADDENDUM 4 (wave-5, lead)
 - node_modules in worktrees are HARDLINK copies. NEVER write into node_modules (no installs, no patching). If vite serves blank / module-not-found errors: `rm -rf ./node_modules frontend/node_modules` in YOUR worktree and re-copy from /home/z/madarek (`cp -al /home/z/madarek/node_modules ./node_modules` + same for frontend/) — never repair in place.
 - Honest conformance state (chromium, 5-bp): usecase 87.9 · problem 84.6 · intro 74.7 · why 61.8 · footer 64.1/62.6/75.3/66.7/68.2 · platform/map/cta/hero/chrome unmeasured-this-round. Ratchet floor 53.7 (full matrix).
+
+## ENV ADDENDUM 5 (wave-6, lead)
+- main @0bd158ba carries: usecase 87.9 avg, intro 74.7, problem(old) 84.6→ now branch 88.8, why 62.2 (branch), footer 71 (branch). Bundle ceiling 777 KB gz HARD.
+- CI-blockers to clear before landing (from L-4b forensics): t04 = missing `.pm-meta{border-block-end…}` spec rule; t05 = bundle 777.4>777 (cut real code); t06 = check-colors --strict raw hex/rgb literals + `.fo-wordmark-reg::before` count 4≠5.
+- why.css lives at frontend/src/styles/landing/why.css (NOT components/landing/ — mapping _readme is stale).
+- run.mjs is lead-controlled shared instrument: ONLY T-14a may edit it this wave (dark path + plumbing-skip mechanism per T-06c's documented need). Section agents: never touch run.mjs.
+- Cross-section dependency: problem's copy-driven line-counts (sub 3-line, titlebox 1-line) live in platform-owned Live.tsx — T-08 owns that file and must honor them.
