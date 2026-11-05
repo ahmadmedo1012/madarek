@@ -16,3 +16,4 @@ T-06c | walk-footer-dom.mjs + build-footer-mapping.py + census-geometry hand-bin
 T-06d | python3 (json spec/mapping forensics) | heron footer.{390,768,1440}.json tree walks + footer.json rebinds
 T-06d | vitest (r321-decor-innertext) | source-contract fix verification for fo-wordmark-reg
 T-06d | scripts/check-colors.sh --strict | color-token gate verification
+T-06d | playwright-probe (cmp-t06.mjs sr-seat diff) + node conformance/run.mjs | mobile seat delta table @390/768, re-measure
