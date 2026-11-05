@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 14
+- [~] L-8 Lander: land usecase 93.9 (5e97b746) + platform 80/80.5 (7fdd6c8e, resolve conflict preferring branch) + intro 74.8 (ecf6e943, drop if bundle breaks); THEN pin ubuntu-24.04 across .github/workflows (incident suspect) as a direct main commit.
+- [~] T-99d axios→fetch diet-only (ultra-tight, main-base).
+- [~] T-03e intro junk-pool + unbound chars + pill/crawl x-mirror.
+- [~] T-06f footer JS diet (18.6KB Footer.tsx) + mobile re-seat + bg:50 + full plumbing enumeration.
+
 ## WAVE 13
-- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
-- [~] T-08c2 platform re-pairing + mobile geometry + dark.
-- [~] T-02d1r usecase y/h.
-- [~] T-03d intro per-char scaffold bindings (~500 rows).
+- [~] T-99c died ×2 → split: T-99d diet-only (axios→fetch on main-base, ultra-tight) + L-9 lands the train after
+- [x] T-08c2 DONE: r338/t08-platform @7fdd6c8e — 78.7→80% (80/80/81/81/78) + DARK 80.5% (contrast 0 fails); mapping de-duped to primary tree; rebase vs main NOT clean (conflict at 7ca29433 — lander resolves preferring branch); T-08c3 residual: 69 crossover nodes (needs duplicate-marquee counterparts), pr-imgs 0×0 off-page seats, interactive ×37 ·
+- [x] T-02d1r DONE: r338/t02-usecase-residual @5e97b746 (rebased on main) — 91.2→93.9% (97/95/93/95/90, ALL ≥90); y:389→161, h:103→54; residual: x-mirror:101/w:92/opacity:57 + 390 minor drift ·
+- [x] T-03d DONE: r338/t03-intro @ecf6e943 — 74.9→74.8% flat net (per-char bindings d88→215/bp landed, x-excused 558→362, but +76 junk rows shifted pool); T-03e residual: junk-pool bindings/excusals, 18 unbound char paths, pill x-mirror ~47, crawl svg ~35 ·
 
 ## WAVE 12
 - [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
@@ -95,11 +101,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 14
+- [~] L-8 Lander: land usecase 93.9 (5e97b746) + platform 80/80.5 (7fdd6c8e, resolve conflict preferring branch) + intro 74.8 (ecf6e943, drop if bundle breaks); THEN pin ubuntu-24.04 across .github/workflows (incident suspect) as a direct main commit.
+- [~] T-99d axios→fetch diet-only (ultra-tight, main-base).
+- [~] T-03e intro junk-pool + unbound chars + pill/crawl x-mirror.
+- [~] T-06f footer JS diet (18.6KB Footer.tsx) + mobile re-seat + bg:50 + full plumbing enumeration.
+
 ## WAVE 13
-- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
-- [~] T-08c2 platform re-pairing + mobile geometry + dark.
-- [~] T-02d1r usecase y/h.
-- [~] T-03d intro per-char scaffold bindings (~500 rows).
+- [~] T-99c died ×2 → split: T-99d diet-only (axios→fetch on main-base, ultra-tight) + L-9 lands the train after
+- [x] T-08c2 DONE: r338/t08-platform @7fdd6c8e — 78.7→80% (80/80/81/81/78) + DARK 80.5% (contrast 0 fails); mapping de-duped to primary tree; rebase vs main NOT clean (conflict at 7ca29433 — lander resolves preferring branch); T-08c3 residual: 69 crossover nodes (needs duplicate-marquee counterparts), pr-imgs 0×0 off-page seats, interactive ×37 ·
+- [x] T-02d1r DONE: r338/t02-usecase-residual @5e97b746 (rebased on main) — 91.2→93.9% (97/95/93/95/90, ALL ≥90); y:389→161, h:103→54; residual: x-mirror:101/w:92/opacity:57 + 390 minor drift ·
+- [x] T-03d DONE: r338/t03-intro @ecf6e943 — 74.9→74.8% flat net (per-char bindings d88→215/bp landed, x-excused 558→362, but +76 junk rows shifted pool); T-03e residual: junk-pool bindings/excusals, 18 unbound char paths, pill x-mirror ~47, crawl svg ~35 ·
 
 ## WAVE 12
 - [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
@@ -153,11 +165,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 14
+- [~] L-8 Lander: land usecase 93.9 (5e97b746) + platform 80/80.5 (7fdd6c8e, resolve conflict preferring branch) + intro 74.8 (ecf6e943, drop if bundle breaks); THEN pin ubuntu-24.04 across .github/workflows (incident suspect) as a direct main commit.
+- [~] T-99d axios→fetch diet-only (ultra-tight, main-base).
+- [~] T-03e intro junk-pool + unbound chars + pill/crawl x-mirror.
+- [~] T-06f footer JS diet (18.6KB Footer.tsx) + mobile re-seat + bg:50 + full plumbing enumeration.
+
 ## WAVE 13
-- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
-- [~] T-08c2 platform re-pairing + mobile geometry + dark.
-- [~] T-02d1r usecase y/h.
-- [~] T-03d intro per-char scaffold bindings (~500 rows).
+- [~] T-99c died ×2 → split: T-99d diet-only (axios→fetch on main-base, ultra-tight) + L-9 lands the train after
+- [x] T-08c2 DONE: r338/t08-platform @7fdd6c8e — 78.7→80% (80/80/81/81/78) + DARK 80.5% (contrast 0 fails); mapping de-duped to primary tree; rebase vs main NOT clean (conflict at 7ca29433 — lander resolves preferring branch); T-08c3 residual: 69 crossover nodes (needs duplicate-marquee counterparts), pr-imgs 0×0 off-page seats, interactive ×37 ·
+- [x] T-02d1r DONE: r338/t02-usecase-residual @5e97b746 (rebased on main) — 91.2→93.9% (97/95/93/95/90, ALL ≥90); y:389→161, h:103→54; residual: x-mirror:101/w:92/opacity:57 + 390 minor drift ·
+- [x] T-03d DONE: r338/t03-intro @ecf6e943 — 74.9→74.8% flat net (per-char bindings d88→215/bp landed, x-excused 558→362, but +76 junk rows shifted pool); T-03e residual: junk-pool bindings/excusals, 18 unbound char paths, pill x-mirror ~47, crawl svg ~35 ·
 
 ## WAVE 12
 - [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
@@ -206,11 +224,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 14
+- [~] L-8 Lander: land usecase 93.9 (5e97b746) + platform 80/80.5 (7fdd6c8e, resolve conflict preferring branch) + intro 74.8 (ecf6e943, drop if bundle breaks); THEN pin ubuntu-24.04 across .github/workflows (incident suspect) as a direct main commit.
+- [~] T-99d axios→fetch diet-only (ultra-tight, main-base).
+- [~] T-03e intro junk-pool + unbound chars + pill/crawl x-mirror.
+- [~] T-06f footer JS diet (18.6KB Footer.tsx) + mobile re-seat + bg:50 + full plumbing enumeration.
+
 ## WAVE 13
-- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
-- [~] T-08c2 platform re-pairing + mobile geometry + dark.
-- [~] T-02d1r usecase y/h.
-- [~] T-03d intro per-char scaffold bindings (~500 rows).
+- [~] T-99c died ×2 → split: T-99d diet-only (axios→fetch on main-base, ultra-tight) + L-9 lands the train after
+- [x] T-08c2 DONE: r338/t08-platform @7fdd6c8e — 78.7→80% (80/80/81/81/78) + DARK 80.5% (contrast 0 fails); mapping de-duped to primary tree; rebase vs main NOT clean (conflict at 7ca29433 — lander resolves preferring branch); T-08c3 residual: 69 crossover nodes (needs duplicate-marquee counterparts), pr-imgs 0×0 off-page seats, interactive ×37 ·
+- [x] T-02d1r DONE: r338/t02-usecase-residual @5e97b746 (rebased on main) — 91.2→93.9% (97/95/93/95/90, ALL ≥90); y:389→161, h:103→54; residual: x-mirror:101/w:92/opacity:57 + 390 minor drift ·
+- [x] T-03d DONE: r338/t03-intro @ecf6e943 — 74.9→74.8% flat net (per-char bindings d88→215/bp landed, x-excused 558→362, but +76 junk rows shifted pool); T-03e residual: junk-pool bindings/excusals, 18 unbound char paths, pill x-mirror ~47, crawl svg ~35 ·
 
 ## WAVE 12
 - [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
@@ -252,11 +276,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 14
+- [~] L-8 Lander: land usecase 93.9 (5e97b746) + platform 80/80.5 (7fdd6c8e, resolve conflict preferring branch) + intro 74.8 (ecf6e943, drop if bundle breaks); THEN pin ubuntu-24.04 across .github/workflows (incident suspect) as a direct main commit.
+- [~] T-99d axios→fetch diet-only (ultra-tight, main-base).
+- [~] T-03e intro junk-pool + unbound chars + pill/crawl x-mirror.
+- [~] T-06f footer JS diet (18.6KB Footer.tsx) + mobile re-seat + bg:50 + full plumbing enumeration.
+
 ## WAVE 13
-- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
-- [~] T-08c2 platform re-pairing + mobile geometry + dark.
-- [~] T-02d1r usecase y/h.
-- [~] T-03d intro per-char scaffold bindings (~500 rows).
+- [~] T-99c died ×2 → split: T-99d diet-only (axios→fetch on main-base, ultra-tight) + L-9 lands the train after
+- [x] T-08c2 DONE: r338/t08-platform @7fdd6c8e — 78.7→80% (80/80/81/81/78) + DARK 80.5% (contrast 0 fails); mapping de-duped to primary tree; rebase vs main NOT clean (conflict at 7ca29433 — lander resolves preferring branch); T-08c3 residual: 69 crossover nodes (needs duplicate-marquee counterparts), pr-imgs 0×0 off-page seats, interactive ×37 ·
+- [x] T-02d1r DONE: r338/t02-usecase-residual @5e97b746 (rebased on main) — 91.2→93.9% (97/95/93/95/90, ALL ≥90); y:389→161, h:103→54; residual: x-mirror:101/w:92/opacity:57 + 390 minor drift ·
+- [x] T-03d DONE: r338/t03-intro @ecf6e943 — 74.9→74.8% flat net (per-char bindings d88→215/bp landed, x-excused 558→362, but +76 junk rows shifted pool); T-03e residual: junk-pool bindings/excusals, 18 unbound char paths, pill x-mirror ~47, crawl svg ~35 ·
 
 ## WAVE 12
 - [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
@@ -294,11 +324,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 14
+- [~] L-8 Lander: land usecase 93.9 (5e97b746) + platform 80/80.5 (7fdd6c8e, resolve conflict preferring branch) + intro 74.8 (ecf6e943, drop if bundle breaks); THEN pin ubuntu-24.04 across .github/workflows (incident suspect) as a direct main commit.
+- [~] T-99d axios→fetch diet-only (ultra-tight, main-base).
+- [~] T-03e intro junk-pool + unbound chars + pill/crawl x-mirror.
+- [~] T-06f footer JS diet (18.6KB Footer.tsx) + mobile re-seat + bg:50 + full plumbing enumeration.
+
 ## WAVE 13
-- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
-- [~] T-08c2 platform re-pairing + mobile geometry + dark.
-- [~] T-02d1r usecase y/h.
-- [~] T-03d intro per-char scaffold bindings (~500 rows).
+- [~] T-99c died ×2 → split: T-99d diet-only (axios→fetch on main-base, ultra-tight) + L-9 lands the train after
+- [x] T-08c2 DONE: r338/t08-platform @7fdd6c8e — 78.7→80% (80/80/81/81/78) + DARK 80.5% (contrast 0 fails); mapping de-duped to primary tree; rebase vs main NOT clean (conflict at 7ca29433 — lander resolves preferring branch); T-08c3 residual: 69 crossover nodes (needs duplicate-marquee counterparts), pr-imgs 0×0 off-page seats, interactive ×37 ·
+- [x] T-02d1r DONE: r338/t02-usecase-residual @5e97b746 (rebased on main) — 91.2→93.9% (97/95/93/95/90, ALL ≥90); y:389→161, h:103→54; residual: x-mirror:101/w:92/opacity:57 + 390 minor drift ·
+- [x] T-03d DONE: r338/t03-intro @ecf6e943 — 74.9→74.8% flat net (per-char bindings d88→215/bp landed, x-excused 558→362, but +76 junk rows shifted pool); T-03e residual: junk-pool bindings/excusals, 18 unbound char paths, pill x-mirror ~47, crawl svg ~35 ·
 
 ## WAVE 12
 - [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
