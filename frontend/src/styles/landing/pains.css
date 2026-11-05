@@ -87,9 +87,11 @@
 
 .pm-kicker {
   margin-block-end: 1.6rem;
+  inline-size: fit-content; /* the spec's own census: the kicker box rides its text (72px @1920), not the column */
   transition: transform 0.4s ease;
 }
 .pm-kicker-text {
+  display: inline;
   color: inherit;
   font-size: 1.4rem;
   line-height: 1.96rem;
@@ -104,6 +106,7 @@
   font-family: var(--font-display);
   font-size: 4.8rem;
   line-height: 1.35; /* ar-line-height floor (transformed expectation) */
+  padding-block-end: 3.15rem; /* ar-floor compensation: the spec's h2 = 2 lines × lh-1 (107px @1920); our 1 line × floor-lh + this pad = the same measured box at every ≥992 bp (107/80/57) */
   font-weight: 600;
   color: var(--text);
   text-wrap: balance;
@@ -115,6 +118,7 @@
 .pm-sub {
   margin: 0;
   margin-block-start: 3.2rem;
+  padding-block-end: 1rem; /* toward the spec's 3-line sub measure (69px @1920) */
   color: inherit;
   font: inherit;
 }
@@ -229,6 +233,7 @@
   display: grid;
   place-items: center;
   padding-block: 2.4rem;
+  min-block-size: 36rem; /* the spec's own art frame: 400/300/213px at 1920/1440/1024 — the 222px art centers in it with the census slack */
 }
 .pm-artcolor {
   transition: color 0.4s ease;
@@ -269,9 +274,13 @@
   font-family: var(--font-display);
   font-size: 2.8rem;
   line-height: 1.35; /* ar-line-height floor (transformed expectation) */
+  padding-block-end: 4.4rem; /* toward the spec's 3-line titlebox (93px @1920) — our 1 line × floor-lh + pad */
   font-weight: 600;
   color: var(--text);
   text-wrap: balance;
+}
+.pm-item-titlebox {
+  margin-block-end: 4.5rem; /* the spec's tgrid row rhythm: 50px between titlebox and answer @1920 */
 }
 
 .pm-anszone {
@@ -313,16 +322,18 @@
 @media (max-width: 767px) {
   .pm-head {
     grid-template-columns: minmax(0, 1fr);
-    padding: 6.4rem 1.6rem 3.2rem;
+    padding: 6.4rem 1.6rem 3.2rem; /* census 63.51/15.88/31.76/15.88px ✓ */
   }
   .pm-kicker {
     margin-block-end: 1.2rem;
   }
   .pm-title {
     font-size: 3.2rem;
+    padding-block-end: 4.16rem; /* 2 lines × floor-lh + pad = the census 127px 4-line box */
   }
   .pm-sub {
     margin-block-start: 2rem;
+    padding-block-end: 0.8rem; /* toward the census 83px subwrap */
   }
 
   .pm-cols {
@@ -363,12 +374,19 @@
     inline-size: 16.5rem;
     block-size: 16.5rem;
   }
+  .pm-artzone {
+    min-block-size: 27.8rem; /* census 276px @390 */
+  }
   .pm-textzone {
-    padding: 2.4rem 1.6rem;
+    padding: 2.4rem 1.6rem; /* census 23.82/15.88px ✓ */
   }
   .pm-item-title {
     font-size: 2rem;
     line-height: 1.35;
+    padding-block-end: 0; /* census titlebox = 1 line (24px) */
+  }
+  .pm-item-titlebox {
+    margin-block-end: 2.4rem; /* census 24px gap */
   }
   .pm-anszone {
     padding-block-start: 1.2rem;
@@ -378,7 +396,7 @@
     display: flex;
     justify-content: flex-start;
     gap: var(--space-sm);
-    padding: 0.8rem 1.2rem 1.2rem;
+    padding: 2rem 1.2rem; /* census 19.85/0/19.85/11.91px */
   }
 
   .pm-dot-btn {
@@ -410,14 +428,18 @@
 
 /* ═══ 768–991 — the 2×2 wrap (the spec's own 768 census) ═══ */
 @media (min-width: 768px) and (max-width: 991px) {
+  /* the 768 census (root 9.2088px): head pad 58.94/22.1/44.2/22.1px,
+     kicker gap 14.73px, h2 4 lines × 36.83px — the r337 guess (4/1.5/3)
+     was 87px short, cascading −85…−325px down the whole section */
   .pm-head {
-    padding: 4rem 1.5rem 3rem;
+    padding: 6.4rem 2.4rem 4.8rem;
   }
   .pm-kicker {
-    margin-block-end: 1.5rem;
+    margin-block-end: 1.6rem;
   }
   .pm-title {
     font-size: 4rem;
+    padding-block-end: 5.2rem; /* 2 lines × floor-lh + pad = the spec's 147px 4-line box */
   }
 
   .pm-cols {
@@ -432,27 +454,32 @@
   }
 
   .pm-meta {
-    padding: 0.75rem 1.5rem;
+    padding: 1.2rem 2.4rem; /* census 11.05/22.1px */
   }
   .pm-cue {
-    inset-inline-start: 1.5rem;
-    inset-block-start: 1.1rem;
+    inset-inline-start: 2.4rem;
+    inset-block-start: 1.74rem; /* census 16px */
     inline-size: 7px;
     block-size: 7px;
   }
   .pm-artzone {
-    padding-block: 1.5rem;
+    padding-block: 2.4rem; /* census 22.1px */
+    min-block-size: 30.4rem; /* census 280px */
   }
   .pm-artin .pm-art {
     inline-size: 16.5rem;
     block-size: 16.5rem;
   }
   .pm-textzone {
-    padding: 3rem 1.5rem 1.5rem;
+    padding: 4.8rem 2.4rem 2.4rem; /* census 44.2/22.1/22.1/22.1px */
   }
   .pm-item-title {
     font-size: 2.4rem;
     line-height: 1.35;
+    padding-block-end: 5.45rem; /* toward the census 80px 3-line titlebox */
+  }
+  .pm-item-titlebox {
+    margin-block-end: 2.06rem; /* census 19px row gap */
   }
 }
 
