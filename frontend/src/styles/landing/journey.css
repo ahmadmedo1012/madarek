@@ -1283,13 +1283,6 @@
     gap: var(--sp-4);
   }
 
-  .wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
-  .wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
-  .wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-verb,
-  .wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
-    animation: none;
-  }
-
   .jt-plan .bp-drawable {
     transition: none;
     stroke-dasharray: none;
