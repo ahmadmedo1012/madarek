@@ -64,3 +64,16 @@
   (ours 8591/7221px tall vs heron 1882/808 — the ≤991 belt still stacks);
   (c) ~317 no-counterpart FAILs (mini clusters, map paths, caption clusters)
   unchanged from T-05c.
+
+## T-05e (r338) — why ≤991 residual work-list (post mobile re-seat, 62.8%)
+- The ≤991 belt is RE-SEATED to the measured seats (768: 753×1882 compact
+  2-col alternating 338px rows + centred axis; 390: 374×807 horizontal row
+  deck). Remaining ≤991 fails are cells whose our-counterparts are
+  display:none at ≤991 (row-4 point reveals .wy-pt ×12, row-3 player bits
+  .wy-vic/.wy-spinz/.wy-loadz/.wy-chk/.wy-dots, map paths): the instrument
+  then heuristically matches those spec cells to unrelated page elements
+  (~8000px away → y≈-7993 fails). Next agent: un-hide + seat them to the
+  spec rects (row-4 points cluster on the map box; row-3 bits near the
+  four capture seats) — worth ~40-60 cells at 390/768.
+- 768 head h2 wraps 3 lines in heron (88px) but 2 in Arabic (transformed
+  text) — h-cell fail by line-count, not fixable without copy change.

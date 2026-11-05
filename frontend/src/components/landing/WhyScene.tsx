@@ -21,7 +21,7 @@
  * gsap; reveal engine drives the intro, Lenis stays).
  */
 import { useSheetScroll } from '../../lib/motion/useSheetScroll';
-import { useRef } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import {
   CAPTURE_LECTURE_CHECKPOINT_2X,
   PRODUCT_CAPTURES,
@@ -127,17 +127,22 @@ const capSrc = (id: string) => {
   return c ? `/media/product/${c.id}-${c.widths[0]}.webp` : '';
 };
 
-/* rem seat factory — one inline-style object shape for the whole stage */
-const seat = (x: string, y: string, w?: string, h?: string) => ({
-  insetInlineStart: x,
-  insetBlockStart: y,
-  ...(w ? { inlineSize: w, blockSize: h } : {}),
-});
+/* rem seat factory — one inline-style shape for the whole stage. Seats
+ * ride CSS custom properties (--wy-sx…) that why.css consumes for the
+ * ≥992 stage, so the ≤991 compact belt (768 alternating 2-col rows ·
+ * ≤767 horizontal row carousel) can re-seat the SAME DOM per breakpoint
+ * without fighting inline-style specificity. */
+const seat = (x: string, y: string, w?: string, h?: string) =>
+  ({
+    '--wy-sx': x,
+    '--wy-sy': y,
+    ...(w ? { '--wy-sw': w, '--wy-sh': h } : {}),
+  }) as CSSProperties;
 
 /** the 13px icon cluster — white core (4px glyph) + accent swap + ring. */
 function IconCluster({ x }: { x: string }) {
   return (
-    <div className="wy-ic" style={{ insetInlineStart: x }}>
+    <div className="wy-ic" style={{ '--wy-ix': x } as CSSProperties}>
       <div className="wy-ic-core">
         <div className="wy-ic-box">
           <div className="wy-ic-dot" />
@@ -165,7 +170,7 @@ function MiniSeat({ m, id }: { m: Mini; id: string }) {
         </div>
       ) : (
         <>
-          <div className="wy-box" style={{ insetInlineStart: m.bx }}>
+          <div className="wy-box" style={{ '--wy-bx': m.bx } as CSSProperties}>
             <div className="wy-box-in">
               <img className="wy-box-img" src={capSrc(id)} alt="" loading="lazy" />
             </div>
@@ -180,7 +185,7 @@ function MiniSeat({ m, id }: { m: Mini; id: string }) {
 /** the pinned dark caption bar — title + sub + accent dot. */
 function CaptionBar({ x, title, sub }: { x: string; title: string; sub: string }) {
   return (
-    <div className="wy-tag" style={{ insetInlineStart: x }}>
+    <div className="wy-tag" style={{ '--wy-tx': x } as CSSProperties}>
       <div className="wy-tag-in">
         <div className="wy-tag-title-w">
           <div className="wy-tag-title">{title}</div>
@@ -239,9 +244,9 @@ export function WhyScene() {
                 className="wy-row"
                 data-spec={`why.row${i + 1}`}
                 key={r.title}
-                style={{ insetBlockStart: `${[0, 62.16, 124.32, 186.48][i]}rem` }}
+                style={{ '--wy-ry': `${[0, 62.16, 124.32, 186.48][i]}rem` } as CSSProperties}
               >
-                <div className="wy-card" data-spec={`why.card${i + 1}`} style={{ insetInlineStart: r.card[0] }}>
+                <div className="wy-card" data-spec={`why.card${i + 1}`} style={{ '--wy-cx': r.card } as CSSProperties}>
                   <div className="wy-card-in">
                     <img
                       className="wy-img"
