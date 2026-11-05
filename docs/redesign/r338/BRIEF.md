@@ -82,3 +82,11 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - CI INFRA INCIDENT (13:25–14:05 pushes): every r338 branch push red (CI + Size gate), job logs 404 BlobNotFound (log retention broken). Branch agents mirrored ALL gates locally GREEN (vitest 3051, lint 0, tsc, design-gates 9/9, size-gate exit 0, check-colors, r321). Until the incident clears: red branch CI alone is NOT exclusion evidence — mirror locally before excluding; try POST /actions/runs/<id>/rerun-failed-jobs (worked for T-01 before).
 - Problem @d2a7a2e7 = 90.5% avg (93/93/93/89/85) — first section at target. Footer @7974d0b8 = 69.2% (blockers cleared locally).
 - After t14a lands: sections opt into `--dark` + plumbing-skip (see ADDENDUM 6).
+
+## ENV ADDENDUM 8 (wave-9, lead rulings)
+- OWNERSHIP RULING (platform): T-08's exclusive set is EXTENDED to **Product.tsx + Live.tsx + platform.css + scripts/conformance/mapping/home-platform-wrap.json** (the platform seat section#product.pr-section is rendered by Product.tsx; OWNERSHIP.md r337 predates the P2-0 seat move — a doc refresh is queued in Track B).
+- t14a is ON MAIN (a5b71046): all sections may now run `--dark` and add `plumbing:[{section,heron,skip:["geometry"],reason}]` entries to their mapping. Dark cells count toward the exit table — start opting in.
+- r338/land-w8 holds t05(eaaf5ebb)+t04(d2a7a2e7)+t06(7974d0b8)+css-cut, NOT landed: combined bundle 777.6 > 777. The 0.6 KB must come out of JS (Chapters.tsx / Footer.tsx) — T-99 owns the diet + landing (merge t05's newer head 37b3c79a first).
+- check-bundle-size.mjs counts dist/assets/*.js ONLY (css is not in the gate) — css cuts do not move it.
+- GitHub Actions incident ONGOING (all-fail, logs 404, reruns red): local verify is the landing evidence; landers keep API-watching and re-check later runs.
+- Usecase lh/geometry task split again (3 agent deaths): T-02c = color:162 + lh:22 only; T-02d = geometry (y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck) only.

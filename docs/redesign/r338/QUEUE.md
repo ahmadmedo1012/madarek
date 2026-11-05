@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 9
+- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
+- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
+- [~] T-02c usecase color+lh only.
+- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+
 ## WAVE 8
-- [~] L-6 Lander+Medic: diagnose CI incident (rerun-failed-jobs), land t14a + t05 + t04 + t06 via LOCAL verify evidence + one combined verify.sh --fast.
-- [~] T-08 platform: Live.tsx + platform.css baseline+census+rewrite start (owns copy line-counts: sub 3-line @1920, titlebox 1-line; use T-07 frozen scrub curves for platform).
-- [~] T-02b usecase lh/geometry: color:162 lh:22 y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck (82.6% worst).
-- [~] T-05e why: x-mirror diet regression (≤991 width) + mobile compact re-seat (8591/7221 → 1882/808).
+- [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
+- [x] T-08 pass-1 DONE: r338/t08-platform @01e5e18b — 46.8→53.7% (noCounterpart census; 42 bindings authored but inert pre-data-spec); T-08b residual: data-spec hooks in Product.tsx, pr-head/side/stage/shots geometry vs heron 481/619 grid, counterparts (dual circular CTAs, marquee rows), scroll-curve alignment; OWNERSHIP EXTENDED to Product.tsx ·
+- [x] T-02b DIED ×3 → split: T-02c (color:162 + lh:22) + T-02d (geometry + 390 parked deck)
+- [x] T-05e DONE: r338/t05-why @37b3c79a — 61.1→62.8%; mobile re-seat complete (768 8591→1882, 390 7221→807, seats on --wy-* vars); T-05f residual: hidden-counterpart clusters (~40-60 cells @390/768 y≈-7993), 768 h2 3-line vs Arabic 2-line, desktop x-mirror:160 + y:406, 262 no-counterpart
 
 ## WAVE 7
 - [x] L-5 DIED (backend deadline) → L-6 combines landing + medic duties (see wave-8)
@@ -67,11 +73,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 9
+- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
+- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
+- [~] T-02c usecase color+lh only.
+- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+
 ## WAVE 8
-- [~] L-6 Lander+Medic: diagnose CI incident (rerun-failed-jobs), land t14a + t05 + t04 + t06 via LOCAL verify evidence + one combined verify.sh --fast.
-- [~] T-08 platform: Live.tsx + platform.css baseline+census+rewrite start (owns copy line-counts: sub 3-line @1920, titlebox 1-line; use T-07 frozen scrub curves for platform).
-- [~] T-02b usecase lh/geometry: color:162 lh:22 y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck (82.6% worst).
-- [~] T-05e why: x-mirror diet regression (≤991 width) + mobile compact re-seat (8591/7221 → 1882/808).
+- [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
+- [x] T-08 pass-1 DONE: r338/t08-platform @01e5e18b — 46.8→53.7% (noCounterpart census; 42 bindings authored but inert pre-data-spec); T-08b residual: data-spec hooks in Product.tsx, pr-head/side/stage/shots geometry vs heron 481/619 grid, counterparts (dual circular CTAs, marquee rows), scroll-curve alignment; OWNERSHIP EXTENDED to Product.tsx ·
+- [x] T-02b DIED ×3 → split: T-02c (color:162 + lh:22) + T-02d (geometry + 390 parked deck)
+- [x] T-05e DONE: r338/t05-why @37b3c79a — 61.1→62.8%; mobile re-seat complete (768 8591→1882, 390 7221→807, seats on --wy-* vars); T-05f residual: hidden-counterpart clusters (~40-60 cells @390/768 y≈-7993), 768 h2 3-line vs Arabic 2-line, desktop x-mirror:160 + y:406, 262 no-counterpart
 
 ## WAVE 7
 - [x] L-5 DIED (backend deadline) → L-6 combines landing + medic duties (see wave-8)
@@ -97,11 +109,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 9
+- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
+- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
+- [~] T-02c usecase color+lh only.
+- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+
 ## WAVE 8
-- [~] L-6 Lander+Medic: diagnose CI incident (rerun-failed-jobs), land t14a + t05 + t04 + t06 via LOCAL verify evidence + one combined verify.sh --fast.
-- [~] T-08 platform: Live.tsx + platform.css baseline+census+rewrite start (owns copy line-counts: sub 3-line @1920, titlebox 1-line; use T-07 frozen scrub curves for platform).
-- [~] T-02b usecase lh/geometry: color:162 lh:22 y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck (82.6% worst).
-- [~] T-05e why: x-mirror diet regression (≤991 width) + mobile compact re-seat (8591/7221 → 1882/808).
+- [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
+- [x] T-08 pass-1 DONE: r338/t08-platform @01e5e18b — 46.8→53.7% (noCounterpart census; 42 bindings authored but inert pre-data-spec); T-08b residual: data-spec hooks in Product.tsx, pr-head/side/stage/shots geometry vs heron 481/619 grid, counterparts (dual circular CTAs, marquee rows), scroll-curve alignment; OWNERSHIP EXTENDED to Product.tsx ·
+- [x] T-02b DIED ×3 → split: T-02c (color:162 + lh:22) + T-02d (geometry + 390 parked deck)
+- [x] T-05e DONE: r338/t05-why @37b3c79a — 61.1→62.8%; mobile re-seat complete (768 8591→1882, 390 7221→807, seats on --wy-* vars); T-05f residual: hidden-counterpart clusters (~40-60 cells @390/768 y≈-7993), 768 h2 3-line vs Arabic 2-line, desktop x-mirror:160 + y:406, 262 no-counterpart
 
 ## WAVE 7
 - [x] L-5 DIED (backend deadline) → L-6 combines landing + medic duties (see wave-8)
@@ -122,11 +140,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 9
+- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
+- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
+- [~] T-02c usecase color+lh only.
+- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+
 ## WAVE 8
-- [~] L-6 Lander+Medic: diagnose CI incident (rerun-failed-jobs), land t14a + t05 + t04 + t06 via LOCAL verify evidence + one combined verify.sh --fast.
-- [~] T-08 platform: Live.tsx + platform.css baseline+census+rewrite start (owns copy line-counts: sub 3-line @1920, titlebox 1-line; use T-07 frozen scrub curves for platform).
-- [~] T-02b usecase lh/geometry: color:162 lh:22 y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck (82.6% worst).
-- [~] T-05e why: x-mirror diet regression (≤991 width) + mobile compact re-seat (8591/7221 → 1882/808).
+- [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
+- [x] T-08 pass-1 DONE: r338/t08-platform @01e5e18b — 46.8→53.7% (noCounterpart census; 42 bindings authored but inert pre-data-spec); T-08b residual: data-spec hooks in Product.tsx, pr-head/side/stage/shots geometry vs heron 481/619 grid, counterparts (dual circular CTAs, marquee rows), scroll-curve alignment; OWNERSHIP EXTENDED to Product.tsx ·
+- [x] T-02b DIED ×3 → split: T-02c (color:162 + lh:22) + T-02d (geometry + 390 parked deck)
+- [x] T-05e DONE: r338/t05-why @37b3c79a — 61.1→62.8%; mobile re-seat complete (768 8591→1882, 390 7221→807, seats on --wy-* vars); T-05f residual: hidden-counterpart clusters (~40-60 cells @390/768 y≈-7993), 768 h2 3-line vs Arabic 2-line, desktop x-mirror:160 + y:406, 262 no-counterpart
 
 ## WAVE 7
 - [x] L-5 DIED (backend deadline) → L-6 combines landing + medic duties (see wave-8)
@@ -140,11 +164,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 9
+- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
+- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
+- [~] T-02c usecase color+lh only.
+- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+
 ## WAVE 8
-- [~] L-6 Lander+Medic: diagnose CI incident (rerun-failed-jobs), land t14a + t05 + t04 + t06 via LOCAL verify evidence + one combined verify.sh --fast.
-- [~] T-08 platform: Live.tsx + platform.css baseline+census+rewrite start (owns copy line-counts: sub 3-line @1920, titlebox 1-line; use T-07 frozen scrub curves for platform).
-- [~] T-02b usecase lh/geometry: color:162 lh:22 y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck (82.6% worst).
-- [~] T-05e why: x-mirror diet regression (≤991 width) + mobile compact re-seat (8591/7221 → 1882/808).
+- [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
+- [x] T-08 pass-1 DONE: r338/t08-platform @01e5e18b — 46.8→53.7% (noCounterpart census; 42 bindings authored but inert pre-data-spec); T-08b residual: data-spec hooks in Product.tsx, pr-head/side/stage/shots geometry vs heron 481/619 grid, counterparts (dual circular CTAs, marquee rows), scroll-curve alignment; OWNERSHIP EXTENDED to Product.tsx ·
+- [x] T-02b DIED ×3 → split: T-02c (color:162 + lh:22) + T-02d (geometry + 390 parked deck)
+- [x] T-05e DONE: r338/t05-why @37b3c79a — 61.1→62.8%; mobile re-seat complete (768 8591→1882, 390 7221→807, seats on --wy-* vars); T-05f residual: hidden-counterpart clusters (~40-60 cells @390/768 y≈-7993), 768 h2 3-line vs Arabic 2-line, desktop x-mirror:160 + y:406, 262 no-counterpart
 
 ## WAVE 7
 - [ ] L-7 Lander.
@@ -153,6 +183,12 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-52 mobile-build.yml · workflow_dispatch: `expo prebuild --platform android` + `./gradlew assembleRelease` on ubuntu-24.04 → APK artifact/Release; optional emulator + Maestro smoke; iOS simulator on a macOS runner if EAS quota gone; include expo-navigation-bar (LR-001). Acc: workflow merged, first run green with APK artifact. 25m.
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
+
+## WAVE 9
+- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
+- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
+- [~] T-02c usecase color+lh only.
+- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
 
 ## WAVE 8 (closing)
 - [ ] T-90 blind panel · R333 12-criterion rubric, dark + WebKit, run once, honest. 25m.
