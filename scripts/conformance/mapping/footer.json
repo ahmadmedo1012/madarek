@@ -159,6 +159,240 @@
       "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[2]",
       "spec": "footer > footer[1] > div[1] > div[3] > div[1] > div[2]",
       "ours": "footer.stripchrome"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "ours": "footer.form"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "spec": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "ours": "footer.input"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "spec": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "ours": "footer.go"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "ours": "footer.formrow"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "footer.sublabel"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "footer.brow.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.brow.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[1] > div[1] > div[1] > p[1] > a[1]",
+      "spec": "footer > div[3] > div[1] > div[1] > div[1] > p[1] > a[1]",
+      "ours": "footer.legalcta"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > p[1]",
+      "spec": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > p[1]",
+      "ours": "footer.legalp"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "footer.legallc"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[2]",
+      "ours": "footer.legalr"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[2]",
+      "ours": "footer.biglink"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "footer.c2bottom"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "footer.bgroup.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "ours": "footer.socials"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+      "spec": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+      "ours": "footer.social"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "footer.bg1label"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+      "ours": "footer.bg3label"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "footer.lglabel.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.lglabel.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "ours": "footer.lglinks.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+      "ours": "footer.lglinks.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "ours": "footer.marksvg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "ours": "footer.markimg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "spec": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "ours": "footer.stripimg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "ours": "footer.striptwin"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "footer.sctop"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "ours": "footer.scbot"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "ours": "footer.scleft"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[4]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[4]",
+      "ours": "footer.scright"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[5]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[5]",
+      "ours": "footer.reg.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[6]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[6]",
+      "ours": "footer.reg.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
+      "ours": "footer.reg.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
+      "ours": "footer.reg.4"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "ours": "footer.bgroup.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "spec": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "ours": "footer.stripsvg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "ours": "footer.stripimage"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "spec": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "ours": "footer.markpath.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "footer.bg2label.1"
     }
   ],
   "noCounterpart": [
