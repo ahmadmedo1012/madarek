@@ -123,6 +123,14 @@
   } /* R332 W390b −24px: journey 4842→≈4818 (heron 4819.4) — the last cascade donor above why */
 }
 
+/* T-09d — measured container rhythm per bp (see .jt). @1920 the wrap
+   settles at lh 24 / ink 72%; @1024 the band root ALSO drops to the
+   measured 9.48px scaffold font (every fs-inheriting node — divs,
+   svg text carriers g/path/line — measures 9.48 there; rem/px-pinned
+   reading voices are unaffected by the root drop).
+   ORDER: these sit AFTER the .jt base rule — equal specificity, so a
+   pre-base placement would let the base lh 18px override every belt. */
+
 .chapters-lede {
   /* R332 W4 — the head's second voice joins the band's mono caption
      register (Heron's home-map carries no body-size text at all —
@@ -157,6 +165,21 @@
    allowed class of stage motion). */
 .jt {
   position: relative;
+  /* T-09d — the band's measured ink model: Heron's map-wrap ink is
+     #282828 at 72% alpha on EVERY structural node (wrap/head column/
+     demo rows/svg art), reproduced as a section-scoped mix of our own
+     --text token (never a raw literal, never a global token mutation —
+     the r338 ADDENDUM 9 scoped-var pattern; the token still flips for
+     dark, so the flip census + contrast floor hold). Structural text
+     nodes keep their own explicit colours and are untouched. */
+  --jt-ink: rgb(40 40 40 / 72%); /* measured Heron map ink — scoped var, not a global token mutation (r338 ADDENDUM 9 pattern; T-25 owns unification). The computed value must serialise rgba(40,40,40,0.72): a color-mix() form reads color(srgb …) and misses the spec string. */
+  color: var(--jt-ink);
+  /* T-09d — container type rhythm, measured per bp: the band's
+     structural boxes (wrap/head column/demo-row scaffolds) carry lh
+     24@1920 · 18@1440 · 12.8@1024 · 19.89@768 · 21.44@390 — the old
+     29.33 body inheritance rode every container. Reading voices keep
+     their own pinned lh; only the scaffold boxes inherit this. */
+  line-height: 18px; /* 1440 measured */
   /* the scroll timeline (R315 · K-D/K-E geometry, re-verified R322
      3-b against the map extraction): the track is 649dvh tall — with
      the section head (≈228px) + the band rhythm (≈232px) it lands the
@@ -169,6 +192,32 @@
   block-size: 700dvh;
   margin-block-start: var(--sp-6);
 }
+
+/* T-09d — measured container rhythm per bp, AFTER the .jt base. */
+@media (min-width: 1920px) {
+  .jt { line-height: 24px; } /* measured @1920 */
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .jt {
+    line-height: 12.8px; /* measured @1024 */
+    font-size: 9.48px;   /* measured @1024 scaffold root */
+  }
+}
+
+@media (max-width: 1023px) {
+  .jt { line-height: 19.89px; } /* measured @768 */
+}
+
+@media (max-width: 767px) {
+  .jt { line-height: 21.44px; } /* measured @390 */
+}
+
+/* T-09d — the demo-row block keeps Heron's SOLID ink (measured
+   rgb(40,40,40) on the intro findings' scaffold + icon strokes): only
+   the band wrap / head column / route art carry the 72% wash, so the
+   intro block re-pins solid before inheritance reaches it. */
+.jt-intro { color: var(--text); }
 
 .jt-pin {
   position: sticky;

@@ -186,3 +186,4 @@ L-7 | GitHub Actions API via curl | post-landing triggered-run status check
 T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-char scaffold mirror bindings (intro.wchar.N.M) + 5-bp measurement
 T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification
 T-09c | playwright(chromium via /tmp/pw-browsers symlink fallback) + run.mjs --sections/--url | baseline+remeasure map conformance
+T-09d | conformance run.mjs (+webkit temp-copy probe) | map pass-4 type/colour rhythm measurement; webkit launch blocked by host libs (libgtk-4 etc.)
