@@ -43,3 +43,8 @@ Heron's frozen `home-platform-wrap` census tree is a page WRAPPER: besides the p
 ## T-10 (cta first pass, r338/t10-cta)
 - home-cta-wrap scaffolding: svg defs/mask/filter/fecomponenttransfer/image + the tween wrapper divs are excused via mapping noCounterpart with per-path written reasons (T-14a grammar) — plumbing, not measured design.
 - heron cta band rails (top ledger band, kicker rail, column rules, sketch-band wrappers, masked img): structural first-pass excuse with written reasons; REAL counterparts (ruled ledger via the existing `.fo-cta .fo-hero-meta` css seat + authored inline-SVG sketch band) are the next cta pass's work. Leaf design (title/lede/primary button/actions box) is bound and fully measured.
+
+## T-10b cta pass-2 (r338)
+- **cg-strip (colleges registry)** — no heron counterpart: heron's cta spec ends at the bottom sheet rule (y1078); the registry strip is a product requirement (R323: the true colleges/campuses/live-capability numbers ride the strip). Our-side extra below the sheet; unbound by design.
+- **kicker/rule ink (color skip)** — heron's ledger kickers + 1px rules carry an ink tone not yet mapped to a design token; scoped skip with reason in mapping (T-25 token unification will un-skip).
+- **section vh span @phone** — heron's @390 band heights are content-driven; our retired 77vh seat is replaced by the measured band rungs (9.6/auto/21.6rem); phone y/h residuals documented in results.

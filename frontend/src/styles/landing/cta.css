@@ -1,119 +1,57 @@
 /* R332 — split VERBATIM from src/styles/landing.css · cta = R313 D7 cta band (1762-1901)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+   full map + proof: docs/redesign/r332/css-split-landing.md
+   R338 T-10b — REWRITE: the band closes on heron's RULED LEDGER (the
+   drafting-table cta): top ledger band (3 mono cells, h 9.6rem) · title
+   band (kicker rail + centered resolve, h 27.6rem) · sketch band (authored
+   line-art, desktop 1fr of the 83.75rem floor / tablet 21.6rem) joined by
+   1px column rules at the rail/mid and mid/side boundaries. All rungs in
+   OUR rem (root 8.33 @1440 · 11.11 @1920 · 5.92 @1024 · 9.2 @768 · 9.92
+   @390) — the tablet trio 9.6+27.6+21.6 = 58.8rem holds heron's 541 @768;
+   the desktop floor 83.75rem holds 698 @1440. */
 
-/* ═══ الخاتمة (R313 · D7 §8) — the coordinates row + the title block
-   + the sketch panel + the resolve + the colleges strip. The band
-   holds ~77vh (the reference's 698px / 5.6%). The honest status pairs
-   (إلى أين) moved to /capabilities with the capability matrix. ═══ */
 .fo-cta {
-  padding-block: var(--sp-10);
   border-block-start: 1px solid var(--rule-strong);
-  min-block-size: 77vh; /* R314 cycle-2 §7 — the reference's 698px (from 755); ≥992 seats are the W5 dissolution at file end */
 }
 
-/* R332 W5 — the ≥992 owner seat: the strata tiers dissolved HERE (ONE
-   definition per property — the strata 4.8/3.84rem + R328 12/8rem
-   duplicates retire). Values are the WINNING cascade verbatim: the
-   R328 one-ladder closer (opens at the scene's 12rem, closes at the
-   quiet 8rem — var(--space-12xl)/var(--space-8xl)), the W3 floor and
-   the compact inner rungs. Height holds 697.9 vs the twin's 698.2
-   (Δ0.04% measured, run-001). The rhythm FIX (the registry strip
-   flush under the resolve) rides the ≥1025 block at file end. */
-@media (min-width: 992px) {
-  .fo-cta {
-    padding-block: var(--space-12xl) var(--space-8xl);
-    /* R315 cycle-3 (W3 — the desktop law): the floor rides the root as a
-     * CONSTANT REM height — 83.75rem = 496 @1024 · 621 @1280 · 698 @1440 ·
-     * 931 @1920 (the fresh manifest's own quartet, ±0.1rem). The old
-     * 77.5vh share was exact at 900px height only: −47 @1080, +30 @768 —
-     * the reference's band is width-driven, not height-driven. */
-    min-block-size: 83.75rem;
-  }
-
-  .fo-cta-inner {
-    /* R333 (P-C): the display-scale title (+6.7px over D2) re-seats on
-       the next spacing rung so the taller block keeps its air — the
-       band's 83.75rem floor absorbs it (content stays under the twin
-       height; verified in the r333 evidence run). */
-    gap: 2.4rem;
-  }
-
-  /* R338 T-10 first pass — heron cta h2 lh is FLAT 1.0 on every ≥768 rung
-     (40/40 · 53.33/53.33 · 28.44/28.44 · 29.47/29.47 measured); only the
-     390 phone rung carries 1.1 (23.82/26.2 — the base seat below). */
-  .fo-cta-title {
-    line-height: 1;
-  }
-
-  /* R338 T-10 — heron lede lh is 1.3 on EVERY rung (17.33/13.33 ·
-     23.11/17.78 · 12.33/9.48 · 19.15/14.73 · 18.06/13.89). */
-  .fo-cta-lede {
-    font-size: 1em;
-    line-height: 1.3;
-  }
-
-  .cg-strip {
-    /* R333 P-F3 — margin 0 from the ≥992 floor up (was 2.4rem, which
-       read 14.2px @1024 — the matrix-1024 rhythm FAIL): the strip sits
-       FLUSH under the resolve at every ≥992 width; the 83.75rem band
-       floor absorbs the air exactly like the ≥1025 seat did (height
-       holds 496 @1024 · 698 @1440). */
-    margin-block-start: 0;
-    padding-block-start: 1.92rem;
-  }
+.fo-cta-frame,
+.fo-cta-sheet {
+  display: block;
 }
 
-/* R322 V1 kill: .fo-cta-coords (the [R313] revision row) and
- * .fo-cta-corners (the r308 [0,…] corner readout) are deleted with
- * their markup — revision tags and coordinates are not content. */
-
-/* the resolve + the sketch panel read side by side (the reference's
-   cta composition: copy + sketch image) */
-.fo-cta-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: var(--sp-8);
-  align-items: stretch;
+/* the 1px rules are real nodes (heron measures them as elements):
+   zero-size boxes + a 1px border = w/h 1 without raw px sizing. */
+.fo-cta-vrule {
+  inline-size: 0;
+  border-inline-start: 1px solid var(--rule);
 }
 
-.fo-cta-inner {
-  display: grid;
-  gap: var(--sp-4);
-  justify-items: start;
+.fo-cta-hrule {
+  block-size: 0;
+  border-block-start: 1px solid var(--rule);
+}
+
+.fo-cta-sheet-rule {
+  block-size: 0;
+  border-block-start: 1px solid var(--rule-strong);
+}
+
+.fo-cta-kicker {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-muted);
+  letter-spacing: 0;
 }
 
 .fo-cta-title {
   font-family: var(--font-display);
-  /* R333 P-F3 — heron's own cta rung, ONE rem seat on the shared fluid
-   * root (matrix-1920 fs FAIL 53.33 vs 62.22 · matrix-1024 28.44 vs
-   * 33.19 — both Δ14.29%): the P-C px-floor·vw·cap clamp paired the
-   * resolve to heron's h1 D1 voice, which renders 62.22px @1920 —
-   * heron's cta is 4.8rem there (53.33 @1920 · 28.44 @1024 · 40.0
-   * @1440). The clamp cannot produce that ladder (one vw cannot hit
-   * three root-shifted rungs), so the seat returns to the rem rung;
-   * the tablet 3.2rem and phone 2.4rem belts seat the step-down ladder
-   * below (heron steps DOWN at tablet — matrix-768 29.47 vs 36.86).
-   * ≤767 the strata file-end 2.4rem seat (23.8168px @390 — heron's own
-   * cta h2 mb rung, run-003 like-for-like) keeps the phone band.
-   * Weight 600 · lh 1.10 · balance stay from the D2 join. */
-  font-size: 4.8rem;
   font-weight: 600;
-  line-height: 1.1;
   text-wrap: balance;
   color: var(--text);
 }
 
 .fo-cta-lede {
-  /* R333 (P-C): +1 rung off the 15px body-lg lead — 16.7px @1440,
-     13px floor-gated (the ladder's max(floor, Nrem) convention); the
-     closing band's copy must carry the resolve, not whisper it. */
-  /* R338 T-10 — heron's lede is exactly 1em of the fluid body root
-     (13.33 @1440 · 17.78 @1920 · 14.73 @768 · 13.89 @390) at lh 1.3;
-     the old 2rem/1.7 resolve voice ran +50% over the twin. */
-  font-size: 1em;
-  line-height: 1.3;
   color: var(--text-secondary);
-  max-inline-size: 52ch;
 }
 
 .fo-cta-actions {
@@ -129,139 +67,200 @@
   gap: var(--sp-1-5);
   font-size: var(--fs-sm);
   color: var(--text-muted);
+  margin-block-start: var(--sp-4);
 }
 
-/* ── the sketch panel (R313 · D7 §8) — the reference's cta sketch
-   image: the drafting-sheet sketch state as pure line work (the
-   6.4rem grid + registration marks + the mono coordinate), a quiet
-   decorative anchor beside the resolve. ── */
-.fo-cta-sketch {
-  position: relative;
-  display: block;
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
-  min-block-size: 22rem;
-  overflow: clip;
+.fo-cta-sketch-wrap,
+.fo-cta-sketch-frame,
+.fo-cta-sketch-holder,
+.fo-cta-sketch-veil,
+.fo-cta-sketch-matte {
+  display: grid;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
-.fo-cta-sketch-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 6.4rem 6.4rem;
-  opacity: 0.55;
+.fo-cta-sketch-frame,
+.fo-cta-sketch-matte {
+  grid-area: 1 / 1;
 }
 
-.fo-cta-sketch-mark {
-  position: absolute;
+.fo-cta-sketch-holder,
+.fo-cta-sketch-veil {
+  grid-area: 1 / 1;
+}
+
+.fo-cta-sketch-art {
+  inline-size: 100%;
+  block-size: 100%;
   color: var(--text-faint);
-  font-family: var(--font-mono);
-  font-size: var(--fs-sm);
-  line-height: 1;
-}
-/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
-   note in auth.css owns the reasoning). */
-.fo-cta-sketch-mark::before { content: '+'; }
-
-.fo-cta-sketch-tl { inset-block-start: 6px; inset-inline-start: 8px; }
-.fo-cta-sketch-tr { inset-block-start: 6px; inset-inline-end: 8px; }
-.fo-cta-sketch-bl { inset-block-end: 6px; inset-inline-start: 8px; }
-.fo-cta-sketch-br { inset-block-end: 6px; inset-inline-end: 8px; }
-
-/* R322 V1 tail: .fo-cta-sketch-coord ([CTA · RESOLVE]) is deleted
-   with its markup — a coordinate tag is not content. */
-
-/* the title block reads as a two-column ruled table inside the
-   closing section (the hero's ex-metadata grid, compact) */
-.fo-cta .fo-hero-meta {
-  margin-block-start: var(--sp-6);
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.fo-cta .fo-meta-row:nth-last-child(-n + 2) {
-  border-block-end: 0;
+/* ── base (phone ≤767): the ledger stacks its bands full-width; the
+   rail/side cells collapse to gutters, the rules stay. ── */
+.fo-cta-ledger {
+  display: grid;
+  grid-template-rows: 9.6rem auto 21.6rem;
 }
 
-/* ═══ R332 W5 — the cta rhythm fix + the dissolution seats. FILE END
-   (the cascade lesson: the base rules above and every strata re-seat
-   lose to these — same-specificity rules resolve by document order).
-
-   Measured twin deltas @1440 (run-001): rhythm gutter 20 vs the twin's
-   0 (Δ20 over the ≤8 gate) — the gutter WAS the registry strip's 20px
-   margin-block-start (the band's two level-1 boxes: the resolve block
-   and the strip). THE FIX: the strip sits FLUSH under the resolve
-   (margin 0 — the twin's three cta boxes butt), and the 83.75rem
-   floor absorbs the air (the band's own air) so the height holds
-   697.9. R333 P-F3: the flush seat now spans the WHOLE ≥992 floor
-   (the 992–1024 slice's 2.4rem margin read 14.2px @1024 — the
-   matrix-1024 rhythm FAIL) and the 768–991 tablet band joins with the
-   strata 58.8rem floor absorbing the 40px colleges-base gutter
-   (matrix-768 rhythm FAIL 40 vs 0). The 992–1024 canon-floor slice's
-   sketch/grid fold and the 768–991 tablet band keep their other
-   measured seats verbatim (moved from strata — shared.css holds no
-   competing seats on these selectors in those belts).
-   The strata .fo-cta and .cg-strip ≥992 + tablet tiers retire herewith. ═══ */
-@media (min-width: 992px) and (max-width: 1024px) {
-  .fo-cta-sketch {
-    display: none;
-  }
-
-  .fo-cta-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+.fo-cta-band {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 5.9fr) minmax(0, 1fr);
+  position: relative;
 }
 
+.fo-cta-cell {
+  position: relative;
+  min-block-size: 0;
+}
+
+.fo-cta-band .fo-cta-hrule {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+}
+
+.fo-cta-vrule {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  block-size: calc(100% - 1px);
+}
+
+.fo-cta-rail {
+  display: flex;
+  align-items: flex-end;
+  padding: var(--sp-1);
+}
+
+.fo-cta-band-top .fo-cta-mid,
+.fo-cta-band-top .fo-cta-side {
+  display: flex;
+  align-items: flex-start;
+  padding: var(--sp-1);
+}
+
+.fo-cta-kicker {
+  font-size: 1.05rem;
+}
+
+.fo-cta-title {
+  font-size: 2.4rem;
+  line-height: 1.1;
+}
+
+.fo-cta-lede {
+  font-size: 1.4rem;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.fo-cta-copy {
+  inline-size: min(60rem, 100%);
+  text-align: center;
+}
+
+.fo-cta-lede-wrap {
+  inline-size: min(79.4rem, 100%);
+  margin-inline: auto;
+  margin-block-start: 1.68rem;
+  text-align: center;
+}
+
+.fo-cta-actions {
+  justify-content: center;
+  margin-block-start: 3.24rem;
+}
+
+.fo-cta-inner {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  padding-inline: 1.62rem;
+}
+
+/* ── tablet (768–991): the 58.8rem trio holds heron's 541 @768 ── */
 @media (min-width: 768px) and (max-width: 991px) {
   .fo-cta {
-    padding-block: var(--sp-8) var(--sp-7);
     min-block-size: 58.8rem;
   }
 
+  .fo-cta-ledger {
+    grid-template-rows: 9.6rem 27.6rem 21.6rem;
+  }
+
   .fo-cta-title {
-    /* R333 P-F3 (matrix-768 cta fs FAIL 29.47 vs 36.86, Δ20.06%): heron
-     * steps the cta voice DOWN at tablet — 3.2rem on the 1.199vw root
-     * = 29.47px @768 (its ladder 4.8rem ≥992 → 3.2rem → 2.4rem ≤767;
-     * madarek's 4.8vw clamp ran the band UP to 36.86 — the
-     * non-monotonic ladder the matrix flags). One seat, one belt. */
+    /* heron steps the cta voice DOWN at tablet — 3.2rem on the 9.2 root
+     * = 29.47px @768 (its ladder 4.8rem ≥992 → 3.2rem → 2.4rem ≤767). */
     font-size: 3.2rem;
-  }
-
-  .fo-cta-sketch {
-    display: none;
-  }
-
-  /* R333 P-F3 (matrix-768 cta rhythm FAIL 40 vs 0): the 40px gutter is
-   * the colleges-base --sp-8 strip margin surviving this belt (the
-   * ≥1025 flush seat never reached it). The strip sits FLUSH under the
-   * resolve here too — the strata 58.8rem band floor absorbs the air
-   * (height holds 541 @768, Δ0.02% unchanged). The strata tablet seat
-   * keeps the strip's PADDING (ONE definition — see its note). */
-  .cg-strip {
-    margin-block-start: 0;
-  }
-
-  .fo-cta-grid {
-    gap: var(--sp-3);
-  }
-
-  .fo-cta-inner {
-    gap: var(--sp-2);
-  }
-
-  .fo-cta-lede {
-    line-height: 1.3;
-  }
-
-  .fo-cta-title {
     line-height: 1;
   }
 
-  .fo-cta-actions {
-    padding-block-start: 0;
+  .fo-cta-kicker {
+    font-size: 1.2rem;
   }
-  /* R332 W5: the tablet .cg-strip padding seat stays in strata.css
-     (the pre-dissolution winner at this belt) — ONE definition. */
+
+  .fo-cta-lede {
+    font-size: 1.6rem;
+  }
+
+  .cg-strip {
+    margin-block-start: 0;
+  }
 }
 
+/* ── desktop (≥992): the 83.75rem floor — 9.6 + 27.6 + 1fr(46.55) ── */
+@media (min-width: 992px) {
+  .fo-cta {
+    min-block-size: 83.75rem;
+  }
+
+  .fo-cta-ledger {
+    grid-template-rows: 9.6rem 27.6rem minmax(46.5rem, 1fr);
+  }
+
+  .fo-cta-band {
+    grid-template-columns: minmax(0, 25.3%) minmax(0, 50.1%) minmax(0, 24.6%);
+  }
+
+  .fo-cta-title {
+    font-size: 4.8rem;
+    line-height: 1;
+  }
+
+  .fo-cta-kicker {
+    font-size: 1.2rem;
+  }
+
+  .fo-cta-lede {
+    font-size: 1.6rem;
+  }
+
+  .fo-cta-copy {
+    inline-size: 60rem;
+  }
+
+  .fo-cta-lede-wrap {
+    inline-size: min(79.4rem, 100%);
+    margin-block-start: 1.68rem;
+  }
+
+  .fo-cta-actions {
+    margin-block-start: 3.24rem;
+  }
+
+  /* the flank rule — heron seats it 11px outside the centered 60rem
+     title box (x460 @1440): 50% − 30rem − 1.32rem from the mid edge. */
+  .fo-cta-flank {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(50% - 31.32rem);
+    inline-size: 0;
+    border-inline-start: 1px solid var(--rule);
+  }
+
+  .cg-strip {
+    margin-block-start: 0;
+    padding-block-start: 1.92rem;
+  }
+}

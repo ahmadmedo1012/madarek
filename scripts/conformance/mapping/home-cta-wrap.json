@@ -12,375 +12,473 @@
   "explicit": [
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > h2[1]",
-      "spec": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > h2[1]",
-      "ours": "cta.title"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
-      "spec": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
-      "ours": "cta.lede"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[3] > a[1]",
-      "spec": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[3] > a[1]",
-      "ours": "cta.primary"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[3]",
-      "spec": "home-cta-wrap > section[1] > div[1] > div[2] > div[2] > div[3]",
-      "ours": "cta.actions"
-    }
-  ],
-  "plumbing": [],
-  "noCounterpart": [
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1]",
+      "ours": "cta.frame"
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1]",
+      "ours": "cta.sheet"
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1]",
+      "ours": "cta.ledger"
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1]",
+      "ours": "cta.band-top"
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[1]",
+      "ours": "cta.top-hrule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "ours": "cta.top-rail"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "cta.top-rail-kick-wrap"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "cta.top-rail-kicker",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3]",
+      "ours": "cta.top-mid"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
+      "ours": "cta.top-mid-kick-wrap"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "ours": "cta.top-mid-kicker",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[3] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3] > div[2]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[3] > div[2]",
+      "ours": "cta.top-mid-rule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4]",
+      "ours": "cta.top-side"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
+      "ours": "cta.top-side-kick-wrap"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[1] > div[4] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "ours": "cta.top-side-kicker",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[4] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4] > div[2]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[1] > div[4] > div[2]",
+      "ours": "cta.top-side-rule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2]",
+      "ours": "cta.band-title"
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[1]",
+      "ours": "cta.title-rail"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "cta.title-rail-kick-wrap"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "cta.title-rail-kicker",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2]",
+      "ours": "cta.title-mid"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "cta.title-box"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[1] > h2[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[1] > h2[1]",
+      "ours": "cta.title"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[2]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[2]",
+      "ours": "cta.lede-wrap"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "ours": "cta.lede"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3]",
+      "ours": "cta.actions"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1]",
+      "ours": "cta.primary"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[4]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[4]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[4]",
+      "ours": "cta.flank-rule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[3]",
+      "ours": "cta.title-side"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[4]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
+      "ours": "cta.title-side-rule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3]",
+      "ours": "cta.band-sketch"
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1]",
+      "ours": "cta.sketch-mid"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[3] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1]",
+      "ours": "cta.sketch-wrap"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "cta.sketch-frame"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "cta.sketch-holder"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "ours": "cta.sketch-art",
+      "skip": [
+        "tag",
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > img[1]",
-      "reason": "heron masked product crop — authored inline-SVG line-art counterpart lands with the cta sketch-band rewrite (never Heron assets)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "cta.sketch-veil"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[3]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[3]",
+      "ours": "cta.sketch-matte"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-      "reason": "svg defs/mask/filter/image tween plumbing — T-14a scaffolding grammar, not measured design"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[3] > div[1] > div[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > section[1] > div[1] > div[3] > div[1] > div[1] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[3] > div[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[2]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[2]",
+      "ours": "cta.sketch-mid-rule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[2]",
+      "ours": "cta.sketch-side"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[3] > div[2] > div[1]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[2] > div[1]",
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[2] > div[1]",
+      "ours": "cta.sketch-side-rule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[3]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[3]",
+      "ours": "cta.band-sketch-hrule",
+      "skip": [
+        "color"
+      ]
     },
     {
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[2]",
-      "reason": "heron cta band rail/ledger/sketch structural wrapper — real ruled counterpart authored in the r338 cta rewrite pass; first-pass binding measures the leaf design (title/lede/button)"
+      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[2]",
+      "ours": "cta.sheet-rule",
+      "skip": [
+        "color"
+      ]
+    }
+  ],
+  "plumbing": [
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[2] > img[1]",
-      "reason": "heron masked product crop — authored inline-SVG line-art counterpart lands with the cta sketch-band rewrite (never Heron assets)"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
+      "skip": [
+        "geometry",
+        "tag",
+        "type",
+        "color"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[1]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[2]",
+      "reason": "heron sketch loader/a11y node (0×0, hidden) — no visual counterpart by design"
     }
   ]
 }
