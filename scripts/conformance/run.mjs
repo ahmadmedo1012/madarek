@@ -114,17 +114,57 @@ const GROUP_CHECKS = { tag: 1, tc: 1, geometry: 4, type: 4, color: 2 };
 
 // R338 T-14a — WCAG relative luminance/contrast for the dark internal-
 // consistency check (unflipped light-ink-on-dark-surface detection).
-function relLum(rgb) {
-  const m = String(rgb).match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)/);
-  if (!m) return null;
+// T-14a2 v2 — colors carry ALPHA: an rgba()/color(srgb)/oklch() ink is
+// COMPOSITED over the (pre-composited, opaque) effective background before
+// the ratio. v1 silently returned null on anything its regex missed and
+// ignored the alpha channel entirely, so translucent seats went uncounted
+// (33 usecase seats showed 0 fails while the honest ratio was 1.0:1).
+// Still-unparseable pairs return null — the caller REPORTS those as
+// skipped, never silently.
+const COLOR_JS = String.raw`(() => {
+  const clamp255 = (v) => Math.max(0, Math.min(255, v));
+  function oklchToSrgb(L, C, H) {
+    const h = (H * Math.PI) / 180, a = C * Math.cos(h), b = C * Math.sin(h);
+    const l_ = L + 0.3963377774 * a + 0.2158037573 * b, m_ = L - 0.1055613458 * a - 0.0638541728 * b, s_ = L - 0.0894841775 * a - 1.291485548 * b;
+    const l = l_ * l_ * l_, m = m_ * m_ * m_, s = s_ * s_ * s_;
+    const lin = [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s];
+    const gam = (v) => (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+    return lin.map((v) => clamp255(gam(Math.max(0, Math.min(1, v))) * 255));
+  }
+  function parseColor(str) {
+    if (str == null) return null;
+    const s = String(str).trim();
+    if (s === "transparent") return { r: 0, g: 0, b: 0, a: 0 };
+    let m = s.match(/^rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)\s*(?:,\s*([\d.%]+)\s*)?\)$/) || s.match(/^rgba?\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.%]+)\s*)?\)$/);
+    if (m) return { r: +m[1], g: +m[2], b: +m[3], a: m[4] == null ? 1 : m[4].endsWith("%") ? parseFloat(m[4]) / 100 : +m[4] };
+    m = s.match(/^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*(?:\/\s*([\d.%]+)\s*)?\)$/);
+    if (m) return { r: clamp255(+m[1] * 255), g: clamp255(+m[2] * 255), b: clamp255(+m[3] * 255), a: m[4] == null ? 1 : m[4].endsWith("%") ? parseFloat(m[4]) / 100 : +m[4] };
+    m = s.match(/^oklch\(\s*([\d.%]+)\s+([\d.%]+)\s+([\d.]+)(?:deg)?\s*(?:\/\s*([\d.%]+)\s*)?\)$/);
+    if (m) {
+      const L = m[1].endsWith("%") ? parseFloat(m[1]) / 100 : +m[1];
+      const C = m[2].endsWith("%") ? parseFloat(m[2]) * 0.004 : +m[2];
+      const rgb = oklchToSrgb(L, C, parseFloat(m[3]));
+      const a = m[4] == null ? 1 : m[4].endsWith("%") ? parseFloat(m[4]) / 100 : +m[4];
+      return Number.isFinite(rgb[0]) && Number.isFinite(a) ? { r: rgb[0], g: rgb[1], b: rgb[2], a } : null;
+    }
+    return null;
+  }
+  return { parseColor };
+})`;
+const { parseColor } = new Function("return (" + COLOR_JS + ")")()();
+function relLum(c) {
   const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
-  return 0.2126 * f(+m[1]) + 0.7152 * f(+m[2]) + 0.0722 * f(+m[3]);
+  return 0.2126 * f(c.r) + 0.7152 * f(c.g) + 0.0722 * f(c.b);
 }
-function contrastRatio(a, b) {
-  const la = relLum(a), lb = relLum(b);
-  if (la == null || lb == null) return null;
-  const hi = Math.max(la, lb), lo = Math.min(la, lb);
-  return (hi + 0.05) / (lo + 0.05);
+// contrast of a (possibly translucent) ink vs a PRE-COMPOSITED opaque bg;
+// element opacity multiplies the ink alpha. null ⇒ caller reports a skip.
+function contrastRatio(inkStr, bgStr, opacity = 1) {
+  const ink = parseColor(inkStr), bg = parseColor(bgStr);
+  if (!ink || !bg || !Number.isFinite(ink.a) || !Number.isFinite(bg.a) || bg.a < 1) return null;
+  const a = Math.max(0, Math.min(1, ink.a * opacity));
+  const fg = a >= 1 ? ink : { r: ink.r * a + bg.r * (1 - a), g: ink.g * a + bg.g * (1 - a), b: ink.b * a + bg.b * (1 - a) };
+  const li = relLum(fg), lb = relLum(bg);
+  return (Math.max(li, lb) + 0.05) / (Math.min(li, lb) + 0.05);
 }
 
 // ── the in-page measurement walk (SAME shape as scripts/spec/extract-heron.mjs) ──
@@ -321,7 +361,8 @@ function isLineContainerPath(p) {
 const browser = await chromium.launch({ headless: true });
 const results = { generatedAt: new Date().toISOString(), url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [] };
 let totalPass = 0, totalFail = 0, exceptionUses = 0;
-let darkPass = 0, darkFail = 0, darkContrast = 0;
+let darkPass = 0, darkFail = 0, darkContrast = 0, darkContrastSkipped = 0;
+const darkSettle = []; // T-14a2: per-bp post-flip settle evidence (stability frames)
 let darkTheme = null; // hoisted: the summary + dark matrix read it after the bp loop
 const exRules = {};
 const matrix = {}; // section -> bp -> cell
@@ -387,31 +428,81 @@ try {
     // assertion set.
     let darkOurs = null;
     if (DARK) {
-      darkTheme = await page.evaluate(async () => {
+      darkTheme = await page.evaluate(() => {
         document.documentElement.setAttribute("data-theme", "dark");
-        await new Promise((r) => setTimeout(r, 900));
         return { attr: document.documentElement.getAttribute("data-theme"), scheme: getComputedStyle(document.documentElement).colorScheme };
       });
+      // T-14a2 — deterministic post-flip settle. v1's fixed 900ms sleep
+      // raced the post-flip re-layout: identical dark runs at 390 showed
+      // +7.1/+14.0px row offsets inside .rl-acc (every computed geometry
+      // property identical light↔dark, varying across runs). Now: wait out
+      // the swap window, then fonts.ready → rAF×2 → rect-stability (3
+      // consecutive identical frames over every section + first 400
+      // descendants, bounded at 180 frames ≈ 3s so a perpetual animation
+      // can never hang the run — it reports settled:false instead).
+      await page.waitForTimeout(900);
+      const settled = await page.evaluate((sels) => {
+        const sig = () => JSON.stringify(sels.map((s) => {
+          const el = document.querySelector(s);
+          if (!el) return null;
+          const r = el.getBoundingClientRect();
+          const parts = [r.x, r.y, r.width, r.height, el.scrollHeight];
+          const kids = el.querySelectorAll("*");
+          for (let i = 0; i < kids.length && i < 400; i++) { const k = kids[i].getBoundingClientRect(); parts.push(Math.round(k.y * 10) / 10, Math.round(k.height * 10) / 10); }
+          return parts.map((v) => Math.round(v * 100) / 100);
+        }));
+        return new Promise((resolve) => {
+          const start = () => {
+            let prev = sig(), stable = 0, tries = 0;
+            const tick = () => {
+              tries++;
+              const cur = sig();
+              if (cur === prev) stable++; else stable = 0;
+              prev = cur;
+              if (stable >= 3) return resolve({ settled: true, frames: tries });
+              if (tries >= 180) return resolve({ settled: false, frames: tries });
+              requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+          };
+          (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(() => requestAnimationFrame(start)));
+        });
+      }, ourSels);
+      darkSettle.push({ bp: bp.name, ...settled });
       darkOurs = {};
       for (const key of SECTIONS_WANTED) {
         const sel = MAPPING.ourSection[key];
-        darkOurs[key] = await page.evaluate(({ key, sel, WALK }) => {
+        darkOurs[key] = await page.evaluate(({ key, sel, WALK, COLOR }) => {
           const { makeWalk, pathOf } = new Function("return (" + WALK + ")")()();
+          const { parseColor: parse } = new Function("return (" + COLOR + ")")()();
           const el = document.querySelector(sel);
           if (!el) return { missing: sel };
           const out = [];
           makeWalk(el, key, out)(el);
-          // effective background = nearest non-transparent ancestor bg
-          // (climbs like a renderer would), noting image/gradient covers.
+          // T-14a2 — effective background = COMPOSITED ancestor background
+          // stack: climbs like a renderer would, collecting rgba layers
+          // until an opaque one, then blends them over the CSS canvas
+          // (white). v1 returned the first non-transparent layer and thus
+          // treated translucent surfaces as opaque → wrong ratios; an
+          // unparseable layer reports ebg:null + reason (counted as a
+          // REPORTED skip by the caller, never silently dropped).
           const effBg = (node) => {
+            const layers = [];
             let n = node, eimg = false;
             while (n && n.nodeType === 1) {
               const cs = getComputedStyle(n);
               if (cs.backgroundImage !== "none") eimg = true;
-              if (cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent") return { ebg: cs.backgroundColor, eimg };
+              const c = parse(cs.backgroundColor);
+              if (c == null) return { ebg: null, eimg, reason: "unparseable background layer: " + cs.backgroundColor };
+              if (c.a > 0) { layers.push(c); if (c.a >= 1) break; }
               n = n.parentElement;
             }
-            return { ebg: "rgb(0, 0, 0)", eimg };
+            let out2 = { r: 255, g: 255, b: 255 };
+            for (let i = layers.length - 1; i >= 0; i--) {
+              const l = layers[i];
+              out2 = { r: l.r * l.a + out2.r * (1 - l.a), g: l.g * l.a + out2.g * (1 - l.a), b: l.b * l.a + out2.b * (1 - l.a) };
+            }
+            return { ebg: "rgb(" + Math.round(out2.r) + ", " + Math.round(out2.g) + ", " + Math.round(out2.b) + ")", eimg, stack: layers.length };
           };
           const bg = {};
           const visit = (n) => {
@@ -420,7 +511,7 @@ try {
           };
           visit(el);
           return { elements: out, bg };
-        }, { key, sel, WALK: WALK_JS });
+        }, { key, sel, WALK: WALK_JS, COLOR: COLOR_JS });
       }
     }
     await page.close();
@@ -616,7 +707,7 @@ try {
       //     catches unflipped raw light inks unreadable on dark surfaces.
       if (DARK && darkOurs?.[key] && !darkOurs[key].missing && !o.missing) {
         const dd = darkOurs[key];
-        const dcell = (cell.dark ??= { pass: 0, fail: 0, flips: 0, contrastChecked: 0, contrastSkipped: 0, themeApplied: darkTheme?.attr === "dark" });
+        const dcell = (cell.dark ??= { pass: 0, fail: 0, flips: 0, contrastChecked: 0, contrastSkipped: 0, contrastReported: 0, themeApplied: darkTheme?.attr === "dark" });
         if (darkTheme?.attr !== "dark") {
           dcell.fail++; darkFail++;
           results.failures.push({ section: key, bp: bp.name, kind: "dark-theme-not-applied", heronPath: "(html)", oursSelector: "(theme)", mode: "dark", expected: 'html[data-theme="dark"] after flip (site ThemeToggle mechanism)', actual: `data-theme=${darkTheme?.attr}, color-scheme=${darkTheme?.scheme}`, delta: 0 });
@@ -646,14 +737,20 @@ try {
           if (lo && (lo.color !== dl.color || lo.bg !== dl.bg)) flipped++;
           const bgInfo = dd.bg?.[oEl.p];
           if ((dl.tc !== "none" || dl.interactive) && bgInfo && !bgInfo.eimg && dl.opacity >= 0.3) {
-            const ratio = contrastRatio(dl.color, bgInfo.ebg);
+            const ratio = bgInfo.ebg == null ? null : contrastRatio(dl.color, bgInfo.ebg, dl.opacity);
             if (ratio != null) {
               dcell.contrastChecked++; darkContrast++;
               if (ratio >= 3) { dcell.pass++; darkPass++; }
               else {
                 dcell.fail++; darkFail++;
-                results.failures.push({ section: key, bp: bp.name, kind: "dark-contrast", heronPath: h.p, oursSelector: oEl.p, mode: "dark", expected: "contrast ≥ 3.0 vs effective background (dark internal consistency)", actual: `${Math.round(ratio * 100) / 100} — ${dl.color} on ${bgInfo.ebg}`, delta: 0 });
+                results.failures.push({ section: key, bp: bp.name, kind: "dark-contrast", heronPath: h.p, oursSelector: oEl.p, mode: "dark", expected: "contrast ≥ 3.0 vs composited effective background (rgba inks alpha-blended; dark internal consistency)", actual: `${Math.round(ratio * 100) / 100} — ${dl.color}${dl.opacity < 1 ? ` ×opacity ${dl.opacity}` : ""} on ${bgInfo.ebg}`, delta: 0 });
               }
+            } else {
+              // T-14a2 — an applicable-but-uncountable seat is REPORTED as
+              // skipped (skippedReport + counters), never silently dropped
+              // the way v1 dropped null-ratio rgba seats.
+              dcell.contrastSkipped++; dcell.contrastReported++; darkContrastSkipped++;
+              results.skippedReport.push({ section: key, bp: bp.name, kind: "dark-contrast", heronPath: h.p, oursSelector: oEl.p, reason: bgInfo.ebg == null ? bgInfo.reason || "no effective background" : `uncountable color pair: ${dl.color} on ${bgInfo.ebg}` });
             }
           } else dcell.contrastSkipped++;
         }
@@ -775,7 +872,7 @@ results.skippedReport.splice(400);
 results.summary.totalSkipped = totalSkipped;
 if (DARK) {
   const dTotal = darkPass + darkFail;
-  results.summary.dark = { pass: darkPass, fail: darkFail, passRate: dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0, contrastChecked: darkContrast, contrastFloor: 3, theme: darkTheme?.attr ?? null, note: "spec is light-only: geometry/type re-asserted on the dark DOM; color group = token-flip census + contrast floor vs effective background" };
+  results.summary.dark = { pass: darkPass, fail: darkFail, passRate: dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0, contrastChecked: darkContrast, contrastSkippedReported: darkContrastSkipped, contrastFloor: 3, theme: darkTheme?.attr ?? null, settle: darkSettle, note: "spec is light-only: geometry/type re-asserted on the dark DOM; color group = token-flip census + contrast floor vs COMPOSITED effective background (rgba/oklch inks alpha-blended; uncountable pairs reported as skips)" };
 }
 
 // console matrix
@@ -812,10 +909,10 @@ if (DARK) {
       line += colD(d ? `${d.pass}/${d.pass + d.fail}` : "—");
     }
     const d0 = Object.values(matrix[key] || {}).find((c) => c && c.dark)?.dark;
-    console.log(line + colD("") + `flips=${d0?.flips ?? 0} contrast=${d0?.contrastChecked ?? 0} skipped-contrast=${d0?.contrastSkipped ?? 0}`);
+    console.log(line + colD("") + `flips=${d0?.flips ?? 0} contrast=${d0?.contrastChecked ?? 0} skipped-contrast=${d0?.contrastSkipped ?? 0} reported=${d0?.contrastReported ?? 0}`);
   }
   const dTotal = darkPass + darkFail;
-  console.log(`DARK TOTAL ${darkPass}/${dTotal} = ${dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0}%  ·  contrast checks ${darkContrast}  ·  html[data-theme]=${darkTheme?.attr}`);
+  console.log(`DARK TOTAL ${darkPass}/${dTotal} = ${dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0}%  ·  contrast checks ${darkContrast}  ·  reported-uncountable ${darkContrastSkipped}  ·  settle ${darkSettle.map((s) => `${s.bp}:${s.settled ? "ok" : "UNSTABLE(" + s.frames + "f)"}`).join(" ")}  ·  html[data-theme]=${darkTheme?.attr}`);
 }
 
 writeFileSync(OUT, JSON.stringify(results, null, 1));
