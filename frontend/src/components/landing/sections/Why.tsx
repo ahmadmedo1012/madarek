@@ -15,7 +15,8 @@ import { WhyScene } from '../WhyScene';
 export function Why() {
   return (
     <section className="wy-section" aria-labelledby="wy-title">
-      {/* the ruled editorial head — eyebrow + display title (left lane) */}
+      {/* the ruled editorial head — 2-col grid: left lane (eyebrow + display
+          h2) | side rail (vertical rule + lede + muted note, mirrored RTL) */}
       <div className="wy-head" data-spec="why.head">
         <div className="wy-eyebrow" data-spec="why.eyebrow">
           <div className="wy-eyebrow-t" data-spec="why.eyebrowt">[06] لماذا مدارك</div>
@@ -23,19 +24,17 @@ export function Why() {
         <RevealCssClass as="div" className="wy-h2w" data-spec="why.h2w" delay={1}>
           <h2 className="wy-title" id="wy-title" data-spec="why.title">الرحلة في أربع مراحل</h2>
         </RevealCssClass>
-      </div>
-
-      {/* the side rail — vertical rule + lede + muted note (mirrored RTL) */}
-      <div className="wy-side" data-spec="why.side">
-        <div className="wy-rule-v" aria-hidden="true" data-spec="why.rulev" />
-        <div className="wy-lede" data-spec="why.lede">
-          <div className="wy-lede-t" data-spec="why.ledet">
-            شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر داخل
-            مدارك، ولكل مرحلة سطح حقيقي من أسطح الطالب نعرضه هنا كما هو تمامًا.
+        <div className="wy-side" data-spec="why.side">
+          <div className="wy-rule-v" aria-hidden="true" data-spec="why.rulev" />
+          <div className="wy-lede" data-spec="why.lede">
+            <div className="wy-lede-t" data-spec="why.ledet">
+              شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر داخل
+              مدارك، ولكل مرحلة سطح حقيقي من أسطح الطالب نعرضه هنا كما هو تمامًا.
+            </div>
           </div>
-        </div>
-        <div className="wy-note" data-spec="why.note">
-          <div className="wy-note-t" data-spec="why.notet">اللقطات من بيئة العرض التجريبية</div>
+          <div className="wy-note" data-spec="why.note">
+            <div className="wy-note-t" data-spec="why.notet">اللقطات من بيئة العرض التجريبية</div>
+          </div>
         </div>
       </div>
 
