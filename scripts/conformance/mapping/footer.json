@@ -1,5 +1,5 @@
 {
-  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: colophon — footer.fo-footer (sections/Footer.tsx).]",
+  "_readme": "R338 T-06 — footer ledger, REGENERATED against the frozen spec by scripts/build-footer-mapping.py (re-run after changing Footer.tsx hooks). Every unique recorded spec path binds to the data-spec key whose OWN recorded walk path (same 6-segment truncation law) is identical — our footer spec-mirrors the reference tree. SVG defs/filter plumbing and 0x0 residue boxes are excused with written reasons; colliding window families ride the tag+tc heuristic fallback. ourSection: footer.fo-footer (components/landing/sections/Footer.tsx — the r338 Heron rebuild: 357/715/357 grid + ink strip + 42px legal row).",
   "ourSection": {
     "footer": "footer.fo-footer"
   },
@@ -12,14 +12,2063 @@
   "explicit": [
     {
       "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "footer.brandname"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "footer.brandsub"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "footer.lglabel.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "ours": "footer.lglinks.1"
+    },
+    {
+      "section": "footer",
       "heron": "footer > footer[1]",
-      "ours": "footer.fo-footer",
-      "note": "footer root container — section-level geometry anchor",
+      "spec": "footer > footer[1]",
+      "ours": "footer.root"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1]",
+      "spec": "footer > footer[1] > div[1]",
+      "ours": "footer.in"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1]",
+      "ours": "footer.grid"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1]",
+      "ours": "footer.col1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "footer.c1top"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "footer.brand"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "footer.c1rule"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[2]",
+      "ours": "footer.col2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "footer.c2top"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "footer.lgroup.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "ours": "footer.lgroup.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "footer.c2rule"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3]",
+      "ours": "footer.col3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.col3rule"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3] > div[2]",
+      "ours": "footer.mark"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[4]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[4]",
+      "ours": "footer.striprule"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[3]",
+      "ours": "footer.strip"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.stripin"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[1] > div[1]",
+      "ours": "footer.stripmedia"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2]",
+      "ours": "footer.stripchrome"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "ours": "footer.form"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "spec": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "ours": "footer.input"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "spec": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "ours": "footer.go"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "ours": "footer.formrow"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "footer.sublabel"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[1] > div[1] > div[1] > p[1] > a[1]",
+      "spec": "footer > div[3] > div[1] > div[1] > div[1] > p[1] > a[1]",
+      "ours": "footer.legalcta"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > p[1]",
+      "spec": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > p[1]",
+      "ours": "footer.legalp"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "footer.legallc"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[2]",
+      "ours": "footer.legalr"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[2]",
+      "ours": "footer.biglink"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "footer.c2bottom"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "footer.bgroup.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "ours": "footer.socials"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+      "spec": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+      "ours": "footer.social"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "footer.bg1label"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+      "ours": "footer.bg3label"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "footer.lglabel.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.lglabel.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "ours": "footer.lglinks.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+      "ours": "footer.lglinks.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "ours": "footer.marksvg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "ours": "footer.markimg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "spec": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "ours": "footer.stripimg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "ours": "footer.striptwin"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "footer.sctop"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "ours": "footer.scbot"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "ours": "footer.scleft"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[4]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[4]",
+      "ours": "footer.scright"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[5]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[5]",
+      "ours": "footer.reg.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[6]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[6]",
+      "ours": "footer.reg.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
+      "ours": "footer.reg.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
+      "ours": "footer.reg.4"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "spec": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "ours": "footer.bgroup.2"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "spec": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "ours": "footer.stripsvg"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "spec": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "ours": "footer.stripimage"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "spec": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "ours": "footer.markpath.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "footer.bg2label.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "footer.c1sub"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "ours": "footer.lgroup.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[3]",
+      "ours": "footer.legal"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.legall"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[3]",
+      "ours": "footer.legalbot"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > a[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > a[2] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > a[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > a[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > a[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > a[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > a[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > a[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > a[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > a[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > form[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > a[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > a[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > a[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > a[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > a[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > a[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > br[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "reason": "SVG defs/filter plumbing inside the reference grayscale tonal twin (0x0, non-visual)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "reason": "SVG defs/filter plumbing inside the reference grayscale tonal twin (0x0, non-visual)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > a[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > a[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[5]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > p[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[1] > div[2] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[2] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[3] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[4] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[5] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[6] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[1] > div[1] > div[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[2] > button[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[5] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[6] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > button[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > a[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > br[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[2] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "reason": "SVG defs/filter plumbing inside the reference grayscale tonal twin (0x0, non-visual)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "reason": "SVG defs/filter plumbing inside the reference grayscale tonal twin (0x0, non-visual)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[4] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[5] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[6] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > br[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[2] > button[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > a[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > a[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > a[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[1] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[1] > a[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[5]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[6]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > button[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[2] > input[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[1] > div[1] > div[1] > p[1] > a[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[1] > div[2] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[2] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[3] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[4] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[5] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[6] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[5]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[6]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[7]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2] > div[1] > div[8]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[2] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[3] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[3] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[6]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[7]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[8]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
+      "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "(our authored brow index rows)",
+      "reason": "T-06d: heron c1-top (footer.1440/390.json) has exactly 2 children (brand block + the 1px hairline) — our brow index rows are Madarek-authored honest-platform content with no heron counterpart"
+    }
+  ],
+  "plumbing": [
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2]",
       "skip": [
-        "tc",
-        "type",
-        "color"
-      ]
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-height image/svg twin stub — lazy-load plumbing seat, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > button[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > br[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > br[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > br[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-height image/svg twin stub — lazy-load plumbing seat, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
     }
   ]
 }
