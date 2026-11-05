@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 22
+- [~] L-a docs landing (t20+t21, no verify per ADDENDUM 14).
+- [~] L-b code landing (t09+t03+t10+t14b+t14a2: ONE build + ONE verify).
+- [~] T-02e usecase dark-ink fix (rgba ink-on-ink → contrast ≥3.0; light byte-identical).
+- [~] T-11c hero pass-3 (work-strip restyle + vh + transition + curves + dark).
+
 ## WAVE 21
-- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
-- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
-- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
-- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+- [~] L-12r DIED (5th lander death) → split: L-a docs-only (no verify, ADDENDUM 14 ruling) + L-b code chunk (one build+verify) + L-c remainder
+- [x] T-11b DONE: r338/t11-hero @d362a7a2 — 61.0→72.9% (75/72/71/74/71); 301 plumbing-skips counted-not-silent + measured transitions; T-11c residual: work-strip restyle ~190, sectionHeightVh 1920/1440, transition:50 (var(--t-slow) suspect), curves, dark ·
+- [x] T-14a2 DONE: r338/t14a2-contrast @f6762b69 — rgba/oklch compositing + fonts.ready→rAF×2→3-stable-frames settle; light IDENTICAL; dark usecase 390 deterministic; .rl-acc was instrument race (no excusal needed); exposes usecase dark-ink 43+35 seats → T-02e ·
+- [~] T-13 died → respawn later (after landings clear) ·
 
 ## WAVE 20
 - [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
@@ -143,11 +149,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 22
+- [~] L-a docs landing (t20+t21, no verify per ADDENDUM 14).
+- [~] L-b code landing (t09+t03+t10+t14b+t14a2: ONE build + ONE verify).
+- [~] T-02e usecase dark-ink fix (rgba ink-on-ink → contrast ≥3.0; light byte-identical).
+- [~] T-11c hero pass-3 (work-strip restyle + vh + transition + curves + dark).
+
 ## WAVE 21
-- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
-- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
-- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
-- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+- [~] L-12r DIED (5th lander death) → split: L-a docs-only (no verify, ADDENDUM 14 ruling) + L-b code chunk (one build+verify) + L-c remainder
+- [x] T-11b DONE: r338/t11-hero @d362a7a2 — 61.0→72.9% (75/72/71/74/71); 301 plumbing-skips counted-not-silent + measured transitions; T-11c residual: work-strip restyle ~190, sectionHeightVh 1920/1440, transition:50 (var(--t-slow) suspect), curves, dark ·
+- [x] T-14a2 DONE: r338/t14a2-contrast @f6762b69 — rgba/oklch compositing + fonts.ready→rAF×2→3-stable-frames settle; light IDENTICAL; dark usecase 390 deterministic; .rl-acc was instrument race (no excusal needed); exposes usecase dark-ink 43+35 seats → T-02e ·
+- [~] T-13 died → respawn later (after landings clear) ·
 
 ## WAVE 20
 - [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
@@ -249,11 +261,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 22
+- [~] L-a docs landing (t20+t21, no verify per ADDENDUM 14).
+- [~] L-b code landing (t09+t03+t10+t14b+t14a2: ONE build + ONE verify).
+- [~] T-02e usecase dark-ink fix (rgba ink-on-ink → contrast ≥3.0; light byte-identical).
+- [~] T-11c hero pass-3 (work-strip restyle + vh + transition + curves + dark).
+
 ## WAVE 21
-- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
-- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
-- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
-- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+- [~] L-12r DIED (5th lander death) → split: L-a docs-only (no verify, ADDENDUM 14 ruling) + L-b code chunk (one build+verify) + L-c remainder
+- [x] T-11b DONE: r338/t11-hero @d362a7a2 — 61.0→72.9% (75/72/71/74/71); 301 plumbing-skips counted-not-silent + measured transitions; T-11c residual: work-strip restyle ~190, sectionHeightVh 1920/1440, transition:50 (var(--t-slow) suspect), curves, dark ·
+- [x] T-14a2 DONE: r338/t14a2-contrast @f6762b69 — rgba/oklch compositing + fonts.ready→rAF×2→3-stable-frames settle; light IDENTICAL; dark usecase 390 deterministic; .rl-acc was instrument race (no excusal needed); exposes usecase dark-ink 43+35 seats → T-02e ·
+- [~] T-13 died → respawn later (after landings clear) ·
 
 ## WAVE 20
 - [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
@@ -350,11 +368,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 22
+- [~] L-a docs landing (t20+t21, no verify per ADDENDUM 14).
+- [~] L-b code landing (t09+t03+t10+t14b+t14a2: ONE build + ONE verify).
+- [~] T-02e usecase dark-ink fix (rgba ink-on-ink → contrast ≥3.0; light byte-identical).
+- [~] T-11c hero pass-3 (work-strip restyle + vh + transition + curves + dark).
+
 ## WAVE 21
-- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
-- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
-- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
-- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+- [~] L-12r DIED (5th lander death) → split: L-a docs-only (no verify, ADDENDUM 14 ruling) + L-b code chunk (one build+verify) + L-c remainder
+- [x] T-11b DONE: r338/t11-hero @d362a7a2 — 61.0→72.9% (75/72/71/74/71); 301 plumbing-skips counted-not-silent + measured transitions; T-11c residual: work-strip restyle ~190, sectionHeightVh 1920/1440, transition:50 (var(--t-slow) suspect), curves, dark ·
+- [x] T-14a2 DONE: r338/t14a2-contrast @f6762b69 — rgba/oklch compositing + fonts.ready→rAF×2→3-stable-frames settle; light IDENTICAL; dark usecase 390 deterministic; .rl-acc was instrument race (no excusal needed); exposes usecase dark-ink 43+35 seats → T-02e ·
+- [~] T-13 died → respawn later (after landings clear) ·
 
 ## WAVE 20
 - [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
@@ -444,11 +468,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 22
+- [~] L-a docs landing (t20+t21, no verify per ADDENDUM 14).
+- [~] L-b code landing (t09+t03+t10+t14b+t14a2: ONE build + ONE verify).
+- [~] T-02e usecase dark-ink fix (rgba ink-on-ink → contrast ≥3.0; light byte-identical).
+- [~] T-11c hero pass-3 (work-strip restyle + vh + transition + curves + dark).
+
 ## WAVE 21
-- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
-- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
-- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
-- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+- [~] L-12r DIED (5th lander death) → split: L-a docs-only (no verify, ADDENDUM 14 ruling) + L-b code chunk (one build+verify) + L-c remainder
+- [x] T-11b DONE: r338/t11-hero @d362a7a2 — 61.0→72.9% (75/72/71/74/71); 301 plumbing-skips counted-not-silent + measured transitions; T-11c residual: work-strip restyle ~190, sectionHeightVh 1920/1440, transition:50 (var(--t-slow) suspect), curves, dark ·
+- [x] T-14a2 DONE: r338/t14a2-contrast @f6762b69 — rgba/oklch compositing + fonts.ready→rAF×2→3-stable-frames settle; light IDENTICAL; dark usecase 390 deterministic; .rl-acc was instrument race (no excusal needed); exposes usecase dark-ink 43+35 seats → T-02e ·
+- [~] T-13 died → respawn later (after landings clear) ·
 
 ## WAVE 20
 - [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
@@ -534,11 +564,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 22
+- [~] L-a docs landing (t20+t21, no verify per ADDENDUM 14).
+- [~] L-b code landing (t09+t03+t10+t14b+t14a2: ONE build + ONE verify).
+- [~] T-02e usecase dark-ink fix (rgba ink-on-ink → contrast ≥3.0; light byte-identical).
+- [~] T-11c hero pass-3 (work-strip restyle + vh + transition + curves + dark).
+
 ## WAVE 21
-- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
-- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
-- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
-- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+- [~] L-12r DIED (5th lander death) → split: L-a docs-only (no verify, ADDENDUM 14 ruling) + L-b code chunk (one build+verify) + L-c remainder
+- [x] T-11b DONE: r338/t11-hero @d362a7a2 — 61.0→72.9% (75/72/71/74/71); 301 plumbing-skips counted-not-silent + measured transitions; T-11c residual: work-strip restyle ~190, sectionHeightVh 1920/1440, transition:50 (var(--t-slow) suspect), curves, dark ·
+- [x] T-14a2 DONE: r338/t14a2-contrast @f6762b69 — rgba/oklch compositing + fonts.ready→rAF×2→3-stable-frames settle; light IDENTICAL; dark usecase 390 deterministic; .rl-acc was instrument race (no excusal needed); exposes usecase dark-ink 43+35 seats → T-02e ·
+- [~] T-13 died → respawn later (after landings clear) ·
 
 ## WAVE 20
 - [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)

@@ -121,3 +121,8 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - Branch backlog awaiting landing: t09-map 82.2+dark83 (53d7fccf), t03-intro 77.0+dark79.7 (cdd6cace), t06g footer 69.4 vitest-green (bd51df71), t10-cta 67.1 (119b7fd9), t20-agents (4ca3314a), t21-docs (8538fa44).
 - Binding grammar limit found (cta): single-string heron paths can't cover 390-vs-≥768 divergent wrappers — documented in commit body; a future instrument pass could allow per-bp path arrays.
 - Dark runs still missing: usecase, problem (on main), cta.
+
+## ENV ADDENDUM 14 (wave-22, lead rulings)
+- DOCS-ONLY pushes to main need NO verify.sh (nothing executable changes; 5 lander deaths forced the split). Code landings still require ONE build + ONE verify.
+- Instrument now composites rgba/oklch alpha contrast + deterministic dark settle (t14a2). Site-side dark-ink fails exposed: usecase dark-contrast 43@390+768 + 35@desktop (rgba(40,40,40,0.72) ink on rgb(40,40,40) = 1.0 invisible) + 1 seat 2.71@390 → T-02e. Footer dark now measurable (~200/330).
+- Backlog (10 branches): t20-agents 4ca3314a, t21-docs 8538fa44, t09-map 53d7fccf, t03-intro cdd6cace, t10-cta 119b7fd9, t14b-dark 0895857b, t14a2 f6762b69, t06g bd51df71, t11-hero d362a7a2, t22-deadcode 63cbdb5b.
