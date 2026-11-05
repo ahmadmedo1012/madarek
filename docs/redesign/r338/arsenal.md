@@ -45,3 +45,4 @@ L-6 | curl+jq (GitHub Actions API — run verdicts, rerun-failed-jobs, log 404 p
 L-6 | postcss (node API in repo node_modules) | surgically retire dead legacy footer/why css rules
 L-6 | vite build + scripts/check-bundle-size.mjs | local bundle gate measurement (found gate = JS-only)
 T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect extraction @768/390 + DOM probe of the ≤991 belt
+T-99 | vite build + check-bundle-size.mjs + node zlib gz census + node codemod | bundle diet: per-module sourcemap ranking, dead data-spec/class audit, exact gz byte measurement (777.6→777.5 clean; 578→~500B residual, landing blocked)
