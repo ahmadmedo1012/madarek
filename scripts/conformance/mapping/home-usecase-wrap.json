@@ -1,5 +1,5 @@
 {
-  "_readme": "R337 A-usecase — home-usecase-wrap ledger, REGENERATED against the frozen spec by scripts/build-roles-mapping.py (re-run after changing Roles.tsx hooks). Every element of the spec tree is bound explicitly to a data-spec key (run.mjs suffix-matches heron paths, so one entry serves every breakpoint with the same tree shape; row paths were extracted verbatim from the canonical 1920 census). The 19 1440/1024-only word-split boxes are excused with a written reason (animation residue, not product structure). ourSection: section#roles.rl-section (sections/Roles.tsx — the r337 Heron rebuild: hairline frame + 8-slide media deck + ruled accordion).",
+  "_readme": "R337 A-usecase — home-usecase-wrap ledger, REGENERATED against the frozen spec by scripts/build-roles-mapping.py (re-run after changing Roles.tsx hooks). Every element of the spec tree is bound explicitly to a data-spec key (run.mjs suffix-matches heron paths, so one entry serves every breakpoint with the same tree shape; row paths were extracted verbatim from the canonical 1920 census). The 1440/1024-only word-split boxes are excused with a written reason (animation residue, not product structure) — single leftovers via noCounterpart, the per-word sibling SETS via the structural charSplit 'wordset' rule (R338 T-02a). ourSection: section#roles.rl-section (sections/Roles.tsx — the r337 Heron rebuild: hairline frame + 8-slide media deck + ruled accordion).",
   "ourSection": {
     "home-usecase-wrap": "section#roles.rl-section"
   },
@@ -952,6 +952,14 @@
       "section": "home-usecase-wrap",
       "heron": "home-usecase-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
       "reason": "1440/1024-only word-split residue: Heron splits each title/line word into its own div during the text-animation tween; no other breakpoint records these boxes. Our Arabic copy renders one box per line — the conforming containers (rowtw/rowtwf/rowlinebox) are bound explicitly."
+    }
+  ],
+  "charSplit": [
+    {
+      "section": "home-usecase-wrap",
+      "container": "wordset",
+      "note": "R338 T-02a — Heron's row text tween splits titles/lines into per-WORD divs; only the 1024/1440 census records them (the depth-6 truncating extractor surfaces them as sibling sets of >=3 boxes with identical fs/fw/color under shallow roots, sometimes sharing a path with the real un-split line box). Structural spec-side detection (r337-intro 37705268 precedent): word boxes never pair, the real line boxes at the same roots stay bound and fully measured.",
+      "reason": "word-split tween scaffolding — Arabic word-split law: our copy renders one box per line inside the bound conforming containers (rowtw/rowtwf/rowlinebox/rowtitle); the per-word boxes are mid-tween residue (opacity 0), their typography asserted by the fully-measured real line boxes at the same roots"
     }
   ]
 }
