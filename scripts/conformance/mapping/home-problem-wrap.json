@@ -117,6 +117,246 @@
       "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > svg[1]",
       "spec": "home-problem-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > svg[1]",
       "ours": "problem.artin.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "problem.titleblock"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "problem.keytext.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "problem.keyroll.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "problem.indexroll.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "problem.indextext.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[4]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[4]",
+      "ours": "problem.cue.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "problem.bodyzone.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "problem.artcolor.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "problem.answrap.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "ours": "problem.zonerule.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "ours": "problem.meta.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "problem.keyroll.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[2]",
+      "ours": "problem.indexroll.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "ours": "problem.indextext.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[3]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[3]",
+      "ours": "problem.metarule.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[4]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[4]",
+      "ours": "problem.cue.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+      "ours": "problem.bodyzone.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "problem.artcolor.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "problem.answrap.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[2] > div[2]",
+      "ours": "problem.zonerule.2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "spec": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "ours": "problem.meta.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "ours": "problem.keyroll.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "problem.keytext.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[2]",
+      "ours": "problem.indexroll.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[2] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[3] > div[2] > div[2] > div[1]",
+      "ours": "problem.indextext.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[3]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[3]",
+      "ours": "problem.metarule.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[4]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[4]",
+      "ours": "problem.cue.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[3] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[3] > div[1]",
+      "ours": "problem.bodyzone.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "problem.artcolor.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[3] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "problem.answrap.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[2] > div[2]",
+      "ours": "problem.zonerule.3"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[2]",
+      "spec": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[2]",
+      "ours": "problem.meta.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[4] > div[2] > div[1] > div[1]",
+      "ours": "problem.keytext.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[2]",
+      "ours": "problem.indexroll.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[2] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[4] > div[2] > div[2] > div[1]",
+      "ours": "problem.indextext.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[3]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[3]",
+      "ours": "problem.metarule.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[3] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[3] > div[1]",
+      "ours": "problem.bodyzone.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "problem.artcolor.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > div[4] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "problem.answrap.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[2] > div[2]",
+      "ours": "problem.zonerule.4"
     }
   ],
   "noCounterpart": [
@@ -1024,6 +1264,471 @@
       "section": "home-problem-wrap",
       "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[4]",
       "reason": "the mobile swiper's progress rail spans (390-only, 20x2 bars under the band) — swiper chrome, not product structure; our own dot rail keeps the belt contract."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[3] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[4] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[5] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > defs[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[1] > svg[1] > defs[1] > mask[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[2]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[3]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[4]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[5]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[2]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[3]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[4]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[5]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[2]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[3]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[4]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[5]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "0x0 tween box — Heron scroll-tween plumbing, no visual counterpart; our transform timeline drives the equivalent motion (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "duplicate recording window — the same Heron element recorded under a second root path; the bound window (['div[1]', 'div[1]', 'div[2]']) owns the comparison (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "duplicate recording window — the same Heron element recorded under a second root path; the bound window (['div[2]', 'div[1]', 'div[1]']) owns the comparison (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "duplicate recording window — the same Heron element recorded under a second root path; the bound window (['div[1]', 'div[1]', 'div[1]']) owns the comparison (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[1]",
+      "reason": "duplicate recording window — the same Heron element recorded under a second root path; the bound window (['div[1]', 'div[1]', 'div[1]']) owns the comparison (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[1]",
+      "reason": "duplicate recording window — the same Heron element recorded under a second root path; the bound window (['div[1]', 'div[1]', 'div[1]']) owns the comparison (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[3]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[4]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[5]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > line[6]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > line[7]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[8]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[9]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[10]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[11]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[12]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[13]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[14]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[15]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[16]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[17]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[2]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[4]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[5]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[6]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[7]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[8]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[9]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[10]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[11]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[12]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[3]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[13]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[14]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[15]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[16]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[17]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > br[1]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > br[2]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > br[1]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > br[2]",
+      "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
     }
   ]
 }
