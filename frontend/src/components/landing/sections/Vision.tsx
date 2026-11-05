@@ -36,11 +36,11 @@ export function Vision({ year }: { year: number }) {
           وتابع تقدّمك من أول محاضرة.
         </p>
         <div className="fo-cta-actions" data-mdrk-reveal="item" id="cta">
-          <Link to="/auth/register" className="btn accent lg">
+          <Link to="/auth/register" className="btn accent lg" data-spec-hover="1">
             {REGISTER}
             <Icon icon={ArrowLeft} size={16} />
           </Link>
-          <Link to="/auth" className="btn ghost lg">{LOGIN}</Link>
+          <Link to="/auth" className="btn ghost lg" data-spec-hover="4">{LOGIN}</Link>
         </div>
         <p className="fo-cta-meta" data-mdrk-reveal="item">
           <Icon icon={Check} size={13} />
@@ -68,8 +68,8 @@ export function Vision({ year }: { year: number }) {
           بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
         </p>
         <div className="cg-strip-links">
-          <Link to="/colleges" className="btn ghost sm">تصفح الكليات التجريبية</Link>
-          <Link to="/auth" className="fo-text-link">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
+          <Link to="/colleges" className="btn ghost sm" data-spec-hover="6">تصفح الكليات التجريبية</Link>
+          <Link to="/auth" className="fo-text-link" data-spec-hover="9">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
         </div>
       </div>
     </section>

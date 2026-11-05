@@ -248,3 +248,48 @@
      (the pre-dissolution winner at this belt) — ONE definition. */
 }
 
+
+/* ── T-13 interaction states — the recorded cta hover/focus-visible
+   deltas (heron ordinals 1/4/6/9: ≥769px bd/tr micro-drift on the
+   resolve seats; ≤768 color+bd on every seat). .probe-hover is the
+   conformance probe's hover-equivalent class — never real. ── */
+@media (min-width: 769px) {
+  .fo-cta .btn.accent:hover,
+  .fo-cta .btn.accent.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent-strong);
+  }
+
+  .fo-cta .btn.ghost:hover,
+  .fo-cta .btn.ghost.probe-hover,
+  .fo-cta .fo-text-link:hover,
+  .fo-cta .fo-text-link.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent);
+  }
+}
+
+@media (max-width: 768px) {
+  .fo-cta .btn.accent:hover,
+  .fo-cta .btn.accent.probe-hover {
+    border-block-end-color: var(--accent-ink);
+  }
+
+  .fo-cta .btn.ghost:hover,
+  .fo-cta .btn.ghost.probe-hover,
+  .fo-cta .fo-text-link:hover,
+  .fo-cta .fo-text-link.probe-hover {
+    color: var(--rule-strong);
+    border-block-end-color: var(--rule-strong);
+  }
+}
+
+.fo-cta .btn.accent:focus-visible {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-strong);
+}
+
+.fo-cta .btn.ghost:focus-visible,
+.fo-cta .fo-text-link:focus-visible {
+  color: var(--accent-strong);
+  border-block-end-color: var(--accent);
+}
