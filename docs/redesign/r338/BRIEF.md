@@ -108,3 +108,9 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - Remaining unlanded: problem 90.5 (d2a7a2e7, ≈+0.6-0.7KB), why 63.5 (t05-why-f 3c647923, ≈+0.9KB), footer 69.2 (fc13324a, ≈+0.6KB). Per-merge bundle staging decides what fits the 0.7 margin — problem first.
 - Diet tasks died 3×: diet is now best-effort; landing what fits without it takes priority.
 - Intro plumbing: the t14a `plumbing:[...]` mapping mechanism IS available for intro's ~41 junk pairs/bp (T-03e asked for "lead plumbing-skip" — that IS the mechanism; next intro pass uses it with reasons).
+
+## ENV ADDENDUM 12 (wave-16, lead rulings)
+- OWNERSHIP RULING (map): T-09's exclusive set is EXTENDED to **JourneyScene.tsx + journey.css + journey/*.tsx** (they render the mapped section#chapters; the r337 OWNERSHIP binding was stale). colleges.css goes to T-10 (cta) THIS WAVE — map must not touch it (the cg-strip in colleges.css lives in the Vision/CTA section).
+- r338/t99d2-axios (3929a7af): −17.9 KB gz (776.3→758.4), vitest 3051/3051, wrapper-only migration — landing this wave, creates 18.6 KB headroom.
+- Footer is bundle-fine but CONTRACT-BLOCKED: its rewrite breaks r321 (legal-row nine links/.fo-legal-row), r320 (/contact cell), r162 (focus-visible), r168 (aria-labels), r177, r307 (5+5 counts), landing-funnel (six surfaces). Tests are LAW — reconcile the markup, never the tests.
+- main @a8c62a03: usecase 93.9 ✓, problem 90.5 ✓, platform 80 ✓, intro 74.8. Unlanded: why 63.5+dark, footer 69.8+dark, intro 75.8 (06537cbe), map 47.6 (branch).

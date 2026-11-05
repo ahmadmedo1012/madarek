@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 16
+- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
+- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
+- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
+- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
-- [~] T-99d-r2 axios→fetch (ultra-tight retry).
-- [~] T-06f-r2 footer diet+mobile+bg+plumbing (on t99 base).
-- [~] T-09 map: first pass — baseline, census, noCounterpart cleanup, top fixes (curves available).
+- [x] T-99d2 DONE: r338/t99d2-axios @3929a7af — bundle 776.3→758.4 KB gz (−17.9!), vitest 3051/3051, wrapper-only (src/lib/api.ts), all gates PASS — awaiting L-10
+- [x] T-06f-r2 DONE: r338/t06f @38d30528 — 69.2→69.8%; mobile re-seat + bg paint model fixed + 45 plumbing entries (175 pairs); residual: ≤991 col1/col3 display:contents artifact (col3 y −11943), link-row y/x-mirror/w, markimg strip w; CONTRACT TESTS still broken (T-06g) ·
+- [x] T-09 pass-1 DONE: r338/t09-map @29cb8da1 — 45.8→47.6%; residual: 2/8 bindings resolve (per-bp div shifts), ~146 unmatched/bp, y:257/x-mirror:209/h:173/w:135 (root: .jt scroll-driver 5922 vs 6300px in journey.css — OWNERSHIP GRANTED addendum 12) ·
 
 ## WAVE 14
 - [x] L-8 DONE: landed usecase 93.9 + platform 80 (+dark 80.5) + intro 74.8 on main 0188bf2f→11670879 (bundle 776.3≤777, verify PASS, 3 t08 gate violations fixed: r162 focus-within / r306 whitelist+RM / r307 PlatformRow hoist; runner pin ×20 ubuntu-24.04; CI still red = GitHub-side incident)
@@ -107,11 +113,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 16
+- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
+- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
+- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
+- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
-- [~] T-99d-r2 axios→fetch (ultra-tight retry).
-- [~] T-06f-r2 footer diet+mobile+bg+plumbing (on t99 base).
-- [~] T-09 map: first pass — baseline, census, noCounterpart cleanup, top fixes (curves available).
+- [x] T-99d2 DONE: r338/t99d2-axios @3929a7af — bundle 776.3→758.4 KB gz (−17.9!), vitest 3051/3051, wrapper-only (src/lib/api.ts), all gates PASS — awaiting L-10
+- [x] T-06f-r2 DONE: r338/t06f @38d30528 — 69.2→69.8%; mobile re-seat + bg paint model fixed + 45 plumbing entries (175 pairs); residual: ≤991 col1/col3 display:contents artifact (col3 y −11943), link-row y/x-mirror/w, markimg strip w; CONTRACT TESTS still broken (T-06g) ·
+- [x] T-09 pass-1 DONE: r338/t09-map @29cb8da1 — 45.8→47.6%; residual: 2/8 bindings resolve (per-bp div shifts), ~146 unmatched/bp, y:257/x-mirror:209/h:173/w:135 (root: .jt scroll-driver 5922 vs 6300px in journey.css — OWNERSHIP GRANTED addendum 12) ·
 
 ## WAVE 14
 - [x] L-8 DONE: landed usecase 93.9 + platform 80 (+dark 80.5) + intro 74.8 on main 0188bf2f→11670879 (bundle 776.3≤777, verify PASS, 3 t08 gate violations fixed: r162 focus-within / r306 whitelist+RM / r307 PlatformRow hoist; runner pin ×20 ubuntu-24.04; CI still red = GitHub-side incident)
@@ -177,11 +189,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 16
+- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
+- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
+- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
+- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
-- [~] T-99d-r2 axios→fetch (ultra-tight retry).
-- [~] T-06f-r2 footer diet+mobile+bg+plumbing (on t99 base).
-- [~] T-09 map: first pass — baseline, census, noCounterpart cleanup, top fixes (curves available).
+- [x] T-99d2 DONE: r338/t99d2-axios @3929a7af — bundle 776.3→758.4 KB gz (−17.9!), vitest 3051/3051, wrapper-only (src/lib/api.ts), all gates PASS — awaiting L-10
+- [x] T-06f-r2 DONE: r338/t06f @38d30528 — 69.2→69.8%; mobile re-seat + bg paint model fixed + 45 plumbing entries (175 pairs); residual: ≤991 col1/col3 display:contents artifact (col3 y −11943), link-row y/x-mirror/w, markimg strip w; CONTRACT TESTS still broken (T-06g) ·
+- [x] T-09 pass-1 DONE: r338/t09-map @29cb8da1 — 45.8→47.6%; residual: 2/8 bindings resolve (per-bp div shifts), ~146 unmatched/bp, y:257/x-mirror:209/h:173/w:135 (root: .jt scroll-driver 5922 vs 6300px in journey.css — OWNERSHIP GRANTED addendum 12) ·
 
 ## WAVE 14
 - [x] L-8 DONE: landed usecase 93.9 + platform 80 (+dark 80.5) + intro 74.8 on main 0188bf2f→11670879 (bundle 776.3≤777, verify PASS, 3 t08 gate violations fixed: r162 focus-within / r306 whitelist+RM / r307 PlatformRow hoist; runner pin ×20 ubuntu-24.04; CI still red = GitHub-side incident)
@@ -242,11 +260,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 16
+- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
+- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
+- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
+- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
-- [~] T-99d-r2 axios→fetch (ultra-tight retry).
-- [~] T-06f-r2 footer diet+mobile+bg+plumbing (on t99 base).
-- [~] T-09 map: first pass — baseline, census, noCounterpart cleanup, top fixes (curves available).
+- [x] T-99d2 DONE: r338/t99d2-axios @3929a7af — bundle 776.3→758.4 KB gz (−17.9!), vitest 3051/3051, wrapper-only (src/lib/api.ts), all gates PASS — awaiting L-10
+- [x] T-06f-r2 DONE: r338/t06f @38d30528 — 69.2→69.8%; mobile re-seat + bg paint model fixed + 45 plumbing entries (175 pairs); residual: ≤991 col1/col3 display:contents artifact (col3 y −11943), link-row y/x-mirror/w, markimg strip w; CONTRACT TESTS still broken (T-06g) ·
+- [x] T-09 pass-1 DONE: r338/t09-map @29cb8da1 — 45.8→47.6%; residual: 2/8 bindings resolve (per-bp div shifts), ~146 unmatched/bp, y:257/x-mirror:209/h:173/w:135 (root: .jt scroll-driver 5922 vs 6300px in journey.css — OWNERSHIP GRANTED addendum 12) ·
 
 ## WAVE 14
 - [x] L-8 DONE: landed usecase 93.9 + platform 80 (+dark 80.5) + intro 74.8 on main 0188bf2f→11670879 (bundle 776.3≤777, verify PASS, 3 t08 gate violations fixed: r162 focus-within / r306 whitelist+RM / r307 PlatformRow hoist; runner pin ×20 ubuntu-24.04; CI still red = GitHub-side incident)
@@ -300,11 +324,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 16
+- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
+- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
+- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
+- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
-- [~] T-99d-r2 axios→fetch (ultra-tight retry).
-- [~] T-06f-r2 footer diet+mobile+bg+plumbing (on t99 base).
-- [~] T-09 map: first pass — baseline, census, noCounterpart cleanup, top fixes (curves available).
+- [x] T-99d2 DONE: r338/t99d2-axios @3929a7af — bundle 776.3→758.4 KB gz (−17.9!), vitest 3051/3051, wrapper-only (src/lib/api.ts), all gates PASS — awaiting L-10
+- [x] T-06f-r2 DONE: r338/t06f @38d30528 — 69.2→69.8%; mobile re-seat + bg paint model fixed + 45 plumbing entries (175 pairs); residual: ≤991 col1/col3 display:contents artifact (col3 y −11943), link-row y/x-mirror/w, markimg strip w; CONTRACT TESTS still broken (T-06g) ·
+- [x] T-09 pass-1 DONE: r338/t09-map @29cb8da1 — 45.8→47.6%; residual: 2/8 bindings resolve (per-bp div shifts), ~146 unmatched/bp, y:257/x-mirror:209/h:173/w:135 (root: .jt scroll-driver 5922 vs 6300px in journey.css — OWNERSHIP GRANTED addendum 12) ·
 
 ## WAVE 14
 - [x] L-8 DONE: landed usecase 93.9 + platform 80 (+dark 80.5) + intro 74.8 on main 0188bf2f→11670879 (bundle 776.3≤777, verify PASS, 3 t08 gate violations fixed: r162 focus-within / r306 whitelist+RM / r307 PlatformRow hoist; runner pin ×20 ubuntu-24.04; CI still red = GitHub-side incident)
@@ -354,11 +384,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 16
+- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
+- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
+- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
+- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
-- [~] T-99d-r2 axios→fetch (ultra-tight retry).
-- [~] T-06f-r2 footer diet+mobile+bg+plumbing (on t99 base).
-- [~] T-09 map: first pass — baseline, census, noCounterpart cleanup, top fixes (curves available).
+- [x] T-99d2 DONE: r338/t99d2-axios @3929a7af — bundle 776.3→758.4 KB gz (−17.9!), vitest 3051/3051, wrapper-only (src/lib/api.ts), all gates PASS — awaiting L-10
+- [x] T-06f-r2 DONE: r338/t06f @38d30528 — 69.2→69.8%; mobile re-seat + bg paint model fixed + 45 plumbing entries (175 pairs); residual: ≤991 col1/col3 display:contents artifact (col3 y −11943), link-row y/x-mirror/w, markimg strip w; CONTRACT TESTS still broken (T-06g) ·
+- [x] T-09 pass-1 DONE: r338/t09-map @29cb8da1 — 45.8→47.6%; residual: 2/8 bindings resolve (per-bp div shifts), ~146 unmatched/bp, y:257/x-mirror:209/h:173/w:135 (root: .jt scroll-driver 5922 vs 6300px in journey.css — OWNERSHIP GRANTED addendum 12) ·
 
 ## WAVE 14
 - [x] L-8 DONE: landed usecase 93.9 + platform 80 (+dark 80.5) + intro 74.8 on main 0188bf2f→11670879 (bundle 776.3≤777, verify PASS, 3 t08 gate violations fixed: r162 focus-within / r306 whitelist+RM / r307 PlatformRow hoist; runner pin ×20 ubuntu-24.04; CI still red = GitHub-side incident)
