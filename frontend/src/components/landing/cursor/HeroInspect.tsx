@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
 /**
  * HeroInspect — R308 «محطات الفحص» · R309 the corrected frame.
  *
@@ -289,7 +290,7 @@ export function HeroInspect() {
       return undefined;
     }
     const wide = window.matchMedia('(hover: hover) and (min-width: 992px)');
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reduced = window.matchMedia(PREFERS_REDUCED_MOTION);
     const evaluate = () => setInstrumentOn(wide.matches && !reduced.matches);
     evaluate();
     wide.addEventListener('change', evaluate);

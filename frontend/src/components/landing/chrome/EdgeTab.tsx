@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
 /**
  * EdgeTab — R314 (V12) — the right-edge vertical chrome tab.
  *
@@ -52,7 +53,7 @@ export function EdgeTab() {
     if (!footer) return; /* no footer on this sheet — a no-op, never an error */
     const reduced =
       typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.matchMedia(PREFERS_REDUCED_MOTION).matches;
     footer.scrollIntoView({
       behavior: reduced ? 'auto' : 'smooth',
       block: 'start',

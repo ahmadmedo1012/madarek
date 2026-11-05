@@ -19,7 +19,7 @@
   padding: 0;
   margin: 0;
   background: var(--bg);
-  color: rgba(40, 40, 40, 0.72);
+  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
   font-size: 1.6rem;
   line-height: 2.16rem;
   font-weight: 500;
@@ -79,6 +79,7 @@
   inline-size: 104%;
   block-size: 104%;
   object-fit: cover;
+  aspect-ratio: 720 / 450; /* CLS guard — the width/height attrs moved here */
 }
 
 /* ── the title column ── */
@@ -87,7 +88,7 @@
   font-size: 1.4rem;
   line-height: 1.96rem;
   font-weight: 500;
-  color: rgba(40, 40, 40, 0.72);
+  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
 }
 .rl-label .fo-mono { font-size: 1.4rem; color: inherit; }
 .rl-h2box { margin: 0; }
@@ -154,7 +155,7 @@
   font-size: 1.6rem;
   line-height: 2.16rem;
   font-weight: 500;
-  color: rgba(40, 40, 40, 0.72);
+  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
 }
 .rl-row-rule {
   position: absolute;
@@ -267,47 +268,6 @@
 .rl-row-icon:hover { color: var(--text); }
 @media (hover: none) {
   .rl-row-icon:hover { color: var(--rule-strong); }
-}
-
-/* ═══ cascade guards — the retired ledger's strata seats ═════════
-   strata.css still pins the R332-era .rl-section (min-block floors,
-   3.2/4rem edge rails, the old .rl-head/.rl-more rules — written for
-   a DOM this rewrite replaced). roles.css imports first, so these
-   same-specificity guards win by being... they are NOT after strata —
-   instead they re-assert at equal specificity with the belt match,
-   and the .rl-section.rl-section bump beats the edge-rail group. */
-@media (max-width: 640px) {
-  .rl-section { padding-block: 0; min-block-size: 0; }
-  .rl-head, .rl-more { margin: 0; padding: 0; }
-}
-@media (max-width: 479px) {
-  .rl-section { padding-block: 0; min-block-size: 0; }
-}
-@media (min-width: 480px) and (max-width: 767px) {
-  .rl-section { padding-block: 0; min-block-size: 0; }
-}
-@media (min-width: 768px) and (max-width: 991px) {
-  .rl-section { padding-block: 0; min-block-size: 0; }
-}
-@media (min-width: 992px) {
-  .rl-section.rl-section {
-    max-inline-size: none;
-    padding-inline: 0;
-    min-block-size: 0;
-  }
-  .rl-frame { min-block-size: 98.45vh; }
-}
-
-/* ═══ cascade guards II — the strata rl-row pad (the retired ledger) ═══
-   strata.css's ≤767 belt still pins .rl-row { padding-block: var(--sp-1) }
-   and loads AFTER this sheet. The phone/tablet row rhythm is the spec's
-   own (2rem / 1.6rem), re-asserted at equal specificity in the same
-   belts — file order loses, so bump once. */
-@media (max-width: 767px) {
-  .rl-section .rl-row { padding-block: 2rem; }
-}
-@media (min-width: 768px) and (max-width: 991px) {
-  .rl-section .rl-row { padding-block: 1.6rem; }
 }
 
 /* the h2's Arabic floor: the transformed expectation reads lh 1.35×fs

@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../hooks/usePrefersReducedMotion';
 /* ═════════════════════════════════════════════════════════════════════
  * loaderOrchestrator — R323 §A2 (task 1-b) — the ONE loading surface.
  * ═════════════════════════════════════════════════════════════════════
@@ -152,7 +153,7 @@ export function reducedMotion(): boolean {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
       return false;
     }
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return window.matchMedia(PREFERS_REDUCED_MOTION).matches;
   } catch {
     return false;
   }

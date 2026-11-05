@@ -310,24 +310,6 @@
     padding-block: var(--sp-5) var(--sp-6); /* R332 W390b −16: 817→≈801 (heron 805.6, −0.6%) — pulls the roles/cta/footer triggers back under 40 */
   }
 
-  /* ── rl: 1290 → 982 (target 948) — the honest 8-card ledger keeps
-     every row (num + title + state tag); the cells tighten to the
-     reference's compact tile rhythm ── */
-  .rl-section {
-    padding-block: var(--sp-4);
-  }
-
-  .rl-head {
-    gap: var(--sp-2);
-    margin-block-end: 0; /* R332 W390b — children butt (heron rhythm 0); the air moves inside */
-    padding-block-end: var(--sp-3);
-  }
-
-  .rl-more {
-    margin-block-start: 0; /* R332 W390b — the ledger's last child butts (rhythm 0); air inside */
-    padding-block-start: var(--sp-2);
-  }
-
   /* ── cta: 669 → 512 (target 500) — the title/resolve rows tighten
      (R322 V1: the coords/corners rows are deleted); the meta readout
      keeps all four honest rows ── */
@@ -523,11 +505,6 @@
   .st-section { min-block-size: 57.2rem; }
   .pm-section { min-block-size: 144.8rem; }
   .pr-section { min-block-size: 55.2rem; }
-  /* R325 Y3: the wy 95.2rem floor RETIRES — it was measured against the
-     old squeezed-rail composition; with the readable 2×2 rail + the
-     capture below, the content-sized band runs ~65rem and the floor
-     stranded a ~220px void (V4: no forced voids). */
-  .rl-section { min-block-size: 145.2rem; }
   .fo-cta { min-block-size: 58.8rem; }
   .fo-footer { min-block-size: 103.1rem; }
 
@@ -631,18 +608,15 @@
    * [7px, 7px+2.08rem] + the 4px hover nudge; 4rem clears it with a
    * ~9px gap @1440 and rides the root at every tier). */
   .st-section,
-  .pm-section,
-  .chapters,
-  .pr-section,
-  .wy-section,
-  .rl-section,
-  .fo-cta {
+.pm-section,
+.chapters,
+.pr-section,
+.wy-section,
+.fo-cta {
     max-inline-size: none;
     padding-inline: 3.2rem; /* spacing-gate: allow — the reference's own measured section padding (3.2rem, content 1373.4 @1440), an external constant */
     padding-inline-end: 4rem; /* R322 V7 — the edge-rail inset (see the note above) */
   }
-
-  .rl-section { min-block-size: calc(100svh - 1.6rem); }
 
   /* W6 R332 — the ≥992 footer re-seats BELOW RETIRE: every one was a
    * same-value twin (or a dead-selector twin) of a footer.css rule,
@@ -701,15 +675,6 @@
     grid-template-columns: auto minmax(0, 1fr);
     gap: 0.48rem 1.92rem;
   }
-
-  /* R332 W5c: the .wy- ≥992 tiers RETIRE (why.css duplicates own the
-     seat verbatim — .wy-stage-text 1.55 at why.css's ≥992 tier; the
-     head/note margins live in why.css's 992–1024 frozen slice and the
-     ≥1025 block. The old 2.88rem head seat was the twin-visible 24px
-     rhythm gutter — Heron's why head butts the strip at 0). */
-
-  .rl-head { margin-block-end: 4.8rem; }
-  .rl-more { margin-block-start: 1.92rem; }
 
   .fo-cta-inner { gap: 1.92rem; }
   .fo-cta-lede { line-height: 1.6; }
@@ -891,11 +856,6 @@
   .st-section { min-block-size: 84.25rem; }
   .pm-section { min-block-size: 87.65rem; padding-block: 4.03rem 3.22rem; }
   .pr-section { min-block-size: 52.1rem; padding-block: 0.81rem 0.61rem; } /* R332 W390b −12px → ≈560 (heron 557.8) */
-  /* R325 Y3: the wy 81.2rem floor RETIRES — the phone band folds the
-     captures away (the rail carries the strip), so the floor pinned
-     Heron's capture-list height onto a band with no captures: ~270px
-     of dead air under the note (V4: no forced voids). */
-  .rl-section { min-block-size: 95.55rem; padding-block: 1.61rem; }
   .fo-cta { min-block-size: 50.4rem; padding-block: 2.02rem 1.61rem; }
   .fo-footer { min-block-size: 124.9rem; }
 
@@ -954,18 +914,6 @@
 
   .wy-stage-title { line-height: 1.2; }
   .wy-stage-text { line-height: 1.35; }
-
-  /* ── roles — the ledger rows tighten to the reference's tile rhythm;
-   * the numeral row joins the mono rem ladder (padding rides the §LAW
-   * line above) ── */
-  .rl-head {
-    gap: 0.81rem;
-    margin-block-end: 1.21rem;
-  }
-
-  .rl-lede { line-height: 1.5; }
-
-  .rl-more { margin-block-start: 0.81rem; }
 
   /* ── cta — the reference's phone band is title + line + button
    * (500 @390; R322 V1: the coords/corners debug rows are deleted):
@@ -1064,9 +1012,6 @@
   .st-section { min-block-size: 84.25rem; }
   .pm-section { min-block-size: 87.65rem; padding-block: var(--sp-8) var(--sp-6); }
   .pr-section { min-block-size: 52.1rem; }
-  /* R325 Y3: the wy 81.2rem floor RETIRES (the ≤479 note above — the
-     large-phone band folds the captures too; the floor was pure void). */
-  .rl-section { min-block-size: 95.55rem; padding-block: var(--sp-4); }
   .fo-cta { min-block-size: 50.4rem; padding-block: var(--sp-5) var(--sp-4); }
   .fo-footer { min-block-size: 124.9rem; display: grid; grid-template-rows: minmax(0, 1fr); }
 
@@ -1175,9 +1120,6 @@
   .wy-stage { padding-block: var(--sp-1); }
   .wy-rail { gap: var(--sp-1); }
   .wy-note { margin-block-start: var(--sp-3); }
-
-  .rl-head { gap: var(--sp-2); margin-block-end: var(--sp-3); }
-  .rl-more { margin-block-start: var(--sp-2); }
 
   .fo-cta-inner { gap: var(--sp-3); }
   .fo-cta-lede { line-height: 1.55; }
@@ -1596,7 +1538,6 @@
 .chapters,
 .pr-section,
 .wy-section,
-.rl-section,
 .fo-cta {
   content-visibility: auto;
   contain: layout paint style;
@@ -1614,8 +1555,7 @@
 /* R325 Y3 re-measure: the wy floors retired, so the placeholder re-fits
    to the CONTENT-SIZED band (measure-intrinsic.mjs @1024/1440).
    375 @1024 · 499 @1440 */
-.wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); }
-.rl-section { contain-intrinsic-size: auto calc(441px + 21.63vw); }    /* 663 @1024 · 753 @1440 — R328 (H5) re-measure (the r324 seat ran +69 stale @1440) */
+.wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); }    /* 663 @1024 · 753 @1440 — R328 (H5) re-measure (the r324 seat ran +69 stale @1440) */
 .fo-cta     { contain-intrinsic-size: auto calc(-8px + 37.5vw); }    /* 376 @1024 · 530 @1440 — R328 (H5) re-measure */
 
 /* 992–1179 — the rung below the 1180 red-team line (anchored @1024) */
@@ -1628,7 +1568,6 @@
      fluid fit re-pinned; st rides its own 502→597 fit. */
   .pr-section { contain-intrinsic-size: auto calc(-2px + 40.14vw); }
   .wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); }
-  .rl-section { contain-intrinsic-size: auto calc(441px + 21.63vw); }
   .fo-cta     { contain-intrinsic-size: auto calc(-8px + 37.5vw); }
 }
 /* 768–991 — the tablet composition (measured @768) */
@@ -1637,8 +1576,7 @@
   .pm-section { contain-intrinsic-size: auto 1260px; }
   .chapters   { contain-intrinsic-size: auto 4685px; }
   .pr-section { contain-intrinsic-size: auto 471px; }   /* r325 merged re-measure (471 @768) */
-  .wy-section { contain-intrinsic-size: auto 616px; } /* r325 Y3 re-measure */
-  .rl-section { contain-intrinsic-size: auto 1300px; }
+  .wy-section { contain-intrinsic-size: auto 616px; }
   .fo-cta     { contain-intrinsic-size: auto 468px; }
 }
 /* 480–767 — the large-phone band (measured @600) */
@@ -1647,8 +1585,7 @@
   .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
   .pr-section { contain-intrinsic-size: auto 856px; }   /* r325 merged re-measure (856 @600) */
-  .wy-section { contain-intrinsic-size: auto 990px; } /* R325 Y3 re-measure — the phone rail folds back to the ONE-column state list */
-  .rl-section { contain-intrinsic-size: auto 1409px; }
+  .wy-section { contain-intrinsic-size: auto 990px; }
   .fo-cta     { contain-intrinsic-size: auto 713px; }
 }
 /* ≤479 — the phone composition (measured @390) */
@@ -1657,8 +1594,7 @@
   .pm-section { contain-intrinsic-size: auto 797px; }
   .chapters   { contain-intrinsic-size: auto 4559px; }   /* R332 W390a re-measure: the 4rem phone title + sp-5 head seat (was 4536 pre-title-rung) */
   .pr-section { contain-intrinsic-size: auto 551px; }   /* R332 W390a re-measure (654→572 rendered; the 617 guess ran +65 stale) */
-  .wy-section { contain-intrinsic-size: auto 817px; } /* R332 W390b re-measure — the pad-inside composition (head 251 + list 463 + note 103) renders 817; the 613 guess ran −204 stale */
-  .rl-section { contain-intrinsic-size: auto 915px; }
+  .wy-section { contain-intrinsic-size: auto 817px; }
   .fo-cta     { contain-intrinsic-size: auto 463px; }
 }
 /* ≤374 — the narrow-phone rung (measured @360) */
@@ -1667,8 +1603,7 @@
   .pm-section { contain-intrinsic-size: auto 748px; }
   .chapters   { contain-intrinsic-size: auto 4976px; }
   .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 merged re-measure (605 @360) */
-  .wy-section { contain-intrinsic-size: auto 646px; } /* R325 Y3 re-measure — the ONE-column state list */
-  .rl-section { contain-intrinsic-size: auto 903px; }
+  .wy-section { contain-intrinsic-size: auto 646px; }
   .fo-cta     { contain-intrinsic-size: auto 428px; }
 }
 
@@ -1710,12 +1645,6 @@
   /* the platform showcase: the frame rides its natural content height
      (r325 Y2 — the fixed 30dvh window cropped its cells; the phone
      band is the head + steps + frame + caption + note in flow) */
-
-  /* the roles ledger rows: the sp-1 pad (the 3-line clamp keeps the
-   * row readable; the reference's 948px band holds the same rows) */
-  .rl-row {
-    padding-block: var(--sp-1);
-  }
 }
 
 

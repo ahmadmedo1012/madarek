@@ -1,3 +1,4 @@
+import { MASTERY_SCORE_LINE } from './copy';
 /**
  * WhyScene — R313 (WP-A1 · D7 section 6 «لماذا») — the pinned
  * Watch/Check/Test/Master stage strip.
@@ -95,7 +96,7 @@ export const WHY_STAGES: WhyStage[] = [
     num: '04',
     verbAr: 'أتقن',
     titleAr: 'مصفوفة الإتقان',
-    textAr: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.',
+    textAr: MASTERY_SCORE_LINE,
     captureId: 'student-matrix',
   },
 ];

@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from './usePrefersReducedMotion';
 import { useEffect, useRef } from 'react';
 
 /**
@@ -96,7 +97,7 @@ export function useSectionProgress<T extends HTMLElement = HTMLElement>(
     const el = ref.current;
     if (!el) return;
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reduced = window.matchMedia(PREFERS_REDUCED_MOTION).matches;
 
     if (reduced) {
       el.style.setProperty(varName, '1');

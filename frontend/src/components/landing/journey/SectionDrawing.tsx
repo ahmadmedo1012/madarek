@@ -1,3 +1,4 @@
+import { BP_DRAWABLE_HAIR } from '../copy';
 /**
  * SectionDrawing — R315 C4-A — the closing state's second view.
  *
@@ -135,7 +136,7 @@ export function SectionDrawing() {
         <line className="bp-hair bp-drawable" x1="4" y1="141" x2="316" y2="141" pathLength={1} />
         {[4, 109, 208, 316].map((x) => (
           <g key={`d${x}`}>
-            <line className="bp-drawable bp-hair" x1={x} y1="137" x2={x} y2="145" pathLength={1} />
+            <line className={BP_DRAWABLE_HAIR} x1={x} y1="137" x2={x} y2="145" pathLength={1} />
           </g>
         ))}
         <text className="bp-micro" x="56" y="136" textAnchor="middle">4.6M</text>

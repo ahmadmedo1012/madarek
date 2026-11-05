@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
 /**
  * SheetCursor — R308 «أداة الإشارة» — the landing's custom pointer.
  *
@@ -72,7 +73,7 @@ export function SheetCursor() {
       return undefined;
     }
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reduced = window.matchMedia(PREFERS_REDUCED_MOTION);
     const evaluate = () => setLive(fine.matches && !reduced.matches);
     evaluate();
     fine.addEventListener('change', evaluate);

@@ -186,7 +186,7 @@ export function Roles() {
                       <div className="rl-row-twf" data-spec={`roles.rowtwf.${i + 1}`}>
                         <div className="rl-row-ink" data-spec={`roles.rowink.${i + 1}`}>
                           <div className="rl-row-title" data-spec={`roles.rowtitle.${i + 1}`}>
-                            {r.title}
+                            <span className="fo-mono" dir="ltr">[{r.num}]</span> {r.title}
                           </div>
                         </div>
                       </div>
