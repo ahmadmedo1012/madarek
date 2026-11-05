@@ -371,11 +371,11 @@ export function Footer({ year }: { year: number }) {
             <R c="fo-rule fo-rule-v" s="footer.legalrule" />
           </div>
           <div className="fo-legal-r" data-spec="footer.legalr">
-            {[
+            {([
               ['/legal/privacy', 'الخصوصية', 'سياسة الخصوصية'],
               ['/legal/terms', 'الشروط', 'شروط الاستخدام'],
               ['/help', 'المساعدة', 'الدليل والأسئلة'],
-            ].map(([to, t1, t2]) => (
+            ] as const).map(([to, t1, t2]) => (
               <N key={to} to={to} t1={t1} t2={t2} />
             ))}
           </div>

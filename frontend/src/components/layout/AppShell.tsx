@@ -1,6 +1,6 @@
 import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import type { ReactNode } from 'react';
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useRef, useState } from 'react';
 // R305-A4 Heron shell layer — the shell's own r305 treatment, scoped
 // here and UNLAYERED by design so it is the cascade's last word after
 // polish.css's overrides. Imported ONLY by the shell (the file itself
@@ -38,7 +38,6 @@ import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
 import { BottomNav } from './BottomNav';
 import { ServerWakePill } from './ServerWakePill';
-import { CommandPaletteBody } from './GlobalSearch';
 import { CommandPalette } from '../overlays';
 import { useThemeSync } from './ThemeToggle';
 import { useScrollRestoration } from './useScrollRestoration';
@@ -166,6 +165,15 @@ export function useEntityPageTitle(entityName?: string | null): void {
     return () => window.clearTimeout(set);
   }, [entityName]);
 }
+
+/* r338 T-99b entry diet: the palette body — the combobox engine that
+ * shares its module (and now its async chunk) with Topbar's GlobalSearch —
+ * left the entry chunk. CommandPalette renders null until `open`, so the
+ * Suspense boundary trips on FIRST PALETTE OPEN, not at shell paint: the
+ * ⌘K chord, the launcher button and the overlay chrome all stay eager. */
+const CommandPaletteBody = lazy(() =>
+  import('./GlobalSearch').then((m) => ({ default: m.CommandPaletteBody })),
+);
 
 /* ───────────────────────────────────────────────────────────
    THEME TRANSITION GUARD — opt into View Transitions API for
@@ -486,7 +494,9 @@ export function AppShell({ children }: { children?: ReactNode }) {
             shared Modal overlay). */}
         <FeedbackWidget />
         <CommandPalette open={paletteOpen} onClose={closePalette} ariaLabel="لوحة الأوامر والبحث">
-          <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
+          <Suspense fallback={null}>
+            <CommandPaletteBody key={paletteSeq} onClose={closePalette} />
+          </Suspense>
         </CommandPalette>
       </div>
     </>

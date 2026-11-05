@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
-import { useMemo, useState, useRef } from 'react';
+import { Suspense, lazy, useMemo, useState, useRef } from 'react';
 import { Menu, Sparkles, LogOut, User as UserIcon, Sun, Moon, Search, Building2 } from 'lucide-react';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '../Icon';
 import { UserAvatar } from '../primitives';
-import { GlobalSearch } from './GlobalSearch';
 import { NotificationDropdown } from './NotificationDropdown';
 import { Dropdown, DropdownItem, DropdownSeparator } from '../overlays';
 import { useUiStore } from '../../stores/ui.store';
@@ -17,6 +16,16 @@ import { NAV_BY_ROLE, ROLE_LABELS } from '../../lib/nav';
 // (lib/roleLabels.ts, shared with the backend twin).
 import { roleLabel } from '../../lib/roleLabels';
 import { toast } from '../../lib/toast';
+
+/* r338 T-99b entry diet: the search engine (~39 KB raw) rode the entry
+ * chunk eagerly through the old `import { GlobalSearch }` line. It now
+ * code-splits into its own async chunk — the topbar chrome (and every
+ * search trigger) stays eager; the pill itself arrives via Suspense
+ * fallback={null} on first authenticated-shell paint, so the landing/
+ * entry path never pays for it. */
+const GlobalSearch = lazy(() =>
+  import('./GlobalSearch').then((m) => ({ default: m.GlobalSearch })),
+);
 
 interface TopbarProps {
   title: ReactNode;
@@ -295,7 +304,12 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
         )}
       </div>
 
-      <GlobalSearch onOpenCommandPalette={onOpenCommandPalette} />
+      {/* Suspense renders no DOM node — the pill stays the row's direct
+          flex child; fallback={null} keeps the topbar quiet until the
+          async search chunk arrives. */}
+      <Suspense fallback={null}>
+        <GlobalSearch onOpenCommandPalette={onOpenCommandPalette} />
+      </Suspense>
 
       <div className="topbar-actions">
         {/* Mobile-band search entry point (4-A2 P1-3): the pill is
