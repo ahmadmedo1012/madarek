@@ -9,5 +9,507 @@
   "scaleFactor": {
     "home-platform-wrap": 1
   },
-  "explicit": []
+  "explicit": [
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1]",
+      "spec": "home-platform-wrap > div[1]",
+      "ours": "platform.section"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1]",
+      "spec": "home-platform-wrap > div[1] > section[1]",
+      "ours": "platform.section"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3]",
+      "ours": "platform.section"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[1]",
+      "ours": "platform.section"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "platform.head"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[1]",
+      "ours": "platform.head"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.label"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.label"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "platform.title"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "platform.title"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1]",
+      "ours": "platform.stage"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "platform.stage"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "platform.stage"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.stage"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
+      "ours": "platform.shots"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > div[1]",
+      "ours": "platform.shots"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "platform.shots"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "platform.shots"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "ours": "platform.shotimg"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[1] > div[2]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[1] > div[2]",
+      "ours": "platform.side"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "platform.side"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[2]",
+      "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[2]",
+      "ours": "platform.side"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "platform.side"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "platform.matrixcell"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "platform.matrixcell"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
+      "ours": "platform.cta"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
+      "ours": "platform.cta"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "ours": "platform.note"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "ours": "platform.note"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[1] > div[3]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[1] > div[2] > div[3]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "reason": "heron dual circular CTA arrow icons — our authored single inline-SVG arrow; second icon has no counterpart (authored-SVG counterpart scheduled next platform pass)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "reason": "heron dual circular CTA arrow icons — our authored single inline-SVG arrow; second icon has no counterpart (authored-SVG counterpart scheduled next platform pass)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron duplicated marquee row copy beyond our static composition — real counterpart (2x product-UI crop row) scheduled next platform pass"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "reason": "heron dual circular CTA arrow icons — our authored single inline-SVG arrow; second icon has no counterpart (authored-SVG counterpart scheduled next platform pass)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "reason": "heron dual circular CTA arrow icons — our authored single inline-SVG arrow; second icon has no counterpart (authored-SVG counterpart scheduled next platform pass)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > div[2]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[3]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[4]",
+      "reason": "1px scaffold hairline (marquee row rule) — visual carried by our section borders, no element counterpart"
+    }
+  ]
 }
