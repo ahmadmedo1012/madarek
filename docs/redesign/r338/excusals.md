@@ -18,3 +18,25 @@
   (defs/filter/mask), row-4 map paths + 12 point reveals, caption clusters —
   need real counterparts + bindings or documented waivers; (c) y:505/x-mirror:120
   /w:111 failure mass sits inside those unbound families.
+
+## T-05c why (r338, bindings session) — excusals added + session residuals
+- SVG scaffolding (suffix-excused, r337 precedent): defs/defs[2], filter[1], femerge[5],
+  clippath[2], mask[1], defs[1] — non-rendering 0x0 filter/clip/mask plumbing inside
+  heron's capture svgs; our authored line-art reproduces the visuals without filters.
+- MEASURED (own vite :5305, chromium): home-why-wrap 61.8% → 62.2% (66/65/61/59/58 per
+  bp). True-path rebinds: 12→19 data-spec bindings (head/eyebrow/eyebrowt/h2w/title/
+  hrule/stage/axis/stagein/progress/track/rows + NEW side/rulev); mk1/mk2 marker
+  bindings dropped — no unique spec path survives the depth-6 truncation.
+- Residual work-list (real debt, NOT excusals): (1) HEAD GEOMETRY — our .wy-head grid
+  mis-places .wy-h2w into the side column (row1 c2) and .wy-side stacks below the grid
+  instead of inside the head's right lane; heron head = 0,0 1427x269 two-column
+  (left: eyebrow y133 + h2 y162; right: 464px rule+lede+note box) — needs a Why.tsx
+  head re-structure + why.css grid fix. (2) STAGE INSET — our content sits at x=33
+  w=1380 vs heron x=0 w=1427 (.wy-section padding-inline 0.84rem + .wy-head
+  padding-inline-start 3.12rem; stage/track must be full-bleed 1427). (3) MOBILE
+  (768/390) — why.css ≤991px belt STACKS the stage (our section 8591/7221px tall vs
+  heron 1882/808px compact mobile) — the spec's mobile grammar needs its own re-seat;
+  ~100 uncountered elements at 390/768 live there. (4) ~55/bp no-counterpart elements
+  remain (mini-capture 0x0 spec imgs, row-4 map paths + point reveals, caption
+  clusters) — need real counterparts or individual excusals. (5) mk1/mk2 way-markers
+  unbindable by path (truncation collision) — heuristic-paired only.

@@ -1,86 +1,86 @@
 {
- "generatedAt": "2026-11-05T12:51:34.691Z",
+ "generatedAt": "2026-11-05T13:23:04.365Z",
  "url": "http://localhost:5305",
  "specDir": "/home/z/wt/t05/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 16022,
-  "pass": 9902,
-  "fail": 6120,
-  "passRate": 61.8,
-  "exceptionUses": 5,
-  "exceptionRate": 0,
+  "total": 16077,
+  "pass": 9999,
+  "fail": 6078,
+  "passRate": 62.2,
+  "exceptionUses": 10,
+  "exceptionRate": 0.1,
   "exceptionCap": "<5%",
   "exceptionRules": {
-   "ar-text-length-class": 5
+   "ar-text-length-class": 10
   },
-  "unmatchedFailures": 260,
+  "unmatchedFailures": 245,
   "gate": "report-only"
  },
  "sections": {
   "home-why-wrap": {
    "390": {
-    "passRate": 57.5,
-    "n": 2574,
-    "pass": 1481,
-    "fail": 1093,
-    "exceptions": 1,
+    "passRate": 57.8,
+    "n": 2585,
+    "pass": 1494,
+    "fail": 1091,
+    "exceptions": 2,
     "explicit": 1,
-    "dataSpec": 12,
-    "heuristic": 161,
-    "unmatched": 104,
-    "excused": 0,
+    "dataSpec": 19,
+    "heuristic": 155,
+    "unmatched": 101,
+    "excused": 4,
     "missing": null
    },
    "768": {
-    "passRate": 58.8,
-    "n": 2571,
-    "pass": 1512,
-    "fail": 1059,
-    "exceptions": 1,
+    "passRate": 59.1,
+    "n": 2582,
+    "pass": 1525,
+    "fail": 1057,
+    "exceptions": 2,
     "explicit": 1,
-    "dataSpec": 12,
-    "heuristic": 161,
-    "unmatched": 103,
-    "excused": 0,
+    "dataSpec": 19,
+    "heuristic": 155,
+    "unmatched": 100,
+    "excused": 4,
     "missing": null
    },
    "1024": {
-    "passRate": 60.4,
-    "n": 3635,
-    "pass": 2196,
-    "fail": 1439,
-    "exceptions": 1,
+    "passRate": 60.9,
+    "n": 3646,
+    "pass": 2220,
+    "fail": 1426,
+    "exceptions": 2,
     "explicit": 1,
-    "dataSpec": 12,
-    "heuristic": 241,
-    "unmatched": 27,
-    "excused": 0,
+    "dataSpec": 22,
+    "heuristic": 232,
+    "unmatched": 24,
+    "excused": 4,
     "missing": null
    },
    "1440": {
-    "passRate": 65,
-    "n": 3621,
-    "pass": 2354,
-    "fail": 1267,
-    "exceptions": 1,
+    "passRate": 65.4,
+    "n": 3632,
+    "pass": 2377,
+    "fail": 1255,
+    "exceptions": 2,
     "explicit": 1,
-    "dataSpec": 12,
-    "heuristic": 241,
-    "unmatched": 13,
-    "excused": 0,
+    "dataSpec": 22,
+    "heuristic": 232,
+    "unmatched": 10,
+    "excused": 4,
     "missing": null
    },
    "1920": {
-    "passRate": 65.1,
-    "n": 3621,
-    "pass": 2359,
-    "fail": 1262,
-    "exceptions": 1,
+    "passRate": 65.6,
+    "n": 3632,
+    "pass": 2383,
+    "fail": 1249,
+    "exceptions": 2,
     "explicit": 1,
-    "dataSpec": 12,
-    "heuristic": 241,
-    "unmatched": 13,
-    "excused": 0,
+    "dataSpec": 22,
+    "heuristic": 232,
+    "unmatched": 10,
+    "excused": 4,
     "missing": null
    }
   }
@@ -1861,7 +1861,7 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": -38,
@@ -2125,7 +2125,7 @@
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": -730,
@@ -2406,28 +2406,6 @@
    "expected": 1601,
    "actual": 6925,
    "delta": 5324
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 5050,
-   "delta": 5050
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 5050,
-   "delta": 5050
   },
   {
    "section": "home-why-wrap",
@@ -3047,6 +3025,28 @@
   },
   {
    "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#ds:why.track",
+   "mode": "data-spec",
+   "expected": 1529,
+   "actual": 5050,
+   "delta": 3521
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "oursSelector": "#ds:why.rows",
+   "mode": "data-spec",
+   "expected": 1529,
+   "actual": 5050,
+   "delta": 3521
+  },
+  {
+   "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
@@ -3091,36 +3091,14 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 3298,
-   "delta": 3298
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "390",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 3298,
-   "delta": 3298
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1920",
    "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 3316,
-   "actual": 98,
-   "delta": 3218
+   "actual": 22,
+   "delta": 3294
   },
   {
    "section": "home-why-wrap",
@@ -3130,8 +3108,8 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 3316,
-   "actual": 138,
-   "delta": 3178
+   "actual": 67,
+   "delta": 3249
   },
   {
    "section": "home-why-wrap",
@@ -3170,56 +3148,23 @@
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 2957,
-   "delta": 2956
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 22,
-   "actual": 2957,
-   "delta": 2935
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2957,
-   "actual": 27,
-   "delta": 2930
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2930,
-   "actual": 13,
-   "delta": 2917
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 2930,
    "actual": 13,
    "delta": 2917
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:why.progress",
+   "mode": "data-spec",
+   "expected": 2886,
+   "actual": 1,
+   "delta": 2885
   },
   {
    "section": "home-why-wrap",
@@ -3235,35 +3180,46 @@
   {
    "section": "home-why-wrap",
    "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2886,
-   "actual": 13,
-   "delta": 2873
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
    "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 394,
+   "expected": 370,
    "actual": 3244,
-   "delta": 2850
+   "delta": 2874
   },
   {
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 3291,
    "actual": 457,
    "delta": 2834
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#ds:why.track",
+   "mode": "data-spec",
+   "expected": 481,
+   "actual": 3298,
+   "delta": 2817
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "oursSelector": "#ds:why.rows",
+   "mode": "data-spec",
+   "expected": 481,
+   "actual": 3298,
+   "delta": 2817
   },
   {
    "section": "home-why-wrap",
@@ -3313,45 +3269,23 @@
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 3291,
-   "actual": 536,
-   "delta": 2755
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 13,
-   "actual": 2691,
-   "delta": 2678
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 13,
-   "actual": 2691,
-   "delta": 2678
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[2] > div[2] > div[1] > div[1] > div[1]",
    "oursSelector": "#hm:div.short",
    "mode": "heuristic",
    "expected": -67,
    "actual": 2593,
    "delta": 2660
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 3291,
+   "actual": 637,
+   "delta": 2654
   },
   {
    "section": "home-why-wrap",
@@ -3380,17 +3314,6 @@
    "bp": "1920",
    "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2690,
-   "actual": 105,
-   "delta": 2585
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 2690,
@@ -3449,8 +3372,19 @@
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 2487,
-   "actual": 73,
-   "delta": 2414
+   "actual": 16,
+   "delta": 2471
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 2487,
+   "actual": 50,
+   "delta": 2437
   },
   {
    "section": "home-why-wrap",
@@ -3462,17 +3396,6 @@
    "expected": 285,
    "actual": 2674,
    "delta": 2389
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2487,
-   "actual": 103,
-   "delta": 2384
   },
   {
    "section": "home-why-wrap",
@@ -3553,17 +3476,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 2218,
-   "delta": 2217
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
@@ -3610,45 +3522,23 @@
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 16,
-   "actual": 2218,
-   "delta": 2202
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2218,
-   "actual": 20,
-   "delta": 2198
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2198,
-   "actual": 10,
-   "delta": 2188
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 2198,
    "actual": 10,
    "delta": 2188
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:why.progress",
+   "mode": "data-spec",
+   "expected": 2165,
+   "actual": 1,
+   "delta": 2164
   },
   {
    "section": "home-why-wrap",
@@ -3664,46 +3554,24 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2165,
-   "actual": 10,
-   "delta": 2155
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 296,
+   "expected": 277,
    "actual": 2433,
-   "delta": 2137
+   "delta": 2156
   },
   {
    "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 2468,
    "actual": 343,
    "delta": 2125
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2690,
-   "actual": 619,
-   "delta": 2071
   },
   {
    "section": "home-why-wrap",
@@ -3714,17 +3582,6 @@
    "mode": "heuristic",
    "expected": -85,
    "actual": 1981,
-   "delta": 2066
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2468,
-   "actual": 402,
    "delta": 2066
   },
   {
@@ -3740,28 +3597,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 10,
-   "actual": 2018,
-   "delta": 2008
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 10,
-   "actual": 2018,
-   "delta": 2008
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1920",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[4] > div[2] > div[1] > div[2] > div[1]",
@@ -3770,6 +3605,17 @@
    "expected": -64,
    "actual": 1939,
    "delta": 2003
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 2468,
+   "actual": 478,
+   "delta": 1990
   },
   {
    "section": "home-why-wrap",
@@ -3817,17 +3663,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2018,
-   "actual": 79,
-   "delta": 1939
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1024",
    "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
@@ -3863,7 +3698,7 @@
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "w",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1902,
@@ -3880,28 +3715,6 @@
    "expected": -64,
    "actual": 1838,
    "delta": 1902
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1902,
-   "actual": 1,
-   "delta": 1901
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1902,
-   "actual": 1,
-   "delta": 1901
   },
   {
    "section": "home-why-wrap",
@@ -3929,23 +3742,12 @@
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "heronPath": "home-why-wrap > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1882,
    "actual": 1,
    "delta": 1881
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1876,
-   "actual": 13,
-   "delta": 1863
   },
   {
    "section": "home-why-wrap",
@@ -4017,17 +3819,6 @@
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 1840,
-   "delta": 1839
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -4045,28 +3836,6 @@
    "expected": 11,
    "actual": 1840,
    "delta": 1829
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 13,
-   "actual": 1840,
-   "delta": 1827
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 13,
-   "actual": 1840,
-   "delta": 1827
   },
   {
    "section": "home-why-wrap",
@@ -4103,14 +3872,14 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+   "bp": "768",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 1,
-   "actual": 1804,
-   "delta": 1803
+   "expected": 1882,
+   "actual": 75,
+   "delta": 1807
   },
   {
    "section": "home-why-wrap",
@@ -4122,17 +3891,6 @@
    "expected": -324,
    "actual": 1455,
    "delta": 1779
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1882,
-   "actual": 107,
-   "delta": 1775
   },
   {
    "section": "home-why-wrap",
@@ -4166,6 +3924,17 @@
    "expected": 515,
    "actual": 2268,
    "delta": 1753
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1768,
+   "actual": 16,
+   "delta": 1752
   },
   {
    "section": "home-why-wrap",
@@ -4204,23 +3973,12 @@
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "heronPath": "home-why-wrap > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1768,
-   "actual": 44,
-   "delta": 1724
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1902,
-   "actual": 183,
-   "delta": 1719
+   "actual": 40,
+   "delta": 1728
   },
   {
    "section": "home-why-wrap",
@@ -4268,14 +4026,25 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1]",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 1768,
-   "actual": 65,
-   "delta": 1703
+   "expected": -730,
+   "actual": 957,
+   "delta": 1687
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -730,
+   "actual": 957,
+   "delta": 1687
   },
   {
    "section": "home-why-wrap",
@@ -4293,22 +4062,11 @@
    "bp": "768",
    "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
+   "oursSelector": "#ds:why.stage",
+   "mode": "data-spec",
    "expected": 1680,
    "actual": 8,
    "delta": 1672
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 180,
-   "actual": 1840,
-   "delta": 1660
   },
   {
    "section": "home-why-wrap",
@@ -4488,17 +4246,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 1577,
-   "delta": 1576
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "768",
    "kind": "y",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[2]",
@@ -4510,28 +4257,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 12,
-   "actual": 1577,
-   "delta": 1565
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1577,
-   "actual": 14,
-   "delta": 1563
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
@@ -4540,17 +4265,6 @@
    "expected": 466,
    "actual": 2028,
    "delta": 1562
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1563,
-   "actual": 7,
-   "delta": 1556
   },
   {
    "section": "home-why-wrap",
@@ -4576,17 +4290,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 2018,
-   "actual": 464,
-   "delta": 1554
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1920",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[4] > div[1] > div[2] > div[1] > img[1]",
@@ -4599,8 +4302,30 @@
   {
    "section": "home-why-wrap",
    "bp": "1024",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:why.progress",
+   "mode": "data-spec",
+   "expected": 1539,
+   "actual": 1,
+   "delta": 1538
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
    "kind": "y",
    "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 197,
+   "actual": 1735,
+   "delta": 1538
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 197,
@@ -4621,30 +4346,8 @@
   {
    "section": "home-why-wrap",
    "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1539,
-   "actual": 7,
-   "delta": 1532
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
    "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 210,
-   "actual": 1735,
-   "delta": 1525
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1755,
@@ -4683,28 +4386,6 @@
    "expected": 1873,
    "actual": 3337,
    "delta": 1464
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1755,
-   "actual": 291,
-   "delta": 1464
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1529,
-   "actual": 87,
-   "delta": 1442
   },
   {
    "section": "home-why-wrap",
@@ -4752,58 +4433,14 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 7,
-   "actual": 1435,
-   "delta": 1428
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 7,
-   "actual": 1435,
-   "delta": 1428
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1440",
    "kind": "w",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1427,
    "actual": 0,
    "delta": 1427
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1427,
-   "actual": 1,
-   "delta": 1426
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1427,
-   "actual": 1,
-   "delta": 1426
   },
   {
    "section": "home-why-wrap",
@@ -4829,25 +4466,14 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 1529,
-   "actual": 114,
-   "delta": 1415
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1407,
-   "actual": 10,
-   "delta": 1397
+   "expected": 1755,
+   "actual": 345,
+   "delta": 1410
   },
   {
    "section": "home-why-wrap",
@@ -4906,31 +4532,9 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 1380,
-   "delta": 1379
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1024",
    "kind": "h",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1435,
-   "actual": 56,
-   "delta": 1379
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1435,
@@ -4983,28 +4587,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 10,
-   "actual": 1380,
-   "delta": 1370
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 10,
-   "actual": 1380,
-   "delta": 1370
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1920",
    "kind": "w",
    "heronPath": "home-why-wrap > div[2] > div[4] > div[1] > div[15] > div[1] > svg[1]",
@@ -5024,17 +4606,6 @@
    "expected": -67,
    "actual": 1286,
    "delta": 1353
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 1353,
-   "delta": 1352
   },
   {
    "section": "home-why-wrap",
@@ -5260,17 +4831,6 @@
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 500,
-   "actual": 1804,
-   "delta": 1304
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -5314,17 +4874,6 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1427,
-   "actual": 137,
-   "delta": 1290
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
@@ -5343,17 +4892,6 @@
    "expected": -319,
    "actual": 965,
    "delta": 1284
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1902,
-   "actual": 619,
-   "delta": 1283
   },
   {
    "section": "home-why-wrap",
@@ -5435,17 +4973,6 @@
   {
    "section": "home-why-wrap",
    "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 140,
-   "actual": 1380,
-   "delta": 1240
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
    "kind": "y",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
@@ -5486,6 +5013,17 @@
    "expected": 1873,
    "actual": 3106,
    "delta": 1233
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.side",
+   "mode": "data-spec",
+   "expected": 619,
+   "actual": 1840,
+   "delta": 1221
   },
   {
    "section": "home-why-wrap",
@@ -5764,17 +5302,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1435,
-   "actual": 330,
-   "delta": 1105
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1440",
    "kind": "y",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[2]",
@@ -5920,34 +5447,12 @@
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "w",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 1015,
    "actual": 0,
    "delta": 1015
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1015,
-   "actual": 1,
-   "delta": 1014
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1015,
-   "actual": 1,
-   "delta": 1014
   },
   {
    "section": "home-why-wrap",
@@ -6151,17 +5656,6 @@
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1000,
-   "actual": 7,
-   "delta": 993
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -6194,17 +5688,6 @@
   {
    "section": "home-why-wrap",
    "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 981,
-   "delta": 980
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
    "kind": "y",
    "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[2]",
    "oursSelector": "#hm:div.none",
@@ -6212,17 +5695,6 @@
    "expected": -281,
    "actual": 698,
    "delta": 979
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 375,
-   "actual": 1353,
-   "delta": 978
   },
   {
    "section": "home-why-wrap",
@@ -6272,28 +5744,6 @@
    "section": "home-why-wrap",
    "bp": "1024",
    "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 7,
-   "actual": 981,
-   "delta": 974
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 7,
-   "actual": 981,
-   "delta": 974
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[12]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -6305,45 +5755,23 @@
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:why.stagein",
+   "mode": "data-spec",
+   "expected": -730,
+   "actual": 244,
+   "delta": 974
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": -730,
    "actual": 244,
    "delta": 974
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": -730,
-   "actual": 244,
-   "delta": 974
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": -730,
-   "actual": 244,
-   "delta": 974
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": -730,
-   "actual": 243,
-   "delta": 973
   },
   {
    "section": "home-why-wrap",
@@ -6380,17 +5808,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1427,
-   "actual": 464,
-   "delta": 963
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "1024",
    "kind": "y",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
@@ -6399,17 +5816,6 @@
    "expected": -272,
    "actual": 691,
    "delta": 963
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1,
-   "actual": 962,
-   "delta": 961
   },
   {
    "section": "home-why-wrap",
@@ -6501,28 +5907,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 943,
-   "actual": 4,
-   "delta": 938.5
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 943,
-   "actual": 4,
-   "delta": 938.5
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[4] > div[1] > div[15] > div[1] > svg[1] > g[1]",
@@ -6589,17 +5973,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1015,
-   "actual": 97,
-   "delta": 918
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[2] > div[4] > div[1] > div[14] > div[1] > svg[1]",
@@ -6611,14 +5984,14 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 9,
-   "actual": 924,
-   "delta": 914.5
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.side",
+   "mode": "data-spec",
+   "expected": 464,
+   "actual": 1380,
+   "delta": 916
   },
   {
    "section": "home-why-wrap",
@@ -6745,17 +6118,6 @@
    "section": "home-why-wrap",
    "bp": "1920",
    "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 9,
-   "actual": 907,
-   "delta": 897.5
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
@@ -6795,17 +6157,6 @@
    "expected": 1062,
    "actual": 1945,
    "delta": 883
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 100,
-   "actual": 981,
-   "delta": 881
   },
   {
    "section": "home-why-wrap",
@@ -7162,6 +6513,17 @@
   {
    "section": "home-why-wrap",
    "bp": "390",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -38,
+   "actual": 811,
+   "delta": 849
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[5]",
    "oursSelector": "#hm:div.none",
@@ -7405,7 +6767,7 @@
    "section": "home-why-wrap",
    "bp": "390",
    "kind": "h",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "heronPath": "home-why-wrap > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 807,
@@ -7746,9 +7108,9 @@
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:why.stagein",
+   "mode": "data-spec",
    "expected": 0,
    "actual": 736,
    "delta": 736
@@ -7758,28 +7120,6 @@
    "bp": "768",
    "kind": "w",
    "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 736,
-   "delta": 736
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "w",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 0,
-   "actual": 736,
-   "delta": 736
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 0,
@@ -8195,25 +7535,14 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
-   "expected": 707,
-   "actual": 3,
-   "delta": 704
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 707,
-   "actual": 3,
-   "delta": 704
+   "expected": 807,
+   "actual": 102,
+   "delta": 705
   },
   {
    "section": "home-why-wrap",
@@ -8247,17 +7576,6 @@
    "expected": 265,
    "actual": 963,
    "delta": 698
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 267,
-   "actual": 962,
-   "delta": 695
   },
   {
    "section": "home-why-wrap",
@@ -8324,28 +7642,6 @@
    "expected": 292,
    "actual": 981,
    "delta": 689
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 7,
-   "actual": 693,
-   "delta": 686
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1024",
-   "kind": "w",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 1015,
-   "actual": 330,
-   "delta": 685
   },
   {
    "section": "home-why-wrap",
@@ -8423,17 +7719,6 @@
    "expected": 678,
    "actual": 4,
    "delta": 674
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "1440",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 7,
-   "actual": 680,
-   "delta": 673.5
   },
   {
    "section": "home-why-wrap",
@@ -8624,17 +7909,6 @@
   },
   {
    "section": "home-why-wrap",
-   "bp": "1920",
-   "kind": "x-mirror",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 674,
-   "actual": 14,
-   "delta": 660
-  },
-  {
-   "section": "home-why-wrap",
    "bp": "768",
    "kind": "x-mirror",
    "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
@@ -8697,6 +7971,17 @@
    "mode": "heuristic",
    "expected": 1940,
    "actual": 2591,
+   "delta": 651
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.side",
+   "mode": "data-spec",
+   "expected": 330,
+   "actual": 981,
    "delta": 651
   },
   {
@@ -8813,29 +8098,7 @@
    "section": "home-why-wrap",
    "bp": "768",
    "kind": "y",
-   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 316,
-   "actual": 957,
-   "delta": 641
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "y",
    "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": 316,
-   "actual": 957,
-   "delta": 641
-  },
-  {
-   "section": "home-why-wrap",
-   "bp": "768",
-   "kind": "y",
-   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
    "oursSelector": "#hm:div.none",
    "mode": "heuristic",
    "expected": 316,
@@ -8885,7 +8148,815 @@
    "expected": 1945,
    "actual": 2585,
    "delta": 640
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1757,
+   "actual": 2396,
+   "delta": 639
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 1928,
+   "actual": 2567,
+   "delta": 639
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 97,
+   "actual": 736,
+   "delta": 639
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 97,
+   "actual": 736,
+   "delta": 639
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 97,
+   "actual": 736,
+   "delta": 639
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 245,
+   "actual": 884,
+   "delta": 639
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1947,
+   "actual": 2585,
+   "delta": 638
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1934,
+   "actual": 2572,
+   "delta": 638
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 2575,
+   "actual": 3212,
+   "delta": 637
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.short",
+   "mode": "heuristic",
+   "expected": 909,
+   "actual": 272,
+   "delta": 637
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 1726,
+   "actual": 2363,
+   "delta": 637
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#ds:why.card2",
+   "mode": "data-spec",
+   "expected": 366,
+   "actual": 1003,
+   "delta": 637
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 1757,
+   "actual": 2393,
+   "delta": 636
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1943,
+   "actual": 2579,
+   "delta": 636
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[1] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 1760,
+   "actual": 2396,
+   "delta": 636
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1002,
+   "actual": 1637,
+   "delta": 635
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1002,
+   "actual": 1637,
+   "delta": 635
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1947,
+   "actual": 2581,
+   "delta": 634
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 633,
+   "actual": 4,
+   "delta": 629
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1940,
+   "actual": 2569,
+   "delta": 629
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.side",
+   "mode": "data-spec",
+   "expected": 633,
+   "actual": 4,
+   "delta": 628.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 2587,
+   "actual": 3212,
+   "delta": 625
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": -64,
+   "actual": 558,
+   "delta": 622
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 230,
+   "actual": 851,
+   "delta": 621
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1086,
+   "actual": 1706,
+   "delta": 620
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#hm:div.long",
+   "mode": "heuristic",
+   "expected": 633,
+   "actual": 14,
+   "delta": 619
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 2575,
+   "actual": 3194,
+   "delta": 619
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[7]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1225,
+   "actual": 1844,
+   "delta": 619
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[9]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1224,
+   "actual": 1842,
+   "delta": 618
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 2,
+   "delta": 617
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 2,
+   "delta": 617
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[5]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1225,
+   "actual": 1842,
+   "delta": 617
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[10]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1227,
+   "actual": 1840,
+   "delta": 613
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[2]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1224,
+   "actual": 1836,
+   "delta": 612
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[4]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1229,
+   "actual": 1840,
+   "delta": 611
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -281,
+   "actual": 329,
+   "delta": 610
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1233,
+   "actual": 1843,
+   "delta": 610
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1229,
+   "actual": 1839,
+   "delta": 610
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -264,
+   "actual": 345,
+   "delta": 609
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1234,
+   "actual": 1843,
+   "delta": 609
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[12] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 11,
+   "actual": 619,
+   "delta": 608
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1222,
+   "actual": 1830,
+   "delta": 608
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1227,
+   "actual": 1834,
+   "delta": 607
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[3]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1232,
+   "actual": 1839,
+   "delta": 607
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 619,
+   "delta": 606
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 619,
+   "delta": 606
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[12]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 619,
+   "delta": 606
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 131,
+   "actual": 736,
+   "delta": 605
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 131,
+   "actual": 736,
+   "delta": 605
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 131,
+   "actual": 736,
+   "delta": 605
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 131,
+   "actual": 736,
+   "delta": 605
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": 186,
+   "actual": 790,
+   "delta": 604.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 186,
+   "actual": 790,
+   "delta": 604.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 186,
+   "actual": 790,
+   "delta": 604.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[4] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.medium",
+   "mode": "heuristic",
+   "expected": 186,
+   "actual": 790,
+   "delta": 604.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 877,
+   "actual": 273,
+   "delta": 603.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 17,
+   "delta": 602
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 17,
+   "delta": 602
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 17,
+   "delta": 602
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 619,
+   "actual": 17,
+   "delta": 602
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1234,
+   "actual": 1836,
+   "delta": 602
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 753,
+   "actual": 151,
+   "delta": 602
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[14]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1231,
+   "actual": 1832,
+   "delta": 601
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:why.rulev",
+   "mode": "data-spec",
+   "expected": 324,
+   "actual": 924,
+   "delta": 600
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1230,
+   "actual": 1830,
+   "delta": 600
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1086,
+   "actual": 1685,
+   "delta": 599
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[13]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 1235,
+   "actual": 1834,
+   "delta": 599
   }
  ],
- "unmatchedReport": []
+ "unmatchedReport": [
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1920",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1024",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "768",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "390",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "excused": true,
+   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
+  }
+ ]
 }
