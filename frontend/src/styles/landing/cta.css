@@ -38,8 +38,18 @@
     gap: 2.4rem;
   }
 
+  /* R338 T-10 first pass — heron cta h2 lh is FLAT 1.0 on every ≥768 rung
+     (40/40 · 53.33/53.33 · 28.44/28.44 · 29.47/29.47 measured); only the
+     390 phone rung carries 1.1 (23.82/26.2 — the base seat below). */
+  .fo-cta-title {
+    line-height: 1;
+  }
+
+  /* R338 T-10 — heron lede lh is 1.3 on EVERY rung (17.33/13.33 ·
+     23.11/17.78 · 12.33/9.48 · 19.15/14.73 · 18.06/13.89). */
   .fo-cta-lede {
-    line-height: 1.6;
+    font-size: 1em;
+    line-height: 1.3;
   }
 
   .cg-strip {
@@ -97,8 +107,11 @@
   /* R333 (P-C): +1 rung off the 15px body-lg lead — 16.7px @1440,
      13px floor-gated (the ladder's max(floor, Nrem) convention); the
      closing band's copy must carry the resolve, not whisper it. */
-  font-size: max(14px, 2rem);
-  line-height: 1.7;
+  /* R338 T-10 — heron's lede is exactly 1em of the fluid body root
+     (13.33 @1440 · 17.78 @1920 · 14.73 @768 · 13.89 @390) at lh 1.3;
+     the old 2rem/1.7 resolve voice ran +50% over the twin. */
+  font-size: 1em;
+  line-height: 1.3;
   color: var(--text-secondary);
   max-inline-size: 52ch;
 }
@@ -238,7 +251,11 @@
   }
 
   .fo-cta-lede {
-    line-height: 1.5;
+    line-height: 1.3;
+  }
+
+  .fo-cta-title {
+    line-height: 1;
   }
 
   .fo-cta-actions {

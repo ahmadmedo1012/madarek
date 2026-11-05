@@ -26,23 +26,23 @@ const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
 
 export function Vision({ year }: { year: number }) {
   return (
-    <section className="fo-cta" id="vision" aria-label="ابدأ رحلتك — أنشئ حسابك">
-      <div className="fo-cta-inner">
-        <h2 className="fo-cta-title" data-mdrk-reveal="lines">
+    <section className="fo-cta" id="vision" data-spec="cta.section" aria-label="ابدأ رحلتك — أنشئ حسابك">
+      <div className="fo-cta-inner" data-spec="cta.inner">
+        <h2 className="fo-cta-title" data-spec="cta.title" data-mdrk-reveal="lines">
           جاهز لبدء <em>رحلتك</em>؟
         </h2>
-        <p className="fo-cta-lede" data-mdrk-reveal="item">
+        <p className="fo-cta-lede" data-spec="cta.lede" data-mdrk-reveal="item">
           أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
           وتابع تقدّمك من أول محاضرة.
         </p>
-        <div className="fo-cta-actions" data-mdrk-reveal="item" id="cta">
-          <Link to="/auth/register" className="btn accent lg">
+        <div className="fo-cta-actions" data-spec="cta.actions" data-mdrk-reveal="item" id="cta">
+          <Link to="/auth/register" className="btn accent lg" data-spec="cta.primary">
             {REGISTER}
             <Icon icon={ArrowLeft} size={16} />
           </Link>
-          <Link to="/auth" className="btn ghost lg">{LOGIN}</Link>
+          <Link to="/auth" className="btn ghost lg" data-spec="cta.secondary">{LOGIN}</Link>
         </div>
-        <p className="fo-cta-meta" data-mdrk-reveal="item">
+        <p className="fo-cta-meta" data-spec="cta.meta" data-mdrk-reveal="item">
           <Icon icon={Check} size={13} />
           مدارك · {year} · منصّة تعليمية مستقلّة
         </p>
@@ -55,19 +55,19 @@ export function Vision({ year }: { year: number }) {
           numbers the old metadata ledger carried (colleges,
           campuses, the live-capability count) ride HERE, computed
           from the real config/data — never invented. */}
-      <div className="cg-strip" id="colleges">
+      <div className="cg-strip" id="colleges" data-spec="cta.registry">
         {/* R328 (H5): the index renumbers [09]→[08] — the footer's
             old [08] drawn-mark cell retired in R323, so the sheet's
             own ladder ran hero[01]…roles[07] then skipped to [09];
             the registry strip IS the eighth band. */}
-        <span className="cg-strip-label fo-mono" dir="ltr">[08] · REGISTRY</span>
-        <p className="cg-strip-text">
+        <span className="cg-strip-label fo-mono" dir="ltr" data-spec="cta.registry-label">[08] · REGISTRY</span>
+        <p className="cg-strip-text" data-spec="cta.registry-text">
           <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
           <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —{' '}
           <span className="fo-mono" dir="ltr">[{String(LIVE_COUNT).padStart(2, '0')}]</span> قدرات تعمل اليوم.
           بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
         </p>
-        <div className="cg-strip-links">
+        <div className="cg-strip-links" data-spec="cta.registry-links">
           <Link to="/colleges" className="btn ghost sm">تصفح الكليات التجريبية</Link>
           <Link to="/auth" className="fo-text-link">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
         </div>
