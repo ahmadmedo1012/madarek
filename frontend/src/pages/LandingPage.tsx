@@ -149,6 +149,23 @@ import { SheetNav } from '../components/landing/chrome/SheetNav';
  * the shared sheet clock, all collapsed under reduced motion.
  */
 
+/* R338 (T-07 · scroll.mjs scrub-curve conformance) — the measured
+ * reference word-ink curve: cumulative ink coverage of the statement
+ * title at 11 evenly spaced seats across the scrub trigger, frozen in
+ * heron-spec/scroll-curves.<bp>.json (live-extracted @ all 5 bps; the
+ * five runs agree within ±0.01 — this is their consensus). A gentle
+ * late-accelerating ease; inkEase() is its piecewise-linear
+ * reproduction (scroll progress → --wr-p), so our linear per-word
+ * thresholds land on the reference's measured SHAPE. */
+const INK_EASE = [0, 0.073, 0.185, 0.297, 0.41, 0.522, 0.634, 0.746, 0.859, 0.97, 1] as const;
+function inkEase(t: number): number {
+  const x = clamp(t, 0, 1) * (INK_EASE.length - 1);
+  const i = Math.min(INK_EASE.length - 2, Math.floor(x));
+  const a = INK_EASE[i] ?? 0;
+  const b = INK_EASE[i + 1] ?? 1;
+  return a + (b - a) * (x - i);
+}
+
 export default function LandingPage() {
   useThemeSync();
   const user = useAuthStore((s) => s.user);
@@ -211,7 +228,18 @@ export default function LandingPage() {
    * bottom+=10%» (title center at 0.9vh), end «center top+=40%»
    * (center at 0.4vh). --wr-p (0..1) rides that traversal; the word
    * colors resolve + reverse with it (imperative, zero renders — the
-   * useSheetScroll contract; R318 C2's idempotent write kept). */
+   * useSheetScroll contract; R318 C2's idempotent write kept).
+   *
+   * R338 (T-07 · scroll.mjs scrub-curve conformance): the reference's
+   * word-ink ramp is NOT linear in scroll progress. Measured on the
+   * live reference at 11 seats across the trigger (frozen in
+   * heron-spec/scroll-curves.<bp>.json — all 5 bps agree within ±0.01):
+   * the cumulative ink coverage runs [0, .073, .185, .297, .41, .522,
+   * .634, .746, .859, .97, 1] — a gentle late-accelerating ease. Our
+   * words ink linearly in --wr-p, so the driver maps scroll progress
+   * through that measured curve (piecewise-linear over the 11 knots)
+   * before writing --wr-p: the SHAPE is the reproduced measurement,
+   * not the source. */
   const statementRef = useRef<HTMLElement>(null);
   const statementTitleRef = useRef<HTMLHeadingElement>(null);
   let lastWrP = '';
@@ -219,7 +247,8 @@ export default function LandingPage() {
     const el = statementRef.current;
     if (!el) return;
     const center = rect.top + rect.height / 2;
-    const p = clamp((vh * 0.9 - center) / (vh * 0.5), 0, 1).toFixed(4);
+    const t = clamp((vh * 0.9 - center) / (vh * 0.5), 0, 1);
+    const p = inkEase(t).toFixed(4);
     if (p !== lastWrP) {
       el.style.setProperty('--wr-p', p);
       lastWrP = p;
