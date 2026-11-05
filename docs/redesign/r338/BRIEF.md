@@ -73,3 +73,7 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - why.css lives at frontend/src/styles/landing/why.css (NOT components/landing/ — mapping _readme is stale).
 - run.mjs is lead-controlled shared instrument: ONLY T-14a may edit it this wave (dark path + plumbing-skip mechanism per T-06c's documented need). Section agents: never touch run.mjs.
 - Cross-section dependency: problem's copy-driven line-counts (sub 3-line, titlebox 1-line) live in platform-owned Live.tsx — T-08 owns that file and must honor them.
+
+## ENV ADDENDUM 6 (wave-7, lead)
+- Instrument upgrade on branch r338/t14a-instrument (562cba47, landing this wave): (1) `--dark` flag — measures under the site's own html[data-theme=dark] (geometry/type/border vs frozen light spec + token-flip census + WCAG contrast ≥3.0); (2) mapping `plumbing:[{section,heron,skip:["geometry"],reason}]` mechanism — skipped cells counted, never silent. Section agents: after t14a lands on main, run your section with `--dark` and fix reported dark-kind fails (e.g. footer dark y:154/w:96/x-mirror:86); add plumbing skips for defs/filter/mask scaffolding with reasons.
+- why branch @eaaf5ebb: bundle gate PASS (777.0≤777), head rebuilt to measured seat; 61.1% with ~33 x-mirror cells regressed by the bundle diet (suspect ≤991 section width min(171.24rem,100%) vs 768/390 spec rects) — T-05e owns the recheck + mobile re-seat.

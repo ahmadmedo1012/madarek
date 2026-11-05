@@ -12,11 +12,15 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 7
+- [~] L-5 Lander: land t14a-instrument FIRST, then t05-why @eaaf5ebb (check branch CIs via API; one combined verify.sh --fast; watch CI; also confirm main @0bd158ba CI green).
+- [~] T-03c intro: per-word intro.word.N data-spec bindings in Statement.tsx ScrubReveal + mapping (the ~294-fail h2 word-cell scaffold bucket) + pill x-mirror (~24).
+
 ## WAVE 6
-- [~] T-14a instrument: dark measurement path in run.mjs + plumbing-skip mechanism (ONLY agent allowed to touch run.mjs). Base origin/main (wordset rule already landed).
-- [~] T-04c problem: .pm-meta spec rule + 390 dip + exclusions + color/lh → ≥90 + branch CI green.
-- [~] T-05d why: bundle cut 0.4KB + head geometry + stage full-bleed (+mobile re-seat if time).
-- [~] T-06d footer: token-ize colors + wordmark pseudo fix + bg model + mobile y-stack.
+- [x] T-14a DONE: r338/t14a-instrument @562cba47 — --dark path (data-theme=dark, token-flip census, WCAG ≥3.0; dark total 87.1%, 0 contrast fails) + plumbing-skip mechanism; light regression PASS; awaiting L-5 landing
+- [~] T-04c problem (agent died; respawn wave-7 — .pm-meta spec rule CI blocker, 390 dip, ~276 heuristic x-pair exclusions, color 95/lh 13) ·
+- [x] T-05d DONE: r338/t05-why @eaaf5ebb — bundle 777.4→777.0 PASS, head rebuilt to measured seat, stage full-bleed 1427; 62.2→61.1% (~33 x-mirror regressed by diet); T-05e residual: x-mirror recheck (≤991 width), mobile re-seat (8591/7221 vs 1882/808), ~317 no-counterpart
+- [~] T-06d footer (agent died; respawn wave-7 — raw-color token-ize CI blocker, .fo-wordmark-reg::before 4≠5 CI blocker, bg model inverted, mobile y-stack) ·
 
 ## WAVE 5
 - [x] T-05c DONE: r338/t05-why @110aec55 — 61.8→62.2%; T-05d residual: bundle cut 0.4KB (CI blocker), .wy-head grid (heron 1427x269), stage full-bleed 1427 (ours inset x33/w1380), mobile re-seat 768/390 (ours 8591/7221 vs heron 1882/808), ~55/bp counterparts, mk1/mk2 path-collisions ·
@@ -57,11 +61,15 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 7
+- [~] L-5 Lander: land t14a-instrument FIRST, then t05-why @eaaf5ebb (check branch CIs via API; one combined verify.sh --fast; watch CI; also confirm main @0bd158ba CI green).
+- [~] T-03c intro: per-word intro.word.N data-spec bindings in Statement.tsx ScrubReveal + mapping (the ~294-fail h2 word-cell scaffold bucket) + pill x-mirror (~24).
+
 ## WAVE 6
-- [~] T-14a instrument: dark measurement path in run.mjs + plumbing-skip mechanism (ONLY agent allowed to touch run.mjs). Base origin/main (wordset rule already landed).
-- [~] T-04c problem: .pm-meta spec rule + 390 dip + exclusions + color/lh → ≥90 + branch CI green.
-- [~] T-05d why: bundle cut 0.4KB + head geometry + stage full-bleed (+mobile re-seat if time).
-- [~] T-06d footer: token-ize colors + wordmark pseudo fix + bg model + mobile y-stack.
+- [x] T-14a DONE: r338/t14a-instrument @562cba47 — --dark path (data-theme=dark, token-flip census, WCAG ≥3.0; dark total 87.1%, 0 contrast fails) + plumbing-skip mechanism; light regression PASS; awaiting L-5 landing
+- [~] T-04c problem (agent died; respawn wave-7 — .pm-meta spec rule CI blocker, 390 dip, ~276 heuristic x-pair exclusions, color 95/lh 13) ·
+- [x] T-05d DONE: r338/t05-why @eaaf5ebb — bundle 777.4→777.0 PASS, head rebuilt to measured seat, stage full-bleed 1427; 62.2→61.1% (~33 x-mirror regressed by diet); T-05e residual: x-mirror recheck (≤991 width), mobile re-seat (8591/7221 vs 1882/808), ~317 no-counterpart
+- [~] T-06d footer (agent died; respawn wave-7 — raw-color token-ize CI blocker, .fo-wordmark-reg::before 4≠5 CI blocker, bg model inverted, mobile y-stack) ·
 
 ## WAVE 5
 - [x] T-05c DONE: r338/t05-why @110aec55 — 61.8→62.2%; T-05d residual: bundle cut 0.4KB (CI blocker), .wy-head grid (heron 1427x269), stage full-bleed 1427 (ours inset x33/w1380), mobile re-seat 768/390 (ours 8591/7221 vs heron 1882/808), ~55/bp counterparts, mk1/mk2 path-collisions ·
@@ -77,11 +85,15 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 7
+- [~] L-5 Lander: land t14a-instrument FIRST, then t05-why @eaaf5ebb (check branch CIs via API; one combined verify.sh --fast; watch CI; also confirm main @0bd158ba CI green).
+- [~] T-03c intro: per-word intro.word.N data-spec bindings in Statement.tsx ScrubReveal + mapping (the ~294-fail h2 word-cell scaffold bucket) + pill x-mirror (~24).
+
 ## WAVE 6
-- [~] T-14a instrument: dark measurement path in run.mjs + plumbing-skip mechanism (ONLY agent allowed to touch run.mjs). Base origin/main (wordset rule already landed).
-- [~] T-04c problem: .pm-meta spec rule + 390 dip + exclusions + color/lh → ≥90 + branch CI green.
-- [~] T-05d why: bundle cut 0.4KB + head geometry + stage full-bleed (+mobile re-seat if time).
-- [~] T-06d footer: token-ize colors + wordmark pseudo fix + bg model + mobile y-stack.
+- [x] T-14a DONE: r338/t14a-instrument @562cba47 — --dark path (data-theme=dark, token-flip census, WCAG ≥3.0; dark total 87.1%, 0 contrast fails) + plumbing-skip mechanism; light regression PASS; awaiting L-5 landing
+- [~] T-04c problem (agent died; respawn wave-7 — .pm-meta spec rule CI blocker, 390 dip, ~276 heuristic x-pair exclusions, color 95/lh 13) ·
+- [x] T-05d DONE: r338/t05-why @eaaf5ebb — bundle 777.4→777.0 PASS, head rebuilt to measured seat, stage full-bleed 1427; 62.2→61.1% (~33 x-mirror regressed by diet); T-05e residual: x-mirror recheck (≤991 width), mobile re-seat (8591/7221 vs 1882/808), ~317 no-counterpart
+- [~] T-06d footer (agent died; respawn wave-7 — raw-color token-ize CI blocker, .fo-wordmark-reg::before 4≠5 CI blocker, bg model inverted, mobile y-stack) ·
 
 ## WAVE 5
 - [ ] L-5 Lander.
@@ -91,6 +103,10 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-46 teacher role shell + top 3 screens · 45m.
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
+
+## WAVE 7
+- [~] L-5 Lander: land t14a-instrument FIRST, then t05-why @eaaf5ebb (check branch CIs via API; one combined verify.sh --fast; watch CI; also confirm main @0bd158ba CI green).
+- [~] T-03c intro: per-word intro.word.N data-spec bindings in Statement.tsx ScrubReveal + mapping (the ~294-fail h2 word-cell scaffold bucket) + pill x-mirror (~24).
 
 ## WAVE 6
 - [ ] L-6 Lander.
