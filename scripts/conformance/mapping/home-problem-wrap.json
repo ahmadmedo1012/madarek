@@ -48,8 +48,8 @@
     },
     {
       "section": "home-problem-wrap",
-      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2]",
-      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2]",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1] > div[2]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1] > div[2]",
       "ours": "problem.subwrap"
     },
     {
@@ -126,8 +126,8 @@
     },
     {
       "section": "home-problem-wrap",
-      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
-      "spec": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
       "ours": "problem.keytext.2"
     },
     {
