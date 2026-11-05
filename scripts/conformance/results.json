@@ -1,12 +1,12 @@
 {
- "generatedAt": "2026-11-05T15:06:22.301Z",
+ "generatedAt": "2026-11-05T15:33:37.848Z",
  "url": "http://localhost:5302",
  "specDir": "/home/z/wt/t02/docs/redesign/r335/heron-spec",
  "summary": {
   "total": 9475,
-  "pass": 8607,
-  "fail": 868,
-  "passRate": 90.8,
+  "pass": 8642,
+  "fail": 833,
+  "passRate": 91.2,
   "exceptionUses": 22,
   "exceptionRate": 0.2,
   "exceptionCap": "<5%",
@@ -22,10 +22,10 @@
  "sections": {
   "home-usecase-wrap": {
    "390": {
-    "passRate": 89.6,
+    "passRate": 89.9,
     "n": 1868,
-    "pass": 1673,
-    "fail": 195,
+    "pass": 1680,
+    "fail": 188,
     "exceptions": 2,
     "explicit": 0,
     "dataSpec": 129,
@@ -36,10 +36,10 @@
     "missing": null
    },
    "768": {
-    "passRate": 94,
+    "passRate": 94.4,
     "n": 1897,
-    "pass": 1784,
-    "fail": 113,
+    "pass": 1791,
+    "fail": 106,
     "exceptions": 2,
     "explicit": 0,
     "dataSpec": 131,
@@ -50,10 +50,10 @@
     "missing": null
    },
    "1024": {
-    "passRate": 89.5,
+    "passRate": 89.9,
     "n": 1907,
-    "pass": 1707,
-    "fail": 200,
+    "pass": 1714,
+    "fail": 193,
     "exceptions": 8,
     "explicit": 0,
     "dataSpec": 131,
@@ -64,10 +64,10 @@
     "missing": null
    },
    "1440": {
-    "passRate": 90.6,
+    "passRate": 91,
     "n": 1907,
-    "pass": 1728,
-    "fail": 179,
+    "pass": 1735,
+    "fail": 172,
     "exceptions": 8,
     "explicit": 0,
     "dataSpec": 131,
@@ -78,10 +78,10 @@
     "missing": null
    },
    "1920": {
-    "passRate": 90.5,
+    "passRate": 90.8,
     "n": 1896,
-    "pass": 1715,
-    "fail": 181,
+    "pass": 1722,
+    "fail": 174,
     "exceptions": 2,
     "explicit": 0,
     "dataSpec": 131,
@@ -7794,34 +7794,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "#ds:roles.h2box",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.1",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.2",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -7838,34 +7816,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.3",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.3",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.4",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -7882,34 +7838,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.5",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.5",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.6",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -7926,34 +7860,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.7",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.7",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1920",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.8",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -7969,6 +7881,17 @@
   },
   {
    "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "color",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
    "bp": "1440",
    "kind": "tag",
    "heronPath": "home-usecase-wrap > div[1]",
@@ -7976,17 +7899,6 @@
    "mode": "data-spec",
    "expected": "div",
    "actual": "section",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "#ds:roles.h2box",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8009,6 +7921,17 @@
    "mode": "data-spec",
    "expected": "none",
    "actual": "long",
+   "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:roles.rowink.2",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
    "delta": 1
   },
   {
@@ -8047,17 +7970,6 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.3",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[2]",
    "oursSelector": "#ds:roles.rowicon.3",
@@ -8075,17 +7987,6 @@
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.4",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8113,17 +8014,6 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.5",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[5] > div[1] > div[2]",
    "oursSelector": "#ds:roles.rowicon.5",
@@ -8141,17 +8031,6 @@
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.6",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8179,17 +8058,6 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.7",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[7] > div[1] > div[2]",
    "oursSelector": "#ds:roles.rowicon.7",
@@ -8207,17 +8075,6 @@
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.8",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8244,17 +8101,6 @@
   },
   {
    "section": "home-usecase-wrap",
-   "bp": "1440",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
    "bp": "1024",
    "kind": "tag",
    "heronPath": "home-usecase-wrap > div[1]",
@@ -8262,17 +8108,6 @@
    "mode": "data-spec",
    "expected": "div",
    "actual": "section",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "#ds:roles.h2box",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8295,6 +8130,17 @@
    "mode": "data-spec",
    "expected": "none",
    "actual": "long",
+   "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "color",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:roles.rowink.2",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
    "delta": 1
   },
   {
@@ -8333,17 +8179,6 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.3",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[2]",
    "oursSelector": "#ds:roles.rowicon.3",
@@ -8361,17 +8196,6 @@
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.4",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8399,17 +8223,6 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.5",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[5] > div[1] > div[2]",
    "oursSelector": "#ds:roles.rowicon.5",
@@ -8427,17 +8240,6 @@
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.6",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8465,17 +8267,6 @@
   {
    "section": "home-usecase-wrap",
    "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.7",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[7] > div[1] > div[2]",
    "oursSelector": "#ds:roles.rowicon.7",
@@ -8493,17 +8284,6 @@
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.8",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8530,17 +8310,6 @@
   },
   {
    "section": "home-usecase-wrap",
-   "bp": "1024",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
-   "oursSelector": "#hm:div.none",
-   "mode": "heuristic",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
    "bp": "768",
    "kind": "tag",
    "heronPath": "home-usecase-wrap > div[1]",
@@ -8548,17 +8317,6 @@
    "mode": "data-spec",
    "expected": "div",
    "actual": "section",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "#ds:roles.h2box",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8575,34 +8333,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.2",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.2",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.3",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8619,34 +8355,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.4",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.4",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.5",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8663,34 +8377,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.6",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.6",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.7",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8707,23 +8399,23 @@
   {
    "section": "home-usecase-wrap",
    "bp": "768",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[8] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.8",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "768",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.8",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "768",
+   "kind": "color",
+   "heronPath": "home-usecase-wrap > div[1] > section[1] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
    "delta": 1
   },
   {
@@ -8751,34 +8443,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > section[1] > div[3] > div[2] > div[2]",
-   "oursSelector": "#ds:roles.h2box",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.1",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.2",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8795,34 +8465,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.3",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.3",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[4] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.4",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8839,34 +8487,12 @@
   {
    "section": "home-usecase-wrap",
    "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[5] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.5",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
    "kind": "opacity",
    "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[3]",
    "oursSelector": "#ds:roles.rowrule1.5",
    "mode": "data-spec",
    "expected": 0,
    "actual": 1,
-   "delta": 1
-  },
-  {
-   "section": "home-usecase-wrap",
-   "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[6] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.6",
-   "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
    "delta": 1
   },
   {
@@ -8883,13 +8509,387 @@
   {
    "section": "home-usecase-wrap",
    "bp": "390",
-   "kind": "color",
-   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[7] > div[1] > div[1] > div[1]",
-   "oursSelector": "#ds:roles.rowink.7",
+   "kind": "opacity",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[3]",
+   "oursSelector": "#ds:roles.rowrule1.7",
    "mode": "data-spec",
-   "expected": "rgb(40, 40, 40)",
-   "actual": "rgba(40, 40, 40, 0.72)",
+   "expected": 0,
+   "actual": 1,
    "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "390",
+   "kind": "opacity",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[3]",
+   "oursSelector": "#ds:roles.rowrule1.8",
+   "mode": "data-spec",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "390",
+   "kind": "lineHeight",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:roles.rowtitle.1",
+   "mode": "data-spec",
+   "expected": 21.44,
+   "actual": 20.84,
+   "delta": 0.6
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "opacity",
+   "heronPath": "home-usecase-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:roles.slide.1",
+   "mode": "data-spec",
+   "expected": 0.860027,
+   "actual": 1,
+   "delta": 0.14
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > section[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1920",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > section[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[4] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[5] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[6] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[7] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[3] > div[3] > div[1] > div[1] > div[8] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > section[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-usecase-wrap",
+   "bp": "1024",
+   "kind": "no-counterpart",
+   "heronPath": "home-usecase-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
   }
  ],
  "unmatchedReport": [

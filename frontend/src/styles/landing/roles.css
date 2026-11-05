@@ -93,7 +93,9 @@
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72)); color-mix() renders as color() and the conformance twin requires the literal */
 }
 .rl-label .fo-mono { font-size: 1.4rem; color: inherit; }
-.rl-h2box { margin: 0; }
+/* the h2's container box reads OPAQUE ink (rgb(40,40,40)) at every bp in
+   the frozen spec — the soft 72% is the section/lede measure, not the box */
+.rl-h2box { margin: 0; color: var(--text); }
 .rl-h2 {
   margin: 0;
   font-family: var(--font-display);
@@ -124,7 +126,11 @@
   justify-content: space-between;
 }
 .rl-row-twf { flex: 1 1 auto; min-inline-size: 0; }
-.rl-row-ink { min-inline-size: 0; }
+/* the row's title box is OPAQUE ink in the spec (fs20/fw700 seats read
+   rgb(40,40,40)); the soft 72% belongs to the unfolded body copy only.
+   Inert visually — the title inside sets its own color — this aligns the
+   wrapper's computed color with the spec's title-box color model */
+.rl-row-ink { min-inline-size: 0; color: var(--text); }
 .rl-row-title {
   font-family: var(--font-display);
   font-size: 2.4rem;
@@ -279,6 +285,12 @@
     padding-block: 2rem;
     padding-inline: 1.6rem;
   }
+  /* 390 floor ruling: the spec's own title lh (19.65 = 1.1×17.86) sits
+     below the Arabic floor (24.11), but the spec's 390 row y/h were
+     measured at 19.65 — raising lh to the floor shifts every following
+     row (+59 y cells measured) while fixing only 7 lh cells: the same
+     floor-vs-geometry mutual exclusion as the h2; the reference's own
+     box wins (documented in r338/excusals.md, T-02c) */
   .rl-row-title { font-size: 1.8rem; line-height: 2.1rem; }
   .rl-row-iconbtn, .rl-row-svg { inline-size: 2rem; block-size: 2rem; }
 }
