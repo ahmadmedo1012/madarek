@@ -1730,5 +1730,227 @@
       "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > br[2]",
       "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
     }
+  ],
+  "charSplit": [
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[1] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[5]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[5]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[5]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[3] > div[3] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[5]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[4] > div[3] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[4]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[5]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > br[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > br[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[3] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[3] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[3]"
+    }
   ]
 }
