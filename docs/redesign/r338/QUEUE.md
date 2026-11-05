@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 17
+- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
+- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
+- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
+- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+
 ## WAVE 16
-- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
-- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
-- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
-- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+- [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
+- [~] T-06g died → respawn wave-17 ·
+- [x] T-09b DONE: r338/t09-map @643289b9 — 47.6→55.6% (57/57/51/56/57); T-09c residual: head re-seat INSIDE .jt (kills y:257 family), pin/card rhythm, generator dedupe bug (4 per-bp paths), 45 starved station-cards, curves clocks ·
+- [x] T-10 pass-1 DONE: r338/t10-cta @a7c860b8 — 44.8→64.4% (65/66/59/66/66); T-10b residual: author counterparts (top ledger band, kicker rail, column rules, sketch band → .fo-cta .fo-hero-meta seat) + bind (~140 junk fails), 1 binding unresolved, lede fs ladder, cg-strip, dark ·
 
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
@@ -113,11 +119,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 17
+- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
+- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
+- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
+- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+
 ## WAVE 16
-- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
-- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
-- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
-- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+- [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
+- [~] T-06g died → respawn wave-17 ·
+- [x] T-09b DONE: r338/t09-map @643289b9 — 47.6→55.6% (57/57/51/56/57); T-09c residual: head re-seat INSIDE .jt (kills y:257 family), pin/card rhythm, generator dedupe bug (4 per-bp paths), 45 starved station-cards, curves clocks ·
+- [x] T-10 pass-1 DONE: r338/t10-cta @a7c860b8 — 44.8→64.4% (65/66/59/66/66); T-10b residual: author counterparts (top ledger band, kicker rail, column rules, sketch band → .fo-cta .fo-hero-meta seat) + bind (~140 junk fails), 1 binding unresolved, lede fs ladder, cg-strip, dark ·
 
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
@@ -189,11 +201,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 17
+- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
+- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
+- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
+- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+
 ## WAVE 16
-- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
-- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
-- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
-- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+- [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
+- [~] T-06g died → respawn wave-17 ·
+- [x] T-09b DONE: r338/t09-map @643289b9 — 47.6→55.6% (57/57/51/56/57); T-09c residual: head re-seat INSIDE .jt (kills y:257 family), pin/card rhythm, generator dedupe bug (4 per-bp paths), 45 starved station-cards, curves clocks ·
+- [x] T-10 pass-1 DONE: r338/t10-cta @a7c860b8 — 44.8→64.4% (65/66/59/66/66); T-10b residual: author counterparts (top ledger band, kicker rail, column rules, sketch band → .fo-cta .fo-hero-meta seat) + bind (~140 junk fails), 1 binding unresolved, lede fs ladder, cg-strip, dark ·
 
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
@@ -260,11 +278,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 17
+- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
+- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
+- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
+- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+
 ## WAVE 16
-- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
-- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
-- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
-- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+- [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
+- [~] T-06g died → respawn wave-17 ·
+- [x] T-09b DONE: r338/t09-map @643289b9 — 47.6→55.6% (57/57/51/56/57); T-09c residual: head re-seat INSIDE .jt (kills y:257 family), pin/card rhythm, generator dedupe bug (4 per-bp paths), 45 starved station-cards, curves clocks ·
+- [x] T-10 pass-1 DONE: r338/t10-cta @a7c860b8 — 44.8→64.4% (65/66/59/66/66); T-10b residual: author counterparts (top ledger band, kicker rail, column rules, sketch band → .fo-cta .fo-hero-meta seat) + bind (~140 junk fails), 1 binding unresolved, lede fs ladder, cg-strip, dark ·
 
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
@@ -324,11 +348,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 17
+- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
+- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
+- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
+- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+
 ## WAVE 16
-- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
-- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
-- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
-- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+- [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
+- [~] T-06g died → respawn wave-17 ·
+- [x] T-09b DONE: r338/t09-map @643289b9 — 47.6→55.6% (57/57/51/56/57); T-09c residual: head re-seat INSIDE .jt (kills y:257 family), pin/card rhythm, generator dedupe bug (4 per-bp paths), 45 starved station-cards, curves clocks ·
+- [x] T-10 pass-1 DONE: r338/t10-cta @a7c860b8 — 44.8→64.4% (65/66/59/66/66); T-10b residual: author counterparts (top ledger band, kicker rail, column rules, sketch band → .fo-cta .fo-hero-meta seat) + bind (~140 junk fails), 1 binding unresolved, lede fs ladder, cg-strip, dark ·
 
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
@@ -384,11 +414,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 17
+- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
+- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
+- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
+- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+
 ## WAVE 16
-- [~] L-10 Lander: merge axios (3929a7af) FIRST → why (3c647923) → intro (06537cbe); footer stays out until T-06g clears contracts; verify; push main.
-- [~] T-06g footer contract reconciliation (9 tests are law) + ≤991 real grid boxes.
-- [~] T-09b map pass-2 (journey ownership granted: scroll-driver 6300px, per-bp data-spec hooks, pairing, curves).
-- [~] T-10 cta first pass (Vision.tsx + cta.css + colleges.css this wave).
+- [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
+- [~] T-06g died → respawn wave-17 ·
+- [x] T-09b DONE: r338/t09-map @643289b9 — 47.6→55.6% (57/57/51/56/57); T-09c residual: head re-seat INSIDE .jt (kills y:257 family), pin/card rhythm, generator dedupe bug (4 per-bp paths), 45 starved station-cards, curves clocks ·
+- [x] T-10 pass-1 DONE: r338/t10-cta @a7c860b8 — 44.8→64.4% (65/66/59/66/66); T-10b residual: author counterparts (top ledger band, kicker rail, column rules, sketch band → .fo-cta .fo-hero-meta seat) + bind (~140 junk fails), 1 binding unresolved, lede fs ladder, cg-strip, dark ·
 
 ## WAVE 15
 - [~] L-9 Lander: fresh train from main 11670879 — merge t04 (d2a7a2e7) first (bundle stage-check), then t05-why-f (3c647923) / t06 (fc13324a) only if ≤777 holds; verify; push.
