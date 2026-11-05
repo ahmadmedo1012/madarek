@@ -1,352 +1,629 @@
-/* R332 — split VERBATIM from src/styles/landing.css · why = R313 D7 why-stage band (1902-2156)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+/* ═══ T-05 (r338) — لماذا مدارك (why) — REWRITTEN from the frozen Heron
+   home-why-wrap spec (docs/redesign/r335/heron-spec/home-why-wrap.*.json).
+   Layered architecture: this sheet owns ONLY the why strip — the ruled
+   editorial head (eyebrow + display h2 | vertical rule + lede + muted
+   note), the full-width hairline, and the TALL pinned stage (centred
+   axis + way-markers + scrubbed accent progress + four 464px capture
+   rows: alternating product card, small captures with 13px icon
+   clusters, the pinned dark caption bars; row 3 = the lecture-player
+   seat, row 4 = the dashed route map). All geometry is rem on the
+   shared fluid root (8.333px @1440 — bp-exact @1024/1440/1920 by
+   construction); ≤991px re-seats the same DOM stacked. Motion is CSS
+   only (house law — no gsap); the reveal engine drives the intro and
+   the ONE scrub var --wy-p drives the accent progress rule. ═══ */
 
-/* ═══ لماذا مدارك (R313 · D7 §6) — the Watch/Check/Test/Master stage
-   strip: the stage rail (always-readable verb cards) beside the
-   capture stack (the four real student surfaces, cross-fading on the
-   scroll). R325 Y3: the band is CONTENT-SIZED — the old 77vh /
-   81.65rem floors outlived the head they were measured against (the
-   R322 compact head cut ~175px) and stranded a ~120–150px void under
-   the capture; V4's own law: no forced voids. ═══ */
+/* ── the section shell — heron: fluid 171.24rem wide (1427 @1440 ·
+   1902 @1920 · 1015 @1024), centred, ZERO padding — the head, the
+   hairline and the stage all run full-bleed to the measured rect ── */
 .wy-section {
-  padding-block: var(--sp-7);
-  border-block-start: 1px solid var(--rule-strong);
+  position: relative;
+  inline-size: min(171.24rem, 100%);
+  margin-inline: auto;
+  padding-inline: 0;
+  padding-block: 0;
 }
 
+/* ── the ruled editorial head — heron @1440: 0,0 1427×269 two-column:
+   left lane (1fr ≈ 962: eyebrow y133 + h2w y162) | side rail (464px:
+   rule + lede + note, pad-top 133). Explicit grid seats — the h2w
+   stays in the left lane, the side rail spans both rows at col 2 ── */
 .wy-head {
   display: grid;
-  gap: var(--sp-3);
-  /* R325 Y3: the head spans the section grid at every belt — the old
-     64ch cap constricted the 768–991 band off the .wy grid's edges
-     (the head floated while the rail/stack below ran full width). */
-  max-inline-size: none;
-  margin-block-end: var(--sp-6);
+  grid-template-columns: minmax(0, 1fr) 55.68rem;
+  align-items: start;
+}
+
+.wy-eyebrow {
+  display: block;
+  grid-column: 1;
+  grid-row: 1;
+  padding-block-start: 15.92rem;   /* lane y106 + lane pad 26.67 → eyebrow y133 */
+  padding-inline-start: 3.2rem;     /* the lane's 26.67px text inset */
+}
+
+.wy-eyebrow-t {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);        /* 11.67px @1440 — Heron txt-14 */
+  font-weight: 500;
+  line-height: 1.4;                    /* 16.33px @1440 */
+  letter-spacing: 0;                   /* Arabic joins forbid tracking */
+  color: var(--text-secondary);
+}
+
+.wy-h2w {
+  display: block;
+  grid-column: 1;
+  grid-row: 2;
+  margin-block-start: 1.56rem;      /* eyebrow bottom 149 → h2w top 162 */
+  margin-inline-start: 3.2rem;
+  inline-size: 45rem;                /* the measured 375px text box */
+  min-block-size: 9.6rem;            /* the 80px two-line seat */
 }
 
 .wy-title {
   font-family: var(--font-display);
-  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance). */
-  font-size: var(--fs-d2);
+  font-size: var(--fs-d2);             /* 40px @1440 — the D2 rung */
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1;                      /* 40/40 measured */
+  letter-spacing: 0;                   /* Arabic: ls 0 by law */
   text-wrap: balance;
+  min-block-size: 9.6rem;            /* the measured 2-line box */
   color: var(--text);
 }
 
-.wy-title em {
-  font-style: normal;
-  color: var(--accent-ink);
+/* the side rail — heron: x962 y0 464x269, pad 133.33/26.67/26.67 —
+   mirrored RTL: the rule rides the rail's inline-start, full height */
+.wy-side {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  padding-block-start: 16rem;        /* 133.33px -> the lede lands at y133 */
+  padding-inline: 3.2rem;
+  min-block-size: 32.28rem;          /* the full 269px head height */
 }
 
-.wy-lede {
-  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
-  font-size: var(--fs-body-lg);
-  line-height: 1.7;
-  color: var(--text-secondary);
+.wy-rule-v {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block: 0;                    /* 0->269: the full head height */
+  inline-size: 0.12rem;              /* the 1px hairline */
+  background: var(--rule-strong);
 }
 
-.wy {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 58rem);
-  gap: var(--sp-6);
-  align-items: start;
-}
+/* the lede rides the side rail's 16rem pad-top (y133 measured) */
 
-/* the stage rail — four verb cards, always readable (the non-active
-   states stay visible; the ACTIVE stage warms + its verb snaps with
-   the reference's hold-plateau shape). R314 cycle-2: the ae70a16
-   compaction accidentally orphaned this list's margin/padding/
-   list-style resets inside the ≥992 media block below (declarations
-   at media-block level are invalid and silently dropped); restored. */
-.wy-rail {
-  display: grid;
-  gap: var(--sp-1-5);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* R314 desktop: the section heads share the reference's compact head
- * band (label + title + one intro line ≈ 160px, not 220–320) */
-@media (min-width: 992px) {
-  .pm-head,
-  .wy-head,
-  .pr-head,
-  .rl-head {
-    gap: var(--sp-3);
-  }
-
-  /* R322 (2-d): .pm-head p retires from this shared rule — the new
-     .pm-sub carries the transplant's own measure (no max-ch island). */
-  .wy-head p,
-  .pr-head p,
-  .rl-head p {
-    max-inline-size: 44ch;
-    font-size: var(--fs-body);
-    line-height: 1.55;
-  }
-}
-
-/* ── R314 (cycle-2 §7 heights) — the exact section-height compaction.
- * Measured deltas vs the Heron reference @1440×900 (capture.mjs
- * meta.json): pm 878→743 · wy 980→681 · cta 755→698. The lede rides
- * BESIDE the display title (the reference's head band: title-wrap +
- * sub-wrap side by side, VLM-confirmed on p-s02-0), not under it —
- * the stacked head was the single tallest offender. Named areas pin
- * every child (bare auto-placement put the TITLE in the narrow lede
- * track and wrapped it to 460px — the 1087px regression). The why
- * rail folds to 2×2 (four cards beside the capture stack).
- * Desktop-scoped: the V13 mobile bands keep their own rules below. ── */
-@media (min-width: 992px) {
-  /* R322 (2-d) — the R314 head-areas grid (label/lede lanes) and the
-     R315 89.15rem min-block-size BOTH RETIRE: the new .pm-head
-     (title-wrap 7fr | sub 5fr, bottoms aligned, base-level) is the
-     measured head; the section is content-sized (V4: no forced voids).
-     The .pm-section min-block-size and the pm-head area pins die with
-     this comment — the base block owns the whole seat now. */
-
-  /* R325 Y3 — ONE grid for the whole strip: the head's lede column is
-   * THE CAPTURE COLUMN (the same minmax(0,58rem) track + the same
-   * sp-6 gutter the .wy grid below runs), so the description paragraph
-   * sits exactly over the frame it describes instead of floating on
-   * its own 26rem island (the reference's sub-wrap rides the main
-   * grid's own edge: 464px over the 1427px head @1440 · 377 over the
-   * 753px cell @768 — mirrored RTL). */
-  .wy-head {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 58rem);
-    grid-template-areas:
-      'label lede'
-      'title lede';
-    align-items: end;
-    column-gap: var(--sp-6);
-    max-inline-size: none;
-  }
-
-  .wy-head > .fo-label { grid-area: label; }
-  .wy-head > .wy-title { grid-area: title; }
-  .wy-head > .wy-lede { grid-area: lede; }
-
-  /* R315 cycle-3 (W3) min-block-size: 81.65rem RETIRES (R325 Y3) —
-   * the floor was measured against the pre-R322 head band; with the
-   * compact head the content tops out ~560px and the floor stranded
-   * a ~120–150px void under the capture (V4: no forced voids). The
-   * section is content-sized; the void ≤ 1.5× section padding. */
-
-  .wy-rail {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.wy-stage {
-  display: grid;
-  gap: var(--sp-0-5);
-  padding: var(--sp-1-5) var(--sp-3);
-  border: 1px solid var(--rule);
-  border-inline-start: 2px solid transparent;
-  background: color-mix(in srgb, var(--surface) 45%, transparent);
-  transition: border-color var(--t-base) var(--ease);
-}
-
-.wy-stage-num {
-  color: var(--text-faint);
-  font-size: var(--fs-xs);
-}
-
-.wy-stage-verb {
-  font-family: var(--font-display);
-  /* R322 (1-d): the why-stage verb joins the D3 rung (weight 500 ·
-     lh 1.15 · balance); the per-belt re-pins below retire. */
-  font-size: var(--fs-d3);
+.wy-lede-t {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);           /* 13.33px @1440 — Heron txt-16 */
   font-weight: 500;
-  line-height: 1.15;
-  text-wrap: balance;
-  color: var(--text);
-}
-
-.wy-stage-title {
-  font-size: var(--fs-sm);
-  font-weight: 600;
+  line-height: 1.35;                   /* …Arabic ascenders law */
   color: var(--text-secondary);
-}
-
-.wy-stage-text {
-  font-size: var(--fs-sm);
-  line-height: 1.65;
-  color: var(--text-secondary);
-}
-
-/* R322 V1 kill: .wy-stage-meta (the English jargon 'live · …' row)
- * is deleted with its markup. */
-
-/* the capture stack — one frame per stage, cross-fading (opacity
-   only; never layout). The stack keeps ONE frame's height. */
-.wy-stack {
-  display: grid;
-}
-
-.wy-capture {
-  grid-area: 1 / 1;
-  opacity: 0;
-  transition: opacity var(--t-slower) var(--ease);
-}
-
-.wy[data-wy-stage='0'] .wy-capture[data-i='0'],
-.wy[data-wy-stage='1'] .wy-capture[data-i='1'],
-.wy[data-wy-stage='2'] .wy-capture[data-i='2'],
-.wy[data-wy-stage='3'] .wy-capture[data-i='3'] {
-  opacity: 1;
-}
-
-/* the active stage: the rail card warms (border + number), the verb
-   snaps with the 74%-hold plateau (0%→74% held, then resolves —
-   the reference's homeWhy/vs-tag grammar) */
-.wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1),
-.wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2),
-.wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3),
-.wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) {
-  border-inline-start-color: var(--accent);
-}
-
-.wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-num,
-.wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-num,
-.wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-num,
-.wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-num {
-  color: var(--accent-ink);
-}
-
-.wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
-.wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
-.wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-verb,
-.wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
-  animation: wy-snap var(--t-cinema) var(--ease) both;
-}
-
-@keyframes wy-snap {
-  0%,
-  74% {
-    opacity: 0.45;
-    scale: 0.85;
-  }
-  100% {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
-/* R325 Y3 — the why frames carry NO overlay chrome: the mock-UI
-   collage (the «مساعد الفهم / عرض توضيحي» fragment) rode the capture's
-   bottom corner like a tooltip pasted over the art; the caption BELOW
-   the frame is this strip's only labeling. Scoped to .wy — the
-   platform band's collage (§05) is untouched. */
-.wy .prf-cards {
-  display: none;
-}
-
-/* R325 Y3 — ONE disclosure line per strip: the per-frame «بيانات العرض
-   التجريبية» caption demo duplicates the section's own .wy-note four
-   times over; the note below the strip carries the confession once. */
-.wy .prf-caption-demo {
-  display: none;
 }
 
 .wy-note {
-  margin-block-start: var(--sp-5);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
+  margin-block-start: 4.44rem;
 }
 
-/* ═══ R332 W5 — the why parity + dissolution seats. FILE END (the
-   cascade lesson: every base rule above and the strata re-seats must
-   lose to these — same-specificity rules resolve by document order).
+.wy-note-t {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-md);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-faint);            /* rgb(180,180,176) */
+}
 
-   Measured twin deltas @1440 (run-001): height 633.6 vs 698.1 (−9.3%),
-   rhythm gutter 24 vs the twin's 0 (Δ24 over the ≤8 gate). The R328
-   8rem quiet rung refilled only part of the R325-Y3 floor retirement;
-   the head's 24px seat was the twin-visible rhythm gutter.
+/* the full-width hairline under the head — 1427x1 at y=269 */
+.wy-hrule {
+  block-size: 0.12rem;
+  background: var(--rule-strong);
+  margin-block-start: 0;
+}
 
-   ≥1025 (the twin's 1440 gate + the root-riding 1280/1920 bands):
-   · the stage strip breathes at the scene rung (var(--space-12xl) =
-     12rem = 100px @1440 — the R328 closer's own opening rung); the
-     budget: 633.6 + 66.7 (padding) − 24 (head seat) + 13.3 (note) ≈ 689
-     = the twin's 698.1 − 1.3% (inside the ±3% gate);
-   · the head sits FLUSH on the strip (margin 0 — the twin's why
-     gutter is 0: their head boxes butt the content);
-   · the note rides the --space-4xl rung (33.33px @1440).
-   992–1024: the narrow-desktop canon-floor slice is FROZEN at the exact
-   winners the strata slice rendered (moved here verbatim — the strata
-   duplicates retire; the R328 8rem ran there by file-end order).
-   768–991: the W3 rem-law tablet seats move verbatim (shared.css holds
-   no competing tablet seats on these selectors).
-   The strata .wy- ≥992/.wy-stage-text tiers retire with this block. ═══ */
-@media (min-width: 1025px) {
+/* ═══ THE STAGE — 2218px tall @1440 (2.76 vh-units rect) ═══ */
+.wy-stage {
+  position: relative;
+  block-size: 266.16rem;               /* 2218px */
+  margin-block-start: 0;               /* the hairline IS the stage's top edge */
+}
+
+/* the centred 1px axis (x=720 abs @1440) */
+.wy-axis {
+  position: absolute;
+  inset-inline-start: 85.56rem;        /* (720−7)/8.333 */
+  inset-block-start: 0;
+  inline-size: 0.12rem;
+  block-size: 100%;
+  background: var(--rule-strong);
+}
+
+.wy-stage-in {
+  position: absolute;
+  inset: 0;
+}
+
+
+/* the 10px axis way-markers (+ cross svg line-art) at the stage's left edge */
+.wy-mk {
+  position: absolute;
+  inset-inline-start: 0.96rem;         /* x=15 abs → 8px in-section */
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
+}
+
+.wy-mk-in,
+.wy-mk-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.wy-mk-path {
+  stroke: var(--text);
+  stroke-width: 1;
+  fill: none;
+}
+
+/* the scrub container — 1427×2018 starting 100px below the hairline */
+.wy-track {
+  position: absolute;
+  inset-block-start: 12rem;            /* 100px */
+  inset-inline: 0;
+  block-size: 242.16rem;               /* 2018px */
+}
+
+/* the accent progress rule — 1px, inset 26px/28px, width = scrub */
+.wy-progress {
+  position: absolute;
+  inset-block-start: 7.08rem;          /* y=59 in-track */
+  inset-inline-start: 3.12rem;
+  inline-size: calc(164.76rem * var(--wy-p, 0));
+  block-size: 0.12rem;
+  background: var(--accent-ink);       /* rgb(250,54,0) */
+  transform-origin: inline-start;
+}
+
+.wy-track-in {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── the four capture rows (464px tall, alternating sides) ── */
+.wy-row {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 55.68rem;                /* 464px */
+}
+
+.wy-card {
+  position: absolute;
+  inset-block-start: 0;
+  inline-size: 55.68rem;
+  block-size: 55.68rem;
+}
+
+.wy-card-in {
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--r-sm, 0.24rem);
+  overflow: hidden;
+  background: var(--surface);
+}
+
+.wy-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* the pinned dark caption bar — title + sub + accent dot */
+.wy-tag {
+  position: absolute;
+  inset-block-start: 5.76rem;          /* y=48 row-relative */
+  display: grid;
+  row-gap: 0.72rem;
+}
+
+.wy-tag-in {
+  display: grid;
+  row-gap: 0.72rem;
+}
+
+.wy-tag-title-w,
+.wy-tag-sub-w {
+  display: block;
+}
+
+.wy-tag-title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;                   /* 20px @1440 */
+  font-weight: 700;
+  line-height: 1.1;                    /* 22px — ≥ Arabic floor */
+  color: var(--paper-ink, var(--text));
+}
+
+.wy-tag-sub {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);           /* 13.33px */
+  font-weight: 400;
+  line-height: 1.35;                   /* 18px — Arabic floor */
+  color: var(--paper-ink, var(--text));
+}
+
+.wy-tag-dot {
+  inline-size: 0.48rem;
+  block-size: 0.48rem;
+  margin-block-start: 0.84rem;
+  background: var(--accent-ink);
+}
+
+/* ── small captures + the 13px icon cluster ── */
+.wy-mini {
+  position: absolute;
+}
+
+.wy-mini-in {
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  border-radius: var(--r-sm, 0.24rem);
+}
+
+.wy-box {
+  position: absolute;
+  block-size: 100%;
+}
+
+.wy-box-in {
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  border-radius: var(--r-sm, 0.24rem);
+}
+
+.wy-box-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* icon cluster: white 10px core (4px glyph) + accent swap + ring */
+.wy-ic {
+  position: absolute;
+  inline-size: 1.56rem;                /* 13px */
+  block-size: 1.56rem;
+}
+
+.wy-ic-core {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.wy-ic-box {
+  inline-size: 1.2rem;                 /* 10px white core */
+  block-size: 1.2rem;
+  margin: 0.18rem;
+  position: relative;
+  background: var(--paper);
+  border-radius: 50%;
+}
+
+.wy-ic-dot {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-start: 0.6rem;
+  inline-size: 0.48rem;                /* 4px glyph */
+  block-size: 0.48rem;
+  background: var(--accent-ink);
+}
+
+.wy-ic-svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.wy-ic-path {
+  stroke: var(--accent-ink);
+  stroke-width: 0.5;
+  fill: none;
+}
+
+.wy-ic-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 50%;
+  background: var(--accent-ink);
+  opacity: 0;
+  transition: opacity var(--t-fast, 0.24s) var(--e-out, ease-out);
+}
+
+.wy-ic-ring {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: 50%;
+  border: 0.12rem solid var(--accent-ink);
+  opacity: 0;
+  transition: opacity var(--t-fast, 0.24s) var(--e-out, ease-out);
+}
+
+/* ── row 3: the lecture-player seat ── */
+.wy-player {
+  position: absolute;
+  inset: 0;
+}
+
+.wy-player2 {
+  position: absolute;
+  inset: 0;
+}
+
+.wy-vid {
+  position: absolute;
+}
+
+.wy-vid-in {
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: hidden;
+  border-radius: var(--r-sm, 0.24rem);
+}
+
+.wy-vic {
+  position: absolute;
+  inline-size: 2.16rem;                /* 18px sound icon */
+  block-size: 2.16rem;
+}
+
+.wy-vic-in,
+.wy-vic-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.wy-vic-path {
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.wy-spinz,
+.wy-loadz {
+  position: absolute;
+  inline-size: 2.88rem;                /* 24px spinner */
+  block-size: 2.88rem;
+}
+
+.wy-spin,
+.wy-spin-svg,
+.wy-load,
+.wy-load-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.wy-load-path {
+  stroke: var(--text-secondary);
+  stroke-width: 2;
+  fill: none;
+}
+
+
+.wy-chk {
+  position: absolute;
+  inline-size: 0.72rem;                /* 6px check */
+  block-size: 0.72rem;
+}
+
+.wy-chk-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.wy-chk-path {
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+  fill: none;
+}
+
+.wy-dots {
+  position: absolute;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.wy-dot {
+  inline-size: 0.48rem;
+  block-size: 0.48rem;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+
+.wy-dot-3 {
+  background: var(--accent-ink);
+}
+
+/* ── row 4: the dashed route map + point reveals ── */
+.wy-pt {
+  position: absolute;
+  transform: scale(var(--wy-pt-s, 1));
+  transform-origin: center;
+}
+
+.wy-pt-in,
+.wy-pt-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.wy-pt-rect {
+  fill: var(--text-secondary);
+}
+
+.wy-pt-rect2 {
+  fill: var(--bg);
+}
+
+.wy-map {
+  position: absolute;
+  inset: 0;
+}
+
+.wy-map-in,
+.wy-map-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+}
+
+.wy-map-path {
+  position: absolute;
+  stroke: var(--rule-strong);
+  stroke-width: 0.12rem;
+  stroke-dasharray: 0.6rem 0.72rem;    /* the dashed route */
+  fill: none;
+}
+
+/* ═══ ≤991px — the same DOM, stacked: head single-column, stage rows
+   become a vertical capture list (static + fully readable under
+   reduced motion; the spec's mobile grammar is its own belt) ═══ */
+@media (max-width: 991px) {
   .wy-section {
-    padding-block: var(--space-12xl);
+    padding-inline: var(--sp-4);
+    padding-block: var(--sp-7) var(--sp-6);
   }
 
   .wy-head {
-    margin-block-end: 0;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--sp-4);
   }
 
-  .wy-note {
-    margin-block-start: var(--space-4xl);
-  }
-}
-
-@media (min-width: 992px) and (max-width: 1024px) {
-  .wy-section {
-    padding-block: 8rem; /* spacing-gate: allow — the R328 quiet-band rung as rendered pre-dissolution (frozen slice) */
+  .wy-eyebrow {
+    grid-column: 1;
+    grid-row: auto;
+    padding-block-start: 0;
+    padding-inline-start: 0;
   }
 
-  .wy-head {
-    margin-block-end: 1.44rem;
-  }
-
-  .wy-note {
-    margin-block-start: 1.44rem;
-  }
-
-  .wy-stage {
-    padding: var(--sp-1) var(--sp-2);
-  }
-}
-
-@media (min-width: 992px) {
-  /* the W3 compact-row leading, live here since R315 (the strata
-     ≥992 tier dissolved here — value verbatim) */
-  .wy-stage-text {
-    line-height: 1.55;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 991px) {
-  .wy-section {
-    padding-block: var(--sp-5) var(--sp-4);
+  .wy-h2w {
+    grid-column: 1;
+    grid-row: auto;
+    margin-block-start: var(--sp-1-5);
+    margin-inline-start: 0;
+    inline-size: auto;
     min-block-size: 0;
   }
 
+  .wy-title {
+    min-block-size: 0;
+  }
+
+  .wy-side {
+    grid-column: 1;
+    grid-row: auto;
+    padding-inline-start: 0;
+    padding-block-start: var(--sp-1-5);
+    min-block-size: 0;
+  }
+
+  .wy-rule-v {
+    inset-block: 0;
+    inset-inline-start: auto;
+    inset-inline-end: 0;
+    inline-size: 100%;
+    block-size: 0.12rem;
+  }
+
+  .wy-note {
+    margin-block-start: var(--sp-2);
+  }
+
+  .wy-hrule {
+    margin-block-start: var(--sp-4);
+  }
+
   .wy-stage {
-    padding: var(--sp-1) var(--sp-2-5);
-    gap: var(--sp-0-25);
+    block-size: auto;
   }
 
-  .wy-stage-text {
-    line-height: 1.45;
+  .wy-axis,
+  .wy-mk,
+  .wy-progress {
+    display: none;
+  }
+
+  .wy-track,
+  .wy-track-in {
+    position: static;
+    block-size: auto;
+  }
+
+  .wy-row {
+    position: relative;
+    inset: 0;
+    block-size: auto;
+    display: grid;
+    row-gap: var(--sp-3);
+    margin-block-end: var(--sp-6);
+  }
+
+  .wy-card,
+  .wy-player,
+  .wy-player2,
+  .wy-map,
+  .wy-map-in,
+  .wy-map-svg {
+    position: relative;
+    inset: 0;
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .wy-card-in,
+  .wy-vid,
+  .wy-vid-in,
+  .wy-box,
+  .wy-box-in,
+  .wy-mini,
+  .wy-mini-in {
+    position: relative;
+    inset: 0;
+    inline-size: 100%;
+    block-size: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .wy-tag {
+    position: relative;
+    inset: 0;
+    margin-block-start: 0;
+  }
+
+  .wy-tag-title {
+    font-size: var(--fs-h3, 1.92rem);
+  }
+
+  .wy-mini + .wy-mini,
+  .wy-ic,
+  .wy-vic,
+  .wy-spinz,
+  .wy-loadz,
+  .wy-chk,
+  .wy-dots,
+  .wy-pt {
+    display: none;
+  }
+
+  .wy-map-path {
+    display: none;
   }
 }
-
-/* ═══ P-A2 R333 (INV-08 · heron-craft row 13) — the strip's
-   proper-scale seat. The capture presents edge-to-edge in its cell
-   on the 1px RULE frame (radius 0 — the sheet's canon; the old
-   --border-strong/--r-xs photo chrome softened the proof), and every
-   frame carries the mono [nn] index chip (ProductFrame idxChip —
-   aria-hidden chrome; the rail owns the stage semantics). The stage
-   01 seat rides the 2× re-capture (1440×870 @1×): same surface, the
-   heron platform frame's own ratio (the img box stays platform.css's
-   inline-size:100% / block-size:auto — edge-to-edge, CLS-safe).
-   Scoped to .wy — file-end so it wins the cascade WITHOUT
-   specificity forks (the W5 lesson). ═══ */
-.wy .prf-photo {
-  border-color: var(--rule);
-  border-radius: 0;
-}
-
