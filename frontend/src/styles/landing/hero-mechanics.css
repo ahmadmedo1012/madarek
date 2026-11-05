@@ -925,6 +925,16 @@
   --hro-paper: rgb(255, 255, 255);      /* measured deco caption ink */
 }
 
+/* R338 T-11d dark arm (T-14b --rl-soft-ink pattern) — the strip ink's
+   night seat: the same 72% strength pointed at the dark ramp's own ink
+   (--text = #F6F6EE, the paper twin); 7.9:1 on the charcoal #282828
+   ground (WCAG AAA; the --dark contrast floor >=3.0 passes with room).
+   The light arm keeps the frozen Heron literal byte-identical; the
+   theme flip moves no box — only the color changes. */
+[data-theme="dark"] .hro {
+  --hro-ink-72: rgba(246, 246, 238, 0.72); /* color-gate: allow — the dark ramp's own ink --text #F6F6EE at the spec's 72% strength (7.9:1 on the #282828 ground); the light arm keeps the frozen Heron literal */
+}
+
 /* [S] the band seat — measured 0.981–0.988vh per breakpoint */
 @media (max-width: 767px) { .hro.fo-hero { min-block-size: calc(100svh - 16px); } }
 @media (min-width: 768px) and (max-width: 1023px) { .hro.fo-hero { min-block-size: calc(100svh - 16px); } }
