@@ -575,7 +575,7 @@
   color: var(--text-secondary);
   text-underline-offset: 0.35em;
   text-decoration: underline transparent;
-  transition: color var(--t-fast) var(--ease), text-decoration-color var(--t-fast) var(--ease);
+  transition: color 0.4s ease, text-decoration-color 0.4s ease;
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -713,8 +713,8 @@
 
 .landing.intro-done .hro-stage .bp-drawable {
   transition:
-    stroke-dashoffset 650ms var(--ease),
-    fill-opacity 500ms var(--ease);
+    stroke-dashoffset 0.4s ease,
+    fill-opacity 0.4s ease;
   stroke-dashoffset: 0;
   fill-opacity: 1;
 }

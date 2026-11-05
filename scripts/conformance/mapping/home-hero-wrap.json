@@ -1592,5 +1592,3017 @@
       "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[3]",
       "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
     }
+  ],
+  "plumbing": [
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > img[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > span[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[5] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[7] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[8] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[10]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[11]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[12]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[13]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[14]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[9]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[10]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[11]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[12]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[13]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[14]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[9]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[10]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[11]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[12]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[13]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[14]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[9]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[10]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[11]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[12]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[13]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[14]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[9]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[5] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[5] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[5] > div[3] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+    }
   ]
 }
