@@ -66,9 +66,10 @@ const MAPPING = readdirSync(join(__dirname, "mapping"))
       Object.assign(acc.scaleFactor ?? (acc.scaleFactor = {}), part.scaleFactor);
       acc.explicit.push(...(part.explicit ?? []));
       acc.noCounterpart.push(...(part.noCounterpart ?? []));
+      acc.charSplit.push(...(part.charSplit ?? []));
       return acc;
     },
-    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [], noCounterpart: [] },
+    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [], noCounterpart: [], charSplit: [] },
   );
 const EXCEPTIONS = JSON.parse(readFileSync(join(__dirname, "exceptions.json"), "utf8"));
 const SECTIONS = Object.keys(MAPPING.ourSection);
@@ -213,7 +214,11 @@ function findNoCounterpartReason(section, specPath) {
   return null;
 }
 
-function matchPairs(heronEls, ourEls, explicitIdx, section) {
+function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = []) {
+  // R337 ar-char-split: spec scaffold boxes (the tween's per-character
+  // divs under the h2 line containers) never enter heuristic pairing —
+  // the per-container aggregate owns them; letting them pair by ordinal
+  // glues them to unrelated elements and produces junk failures.
   const pairs = [];
   const usedOurs = new Set();
   // (a) explicit (legacy selectors + data-spec resolved by the page walk)
@@ -236,6 +241,7 @@ function matchPairs(heronEls, ourEls, explicitIdx, section) {
   let heuristic = 0;
   for (const h of heronEls) {
     if (pairs.some((p) => p.h === h)) continue;
+    if (charSplitRules.some((c) => h.p.includes(c.container) && !isLineContainerPath(h.p))) continue;
     const q = byKey.get(h.tag + "|" + h.tc);
     if (q && q.length) {
       const i = q.shift();
@@ -250,6 +256,13 @@ function matchPairs(heronEls, ourEls, explicitIdx, section) {
     unmatched.push({ h, reason: findNoCounterpartReason(section, h.p) });
   }
   return { pairs, heuristic, explicit: pairs.length - heuristic, unmatched };
+}
+
+// a path is a LINE CONTAINER when the segment before its last is the h2
+// itself ("… > h2[1] > div[3]") — scaffold boxes are deeper and their
+// penultimate segment is a plain div.
+function isLineContainerPath(p) {
+  return p.split(" > ").slice(-2)[0] === "h2[1]";
 }
 
 // ── runner ───────────────────────────────────────────────────────────────────
@@ -322,12 +335,86 @@ try {
       if (!spec || spec.missing) { cell.missing = "no-heron-spec"; continue; }
       if (o.missing) { cell.missing = `no-our-container:${o.missing}`; continue; }
 
-      const { pairs, heuristic, explicit, unmatched } = matchPairs(spec.elements, o.elements, o.explicitIdx, key);
+      const charSplitRules = MAPPING.charSplit.filter((c) => c.section === key);
+      const { pairs, heuristic, explicit, unmatched } = matchPairs(spec.elements, o.elements, o.explicitIdx, key, charSplitRules);
       cell.heuristic = heuristic;
       cell.explicit = pairs.filter((p) => p.mode === "explicit").length;
       cell.dataSpec = pairs.filter((p) => p.mode === "data-spec").length;
       cell.unmatched = unmatched.filter((u) => !u.reason).length;
       cell.excused = unmatched.filter((u) => !!u.reason).length;
+
+      // R337 ar-char-split — TRANSFORMED expectations, two-segment law.
+      // The extractor truncates spec ancestor paths at depth 6, so a
+      // line container ("… > h2[1] > div[3]") and its char scaffold
+      // boxes (recorded under a shallower truncated root that shares
+      // the container's last two segments "h2[1] > div[3]") are tied by
+      // those two segments. Per PAIRED line container:
+      //   · the container itself stays fully measured (all raw fields);
+      //   · ONE aggregate asserts the scaffold typography (fs/lh/fw/
+      //     color of the char boxes vs our word boxes) — as strong as
+      //     the raw fields were;
+      //   · the scaffold boxes are excused with the written word-law
+      //     reason, counted once, and pulled out of pair/unmatched
+      //     accounting so nothing double-counts.
+      const scaffoldKey2 = (p) => p.split(" > ").slice(-2).join(" > ");
+      const excusedScaffold = new Set(); // spec paths excused exactly once
+      for (const csr of charSplitRules) {
+        const containers = pairs.filter((pp) => pp.h.p.includes(csr.container));
+        for (const { h: lineH, o: lineO, mode } of containers) {
+          const key2 = scaffoldKey2(lineH.p);
+          const lineDepth = lineH.p.split(" > ").length;
+          const charEls = spec.elements.filter((e) => {
+            if (e.p === lineH.p) return false;
+            const s = e.p.split(" > ");
+            // (a) recorded under the truncated root "wrap > h2[1] > div[N]" —
+            //     shares the container's last two segments at depth 2-3;
+            // (b) recorded in full under the container — prefix match.
+            const viaTrunc = s.slice(1, 3).join(" > ") === key2;
+            const viaFull = e.p.startsWith(lineH.p + " > ");
+            return (viaTrunc || viaFull);
+          });
+          if (!charEls.length) continue;
+          const cfs = charEls.map((e) => T.num(e.fs)), clh = charEls.map((e) => T.num(e.lh));
+          const cfw = charEls.map((e) => e.fw), ccol = charEls.map((e) => e.color);
+          // our word boxes: the text-bearing descendants of OUR container
+          const ourTextEls = o.elements.filter((e) => e.p.startsWith(lineO.p + " > ") && e.tc !== "none");
+          const ofs = ourTextEls.map((e) => T.num(e.fs)), olh = ourTextEls.map((e) => T.num(e.lh));
+          const ofw = ourTextEls.map((e) => e.fw), ocol = ourTextEls.map((e) => e.color);
+          const sel = mode === "data-spec" ? `#ds:${lineO.ds}` : (lineO.p || MAPPING.ourSection[key]);
+          const fsOk = ofs.length > 0 && cfs.length > 0 && ofs.every((v) => Math.abs(v - cfs[0]) <= 0.5 * scaleFactor);
+          const lhFloor = Math.max(clh[0] || 0, 1.35 * (cfs[0] || 16));
+          const lhOk = olh.length > 0 && olh.every((v) => Math.abs(v - lhFloor) <= 0.5 * scaleFactor);
+          const fwOk = ofw.length > 0 && cfw.length > 0 && ofw.every((v) => String(v) === String(cfw[0]));
+          const colOk = ocol.length > 0 && ccol.length > 0 && ocol.every((c) => T.sameRgb(c, ccol[0]));
+          for (const [kIdx, ok, exp, act] of [
+            ["fontSize", fsOk, cfs[0], ofs[0] ?? null],
+            ["lineHeight", lhOk, Math.round(lhFloor * 100) / 100, olh[0] ?? null],
+            ["fontWeight", fwOk, cfw[0], ofw[0] ?? null],
+            ["color", colOk, ccol[0], ocol[0] ?? null],
+          ]) {
+            if (ok) cell.pass++;
+            else {
+              cell.fail++;
+              results.failures.push({ section: key, bp: bp.name, kind: kIdx, heronPath: `${lineH.p} (ar-char-split aggregate)`, oursSelector: sel, mode: "data-spec", expected: exp, actual: act, delta: 0 });
+            }
+          }
+          for (const e of charEls) {
+            if (excusedScaffold.has(e.p)) continue;
+            excusedScaffold.add(e.p);
+            cell.excused++;
+            results.unmatchedReport.push({ section: key, bp: bp.name, heronPath: e.p, excused: true, reason: "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); the line container is fully measured + the aggregate typography asserted" });
+          }
+        }
+      }
+      // pull the excused scaffold boxes out of pair/unmatched accounting
+      for (let i = pairs.length - 1; i >= 0; i--) {
+        if (excusedScaffold.has(pairs[i].h.p)) pairs.splice(i, 1);
+      }
+      for (let i = unmatched.length - 1; i >= 0; i--) {
+        if (excusedScaffold.has(unmatched[i].h.p)) unmatched.splice(i, 1);
+      }
+      cell.unmatched = unmatched.filter((u) => !u.reason).length;
+      cell.excused += unmatched.filter((u) => !!u.reason).length;
 
       const run = (h, oEl, skip, heronPath, oursSel) => {
         const checks = [];
