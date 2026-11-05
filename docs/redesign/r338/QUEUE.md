@@ -12,15 +12,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 12
+- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
+- [~] T-02d1 usecase y+h geometry only.
+- [~] T-08c1 platform color+lh css-only.
+
 ## WAVE 11
-- [~] T-99b1 entry-diet ONLY (tight): lazy GlobalSearch + axios audit, clean-rebuild bundle ≤777, push branch, report.
-- [~] T-05f why residual: hidden-counterpart clusters, 768 h2 Arabic 2-line, desktop x-mirror:160/y:406, 262 no-counterpart + --dark.
+- [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
+- [x] T-05f DONE: canonical why branch is now **r338/t05-why-f** @3c647923 — 62.8→63.5% light (65/65/58/66/63), dark 66.8→67.4% (flips 217, contrast 0 fails), no-counterpart 262→198; residual: desktop x-mirror ~96 + y ~400 (needs explicit bindings d=19→~60), 768 h2 2-line col park, map-path w/h approximate, ~200 no-counterpart ·
 
 ## WAVE 10
 - [~] T-99b DIED → split: T-99b1 diet-only (lazy GlobalSearch/axios, tight scope, branch push) then T-99b2 landing
 - [x] T-03c DONE: r338/t03-intro @f1012d9c — 74.7→74.9% (112 explicit word data-spec pairs via ScrubReveal wordSpec; container charSplit measured 59.9% → honestly reverted); T-03d residual: 26 per-CHAR heron paths ~500 fail rows (need per-char→word bindings or scaffold rule), pill x-mirror ~47, crawl/label svg ~35, dark/webkit unmeasured ·
-- [~] T-02d usecase geometry (died wave-10; respawn — y:389 h:103 x-mirror:85 w:78 + 390 parked deck; beware carried acc re-seat WIP) ·
-- [~] T-08c platform pass-3 (died wave-10; respawn — token ruling rgb(250,54,0), side-col 193 rows, ai-cell, 768/390 folds, marquee+dual-CTA counterparts, curves) ·
+- [~] T-02d died ×3 → split: T-02d1 (y:389 + h:103 only) + T-02d2 (x-mirror:85 + w:78 + 390 parked deck) ·
+- [~] T-08c died ×2 → split: T-08c1 (color token ruling + lh:117, css-only) + T-08c2 (geometry + counterparts + curves) ·
 
 ## WAVE 9
 - [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
@@ -83,15 +89,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 12
+- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
+- [~] T-02d1 usecase y+h geometry only.
+- [~] T-08c1 platform color+lh css-only.
+
 ## WAVE 11
-- [~] T-99b1 entry-diet ONLY (tight): lazy GlobalSearch + axios audit, clean-rebuild bundle ≤777, push branch, report.
-- [~] T-05f why residual: hidden-counterpart clusters, 768 h2 Arabic 2-line, desktop x-mirror:160/y:406, 262 no-counterpart + --dark.
+- [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
+- [x] T-05f DONE: canonical why branch is now **r338/t05-why-f** @3c647923 — 62.8→63.5% light (65/65/58/66/63), dark 66.8→67.4% (flips 217, contrast 0 fails), no-counterpart 262→198; residual: desktop x-mirror ~96 + y ~400 (needs explicit bindings d=19→~60), 768 h2 2-line col park, map-path w/h approximate, ~200 no-counterpart ·
 
 ## WAVE 10
 - [~] T-99b DIED → split: T-99b1 diet-only (lazy GlobalSearch/axios, tight scope, branch push) then T-99b2 landing
 - [x] T-03c DONE: r338/t03-intro @f1012d9c — 74.7→74.9% (112 explicit word data-spec pairs via ScrubReveal wordSpec; container charSplit measured 59.9% → honestly reverted); T-03d residual: 26 per-CHAR heron paths ~500 fail rows (need per-char→word bindings or scaffold rule), pill x-mirror ~47, crawl/label svg ~35, dark/webkit unmeasured ·
-- [~] T-02d usecase geometry (died wave-10; respawn — y:389 h:103 x-mirror:85 w:78 + 390 parked deck; beware carried acc re-seat WIP) ·
-- [~] T-08c platform pass-3 (died wave-10; respawn — token ruling rgb(250,54,0), side-col 193 rows, ai-cell, 768/390 folds, marquee+dual-CTA counterparts, curves) ·
+- [~] T-02d died ×3 → split: T-02d1 (y:389 + h:103 only) + T-02d2 (x-mirror:85 + w:78 + 390 parked deck) ·
+- [~] T-08c died ×2 → split: T-08c1 (color token ruling + lh:117, css-only) + T-08c2 (geometry + counterparts + curves) ·
 
 ## WAVE 9
 - [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
@@ -129,15 +141,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 12
+- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
+- [~] T-02d1 usecase y+h geometry only.
+- [~] T-08c1 platform color+lh css-only.
+
 ## WAVE 11
-- [~] T-99b1 entry-diet ONLY (tight): lazy GlobalSearch + axios audit, clean-rebuild bundle ≤777, push branch, report.
-- [~] T-05f why residual: hidden-counterpart clusters, 768 h2 Arabic 2-line, desktop x-mirror:160/y:406, 262 no-counterpart + --dark.
+- [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
+- [x] T-05f DONE: canonical why branch is now **r338/t05-why-f** @3c647923 — 62.8→63.5% light (65/65/58/66/63), dark 66.8→67.4% (flips 217, contrast 0 fails), no-counterpart 262→198; residual: desktop x-mirror ~96 + y ~400 (needs explicit bindings d=19→~60), 768 h2 2-line col park, map-path w/h approximate, ~200 no-counterpart ·
 
 ## WAVE 10
 - [~] T-99b DIED → split: T-99b1 diet-only (lazy GlobalSearch/axios, tight scope, branch push) then T-99b2 landing
 - [x] T-03c DONE: r338/t03-intro @f1012d9c — 74.7→74.9% (112 explicit word data-spec pairs via ScrubReveal wordSpec; container charSplit measured 59.9% → honestly reverted); T-03d residual: 26 per-CHAR heron paths ~500 fail rows (need per-char→word bindings or scaffold rule), pill x-mirror ~47, crawl/label svg ~35, dark/webkit unmeasured ·
-- [~] T-02d usecase geometry (died wave-10; respawn — y:389 h:103 x-mirror:85 w:78 + 390 parked deck; beware carried acc re-seat WIP) ·
-- [~] T-08c platform pass-3 (died wave-10; respawn — token ruling rgb(250,54,0), side-col 193 rows, ai-cell, 768/390 folds, marquee+dual-CTA counterparts, curves) ·
+- [~] T-02d died ×3 → split: T-02d1 (y:389 + h:103 only) + T-02d2 (x-mirror:85 + w:78 + 390 parked deck) ·
+- [~] T-08c died ×2 → split: T-08c1 (color token ruling + lh:117, css-only) + T-08c2 (geometry + counterparts + curves) ·
 
 ## WAVE 9
 - [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
@@ -170,15 +188,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 12
+- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
+- [~] T-02d1 usecase y+h geometry only.
+- [~] T-08c1 platform color+lh css-only.
+
 ## WAVE 11
-- [~] T-99b1 entry-diet ONLY (tight): lazy GlobalSearch + axios audit, clean-rebuild bundle ≤777, push branch, report.
-- [~] T-05f why residual: hidden-counterpart clusters, 768 h2 Arabic 2-line, desktop x-mirror:160/y:406, 262 no-counterpart + --dark.
+- [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
+- [x] T-05f DONE: canonical why branch is now **r338/t05-why-f** @3c647923 — 62.8→63.5% light (65/65/58/66/63), dark 66.8→67.4% (flips 217, contrast 0 fails), no-counterpart 262→198; residual: desktop x-mirror ~96 + y ~400 (needs explicit bindings d=19→~60), 768 h2 2-line col park, map-path w/h approximate, ~200 no-counterpart ·
 
 ## WAVE 10
 - [~] T-99b DIED → split: T-99b1 diet-only (lazy GlobalSearch/axios, tight scope, branch push) then T-99b2 landing
 - [x] T-03c DONE: r338/t03-intro @f1012d9c — 74.7→74.9% (112 explicit word data-spec pairs via ScrubReveal wordSpec; container charSplit measured 59.9% → honestly reverted); T-03d residual: 26 per-CHAR heron paths ~500 fail rows (need per-char→word bindings or scaffold rule), pill x-mirror ~47, crawl/label svg ~35, dark/webkit unmeasured ·
-- [~] T-02d usecase geometry (died wave-10; respawn — y:389 h:103 x-mirror:85 w:78 + 390 parked deck; beware carried acc re-seat WIP) ·
-- [~] T-08c platform pass-3 (died wave-10; respawn — token ruling rgb(250,54,0), side-col 193 rows, ai-cell, 768/390 folds, marquee+dual-CTA counterparts, curves) ·
+- [~] T-02d died ×3 → split: T-02d1 (y:389 + h:103 only) + T-02d2 (x-mirror:85 + w:78 + 390 parked deck) ·
+- [~] T-08c died ×2 → split: T-08c1 (color token ruling + lh:117, css-only) + T-08c2 (geometry + counterparts + curves) ·
 
 ## WAVE 9
 - [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
@@ -204,15 +228,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 12
+- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
+- [~] T-02d1 usecase y+h geometry only.
+- [~] T-08c1 platform color+lh css-only.
+
 ## WAVE 11
-- [~] T-99b1 entry-diet ONLY (tight): lazy GlobalSearch + axios audit, clean-rebuild bundle ≤777, push branch, report.
-- [~] T-05f why residual: hidden-counterpart clusters, 768 h2 Arabic 2-line, desktop x-mirror:160/y:406, 262 no-counterpart + --dark.
+- [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
+- [x] T-05f DONE: canonical why branch is now **r338/t05-why-f** @3c647923 — 62.8→63.5% light (65/65/58/66/63), dark 66.8→67.4% (flips 217, contrast 0 fails), no-counterpart 262→198; residual: desktop x-mirror ~96 + y ~400 (needs explicit bindings d=19→~60), 768 h2 2-line col park, map-path w/h approximate, ~200 no-counterpart ·
 
 ## WAVE 10
 - [~] T-99b DIED → split: T-99b1 diet-only (lazy GlobalSearch/axios, tight scope, branch push) then T-99b2 landing
 - [x] T-03c DONE: r338/t03-intro @f1012d9c — 74.7→74.9% (112 explicit word data-spec pairs via ScrubReveal wordSpec; container charSplit measured 59.9% → honestly reverted); T-03d residual: 26 per-CHAR heron paths ~500 fail rows (need per-char→word bindings or scaffold rule), pill x-mirror ~47, crawl/label svg ~35, dark/webkit unmeasured ·
-- [~] T-02d usecase geometry (died wave-10; respawn — y:389 h:103 x-mirror:85 w:78 + 390 parked deck; beware carried acc re-seat WIP) ·
-- [~] T-08c platform pass-3 (died wave-10; respawn — token ruling rgb(250,54,0), side-col 193 rows, ai-cell, 768/390 folds, marquee+dual-CTA counterparts, curves) ·
+- [~] T-02d died ×3 → split: T-02d1 (y:389 + h:103 only) + T-02d2 (x-mirror:85 + w:78 + 390 parked deck) ·
+- [~] T-08c died ×2 → split: T-08c1 (color token ruling + lh:117, css-only) + T-08c2 (geometry + counterparts + curves) ·
 
 ## WAVE 9
 - [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
@@ -234,15 +264,21 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 12
+- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
+- [~] T-02d1 usecase y+h geometry only.
+- [~] T-08c1 platform color+lh css-only.
+
 ## WAVE 11
-- [~] T-99b1 entry-diet ONLY (tight): lazy GlobalSearch + axios audit, clean-rebuild bundle ≤777, push branch, report.
-- [~] T-05f why residual: hidden-counterpart clusters, 768 h2 Arabic 2-line, desktop x-mirror:160/y:406, 262 no-counterpart + --dark.
+- [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
+- [x] T-05f DONE: canonical why branch is now **r338/t05-why-f** @3c647923 — 62.8→63.5% light (65/65/58/66/63), dark 66.8→67.4% (flips 217, contrast 0 fails), no-counterpart 262→198; residual: desktop x-mirror ~96 + y ~400 (needs explicit bindings d=19→~60), 768 h2 2-line col park, map-path w/h approximate, ~200 no-counterpart ·
 
 ## WAVE 10
 - [~] T-99b DIED → split: T-99b1 diet-only (lazy GlobalSearch/axios, tight scope, branch push) then T-99b2 landing
 - [x] T-03c DONE: r338/t03-intro @f1012d9c — 74.7→74.9% (112 explicit word data-spec pairs via ScrubReveal wordSpec; container charSplit measured 59.9% → honestly reverted); T-03d residual: 26 per-CHAR heron paths ~500 fail rows (need per-char→word bindings or scaffold rule), pill x-mirror ~47, crawl/label svg ~35, dark/webkit unmeasured ·
-- [~] T-02d usecase geometry (died wave-10; respawn — y:389 h:103 x-mirror:85 w:78 + 390 parked deck; beware carried acc re-seat WIP) ·
-- [~] T-08c platform pass-3 (died wave-10; respawn — token ruling rgb(250,54,0), side-col 193 rows, ai-cell, 768/390 folds, marquee+dual-CTA counterparts, curves) ·
+- [~] T-02d died ×3 → split: T-02d1 (y:389 + h:103 only) + T-02d2 (x-mirror:85 + w:78 + 390 parked deck) ·
+- [~] T-08c died ×2 → split: T-08c1 (color token ruling + lh:117, css-only) + T-08c2 (geometry + counterparts + curves) ·
 
 ## WAVE 9
 - [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
