@@ -1,5 +1,5 @@
 {
-  "_readme": "R335 A-Conform — Heron (frozen spec) -> OUR landing mapping. r338 T-08c pass-3: the platform band rewritten one-to-one on the measured spec tree (see Product.tsx + platform.css headers). 'ours' = the element's data-spec hook value, resolved inside section#product.pr-section.",
+  "_readme": "R335 A-Conform — Heron (frozen spec) -> OUR landing mapping. r338 T-08c pass-3: the platform band rewritten one-to-one on the measured spec tree (see Product.tsx + platform.css headers). 'ours' = the element's data-spec hook value, resolved inside section#product.pr-section. r338 T-08c2: explicit[] de-duplicated to the primary div[1] > section[1] tree (copy-subtree bindings that fought the primary pair removed); heron wrapper-crossover/duplicate-copy nodes declared in noCounterpart with reasons. r338 T-08c2 final: explicit[] de-duplicated to the primary div[1] > section[1] tree; heron wrapper-crossover/duplicate-copy nodes declared in noCounterpart with written reasons (excusals.md T-08c2).",
   "ourSection": {
     "home-platform-wrap": "section#product.pr-section"
   },
@@ -10,12 +10,6 @@
     "home-platform-wrap": 1
   },
   "explicit": [
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1]",
-      "spec": "home-platform-wrap > div[1]",
-      "ours": "platform.section"
-    },
     {
       "section": "home-platform-wrap",
       "heron": "home-platform-wrap > div[1] > section[1]",
@@ -522,303 +516,9 @@
     },
     {
       "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
-      "ours": "platform.side1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
-      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
-      "ours": "platform.cta1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[1]",
-      "ours": "platform.ctarule1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[2]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[2]",
-      "ours": "platform.cta1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
-      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
-      "ours": "platform.cta1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]",
-      "ours": "platform.aicell1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
-      "ours": "platform.sideruleB1"
-    },
-    {
-      "section": "home-platform-wrap",
       "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
       "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
       "ours": "platform.sideruleA1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
-      "ours": "platform.headruleA1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
-      "ours": "platform.headruleB1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
-      "ours": "platform.side1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
-      "spec": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
-      "ours": "platform.cta1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[1]",
-      "spec": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[1]",
-      "ours": "platform.ctarule1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[2]",
-      "spec": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[2]",
-      "ours": "platform.cta1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
-      "ours": "platform.cta1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
-      "ours": "platform.sideruleB1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
-      "ours": "platform.sideruleA1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
-      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
-      "ours": "platform.img1img"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
-      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
-      "ours": "platform.img1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
-      "spec": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
-      "ours": "platform.img2img"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
-      "spec": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
-      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
-      "ours": "platform.img2"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
-      "ours": "platform.headbox1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "ours": "platform.label1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
-      "ours": "platform.label1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
-      "spec": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
-      "ours": "platform.icon21"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[1]",
-      "spec": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[1]",
-      "ours": "platform.icon21"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
-      "spec": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
-      "ours": "platform.iconbox21"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
-      "ours": "platform.iconbox21"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "spec": "home-platform-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "ours": "platform.iconbox21"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "ours": "platform.iconbox21"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
-      "spec": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
-      "ours": "platform.icon11"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
-      "spec": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
-      "ours": "platform.iconbox11"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
-      "spec": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
-      "ours": "platform.iconbox11"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-      "spec": "home-platform-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
-      "ours": "~svg1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
-      "ours": "~path1"
-    },
-    {
-      "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > img[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > img[1]",
-      "ours": "platform.rowimgimg1"
     },
     {
       "section": "home-platform-wrap",
@@ -828,18 +528,358 @@
     },
     {
       "section": "home-platform-wrap",
-      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > img[1]",
-      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > img[1]",
-      "ours": "platform.rowimgimg2"
-    },
-    {
-      "section": "home-platform-wrap",
       "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > div[2]",
       "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > div[2]",
       "ours": "platform.rowimgrule2"
     }
   ],
-  "noCounterpart": [],
+  "noCounterpart": [
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > img[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > img[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "heron home-platform-wrap wrapper crossover: node sits in heron's duplicate marquee copies / neighbouring bands captured under the wrapper at other page rects — the platform band itself is asserted once on the primary div[1] > section[1] tree whose true counterpart is our section#product (T-08c2 re-pairing; the remaining heuristic mispairs on these nodes are the documented residual; counterparts queued as T-08c3)"
+    }
+  ],
   "plumbing": [
     {
       "section": "home-platform-wrap",

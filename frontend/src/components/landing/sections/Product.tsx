@@ -82,31 +82,34 @@ function PlatformRow({ item, idx, hidden }: { item: typeof PLATFORM_ITEMS[number
         </div>
         <a href="#cta" className="pr-cta" data-spec={ds('cta')}>
           <div className="pr-cta-rule" data-spec={ds('ctarule')} aria-hidden="true" />
-          <span className="pr-cta-body" data-spec={ds('ctabody')}>
-            <span className="pr-cta-row" data-spec={ds('ctarow')}>
+          {/* r338 T-08c2 — heron's CTA internals are divs (a[2] > div[2] >
+              div[1] > …, measured): the structural wrappers re-tagged
+              span → div so the explicit pairs pass tag asserts */}
+          <div className="pr-cta-body" data-spec={ds('ctabody')}>
+            <div className="pr-cta-row" data-spec={ds('ctarow')}>
               {/* heron's dark hover menu (624×156) — the assistant
                   panel; opens on hover/focus, rect never moves */}
-              <span className="pr-menu" data-spec={ds('aicell')}>
+              <div className="pr-menu" data-spec={ds('aicell')}>
                 <span className="pr-menu-k" data-spec={ds('menuk')}>المساعد الأكاديمي</span>
                 <span className="pr-menu-q" data-spec={ds('menuq')}>اشرح لي مفهوم «نقطة الفحص»</span>
                 <span className="pr-menu-a" data-spec={ds('menua')}>سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</span>
-              </span>
-              <span className="pr-cta-line" data-spec={ds('ctaline1')}><span data-spec={ds('ctaline1t')}>{item.cta1}</span></span>
-              <span className="pr-cta-icons" data-spec={ds('icons')}>
-                <span className="pr-cta-ic" data-spec={ds('icon1')}>
-                  <span className="pr-cta-icbox" data-spec={ds('iconbox1')}>
+              </div>
+              <div className="pr-cta-line" data-spec={ds('ctaline1')}><span data-spec={ds('ctaline1t')}>{item.cta1}</span></div>
+              <div className="pr-cta-icons" data-spec={ds('icons')}>
+                <div className="pr-cta-ic" data-spec={ds('icon1')}>
+                  <div className="pr-cta-icbox" data-spec={ds('iconbox1')}>
                     <Icon icon={ChevronLeft} size={22} />
-                  </span>
-                </span>
-                <span className="pr-cta-ic" data-spec={ds('icon2')}>
-                  <span className="pr-cta-icbox" data-spec={ds('iconbox2')}>
+                  </div>
+                </div>
+                <div className="pr-cta-ic" data-spec={ds('icon2')}>
+                  <div className="pr-cta-icbox" data-spec={ds('iconbox2')}>
                     <Icon icon={ChevronLeft} size={22} />
-                  </span>
-                </span>
-              </span>
-            </span>
-            <span className="pr-cta-line" data-spec={ds('ctaline2')}><span data-spec={ds('ctaline2t')}>{item.cta2}</span></span>
-          </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="pr-cta-line" data-spec={ds('ctaline2')}><span data-spec={ds('ctaline2t')}>{item.cta2}</span></div>
+          </div>
         </a>
         <div className="pr-cell-rule is-end" data-spec={ds('sideruleB')} aria-hidden="true" />
       </div>

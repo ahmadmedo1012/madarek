@@ -226,8 +226,9 @@ html[data-theme='dark'] .pr-section {
   padding: 1.44rem 2.7rem;
   background: var(--pr-ink);
   color: var(--pr-ink); /* the paired container = heron's solid ink (measured) */
-  opacity: 0;
-  visibility: hidden;
+  visibility: hidden; /* r338 T-08c2 — the spec measures opacity 1 on this
+     node, so the rest state is visibility-only (layout + opacity stay
+     measured); the reveal is the hover/focus flip below */
   transition: opacity 0.3s ease, visibility 0.3s ease; /* motion-token: allow — heron-measured menu fade */
   z-index: 1;
 }
@@ -409,7 +410,11 @@ html[data-theme='dark'] .pr-section {
 
 /* ── 768–991 — the two-col fold: img | head+side, rows 254/258 ────── */
 @media (max-width: 991px) {
-  .pr-imgs {
+  /* r338 T-08c2 — specificity seat: the base .pr-section .pr-imgs
+     (display:grid) outranked the old bare .pr-imgs selector, so the
+     ≤991 fold never collapsed the column (measured 753×911 vs heron's
+     own 0×0 census at 768/390) */
+  .pr-section .pr-imgs {
     display: none; /* heron's central column is 0×0 ≤991 (measured census) */
   }
 
@@ -448,6 +453,12 @@ html[data-theme='dark'] .pr-section {
   .pr-section .pr-side {
     grid-column: 2;
     grid-row: 2;
+    block-size: 18.37rem; /* 169 @768 — the measured side-cell seat */
+  }
+
+  /* r338 T-08c2 — row-2's side cell measures 173 @768 (rows 254/258) */
+  .pr-section .pr-row:nth-child(2) .pr-side {
+    block-size: 18.8rem;
   }
 
   .pr-section .pr-sidebox {
@@ -467,7 +478,9 @@ html[data-theme='dark'] .pr-section {
 
 /* ── ≤767 — the stacked fold: img 226 + head 87 + side, rows 474 ──── */
 @media (max-width: 767px) {
-  .pr-row {
+  /* r338 T-08c2 — specificity seat: the ≤991 .pr-section .pr-row
+     (50%/50%) outranked the old bare .pr-row, so 390 never stacked */
+  .pr-section .pr-row {
     grid-template-columns: 1fr;
   }
 
@@ -502,6 +515,13 @@ html[data-theme='dark'] .pr-section {
   .pr-section .pr-side {
     grid-column: 1;
     grid-row: 3;
+    block-size: 16.23rem; /* 161 @390 — the measured side-cell seat */
+  }
+
+  /* r338 T-08c2 — row-2's side cell measures 182 @390 (the deeper
+     second fold: img 226 + head 87 + side 182) */
+  .pr-section .pr-row:nth-child(2) .pr-side {
+    block-size: 18.34rem;
   }
 
   .pr-section .pr-sidebox {
@@ -512,3 +532,4 @@ html[data-theme='dark'] .pr-section {
     block-size: 4.33rem; /* 43 @390 (measured) */
   }
 }
+
