@@ -48,3 +48,5 @@ T-05f | playwright probe + heron-spec.768/390.json rect extraction | measured ro
 T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification
 T-20 | targeted source reads (rg/grep + package.json x2, scripts/README + verify.sh + run.mjs flags, OWNERSHIP.md, ci.yml, HANDOFF.md, check-bundle-size.mjs, mapping/, styles/landing/, apps/mobile/) | fact-base for AGENTS.md (verified every command, gate, ceiling, seat binding)
 T-21 | git mv + du/rg script-dep audit (heron-spec/r331-twin/r320-gate/assets refs) | archive closed redesign rounds into docs/archive/redesign, add docs/INDEX.md, fix AGENTS.md r313 link
+T-14a2 | playwright chromium (chromium-1200 via /tmp/pw-browsers symlink fallback, PLAYWRIGHT_BROWSERS_PATH) | dark-path instrument validation: light regression (usecase+footer), 390 determinism double-run, per-bp dark-contrast counts
+T-02e | scripts/conformance/run.mjs --dark + vite --port 5302 | usecase dark-ink contrast measurement: rgba composite census 44/43/35/35/35 fails → 0 (43+35 soft-ink seats + 1 seat 2.71@390 via --rl-soft-ink dark arm)
