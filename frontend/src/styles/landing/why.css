@@ -187,16 +187,19 @@
   inset: 0;
 }
 
-/* ── the four capture rows (464px tall, alternating sides) ── */
+/* ── the four capture rows (464px tall, alternating sides) — seats ride
+   the --wy-* custom properties (see WhyScene seat factory) ── */
 .wy-row {
   position: absolute;
   inset-inline: 0;
+  inset-block-start: var(--wy-ry);
   block-size: 55.68rem;                /* 464px */
 }
 
 .wy-card {
   position: absolute;
   inset-block-start: 0;
+  inset-inline-start: var(--wy-cx);
   inline-size: 55.68rem;
   block-size: 55.68rem;
 }
@@ -220,6 +223,7 @@
 .wy-tag {
   position: absolute;
   inset-block-start: 5.76rem;          /* y=48 row-relative */
+  inset-inline-start: var(--wy-tx);
   display: grid;
   row-gap: 0.72rem;
 }
@@ -260,6 +264,10 @@
 /* ── small captures + the 13px icon cluster ── */
 .wy-mini {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
+  inline-size: var(--wy-sw);
+  block-size: var(--wy-sh);
 }
 
 .wy-mini-in {
@@ -272,6 +280,7 @@
 .wy-box {
   position: absolute;
   block-size: 100%;
+  inset-inline-start: var(--wy-bx);
 }
 
 .wy-box-in {
@@ -291,6 +300,7 @@
 /* icon cluster: white 10px core (4px glyph) + accent swap + ring */
 .wy-ic {
   position: absolute;
+  inset-inline-start: var(--wy-ix);
   inline-size: 1.56rem;                /* 13px */
   block-size: 1.56rem;
 }
@@ -365,6 +375,10 @@
 
 .wy-vid {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
+  inline-size: var(--wy-sw, auto);
+  block-size: var(--wy-sh, auto);
 }
 
 .wy-vid-in {
@@ -376,6 +390,8 @@
 
 .wy-vic {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
   inline-size: 2.16rem;                /* 18px sound icon */
   block-size: 2.16rem;
 }
@@ -396,6 +412,8 @@
 .wy-spinz,
 .wy-loadz {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
   inline-size: 2.88rem;                /* 24px spinner */
   block-size: 2.88rem;
 }
@@ -418,6 +436,8 @@
 
 .wy-chk {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
   inline-size: 0.72rem;                /* 6px check */
   block-size: 0.72rem;
 }
@@ -436,6 +456,8 @@
 
 .wy-dots {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
   display: flex;
   gap: 0.6rem;
 }
@@ -454,6 +476,10 @@
 /* ── row 4: the dashed route map + point reveals ── */
 .wy-pt {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
+  inline-size: var(--wy-sw);
+  block-size: var(--wy-sh);
   transform: scale(var(--wy-pt-s, 1));
   transform-origin: center;
 }
@@ -487,143 +513,348 @@
 
 .wy-map-path {
   position: absolute;
+  inset-inline-start: var(--wy-sx);
+  inset-block-start: var(--wy-sy);
+  inline-size: var(--wy-sw);
+  block-size: var(--wy-sh);
   stroke: var(--rule-strong);
   stroke-width: 0.12rem;
   stroke-dasharray: 0.6rem 0.72rem;    /* the dashed route */
   fill: none;
 }
 
-/* ═══ ≤991px — the same DOM, stacked: head single-column, stage rows
-   become a vertical capture list (static + fully readable under
-   reduced motion; the spec's mobile grammar is its own belt) ═══ */
+/* ═══ ≤991 — the COMPACT tablet belt, re-seated to the measured 768
+   spec (section 753×1882: ruled 2-col head 202 · full hairline ·
+   1680px stage with the centred 1px axis · four 338px alternating
+   2-col rows — card one side, pinned caption the other, mini-captures
+   overlaid on the cards). Seats in rem on the ≤991 root (9.2px @768);
+   logical RTL properties mirror the spec's physical x exactly
+   (inset-inline-start ≡ spec x — mirror×RTL = identity). ═══ */
 @media (max-width: 991px) {
   .wy-section {
-    padding-inline: var(--sp-4);
-    padding-block: var(--sp-7) var(--sp-6);
+    inline-size: 100%;
+    padding-inline: 0.81rem;            /* 7.5px gutters @768 · 8px @390 */
+    padding-block: 0;
   }
 
   .wy-head {
-    grid-template-columns: minmax(0, 1fr);
-    row-gap: var(--sp-4);
+    grid-template-columns: minmax(0, 1fr) 40.97rem;
+    block-size: 21.83rem;               /* 201px + the 1px hairline */
   }
 
   .wy-eyebrow {
-    grid-column: 1;
-    grid-row: auto;
-    padding-block-start: 0;
-    padding-inline-start: 0;
+    padding-block-start: 6.3rem;        /* eyebrow y58 */
+    padding-inline-start: 2.39rem;      /* x22 in the left lane */
+  }
+
+  .wy-eyebrow-t {
+    font-size: 1.6rem;                  /* 14.73px @768 */
+    line-height: 1.22;                  /* the 18px seat */
   }
 
   .wy-h2w {
-    grid-column: 1;
-    grid-row: auto;
-    margin-block-start: var(--sp-1-5);
-    margin-inline-start: 0;
-    inline-size: auto;
+    margin-block-start: 1.63rem;        /* eyebrow bottom 76 → h2 y91 */
+    margin-inline-start: 2.39rem;
+    inline-size: 28.03rem;              /* the 258px box */
     min-block-size: 0;
   }
 
   .wy-title {
+    font-size: 3.2rem;                  /* 29.47px @768 */
+    line-height: 1;
     min-block-size: 0;
   }
 
   .wy-side {
-    grid-column: 1;
-    grid-row: auto;
-    padding-inline-start: 0;
-    padding-block-start: var(--sp-1-5);
+    align-self: end;                    /* the rail rides y84 of 202 */
+    padding-block-start: 0;
+    padding-inline: 1.41rem 0;
     min-block-size: 0;
   }
 
-  .wy-rule-v {
-    inset-block: 0;
-    inset-inline-start: auto;
-    inset-inline-end: 0;
-    inline-size: 100%;
-    block-size: 0.12rem;
+  .wy-lede-t {
+    font-size: 1.6rem;
+    line-height: 1.3;
   }
 
   .wy-note {
-    margin-block-start: var(--sp-2);
+    margin-block-start: 0.44rem;
+  }
+
+  .wy-note-t {
+    font-size: 1.6rem;
+    line-height: 1.22;
   }
 
   .wy-hrule {
-    margin-block-start: var(--sp-4);
-  }
-
-  .wy-stage {
-    block-size: auto;
-  }
-
-  .wy-axis,
-  .wy-mk,
-  .wy-progress {
-    display: none;
-  }
-
-  .wy-track,
-  .wy-track-in {
-    position: static;
-    block-size: auto;
-  }
-
-  .wy-row {
-    position: relative;
-    inset: 0;
-    block-size: auto;
-    display: grid;
-    row-gap: var(--sp-3);
-    margin-block-end: var(--sp-6);
-  }
-
-  .wy-card,
-  .wy-player,
-  .wy-player2,
-  .wy-map,
-  .wy-map-in,
-  .wy-map-svg {
-    position: relative;
-    inset: 0;
-    inline-size: 100%;
-    block-size: auto;
-  }
-
-  .wy-card-in,
-  .wy-vid,
-  .wy-vid-in,
-  .wy-box,
-  .wy-box-in,
-  .wy-mini,
-  .wy-mini-in {
-    position: relative;
-    inset: 0;
-    inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 4 / 3;
-  }
-
-  .wy-tag {
-    position: relative;
-    inset: 0;
     margin-block-start: 0;
   }
 
-  .wy-tag-title {
-    font-size: var(--fs-h3, 1.92rem);
+  /* the stage — 1680px; the scrub wrapper collapses to the spec's 0×0
+     (children still render), the axis runs centre full-height */
+  .wy-stage {
+    block-size: 182.51rem;
   }
 
-  .wy-mini + .wy-mini,
-  .wy-ic,
+  .wy-axis {
+    inset-inline-start: 40.97rem;       /* the centre 377px rail */
+  }
+
+  .wy-mk,
+  .wy-progress {
+    display: none;                      /* spec 0×0 — hidden seats */
+  }
+
+  .wy-stage-in {
+    inline-size: 0;
+    block-size: 0;                      /* the spec's 0×0 scrub wrapper */
+  }
+
+  .wy-track {
+    inset-block-start: 12.39rem;        /* y114 stage-relative */
+    inline-size: calc(100vw - 1.62rem); /* 753px @768 · 374px @390 */
+    block-size: 166.12rem;              /* 1529px */
+  }
+
+  .wy-row {
+    inset-block-start: 0;
+    block-size: 36.72rem;               /* 338px rows */
+  }
+
+  .wy-track-in > .wy-row:nth-child(2) { inset-block-start: 43.13rem; }
+  .wy-track-in > .wy-row:nth-child(3) { inset-block-start: 86.26rem; }
+  .wy-track-in > .wy-row:nth-child(4) { inset-block-start: 129.39rem; }
+
+  .wy-card {
+    inset-block-start: 0;
+    inline-size: 36.72rem;
+    block-size: 36.72rem;
+  }
+
+  .wy-row:nth-child(odd) .wy-card { inset-inline-start: 3.26rem; }
+  .wy-row:nth-child(even) .wy-card { inset-inline-start: 41.93rem; }
+
+  /* the pinned caption bar — the 367px col opposite the card */
+  .wy-tag {
+    inset-block-start: 13.4rem;
+    inline-size: 39.87rem;
+  }
+
+  .wy-row:nth-child(odd) .wy-tag {
+    inset-inline-start: 41.93rem;
+    inset-block-start: 14.45rem;
+    padding-inline-start: 2.06rem;
+  }
+
+  .wy-row:nth-child(even) .wy-tag {
+    inset-inline-start: 0.76rem;
+    inset-block-start: 13.36rem;
+    padding-inline-start: 5.21rem;
+  }
+
+  .wy-tag-title {
+    font-size: 1.6rem;
+    line-height: 1.36;                  /* the 20px seat */
+  }
+
+  .wy-tag-sub {
+    font-size: 1.6rem;
+    line-height: 1.3;                   /* the 19px seat */
+  }
+
+  /* mini-captures — the measured 768 overlay seats (row-relative) */
+  .wy-row[data-spec="why.row1"] .wy-mini:nth-child(2) {
+    inset-inline-start: 11.3rem; inset-block-start: 10.65rem;
+    inline-size: 10.75rem; block-size: 6.3rem;
+  }
+  .wy-row[data-spec="why.row1"] .wy-mini:nth-child(3) {
+    inset-inline-start: 20.53rem; inset-block-start: 20.75rem;
+    inline-size: 14.23rem; block-size: 7.93rem;
+  }
+  .wy-row[data-spec="why.row2"] .wy-mini:nth-child(2) {
+    inset-inline-start: 53.34rem; inset-block-start: 8.15rem;
+    inline-size: 10.54rem; block-size: 10.54rem;
+  }
+  .wy-row[data-spec="why.row2"] .wy-mini:nth-child(3) {
+    inset-inline-start: 59.97rem; inset-block-start: 20.43rem;
+    inline-size: 16.73rem; block-size: 14.23rem;
+  }
+  .wy-row[data-spec="why.row4"] .wy-mini {
+    inset-inline-start: 44.33rem; inset-block-start: 26.72rem;
+    inline-size: 9.02rem; block-size: 7.17rem;
+  }
+
+  .wy-box { inset-inline-start: 0; }
+
+  /* the 9px marker cluster at the mini's top inline-end corner */
+  .wy-ic {
+    inset-inline-start: auto;
+    inset-inline-end: 0.87rem;
+    inset-block-start: 0.76rem;
+    inline-size: 0.98rem;
+    block-size: 0.98rem;
+  }
+
+  .wy-ic-box {
+    inline-size: 0.65rem;
+    block-size: 0.65rem;
+    margin: 0.165rem;
+  }
+
+  .wy-ic-dot { display: none; }
+
+  /* row 3 — the four capture seats of the lecture-player cluster */
+  .wy-player2 .wy-vid:nth-child(1) {
+    inset-inline-start: 8.8rem; inset-block-start: -6.84rem;
+    inline-size: 25.53rem; block-size: 15.75rem;
+  }
+  .wy-player2 .wy-vid:nth-child(3) {
+    inset-inline-start: 7.5rem; inset-block-start: 9.67rem;
+    inline-size: 28.14rem; block-size: 17.27rem;
+  }
+  .wy-player2 .wy-vid:nth-child(6) {
+    inset-inline-start: 8.8rem; inset-block-start: 27.81rem;
+    inline-size: 25.53rem; block-size: 15.75rem;
+  }
+  .wy-player2 .wy-vid:nth-child(8) {
+    inset-inline-start: 7.28rem; inset-block-start: 27.6rem;
+    inline-size: 10.75rem; block-size: 6.95rem;
+  }
+
   .wy-vic,
   .wy-spinz,
   .wy-loadz,
   .wy-chk,
   .wy-dots,
   .wy-pt {
-    display: none;
+    display: none;                      /* no ≤991 spec seat */
   }
 
-  .wy-map-path {
-    display: none;
+  /* row 4 — the dashed route map inside the right-hand card */
+  .wy-map {
+    inset-block-start: 7.17rem;
+    inset-inline-start: 46.17rem;
+    inline-size: 28.46rem;
+    block-size: 20.97rem;
+  }
+}
+
+/* ═══ ≤767 — the mobile deck: the 390 spec's horizontal row carousel
+   (section 374×807: stacked head · full hairline · a 522px stage whose
+   four 374×481 rows sit side-by-side — the 350px image square with
+   overlaid minis + the caption stacked beneath, per deck card). ═══ */
+@media (max-width: 767px) {
+  .wy-head {
+    grid-template-columns: minmax(0, 1fr);
+    block-size: 28.62rem;               /* 284px + hairline */
+  }
+
+  .wy-eyebrow {
+    padding-block-start: 4.73rem;       /* y47 */
+    padding-inline-start: 0;
+  }
+
+  .wy-eyebrow-t { line-height: 1; }     /* the 15px seat */
+
+  .wy-h2w {
+    margin-block-start: 1.31rem;
+    margin-inline-start: 0;
+    inline-size: 34.47rem;              /* 342px */
+  }
+
+  .wy-side {
+    align-self: auto;
+    margin-block-start: 1.91rem;        /* h2 bottom 139 → side y158 */
+    padding-inline: 0;
+  }
+
+  .wy-stage {
+    block-size: 52.61rem;               /* 522px */
+  }
+
+  .wy-axis { display: none; }
+
+  .wy-track {
+    inset-block-start: 0;
+    block-size: 48.47rem;               /* 481px */
+  }
+
+  .wy-row {
+    inset-inline-end: auto;
+    inline-size: 37.69rem;              /* 374px deck cards */
+    inset-block-start: 0;
+    block-size: 48.47rem;
+  }
+
+  .wy-track-in > .wy-row:nth-child(1) { inset-inline-start: 0; }
+  .wy-track-in > .wy-row:nth-child(2) { inset-inline-start: 37.69rem; }
+  .wy-track-in > .wy-row:nth-child(3) { inset-inline-start: 75.38rem; }
+  .wy-track-in > .wy-row:nth-child(4) { inset-inline-start: 113.08rem; }
+
+  .wy-card {
+    inset-block-start: 1.71rem;         /* y17 in the 481px row */
+    inset-inline-start: 1.21rem;        /* x12 */
+    inline-size: 35.27rem;              /* the 350px square */
+    block-size: 35.27rem;
+  }
+
+  .wy-row:nth-child(odd) .wy-card,
+  .wy-row:nth-child(even) .wy-card { inset-inline-start: 1.21rem; }
+
+  .wy-tag {
+    inset-block-start: 39.61rem;        /* y393 */
+    inset-inline-start: 1.21rem;
+    inline-size: 35.27rem;
+    padding-inline-start: 1.61rem;      /* label x28 */
+    padding-block-start: 1.21rem;
+  }
+
+  .wy-tag-title { line-height: 1.38; }  /* the 22px seat */
+  .wy-tag-sub { line-height: 1.32; }    /* the 21px seat */
+
+  /* mini overlays re-seated to the 390 deck seats */
+  .wy-row[data-spec="why.row1"] .wy-mini:nth-child(2) {
+    inset-inline-start: 8.97rem; inset-block-start: 10.18rem;
+    inline-size: 10.38rem; block-size: 6.05rem;
+  }
+  .wy-row[data-spec="why.row1"] .wy-mini:nth-child(3) {
+    inset-inline-start: 17.74rem; inset-block-start: 21.66rem;
+    inline-size: 13.71rem; block-size: 7.56rem;
+  }
+  .wy-row[data-spec="why.row2"] .wy-mini:nth-child(2) {
+    inset-inline-start: 12.09rem; inset-block-start: 17.33rem;
+    inline-size: 10.08rem; block-size: 2.12rem;
+  }
+  .wy-row[data-spec="why.row2"] .wy-mini:nth-child(3) {
+    inset-inline-start: 10.78rem; inset-block-start: 32.14rem;
+    inline-size: 27.11rem; block-size: 2.12rem;
+  }
+  .wy-row[data-spec="why.row4"] .wy-mini {
+    inset-inline-start: 20.4rem; inset-block-start: 27.4rem;
+    inline-size: 4.16rem; block-size: 6.89rem;
+  }
+
+  .wy-player2 .wy-vid:nth-child(1) {
+    inset-inline-start: 6.55rem; inset-block-start: 15.82rem;
+    inline-size: 24.49rem; block-size: 2rem;
+  }
+  .wy-player2 .wy-vid:nth-child(3) {
+    inset-inline-start: 5.34rem; inset-block-start: 17.84rem;
+    inline-size: 27.11rem; block-size: 2.12rem;
+  }
+  .wy-player2 .wy-vid:nth-child(6) {
+    inset-inline-start: 8.97rem; inset-block-start: 10.18rem;
+    inline-size: 10.38rem; block-size: 6.05rem;
+  }
+  .wy-player2 .wy-vid:nth-child(8) {
+    inset-inline-start: 5.34rem; inset-block-start: 25.4rem;
+    inline-size: 10.08rem; block-size: 2.12rem;
+  }
+
+  .wy-map {
+    inset-block-start: 8.6rem;
+    inset-inline-start: 21.3rem;
+    inline-size: 13.13rem;
+    block-size: 9.67rem;
   }
 }

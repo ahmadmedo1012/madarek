@@ -35,3 +35,4 @@ T-06d | playwright-probe (cmp-t06.mjs sr-seat diff) + node conformance/run.mjs |
 L-6 | curl+jq (GitHub Actions API — run verdicts, rerun-failed-jobs, log 404 probe) | medic incident diagnosis
 L-6 | postcss (node API in repo node_modules) | surgically retire dead legacy footer/why css rules
 L-6 | vite build + scripts/check-bundle-size.mjs | local bundle gate measurement (found gate = JS-only)
+T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect extraction @768/390 + DOM probe of the ≤991 belt
