@@ -14,17 +14,6 @@ import { JourneyScene } from '../journey/JourneyScene';
 export function Chapters() {
   return (
     <section id="chapters" className="chapters" aria-labelledby="chapters-title">
-      <header className="chapters-head">
-        <div className="chapters-head-copy">
-          <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
-          <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
-            الرحلة — <em>أربعة فصول تتحرك أمامك</em>
-          </RevealCssClass>
-        </div>
-        <RevealCssClass as="p" className="chapters-lede" delay={2}>
-          مرّر لترى الرحلة تُبنى: أربعة فصول تتحرك في مشهد واحد. لا لقطات مُجمّلة ولا وعود.
-        </RevealCssClass>
-      </header>
 
       {/* r308 — «رحلة التعلّم»: the pinned walkthrough. Chapters
           01–04 play out across one persistent drawing while the
@@ -35,7 +24,24 @@ export function Chapters() {
           statement → plan on the paper → INTRODUCTION card →
           findings stations with the progress hairline → the red
           room reveal → the closing column. */}
-      <JourneyScene />
+      {/* T-09c — the head is SEATED INSIDE the track (.jt): heron's head
+          column is the track's own top zone (wrap > section[1] > …,
+          y = track top), not a sibling above it. */}
+      <JourneyScene
+        head={
+          <header className="chapters-head">
+            <div className="chapters-head-copy">
+              <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
+              <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
+                الرحلة — <em>أربعة فصول تتحرك أمامك</em>
+              </RevealCssClass>
+            </div>
+            <RevealCssClass as="p" className="chapters-lede" delay={2}>
+              مرّر لترى الرحلة تُبنى: أربعة فصول تتحرك في مشهد واحد. لا لقطات مُجمّلة ولا وعود.
+            </RevealCssClass>
+          </header>
+        }
+      />
     </section>
   );
 }

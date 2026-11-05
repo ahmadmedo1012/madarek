@@ -1,4 +1,5 @@
 import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
+import type { ReactNode } from "react";
 import { LECTURE_INTERACTIVE, MASTERY_SCORE_LINE } from '../copy';
 /**
  * JourneyScene — R308 «رحلة التعلّم» · R310–R319 the plan scene's own
@@ -236,6 +237,39 @@ const LAYER_WINDOWS: ReadonlyArray<readonly [number, number]> = [
  * to 1 — never from 0, never a discrete jump. */
 const XL_GHOST = 0.18;
 
+/* T-09e — the measured art register: the conformance census pairs the
+ * band's svg art by document order (path/g ordinal over the walked
+ * section). Heron's frozen rest state: the route overlay (svg[2] path
+ * 1–13) rests at opacity 0 with a filter tween; the annotation groups
+ * g[2]g[3]/g[4]g[4]/g[6]g[3] rest at 0, the g[*]g[1] tints at 0.24;
+ * the demo-row path art + the tween groups carry the 0.4s/ease motion
+ * class (journey.css — the measured register). The reveal rides the
+ * annotation era (layer 6's window) — the same direct-write contract
+ * as the six layers. */
+const ART_ROUTE_PATHS: readonly [number, number] = [8, 20]; // census ordinal (inclusive)
+const ART_HIDDEN_GROUPS: readonly number[] = [1, 5, 9]; // census ordinal → rest 0
+const ART_TINT_GROUPS: readonly number[] = [2, 6, 10]; // census ordinal → rest 0.24
+const ART_TINT = 0.24;
+const ART_REVEAL: readonly [number, number] = [3.02, 3.52]; // the annotation era (layer 6)
+
+type ArtRegister = { route: SVGPathElement[]; hidden: SVGGElement[]; tint: SVGGElement[] };
+
+function resolveArtRegister(track: HTMLElement): ArtRegister {
+  const paths = Array.from(track.querySelectorAll<SVGPathElement>('.jt-plan path'));
+  const groups = Array.from(track.querySelectorAll<SVGGElement>('.jt-plan g'));
+  const route = paths.slice(ART_ROUTE_PATHS[0], ART_ROUTE_PATHS[1] + 1);
+  for (const el of route) {
+    /* the measured tween property for the route overlay (heron svg[2])
+     * is filter — the demo-row paths keep the css transform register. */
+    el.style.transition = 'filter var(--jt-t-art) var(--jt-e-art)';
+  }
+  return {
+    route,
+    hidden: ART_HIDDEN_GROUPS.map((i) => groups[i]).filter((el): el is SVGGElement => !!el),
+    tint: ART_TINT_GROUPS.map((i) => groups[i]).filter((el): el is SVGGElement => !!el),
+  };
+}
+
 /* the finding rotation: 5 equal 0.6s windows over t 2.5→5.5, one step
  * behind the layer builds (finding i narrates rooms i..i+1 — the
  * fifth, the assistant, rides the annot layer + the collapse). */
@@ -414,7 +448,7 @@ function writeCard(
   setSheetVar(el.style, 'visibility', o <= 0 ? 'hidden' : 'visible');
 }
 
-export function JourneyScene() {
+export function JourneyScene({ head }: { head?: ReactNode }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const mapInRef = useRef<HTMLDivElement | null>(null);
   const windowRef = useRef<HTMLDivElement | null>(null);
@@ -488,9 +522,16 @@ export function JourneyScene() {
        * state stands at once — the finished plan, the open card with
        * ALL findings readable, the revealed closing, no drift, no
        * camera zoom. Idempotent writes; the page never animates. */
+      /* T-09e — the measured art register (resolveArtRegister): the
+       * census-paired route overlay + annotation groups; under RM the
+       * static end state stands them all at 1 with the layers. */
+      const art = resolveArtRegister(track);
       if (reduced) {
         for (const group of resolveLayers(track)) {
           for (const el of group) setSheetVar(el.style, 'opacity', '1');
+        }
+        for (const el of [...art.route, ...art.hidden, ...art.tint]) {
+          setSheetVar(el.style, 'opacity', '1');
         }
         if (card1Ref.current) {
           setSheetVar(card1Ref.current.style, 'opacity', '0');
@@ -555,6 +596,19 @@ export function JourneyScene() {
         for (const el of groups[i] ?? []) {
           setSheetVar(el.style, 'opacity', o.toFixed(3));
         }
+      }
+
+      /* 3b · T-09e — the measured art register reveal: the route
+       * overlay (census-paired svg[2] path art) + the hidden/tinted
+       * annotation groups rest at Heron's measured states (0 / 0 /
+       * 0.24) and ink in with the annotation era — the reveal wiring
+       * for the band's census-paired art seats; the 0.4s/ease tween
+       * register lives in journey.css. */
+      const artRev = p2o((t - ART_REVEAL[0]) / (ART_REVEAL[1] - ART_REVEAL[0]));
+      for (const el of art.route) setSheetVar(el.style, 'opacity', artRev.toFixed(3));
+      for (const el of art.hidden) setSheetVar(el.style, 'opacity', artRev.toFixed(3));
+      for (const el of art.tint) {
+        setSheetVar(el.style, 'opacity', (ART_TINT + (1 - ART_TINT) * artRev).toFixed(3));
       }
 
       /* 4 · the statement plaques (fade + rise + the 4% shrink out).
@@ -661,6 +715,10 @@ export function JourneyScene() {
       data-wash="none"
       data-rm="off"
     >
+      {/* T-09c — the head SEATED INSIDE the track: heron seats its head
+          column at the track top (same y as the track, the sticky window
+          overlapping it); absolute so the pin flow is untouched. */}
+      {head}
       <div className="jt-pin">
         {/* the PLAN COLUMN — flex:1 of the frame @≥992; the scroll
             track (the sticky's containing block) @≤991 */}
