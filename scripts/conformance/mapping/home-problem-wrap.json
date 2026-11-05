@@ -1729,6 +1729,11 @@
       "section": "home-problem-wrap",
       "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > br[2]",
       "reason": "Heron svg line-art internal / plumbing node — our counterpart is authored inline-SVG line-art compared as a whole via its container (r338 T-04 binding pass)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2]",
+      "reason": "dup-window: the reference duplicated layout windows below the bound containers (colliding 6-seg shapes) — the unique seats are explicitly bound; this residue has no trustworthy pair"
     }
   ],
   "charSplit": [
@@ -1951,6 +1956,74 @@
     {
       "section": "home-problem-wrap",
       "container": "home-problem-wrap > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[2] > span[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[4] > div[3] > div[2] > div[1] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > svg[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > svg[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[2] > div[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > svg[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > svg[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[1]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2] > div[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[3]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2]"
+    },
+    {
+      "section": "home-problem-wrap",
+      "container": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1] > div[1]"
     }
   ]
 }
