@@ -221,9 +221,33 @@ function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = [])
   // glues them to unrelated elements and produces junk failures.
   const pairs = [];
   const usedOurs = new Set();
+  // R338 T-02a (usecase word-split, r337-intro 37705268 precedent):
+  // Heron's row text tween splits titles/lines into per-WORD divs which
+  // the depth-6-truncating census records as SIBLING SETS (>=3 boxes,
+  // identical fs/fw/color, text-bearing) under shallow roots — sometimes
+  // sharing a path with the REAL un-split line box. Structural detection
+  // on the SPEC side only; no value comparison against our elements.
+  const wordsetMode = charSplitRules.some((c) => c.container === "wordset");
+  const wordSet = new Set();
+  if (wordsetMode) {
+    const byParent = new Map();
+    for (const h of heronEls) {
+      const par = h.p.split(" > ").slice(0, -1).join(" > ");
+      if (!byParent.has(par)) byParent.set(par, []);
+      byParent.get(par).push(h);
+    }
+    for (const sibs of byParent.values()) {
+      if (sibs.length < 3) continue;
+      const sig = (e) => `${e.fs}|${e.fw}|${e.color}|${e.tc}`;
+      const counts = new Map();
+      for (const sb of sibs) counts.set(sig(sb), (counts.get(sig(sb)) || 0) + 1);
+      for (const sb of sibs) if (sb.tc !== "none" && sb.fs != null && counts.get(sig(sb)) >= 3) wordSet.add(sb);
+    }
+  }
   // (a) explicit (legacy selectors + data-spec resolved by the page walk)
   for (const h of heronEls) {
     const ex = explicitIdx[h.p];
+    if (wordsetMode && wordSet.has(h)) continue; // scaffold never pairs — the real line box (non-member, same truncated path when duplicated) keeps the binding
     if (ex && ourEls[ex.idx] && !usedOurs.has(ex.idx)) {
       usedOurs.add(ex.idx);
       pairs.push({ h, o: ourEls[ex.idx], mode: ex.ds ? "data-spec" : "explicit", skip: new Set(ex.skip) });
@@ -242,6 +266,7 @@ function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = [])
   for (const h of heronEls) {
     if (pairs.some((p) => p.h === h)) continue;
     if (charSplitRules.some((c) => h.p.includes(c.container) && !isLineContainerPath(h.p))) continue;
+    if (wordsetMode && wordSet.has(h)) continue;
     const q = byKey.get(h.tag + "|" + h.tc);
     if (q && q.length) {
       const i = q.shift();
@@ -255,7 +280,7 @@ function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = [])
     if (pairs.some((p) => p.h === h)) continue;
     unmatched.push({ h, reason: findNoCounterpartReason(section, h.p) });
   }
-  return { pairs, heuristic, explicit: pairs.length - heuristic, unmatched };
+  return { pairs, heuristic, explicit: pairs.length - heuristic, unmatched, wordSet };
 }
 
 // a path is a LINE CONTAINER when the segment before its last is the h2
@@ -336,7 +361,7 @@ try {
       if (o.missing) { cell.missing = `no-our-container:${o.missing}`; continue; }
 
       const charSplitRules = MAPPING.charSplit.filter((c) => c.section === key);
-      const { pairs, heuristic, explicit, unmatched } = matchPairs(spec.elements, o.elements, o.explicitIdx, key, charSplitRules);
+      const { pairs, heuristic, explicit, unmatched, wordSet } = matchPairs(spec.elements, o.elements, o.explicitIdx, key, charSplitRules);
       cell.heuristic = heuristic;
       cell.explicit = pairs.filter((p) => p.mode === "explicit").length;
       cell.dataSpec = pairs.filter((p) => p.mode === "data-spec").length;
@@ -406,6 +431,21 @@ try {
           }
         }
       }
+      // R338 T-02a — wordset mode: unpaired word boxes are excused with
+      // the written word-law reason; the REAL line boxes at the same
+      // truncated roots stay bound and fully measured, so the typography
+      // the words carried is still asserted (as strong as raw fields).
+      const excusedWordEls = new Set();
+      const wordsetMode = charSplitRules.some((c) => c.container === "wordset"); // section-scope flag (matchPairs computes its own)
+      if (wordsetMode) {
+        const wsr = charSplitRules.find((c) => c.container === "wordset");
+        for (const u of unmatched) {
+          if (!wordSet.has(u.h) || u.reason || excusedWordEls.has(u.h)) continue;
+          excusedWordEls.add(u.h);
+          cell.excused++;
+          results.unmatchedReport.push({ section: key, bp: bp.name, heronPath: u.h.p, excused: true, reason: wsr.reason });
+        }
+      }
       // pull the excused scaffold boxes out of pair/unmatched accounting
       for (let i = pairs.length - 1; i >= 0; i--) {
         if (excusedScaffold.has(pairs[i].h.p)) pairs.splice(i, 1);
@@ -413,6 +453,10 @@ try {
       for (let i = unmatched.length - 1; i >= 0; i--) {
         if (excusedScaffold.has(unmatched[i].h.p)) unmatched.splice(i, 1);
       }
+      // wordset excuses pull by ELEMENT identity — a truncated path can be
+      // shared with the real line box, which must stay measured.
+      for (let i = unmatched.length - 1; i >= 0; i--) if (excusedWordEls.has(unmatched[i].h)) unmatched.splice(i, 1);
+      for (let i = pairs.length - 1; i >= 0; i--) if (excusedWordEls.has(pairs[i].h)) pairs.splice(i, 1);
       cell.unmatched = unmatched.filter((u) => !u.reason).length;
       cell.excused += unmatched.filter((u) => !!u.reason).length;
 
