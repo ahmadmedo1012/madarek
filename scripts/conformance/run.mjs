@@ -558,6 +558,14 @@ for (const key of SECTIONS_WANTED) {
   }
 }
 results.failures.sort((a, b) => b.delta - a.delta).splice(800);
+/* r338 medic: the unmatched/excused listing must stay bounded too — the
+ * intro run's excused-residue report hit 1417 entries (846KB file) and
+ * reddened the size gate's 500KB per-file rule (rule 1). Same cap
+ * pattern as failures above; the omitted count in summary keeps the
+ * report honest (nothing downstream parses unmatchedReport — it is a
+ * human diagnostic; the per-cell counts in sections carry the numbers). */
+results.summary.unmatchedOmitted = Math.max(0, results.unmatchedReport.length - 400);
+results.unmatchedReport.splice(400);
 
 // console matrix
 const col = (s) => String(s).padEnd(9);
