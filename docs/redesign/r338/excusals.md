@@ -27,3 +27,11 @@
   active-slide (785) exceeds its own frame (759) by 3.4%; reproduced via the
   scale(1.0343) seat, img lands 782 vs 812 — the img overflow at that bp reads
   3.4% (vs 2.7% at 1920) and the two remaining h cells are the accepted gap.
+||||||| 36a32694
+- T-08c platform: webkit absent from the shared pw cache (ENV ADDENDUM 2/4) — webkit cells for home-platform-wrap are unmeasured, never faked; dark cells not re-run this pass (residual for the next platform pass).
+## T-08c1 (platform color+lh) — residuals handed to T-08c2 (pairing, not spec values)
+- lineHeight `#hm:div.short` ×5 (1/bp): heron's short-text 1.4rem/1.4-voice nodes get HEURISTICALLY paired to our base-voice `.pr-label` (want 21.78/16.33/11.61/18.05/18.75 = exactly our `.pr-cta-line` voice, already explicit-bound to its own twins). Fix = c2 re-pairing (explicit binding/DOM seat), not CSS.
+- color `#hm:div.none` ×43 listed: heron CTA-internal nodes (anchor/rule/body orange rgb(250,54,0) + row/line/icon solid ink) heuristically paired to our muted-inheriting head/side elements. Our CTA subtree already carries the measured colors under its explicit bindings; same c2 re-pairing lever.
+- Dark cells + webkit unmeasured this pass (timebox); section has a dark arm (`html[data-theme=dark]` re-points all 5 pr-vars) — measure in c2's pass.
+## T-08c2 (platform, r338) — heron home-platform-wrap wrapper crossovers
+Heron's frozen `home-platform-wrap` census tree is a page WRAPPER: besides the platform band (`div[1] > section[1]`, fully asserted with explicit data-spec pairs) it captures duplicate marquee copies of the band plus nodes of the neighbouring map/usecase/cta bands at other page rects (~69 paths). Those nodes have no counterpart inside `section#product` (their true counterparts live in our other sections, asserted under their own section keys) — declared in `home-platform-wrap.json` `noCounterpart` with reasons. Residual: the instrument's heuristic can still mispair some of them before the excuse applies (h=52) and the ≤991 `pr-imgs`/`pr-img` y/x-mirror cells assert heron's off-page 0×0 positions (y −7606/−7372) which a `display:none` fold cannot reproduce — queued for T-08c3 (rendered duplicate rows + absolute 0×0 seats).

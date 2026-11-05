@@ -19,3 +19,8 @@ L-7 | vite build + check-bundle-size.mjs | per-stage bundle truth: main 776.4 / 
 L-7 | scripts/verify.sh --fast | landing gate on final train before push to main
 L-7 | GitHub Actions API via curl | post-landing triggered-run status check
 T02 | playwright probe + spec census diff | y/h geometry re-seat (h2 3-line 64% seat, deck scale model)
+||||||| 36a32694
+T-08c | playwright (repo node_modules + /tmp/pw-browsers chromium-1200→1223 fallback) | section-relative rect probe of our platform band + mirror-aware rect→data-spec binding generator (/tmp/rectbind.mjs) |
+T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath |
+T-08c1 | node -e census over scripts/conformance/results.json + docs/redesign/r335/heron-spec/*.json | color/lh family census, spec-value mining (aLh ar-floor + per-bp label/menu/CTA voices)
+T-08c2 | conformance/run.mjs (--sections home-platform-wrap --url :5308, light+dark), python/json (mapping rebind analysis + rewrite) | re-pairing + dark pass
