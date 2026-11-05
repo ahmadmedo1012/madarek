@@ -64,24 +64,37 @@
 }
 
 /* ── the deck ── */
+/* the census deck seats: the LIVE slide rides at scale 1 (it is the
+   frame-sized box: 1062/887/737/254 = the frame itself) and the parked
+   slides at 1.04 of it (1105/922/766/264); the img overflows its slide
+   by ±1.35% at ≥1440 (1089 on 1062), flush below */
 .rl-deck, .rl-deckinner { position: absolute; inset: 0; }
 .rl-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transform: scale(1.026);
+  transform: scale(1.04);
   transition: transform 0.4s ease, opacity 0.4s ease;
 }
 .rl-slide.is-active {
   opacity: 1;
-  transform: scale(1.068);
+  transform: none;
 }
 .rl-slide img {
   position: absolute;
-  inset: -2%;
-  inline-size: 104%;
-  block-size: 104%;
+  inset: 0;
   object-fit: cover;
+}
+@media (min-width: 1440px) {
+  .rl-slide img { inset: -1.35%; }
+}
+@media (min-width: 992px) and (max-width: 1439px) {
+  /* the 1024 census: the parked deck rides at 849 on the 759 frame
+     (scale 1.1227) while the live slide reads 785 (scale 1.0343, img
+     812 = slide+1.7%) — the reference's own mid-desktop seats */
+  .rl-slide { transform: scale(1.1227); }
+  .rl-slide.is-active { transform: scale(1.0343); }
+  .rl-slide.is-active img { inset: -1.7%; }
 }
 
 /* ── the title column ── */
@@ -111,10 +124,12 @@
 
 /* ═══ the accordion ═══ */
 .rl-accwrap, .rl-acc { margin: 0; }
+/* the census row box: 83px closed @1920 = 27 top + 36 title + 20 bottom
+   (2.43rem/1.8rem; 62px @1440, 44px @1024 — the same seats scale) */
 .rl-row {
   position: relative;
   display: block;
-  padding-block: 2.4rem;
+  padding-block: 2.43rem 1.8rem;
   padding-inline-start: 15.4rem;
   padding-inline-end: 3.2rem;
   cursor: pointer;
@@ -186,30 +201,23 @@
   overflow: hidden;
 }
 
-/* ═══ desktop belts: the column's stretch + the acc gap ═══ */
-/* the spec's titlecol children (labelbox + h2box) read 609 wide at
-   1920 — content-sized to the h2's longest line, not full column
-   blocks; a single min-content grid track gives both boxes that width */
-@media (min-width: 992px) {
-  .rl-titlecol { display: grid; grid-template-columns: min-content; }
-}
+/* ═══ desktop belts: the h2's 3-line seat + the column gap ═══ */
+/* the spec's titlecol children read 64% of the column (609 on the 951
+   col @1920, 457 on 713 @1440) — the width that wraps the h2 to the
+   census's 3 lines (160/120/85 tall); the h2end→accordion gap is
+   carried by the titlecol's block-end padding (134/191.5/264px at
+   1920/1440/1024 — the column ends where the accordion starts) */
 .rl-titlecol { padding-block-start: 3.2rem; }
 .rl-labelbox { margin-block-end: 1.5rem; }
-.rl-titlecol { padding-block-end: 9.04rem; }
-.rl-accwrap { margin-block-start: 3.06rem; }
-@media (min-width: 1440px) and (max-width: 1919px) {
-  /* spec 1440: accwrap y=367, row1 y=387 — re-seated from the measured
-     overshoot (427→367) + the spec's own 20px accwrap→row1 offset */
-  .rl-titlecol { padding-block-end: 0; }
-  .rl-accwrap { margin-block-start: -4.05rem; }
-  .rl-acc { padding-block-start: 1.8rem; }
+@media (min-width: 992px) {
+  .rl-labelbox, .rl-h2box { inline-size: 64%; }
+  .rl-titlecol { padding-block-end: 44.58rem; }
 }
-@media (min-width: 992px) and (max-width: 1439px) {
-  /* spec 1024: accwrap y=389, row1 y=403 — same re-seat (468→389) with
-     the 14px accwrap→row1 offset */
-  .rl-titlecol { padding-block-end: 22.04rem; }
-  .rl-accwrap { margin-block-start: 0; }
-  .rl-acc { padding-block-start: 1.26rem; }
+@media (min-width: 1440px) {
+  .rl-titlecol { padding-block-end: 22.99rem; }
+}
+@media (min-width: 1920px) {
+  .rl-titlecol { padding-block-end: 12.06rem; }
 }
 @media (min-width: 992px) and (max-width: 1919px) {
   /* the twin bottom rule + the open row's top rule collapse to 0 width
@@ -229,7 +237,8 @@
     block-size: 80rem;
     flex: none;
   }
-  .rl-mediarule { display: none; }
+  /* the 768 census keeps the media's inner edge rule (737 tall, full
+     media band) — only the phone band drops it */
   .rl-midrule {
     display: block;
     position: static;
@@ -241,11 +250,13 @@
     padding-block: 6.4rem 2.4rem;
   }
   .rl-labelbox { margin-block-end: 1.63rem; }
+  /* the h2 box narrows to 332 (44%) to hold the census's 3 lines (88) */
+  .rl-h2box { inline-size: 44%; }
   .rl-h2 { font-size: 3.2rem; line-height: 3.2rem; }
   .rl-contentcol { order: 3; }
   .rl-accwrap { margin-block-start: 0; }
   .rl-row {
-    padding-block: 1.6rem;
+    padding-block: 1.35rem;
     padding-inline: 2.4rem;
   }
   .rl-row-title { font-size: 2rem; line-height: 2.7rem; }
