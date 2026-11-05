@@ -398,17 +398,6 @@ mapping = {
     "scaleFactor": {"home-intro-wrap": 1},
     "explicit": explicit,
     "noCounterpart": no_counterpart,
-    # r338 T-03b (r337 ar-char-split precedent): the h2's per-character
-    # scaffold boxes and the media cell's tween plumbing (the two full-bleed
-    # divs wrapping the masked svg) must NEVER enter heuristic pairing —
-    # tag+tc ordinal gluing welds them to crawl/label elements and produces
-    # junk failures. Explicitly-bound elements are unaffected (explicit
-    # pairing runs first); the rest become unmatched and ride the written
-    # noCounterpart excuses above.
-    "charSplit": [
-        {"section": "home-intro-wrap", "container": "h2[1]"},
-        {"section": "home-intro-wrap", "container": "section[1] > div[1] > div[1] > div[1] > div[1]"},
-    ],
 }
 
 OUT.write_text(json.dumps(mapping, indent=2, ensure_ascii=False) + "\n", encoding="utf8")
