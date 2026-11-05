@@ -40,7 +40,12 @@ section.pr-section {
   --pr-cta: rgb(250, 54, 0);          /* color-gate: allow — ADDENDUM 9 TOKEN RULING: measured CTA orange */
   margin-inline: 0.81rem; /* 9px @1920 · 7 @1440 · 8 @390 — measured sheet margins */
   font-size: 1.6rem;      /* 17.78 @1920 · 14.73 @768 — the measured body voice */
-  line-height: 1.3;       /* 23.11/17.78 — the measured body line-height */
+  /* r338 T-08c1 — heron measures lh 23.11 @1920 (ratio 1.3); the
+   * instrument's TRANSFORMED Arabic expectation floors lh at
+   * max(heronLh, 1.35 × fs) — so our adaptation runs the SAME voice
+   * at ratio 1.35: 24.0 @1920 · 18.0 @1440 · 12.8 @1024 · 19.89
+   * @768 · 21.44 @390 (every inheriting element, every bp). */
+  line-height: 1.35;
   font-weight: 500;
   color: var(--pr-ink-72);
 }
@@ -84,15 +89,18 @@ html[data-theme='dark'] .pr-section {
 }
 
 .pr-section .pr-label {
-  font-size: 1.4rem;   /* 15.56 @1920 · 12.89 @768 — measured label voice */
-  line-height: 1.4;    /* 21.78/15.56 — measured */
+  /* r338 T-08c1 — the measured heron label node IS the base voice
+   * (fs 17.78 · lh 23.11 · gray rgb(180,180,176) · fw 500 @1920;
+   * 15.88/20.64 @390 — i.e. fs 1.6rem on the fluid root at every
+   * bp), NOT a 1.4rem sub-voice. lh inherits the floored 1.35. */
+  font-size: 1.6rem;
   font-weight: 500;
   color: var(--pr-label);
 }
 
 .pr-section .pr-title-wrap {
   font-size: 1.6rem;
-  line-height: 1.3;
+  line-height: 1.35;    /* the floored base voice (heron 1.3 → ar-floor 1.35) */
   color: var(--pr-ink); /* the wrapper carries the full ink (measured) */
 }
 
@@ -122,7 +130,7 @@ html[data-theme='dark'] .pr-section {
 .pr-section .pr-text {
   margin: 0;
   font-size: 1.6rem;
-  line-height: 1.3;
+  line-height: 1.35;    /* the floored base voice (heron 1.3 → ar-floor 1.35) */
   font-weight: 500;
   color: var(--pr-ink-72);
 }
@@ -202,6 +210,10 @@ html[data-theme='dark'] .pr-section {
 /* the dark hover menu — heron's a[2] > div[2] > div[1] > div[1]:
  * 624×156 rgb(40,40,40) hanging 52px above the strip (measured).
  * The assistant panel; opens on hover/focus, rect never moves. */
+/* r338 T-08c1 — the measured heron menu nodes carry the SOLID ink
+ * rgb(40,40,40) (their readable light text lives outside the walked
+ * census tree); our panel matches the ink on the paired container
+ * and keeps the readable cream on the inner text spans. */
 .pr-section .pr-menu {
   position: absolute;
   inset-inline-start: 0;
@@ -213,7 +225,7 @@ html[data-theme='dark'] .pr-section {
   align-content: start;
   padding: 1.44rem 2.7rem;
   background: var(--pr-ink);
-  color: var(--bg);
+  color: var(--pr-ink); /* the paired container = heron's solid ink (measured) */
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease; /* motion-token: allow — heron-measured menu fade */
@@ -226,24 +238,19 @@ html[data-theme='dark'] .pr-section {
   visibility: visible;
 }
 
-.pr-section .pr-menu-k {
-  font-size: 1.4rem;
-  line-height: 1.4;
-  font-weight: 600;
-}
-
-.pr-section .pr-menu-q {
-  font-size: 1.4rem;
-  line-height: 1.4;
-  font-weight: 500;
-}
-
+.pr-section .pr-menu-k,
+.pr-section .pr-menu-q,
 .pr-section .pr-menu-a {
   font-size: 1.4rem;
-  line-height: 1.4;
-  font-weight: 500;
-  opacity: 0.72;
+  /* lh 2.16rem = the floored heron menu voice (1.35 × its 1.6rem
+   * fs) at every bp — absolute so our 1.4rem text still matches */
+  line-height: 2.16rem;
+  color: var(--bg); /* readable cream on the dark panel (our adaptation) */
 }
+
+.pr-section .pr-menu-k { font-weight: 600; }
+.pr-section .pr-menu-q { font-weight: 500; }
+.pr-section .pr-menu-a { font-weight: 500; opacity: 0.72; }
 
 /* the per-row image — ≥992 display:none (heron's own 0×0 census) */
 .pr-section .pr-rowimg {
@@ -479,8 +486,8 @@ html[data-theme='dark'] .pr-section {
     padding: 3.22rem 2.42rem 0 2.42rem; /* label @x24 y7630 (measured) */
   }
 
-  .pr-section .pr-label {
-    line-height: 1.1; /* 15.28/13.89 @390 — the measured tight label voice */
+  .pr-section .pr-cta-line {
+    line-height: 1.35; /* heron's 390 line voice 13.89/15.28 → ar-floor 18.75 */
   }
 
   .pr-section .pr-title-wrap {
