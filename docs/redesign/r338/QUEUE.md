@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 18
+- [~] T-06g1 footer contracts-ONLY (9 tests are law; vitest green = done).
+- [~] T-10b-r2 cta pass-2.
+- [~] T-03f-r2 intro plumbing+pill+dark.
+- [~] T-20 AGENTS.md (Track B starts: repo map, commands, gates, ownership incl. R338 rulings, how-to-add, CSS/token conventions, never-do).
+
 ## WAVE 17
-- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
-- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
-- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
-- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+- [~] T-06g died ×2 → split: T-06g1 contracts-ONLY (sonnet, mechanical); ≤991 grid boxes → T-06h ·
+- [x] T-09c DONE: r338/t09-map @ea5373fe — 55.6→67.1% (69/69/60/69/69); head INSIDE .jt (y-family 257→40), +4 per-bp paths, +47 plumbing skips; T-09d residual: lh:275/fs:59 rhythm, transition:135 (curve clocks), color:124/opacity:49, 1024@60 own pass, 45 nc, dark ·
+- [~] T-10b died → respawn wave-18 ·
+- [~] T-03f died → respawn wave-18 ·
 
 ## WAVE 16
 - [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
@@ -119,11 +125,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 18
+- [~] T-06g1 footer contracts-ONLY (9 tests are law; vitest green = done).
+- [~] T-10b-r2 cta pass-2.
+- [~] T-03f-r2 intro plumbing+pill+dark.
+- [~] T-20 AGENTS.md (Track B starts: repo map, commands, gates, ownership incl. R338 rulings, how-to-add, CSS/token conventions, never-do).
+
 ## WAVE 17
-- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
-- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
-- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
-- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+- [~] T-06g died ×2 → split: T-06g1 contracts-ONLY (sonnet, mechanical); ≤991 grid boxes → T-06h ·
+- [x] T-09c DONE: r338/t09-map @ea5373fe — 55.6→67.1% (69/69/60/69/69); head INSIDE .jt (y-family 257→40), +4 per-bp paths, +47 plumbing skips; T-09d residual: lh:275/fs:59 rhythm, transition:135 (curve clocks), color:124/opacity:49, 1024@60 own pass, 45 nc, dark ·
+- [~] T-10b died → respawn wave-18 ·
+- [~] T-03f died → respawn wave-18 ·
 
 ## WAVE 16
 - [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
@@ -201,11 +213,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 18
+- [~] T-06g1 footer contracts-ONLY (9 tests are law; vitest green = done).
+- [~] T-10b-r2 cta pass-2.
+- [~] T-03f-r2 intro plumbing+pill+dark.
+- [~] T-20 AGENTS.md (Track B starts: repo map, commands, gates, ownership incl. R338 rulings, how-to-add, CSS/token conventions, never-do).
+
 ## WAVE 17
-- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
-- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
-- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
-- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+- [~] T-06g died ×2 → split: T-06g1 contracts-ONLY (sonnet, mechanical); ≤991 grid boxes → T-06h ·
+- [x] T-09c DONE: r338/t09-map @ea5373fe — 55.6→67.1% (69/69/60/69/69); head INSIDE .jt (y-family 257→40), +4 per-bp paths, +47 plumbing skips; T-09d residual: lh:275/fs:59 rhythm, transition:135 (curve clocks), color:124/opacity:49, 1024@60 own pass, 45 nc, dark ·
+- [~] T-10b died → respawn wave-18 ·
+- [~] T-03f died → respawn wave-18 ·
 
 ## WAVE 16
 - [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
@@ -278,11 +296,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 18
+- [~] T-06g1 footer contracts-ONLY (9 tests are law; vitest green = done).
+- [~] T-10b-r2 cta pass-2.
+- [~] T-03f-r2 intro plumbing+pill+dark.
+- [~] T-20 AGENTS.md (Track B starts: repo map, commands, gates, ownership incl. R338 rulings, how-to-add, CSS/token conventions, never-do).
+
 ## WAVE 17
-- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
-- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
-- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
-- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+- [~] T-06g died ×2 → split: T-06g1 contracts-ONLY (sonnet, mechanical); ≤991 grid boxes → T-06h ·
+- [x] T-09c DONE: r338/t09-map @ea5373fe — 55.6→67.1% (69/69/60/69/69); head INSIDE .jt (y-family 257→40), +4 per-bp paths, +47 plumbing skips; T-09d residual: lh:275/fs:59 rhythm, transition:135 (curve clocks), color:124/opacity:49, 1024@60 own pass, 45 nc, dark ·
+- [~] T-10b died → respawn wave-18 ·
+- [~] T-03f died → respawn wave-18 ·
 
 ## WAVE 16
 - [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
@@ -348,11 +372,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 18
+- [~] T-06g1 footer contracts-ONLY (9 tests are law; vitest green = done).
+- [~] T-10b-r2 cta pass-2.
+- [~] T-03f-r2 intro plumbing+pill+dark.
+- [~] T-20 AGENTS.md (Track B starts: repo map, commands, gates, ownership incl. R338 rulings, how-to-add, CSS/token conventions, never-do).
+
 ## WAVE 17
-- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
-- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
-- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
-- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+- [~] T-06g died ×2 → split: T-06g1 contracts-ONLY (sonnet, mechanical); ≤991 grid boxes → T-06h ·
+- [x] T-09c DONE: r338/t09-map @ea5373fe — 55.6→67.1% (69/69/60/69/69); head INSIDE .jt (y-family 257→40), +4 per-bp paths, +47 plumbing skips; T-09d residual: lh:275/fs:59 rhythm, transition:135 (curve clocks), color:124/opacity:49, 1024@60 own pass, 45 nc, dark ·
+- [~] T-10b died → respawn wave-18 ·
+- [~] T-03f died → respawn wave-18 ·
 
 ## WAVE 16
 - [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
@@ -414,11 +444,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 18
+- [~] T-06g1 footer contracts-ONLY (9 tests are law; vitest green = done).
+- [~] T-10b-r2 cta pass-2.
+- [~] T-03f-r2 intro plumbing+pill+dark.
+- [~] T-20 AGENTS.md (Track B starts: repo map, commands, gates, ownership incl. R338 rulings, how-to-add, CSS/token conventions, never-do).
+
 ## WAVE 17
-- [~] T-06g-r2 footer contracts (tests are law) + ≤991 grid boxes.
-- [~] T-09c map pass-3 (head inside .jt, rhythm, per-bp paths, station-cards, curves).
-- [~] T-10b cta pass-2 (counterparts + bindings + lede ladder + dark).
-- [~] T-03f intro (plumbing mechanism for ~41 junk pairs/bp + pill icon x-mirror + crawl svg + dark).
+- [~] T-06g died ×2 → split: T-06g1 contracts-ONLY (sonnet, mechanical); ≤991 grid boxes → T-06h ·
+- [x] T-09c DONE: r338/t09-map @ea5373fe — 55.6→67.1% (69/69/60/69/69); head INSIDE .jt (y-family 257→40), +4 per-bp paths, +47 plumbing skips; T-09d residual: lh:275/fs:59 rhythm, transition:135 (curve clocks), color:124/opacity:49, 1024@60 own pass, 45 nc, dark ·
+- [~] T-10b died → respawn wave-18 ·
+- [~] T-03f died → respawn wave-18 ·
 
 ## WAVE 16
 - [x] L-10 DONE: landed axios diet + why 63.5/67.4-dark + intro 75.8 on main a8c62a03..e882f0ec (bundle 759.6≤777, verify PASS, 17.4KB headroom)
