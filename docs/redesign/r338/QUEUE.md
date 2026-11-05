@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 21
+- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
+- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
+- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
+- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+
 ## WAVE 20
-- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
-- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
-- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
-- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+- [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
+- [x] T-11 pass-1 DONE: r338/t11-hero @6c28c813 — 44.6→61.0% (63/61/56/64/61); 12 bindings + 301 documented excuses; T-11b residual: ~780 junk ink-SVG pairs, ~190 real (wrapper grid, sectionHeightVh, transition:45), curves ·
+- [x] T-14b DONE: r338/t14b-dark @0895857b — dark usecase 91.1→93.3% (flips 24→92, contrast 7.9:1, light byte-identical); dark problem 92.9% CLEAN; footer dark 63.9 / cta dark 65.3 measured (branches unlanded); INSTRUMENT BUG: contrastRatio() null on rgba → dark uncounts alpha inks (T-14a-bis) ·
+- [x] T-22 DONE: r338/t22-deadcode @63cbdb5b — knip+jscpd+depcruise baselines pinned (65 unusedFiles/320 unusedExports/289 dupBlocks/1 circular), check.sh ratchet exit-0, new deadcode.yml job, 1 devDep removed, vite build PASS ·
 
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
@@ -137,11 +143,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 21
+- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
+- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
+- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
+- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+
 ## WAVE 20
-- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
-- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
-- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
-- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+- [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
+- [x] T-11 pass-1 DONE: r338/t11-hero @6c28c813 — 44.6→61.0% (63/61/56/64/61); 12 bindings + 301 documented excuses; T-11b residual: ~780 junk ink-SVG pairs, ~190 real (wrapper grid, sectionHeightVh, transition:45), curves ·
+- [x] T-14b DONE: r338/t14b-dark @0895857b — dark usecase 91.1→93.3% (flips 24→92, contrast 7.9:1, light byte-identical); dark problem 92.9% CLEAN; footer dark 63.9 / cta dark 65.3 measured (branches unlanded); INSTRUMENT BUG: contrastRatio() null on rgba → dark uncounts alpha inks (T-14a-bis) ·
+- [x] T-22 DONE: r338/t22-deadcode @63cbdb5b — knip+jscpd+depcruise baselines pinned (65 unusedFiles/320 unusedExports/289 dupBlocks/1 circular), check.sh ratchet exit-0, new deadcode.yml job, 1 devDep removed, vite build PASS ·
 
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
@@ -237,11 +249,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 21
+- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
+- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
+- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
+- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+
 ## WAVE 20
-- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
-- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
-- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
-- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+- [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
+- [x] T-11 pass-1 DONE: r338/t11-hero @6c28c813 — 44.6→61.0% (63/61/56/64/61); 12 bindings + 301 documented excuses; T-11b residual: ~780 junk ink-SVG pairs, ~190 real (wrapper grid, sectionHeightVh, transition:45), curves ·
+- [x] T-14b DONE: r338/t14b-dark @0895857b — dark usecase 91.1→93.3% (flips 24→92, contrast 7.9:1, light byte-identical); dark problem 92.9% CLEAN; footer dark 63.9 / cta dark 65.3 measured (branches unlanded); INSTRUMENT BUG: contrastRatio() null on rgba → dark uncounts alpha inks (T-14a-bis) ·
+- [x] T-22 DONE: r338/t22-deadcode @63cbdb5b — knip+jscpd+depcruise baselines pinned (65 unusedFiles/320 unusedExports/289 dupBlocks/1 circular), check.sh ratchet exit-0, new deadcode.yml job, 1 devDep removed, vite build PASS ·
 
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
@@ -332,11 +350,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 21
+- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
+- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
+- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
+- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+
 ## WAVE 20
-- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
-- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
-- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
-- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+- [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
+- [x] T-11 pass-1 DONE: r338/t11-hero @6c28c813 — 44.6→61.0% (63/61/56/64/61); 12 bindings + 301 documented excuses; T-11b residual: ~780 junk ink-SVG pairs, ~190 real (wrapper grid, sectionHeightVh, transition:45), curves ·
+- [x] T-14b DONE: r338/t14b-dark @0895857b — dark usecase 91.1→93.3% (flips 24→92, contrast 7.9:1, light byte-identical); dark problem 92.9% CLEAN; footer dark 63.9 / cta dark 65.3 measured (branches unlanded); INSTRUMENT BUG: contrastRatio() null on rgba → dark uncounts alpha inks (T-14a-bis) ·
+- [x] T-22 DONE: r338/t22-deadcode @63cbdb5b — knip+jscpd+depcruise baselines pinned (65 unusedFiles/320 unusedExports/289 dupBlocks/1 circular), check.sh ratchet exit-0, new deadcode.yml job, 1 devDep removed, vite build PASS ·
 
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
@@ -420,11 +444,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 21
+- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
+- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
+- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
+- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+
 ## WAVE 20
-- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
-- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
-- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
-- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+- [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
+- [x] T-11 pass-1 DONE: r338/t11-hero @6c28c813 — 44.6→61.0% (63/61/56/64/61); 12 bindings + 301 documented excuses; T-11b residual: ~780 junk ink-SVG pairs, ~190 real (wrapper grid, sectionHeightVh, transition:45), curves ·
+- [x] T-14b DONE: r338/t14b-dark @0895857b — dark usecase 91.1→93.3% (flips 24→92, contrast 7.9:1, light byte-identical); dark problem 92.9% CLEAN; footer dark 63.9 / cta dark 65.3 measured (branches unlanded); INSTRUMENT BUG: contrastRatio() null on rgba → dark uncounts alpha inks (T-14a-bis) ·
+- [x] T-22 DONE: r338/t22-deadcode @63cbdb5b — knip+jscpd+depcruise baselines pinned (65 unusedFiles/320 unusedExports/289 dupBlocks/1 circular), check.sh ratchet exit-0, new deadcode.yml job, 1 devDep removed, vite build PASS ·
 
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
@@ -504,11 +534,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 21
+- [~] L-12r Lander (single-build): all 9 branches (t20 t21 t09 t03 t06g t10 t14b-dark t11 t22), ONE bundle build + ONE verify, push main.
+- [~] T-11b hero pass-2 (junk plumbing + wrapper grid + vh + transitions + curves).
+- [~] T-14a-bis instrument: fix rgba contrastRatio null in --dark + .rl-acc 390 nondeterministic offset.
+- [~] T-13 interaction states (usecase/problem/why/footer/map/cta — NOT hero this wave).
+
 ## WAVE 20
-- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
-- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
-- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
-- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+- [~] L-12 DIED (4th lander death — per-stage builds too slow) → L-12r single-build strategy wave-21 (all 9 branches, ONE build + ONE verify)
+- [x] T-11 pass-1 DONE: r338/t11-hero @6c28c813 — 44.6→61.0% (63/61/56/64/61); 12 bindings + 301 documented excuses; T-11b residual: ~780 junk ink-SVG pairs, ~190 real (wrapper grid, sectionHeightVh, transition:45), curves ·
+- [x] T-14b DONE: r338/t14b-dark @0895857b — dark usecase 91.1→93.3% (flips 24→92, contrast 7.9:1, light byte-identical); dark problem 92.9% CLEAN; footer dark 63.9 / cta dark 65.3 measured (branches unlanded); INSTRUMENT BUG: contrastRatio() null on rgba → dark uncounts alpha inks (T-14a-bis) ·
+- [x] T-22 DONE: r338/t22-deadcode @63cbdb5b — knip+jscpd+depcruise baselines pinned (65 unusedFiles/320 unusedExports/289 dupBlocks/1 circular), check.sh ratchet exit-0, new deadcode.yml job, 1 devDep removed, vite build PASS ·
 
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
