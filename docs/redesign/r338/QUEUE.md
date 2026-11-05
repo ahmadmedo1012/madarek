@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 13
+- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
+- [~] T-08c2 platform re-pairing + mobile geometry + dark.
+- [~] T-02d1r usecase y/h.
+- [~] T-03d intro per-char scaffold bindings (~500 rows).
+
 ## WAVE 12
-- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
 - [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
-- [~] T-02d1 usecase y+h geometry only.
-- [~] T-08c1 platform color+lh css-only.
+- [~] T-02d1 died → respawn wave-13 (y:389 + h:103 only) ·
+- [x] T-08c1 DONE (incl. recovered dead-agent pass-3): r338/t08-platform @e4854b0b — 56.3→78.7% (83/83/83/76/69); lh 193→5 (ar-floor 1.35 pattern), color 46→43 (CTA orange ruling applied); T-08c2 residual: lh×5 + color×43 heuristic mispairs (explicit bindings), 390/768 mobile geometry (69/76), dark+webkit, counterparts+curves ·
 
 ## WAVE 11
 - [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
@@ -89,11 +95,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 13
+- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
+- [~] T-08c2 platform re-pairing + mobile geometry + dark.
+- [~] T-02d1r usecase y/h.
+- [~] T-03d intro per-char scaffold bindings (~500 rows).
+
 ## WAVE 12
-- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
 - [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
-- [~] T-02d1 usecase y+h geometry only.
-- [~] T-08c1 platform color+lh css-only.
+- [~] T-02d1 died → respawn wave-13 (y:389 + h:103 only) ·
+- [x] T-08c1 DONE (incl. recovered dead-agent pass-3): r338/t08-platform @e4854b0b — 56.3→78.7% (83/83/83/76/69); lh 193→5 (ar-floor 1.35 pattern), color 46→43 (CTA orange ruling applied); T-08c2 residual: lh×5 + color×43 heuristic mispairs (explicit bindings), 390/768 mobile geometry (69/76), dark+webkit, counterparts+curves ·
 
 ## WAVE 11
 - [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
@@ -141,11 +153,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 13
+- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
+- [~] T-08c2 platform re-pairing + mobile geometry + dark.
+- [~] T-02d1r usecase y/h.
+- [~] T-03d intro per-char scaffold bindings (~500 rows).
+
 ## WAVE 12
-- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
 - [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
-- [~] T-02d1 usecase y+h geometry only.
-- [~] T-08c1 platform color+lh css-only.
+- [~] T-02d1 died → respawn wave-13 (y:389 + h:103 only) ·
+- [x] T-08c1 DONE (incl. recovered dead-agent pass-3): r338/t08-platform @e4854b0b — 56.3→78.7% (83/83/83/76/69); lh 193→5 (ar-floor 1.35 pattern), color 46→43 (CTA orange ruling applied); T-08c2 residual: lh×5 + color×43 heuristic mispairs (explicit bindings), 390/768 mobile geometry (69/76), dark+webkit, counterparts+curves ·
 
 ## WAVE 11
 - [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
@@ -188,11 +206,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 13
+- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
+- [~] T-08c2 platform re-pairing + mobile geometry + dark.
+- [~] T-02d1r usecase y/h.
+- [~] T-03d intro per-char scaffold bindings (~500 rows).
+
 ## WAVE 12
-- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
 - [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
-- [~] T-02d1 usecase y+h geometry only.
-- [~] T-08c1 platform color+lh css-only.
+- [~] T-02d1 died → respawn wave-13 (y:389 + h:103 only) ·
+- [x] T-08c1 DONE (incl. recovered dead-agent pass-3): r338/t08-platform @e4854b0b — 56.3→78.7% (83/83/83/76/69); lh 193→5 (ar-floor 1.35 pattern), color 46→43 (CTA orange ruling applied); T-08c2 residual: lh×5 + color×43 heuristic mispairs (explicit bindings), 390/768 mobile geometry (69/76), dark+webkit, counterparts+curves ·
 
 ## WAVE 11
 - [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
@@ -228,11 +252,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 13
+- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
+- [~] T-08c2 platform re-pairing + mobile geometry + dark.
+- [~] T-02d1r usecase y/h.
+- [~] T-03d intro per-char scaffold bindings (~500 rows).
+
 ## WAVE 12
-- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
 - [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
-- [~] T-02d1 usecase y+h geometry only.
-- [~] T-08c1 platform color+lh css-only.
+- [~] T-02d1 died → respawn wave-13 (y:389 + h:103 only) ·
+- [x] T-08c1 DONE (incl. recovered dead-agent pass-3): r338/t08-platform @e4854b0b — 56.3→78.7% (83/83/83/76/69); lh 193→5 (ar-floor 1.35 pattern), color 46→43 (CTA orange ruling applied); T-08c2 residual: lh×5 + color×43 heuristic mispairs (explicit bindings), 390/768 mobile geometry (69/76), dark+webkit, counterparts+curves ·
 
 ## WAVE 11
 - [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)
@@ -264,11 +294,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 13
+- [~] T-99c axios→fetch diet + LAND t04+t06 (+t05 if room): real cut, clean rebuild ≤776.5, verify, push main.
+- [~] T-08c2 platform re-pairing + mobile geometry + dark.
+- [~] T-02d1r usecase y/h.
+- [~] T-03d intro per-char scaffold bindings (~500 rows).
+
 ## WAVE 12
-- [~] L-7 Lander: BUNDLE-NEUTRAL train from main — merge t02c(5a3dff54) + t03c(f1012d9c) + t05f(r338/t05-why-f 3c647923) + t08b(36a32694); drop any merge that breaks ≤777; verify --fast; push main.
+- [x] L-7 DONE: landed t02+t03+t08 on main a5b71046..0188bf2f (verify PASS, bundle 776.4); t05 DROPPED (+0.9KB → 777.3) — preserved at local ref r338/land-w12-with-t05 (8bbae10f), re-merge after JS diet
 - [~] T-99b1r entry diet (ultra-tight: lazy GlobalSearch only).
-- [~] T-02d1 usecase y+h geometry only.
-- [~] T-08c1 platform color+lh css-only.
+- [~] T-02d1 died → respawn wave-13 (y:389 + h:103 only) ·
+- [x] T-08c1 DONE (incl. recovered dead-agent pass-3): r338/t08-platform @e4854b0b — 56.3→78.7% (83/83/83/76/69); lh 193→5 (ar-floor 1.35 pattern), color 46→43 (CTA orange ruling applied); T-08c2 residual: lh×5 + color×43 heuristic mispairs (explicit bindings), 390/768 mobile geometry (69/76), dark+webkit, counterparts+curves ·
 
 ## WAVE 11
 - [~] T-99b1 died → respawn ultra-tight (lazy GlobalSearch ONLY, ≤12 calls)

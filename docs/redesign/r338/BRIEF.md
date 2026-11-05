@@ -96,3 +96,8 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - ENTRY-SHELL DIET (T-99b): App.tsx (~53KB raw), GlobalSearch (~39KB raw), axios (~22KB raw) are all EAGER in the entry chunk. The landing route does not need them eagerly. T-99b owns: App.tsx, GlobalSearch*, the search entry wiring, and may convert eager imports to React.lazy/dynamic import + async chunking (verify tsc+vitest cover it). This is the honest path under the 777 ceiling — bundle ceiling stays 777, NO raise.
 - results.json failure rows cap at 800 — to enumerate the FULL footer plumbing set (257 pairs), work from the heron-spec files + section census directly, not results.json.
 - usecase is at 91.2% (91/91/90/94/90) — first section fully ≥90. problem 90.5 held on land-w8. Landing train: t99 holds t05+t04+t06+css-cut+diet; T-99b adds t02c(5a3dff54)+t06e(fc13324a)+t08b(36a32694) + entry diet, then lands.
+
+## ENV ADDENDUM 10 (wave-13, lead)
+- CRITICAL GATE FACT: check-bundle-size.mjs sums ALL dist/assets/*.js INCLUDING async chunks — lazy-splitting moves weight and adds fragmentation glue; it can NEVER lower the total. The only honest lever is REAL code cuts (axios→native fetch migration ≈ −5-6 KB gz; dead App.tsx weight). The t99br lazy-split branch is shelved (also fixed a pre-existing Footer.tsx tsc `as const` error).
+- main @0188bf2f carries: usecase 91.2 ✓, intro 74.8, platform 56.3 (branch now at 78.7 — lands next), + t14a instrument. The t99 train (dd0fd5c4) holds problem 90.5 + footer 69.2 + why-merge; lands after the axios diet.
+- Platform CTA orange ruling APPLIED (section-scoped var rgb(250,54,0)); lh ar-floor max(heronLh,1.35×fs) pattern established — reuse it.
