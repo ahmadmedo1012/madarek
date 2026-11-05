@@ -12,12 +12,1585 @@
   "explicit": [
     {
       "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "ours": ".hro-deco-1 .hro-deco-text",
+      "note": "deco card 1 caption"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "ours": ".hro-deco-2 .hro-deco-text",
+      "note": "deco card 2 caption"
+    },
+    {
+      "section": "home-hero-wrap",
       "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
       "ours": ".hro-title-cell h1",
-      "note": "hero display title; our h1 wraps lines in split masks so own-text tc is 'none' — tc skipped until data-spec hooks land",
+      "note": "hero display h1 (3 authored mask lines ride inside)",
       "skip": [
         "tc"
       ]
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+      "ours": ".hro-sub-cell .hro-lead",
+      "note": "hero lead paragraph (2 mask lines)"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+      "ours": ".hro-sub-cell .hro-cta",
+      "note": "primary register CTA"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > a[2]",
+      "ours": ".hro-sub-cell .hro-alt",
+      "note": "login secondary block"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": ".hro-work-track > .hro-work-item:nth-of-type(1)",
+      "note": "work strip subject 1"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "ours": ".hro-work-track > .hro-work-item:nth-of-type(2)",
+      "note": "work strip subject 2"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "ours": ".hro-work-track > .hro-work-item:nth-of-type(3)",
+      "note": "work strip subject 3"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "ours": ".hro-work-track > .hro-work-item:nth-of-type(4)",
+      "note": "work strip subject 4"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "ours": ".hro-work-track > .hro-work-item:nth-of-type(5)",
+      "note": "work strip subject 5"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+      "ours": ".hro-work-track > .hro-work-item:nth-of-type(6)",
+      "note": "work strip subject 6"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > a[2] > div[2] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > img[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[8]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[4]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > span[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[1] > div[5] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[5] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[6] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[7] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[8] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[3] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[8]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[10]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[11]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[12]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[13]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[14]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[8]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[9]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[10]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[11]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[12]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[13]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[14]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[8]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[9]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[10]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[11]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[12]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[13]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[14]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[8]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[1] > div[9]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[3] > div[2] > div[8]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[10]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[11]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[12]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[13]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[14]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[8]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[1] > div[9]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[3]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[4]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[5]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[6]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[2] > div[4] > div[2] > div[7]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[4]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[5]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[5] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[5] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[5] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[4]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > a[2] > div[2] > div[3] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[3]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[4] > div[3] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[1] > div[5] > div[3] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[3] > div[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[2] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[3] > div[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[3] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[3] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[5] > div[3] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "vector chrome (plus-marks/social arrows/marquee icons/pin dots) - our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.hro-deco-sq), no per-node svg pairing"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[2]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "reason": "drafting grid hairline - our elevation draws its grid inside the ink SVG; no per-div counterpart"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[2]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[3]",
+      "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
     }
   ]
 }
