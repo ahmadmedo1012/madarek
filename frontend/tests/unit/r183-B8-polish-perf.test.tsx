@@ -220,7 +220,15 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
     // drafting instruments + the dashboard showpiece) measured 769.6 KB
     // gz / 168 chunks at fa5a066 — 768→776 (+1.0%, documented in the
     // gate header; a future bundle-diet round re-pins DOWN, never up).
-    expect(script).toContain('LIMIT_TOTAL_KB = 776');
+    // R337 override: the A-usecase section (the Heron-spec's own 8-row
+    // accordion + 8-slide media deck replacing the old 5-card ledger)
+    // measured 776.3 KB gz at 4510c010 on a 30B margin AFTER the full
+    // diet round (motion-media shared literals, dead modules removed;
+    // 50+ measured builds proved sub-30-site constant extraction makes
+    // the gz total WORSE) — 776→777 (+0.13%, the smallest raise in the
+    // gate's history, documented in the gate header; a landing-family
+    // diet owns the reduction; re-pin DOWN with it, never up).
+    expect(script).toContain('LIMIT_TOTAL_KB = 777');
     expect(script).toContain('LIMIT_ENTRY_KB = 92');
     expect(script).toContain('LIMIT_PDF_KB = 110');
     // Fail-closed scanner errors are a distinct exit code, so a missing
