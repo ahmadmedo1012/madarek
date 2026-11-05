@@ -13,7 +13,12 @@
    the 72% soft ink + the quiet mono greys ride the spec-exact
    literals (color-gate allows — color-mix() renders as color() and
    the conformance twin requires the literal), and flip to the site's
-   dark tokens under [data-theme="dark"]. */
+   dark tokens under [data-theme="dark"]. T-06d: every solid ink now
+   rides the design tokens (--text IS #282828, --neutral-400 IS
+   rgb(180,180,176), --c-grey-ink IS rgb(98,98,96) — exact values); only
+   the 72% soft-ink alpha seats keep the spec literal + color-gate allow
+   (statement.css precedent — color-mix() serializes as color() and the
+   conformance twin compares the literal). */
 
 .fo-footer {
   display: block;
@@ -51,19 +56,20 @@
 .fo-col { min-inline-size: 0; }
 
 /* ── col1: the brand lockup + small-link rows + the subscribe seat ── */
-.fo-c1-top { padding: 1.6rem; }
+.fo-c1-top { padding: 1.6rem 1.6rem 0; }
+.fo-rule-bleed { margin-inline: -1.6rem; }
 .fo-brand-name {
   font-size: 3.2rem;
   line-height: 3.2rem;
   font-weight: 600;
-  color: rgb(40, 40, 40); /* color-gate: allow — the spec's solid ink literal */
+  color: var(--text);
 }
 .fo-brand-sub {
   margin-block-start: 0.5rem;
   font-size: 1.6rem;
   line-height: 2.08rem;
   font-weight: 500;
-  color: rgba(40, 40, 40, 0.72);
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
 }
 .fo-brow {
   display: flex;
@@ -81,8 +87,8 @@
   font-weight: 500;
   transition: color 0.2s ease;
 }
-.fo-ilink-t { color: rgba(40, 40, 40, 0.72); }
-.fo-ilink:hover .fo-ilink-t { color: rgb(40, 40, 40); }
+.fo-ilink-t { color: rgba(40, 40, 40, 0.72); } /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
+.fo-ilink:hover .fo-ilink-t { color: var(--text); }
 
 .fo-c1-sub { padding: 1.6rem; }
 .fo-mono-label {
@@ -90,7 +96,7 @@
   font-size: 1.4rem;
   line-height: 1.96rem;
   font-weight: 500;
-  color: rgb(98, 98, 96); /* color-gate: allow — the spec's quiet mono grey literal */
+  color: var(--c-grey-ink); /* the quiet mono grey — --c-grey-ink IS the spec rgb(98,98,96) */
 }
 .fo-mono-label-t { color: inherit; }
 
@@ -99,7 +105,7 @@
   font-size: 1.6rem;
   line-height: 2.08rem;
   font-weight: 400;
-  color: rgba(40, 40, 40, 0.72);
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
 .fo-form-row {
   display: flex;
@@ -118,7 +124,7 @@
   font: inherit;
   font-size: 1.6rem;
   line-height: 2.28rem;
-  color: rgb(40, 40, 40);
+  color: var(--text);
   transition: border-color 0.45s ease;
 }
 .fo-input::placeholder { color: var(--rule-strong); }
@@ -163,7 +169,7 @@
   font-size: 1.6rem;
   line-height: 2.08rem;
   font-weight: 500;
-  color: rgb(40, 40, 40); /* color-gate: allow — spec link ink literal */
+  color: var(--text); /* spec link ink — --text IS #282828 */
   transition: color 0.2s ease;
 }
 .fo-link-t { color: inherit; }
@@ -176,7 +182,7 @@
   padding: 0.5rem;
   text-decoration: none;
   transition: color 0.4s ease;
-  color: rgb(40, 40, 40);
+  color: var(--text);
 }
 .fo-biglink-t {
   font-size: 2.4rem;
@@ -194,7 +200,7 @@
   display: block;
   padding: 0.5rem;
   text-decoration: none;
-  color: rgb(40, 40, 40);
+  color: var(--text);
   transition: color 0.4s ease;
 }
 .fo-social-t1,
@@ -218,7 +224,7 @@
   inline-size: 100%;
   block-size: 100%;
   display: block;
-  color: rgb(40, 40, 40);
+  color: var(--text);
 }
 .fo-mark-p {
   fill: none;
@@ -242,26 +248,32 @@
 .fo-strip-svg { inline-size: 100%; block-size: 100%; display: block; }
 .fo-strip-image { inline-size: 100%; block-size: 100%; }
 
-/* the registration chrome: 4 edge rules + 4 corner crosshairs */
+/* the registration chrome: 4 edge rules (heron paints them via a
+   background IMAGE — backgroundColor stays transparent) + the 4 corner
+   crosshairs as the fo-wordmark-reg '+' family (R321 §A6 source
+   contract: CSS ::before content, never DOM text) */
 .fo-strip-chrome { position: absolute; inset: 1.2rem; }
-.fo-sc-edge { position: absolute; background: var(--rule-strong); }
+.fo-sc-edge { position: absolute; background-image: linear-gradient(var(--rule-strong), var(--rule-strong)); }
 .fo-sc-t { inset-inline: 2.04rem; block-size: 0.84rem; inset-block-start: 0; }
 .fo-sc-b { inset-inline: 2.04rem; block-size: 0.84rem; inset-block-end: 0; }
 .fo-sc-l { inset-block: 1.97rem; inline-size: 0.84rem; inset-inline-start: 0; }
 .fo-sc-r { inset-block: 1.97rem; inline-size: 0.84rem; inset-inline-end: 0; }
-.fo-reg { position: absolute; inline-size: 1.2rem; block-size: 1.2rem; color: rgb(40, 40, 40); }
-.fo-reg:nth-of-type(5) { inset-block-start: -0.24rem; inset-inline-start: -0.24rem; }
-.fo-reg:nth-of-type(6) { inset-block-start: -0.24rem; inset-inline-end: -0.24rem; }
-.fo-reg:nth-of-type(7) { inset-block-end: -0.24rem; inset-inline-start: -0.24rem; }
-.fo-reg:nth-of-type(8) { inset-block-end: -0.24rem; inset-inline-end: -0.24rem; }
-.fo-reg-in { inline-size: 100%; block-size: 100%; }
-.fo-reg-in svg { inline-size: 100%; block-size: 100%; display: block; }
-.fo-reg-p {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1;
-  transition: transform 0.4s ease;
+.fo-wordmark-reg {
+  position: absolute;
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
 }
+.fo-wordmark-reg::before { content: '+'; }
+.fo-reg-tl { inset-block-start: -0.24rem; inset-inline-start: -0.24rem; }
+.fo-reg-tr { inset-block-start: -0.24rem; inset-inline-end: -0.24rem; }
+.fo-reg-bl { inset-block-end: -0.24rem; inset-inline-start: -0.24rem; }
+.fo-reg-br { inset-block-end: -0.24rem; inset-inline-end: -0.24rem; }
 
 /* ═══ the legal row: © + the ruled nav links ═══ */
 .fo-legal {
@@ -278,10 +290,10 @@
   font-size: 1.4rem;
   line-height: 1.82rem;
   font-weight: 500;
-  color: rgba(40, 40, 40, 0.72);
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
 .fo-legal-a {
-  color: rgb(40, 40, 40);
+  color: var(--text);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -293,7 +305,7 @@
   justify-content: center;
   padding-inline: 2rem;
   text-decoration: none;
-  color: rgb(40, 40, 40);
+  color: var(--text);
   transition: color 0.4s ease;
 }
 .fo-legal-nav .fo-rule-v { align-self: stretch; }
@@ -306,46 +318,66 @@
 }
 .fo-legal-nav:hover { color: var(--accent); }
 
-/* ═══ responsive (≤991): the grid stacks, col2 keeps its 2-across ═══ */
+/* the grid's own closing hairline (its 4th child, full-bleed) */
+.fo-grid-rule { grid-column: 1 / -1; }
+
+/* ═══ responsive (≤991): the stack — col2 unwraps (display:contents,
+    heron's 0×0 col2 cell at 390/768), col3's mark re-seats (207 @768) ═══ */
 @media (max-width: 991px) {
   .fo-grid { grid-template-columns: 1fr; }
-  .fo-col3 { display: none; } /* the drawn mark is the desktop seat's own */
+  .fo-col2 { display: contents; }
+  .fo-col3 { display: grid; }
+  .fo-mark { inline-size: 24.84rem; block-size: 24.84rem; }
+  .fo-mark-img { inline-size: 19.92rem; block-size: 2.28rem; }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr 1fr; }
-  .fo-strip { block-size: 30rem; }
+  .fo-strip { block-size: 26.04rem; }
+  .fo-strip-chrome { inset: 1.32rem; }
 }
 
-/* ═══ mobile (≤767): single column, the quiet mono grey the spec
-    itself uses there (11.91px rgb(180,180,176) @390) ═══ */
+/* ═══ mobile (≤767): single column, the measured 390 stack — mark 119
+    centered · strip 137 · chrome inset 8 with 6px edges · 8×8 reg marks
+    · centered © · the legal nav row — mono grey = --neutral-400 (IS
+    the spec's own ≤767 rgb(180,180,176)) ═══ */
 @media (max-width: 767px) {
   .fo-mono-label {
     font-size: 1.2rem;
     line-height: 1.32rem;
-    color: rgb(180, 180, 176); /* color-gate: allow — the spec's own ≤767 mono grey literal */
+    color: var(--neutral-400);
   }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr 1fr; }
   .fo-input,
   .fo-go { block-size: 4.84rem; }
-  .fo-strip { block-size: 24rem; }
+  .fo-col3rule { display: none; }
+  .fo-mark { inline-size: 14.28rem; block-size: 14.28rem; }
+  .fo-mark-img { inline-size: 14.28rem; block-size: 2.52rem; }
+  .fo-strip { block-size: 16.44rem; }
+  .fo-strip-chrome { inset: 0.96rem; }
+  .fo-sc-t,
+  .fo-sc-b { inset-inline: 1.44rem; block-size: 0.72rem; }
+  .fo-sc-l,
+  .fo-sc-r { inset-block: 1.44rem; inline-size: 0.72rem; }
+  .fo-wordmark-reg { inline-size: 0.96rem; block-size: 0.96rem; font-size: 0.96rem; }
+  .fo-reg-tl,
+  .fo-reg-tr { inset-block-start: -0.12rem; }
+  .fo-reg-bl,
+  .fo-reg-br { inset-block-end: -0.12rem; }
+  .fo-reg-tl,
+  .fo-reg-bl { inset-inline-start: -0.12rem; }
+  .fo-reg-tr,
+  .fo-reg-br { inset-inline-end: -0.12rem; }
   .fo-legal { flex-direction: column; }
-  .fo-legal-l { padding: 1rem 1.6rem; }
-  .fo-legal-r { flex-wrap: wrap; }
+  .fo-legal-l { padding: 1rem 1.6rem; justify-content: center; }
+  .fo-legal-r { justify-content: space-between; }
 }
 
-/* ═══ dark theme: the spec literals above are the LIGHT measures;
-    under [data-theme="dark"] every seat flips to the site's tokens ═══ */
-[data-theme='dark'] .fo-footer { color: var(--text-secondary, rgba(235, 235, 230, 0.72)); }
-[data-theme='dark'] .fo-brand-name,
-[data-theme='dark'] .fo-link,
-[data-theme='dark'] .fo-biglink,
-[data-theme='dark'] .fo-social,
-[data-theme='dark'] .fo-legal-a,
-[data-theme='dark'] .fo-legal-nav,
-[data-theme='dark'] .fo-mark-svg,
-[data-theme='dark'] .fo-reg,
-[data-theme='dark'] .fo-input { color: var(--text, #ebebe6); }
+/* ═══ dark theme: the 72% soft-ink literals above are the LIGHT
+    measures — under [data-theme="dark"] those seats flip to the site's
+    tokens (the var(--text) seats flip on their own) ═══ */
+[data-theme='dark'] .fo-footer { color: var(--text-secondary); }
+[data-theme='dark'] .fo-brand-sub,
 [data-theme='dark'] .fo-ilink-t,
 [data-theme='dark'] .fo-form-copy-t,
-[data-theme='dark'] .fo-legal-p { color: var(--text-secondary, rgba(235, 235, 230, 0.72)); }
-[data-theme='dark'] .fo-mono-label { color: var(--neutral-400, #8a8a86); }
+[data-theme='dark'] .fo-legal-p { color: var(--text-secondary); }
+[data-theme='dark'] .fo-mono-label { color: var(--neutral-400); }

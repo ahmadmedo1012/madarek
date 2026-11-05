@@ -108,8 +108,10 @@ export function Footer({ year }: { year: number }) {
                   ))}
                 </div>
               ))}
+              {/* the hairline is the c1-top block's OWN last child (the
+                  heron paint model — full-bleed past the cell padding) */}
+              <div className="fo-rule fo-rule-h fo-rule-bleed" data-spec="footer.c1rule" />
             </div>
-            <div className="fo-rule fo-rule-h" data-spec="footer.c1rule" />
             <div className="fo-c1-sub" data-spec="footer.c1sub">
               <div className="fo-mono-label" data-spec="footer.sublabel">
                 <div className="fo-mono-label-t">[ EARLY ACCESS ]</div>
@@ -167,6 +169,9 @@ export function Footer({ year }: { year: number }) {
 
           {/* col2 — the wide index: 3 groups up, 3 seats down, hairline-ruled */}
           <div className="fo-col fo-col2" data-spec="footer.col2">
+            {/* the heron model: col2 > [top wrapper (groups grid + its own
+                hairline) · bottom grid] — the rule lives INSIDE the wrapper */}
+            <div className="fo-c2-topw">
             <div className="fo-c2-top" data-spec="footer.c2top">
               {INDEX_TOP.map((g, gi) => (
                 <div className="fo-lgroup" key={g.label} data-spec={`footer.lgroup.${gi + 1}`}>
@@ -182,8 +187,9 @@ export function Footer({ year }: { year: number }) {
                   </div>
                 </div>
               ))}
+              <div className="fo-rule fo-rule-h" data-spec="footer.c2rule" />
             </div>
-            <div className="fo-rule fo-rule-h" data-spec="footer.c2rule" />
+            </div>
             <div className="fo-c2-bottom" data-spec="footer.c2bottom">
               <div className="fo-lgroup" data-spec="footer.bgroup.1">
                 <div className="fo-mono-label" data-spec="footer.bg1label">
@@ -270,6 +276,8 @@ export function Footer({ year }: { year: number }) {
               height={0}
             />
           </div>
+          {/* the grid's OWN closing hairline (its 4th child, full-bleed) */}
+          <div className="fo-rule fo-rule-h fo-grid-rule" data-spec="footer.striprule" />
         </div>
 
         {/* ── the strip band (314 @1440): OUR OWN licensed ink render,
@@ -277,7 +285,6 @@ export function Footer({ year }: { year: number }) {
             The retired FooterLens pointer instrument is gone — the spec's
             strip is the image + the feComponentTransfer twin + the four
             corner crosshairs and edge rules. ── */}
-        <div className="fo-rule fo-rule-h fo-rule-full" data-spec="footer.striprule" />
         <div className="fo-strip" data-spec="footer.strip">
           <div className="fo-strip-in" data-spec="footer.stripin">
             <div className="fo-strip-media" data-spec="footer.stripmedia">
@@ -325,15 +332,11 @@ export function Footer({ year }: { year: number }) {
               <div className="fo-sc-edge fo-sc-b" data-spec="footer.scbot" />
               <div className="fo-sc-edge fo-sc-l" data-spec="footer.scleft" />
               <div className="fo-sc-edge fo-sc-r" data-spec="footer.scright" />
-              {[0, 1, 2, 3].map((i) => (
-                <div className="fo-reg" key={i} data-spec={`footer.reg.${i + 1}`}>
-                  <div className="fo-reg-in">
-                    <svg viewBox="0 0 10 10" aria-hidden="true">
-                      <path className="fo-reg-p" d="M5 0v10" />
-                      <path className="fo-reg-p" d="M0 5h10" />
-                    </svg>
-                  </div>
-                </div>
+              {/* the corner crosshairs: the fo-wordmark-reg family,
+                  painted as CSS ::before '+' glyphs (R321 §A6 — decorative
+                  marks never carry DOM text) */}
+              {(['tl', 'tr', 'bl', 'br'] as const).map((pos, i) => (
+                <div className={`fo-wordmark-reg fo-reg-${pos}`} key={pos} data-spec={`footer.reg.${i + 1}`} />
               ))}
             </div>
           </div>
@@ -367,6 +370,8 @@ export function Footer({ year }: { year: number }) {
               </Link>
             ))}
           </div>
+          {/* the legal row's OWN closing hairline (its 3rd child) */}
+          <div className="fo-rule fo-rule-h" data-spec="footer.legalbot" />
         </div>
       </div>
     </footer>
