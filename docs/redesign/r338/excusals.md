@@ -86,3 +86,8 @@ T-06 | footer × webkit (all 5 bps) | ~/.cache/ms-playwright has chromium only �
   four capture seats) — worth ~40-60 cells at 390/768.
 - 768 head h2 wraps 3 lines in heron (88px) but 2 in Arabic (transformed
   text) — h-cell fail by line-count, not fixable without copy change.
+
+## T-06f footer excusals (r338/t06f, wave-13)
+- footer.col2 y/x-mirror @390/768: heron's col2 cell is a collapsed 0x0 window (display:contents-like); its recorded y = −heronSectionPageY, an artifact of the heron page height above the footer. Our col2 (also display:contents, gBCR zeros) yields −ourSectionPageY. The delta is our-vs-heron page height above the footer — not reproducible without falsifying page layout. Geometry stays measured (never skipped); cells documented as impossible.
+- footer.markpath.1-8 geometry: our col3 mark is Madarek's OWN authored line-art (hard rule: never Heron paths) — path-level geometry divergence is by law, not by omission.
+- footer.c1sub h @390/768 (exp 1px): the heron element recorded at the c1sub-bound path at mobile bps is a 1px hairline twin (window collision); collapsing our real subscribe seat to 1px would delete a functional door. bg corrected to spec rgb(179,179,175); h stays measured and fails, documented.

@@ -1708,5 +1708,367 @@
       "heron": "(our authored brow index rows)",
       "reason": "T-06d: heron c1-top (footer.1440/390.json) has exactly 2 children (brand block + the 1px hairline) — our brow index rows are Madarek-authored honest-platform content with no heron counterpart"
     }
+  ],
+  "plumbing": [
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-height image/svg twin stub — lazy-load plumbing seat, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > button[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > br[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > br[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > br[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "0-height image/svg twin stub — lazy-load plumbing seat, not a measured box (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
+    }
   ]
 }

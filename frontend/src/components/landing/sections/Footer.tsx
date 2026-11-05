@@ -91,12 +91,12 @@ const CONTACT_LINKS: [string, string, string][] = [
 /* the col3 construction mark — Madarek's OWN Logo geometry, authored
  * inline line-art (never Heron's paths) */
 const MARK_PATHS = [
-  'M177.5 37.5A94 94 0 1 0 190.4 122', // the orbit circle (open at the reading apex)
-  'M158.9 56.1A67 67 0 1 0 168.1 116', // the inner second orbit
-  'M107.5 10v195', // the vertical construction axis
-  'M10 107.5h195', // the horizontal construction axis
-  'M39.6 39.6l135.8 135.8', // the diagonal construction track
-  'M177.5 37.5l.01.01', // the knowledge point on the orbit
+  'M178 38A94 94 0 1 0 190 122', // the orbit circle (open at the reading apex)
+  'M159 56A67 67 0 1 0 168 116', // the inner second orbit
+  'M108 10v195', // the vertical construction axis
+  'M10 108h195', // the horizontal construction axis
+  'M40 40l136 136', // the diagonal construction track
+  'M178 38h.01', // the knowledge point on the orbit
   'M55 182h105', // the base line
   'M22 62V22h40M153 22h40v40M193 153v40h-40M62 193H22v-40', // frame corner ticks
 ];
@@ -198,7 +198,7 @@ export function Footer({ year }: { year: number }) {
                     aria-label="الانتقال إلى التسجيل المبكر"
                   >
                     <div className="fo-go-ic">
-                      <svg viewBox="0 0 17 17" role="img" aria-hidden="true">
+                      <svg viewBox="0 0 17 17" aria-hidden="true">
                         <path d="M2 8.5h12M9.5 4l4.5 4.5L9.5 13" />
                       </svg>
                     </div>
@@ -279,15 +279,13 @@ export function Footer({ year }: { year: number }) {
                 ))}
               </svg>
             </div>
-            {/* the spec's 0-height image seat (a 215×0 lazy stub) */}
+            {/* the spec's 0-height image seat (a lazy stub - CSS sizes it) */}
             <img
               className="fo-mark-img"
               data-spec="footer.markimg"
               src="/media/renders/hero-ink-1100.webp"
               alt=""
               loading="lazy"
-              width={215}
-              height={0}
             />
           </div>
           {/* the grid's OWN closing hairline (its 4th child, full-bleed) */}
@@ -330,12 +328,9 @@ export function Footer({ year }: { year: number }) {
                     className="fo-strip-image"
                     data-spec="footer.stripimage"
                     href="/media/renders/hero-ink-1100.webp"
-                    x="0"
-                    y="0"
                     width="1427"
                     height="314"
                     filter="url(#fo-gray)"
-                    preserveAspectRatio="xMidYMid slice"
                   />
                 </svg>
               </div>
