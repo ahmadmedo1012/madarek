@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 10
+- [~] T-99b entry-diet + land: lazy GlobalSearch + axios/App.tsx audit, merge t02c+t06e+t08b into t99, verify ≤777, push main.
+- [~] T-03c intro word-bindings (respawn).
+- [~] T-02d usecase geometry only.
+- [~] T-08c platform pass-3 (token ruling + geometry + counterparts + curves).
+
 ## WAVE 9
-- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
-- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
-- [~] T-02c usecase color+lh only.
-- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+- [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
+- [x] T-08b DONE: r338/t08-platform @36a32694 — 53.7→56.3% (61/61/49/53/57); T-08c residual: color:123 (CTA orange token — RULING in addendum 9), lh:117, geometry (side col rows 193 stack, row2 y140, ai-cell, 768/390 folds), marquee+dual-CTA counterparts, curves alignment ·
+- [x] T-02c DONE: r338/t02-usecase-residual @5a3dff54 — 87.9→91.2% (91/91/90/94/90); color 39→5, lh excused w/ written reasons (floor-vs-geometry exclusion measured); T-02d owns y:389 h:103 x-mirror:85 w:78 + 390 parked deck (beware carried acc re-seat WIP) ·
+- [x] T-06e DONE: r338/t06-footer @fc13324a (rebased on t14a main) — light 69.2 (60 plumbing-skips counted), DARK 68.5% (flips 143, contrast 325/0); T-06f residual: mobile re-seat (c1top/c1sub/lglabel/col3-markimg), bg:50 (transparent vs rgb(179,179,175)), dark geometry drift, full 257-pair plumbing enumeration from spec files ·
 
 ## WAVE 8
 - [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
@@ -73,11 +79,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 10
+- [~] T-99b entry-diet + land: lazy GlobalSearch + axios/App.tsx audit, merge t02c+t06e+t08b into t99, verify ≤777, push main.
+- [~] T-03c intro word-bindings (respawn).
+- [~] T-02d usecase geometry only.
+- [~] T-08c platform pass-3 (token ruling + geometry + counterparts + curves).
+
 ## WAVE 9
-- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
-- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
-- [~] T-02c usecase color+lh only.
-- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+- [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
+- [x] T-08b DONE: r338/t08-platform @36a32694 — 53.7→56.3% (61/61/49/53/57); T-08c residual: color:123 (CTA orange token — RULING in addendum 9), lh:117, geometry (side col rows 193 stack, row2 y140, ai-cell, 768/390 folds), marquee+dual-CTA counterparts, curves alignment ·
+- [x] T-02c DONE: r338/t02-usecase-residual @5a3dff54 — 87.9→91.2% (91/91/90/94/90); color 39→5, lh excused w/ written reasons (floor-vs-geometry exclusion measured); T-02d owns y:389 h:103 x-mirror:85 w:78 + 390 parked deck (beware carried acc re-seat WIP) ·
+- [x] T-06e DONE: r338/t06-footer @fc13324a (rebased on t14a main) — light 69.2 (60 plumbing-skips counted), DARK 68.5% (flips 143, contrast 325/0); T-06f residual: mobile re-seat (c1top/c1sub/lglabel/col3-markimg), bg:50 (transparent vs rgb(179,179,175)), dark geometry drift, full 257-pair plumbing enumeration from spec files ·
 
 ## WAVE 8
 - [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
@@ -109,11 +121,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 10
+- [~] T-99b entry-diet + land: lazy GlobalSearch + axios/App.tsx audit, merge t02c+t06e+t08b into t99, verify ≤777, push main.
+- [~] T-03c intro word-bindings (respawn).
+- [~] T-02d usecase geometry only.
+- [~] T-08c platform pass-3 (token ruling + geometry + counterparts + curves).
+
 ## WAVE 9
-- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
-- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
-- [~] T-02c usecase color+lh only.
-- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+- [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
+- [x] T-08b DONE: r338/t08-platform @36a32694 — 53.7→56.3% (61/61/49/53/57); T-08c residual: color:123 (CTA orange token — RULING in addendum 9), lh:117, geometry (side col rows 193 stack, row2 y140, ai-cell, 768/390 folds), marquee+dual-CTA counterparts, curves alignment ·
+- [x] T-02c DONE: r338/t02-usecase-residual @5a3dff54 — 87.9→91.2% (91/91/90/94/90); color 39→5, lh excused w/ written reasons (floor-vs-geometry exclusion measured); T-02d owns y:389 h:103 x-mirror:85 w:78 + 390 parked deck (beware carried acc re-seat WIP) ·
+- [x] T-06e DONE: r338/t06-footer @fc13324a (rebased on t14a main) — light 69.2 (60 plumbing-skips counted), DARK 68.5% (flips 143, contrast 325/0); T-06f residual: mobile re-seat (c1top/c1sub/lglabel/col3-markimg), bg:50 (transparent vs rgb(179,179,175)), dark geometry drift, full 257-pair plumbing enumeration from spec files ·
 
 ## WAVE 8
 - [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
@@ -140,11 +158,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 10
+- [~] T-99b entry-diet + land: lazy GlobalSearch + axios/App.tsx audit, merge t02c+t06e+t08b into t99, verify ≤777, push main.
+- [~] T-03c intro word-bindings (respawn).
+- [~] T-02d usecase geometry only.
+- [~] T-08c platform pass-3 (token ruling + geometry + counterparts + curves).
+
 ## WAVE 9
-- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
-- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
-- [~] T-02c usecase color+lh only.
-- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+- [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
+- [x] T-08b DONE: r338/t08-platform @36a32694 — 53.7→56.3% (61/61/49/53/57); T-08c residual: color:123 (CTA orange token — RULING in addendum 9), lh:117, geometry (side col rows 193 stack, row2 y140, ai-cell, 768/390 folds), marquee+dual-CTA counterparts, curves alignment ·
+- [x] T-02c DONE: r338/t02-usecase-residual @5a3dff54 — 87.9→91.2% (91/91/90/94/90); color 39→5, lh excused w/ written reasons (floor-vs-geometry exclusion measured); T-02d owns y:389 h:103 x-mirror:85 w:78 + 390 parked deck (beware carried acc re-seat WIP) ·
+- [x] T-06e DONE: r338/t06-footer @fc13324a (rebased on t14a main) — light 69.2 (60 plumbing-skips counted), DARK 68.5% (flips 143, contrast 325/0); T-06f residual: mobile re-seat (c1top/c1sub/lglabel/col3-markimg), bg:50 (transparent vs rgb(179,179,175)), dark geometry drift, full 257-pair plumbing enumeration from spec files ·
 
 ## WAVE 8
 - [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
@@ -164,11 +188,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 10
+- [~] T-99b entry-diet + land: lazy GlobalSearch + axios/App.tsx audit, merge t02c+t06e+t08b into t99, verify ≤777, push main.
+- [~] T-03c intro word-bindings (respawn).
+- [~] T-02d usecase geometry only.
+- [~] T-08c platform pass-3 (token ruling + geometry + counterparts + curves).
+
 ## WAVE 9
-- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
-- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
-- [~] T-02c usecase color+lh only.
-- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+- [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
+- [x] T-08b DONE: r338/t08-platform @36a32694 — 53.7→56.3% (61/61/49/53/57); T-08c residual: color:123 (CTA orange token — RULING in addendum 9), lh:117, geometry (side col rows 193 stack, row2 y140, ai-cell, 768/390 folds), marquee+dual-CTA counterparts, curves alignment ·
+- [x] T-02c DONE: r338/t02-usecase-residual @5a3dff54 — 87.9→91.2% (91/91/90/94/90); color 39→5, lh excused w/ written reasons (floor-vs-geometry exclusion measured); T-02d owns y:389 h:103 x-mirror:85 w:78 + 390 parked deck (beware carried acc re-seat WIP) ·
+- [x] T-06e DONE: r338/t06-footer @fc13324a (rebased on t14a main) — light 69.2 (60 plumbing-skips counted), DARK 68.5% (flips 143, contrast 325/0); T-06f residual: mobile re-seat (c1top/c1sub/lglabel/col3-markimg), bg:50 (transparent vs rgb(179,179,175)), dark geometry drift, full 257-pair plumbing enumeration from spec files ·
 
 ## WAVE 8
 - [x] L-6 DONE (partial): t14a landed on main a5b71046 (by dying L-5); t05+t04+t06 merged on r338/land-w8 but HELD — bundle 777.6>777 (needs 0.6KB JS diet from Chapters/Footer.tsx); incident ongoing (logs 404); css cuts don't move the JS-only gate
@@ -184,11 +214,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 10
+- [~] T-99b entry-diet + land: lazy GlobalSearch + axios/App.tsx audit, merge t02c+t06e+t08b into t99, verify ≤777, push main.
+- [~] T-03c intro word-bindings (respawn).
+- [~] T-02d usecase geometry only.
+- [~] T-08c platform pass-3 (token ruling + geometry + counterparts + curves).
+
 ## WAVE 9
-- [~] T-99 bundle-diet + land: merge t05 37b3c79a into land-w8, cut 0.6KB real JS from Chapters.tsx/Footer.tsx, verify --fast (≤777), push main.
-- [~] T-08b platform pass-2 (Product.tsx data-spec + geometry + counterparts + curves).
-- [~] T-02c usecase color+lh only.
-- [~] T-06e footer mobile model + plumbing skips + --dark opt-in.
+- [x] T-99 DONE (blocked honestly): diet −1.7KB raw ≈ 0 gz (gzip dedupes); bundle 777.594 = 608B over; honest levers spent at section level → T-99b entry-shell diet (App.tsx/GlobalSearch/axios async-ification) owns the landing
+- [x] T-08b DONE: r338/t08-platform @36a32694 — 53.7→56.3% (61/61/49/53/57); T-08c residual: color:123 (CTA orange token — RULING in addendum 9), lh:117, geometry (side col rows 193 stack, row2 y140, ai-cell, 768/390 folds), marquee+dual-CTA counterparts, curves alignment ·
+- [x] T-02c DONE: r338/t02-usecase-residual @5a3dff54 — 87.9→91.2% (91/91/90/94/90); color 39→5, lh excused w/ written reasons (floor-vs-geometry exclusion measured); T-02d owns y:389 h:103 x-mirror:85 w:78 + 390 parked deck (beware carried acc re-seat WIP) ·
+- [x] T-06e DONE: r338/t06-footer @fc13324a (rebased on t14a main) — light 69.2 (60 plumbing-skips counted), DARK 68.5% (flips 143, contrast 325/0); T-06f residual: mobile re-seat (c1top/c1sub/lglabel/col3-markimg), bg:50 (transparent vs rgb(179,179,175)), dark geometry drift, full 257-pair plumbing enumeration from spec files ·
 
 ## WAVE 8 (closing)
 - [ ] T-90 blind panel · R333 12-criterion rubric, dark + WebKit, run once, honest. 25m.

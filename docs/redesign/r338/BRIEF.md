@@ -90,3 +90,9 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - check-bundle-size.mjs counts dist/assets/*.js ONLY (css is not in the gate) — css cuts do not move it.
 - GitHub Actions incident ONGOING (all-fail, logs 404, reruns red): local verify is the landing evidence; landers keep API-watching and re-check later runs.
 - Usecase lh/geometry task split again (3 agent deaths): T-02c = color:162 + lh:22 only; T-02d = geometry (y:265 h:92 x-mirror:73 w:63 bg:81 + 390 parked deck) only.
+
+## ENV ADDENDUM 9 (wave-10, lead rulings)
+- TOKEN RULING (platform CTA orange): the spec measures heron CTA orange rgb(250,54,0); our token is rgb(199,46,0). Scoped fix: define the CTA orange as a section-scoped var in platform.css set to the MEASURED value (do not mutate the global token yet — a global token unification is queued as T-25). Same approach for any other measured color deltas: scoped var + note in HANDOFF for T-25.
+- ENTRY-SHELL DIET (T-99b): App.tsx (~53KB raw), GlobalSearch (~39KB raw), axios (~22KB raw) are all EAGER in the entry chunk. The landing route does not need them eagerly. T-99b owns: App.tsx, GlobalSearch*, the search entry wiring, and may convert eager imports to React.lazy/dynamic import + async chunking (verify tsc+vitest cover it). This is the honest path under the 777 ceiling — bundle ceiling stays 777, NO raise.
+- results.json failure rows cap at 800 — to enumerate the FULL footer plumbing set (257 pairs), work from the heron-spec files + section census directly, not results.json.
+- usecase is at 91.2% (91/91/90/94/90) — first section fully ≥90. problem 90.5 held on land-w8. Landing train: t99 holds t05+t04+t06+css-cut+diet; T-99b adds t02c(5a3dff54)+t06e(fc13324a)+t08b(36a32694) + entry diet, then lands.
