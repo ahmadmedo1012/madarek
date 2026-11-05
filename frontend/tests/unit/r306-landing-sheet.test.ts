@@ -162,10 +162,14 @@ describe('r306 — the drawing sheet ships', () => {
   });
 
   it('the mono bracketed indices carry the drafting voice (Latin, dir=ltr, tabular)', () => {
-    expect(liveTsx).toMatch(/fo-mono[^>]*dir="ltr">\[01\]/);
-    for (const n of ['[02]', '[03]', '[04]', '[05]', '[06]', '[07]']) {
-      expect(liveTsx).toContain(n);
-    }
+    // R337: the Heron census for the section is 8 accordion rows; the
+    // rewrite renders the numeral from the row data (ROLE_ROWS.num
+    // 01–08), so the PIN is the voice — mono, Latin glyphs, dir=ltr,
+    // tabular numerals — on the template, plus the full 01–08 ladder
+    // in the data, not a fixed DOM total.
+    expect(liveTsx).toMatch(/fo-mono[^>]*dir="ltr">\[\{active\.num\}\]/);
+    expect(liveTsx).toMatch(/num:\s*'0[1-8]'/);
+    expect(liveTsx).not.toMatch(/num:\s*'0[9]'/);
     expect(live).toMatch(/\.fo-mono\s*\{[^}]*font-variant-numeric:\s*tabular-nums/);
   });
 });

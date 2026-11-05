@@ -1,3 +1,4 @@
+import { BP_DRAWABLE, BP_DRAWABLE_HAIR } from './copy';
 /**
  * ElevationDrawing — R310 «واجهة التعلّم» — Artwork A.
  *
@@ -89,8 +90,8 @@ function Window({
 }) {
   return (
     <g className="bp-hair" aria-hidden="true">
-      <rect className="bp-drawable" x={x} y={y} width={w} height={h} pathLength={1} />
-      <line className="bp-drawable" x1={x + w / 2} y1={y} x2={x + w / 2} y2={y + h} pathLength={1} />
+      <rect className={BP_DRAWABLE} x={x} y={y} width={w} height={h} pathLength={1} />
+      <line className={BP_DRAWABLE} x1={x + w / 2} y1={y} x2={x + w / 2} y2={y + h} pathLength={1} />
     </g>
   );
 }
@@ -177,17 +178,17 @@ export function ElevationArt({
       {furniture && (
       <g className="bp-l-frame" data-ink="1" aria-hidden="true">
         <g className="bp-hair">
-          <path d="M36 50 h16 M44 42 v16" className="bp-drawable" pathLength={1} />
-          <path d="M1388 50 h16 M1396 42 v16" className="bp-drawable" pathLength={1} />
-          <path d="M36 614 h16 M44 606 v16" className="bp-drawable" pathLength={1} />
-          <path d="M1388 614 h16 M1396 606 v16" className="bp-drawable" pathLength={1} />
+          <path d="M36 50 h16 M44 42 v16" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M1388 50 h16 M1396 42 v16" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M36 614 h16 M44 606 v16" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M1388 614 h16 M1396 606 v16" className={BP_DRAWABLE} pathLength={1} />
         </g>
         {/* the top ruler — the drafting strip with alternating ticks */}
-        <line className="bp-drawable bp-hair" x1="36" y1="64" x2="1404" y2="64" pathLength={1} />
+        <line className={BP_DRAWABLE_HAIR} x1="36" y1="64" x2="1404" y2="64" pathLength={1} />
         {Array.from({ length: 39 }, (_, i) => 36 + i * 36).map((x) => (
           <line
             key={x}
-            className="bp-drawable bp-hair"
+            className={BP_DRAWABLE_HAIR}
             x1={x}
             y1="64"
             x2={x}
@@ -215,7 +216,7 @@ export function ElevationArt({
         ].map(([letter, x]) => (
           <g key={letter as string}>
             <line className="bp-drawable bp-gridline" x1={x as number} y1="108" x2={x as number} y2="500" pathLength={1} />
-            <circle className="bp-drawable bp-hair" cx={x as number} cy="99" r="9" pathLength={1} />
+            <circle className={BP_DRAWABLE_HAIR} cx={x as number} cy="99" r="9" pathLength={1} />
             <text className="bp-micro" x={x as number} y="102.5" textAnchor="middle">
               {letter as string}
             </text>
@@ -238,7 +239,7 @@ export function ElevationArt({
         {/* paving joints above the datum (sheet variant only) */}
         {!entrance &&
           Array.from({ length: 29 }, (_, i) => 60 + i * 48).map((x) => (
-            <line key={x} className="bp-drawable bp-hair" x1={x} y1="500" x2={x} y2="495" pathLength={1} />
+            <line key={x} className={BP_DRAWABLE_HAIR} x1={x} y1="500" x2={x} y2="495" pathLength={1} />
           ))}
         {/* the level datum triangles at both ends */}
         <polygon className="bp-drawable bp-fill" points="52,500 60,488 68,500" pathLength={1} />
@@ -258,11 +259,11 @@ export function ElevationArt({
           {!entrance && (
             <polygon className="bp-drawable bp-xhatch-fill" points="1010,230 1145,196 1280,230" pathLength={1} />
           )}
-          <line className="bp-drawable bp-hair" x1="1016" y1="242" x2="1274" y2="242" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1016" y1="242" x2="1274" y2="242" pathLength={1} />
           {/* the clerestory band — 11 mullions under the rake */}
-          <rect className="bp-drawable bp-hair" x="1030" y="252" width="220" height="32" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="1030" y="252" width="220" height="32" pathLength={1} />
           {Array.from({ length: 10 }, (_, i) => 1052 + i * 20).map((x) => (
-            <line key={x} className="bp-drawable bp-hair" x1={x} y1="252" x2={x} y2="284" pathLength={1} />
+            <line key={x} className={BP_DRAWABLE_HAIR} x1={x} y1="252" x2={x} y2="284" pathLength={1} />
           ))}
           {/* the spandrel texture + the floor band */}
           {!entrance && (
@@ -274,9 +275,9 @@ export function ElevationArt({
               <rect className="bp-drawable bp-shade-fill" x="1012" y="288" width="266" height="22" pathLength={1} />
             </>
           )}
-          <line className="bp-drawable bp-hair" x1="1010" y1="392" x2="1280" y2="392" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1010" y1="392" x2="1280" y2="392" pathLength={1} />
           {/* the level marker — L1 at the floor band */}
-          <line className="bp-drawable bp-hair" x1="1280" y1="392" x2="1292" y2="392" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1280" y1="392" x2="1292" y2="392" pathLength={1} />
           {!entrance && <text className="bp-micro" x="1296" y="395">L1</text>}
         </g>
         <g className="bp-l-openings" data-ink="6">
@@ -293,17 +294,17 @@ export function ElevationArt({
           )}
           {/* the entrance portal — double doors + transom + canopy */}
           <rect className="bp-drawable bp-fill" x="1090" y="410" width="100" height="90" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="1140" y1="410" x2="1140" y2="500" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="1090" y1="430" x2="1190" y2="430" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="1115" y1="430" x2="1115" y2="500" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="1165" y1="430" x2="1165" y2="500" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1140" y1="410" x2="1140" y2="500" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1090" y1="430" x2="1190" y2="430" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1115" y1="430" x2="1115" y2="500" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1165" y1="430" x2="1165" y2="500" pathLength={1} />
           {/* the canopy + its rods */}
           <line className="bp-drawable bp-ink" x1="1078" y1="400" x2="1202" y2="400" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="1090" y1="400" x2="1090" y2="410" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="1190" y1="400" x2="1190" y2="410" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1090" y1="400" x2="1090" y2="410" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="1190" y1="400" x2="1190" y2="410" pathLength={1} />
           {/* the entrance steps */}
-          <rect className="bp-drawable bp-hair" x="1082" y="492" width="116" height="8" pathLength={1} />
-          <rect className="bp-drawable bp-hair" x="1074" y="500" width="132" height="8" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="1082" y="492" width="116" height="8" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="1074" y="500" width="132" height="8" pathLength={1} />
           {/* two flanking slit windows */}
           <Window x={1030} y={420} w={22} h={64} />
           <Window x={1232} y={420} w={22} h={64} />
@@ -324,12 +325,12 @@ export function ElevationArt({
           {!entrance && (
             <rect className="bp-drawable bp-fins-fill" x="938" y="376" width="64" height="96" pathLength={1} />
           )}
-          <rect className="bp-drawable bp-hair" x="938" y="376" width="64" height="96" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="938" y="376" width="64" height="96" pathLength={1} />
           {[954, 970, 986].map((x) => (
-            <line key={x} className="bp-drawable bp-hair" x1={x} y1="376" x2={x} y2="472" pathLength={1} />
+            <line key={x} className={BP_DRAWABLE_HAIR} x1={x} y1="376" x2={x} y2="472" pathLength={1} />
           ))}
           {[408, 440].map((y) => (
-            <line key={y} className="bp-drawable bp-hair" x1="938" y1={y} x2="1002" y2={y} pathLength={1} />
+            <line key={y} className={BP_DRAWABLE_HAIR} x1="938" y1={y} x2="1002" y2={y} pathLength={1} />
           ))}
         </g>
         <g className="bp-l-detail" data-ink="7">
@@ -337,7 +338,7 @@ export function ElevationArt({
               R315 A.1: the pin-square grammar, 18×18 → ≈16px on the
               hero seat; the reference parity marker shape) */}
           <line className="bp-drawable bp-ink" x1="970" y1="356" x2="970" y2="300" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="962" y1="312" x2="978" y2="312" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="962" y1="312" x2="978" y2="312" pathLength={1} />
           <rect className="bp-drawable bp-signal-fill" x="972" y="300" width="18" height="18" pathLength={1} />
           {/* the pulse square on the glass — the live checkpoint */}
           <rect className="bp-drawable bp-signal-fill" x="966" y="452" width="8" height="8" pathLength={1} />
@@ -372,26 +373,26 @@ export function ElevationArt({
           {[766, 812, 858, 904].map((x) => (
             <g key={x}>
               <rect className="bp-drawable bp-fill" x={x} y="340" width="13" height="152" pathLength={1} />
-              <rect className="bp-drawable bp-hair" x={x - 3} y="332" width="19" height="8" pathLength={1} />
-              <rect className="bp-drawable bp-hair" x={x - 3} y="492" width="19" height="8" pathLength={1} />
+              <rect className={BP_DRAWABLE_HAIR} x={x - 3} y="332" width="19" height="8" pathLength={1} />
+              <rect className={BP_DRAWABLE_HAIR} x={x - 3} y="492" width="19" height="8" pathLength={1} />
             </g>
           ))}
           {/* the recessed door wall between the middle columns */}
-          <rect className="bp-drawable bp-hair" x="800" y="416" width="78" height="84" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="839" y1="416" x2="839" y2="500" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="800" y="416" width="78" height="84" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="839" y1="416" x2="839" y2="500" pathLength={1} />
           {/* the pavilion steps */}
-          <rect className="bp-drawable bp-hair" x="748" y="500" width="174" height="8" pathLength={1} />
-          <rect className="bp-drawable bp-hair" x="740" y="508" width="190" height="8" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="748" y="500" width="174" height="8" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="740" y="508" width="190" height="8" pathLength={1} />
         </g>
         <g className="bp-l-detail" data-ink="7">
           {/* the clock in the pediment */}
           <circle className="bp-drawable bp-fill" cx="835" cy="281" r="13" pathLength={1} />
           <line className="bp-drawable bp-ink" x1="835" y1="281" x2="835" y2="271" pathLength={1} />
           <line className="bp-drawable bp-ink" x1="835" y1="281" x2="842" y2="285" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="835" y1="270" x2="835" y2="273" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="835" y1="289" x2="835" y2="292" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="824" y1="281" x2="827" y2="281" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="843" y1="281" x2="846" y2="281" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="835" y1="270" x2="835" y2="273" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="835" y1="289" x2="835" y2="292" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="824" y1="281" x2="827" y2="281" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="843" y1="281" x2="846" y2="281" pathLength={1} />
         </g>
       </g>
 
@@ -410,13 +411,13 @@ export function ElevationArt({
             </>
           )}
           {Array.from({ length: 10 }, (_, i) => 438 + i * 32).map((x) => (
-            <line key={x} className="bp-drawable bp-hair" x1={x} y1="292" x2={x} y2="286" pathLength={1} />
+            <line key={x} className={BP_DRAWABLE_HAIR} x1={x} y1="292" x2={x} y2="286" pathLength={1} />
           ))}
           {/* the reading-room spandrel + the floor band */}
           {!entrance && (
             <rect className="bp-drawable bp-stipple-fill" x="432" y="374" width="306" height="34" pathLength={1} />
           )}
-          <line className="bp-drawable bp-hair" x1="430" y1="408" x2="740" y2="408" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="430" y1="408" x2="740" y2="408" pathLength={1} />
         </g>
         <g className="bp-l-openings" data-ink="6">
           {/* the tall-window grid — 7 bays × 2 rows */}
@@ -427,8 +428,8 @@ export function ElevationArt({
             </g>
           ))}
           {/* the wing entrance (reading end) */}
-          <rect className="bp-drawable bp-hair" x="700" y="424" width="32" height="76" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="716" y1="424" x2="716" y2="500" pathLength={1} />
+          <rect className={BP_DRAWABLE_HAIR} x="700" y="424" width="32" height="76" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="716" y1="424" x2="716" y2="500" pathLength={1} />
           {/* c4-C — the plinth strip below the tall windows (the base
               shadow value on the reading wing's wall). */}
           {!entrance && (
@@ -488,9 +489,9 @@ export function ElevationArt({
           <line className="bp-drawable bp-ink" x1="355" y1="100" x2="355" y2="64" pathLength={1} />
           <rect className="bp-drawable bp-signal-fill" x="357" y="64" width="18" height="18" pathLength={1} />
           {/* the tower's vertical dimension */}
-          <line className="bp-drawable bp-hair" x1="262" y1="100" x2="262" y2="500" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="256" y1="100" x2="268" y2="100" pathLength={1} />
-          <line className="bp-drawable bp-hair" x1="256" y1="500" x2="268" y2="500" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="262" y1="100" x2="262" y2="500" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="256" y1="100" x2="268" y2="100" pathLength={1} />
+          <line className={BP_DRAWABLE_HAIR} x1="256" y1="500" x2="268" y2="500" pathLength={1} />
           {!entrance && <text className="bp-micro" x="254" y="304" textAnchor="end">44M</text>}
         </g>
       </g>
@@ -501,9 +502,9 @@ export function ElevationArt({
             c4-C: the canopies carry the stipple texture (the granular
             ink mass the reference's trees read as). */}
         <g className="bp-hair">
-          <path d="M1342,500 v-64" className="bp-drawable" pathLength={1} />
-          <path d="M1342,446 c-10,-14 -22,-20 -34,-24" className="bp-drawable" pathLength={1} />
-          <path d="M1342,440 c10,-16 22,-24 32,-30" className="bp-drawable" pathLength={1} />
+          <path d="M1342,500 v-64" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M1342,446 c-10,-14 -22,-20 -34,-24" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M1342,440 c10,-16 22,-24 32,-30" className={BP_DRAWABLE} pathLength={1} />
           {!entrance && (
             <>
               <circle cx="1342" cy="394" r="30" className="bp-drawable bp-stipple-outline" pathLength={1} />
@@ -511,13 +512,13 @@ export function ElevationArt({
               <circle cx="1366" cy="410" r="24" className="bp-drawable bp-stipple-outline" pathLength={1} />
             </>
           )}
-          <path d="M1330,380 l-8,-10 M1352,384 l10,-8 M1322,404 l-10,-6 M1360,400 l10,-8" className="bp-drawable" pathLength={1} />
+          <path d="M1330,380 l-8,-10 M1352,384 l10,-8 M1322,404 l-10,-6 M1360,400 l10,-8" className={BP_DRAWABLE} pathLength={1} />
         </g>
         {/* the left tree — beside the tower (reading end) */}
         <g className="bp-hair">
-          <path d="M158,500 v-64" className="bp-drawable" pathLength={1} />
-          <path d="M158,446 c-10,-14 -22,-20 -34,-24" className="bp-drawable" pathLength={1} />
-          <path d="M158,440 c10,-16 22,-24 32,-30" className="bp-drawable" pathLength={1} />
+          <path d="M158,500 v-64" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M158,446 c-10,-14 -22,-20 -34,-24" className={BP_DRAWABLE} pathLength={1} />
+          <path d="M158,440 c10,-16 22,-24 32,-30" className={BP_DRAWABLE} pathLength={1} />
           {!entrance && (
             <>
               <circle cx="158" cy="394" r="30" className="bp-drawable bp-stipple-outline" pathLength={1} />
@@ -525,20 +526,20 @@ export function ElevationArt({
               <circle cx="182" cy="410" r="24" className="bp-drawable bp-stipple-outline" pathLength={1} />
             </>
           )}
-          <path d="M146,380 l-8,-10 M168,384 l10,-8 M138,404 l-10,-6 M176,400 l10,-8" className="bp-drawable" pathLength={1} />
+          <path d="M146,380 l-8,-10 M168,384 l10,-8 M138,404 l-10,-6 M176,400 l10,-8" className={BP_DRAWABLE} pathLength={1} />
         </g>
       </g>
 
       {/* ═══ 08 · the dimension chain — the sheet's measure line ══════ */}
       {furniture && (
       <g className="bp-l-dims" data-ink="8" aria-hidden="true">
-        <line className="bp-drawable bp-hair" x1="36" y1="568" x2="1404" y2="568" pathLength={1} />
-        <line className="bp-drawable bp-hair" x1="36" y1="568" x2="46" y2="568" pathLength={1} />
-        <line className="bp-drawable bp-hair" x1="1394" y1="568" x2="1404" y2="568" pathLength={1} />
+        <line className={BP_DRAWABLE_HAIR} x1="36" y1="568" x2="1404" y2="568" pathLength={1} />
+        <line className={BP_DRAWABLE_HAIR} x1="36" y1="568" x2="46" y2="568" pathLength={1} />
+        <line className={BP_DRAWABLE_HAIR} x1="1394" y1="568" x2="1404" y2="568" pathLength={1} />
         {/* extension lines + ticks at every grid column */}
         {[280, 430, 585, 740, 930, 1010, 1280].map((x) => (
           <g key={x}>
-            <line className="bp-drawable bp-hair" x1={x} y1="516" x2={x} y2="574" pathLength={1} />
+            <line className={BP_DRAWABLE_HAIR} x1={x} y1="516" x2={x} y2="574" pathLength={1} />
             <DimTick x={x} y={568} />
           </g>
         ))}
@@ -564,7 +565,7 @@ export function ElevationArt({
         <polyline className="bp-drawable bp-ink" points="316,526 304,532 316,538" pathLength={1} />
         {/* station ticks from each volume's center down to the path */}
         {[1145, 970, 835, 585, 355].map((x) => (
-          <line key={x} className="bp-drawable bp-hair" x1={x} y1="516" x2={x} y2="532" pathLength={1} />
+          <line key={x} className={BP_DRAWABLE_HAIR} x1={x} y1="516" x2={x} y2="532" pathLength={1} />
         ))}
         <text className="bp-tag" x="773" y="524" textAnchor="middle">مسار التعلّم — من المحاضرة إلى الإتقان</text>
       </g>

@@ -1,3 +1,4 @@
+import { BP_DRAWABLE, BP_DRAWABLE_HAIR } from './copy';
 /**
  * StatementArt — R315 cycle-4 (c4-C) → R322 (2-c · the Heron intro
  * transplant): the statement band's SQUARE drafted architectural
@@ -49,7 +50,7 @@ function RowCell({ x, y, w, h, fill }: { x: number; y: number; w: number; h: num
 function Figure({ x, ground }: { x: number; ground: number }) {
   return (
     <g className="bp-hair" aria-hidden="true">
-      <line className="bp-drawable" x1={x} y1={ground} x2={x} y2={ground - 44} />
+      <line className={BP_DRAWABLE} x1={x} y1={ground} x2={x} y2={ground - 44} />
       <circle className="st-poché" cx={x} cy={ground - 52} r={5} />
     </g>
   );
@@ -114,16 +115,16 @@ export function StatementArt() {
         {/* the window ladder — the light face's grid (the reading-start
             face, lit; the ladder reads as floors) */}
         {[168, 240, 312, 384, 456, 528, 600, 672, 744, 816].map((y) => (
-          <line key={y} className="bp-drawable bp-hair" x1="746" y1={y} x2="790" y2={y} />
+          <line key={y} className={BP_DRAWABLE_HAIR} x1="746" y1={y} x2="790" y2={y} />
         ))}
-        <line className="bp-drawable bp-hair" x1="768" y1="100" x2="768" y2="898" />
+        <line className={BP_DRAWABLE_HAIR} x1="768" y1="100" x2="768" y2="898" />
         {/* the fin-hatched shadow face (over the sun's edge — wireframe
             ink in front of the orange, the reference's z-order) */}
         <rect className="st-fins-fill" x="794" y="102" width="88" height="800" aria-hidden="true" />
         {/* the fin band's bounding hairlines (read the texture as a
             drafted bay, not a smudge) */}
-        <line className="bp-drawable bp-hair" x1="794" y1="102" x2="794" y2="898" />
-        <line className="bp-drawable bp-hair" x1="882" y1="102" x2="882" y2="898" />
+        <line className={BP_DRAWABLE_HAIR} x1="794" y1="102" x2="794" y2="898" />
+        <line className={BP_DRAWABLE_HAIR} x1="882" y1="102" x2="882" y2="898" />
         {/* the solid poché mass — the deep shadow polygon on the far
             edge, stepping down the tower's shoulder like the
             reference's black map block */}
@@ -133,8 +134,8 @@ export function StatementArt() {
           aria-hidden="true"
         />
         {/* the entrance — door ticks at the ground line */}
-        <line className="bp-drawable bp-hair" x1="762" y1="900" x2="762" y2="830" />
-        <line className="bp-drawable bp-hair" x1="786" y1="900" x2="786" y2="830" />
+        <line className={BP_DRAWABLE_HAIR} x1="762" y1="900" x2="762" y2="830" />
+        <line className={BP_DRAWABLE_HAIR} x1="786" y1="900" x2="786" y2="830" />
       </g>
 
       {/* ═══ the podium — the tower's base block: hatched roof band,
@@ -143,9 +144,9 @@ export function StatementArt() {
         <rect className="bp-drawable bp-ink" x="560" y="560" width="176" height="340" />
         <rect className="st-xhatch-fill" x="563" y="563" width="170" height="26" aria-hidden="true" />
         <rect className="st-shade-fill" x="563" y="595" width="170" height="24" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="600" y1="900" x2="600" y2="808" />
-        <line className="bp-drawable bp-hair" x1="640" y1="900" x2="640" y2="808" />
-        <line className="bp-drawable bp-hair" x1="680" y1="900" x2="680" y2="808" />
+        <line className={BP_DRAWABLE_HAIR} x1="600" y1="900" x2="600" y2="808" />
+        <line className={BP_DRAWABLE_HAIR} x1="640" y1="900" x2="640" y2="808" />
+        <line className={BP_DRAWABLE_HAIR} x1="680" y1="900" x2="680" y2="808" />
       </g>
 
       {/* ═══ the mid masses — the stepped campus blocks descending the
@@ -156,17 +157,17 @@ export function StatementArt() {
         <rect className="bp-drawable bp-ink" x="392" y="470" width="152" height="430" />
         <rect className="st-xhatch-fill" x="395" y="473" width="146" height="22" aria-hidden="true" />
         {[540, 600, 660, 720, 780].map((y) => (
-          <line key={y} className="bp-drawable bp-hair" x1="410" y1={y} x2="528" y2={y} />
+          <line key={y} className={BP_DRAWABLE_HAIR} x1="410" y1={y} x2="528" y2={y} />
         ))}
         {/* block B */}
         <rect className="bp-drawable bp-ink" x="252" y="620" width="130" height="280" />
         <rect className="st-fins-fill" x="255" y="623" width="26" height="274" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="284" y1="620" x2="284" y2="900" />
+        <line className={BP_DRAWABLE_HAIR} x1="284" y1="620" x2="284" y2="900" />
         {/* block C */}
         <rect className="bp-drawable bp-ink" x="120" y="726" width="124" height="174" />
-        <line className="bp-drawable bp-hair" x1="152" y1="900" x2="152" y2="800" />
-        <line className="bp-drawable bp-hair" x1="184" y1="900" x2="184" y2="800" />
-        <line className="bp-drawable bp-hair" x1="216" y1="900" x2="216" y2="800" />
+        <line className={BP_DRAWABLE_HAIR} x1="152" y1="900" x2="152" y2="800" />
+        <line className={BP_DRAWABLE_HAIR} x1="184" y1="900" x2="184" y2="800" />
+        <line className={BP_DRAWABLE_HAIR} x1="216" y1="900" x2="216" y2="800" />
       </g>
 
       {/* ═══ the journey — the dashed path from the tower's podium down
@@ -180,8 +181,8 @@ export function StatementArt() {
         <line className="bp-dash" x1="308" y1="616" x2="308" y2="676" />
         <polyline className="bp-drawable bp-ink" points="300,668 308,684 316,668" />
         {/* the station ticks tying the path to the masses it serves */}
-        <line className="bp-drawable bp-hair" x1="648" y1="528" x2="648" y2="552" />
-        <line className="bp-drawable bp-hair" x1="468" y1="616" x2="468" y2="640" />
+        <line className={BP_DRAWABLE_HAIR} x1="648" y1="528" x2="648" y2="552" />
+        <line className={BP_DRAWABLE_HAIR} x1="468" y1="616" x2="468" y2="640" />
       </g>
 
       {/* ═══ the row band — the "pixel-art rows": two offset rows of
@@ -207,9 +208,9 @@ export function StatementArt() {
           bookend) + the low entrance mass at the composition's close. ═══ */}
       <g aria-hidden="true">
         <g className="bp-hair">
-          <path className="bp-drawable" d="M52,900 v-96" />
-          <path className="bp-drawable" d="M52,816 c-20,-26 -38,-38 -60,-45" />
-          <path className="bp-drawable" d="M52,810 c20,-29 38,-42 58,-54" />
+          <path className={BP_DRAWABLE} d="M52,900 v-96" />
+          <path className={BP_DRAWABLE} d="M52,816 c-20,-26 -38,-38 -60,-45" />
+          <path className={BP_DRAWABLE} d="M52,810 c20,-29 38,-42 58,-54" />
           <circle className="st-stipple-outline" cx="52" cy="762" r="52" />
           <circle className="st-stipple-outline" cx="16" cy="794" r="36" />
           <circle className="st-stipple-outline" cx="90" cy="786" r="38" />
@@ -223,8 +224,8 @@ export function StatementArt() {
         <line className="bp-drawable bp-ink bp-ink-2" x1="16" y1="900" x2="984" y2="900" />
         <rect className="st-shade-fill" x="60" y="903" width="820" height="26" aria-hidden="true" />
         <rect className="st-xhatch-fill" x="16" y="903" width="970" height="36" aria-hidden="true" />
-        <line className="bp-drawable bp-hair" x1="120" y1="914" x2="152" y2="882" />
-        <line className="bp-drawable bp-hair" x1="848" y1="914" x2="880" y2="882" />
+        <line className={BP_DRAWABLE_HAIR} x1="120" y1="914" x2="152" y2="882" />
+        <line className={BP_DRAWABLE_HAIR} x1="848" y1="914" x2="880" y2="882" />
       </g>
     </svg>
   );

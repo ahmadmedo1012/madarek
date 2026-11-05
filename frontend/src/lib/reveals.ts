@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../lib/motion-media';
 /**
  * reveals — R333 (P-C) — the ONE scroll-reveal recipe for the landing's
  * second half, riding the HOUSE reveal contract (heron-craft §2 themes
@@ -78,7 +79,7 @@ export function initReveals(): RevealsHandle {
   }
   const w = window as RevealsWindow;
   if (w.__mdrkReveals) return w.__mdrkReveals; // idempotent — never double-arm
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (window.matchMedia(PREFERS_REDUCED_MOTION).matches) {
     return noop; // RM: bail entirely — content stays in final state
   }
 

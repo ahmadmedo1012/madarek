@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * FooterLens — R308 «شريط الفحص» — the footer's pointer instrument.
  *
@@ -87,7 +88,7 @@ export function FooterLens() {
       return undefined;
     }
     const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const reduced = window.matchMedia(PREFERS_REDUCED_MOTION);
     const evaluate = () => setLensOn(fine.matches && !reduced.matches);
     evaluate();
     fine.addEventListener('change', evaluate);

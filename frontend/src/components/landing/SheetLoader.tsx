@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../../lib/motion-media';
 /**
  * SheetLoader — R313 «لوحة البدء» — the entrance sequence, rebuilt to
  * the reference's loader semantics (D10).
@@ -209,7 +210,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
       reduced =
         typeof window !== 'undefined' &&
         typeof window.matchMedia === 'function' &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.matchMedia(PREFERS_REDUCED_MOTION).matches;
     } catch {
       /* matchMedia unavailable — the page stands complete */
     }
@@ -435,7 +436,7 @@ export function SheetLoader({ onDone, onExitStart }: SheetLoaderProps) {
     const exitMs = Math.max(120, motionDurationMs(EXIT_TOKEN, EXIT_FALLBACK_MS));
     const reduce =
       typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.matchMedia(PREFERS_REDUCED_MOTION).matches;
     if (reduce || typeof el.animate !== 'function') {
       const t = window.setTimeout(() => onDoneRef.current(), 30);
       return () => window.clearTimeout(t);

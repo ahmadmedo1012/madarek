@@ -1,3 +1,4 @@
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * Preloader — R333 «تتابع الدخول» — the entry overlay (heron-craft row 1).
  *
@@ -89,7 +90,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
 
     const reduced =
       typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.matchMedia(PREFERS_REDUCED_MOTION).matches;
     if (reduced) {
       /* belt-and-braces: the parent's gate already refuses to mount
        * under RM — if the gate is ever bypassed, skip entirely. */

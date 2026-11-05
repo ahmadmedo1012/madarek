@@ -1,3 +1,5 @@
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
+import { LECTURE_INTERACTIVE, MASTERY_SCORE_LINE } from '../copy';
 /**
  * JourneyScene — R308 «رحلة التعلّم» · R310–R319 the plan scene's own
  * history · **R322 (3-b) — THE MAP TRANSPLANT** (Heron `home-map`).
@@ -145,7 +147,7 @@ const INTRO_TITLE_AR = 'مقدمة';
 const FINDINGS_AR = [
   {
     key: 'lecture',
-    title: 'المحاضرة التفاعلية',
+    title: LECTURE_INTERACTIVE,
     text: 'محاضرة مسجَّلة بنقاط فحص تُثبِّت الفهم، وحضور يُحتسب تلقائيًا عند الإكمال.',
   },
   {
@@ -161,7 +163,7 @@ const FINDINGS_AR = [
   {
     key: 'mastery',
     title: 'مصفوفة الإتقان',
-    text: 'درجة إتقان لكل مفهوم تكشف الفجوة وتربطها بالدرس المناسب.',
+    text: MASTERY_SCORE_LINE,
   },
   {
     key: 'assistant',
@@ -360,7 +362,7 @@ function viewportState(): { mobile: boolean; phone: boolean; reduced: boolean } 
     mmSource = window.matchMedia;
     mobileQuery = window.matchMedia('(max-width: 991px)');
     phoneQuery = window.matchMedia('(max-width: 767px)');
-    reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    reducedQuery = window.matchMedia(PREFERS_REDUCED_MOTION);
   }
   return {
     mobile: !!mobileQuery?.matches,

@@ -56,7 +56,7 @@ import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
 import { HeroInspect } from '../cursor/HeroInspect';
 import '../../../styles/landing/hero-mechanics.css';
-import { BRAND_LABEL, LOGIN, REGISTER } from '../copy';
+import { BRAND_LABEL, LOGIN, REGISTER, LECTURE_INTERACTIVE, MASTERY_MATRIX} from '../copy';
 
 /* The display title — 3 authored lines (the reference's h1 wraps to 9
  * mask lines inside its narrow title-wrap; Arabic carries the same
@@ -77,8 +77,8 @@ const LEAD_LINES = [
  * honest capability ledger ([01] المحاضرات التفاعلية · [03] مصفوفة
  * الإتقان — same subjects as the work strip, never new claims). */
 const DECO_CARDS = [
-  { code: '01', text: 'المحاضرة التفاعلية' },
-  { code: '03', text: 'مصفوفة الإتقان' },
+  { code: '01', text: LECTURE_INTERACTIVE },
+  { code: '03', text: MASTERY_MATRIX },
 ] as const;
 
 export function Hero() {

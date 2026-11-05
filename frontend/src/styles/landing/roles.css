@@ -1,176 +1,325 @@
-/* R332 — split VERBATIM from src/styles/landing.css · roles = R313 D7 roles ledger (1588-1711)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+/* R337 A-usecase — الأدوار, REBUILT against the frozen Heron spec
+   (docs/redesign/r335/heron-spec/home-usecase-wrap.*.json).
+   The old R323 ledger (cards → hairline rows) is RETIRED with this
+   rewrite; every rule below is new. The DOM (Roles.tsx):
+     section > ruleTop · ruleBottom · frame
+     frame > media(mediarule · deck > inner > slide×8>img) ·
+             titlecol(labelbox>label · h2box>h2 · midrule) ·
+             contentcol(accwrap > acc > row×8)
 
-/* ═══ الأدوار (R313 · D7 §7) — the ruled hairline grid: the five
-   verified platform roles + three honest personas, one card grammar
-   (the reference's home-usecase). The band holds ~98vh (the
-   reference's 887px / 7.2%). ═══ */
+   Desktop (≥992): frame = 98.45vh, grid 50/50 — media left-column,
+   titlecol+contentcol stacked in the right column (grid-template-
+   areas). RTL: media sits right, column left (the x-mirror).
+   768–991: frame flex-column — media, titlecol, contentcol.
+   ≤767: titlecol, media, contentcol (the spec's phone order). */
+
 .rl-section {
-  padding-block: var(--sp-7);
-  border-block-start: 1px solid var(--rule-strong);
-  /* r324 P2 (X5): the 98vh floor was the giant-list era's runway — the
-     ledger section reads ≤ 1.1 viewport at 1440 by CONTENT now. */
-  min-block-size: 0;
-}
-
-.rl-head {
-  display: grid;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-8);
-}
-
-.rl-title {
-  font-family: var(--font-display);
-  /* R322 (1-d): joins the D2 rung (weight 600 · lh 1.10 · balance). */
-  font-size: var(--fs-d2);
-  font-weight: 600;
-  line-height: 1.1;
-  text-wrap: balance;
-  color: var(--text);
-}
-
-/* the section lede (the honest promise: every card says the truth) */
-.rl-lede {
-  /* R322 (1-d): the body band's --fs-body-lg rung (see .chapters-lede). */
-  font-size: var(--fs-body-lg);
-  line-height: 1.7;
-  color: var(--text-secondary);
-  max-inline-size: 64ch;
-}
-
-/* r324 P2 (X5) — the ROLES LEDGER (the R323 CSS owned .rl-card grid
-   names while the shipped JSX renders .rl-row ledger names — the
-   section rendered as an UNSTYLED list of 34px bold h3s stacked down
-   a 98vh runway with 60% of the viewport empty). The brief's grammar:
-   a 2-column hairline ledger ≥992 (4 rows × 2, 8 rows), 1 column on
-   phone; row title at the st/D3 register (23–28px) weight 600; the
-   honest one-line description; the status chip on the row's end. */
-.rl-ledger {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 var(--sp-7);
-  margin: 0;
+  position: relative;
+  display: block;
   padding: 0;
-  list-style: none;
-  border-block-start: 1px solid var(--rule);
+  margin: 0;
+  background: var(--bg);
+  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
+  font-size: 1.6rem;
+  line-height: 2.16rem;
+  font-weight: 500;
 }
 
-.rl-row {
+/* the frame's top + bottom hairlines */
+.rl-rule {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--rule-strong);
+  pointer-events: none;
+}
+.rl-rule-top { inset-block-start: 0; }
+.rl-rule-bottom { inset-block-end: 0; }
+
+/* ═══ the frame ═══ */
+.rl-frame {
+  position: relative;
   display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: var(--sp-3);
-  align-items: baseline;
-  padding-block: var(--sp-3);
-  border-block-end: 1px solid var(--rule);
+  grid-template-areas:
+    'media title'
+    'media content';
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  min-block-size: 98.45vh;
+}
+.rl-media { grid-area: media; position: relative; overflow: hidden; }
+.rl-titlecol { grid-area: title; position: relative; min-inline-size: 0; }
+.rl-contentcol { grid-area: content; min-inline-size: 0; }
+
+/* the center hairline: a real 1px element on the pane's inner edge */
+.rl-mediarule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 1px;
+  background: var(--rule-strong);
 }
 
-.rl-row-num {
-  color: var(--text-faint);
-  font-size: var(--fs-mono-md);
-  translate: 0 -0.1em;
+/* ── the deck ── */
+.rl-deck, .rl-deckinner { position: absolute; inset: 0; }
+.rl-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.026);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.rl-slide.is-active {
+  opacity: 1;
+  transform: scale(1.068);
+}
+.rl-slide img {
+  position: absolute;
+  inset: -2%;
+  inline-size: 104%;
+  block-size: 104%;
+  object-fit: cover;
 }
 
-.rl-row-name {
+/* ── the title column ── */
+.rl-labelbox { margin: 0; }
+.rl-label {
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
+}
+.rl-label .fo-mono { font-size: 1.4rem; color: inherit; }
+.rl-h2box { margin: 0; }
+.rl-h2 {
   margin: 0;
   font-family: var(--font-display);
-  /* R333 (P-C — the «roles list timid» defect): +2 rungs off the D3
-     seat — 26.7px @1440 (the ledger row reads at the item-title
-     register above D3, under the section H2's D2), 20px floor @390,
-     2.22vw mid. clamp(px floor · vw mid · rem cap) — the --fs-d1
-     convention; the ledger stays a ledger, not a poster. */
-  font-size: clamp(20px, 2.22vw, 3.2rem);
+  font-size: 4.8rem;
+  line-height: 4.8rem;
   font-weight: 600;
-  line-height: 1.15;
+  color: var(--text);
+  text-wrap: balance;
+}
+/* the mid rule: hidden on desktop (the mediarule covers the seam),
+   the title col's bottom edge on the stacked bands */
+.rl-midrule { display: none; }
+
+/* ═══ the accordion ═══ */
+.rl-accwrap, .rl-acc { margin: 0; }
+.rl-row {
+  position: relative;
+  display: block;
+  padding-block: 2.4rem;
+  padding-inline-start: 15.4rem;
+  padding-inline-end: 3.2rem;
+  cursor: pointer;
+}
+.rl-row-tw {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.rl-row-twf { flex: 1 1 auto; min-inline-size: 0; }
+.rl-row-ink { min-inline-size: 0; }
+.rl-row-title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 3.24rem;
+  font-weight: 700;
   color: var(--text);
 }
-
-/* the honest one-line description rides UNDER the name (the ledger
-   row is a two-line cell: name, then the line) — clamped so a long
-   Arabic sentence can never blow the row open. */
+.rl-row-icon {
+  flex: none;
+  margin-inline-start: auto;
+  color: var(--rule-strong);
+  transition: color 0.4s ease;
+}
+.rl-row-iconbtn {
+  display: grid;
+  place-items: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+.rl-row-svg { inline-size: 2rem; block-size: 2rem; overflow: visible; }
+.rl-p1, .rl-p2 {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transition: transform 0.4s ease;
+}
+.rl-row.is-open .rl-p2 { display: none; }
+.rl-row-linebox { display: block; }
 .rl-row-line {
-  grid-column: 2 / 3;
-  margin: 0;
-  /* R333 (P-C): the honest one-line description leaves the fixed 13px
-     sm rung for the 16px @1440 body register (max(floor, Nrem) —
-     13px floor-gated); --text-secondary holds ≥4.5:1 on the paper
-     ground at body size. */
-  font-size: max(13px, 1.92rem);
-  line-height: 1.6;
-  color: var(--text-secondary);
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  font-size: 1.6rem;
+  line-height: 2.16rem;
+  font-weight: 500;
+  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
+}
+.rl-row-rule {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--rule-strong);
+  pointer-events: none;
+}
+.rl-row-rule-b, .rl-row-rule-o { inset-block-end: 0; }
+.rl-row-rule-t { inset-block-start: 0; }
+.rl-row-zero {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
   overflow: hidden;
 }
 
-.rl-row-tag {
-  align-self: start;
-  padding: var(--sp-0-5) var(--sp-2);
-  border: 1px solid var(--border-strong);
-  font-size: var(--fs-xxs);
-  font-weight: 600;
-  color: var(--text-muted);
-  white-space: nowrap;
+/* ═══ desktop belts: the column's stretch + the acc gap ═══ */
+.rl-titlecol { padding-block-start: 3.2rem; }
+.rl-labelbox { margin-block-end: 1.5rem; }
+.rl-titlecol { padding-block-end: 9.04rem; }
+.rl-accwrap { margin-block-start: 3.06rem; }
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .rl-titlecol { padding-block-end: 14.56rem; }
+  .rl-accwrap { margin-block-start: 8.4rem; }
+}
+@media (min-width: 992px) and (max-width: 1439px) {
+  .rl-titlecol { padding-block-end: 25.3rem; }
+  .rl-accwrap { margin-block-start: 19.24rem; }
+}
+@media (min-width: 992px) and (max-width: 1919px) {
+  /* the twin bottom rule + the open row's top rule collapse to 0 width
+     at the reference's own mid-desktop measures (1440/1024) */
+  .rl-row-rule-o, .rl-row.is-open .rl-row-rule-t { inline-size: 0; }
 }
 
-.rl-row-tag.is-live {
-  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  color: var(--accent-ink);
-}
-
-@media (max-width: 991px) {
-  .rl-ledger {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  .rl-row-line {
-    -webkit-line-clamp: 3;
-  }
-}
-
-.rl-more {
-  margin-block-start: var(--sp-4);
-  font-size: var(--fs-sm);
-  color: var(--text-muted);
-}
-
-/* ═══ R332 W5 — the roles dissolution seats. FILE END (the cascade
-   lesson: the base rules above and every strata re-seat lose to these
-   — same-specificity rules resolve by document order).
-
-   Roles measured PASS at 1440 (run-001: height Δ0.01% — the floor IS
-   the twin's 886.7; heading Δ0.0%) — so these seats move VERBATIM, no
-   value changes: the ≥992 block takes the strata law seats (the
-   100svh−1.6rem floor + the R328 8rem quiet rung + the head/more
-   rungs), the 768–991 tablet block takes the W3 rem-law band (the
-   145.2rem floor wins the belt's two min-block seats by file-end
-   order, as rendered pre-dissolution). The strata .rl- ≥992 + tablet
-   duplicates retire herewith; the roles fix rides the why cascade
-   above it (trigger-start). shared.css holds no competing seats on
-   these selectors in either belt. ═══ */
-@media (min-width: 992px) {
-  .rl-section {
-    padding-block: var(--space-8xl);
-    min-block-size: calc(100svh - 1.6rem);
-  }
-
-  .rl-head {
-    margin-block-end: 4.8rem;
-  }
-
-  .rl-more {
-    margin-block-start: 1.92rem;
-  }
-}
-
+/* ═══ tablet band (768–991): media · title · content ═══ */
 @media (min-width: 768px) and (max-width: 991px) {
-  .rl-section {
-    padding-block: var(--sp-5) var(--sp-4);
-    min-block-size: 145.2rem;
+  .rl-frame {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 0;
   }
-
-  .rl-card {
-    min-block-size: 27.5rem;
+  .rl-media {
+    order: 1;
+    block-size: 80rem;
+    flex: none;
   }
+  .rl-mediarule { display: none; }
+  .rl-midrule {
+    display: block;
+    position: static;
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
+  .rl-titlecol {
+    order: 2;
+    padding-block: 6.4rem 2.4rem;
+  }
+  .rl-labelbox { margin-block-end: 1.63rem; }
+  .rl-h2 { font-size: 3.2rem; line-height: 3.2rem; }
+  .rl-contentcol { order: 3; }
+  .rl-accwrap { margin-block-start: 0; }
+  .rl-row {
+    padding-block: 1.6rem;
+    padding-inline: 2.4rem;
+  }
+  .rl-row-title { font-size: 2rem; line-height: 2.7rem; }
+  .rl-row-iconbtn, .rl-row-svg { inline-size: 2.2rem; block-size: 2.2rem; }
 }
 
+/* ═══ phone band (≤767): title · media · content ═══ */
+@media (max-width: 767px) {
+  .rl-frame {
+    display: flex;
+    flex-direction: column;
+    min-block-size: 0;
+  }
+  .rl-titlecol {
+    order: 1;
+    padding-block: 6.4rem 2.4rem;
+  }
+  .rl-label { line-height: 1.889rem; }
+  .rl-labelbox { margin-block-end: 1.21rem; }
+  .rl-media {
+    order: 2;
+    aspect-ratio: 374 / 254;
+    flex: none;
+    block-size: auto;
+  }
+  .rl-mediarule { display: none; }
+  .rl-midrule {
+    display: block;
+    position: static;
+    block-size: 1px;
+    background: var(--rule-strong);
+  }
+  .rl-h2 { font-size: 3.2rem; line-height: 3.2rem; }
+  .rl-contentcol { order: 3; }
+  .rl-accwrap { margin-block-start: 0; }
+  .rl-row {
+    padding-block: 2rem;
+    padding-inline: 1.6rem;
+  }
+  .rl-row-title { font-size: 1.8rem; line-height: 2.43rem; }
+  .rl-row-iconbtn, .rl-row-svg { inline-size: 2.4rem; block-size: 2.4rem; }
+}
+
+/* ═══ interaction ═══ */
+.rl-row-icon:hover { color: var(--text); }
+@media (hover: none) {
+  .rl-row-icon:hover { color: var(--rule-strong); }
+}
+
+/* ═══ cascade guards — the retired ledger's strata seats ═════════
+   strata.css still pins the R332-era .rl-section (min-block floors,
+   3.2/4rem edge rails, the old .rl-head/.rl-more rules — written for
+   a DOM this rewrite replaced). roles.css imports first, so these
+   same-specificity guards win by being... they are NOT after strata —
+   instead they re-assert at equal specificity with the belt match,
+   and the .rl-section.rl-section bump beats the edge-rail group. */
+@media (max-width: 640px) {
+  .rl-section { padding-block: 0; min-block-size: 0; }
+  .rl-head, .rl-more { margin: 0; padding: 0; }
+}
+@media (max-width: 479px) {
+  .rl-section { padding-block: 0; min-block-size: 0; }
+}
+@media (min-width: 480px) and (max-width: 767px) {
+  .rl-section { padding-block: 0; min-block-size: 0; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .rl-section { padding-block: 0; min-block-size: 0; }
+}
+@media (min-width: 992px) {
+  .rl-section.rl-section {
+    max-inline-size: none;
+    padding-inline: 0;
+    min-block-size: 0;
+  }
+  .rl-frame { min-block-size: 98.45vh; }
+}
+
+/* ═══ cascade guards II — the strata rl-row pad (the retired ledger) ═══
+   strata.css's ≤767 belt still pins .rl-row { padding-block: var(--sp-1) }
+   and loads AFTER this sheet. The phone/tablet row rhythm is the spec's
+   own (2rem / 1.6rem), re-asserted at equal specificity in the same
+   belts — file order loses, so bump once. */
+@media (max-width: 767px) {
+  .rl-section .rl-row { padding-block: 2rem; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .rl-section .rl-row { padding-block: 1.6rem; }
+}
+
+/* the h2's Arabic floor: the transformed expectation reads lh 1.35×fs
+   (72px @1920). Conforming the lh while keeping the 3-line box and the
+   98.45vh section exact is impossible simultaneously — the reference's
+   own 1.0 box wins (box + section + column geometry all conform); the
+   two lh assertions per bp are the accepted, documented residual. */
+
+/* the row rules' settle: the spec records a 0.4s ease transition on the
+   open row's rules (the accordion's unfold) — carried verbatim */
+.rl-row-rule { transition: opacity 0.4s ease; }
+
+/* the wrap's ground: the spec's section box is transparent (the page
+   ground shows through) */
+.rl-section.rl-section { background: transparent; }
