@@ -1,0 +1,1086 @@
+{
+ "meta": {
+  "bp": "1024",
+  "url": "https://heronaiapp.com/",
+  "extractedAt": "2026-11-05T11:50:29.658Z",
+  "source": "live .main-inner seat sampling @11 seats + ScrollTrigger introspection (chromium; webkit residual)"
+ },
+ "curves": [
+  {
+   "trigger": "div.home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+   "recorded": {
+    "start": 56,
+    "end": 588
+   },
+   "targetFound": true,
+   "elCls": "home-intro-content-title",
+   "liveTriggers": 1,
+   "pin": false,
+   "pinSpacing": false,
+   "snap": null,
+   "liveScrub": true,
+   "liveStart": 56,
+   "liveEnd": 588,
+   "startVh": 0.073,
+   "endVh": 0.766,
+   "animated": [
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8787,
+      "x": 0,
+      "y": 2.87488,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8737,
+      "x": 0,
+      "y": 2.99261,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8686,
+      "x": 0,
+      "y": 3.11352,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8634,
+      "x": 0,
+      "y": 3.23763,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.858,
+      "x": 0,
+      "y": 3.36499,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8525,
+      "x": 0,
+      "y": 3.49567,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[4]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8469,
+      "x": 0,
+      "y": 3.62966,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[5]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8411,
+      "x": 0,
+      "y": 3.76707,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[6]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8351,
+      "x": 0,
+      "y": 3.90786,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[7]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.829,
+      "x": 0,
+      "y": 4.05214,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[8] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8228,
+      "x": 0,
+      "y": 4.19993,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[9]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[9] > div[1]",
+     "props": {
+      "color": "rgb(40, 40, 40)",
+      "opacity": 0.8164,
+      "x": 0,
+      "y": 4.35125,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    }
+   ],
+   "animatedCount": 254,
+   "ours": "h2#statement-title",
+   "anchors": {
+    "mode": "center",
+    "fromVh": 0.9,
+    "toVh": 0.4
+   },
+   "metric": "inkCoverage",
+   "samples": {
+    "inkCoverage": [
+     0,
+     0.072,
+     0.184,
+     0.298,
+     0.41,
+     0.522,
+     0.634,
+     0.746,
+     0.86,
+     0.97,
+     1
+    ]
+   },
+   "progressAtSeats": [
+    0,
+    0.1,
+    0.199,
+    0.301,
+    0.4,
+    0.5,
+    0.6,
+    0.699,
+    0.801,
+    0.9,
+    1
+   ],
+   "spans": {
+    "spans": 127
+   }
+  }
+ ],
+ "pending": [
+  {
+   "trigger": "div.home-map-wrap > div[1]",
+   "recorded": {
+    "start": 1041,
+    "end": 1800
+   },
+   "targetFound": true,
+   "elCls": "home-map-wrap",
+   "liveTriggers": 1,
+   "pin": false,
+   "pinSpacing": false,
+   "snap": null,
+   "liveScrub": null,
+   "liveStart": 662,
+   "liveEnd": 7556,
+   "startVh": 0.862,
+   "endVh": 9.839,
+   "animated": [
+    {
+     "path": "section[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0,
+      "x": 0,
+      "y": -1.7778,
+      "scale": 0.96,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "section[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0,
+      "x": 0,
+      "y": -1.7778,
+      "scale": 0.96,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[3]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[4]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[5]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[6]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[7]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[8]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[9]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[10]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[11]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[12]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[13]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[2] > div[8] > div[1] > div[4]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[2] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0.4975,
+      "x": 0,
+      "y": 4.16885,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[2] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0.4486,
+      "x": 0,
+      "y": 4.57463,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    }
+   ],
+   "animatedCount": 69,
+   "note": "no counterpart mapping yet (section motion not built) — measured inventory"
+  },
+  {
+   "trigger": "div.home-map-wrap > div[1]",
+   "recorded": {
+    "start": 1421,
+    "end": 6187
+   },
+   "targetFound": true,
+   "elCls": "home-map-wrap",
+   "liveTriggers": 3,
+   "pin": false,
+   "pinSpacing": false,
+   "snap": null,
+   "liveScrub": null,
+   "liveStart": 662,
+   "liveEnd": 7556,
+   "startVh": 0.862,
+   "endVh": 9.839,
+   "animated": [
+    {
+     "path": "section[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "section[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0,
+      "x": 0,
+      "y": -1.7778,
+      "scale": 0.96,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "section[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0,
+      "x": 0,
+      "y": -1.7778,
+      "scale": 0.96,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[2]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[3]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[4]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[5]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[6]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[7]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[8]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[9]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[10]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[11]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[12]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2] > path[13]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[2] > div[8] > div[1] > div[4]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    },
+    {
+     "path": "section[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 1,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    }
+   ],
+   "animatedCount": 101,
+   "note": "no counterpart mapping yet (section motion not built) — measured inventory"
+  },
+  {
+   "trigger": "div.home-platform-wrap > div[1] > section[1] > div[3] > div[1]",
+   "recorded": {
+    "start": 6417,
+    "end": 7681
+   },
+   "targetFound": true,
+   "elCls": "home-platform-content",
+   "liveTriggers": 2,
+   "pin": false,
+   "pinSpacing": false,
+   "snap": null,
+   "liveScrub": null,
+   "liveStart": 6619,
+   "liveEnd": 7681,
+   "startVh": 8.618,
+   "endVh": 10.001,
+   "animated": [
+    {
+     "path": "div[1]",
+     "props": {
+      "color": "rgba(40, 40, 40, 0.72)",
+      "opacity": 0.0090261,
+      "x": 0,
+      "y": 0,
+      "scale": 1,
+      "rotate": 0,
+      "clipPath": 0,
+      "filter": 0
+     }
+    }
+   ],
+   "animatedCount": 1,
+   "note": "no counterpart mapping yet (section motion not built) — measured inventory"
+  }
+ ]
+}
