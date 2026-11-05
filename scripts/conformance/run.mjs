@@ -33,6 +33,7 @@
  *   node scripts/conformance/run.mjs --sections home-hero-wrap,footer --bps 1440,390
  *   node scripts/conformance/run.mjs --gate                     # CI: exit 1 below ratchet
  *   node scripts/conformance/run.mjs --ratchet                  # raise ratchet to current rate
+ *   node scripts/conformance/run.mjs --dark                     # + dark internal-consistency pass (spec is light-only)
  *   node scripts/conformance/run.mjs --url http://localhost:5174/
  *
  * Output: console matrix + scripts/conformance/results.json.
@@ -67,9 +68,10 @@ const MAPPING = readdirSync(join(__dirname, "mapping"))
       acc.explicit.push(...(part.explicit ?? []));
       acc.noCounterpart.push(...(part.noCounterpart ?? []));
       acc.charSplit.push(...(part.charSplit ?? []));
+      acc.plumbing.push(...(part.plumbing ?? []));
       return acc;
     },
-    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [], noCounterpart: [], charSplit: [] },
+    { ourSection: {}, heronPageKey: {}, scaleFactor: {}, explicit: [], noCounterpart: [], charSplit: [], plumbing: [] },
   );
 const EXCEPTIONS = JSON.parse(readFileSync(join(__dirname, "exceptions.json"), "utf8"));
 const SECTIONS = Object.keys(MAPPING.ourSection);
@@ -92,6 +94,7 @@ const RATCHET_UPDATE = process.argv.includes("--ratchet");
 const RATCHET_FILE = join(__dirname, "ratchet.json");
 const OUT = arg("out", join(__dirname, "results.json"));
 const URL = arg("url", "http://localhost:5173/");
+const DARK = process.argv.includes("--dark");
 const unknown = SECTIONS_WANTED.filter((s) => !MAPPING.ourSection[s]);
 if (unknown.length) {
   console.error(`unknown section key(s): ${unknown.join(", ")} — known: ${SECTIONS.join(", ")}`);
@@ -99,6 +102,30 @@ if (unknown.length) {
 }
 // The noCounterpart reasons are per spec-path suffix; pre-compile.
 const NO_COUNTERPART = MAPPING.noCounterpart; // [{section, heron, reason}]
+
+// R338 T-14a — plumbing-skip rules (mapping "plumbing": [{section, heron,
+// skip: ["geometry", …], reason}]) + per-binding explicit[].skip arrays.
+// A skipped field-group never enters the pass/fail denominator — every
+// skipped CHECK is counted (cell.skipped) and listed in
+// results.skippedReport with its written reason. Real boxes keep every
+// non-declared assertion.
+const PLUMBING = MAPPING.plumbing;
+const GROUP_CHECKS = { tag: 1, tc: 1, geometry: 4, type: 4, color: 2 };
+
+// R338 T-14a — WCAG relative luminance/contrast for the dark internal-
+// consistency check (unflipped light-ink-on-dark-surface detection).
+function relLum(rgb) {
+  const m = String(rgb).match(/rgba?\(([\d.]+),\s*([\d.]+),\s*([\d.]+)/);
+  if (!m) return null;
+  const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f(+m[1]) + 0.7152 * f(+m[2]) + 0.0722 * f(+m[3]);
+}
+function contrastRatio(a, b) {
+  const la = relLum(a), lb = relLum(b);
+  if (la == null || lb == null) return null;
+  const hi = Math.max(la, lb), lo = Math.min(la, lb);
+  return (hi + 0.05) / (lo + 0.05);
+}
 
 // ── the in-page measurement walk (SAME shape as scripts/spec/extract-heron.mjs) ──
 const WALK_JS = String.raw`
@@ -292,8 +319,10 @@ function isLineContainerPath(p) {
 
 // ── runner ───────────────────────────────────────────────────────────────────
 const browser = await chromium.launch({ headless: true });
-const results = { generatedAt: new Date().toISOString(), url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [] };
+const results = { generatedAt: new Date().toISOString(), url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [] };
 let totalPass = 0, totalFail = 0, exceptionUses = 0;
+let darkPass = 0, darkFail = 0, darkContrast = 0;
+let darkTheme = null; // hoisted: the summary + dark matrix read it after the bp loop
 const exRules = {};
 const matrix = {}; // section -> bp -> cell
 
@@ -347,6 +376,53 @@ try {
       }, { key, sel, explicit, WALK: WALK_JS });
       ours[key] = data;
     }
+
+    // 3.5) R338 T-14a — dark path: flip the theme exactly the way the site
+    // does (ThemeToggle sets <html data-theme>; tokens.generated.css
+    // redefines the token blocks under [data-theme="dark"]), wait out the
+    // swap (AppShell pins data-theme-swapping → transitions off), then
+    // re-walk the same sections. The frozen Heron spec is LIGHT-ONLY (no
+    // dark recordings exist), so the dark pass measures OUR internal
+    // consistency — see the dark compare block in step 4 for the exact
+    // assertion set.
+    let darkOurs = null;
+    if (DARK) {
+      darkTheme = await page.evaluate(async () => {
+        document.documentElement.setAttribute("data-theme", "dark");
+        await new Promise((r) => setTimeout(r, 900));
+        return { attr: document.documentElement.getAttribute("data-theme"), scheme: getComputedStyle(document.documentElement).colorScheme };
+      });
+      darkOurs = {};
+      for (const key of SECTIONS_WANTED) {
+        const sel = MAPPING.ourSection[key];
+        darkOurs[key] = await page.evaluate(({ key, sel, WALK }) => {
+          const { makeWalk, pathOf } = new Function("return (" + WALK + ")")()();
+          const el = document.querySelector(sel);
+          if (!el) return { missing: sel };
+          const out = [];
+          makeWalk(el, key, out)(el);
+          // effective background = nearest non-transparent ancestor bg
+          // (climbs like a renderer would), noting image/gradient covers.
+          const effBg = (node) => {
+            let n = node, eimg = false;
+            while (n && n.nodeType === 1) {
+              const cs = getComputedStyle(n);
+              if (cs.backgroundImage !== "none") eimg = true;
+              if (cs.backgroundColor && cs.backgroundColor !== "rgba(0, 0, 0, 0)" && cs.backgroundColor !== "transparent") return { ebg: cs.backgroundColor, eimg };
+              n = n.parentElement;
+            }
+            return { ebg: "rgb(0, 0, 0)", eimg };
+          };
+          const bg = {};
+          const visit = (n) => {
+            bg[pathOf(n, el, key)] = effBg(n);
+            for (const c of n.children) visit(c);
+          };
+          visit(el);
+          return { elements: out, bg };
+        }, { key, sel, WALK: WALK_JS });
+      }
+    }
     await page.close();
 
     // 4) compare
@@ -355,12 +431,26 @@ try {
       let spec;
       try { spec = JSON.parse(readFileSync(join(SPEC_DIR, `${key}.${bp.name}.json`), "utf8")); } catch { spec = null; }
       const o = ours[key];
-      const cell = (matrix[key] ??= {})[bp.name] ??= { pass: 0, fail: 0, exceptions: 0, explicit: 0, dataSpec: 0, heuristic: 0, unmatched: 0, excused: 0, missing: null };
+      const cell = (matrix[key] ??= {})[bp.name] ??= { pass: 0, fail: 0, exceptions: 0, explicit: 0, dataSpec: 0, heuristic: 0, unmatched: 0, excused: 0, skipped: 0, missing: null };
 
       if (!spec || spec.missing) { cell.missing = "no-heron-spec"; continue; }
       if (o.missing) { cell.missing = `no-our-container:${o.missing}`; continue; }
 
       const charSplitRules = MAPPING.charSplit.filter((c) => c.section === key);
+      // R338 T-14a — resolve skip field-groups per pair: per-binding
+      // explicit[].skip ∪ section plumbing rules (spec-path exact/suffix,
+      // same grammar as noCounterpart). Counted + reported, never silent.
+      const plumbingRules = PLUMBING.filter((p) => p.section === key);
+      const skipsFor = (specPath, bindingSkip) => {
+        const s = new Set(bindingSkip ?? []);
+        let reason = s.size ? "binding-level skip (mapping explicit[].skip)" : null;
+        for (const pr of plumbingRules) {
+          if (!specPathMatches(specPath, pr.heron)) continue;
+          for (const g of pr.skip ?? []) s.add(g);
+          reason = pr.reason ?? reason;
+        }
+        return { s, reason };
+      };
       const { pairs, heuristic, explicit, unmatched, wordSet } = matchPairs(spec.elements, o.elements, o.explicitIdx, key, charSplitRules);
       cell.heuristic = heuristic;
       cell.explicit = pairs.filter((p) => p.mode === "explicit").length;
@@ -460,25 +550,25 @@ try {
       cell.unmatched = unmatched.filter((u) => !u.reason).length;
       cell.excused += unmatched.filter((u) => !!u.reason).length;
 
-      const run = (h, oEl, skip, heronPath, oursSel) => {
-        const checks = [];
-        if (!skip.has("tag")) checks.push(T.aTag(h, oEl));
-        if (!skip.has("tc")) checks.push(T.aTc(h, oEl));
-        if (!skip.has("geometry")) {
-          checks.push(T.aX(h, oEl, bp.width));
-          checks.push(T.aY(h, oEl, bp.height));
-          checks.push(T.aW(h, oEl, bp.width));
-          checks.push(T.aH(h, oEl, bp.height));
-        }
-        if (!skip.has("type")) {
-          checks.push(T.aFs(h, oEl, scaleFactor));
-          checks.push(T.aLh(h, oEl, scaleFactor));
-          checks.push(T.aFw(h, oEl));
-          checks.push(T.aLs(h, oEl));
-        }
-        if (!skip.has("color")) {
-          checks.push(T.aColor(h, oEl));
-          checks.push(T.aBg(h, oEl));
+      const skippedEntries = [];
+      const run = (h, oEl, skip, skipReason, heronPath, oursSel) => {
+        const groups = [
+          ["tag", () => [T.aTag(h, oEl)]],
+          ["tc", () => [T.aTc(h, oEl)]],
+          ["geometry", () => [T.aX(h, oEl, bp.width), T.aY(h, oEl, bp.height), T.aW(h, oEl, bp.width), T.aH(h, oEl, bp.height)]],
+          ["type", () => [T.aFs(h, oEl, scaleFactor), T.aLh(h, oEl, scaleFactor), T.aFw(h, oEl), T.aLs(h, oEl)]],
+          ["color", () => [T.aColor(h, oEl), T.aBg(h, oEl)]],
+        ];
+        let checks = [];
+        for (const [g, make] of groups) {
+          if (skip.has(g)) {
+            // R338 T-14a — skipped assertions are COUNTED (cell.skipped)
+            // and listed (results.skippedReport) — never a silent pass.
+            cell.skipped += GROUP_CHECKS[g];
+            skippedEntries.push({ heronPath, group: g, checks: GROUP_CHECKS[g], reason: skipReason ?? "(no reason recorded)" });
+            continue;
+          }
+          checks = checks.concat(make());
         }
         checks.push(T.aRadius(h, oEl), T.aOpacity(h, oEl), T.aBorder(h, oEl), T.aInteractive(h, oEl), T.aTransition(h, oEl));
         for (const c of checks) {
@@ -492,8 +582,10 @@ try {
         }
       };
       for (const { h, o: oEl, mode, skip } of pairs) {
-        run(h, oEl, skip, h.p, mode === "heuristic" ? `#hm:${h.tag}.${h.tc}` : mode === "data-spec" ? `#ds:${oEl.ds}` : (oEl.p || MAPPING.ourSection[key]));
+        const { s: skipSet, reason: skipReason } = skipsFor(h.p, skip);
+        run(h, oEl, skipSet, skipReason, h.p, mode === "heuristic" ? `#hm:${h.tag}.${h.tc}` : mode === "data-spec" ? `#ds:${oEl.ds}` : (oEl.p || MAPPING.ourSection[key]));
       }
+      for (const e of skippedEntries) results.skippedReport.push({ section: key, bp: bp.name, ...e });
 
       // v2: every unmatched spec element is a FAILURE by default — either a
       // real gap (kind no-counterpart, fix by adding the element + mapping)
@@ -505,6 +597,71 @@ try {
           cell.fail++;
           results.failures.push({ section: key, bp: bp.name, kind: "no-counterpart", heronPath: h.p, oursSelector: "(none)", mode: "unmatched", expected: "an element conforming to the spec role", actual: "no counterpart element", delta: 0 });
         }
+      }
+
+      // R338 T-14a — DARK internal-consistency (frozen spec is LIGHT-ONLY,
+      // so there are no dark reference values). What --dark asserts, on the
+      // SAME pairs, measured on the dark-flipped DOM:
+      //   · the theme actually flipped: html[data-theme="dark"] (the exact
+      //     mechanism the site's ThemeToggle uses);
+      //   · geometry + type + radius/opacity/border/interactive/transition
+      //     re-asserted vs the frozen (light) spec — a theme flip must not
+      //     move a box or retype a line;
+      //   · the color group is NOT compared to the light spec (differs by
+      //     design); instead: (a) flip census — ≥1 paired element per
+      //     section must change color/bg light→dark (token-driven theming;
+      //     catches a section with no dark arm); (b) contrast floor — every
+      //     text-bearing/interactive paired element keeps contrast ≥ 3.0
+      //     against its effective (nearest opaque ancestor) background —
+      //     catches unflipped raw light inks unreadable on dark surfaces.
+      if (DARK && darkOurs?.[key] && !darkOurs[key].missing && !o.missing) {
+        const dd = darkOurs[key];
+        const dcell = (cell.dark ??= { pass: 0, fail: 0, flips: 0, contrastChecked: 0, contrastSkipped: 0, themeApplied: darkTheme?.attr === "dark" });
+        if (darkTheme?.attr !== "dark") {
+          dcell.fail++; darkFail++;
+          results.failures.push({ section: key, bp: bp.name, kind: "dark-theme-not-applied", heronPath: "(html)", oursSelector: "(theme)", mode: "dark", expected: 'html[data-theme="dark"] after flip (site ThemeToggle mechanism)', actual: `data-theme=${darkTheme?.attr}, color-scheme=${darkTheme?.scheme}`, delta: 0 });
+        }
+        const lightByPath = new Map(o.elements.map((e) => [e.p, e]));
+        const darkByPath = new Map(dd.elements.map((e) => [e.p, e]));
+        let flipped = 0;
+        for (const { h, o: oEl, skip } of pairs) {
+          const dl = darkByPath.get(oEl.p);
+          if (!dl) continue;
+          const { s: sk } = skipsFor(h.p, skip);
+          const darkChecks = [];
+          if (!sk.has("tag")) darkChecks.push(T.aTag(h, dl));
+          if (!sk.has("tc")) darkChecks.push(T.aTc(h, dl));
+          if (!sk.has("geometry")) darkChecks.push(T.aX(h, dl, bp.width), T.aY(h, dl, bp.height), T.aW(h, dl, bp.width), T.aH(h, dl, bp.height));
+          if (!sk.has("type")) darkChecks.push(T.aFs(h, dl, scaleFactor), T.aLh(h, dl, scaleFactor), T.aFw(h, dl), T.aLs(h, dl));
+          darkChecks.push(T.aRadius(h, dl), T.aOpacity(h, dl), T.aBorder(h, dl), T.aInteractive(h, dl), T.aTransition(h, dl));
+          for (const c of darkChecks) {
+            if (!c) continue;
+            if (c.pass) { dcell.pass++; darkPass++; }
+            else {
+              dcell.fail++; darkFail++;
+              results.failures.push({ section: key, bp: bp.name, kind: c.kind, heronPath: h.p, oursSelector: oEl.p, mode: "dark", expected: c.expected, actual: c.actual, delta: Math.round(c.delta * 100) / 100 });
+            }
+          }
+          const lo = lightByPath.get(oEl.p);
+          if (lo && (lo.color !== dl.color || lo.bg !== dl.bg)) flipped++;
+          const bgInfo = dd.bg?.[oEl.p];
+          if ((dl.tc !== "none" || dl.interactive) && bgInfo && !bgInfo.eimg && dl.opacity >= 0.3) {
+            const ratio = contrastRatio(dl.color, bgInfo.ebg);
+            if (ratio != null) {
+              dcell.contrastChecked++; darkContrast++;
+              if (ratio >= 3) { dcell.pass++; darkPass++; }
+              else {
+                dcell.fail++; darkFail++;
+                results.failures.push({ section: key, bp: bp.name, kind: "dark-contrast", heronPath: h.p, oursSelector: oEl.p, mode: "dark", expected: "contrast ≥ 3.0 vs effective background (dark internal consistency)", actual: `${Math.round(ratio * 100) / 100} — ${dl.color} on ${bgInfo.ebg}`, delta: 0 });
+              }
+            }
+          } else dcell.contrastSkipped++;
+        }
+        dcell.flips = flipped;
+        if (pairs.length && flipped === 0) {
+          dcell.fail++; darkFail++;
+          results.failures.push({ section: key, bp: bp.name, kind: "dark-no-flip", heronPath: MAPPING.ourSection[key], oursSelector: MAPPING.ourSection[key], mode: "dark", expected: "≥1 paired element color/bg flips light→dark (token-driven theme)", actual: "0 flips — section has no dark arm", delta: 0 });
+        } else if (pairs.length) { dcell.pass++; darkPass++; }
       }
 
       // page-level: section height vh + pin spans
@@ -610,6 +767,16 @@ results.failures.sort((a, b) => b.delta - a.delta).splice(800);
  * human diagnostic; the per-cell counts in sections carry the numbers). */
 results.summary.unmatchedOmitted = Math.max(0, results.unmatchedReport.length - 400);
 results.unmatchedReport.splice(400);
+/* r338 T-14a: skipped (plumbing/binding) assertions are bounded the same
+ * way; the per-cell counts in sections carry the full numbers. */
+const totalSkipped = Object.values(matrix).flatMap((b) => Object.values(b)).reduce((a, c) => a + ((c && c.skipped) || 0), 0);
+results.summary.skippedOmitted = Math.max(0, results.skippedReport.length - 400);
+results.skippedReport.splice(400);
+results.summary.totalSkipped = totalSkipped;
+if (DARK) {
+  const dTotal = darkPass + darkFail;
+  results.summary.dark = { pass: darkPass, fail: darkFail, passRate: dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0, contrastChecked: darkContrast, contrastFloor: 3, theme: darkTheme?.attr ?? null, note: "spec is light-only: geometry/type re-asserted on the dark DOM; color group = token-flip census + contrast floor vs effective background" };
+}
 
 // console matrix
 const col = (s) => String(s).padEnd(9);
@@ -626,15 +793,30 @@ for (const key of SECTIONS_WANTED) {
     counts += col(`${c.pass}/${n}`);
   }
   const c0 = Object.values(matrix[key] || {})[0] || {};
-  console.log(line + col("") + ` e=${c0.explicit ?? 0} d=${c0.dataSpec ?? 0} h=${c0.heuristic ?? 0} u=${c0.unmatched ?? 0} x=${c0.excused ?? 0}`);
+  console.log(line + col("") + ` e=${c0.explicit ?? 0} d=${c0.dataSpec ?? 0} h=${c0.heuristic ?? 0} u=${c0.unmatched ?? 0} x=${c0.excused ?? 0} s=${c0.skipped ?? 0}`);
 }
 console.log("-".repeat(70));
-console.log(`TOTAL ${totalPass}/${total} = ${rate}%  ·  exceptions ${exceptionUses} (${exRate}%, cap 5%)  ·  no-counterpart FAILs ${results.summary.unmatchedFailures}  ·  failures listed: ${results.failures.length}`);
+console.log(`TOTAL ${totalPass}/${total} = ${rate}%  ·  exceptions ${exceptionUses} (${exRate}%, cap 5%)  ·  no-counterpart FAILs ${results.summary.unmatchedFailures}  ·  failures listed: ${results.failures.length}  ·  skipped (counted) ${totalSkipped}`);
 const topKinds = {};
 for (const f of results.failures) topKinds[f.kind] = (topKinds[f.kind] || 0) + 1;
 console.log("top failure kinds:", Object.entries(topKinds).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => `${k}:${v}`).join("  "));
 console.log("exception rules used (true waivers only):", Object.entries(exRules).map(([k, v]) => `${k}:${v}`).join("  ") || "none");
 if (ratchetValue != null) console.log(`ratchet floor: ${ratchetValue}%  ·  gate: ${gateVerdict}`);
+if (DARK) {
+  const colD = (s) => String(s).padEnd(10);
+  console.log("\nDARK internal-consistency — " + URL + "  (spec is light-only; color group = flip census + contrast floor 3.0)");
+  for (const key of SECTIONS_WANTED) {
+    let line = colD(key.slice(0, 9));
+    for (const bpName of BPS_WANTED) {
+      const d = matrix[key]?.[bpName]?.dark;
+      line += colD(d ? `${d.pass}/${d.pass + d.fail}` : "—");
+    }
+    const d0 = Object.values(matrix[key] || {}).find((c) => c && c.dark)?.dark;
+    console.log(line + colD("") + `flips=${d0?.flips ?? 0} contrast=${d0?.contrastChecked ?? 0} skipped-contrast=${d0?.contrastSkipped ?? 0}`);
+  }
+  const dTotal = darkPass + darkFail;
+  console.log(`DARK TOTAL ${darkPass}/${dTotal} = ${dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0}%  ·  contrast checks ${darkContrast}  ·  html[data-theme]=${darkTheme?.attr}`);
+}
 
 writeFileSync(OUT, JSON.stringify(results, null, 1));
 console.log("results → " + OUT);
