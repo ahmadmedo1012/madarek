@@ -645,3 +645,95 @@
   }
 }
 
+
+/* ═══ r338 T-08b — the heron 481/802/619 row-grid re-seat (≥992).
+   Measured @1920: section 1902×947 (0.81rem side margins), rows
+   473+473, cols 481/802/619 (rem-exact: 361/601/464 @1440,
+   257/428 @1024 — heron's own fluid ladder), head row 193 with
+   label 392×22 fs15.56/lh21.78 @y36 + title 392×36 fs35.56/lh1
+   @y136, side cells 619×140, CTA row 619×53, body voice lh 1.3.
+   RTL: the head col seats the inline-start (right) edge — the
+   mirror of heron's LTR left col. Overrides the shared.css 3/5/4
+   seat by specificity only (no shared.css edit — T-08 ownership). ═══ */
+@media (min-width: 992px) {
+  .pr-section.pr-section {
+    display: grid;
+    grid-template-columns: 25.24% 42.16% 32.6%;
+    grid-template-rows: 42.57rem 42.57rem;
+    margin-inline: 0.81rem;
+    padding-block: 0;
+    line-height: 1.3;
+    color: color-mix(in srgb, var(--text) 72%, transparent);
+    border-block-end: 1px solid var(--rule-strong);
+  }
+  .pr-section .pr-head {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+    gap: 0;
+    margin: 0;
+    block-size: 17.37rem;
+    padding: 3.24rem 3.24rem 1.181rem 4.77rem;
+    border-block-end: 1px solid var(--rule-strong);
+  }
+  .pr-section .pr-head .fo-label {
+    font-size: 1.4rem;   /* 15.56px @1920 — heron's small label voice */
+    line-height: 1.4;    /* 21.78px */
+  }
+  .pr-section .pr-title { margin-block-start: 7.02rem; }
+  .pr-section .pr-head-more {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    display: grid;
+    gap: var(--sp-4);
+    padding: 2.025rem 3.24rem 0 4.77rem;
+    overflow: clip;
+  }
+  .pr-section .pr-stage {
+    grid-column: 2;
+    grid-row: 1;
+    block-size: 42.57rem;
+  }
+  .pr-section .pr-stage .pr-frame { block-size: 100%; }
+  .pr-section .pr-shots {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    gap: 0;
+    grid-template-columns: 1fr;
+  }
+  .pr-section .pr-shot:not(:first-child) { display: none; }
+  .pr-section .pr-shot-media img { block-size: 42.48rem; }
+  .pr-section .pr-shot .prf-idxchip {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline-start: 0;
+  }
+  .pr-section .pr-side {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: start;
+    gap: 0;
+  }
+  .pr-section .pr-cell-matrix,
+  .pr-section .pr-cell-ai {
+    flex: none;
+    block-size: 12.6rem;
+    overflow: clip;
+  }
+  .pr-section .pr-note {
+    grid-column: 3;
+    grid-row: 2;
+    align-self: start;
+    align-items: center;
+    block-size: 4.77rem;
+    margin: 0;
+    border-block-start: 1px solid var(--rule-strong);
+  }
+  .pr-section .pr-frame-cta {
+    font-size: 1.6rem;  /* 17.78px @1920 — heron's CTA voice */
+    line-height: 1.3;
+    white-space: normal;
+  }
+}

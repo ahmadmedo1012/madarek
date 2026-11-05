@@ -155,12 +155,13 @@ const PLATFORM_SHOTS = [
 
 function PlatformShots() {
   return (
-    <div className="pr-shots" role="group" aria-label="واجهات المنصّة الحقيقية">
+    <div className="pr-shots" role="group" aria-label="واجهات المنصّة الحقيقية" data-spec="platform.shots">
       {PLATFORM_SHOTS.map((s) => (
         <figure key={s.chip} className="pr-shot">
           <div className="pr-shot-media">
             <img
               src={s.src}
+              data-spec={s.chip === '[01]' ? 'platform.shotimg' : undefined}
               alt={s.altAr}
               loading="lazy"
               decoding="async"
@@ -189,17 +190,23 @@ function PlatformShots() {
 
 export function Product() {
   return (
-    <section id="product" className="pr-section" aria-labelledby="pr-title">
+    <section id="product" className="pr-section" aria-labelledby="pr-title" data-spec="platform.section">
       {/* the heading column — the extracted content cell: label,
           title, lede, then the player's concept steps as the
           hairline index BESIDE the frame (the extracted cell's own
           step list; aria-hidden drafting chrome — the honest read
           lives in the title/lede/caption/note). */}
-      <div className="pr-head">
-        <span className="fo-label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
-        <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title">
+      <div className="pr-head" data-spec="platform.head">
+        <span className="fo-label" data-spec="platform.label"><span className="fo-mono" dir="ltr">[05]</span> المنصّة فعليًا</span>
+        <RevealCssClass as="h2" className="pr-title" delay={1} id="pr-title" data-spec="platform.title">
           لا وعود — هذه <em>الواجهة نفسها</em>
         </RevealCssClass>
+      </div>
+
+      {/* r338 T-08b — the head column's lower free zone (heron's left
+          col is empty below its two 193px rows): lede + step list ride
+          the same column as unbound drafting chrome */}
+      <div className="pr-head-more">
         <RevealCssClass as="p" className="pr-lede" delay={2}>
           بنية الواجهات نفسها برسم داخلي: مشغّل المحاضرة بنقاط الفحص،
           ومصفوفة الإتقان، والمساعد الأكاديمي — كما تعمل اليوم داخل المنصّة.
@@ -225,15 +232,15 @@ export function Product() {
         </ol>
       </div>
 
-      <RevealCssClass as="div" className="pr-stage" delay={2}>
+      <RevealCssClass as="div" className="pr-stage" delay={2} data-spec="platform.stage">
         <PlatformShowcase />
       </RevealCssClass>
 
       {/* the inline-end column — the two drawn surfaces (the
           extracted content-right seat; aria-hidden drafting
           chrome; folds at ≤1024 with the strips-only bands) */}
-      <RevealCssClass as="div" className="pr-side" delay={3} aria-hidden="true">
-        <div className="pr-cell pr-cell-matrix">
+      <RevealCssClass as="div" className="pr-side" delay={3} aria-hidden="true" data-spec="platform.side">
+        <div className="pr-cell pr-cell-matrix" data-spec="platform.matrixcell">
           <div className="pr-cell-bar">
             <span className="pr-cell-idx fo-mono" dir="ltr">[02]</span>
             <span className="pr-cell-title">مصفوفة الإتقان</span>
@@ -259,7 +266,7 @@ export function Product() {
         </div>
 
         {/* one assistant bubble — the LIVE concept-explain scope */}
-        <div className="pr-cell pr-cell-ai">
+        <div className="pr-cell pr-cell-ai" data-spec="platform.aicell">
           <div className="pr-cell-bar">
             <span className="pr-cell-idx fo-mono" dir="ltr">[03]</span>
             <span className="pr-cell-title">المساعد الأكاديمي</span>
@@ -275,9 +282,9 @@ export function Product() {
           with the head at the strips-only 768–1024 bands). The
           r307 contract kept: the CTA scrolls to the conversion
           row (#cta) — never an auth link. */}
-      <RevealCssClass as="div" className="pr-note" delay={3}>
+      <RevealCssClass as="div" className="pr-note" delay={3} data-spec="platform.note">
         <span className="pr-frame-demo fo-mono">بيانات تجريبية</span>
-        <a href="#cta" className="fo-text-link pr-frame-cta">
+        <a href="#cta" className="fo-text-link pr-frame-cta" data-spec="platform.cta">
           أنشئ حسابك لتجربتها حيّة
           <Icon icon={ArrowLeft} size={13} />
         </a>
