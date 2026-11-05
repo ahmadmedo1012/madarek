@@ -12,11 +12,15 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 5
+- [~] T-05c why counterparts+bindings: explicit side-rail bindings (depth-6 collision), add counterparts for ~52/bp no-counterpart elements + data-spec bindings.
+- [~] T-06c footer bindings+geometry: hand-bind remaining ~35 hooks from census geometry, fix y/x-mirror/w/h + bg families.
+
 ## WAVE 4
-- [~] L-4 Lander: land r338/t02-usecase-residual + r338/t03-intro + r338/t04-problem to main (branch-CI evidence via API + one combined verify.sh --fast), watch CI.
-- [~] T-05b why: measure r338/t05-why rewrite (port 5305), census, iterate ≥90%, write explicit mapping bindings.
-- [~] T-06b footer: measure r338/t06-footer rewrite (port 5306, pre-rewrite 45.4/34.9/38.8/36.2/43.1), regenerate mapping/footer.json bindings, iterate ≥90%.
-- [~] T-04b problem: HEIGHT family + 768 y-shift + dup-window rebinds + color/lh →≥90%.
+- [~] L-4b Lander (respawn: agent died; land t02+t03+t04 (+t05 ddd02990, t06 e313f3e2 — monotonic improvements), branch-CI evidence, ONE combined verify, watch CI)
+- [x] T-05b DONE: r338/t05-why @ddd02990 — measured 61.2→61.8% (rewrite honestly below target); T-05c residual: side-rail unbindable (depth-6 collision, 6 bindings dropped), ~52/bp no-counterpart elements (mini-capture imgs, player defs/mask, row-4 map paths, caption clusters), y:505/x-mirror:120/w:111 mass
+- [x] T-06b DONE: r338/t06-footer @e313f3e2 — 45.4/34.9/38.8/36.2/43.1 → 64.1/62.6/75.3/66.7/68.2%; T-06c residual: hand-bind form/input/go/legal/biglink/socials/bgroups/brow.2-3, fix y323/x-mirror185/w148/h42 + bg94
+- [~] T-04b problem (agent died wave-4; respawn wave-5 — HEIGHT family ×0.751, 768 y-shift cascade, dup-window rebinds, color:90/lh:18) ·
 
 ## WAVE 3 additions
 - [x] L-3 Lander DONE: main GREEN a362bcb5→850ce6fa (Size gate SUCCESS ×2, verify --fast PASS ×2, bundle 776.1-776.3≤777); scroll cells + feel on main; ratchet SKIPPED (in-tree results.json is scoped subset; full re-measure needed)
@@ -46,6 +50,10 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-21 docs diet · move closed docs/redesign/r3xx/* into docs/archive/ (heavy evidence → a GitHub Release), one-page docs/INDEX.md. Acc: docs tree = current/ + archive/ + INDEX.md, no broken relative links. 25m.
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
+
+## WAVE 5
+- [~] T-05c why counterparts+bindings: explicit side-rail bindings (depth-6 collision), add counterparts for ~52/bp no-counterpart elements + data-spec bindings.
+- [~] T-06c footer bindings+geometry: hand-bind remaining ~35 hooks from census geometry, fix y/x-mirror/w/h + bg families.
 
 ## WAVE 4
 - [ ] L-4 Lander.

@@ -62,3 +62,7 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - Bundle ceiling on main is 777 KB gz (r337's documented raise, already merged). Do NOT exceed 777; prefer real cuts.
 - Conformance honest baselines (chromium, 5-bp avg): usecase 87.9 (claimed 91.4 did not reproduce), problem 84.6, intro 74.7. why/footer rewrites landed on branches but UNMEASURED.
 - run.mjs is shared instrument code: T-02a added the charSplit "wordset" rule on branch r338/t02-usecase-residual (NOT yet on main). If your task touches run.mjs, base your worktree on the branch that last touched it to avoid conflicts.
+
+## ENV ADDENDUM 4 (wave-5, lead)
+- node_modules in worktrees are HARDLINK copies. NEVER write into node_modules (no installs, no patching). If vite serves blank / module-not-found errors: `rm -rf ./node_modules frontend/node_modules` in YOUR worktree and re-copy from /home/z/madarek (`cp -al /home/z/madarek/node_modules ./node_modules` + same for frontend/) — never repair in place.
+- Honest conformance state (chromium, 5-bp): usecase 87.9 · problem 84.6 · intro 74.7 · why 61.8 · footer 64.1/62.6/75.3/66.7/68.2 · platform/map/cta/hero/chrome unmeasured-this-round. Ratchet floor 53.7 (full matrix).
