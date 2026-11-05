@@ -118,7 +118,7 @@ npm run db:provision-owner              # تجهيز مالك بهوية الم�
    زخرفية، التمرير عبر Lenis على صفحات الزوّار فقط، الجذر مرن
    `0.5787037037vw` بأرضية 13px للعربية، والورق `#F6F6EE`. المرجع الكامل:
    قسم «R313 — Heron parity canon (owner override)» في `DESIGN.md` + دفتر
-   التجاوزات `docs/redesign/r313/OVERRIDE-LEDGER.md`. العقود الصلبة لا يمسّها
+   التجاوزات `docs/archive/redesign/r313/OVERRIDE-LEDGER.md`. العقود الصلبة لا يمسّها
    التجاوز: الوصول (a11y)، النسخ الصادقة، بصمة CSP، قوابس القمع 5+5، وحظر
    الأصول الاحتكارية (BT Grotesk محظور — تبقى Alexandria/IBM Plex)؛ وعند
    أي تعارض: الشيفرة تفوز ويُصحَّح المستند في نفس التغيير (§2).
