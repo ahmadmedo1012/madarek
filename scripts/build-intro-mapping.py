@@ -24,13 +24,18 @@ Binding model (the walk's pathOf truncates at six segments):
     and the empty 0x0 tween-residue boxes are excused with written
     reasons.
 
-Run after changing Statement.tsx hooks: python3 scripts/build-intro-mapping.py
+Run after changing Statement.tsx hooks:
+  python3 scripts/build-intro-mapping.py            # repo root = cwd
+  python3 scripts/build-intro-mapping.py /path/to/wt # explicit root (r338 T-03b:
+                                                    # ROOT was hardcoded to a dead
+                                                    # path — now a CLI arg, default cwd)
 """
+import sys
 import json
 from collections import defaultdict
 from pathlib import Path
 
-ROOT = Path("/home/z/work/wt-intro")
+ROOT = Path(sys.argv[1]).resolve() if len(sys.argv) > 1 else Path.cwd()
 SPEC = ROOT / "docs/redesign/r335/heron-spec"
 OUT = ROOT / "scripts/conformance/mapping/home-intro-wrap.json"
 BPS = ["390", "768", "1024", "1440", "1920"]
@@ -59,7 +64,10 @@ TRUE = {
     "home-intro-wrap > div[1] > section[1] > div[1] > div[3] > div[1]": "intro.tickerrule",
     "home-intro-wrap > div[1] > section[1] > div[1] > div[3] > div[2]": "intro.tickerin",
     "home-intro-wrap > div[1] > section[1] > div[1] > div[3] > div[2] > div[1]": "intro.labelrow",
-    "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]": "intro.label",
+    # r338 T-03b: the label box's recorded window keeps its section[1] head —
+    # the old div[1] > div[1] head never matched, so intro.label glued to the
+    # arrows cluster's 22x22 boxes (junk heuristic).
+    "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[1]": "intro.label",
     "home-intro-wrap > div[1] > section[1] > div[1] > div[3] > div[2] > div[2]": "intro.crawl",
     "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[2] > div[1]": "intro.crawlin",
     "home-intro-wrap > div[1] > section[1] > div[1] > div[3] > div[3]": "intro.desc",
@@ -174,7 +182,7 @@ for bp in BPS:
                 crawl_windows.setdefault(p, idx)
 
 for p, idx in crawl_windows.items():
-    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": f"intro.cell.{idx}", "skip": ["geometry"]})
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": f"intro.cell.{idx}", "skip": ["geometry", "x-mirror"]})
 bound_patterns.update(crawl_windows.keys())
 
 # the cell children (logo box / img / sep): unique windows one level deeper
@@ -197,7 +205,7 @@ for bp in BPS:
                 cell_child_windows.setdefault(p, f"intro.cellsep.{idx}")
 
 for p, k in cell_child_windows.items():
-    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry"]})
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry", "x-mirror"]})
 bound_patterns.update(cell_child_windows.keys())
 
 # ── the label row internals: unique windows ─────────────────────────────────
@@ -261,14 +269,80 @@ LABEL_MANUAL = {
     "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[3]": "intro.labeltoprule",
     "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]": "intro.labelarrows",
     "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[1] > div[1]": "intro.labelarrow",
-    "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[1] > div[1]": "intro.labelarrow",
-    "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]": "intro.labelarrowsvg",
-    "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]": "intro.labelarrowpath",
+    # r338 T-03b: the second arrow stack + the in/box plumbing of both stacks
+    # (st-parrow-b / st-parrow-in / st-parrow-box x2).
+    "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[2]": "intro.labelarrow2",
+    "home-intro-wrap > div[2] > div[1] > div[4] > div[1] > div[1] > div[1]": "intro.labelarrowin",
+    "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[2] > div[1]": "intro.labelarrowin2",
+    "home-intro-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]": "intro.labelarrowbox",
+    "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]": "intro.labelarrowbox2",
+    # r338 T-03b: labelarrowsvg/labelarrowpath REMOVED — their recorded window
+    # (`div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]` + its path)
+    # collides 3-way at 1920 (pill iconA svg + both arrow svgs), so the
+    # explicit binding glued our arrow svg onto the pill's icon svg. The svgs
+    # and paths now ride the heuristic tag+ordinal fallback, which pairs them
+    # 1:1 in document order (media -> pill A -> pill B -> arrow 1 -> arrow 2).
 }
 for p, k in LABEL_MANUAL.items():
     if k:
         explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k})
 bound_patterns.update(k for k in LABEL_MANUAL.values() if k)
+
+# -- r338 T-03b: the pill icon wrappers + the media tone svg -----------------
+# The icon wrappers are recorded at 1920/768/390 as a[2] > div[1] > div[3] >
+# div[1]/div[2] (50x50 / 41x41); the media cell's tonal svg rides the
+# mediainner box (the reference's masked-image svg).
+NEW_WINDOWS = {
+    "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[1]": "intro.ctaicon",
+    "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[2]": "intro.ctaicon2",
+    "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]": "intro.mediasvg",
+}
+for p, k in NEW_WINDOWS.items():
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k})
+bound_patterns.update(NEW_WINDOWS.keys())
+
+# -- r338 T-03b: the crawl cell children, second window shape ----------------
+# At 1920 the walk records the cell children as 6-seg windows headed
+# `div[2] > div[2] > div[1]` (logo: ...div[N] > div[1], sep: ...div[N] >
+# div[2]) and the imgs as `div[2] > div[1] > div[1] > div[N] > div[1] >
+# img[1]` — a shape the 7-seg filter above never catches. Bind by ordinal N,
+# guarded to the crawl band (geometry skipped: the marquee is mid-flight).
+def crawl_band(bp):
+    for e in CENSUS[bp]:
+        if e["p"].endswith("div[3] > div[2] > div[2]") and e["vr"]["h"] > 40:
+            return e["vr"]
+    return None
+
+crawl_children2 = {}
+for bp in BPS:
+    band = crawl_band(bp)
+    if not band:
+        continue
+    for e in CENSUS[bp]:
+        p = e["p"]
+        if "h2[1]" in p or is_bound(p):
+            continue
+        segs = p.split(" > ")
+        r = e["vr"]
+        in_band = band["y"] - 6 <= r["y"] and r["y"] + r["h"] <= band["y"] + band["h"] + 6
+        if not in_band:
+            continue
+        if (len(segs) == 6 and segs[1] == "div[2]" and segs[2] == "div[2]"
+                and segs[3] == "div[1]" and segs[4].startswith("div[")
+                and segs[5] == "div[1]" and r["w"] >= 40 and r["h"] != 44):
+            crawl_children2.setdefault(p, "intro.celllogo." + segs[4].strip("div[]"))
+        elif (len(segs) == 6 and segs[1] == "div[2]" and segs[2] == "div[2]"
+                and segs[3] == "div[1]" and segs[4].startswith("div[")
+                and segs[5] == "div[2]" and r["w"] == 1):
+            crawl_children2.setdefault(p, "intro.cellsep." + segs[4].strip("div[]"))
+        elif (len(segs) == 6 and segs[1] == "div[2]" and segs[2] == "div[1]"
+                and segs[3] == "div[1]" and segs[4].startswith("div[")
+                and segs[5] == "img[1]" and r["w"] >= 40):
+            crawl_children2.setdefault(p, "intro.cellimg." + segs[4].strip("div[]"))
+
+for p, k in crawl_children2.items():
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry", "x-mirror"]})
+bound_patterns.update(crawl_children2.keys())
 
 
 # ── noCounterpart: every unbound recorded path, with written reasons ────────
