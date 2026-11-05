@@ -102,6 +102,19 @@ export interface ScrubRevealProps {
    * of leaving the masks to the heuristic tag+tc fallback.
    */
   wordSpec?: (globalIndex: number) => string | undefined;
+  /**
+   * R338 T-03d (intro char census): the reference's split-text tween
+   * nests one empty overflow box per CHARACTER inside every word cell
+   * (its own census: 26 words, 127 tc-none char boxes, all text-empty —
+   * pure tween scaffold). Arabic shaping must never split mid-word, so
+   * the mirror keeps the grammar, not the split: charCounts[i] = how
+   * many empty scaffold boxes global word i carries (aria-hidden,
+   * non-visual — the shaped text stays whole in .wr-i), and charSpec
+   * names each box for the conformance mapping. Boxes beyond the table
+   * (our surplus words) simply do not render.
+   */
+  charCounts?: readonly number[];
+  charSpec?: (globalWordIndex: number, charIndex: number) => string | undefined;
 }
 
 /**
@@ -109,7 +122,7 @@ export interface ScrubRevealProps {
  * `--wr-p` custom property (0..1); each word unmasks in sequence as
  * the progress passes its index.
  */
-export function ScrubReveal({ text, className, lines, renderLine, wordSpec }: ScrubRevealProps) {
+export function ScrubReveal({ text, className, lines, renderLine, wordSpec, charCounts, charSpec }: ScrubRevealProps) {
   const words = text.split(' ');
   const n = words.length;
   const run = (from: number, to: number) =>
@@ -125,6 +138,11 @@ export function ScrubReveal({ text, className, lines, renderLine, wordSpec }: Sc
             style={{ ['--wr-i' as string]: gi }}
           >
             <span className="wr-i" data-spec={ds ? ds.replace('.word.', '.wordin.') : undefined}>{w}</span>
+            {/* the reference's per-char tween scaffold, mirrored as empty
+                boxes (the joining law: Arabic text never splits mid-word) */}
+            {Array.from({ length: charCounts?.[gi] ?? 0 }, (_, m) => (
+              <span key={`wr-c-${m}`} aria-hidden="true" data-spec={charSpec?.(gi, m)} />
+            ))}
           </span>
           {gi < words.length - 1 ? SPACE : null}
         </Fragment>

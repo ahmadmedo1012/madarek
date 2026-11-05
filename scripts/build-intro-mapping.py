@@ -258,6 +258,53 @@ bound_patterns.update(linemask_windows.keys())
 bound_patterns.update(word_cells.keys())
 bound_patterns.update(wordin_cells.keys())
 
+# ── r338 T-03d: the h2 per-CHAR census — the scaffold mirror bindings ──────
+# The reference's split-text tween nests one empty (tc-none) overflow box
+# per CHARACTER inside every word cell: h2 > div[L] (line) > div[1] (box)
+# > div[1] (mask) > div[K] (word) > div[M] (char) — 127 char boxes at every
+# desktop bp (none at 390: mobile records word boxes only), the SAME
+# per-word distribution at each (26 words, 3..10 chars). Word ordinal by
+# STATEMENT_LINES-style offset arithmetic: N = words of lines 1..L-1 + K.
+# Our ScrubReveal mirrors the scaffold GRAMMAR — one empty aria-hidden
+# span per reference char box inside each word mask (intro.wchar.N.M,
+# the HERON_CHAR_COUNTS table in Statement.tsx) — while the shaped Arabic
+# text stays whole in .wr-i (the joining law: per-word splits only).
+# tag/tc/geometry/x-mirror skipped (span-vs-div, empty scaffold,
+# English↔Arabic char runs differ in width — geometry lives at the
+# word/line level; RTL mirror); typography (fs/lh/fw/ls) + color still
+# asserted per char box (ours inherit the title's own type + ink).
+char_cells = {}  # path -> intro.wchar.N.M
+for bp in BPS:
+    line_words = {}  # 'div[L]' -> word count (the tail-4 word-cell census)
+    for e in CENSUS[bp]:
+        t = h2_tail(e["p"])
+        if not t:
+            continue
+        s = t.split(" > ")
+        if len(s) == 4 and s[1] == "div[1]" and s[2] == "div[1]":
+            line_words[s[0]] = line_words.get(s[0], 0) + 1
+    for e in CENSUS[bp]:
+        p = e["p"]
+        if "h2[1]" not in p or is_bound(p):
+            continue
+        t = h2_tail(p)
+        if not t:
+            continue
+        s = t.split(" > ")
+        if (len(s) != 5 or s[1] != "div[1]" or s[2] != "div[1]"
+                or e.get("tc") not in (None, "none")):
+            continue
+        L = int(s[0].strip("div[]"))
+        K = int(s[3].strip("div[]"))
+        M = int(s[4].strip("div[]"))
+        n = sum(line_words.get(f"div[{i}]", 0) for i in range(1, L)) + K
+        char_cells.setdefault(p, f"intro.wchar.{n}.{M}")
+
+for p, k in char_cells.items():
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["tag", "tc", "geometry", "x-mirror"]})
+bound_patterns.update(char_cells.keys())
+
+
 # ── the crawl cells: unique windows under the crawl track ──────────────────
 # The 1920/1440/1024/768 censuses record 8 cells + a 0-width 9th; the
 # cell windows are 'home-intro-wrap > div[3] > div[2] > div[2] > div[1] >
@@ -455,10 +502,10 @@ for p in sorted(all_paths):
     if "h2[1]" in p:
         reason = (
             "h2 split-text tween residue: the reference's split-text tween wraps every "
-            "word in its own overflow box; the recorded 6-segment windows collide (the "
-            "walk truncates deeper paths). Our ScrubReveal renders one word span per "
-            "word — the word cells ride the heuristic tag+tc fallback; the wrappers "
-            "are the tween's own plumbing."
+            "word/char in its own overflow box; the windows left here collide across "
+            "bps or belong to the tween's own plumbing. Our ScrubReveal mirrors the "
+            "word/char scaffold explicitly (intro.word/wordin/wchar.N.M); this residue "
+            "is the tween's own wrappers beyond the mirror."
         )
     elif collides:
         reason = (
@@ -487,7 +534,9 @@ mapping = {
         "scripts/build-intro-mapping.py (re-run after changing Statement.tsx hooks). "
         "TRUE paths (≤6 segments from the wrap) bind the structural containers; the h2's "
         "recorded window path binds intro.h2; the pill/label/crawl internals bind their "
-        "unique recorded windows; the line groups bind intro.line.${i}. The walk truncates "
+        "unique recorded windows; the line groups bind intro.line.${i}; the word and "
+        "char cells bind intro.word/wordin/wchar.N.M (the split-text mirror — empty "
+        "scaffold spans, Arabic text whole per word). The walk truncates "
         "deeper paths into colliding 6-segment windows — that residue (word wrappers, "
         "parked roll copies, loop duplicates, 0x0 tween boxes, SVG defs) is excused with "
         "written reasons. ourSection: section#statement.st-section (sections/Statement.tsx "
@@ -501,4 +550,4 @@ mapping = {
 }
 
 OUT.write_text(json.dumps(mapping, indent=2, ensure_ascii=False) + "\n", encoding="utf8")
-print(f"explicit: {len(explicit)} bindings · noCounterpart: {len(no_counterpart)} excuses · line windows {len(line_windows)} · crawl cells {len(crawl_windows)}")
+print(f"explicit: {len(explicit)} bindings · noCounterpart: {len(no_counterpart)} excuses · line windows {len(line_windows)} · crawl cells {len(crawl_windows)} · char cells {len(char_cells)}")
