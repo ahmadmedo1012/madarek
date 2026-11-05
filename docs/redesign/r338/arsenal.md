@@ -6,3 +6,4 @@ T-05c | python3 json rebuilder + playwright probe (/tmp/t05) | true-path rebinds
 T-05d | python3 str/regex surgery | byte-exact why.css/WhyScene edits where Edit whitespace-matching failed
 T-05d | vite build + scripts/check-bundle-size.mjs | bundle-diet verify 777.4→777.0 KB gz PASS
 T-05d | conformance/run.mjs --sections home-why-wrap --url :5305 | post-reseat why measurement
+T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect extraction @768/390 + DOM probe of the ≤991 belt
