@@ -43,7 +43,6 @@
   background: var(--rule-strong);
 }
 .fo-rule-h { block-size: 1px; inline-size: 100%; }
-.fo-rule-full { inline-size: 100%; }
 .fo-rule-v { inline-size: 1px; align-self: stretch; }
 .fo-rule-g { margin-block: 0.6rem; }
 
@@ -218,7 +217,6 @@
   display: grid;
   place-items: center;
 }
-.fo-col3rule { position: absolute; inset-block: 0; inset-inline-start: 0; }
 .fo-mark { inline-size: 25.8rem; block-size: 25.8rem; }
 .fo-mark-svg {
   inline-size: 100%;
@@ -353,7 +351,6 @@
   .fo-c2-bottom { grid-template-columns: 1fr 1fr; }
   .fo-input,
   .fo-go { block-size: 4.84rem; }
-  .fo-col3rule { display: none; }
   .fo-mark { inline-size: 11.9rem; block-size: 11.9rem; }
   .fo-mark-img { inline-size: 11.9rem; block-size: 0; }
   .fo-strip { block-size: 9.6rem; }
