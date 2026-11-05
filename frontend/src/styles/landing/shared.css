@@ -51,10 +51,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .wy-rail {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   /* PI-B2 — the ≤991 .fo-cta-grid fold is GONE: no markup renders
    * .fo-cta-grid (the CTA slab's own grid needs no mobile re-map). */
 
@@ -70,24 +66,6 @@
    phone band below (full-width address rows: the honest address
    lines + the repo URL wrap on real width, headings on their own
    row, block flow, no overlaps). */
-  .fo-fgrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      'strip strip'
-      'tagline tagline'
-      'links-a links-b'
-      'links-c links-c'
-      'addr-a addr-b'
-      'mark mark';
-  }
-
-  .fo-fcell {
-    min-inline-size: 0; /* grid items wrap instead of overflowing the track */
-  }
-
-  .fo-fcell-strip {
-    block-size: 160px;
-  }
 }
 
 @media (max-width: 767px) {
@@ -151,7 +129,6 @@
   .wy-section { padding-block: var(--sp-6) var(--sp-5); }
   .rl-section { padding-block: var(--sp-6) var(--sp-5); }
   .fo-cta { padding-block: var(--sp-8) var(--sp-7); }
-  .fo-footer-inner { padding-block: var(--sp-5) var(--sp-4); }
 
   /* R322 (1-d) — the rung seats (pm/wy/rl/cta titles) resolve the
    * band-independent --fs-d2 at this belt too: the V13 px re-pin
@@ -216,9 +193,6 @@
      runs the list two-up over its center divider); the reference's own
      mobile why is the full-width state list (cms 374px single column
      @390), so the ≤991 2×2 must not cascade past the tablet belt. */
-  .wy-rail {
-    grid-template-columns: minmax(0, 1fr);
-  }
 
   /* PI-B2 — the ≤767 .rl-card compaction rungs are GONE with the
      retired tile grid (markup-dead; the reference's own use-case rows
@@ -234,18 +208,6 @@
    * proportional ladder — 166px (Heron 165.75 @768, seated in the
    * ≤991 block above) with the cell's breathing room, not the
    * desktop's 215. */
-  .fo-fcell {
-    padding: var(--sp-3);
-    min-block-size: 0;
-  }
-
-  .fo-fcell-strip {
-    block-size: 110px;
-  }
-
-  .fo-wordmark {
-    padding-block: var(--sp-4) var(--sp-3);
-  }
 
   /* PI-B2 — the ≤767 .fo-fcell-mark rung is GONE with the retired
      mark cell (see the ≤640 note below). */
@@ -270,21 +232,6 @@
      account column is RETIRED — it fought the named area and was
      the overlap source (the account cell spanned into the address
      column, «العنوان» under the account links). */
-  .fo-fgrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      'strip strip'
-      'tagline tagline'
-      'links-a links-b'
-      'links-c links-c'
-      'addr-a addr-b'
-      'mark mark';
-  }
-
-  .fo-footer-about {
-    font-size: var(--fs-sm);
-    line-height: 1.55;
-  }
 }
 
 @media (max-width: 640px) {
@@ -331,21 +278,6 @@
      (the paired 112px tracks broke their wrapping and collided);
      every named placement resolves inside the two-column band, no
      span/auto longhands fighting the map. */
-  .fo-fgrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      'strip strip'
-      'tagline tagline'
-      'links-a links-b'
-      'links-c links-c'
-      'addr-a addr-a'
-      'addr-b addr-b'
-      'mark mark';
-  }
-
-  .fo-fcell-strip {
-    block-size: 74px; /* spacing-gate: allow — the phone band's own horizon sliver (the reference has no strip-image cell @390; its grid budget is 1006.36 measured) */
-  }
 
   /* PI-B2 — the ≤640 .fo-fcell-mark / .fo-footer-mark-svg rungs are
      GONE: the [08] drawn-mark cell retired from the markup in R323

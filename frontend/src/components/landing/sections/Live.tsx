@@ -94,7 +94,7 @@ export function Live({ colsRef, dotsRef }: LiveProps) {
                 [03] التحديات
               </div>
             </div>
-            <div className="pm-titlebox" data-spec="problem.titlebox">
+            <div className="pm-titlebox">
               <h2 className="pm-title" id="pm-title" data-spec="problem.h2">
                 أربعة أوجاع من التعليم العالي الليبي
               </h2>
@@ -114,7 +114,7 @@ export function Live({ colsRef, dotsRef }: LiveProps) {
         <div className="pm-band" data-spec="problem.band">
           <div className="pm-bandrule" aria-hidden="true" data-spec="problem.bandrule" />
           <div className="pm-bandinner" data-spec="problem.bandinner">
-          <ol className="pm-cols" ref={colsRef} aria-label="الأوجاع الأربعة" data-spec="problem.cols">
+          <ol className="pm-cols" ref={colsRef} aria-label="الأوجاع الأربعة">
             {PAINS.map((p, i) => (
               <li
                 key={p.num}

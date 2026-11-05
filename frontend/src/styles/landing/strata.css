@@ -63,22 +63,6 @@
   }
   /* the © bar: © + disclosure share row one; the nine legal links
      take their own 44px-touch row under them (ONE ruled bar total). */
-  .fo-legal-row {
-    order: 3;
-    flex-basis: 100%;
-    /* R328 (H7 · R2 final) — the desktop CENTER cluster wraps to the
-       full bar on phones; a centered wrapped cluster reads un-anchored
-       against the sheet's right-start grammar. Stack at the reading
-       start on the band. */
-    justify-content: flex-start;
-    margin-inline: 0;
-  }
-  .fo-footer-bottom {
-    row-gap: var(--sp-0-5); /* the two-row seat breathes tighter at this band */
-  }
-  .fo-fcell {
-    padding: var(--sp-3) var(--sp-3); /* 12/12 — one step tighter than the desktop 16/12 cell */
-  }
 }
 
 .fl-sketch line,
@@ -245,13 +229,6 @@
   }
 
   /* the footer's own compact rhythm shared by both mobile belts */
-  .fo-footer-inner {
-    padding-block: var(--sp-3) var(--sp-3);
-  }
-
-  .fo-footer-link {
-    min-block-size: 26px;
-  }
 }
 
 @media (max-width: 640px) {
@@ -300,10 +277,6 @@
     padding-block: var(--sp-2);
   }
 
-  .wy-rail {
-    gap: var(--sp-1);
-  }
-
   .wy-note {
     margin-block-start: 0;
     padding-block: var(--sp-5) var(--sp-6); /* R332 W390b −16: 817→≈801 (heron 805.6, −0.6%) — pulls the roles/cta/footer triggers back under 40 */
@@ -339,48 +312,11 @@
      their rows, the repo URL wraps on the full band). Links pair
      with links; the account column keeps a full row; the
      construction mark keeps its own row. ── */
-  .fo-fgrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      'strip strip'
-      'tagline tagline'
-      'links-a links-b'
-      'links-c links-c'
-      'addr-a addr-a'
-      'addr-b addr-b'
-      'mark mark';
-  }
-
-  .fo-fcell {
-    padding: var(--sp-2) var(--sp-3); /* block 8 / inline 12 — the reference's mobile text inset (14.88 from the frame line) */
-  }
-
-  .fo-footer-heading {
-    padding-block-end: var(--sp-1);
-    margin-block-end: var(--sp-0-5);
-  }
-
-  .fo-fcell-addr {
-    margin-block-start: 0;
-    padding-block: var(--sp-2);
-  }
-
-  .fo-footer-about {
-    line-height: 1.45;
-  }
 
   /* the closing wordmark band: the COMPACT cut rides the phone's own
    * measure (max 480px — a word, not a wall) and the Latin micro line
    * drops to the mono-sm rung so it reads on ONE line (decorative,
    * aria-hidden) */
-  .fo-wordmark {
-    padding-block: var(--sp-2) var(--sp-1-5);
-  }
-
-  .fo-wordmark-en {
-    font-size: var(--fs-mono-sm);
-    letter-spacing: 0.15em; /* Latin mono — tracking allowed */
-  }
 
   /* R315 (K-F · B9): the reference's mobile copyright band is a
    * 95.81-tall stack of hairline rows (measured @390) — the © line
@@ -388,37 +324,10 @@
    * between, instead of the desktop's single flex line. The bands
    * butt (the ≤640 inner rhythm is 0): grid + strip + copyright =
    * the reference's own 1239.11 phone measure. */
-  .fo-footer-inner {
-    padding-block: 0;
-    gap: 0;
-  }
-
-  .fo-footer-bottom {
-    display: grid;
-    gap: 0;
-    padding-block: 0;
-    padding-inline: var(--sp-3);
-  }
-
-  .fo-footer-bottom > * {
-    padding-block: 15px; /* spacing-gate: allow — the measured mobile copyright rows (95.81 total @390 for two rows + rule), an external constant */
-  }
-
-  .fo-footer-cluster {
-    border-block-start: 1px solid var(--rule);
-  }
 
   /* R320 §D: the policy links row on the phone rung — centered
      wrapping rows (the 44px targets stack comfortably), same quiet
      inline inset as the copyright band. */
-  .fo-legal-row {
-    /* R328 (H7 · R2 final) — the phone bar anchors at the READING
-       START (this later cascade seat is what actually rendered at
-       ≤767; the 1099-block fix alone lost to it — measured center
-       with pixel-symmetric gaps at m-100). */
-    justify-content: flex-start;
-    padding-inline: var(--sp-3);
-  }
 }
 
 /* ═══ R315 cycle-2 (M3 · batch 2) — the 768–991 tablet band ═════════
@@ -485,15 +394,10 @@
    * band 1053 → 877) */
   .wy-stage { padding: var(--sp-1) var(--sp-2-5); gap: var(--sp-0-25); }
   /* R322 (1-d) — the tablet .wy-stage-verb re-pin retires (D3 rung). */
-  .wy-stage-text { line-height: 1.45; }
 
   /* 8 — footer: the main grid compacts toward the reference's 672
    * @768 (head 170 + logo 331); lens strip + wordmark + legal rows
    * below keep their own seats (217 + 59 there) */
-  .fo-footer-about { font-size: var(--fs-sm); line-height: 1.55; }
-  .fo-fcell-tagline { padding-block: var(--sp-2); }
-  .fo-fcell-strip { block-size: 11rem; }
-  .fo-fgrid { row-gap: var(--sp-1); }
   /* R319 §D2: the tablet strip row retires its fixed 11rem — the
    * five-column sheet is full-bleed width-driven (1000:80), the row
    * hugs it (the svg's own 0..10u label band is the air). */
@@ -530,16 +434,6 @@
    * column, then their airy spacing — VLM-confirmed row structure).
    * The in-grid lens cell retires (the strip below already carries
    * the lens + wordmark = the reference's own footer-img-wrap). */
-  .fo-fgrid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-areas:
-      'tagline tagline tagline'
-      'links-a links-b links-c'
-      'addr-a addr-b mark';
-    row-gap: var(--sp-3);
-  }
-  .fo-fcell-strip { display: none; }
-  .fo-fcell-tagline { padding-block-end: var(--sp-2); }
 
   /* batch-3b micro-trims (768: cta 566→541) — statement rows retired
    * with their classes (R322 2-c). */
@@ -725,23 +619,11 @@
  * the block retires there — no cliff at the boundary (both sides
  * floor-bound). */
 @media (min-width: 992px) and (max-width: 1319px) {
-  .fo-fgrid {
-    grid-template-columns:
-      minmax(0, 2.4fr)
-      minmax(0, 1.05fr)
-      minmax(0, 1.05fr)
-      minmax(0, 1.05fr)
-      minmax(0, 1.15fr);
-    grid-template-areas:
-      'tagline na nb nc mark'
-      'tagline ea ea ab ab';
-  }
 
   /* the column headings ride the row chrome the 42.6rem floor can
    * seat at this end of the root (the 13px canon floor keeps the
    * heading text itself; the reference's own heading row is 20px
    * @1024 — ours 21.5px trimmed vs 28.5px untrimmed) */
-  .fo-footer-heading { padding-block-end: var(--sp-0-5); margin-block-end: 0; }
 }
 
 /* ═══ R315 cycle-2 (M4) — the 992–1024 narrow-desktop slice ═════════
@@ -770,15 +652,10 @@
 @media (min-width: 992px) and (max-width: 1024px) {
   .fo-cta-sketch { display: none; }
   .fo-cta { padding-block: var(--sp-6) var(--sp-5); }
-  .fo-fcell-strip { display: none; }
-  .fo-fgrid { row-gap: var(--sp-1); }
-  .fo-fcell { padding-block: 1.2rem; }
-  .fo-footer-about { font-size: var(--fs-sm); line-height: 1.45; }
 
   /* the row chrome the 42.6rem floor can seat at the 5.93px root:
    * the 13px link text leads at 1.2 (the reference's own rows are
    * 19.9px here — the min-block rung binds, only the leading bent) */
-  .fo-footer-link { line-height: 1.2; }
 
   /* platform: the strips-only band — the Y2 end belt (file end) owns
    * this slice's last word (head/note/side fold + the full-width
@@ -812,8 +689,6 @@
  * ≥1148 the base chrome keeps the rows under the floor on their own
  * — no cliff at either boundary (both sides floor-bound there). */
 @media (min-width: 1025px) and (max-width: 1147px) {
-  .fo-footer-link { line-height: 1.2; }
-  .fo-fcell { padding-block: 1.2rem; }
 }
 
 /* ── R318 §A7 — the column captions' alignment rule: the reference
@@ -826,9 +701,6 @@
  * 8.53px @1024 · 12px @768/390 — their bands are floor-pinned and
  * the reference measure is the 1440 desktop one.) ── */
 @media (min-width: 1025px) {
-  .fo-fcell {
-    padding-inline: 13px; /* spacing-gate: allow — the reference's measured caption gutter (+14 with the 1px hairline), an external constant */
-  }
 }
 
 /* ═══ R315 cycle-3 (W1) — the ≤479 phone tier rides the measured REM LAW
@@ -940,7 +812,6 @@
   }
 
   .wy-stage-title { line-height: 1.2; }
-  .wy-stage-text { line-height: 1.35; }
 
   /* ── roles — the ledger's phone seats (.rl-head/.rl-lede/.rl-more)
    * are RETIRED with the retired DOM (the r337 usecase rewrite —
@@ -958,37 +829,6 @@
    * on the phone grid — its 136.94 band IS the strip below); every
    * fixed px seat rides rem: the 119px line-logo (12rem), the 45.6px
    * subscribe pair (4.59rem), the 26px link rows, the 15px legal rows ── */
-  .fo-fcell-strip { display: none; }
-
-  .fo-fcell {
-    padding: 0.81rem 1.21rem;
-  }
-
-  .fo-fcell-addr {
-    padding-block: 0.81rem;
-  }
-
-  .fo-footer-heading {
-    padding-block-end: 0.6rem;
-    margin-block-end: 0.4rem;
-  }
-
-  .fo-footer-link {
-    min-block-size: 2.62rem; /* the 26px phone link row @390, rem-pure */
-  }
-
-  .fo-wordmark {
-    padding-block: 0.81rem 0.6rem;
-    margin-block-start: 0.81rem;
-  }
-
-  .fo-footer-bottom {
-    padding-inline: 1.21rem;
-  }
-
-  .fo-footer-bottom > * {
-    padding-block: 1.51rem; /* the 15px legal rows @390, rem-pure */
-  }
 
   /* ── the shared label row rides the mono rhythm at the phone root ── */
   .fo-label {
@@ -1117,17 +957,12 @@
   /* 6 — the footer's 390-measured constants ride the root (each is
    * its own verified mobile measure ÷ 9.92366 — the reference's own
    * mobile footer scales the same seats with its root) */
-  .fo-footer-link { min-block-size: 2.6201rem; }
-  .fo-fcell-strip { block-size: 7.4583rem; }
-  .fo-footer-bottom > * { padding-block: 1.5116rem; }
 
   /* 7 — the footer's own air law: the reference's mobile footer is
    * grid + image strip + legal row (the strip band carries ~23% of the
    * height); ours absorbs the floor's air inside the wordmark row so
    * the legal row stays pinned to the band's bottom edge like theirs
    * (display seats merged into the §LAW line above) */
-  .fo-footer-inner { grid-template-rows: auto minmax(0, 1fr) auto; padding-block: 0; gap: 0; }
-  .fo-wordmark { display: grid; place-content: center; padding-block: var(--sp-2) var(--sp-1-5); }
 
   /* 8 — ONE composition across the tier (the reference has no 640 rung
    * — its live boundaries are 991/767/479 only; the constant-rem law
@@ -1153,7 +988,6 @@
   .wy-section { padding-block: var(--sp-6) var(--sp-5); }
   .wy-head { gap: var(--sp-2); margin-block-end: var(--sp-4); }
   .wy-stage { padding-block: var(--sp-1); }
-  .wy-rail { gap: var(--sp-1); }
   .wy-note { margin-block-start: var(--sp-3); }
 
   /* the roles ledger's phone rhythm seats (.rl-head/.rl-more) retired
@@ -1162,25 +996,6 @@
   .fo-cta-inner { gap: var(--sp-3); }
   .fo-cta-lede { line-height: 1.55; }
   .fo-cta-actions { gap: var(--sp-2); }
-
-  .fo-fgrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-areas:
-      'strip strip'
-      'tagline tagline'
-      'links-a links-b'
-      'links-c links-c'
-      'addr-a addr-a'
-      'addr-b addr-b'
-      'mark mark';
-  }
-  .fo-fcell { padding: var(--sp-2) var(--sp-3); }
-  .fo-footer-heading { padding-block-end: var(--sp-1); margin-block-end: var(--sp-0-5); }
-  .fo-fcell-addr { margin-block-start: 0; padding-block: var(--sp-2); }
-  .fo-footer-about { line-height: 1.45; }
-  .fo-wordmark-en { font-size: var(--fs-mono-sm); }
-  .fo-footer-bottom { display: grid; gap: 0; padding-block: 0; padding-inline: var(--sp-3); }
-  .fo-footer-cluster { border-block-start: 1px solid var(--rule); }
 }
 
 /* R332 W4 — the ≤399 FOOT RUNG (top-level; see the note inside the
@@ -1789,11 +1604,6 @@
 @media (max-width: 767px) {
   .fo-cta-title {
     font-size: 2.4rem;
-  }
-
-  .fo-footer-heading {
-    font-size: 2.4rem;
-    line-height: 1.2;
   }
 
   /* R332 W390b — the registry strip sits FLUSH under the resolve on
