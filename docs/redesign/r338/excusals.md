@@ -269,3 +269,5 @@ T-06 | footer × webkit (all 5 bps) | ~/.cache/ms-playwright has chromium only �
   for alpha-channel fg colors (rgba), so the 33 invisible-ink seats
   were UNCOUNTED by --dark (contrastChecked=100/skipped=30, 0 fails
   while the honest ratio was 1.0) — found only by probe.
+
+- T-11 hero first pass: heron vector chrome (plus-marks/social/marquee icons/pin dots) + drafting grid hairlines + census-truncated wrapper paths excused with reasons (301 paths) — our counterparts are CSS line-art seats (.bp-plus/.bp-dmark/.bp-rulers) and the full-bleed ink SVG (R332 W1 documented deviation); webkit host-blocked (ADDENDUM 13), dark run deferred to next pass.
