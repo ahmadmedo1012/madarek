@@ -27,3 +27,4 @@ T-08c2 | conformance/run.mjs (--sections home-platform-wrap --url :5308, light+d
 ||||||| 0188bf2f
 T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-char scaffold mirror bindings (intro.wchar.N.M) + 5-bp measurement
 L-8 | verify.sh --fast + vite build/check-bundle-size.mjs + vitest/tsc + curl GitHub API | landed t02+t08+t03 (3 gate fixes), runner pin ubuntu-24.04
+T-99d2 | tsc+vitest+vite/check-bundle-size | axios→native-fetch migration gates + bundle truth

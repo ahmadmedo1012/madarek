@@ -35,7 +35,7 @@ import {
 // ONLY AuthPage edits.
 import { ConsentLine } from '../components/ConsentLine';
 import type { AppRole, MembershipInfo } from '../stores/auth.store';
-import type { AxiosError } from 'axios';
+import type { ApiError } from '../lib/api';
 
 /** Login-error envelope the backend rejects with (lib/errors.ts):
  *  `{ error: { code, message } }` — the message is authored Arabic. */
@@ -50,12 +50,12 @@ type LoginErrorBody = { error?: { code?: string; message?: string } };
  *  قليلاً ثم أعد المحاولة»). Ordered FIRST: the lockout branch wins
  *  before the generic authErrorView path (r157 F5 finding 3). */
 function isRateLimitError(error: unknown): boolean {
-  const ax = error as AxiosError<LoginErrorBody> | null;
+  const ax = error as ApiError<LoginErrorBody> | null;
   return ax?.response?.status === 429 || ax?.response?.data?.error?.code === 'TOO_MANY_REQUESTS';
 }
 
 function rateLimitMessage(error: unknown): string {
-  const ax = error as AxiosError<LoginErrorBody> | null;
+  const ax = error as ApiError<LoginErrorBody> | null;
   const serverMessage = ax?.response?.data?.error?.message;
   return serverMessage ?? 'محاولات دخول كثيرة — انتظر قليلاً ثم أعد المحاولة.';
 }
