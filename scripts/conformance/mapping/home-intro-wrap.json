@@ -5117,5 +5117,2159 @@
       "note": "R338 T-03e — alternate window-head recording of an explicitly-bound canonical family (the walk anchors the same heron DOM at a different head at other bps). Structural spec-side detection: the head-variant rows never enter heuristic pairing; real cells stay bound at their canonical heads and fully measured.",
       "reason": "duplicate window-head residue: this recording is the same tween/roll scaffold (parked roll copy, loop-duplicate crawl track, 0x0 tween box, SVG defs plumbing) that the canonical family binds explicitly — the head variant must not glue by ordinal; excused with the written noCounterpart reason, counted, never silent"
     }
+  ],
+  "plumbing": [
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side svg defs/mask/filter scaffolding under the crawl/label marks; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side svg defs/mask/filter scaffolding under the crawl/label marks; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side svg defs/mask/filter scaffolding under the crawl/label marks; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side svg defs/mask/filter scaffolding under the crawl/label marks; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[8] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[9] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[8] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[9] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[5] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[6] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[7] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[8] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[9] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side media-strip roll/loop duplicate window (parked copy of the bound media cell); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[4] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[10]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[8]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[2] > div[9]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[3] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[3] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[4] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[8]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[2] > div[9]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[2] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[3] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[4] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[4] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[4] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[4] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[3] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[2] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[4] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[4] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[2] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[3] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[4] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[2] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[4] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[4] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[8]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[9]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side split-text per-char/word tween scaffold window (depth-6 truncation residue) below the h2 line containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[4] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[5] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[6] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[7] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[8] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[8] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[9] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[9] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side svg defs/mask/filter scaffolding under the crawl/label marks; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side svg defs/mask/filter scaffolding under the crawl/label marks; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[5] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[5] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[6] > div[1] > div[1] > div[5] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[8] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[9] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[2] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[3] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[4] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[4] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[7] > div[1] > div[1] > div[4] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[8] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[8] > div[1] > div[1] > div[1] > div[9] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side deep-window tween/roll plumbing residue (word wrappers, parked roll copies, 0x0 tween boxes) below the bound containers; heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side alternate window-head recording of a bound family (the walk anchors the same heron DOM at a different head); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron-side alternate window-head recording of a bound family (the walk anchors the same heron DOM at a different head); heuristically glues to an unrelated our-element (junk pair) — no charSplit container is possible here without breaking the canonical pill/label/crawl bindings; geometry not comparable, skipped and counted"
+    }
   ]
 }
