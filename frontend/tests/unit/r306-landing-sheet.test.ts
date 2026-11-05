@@ -162,15 +162,14 @@ describe('r306 — the drawing sheet ships', () => {
   });
 
   it('the mono bracketed indices carry the drafting voice (Latin, dir=ltr, tabular)', () => {
-    // R337: the count follows the frozen Heron census for the section
-    // (8 accordion rows at r337/usecase); the PIN is the voice — mono,
-    // Latin glyphs, dir=ltr, tabular numerals — and a full ladder of
-    // indices from [01], not a fixed row total.
-    expect(liveTsx).toMatch(/fo-mono[^>]*dir="ltr">\[01\]/);
-    for (const n of ['[02]', '[03]', '[04]', '[05]', '[06]']) {
-      expect(liveTsx).toContain(n);
-    }
-    expect(liveTsx).toMatch(/fo-mono[^>]*dir="ltr">\[\d{2}\][^<]*<\/span>/);
+    // R337: the Heron census for the section is 8 accordion rows; the
+    // rewrite renders the numeral from the row data (ROLE_ROWS.num
+    // 01–08), so the PIN is the voice — mono, Latin glyphs, dir=ltr,
+    // tabular numerals — on the template, plus the full 01–08 ladder
+    // in the data, not a fixed DOM total.
+    expect(liveTsx).toMatch(/fo-mono[^>]*dir="ltr">\[\{active\.num\}\]/);
+    expect(liveTsx).toMatch(/num:\s*'0[1-8]'/);
+    expect(liveTsx).not.toMatch(/num:\s*'0[9]'/);
     expect(live).toMatch(/\.fo-mono\s*\{[^}]*font-variant-numeric:\s*tabular-nums/);
   });
 });
