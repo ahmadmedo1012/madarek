@@ -158,6 +158,106 @@ for p, idx in line_windows.items():
     explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": f"intro.line.{idx}"})
 bound_patterns.update(line_windows.keys())
 
+# ── r338 T-03c: the h2 word census — per-word data-spec bindings ────────────
+# The reference's split-text tween nests every line as
+#   h2 > line-group > line-box > mask-wrapper > word-cell[s] > (char cells)
+# and the census windows (wrap head + true tail after h2[1]) preserve the
+# tail, so the cells classify by their post-h2 chain:
+#   tail div[L] > div[1]                  (full-width, tc none) = line box
+#   tail div[L] > div[1] > div[1]         (full-width, tc none) = mask wrapper
+#   tail div[L] > div[1] > div[1] > div[N](tc none)            = word cell
+#   tail … > div[N] > div[M]              (text-bearing)        = char/text cell
+# Our ScrubReveal renders the same grammar: .st-line (intro.line.N) >
+# .st-line-in (intro.linein.N) > .st-line-mask (intro.linemask.N) >
+# .wr-w word masks (intro.word.N) > .wr-i text boxes (intro.wordin.N).
+# Line boxes/wrappers are full-width geometry boxes → bound with FULL
+# checks; word/char cells are English-vs-Arabic runs (transformed
+# expectations: geometry lives at the line level) → tag+geometry+x-mirror
+# skipped, typography (fs/lh/fw/ls) + color + tc still asserted per word.
+# Ordinals are GLOBAL document order per bp, capped at OUR word count
+# (STATEMENT_TEXT splits into 29 words); the reference's surplus cells
+# stay excused with the h2 split-text residue reason below.
+OUR_WORDS = 29  # len(STATEMENT_TEXT.split(" ")) — Statement.tsx
+
+def h2_tail(p):
+    if "h2[1] > " not in p:
+        return None
+    return p.split("h2[1] > ", 1)[1]
+
+def h2_vr(bp):
+    for e in CENSUS[bp]:
+        if e["p"].endswith("h2[1]"):
+            return e["vr"]
+    return None
+
+word_cells = {}    # path -> intro.word.N   (our .wr-w masks)
+wordin_cells = {}  # path -> intro.wordin.N (our .wr-i text boxes)
+linebox_windows = {}   # path -> intro.linein.N   (our .st-line-in)
+linemask_windows = {}  # path -> intro.linemask.N (our .st-line-mask)
+for bp in BPS:
+    hv = h2_vr(bp) or {"w": 0}
+    word_n = 0
+    wordin_n = 0
+    for e in CENSUS[bp]:
+        p = e["p"]
+        if "h2[1]" not in p or is_bound(p):
+            continue
+        tail = h2_tail(p)
+        if not tail:
+            continue
+        segs = tail.split(" > ")
+        r = e["vr"]
+        # a window recorded by more than one element in ANY bp cannot bind
+        if any(len(v) > 1 for v in [per_bp[b].get(p, []) for b in BPS]):
+            continue
+        tc_none = e.get("tc") in (None, "none")
+        if len(segs) == 2 and segs[1] == "div[1]" and tc_none and r["w"] >= 0.8 * hv["w"]:
+            linebox_windows.setdefault(p, f"intro.linein.{segs[0].strip('div[]')}")
+        elif len(segs) == 2 and tc_none and r["w"] > 0 and r["h"] > 8:
+            # the 390 census: line group > WORD BOX (narrow) > char cells
+            word_n += 1
+            if word_n <= OUR_WORDS:
+                word_cells.setdefault(p, f"intro.word.{word_n}")
+        elif len(segs) == 3 and segs[1] == "div[1]" and segs[2] == "div[1]" and tc_none and r["w"] >= 0.8 * hv["w"]:
+            linemask_windows.setdefault(p, f"intro.linemask.{segs[0].strip('div[]')}")
+        elif len(segs) == 3 and segs[1] == "div[1]" and not tc_none and r["w"] > 0:
+            # the 390 census: line > box > per-char TEXT cells
+            wordin_n += 1
+            if wordin_n <= OUR_WORDS:
+                wordin_cells.setdefault(p, f"intro.wordin.{wordin_n}")
+        elif len(segs) == 4 and segs[1] == "div[1]" and segs[2] == "div[1]" and r["w"] > 0 and r["h"] > 8:
+            if tc_none:
+                word_n += 1
+                if word_n <= OUR_WORDS:
+                    word_cells.setdefault(p, f"intro.word.{word_n}")
+            else:
+                wordin_n += 1
+                if wordin_n <= OUR_WORDS:
+                    wordin_cells.setdefault(p, f"intro.wordin.{wordin_n}")
+        elif len(segs) == 5 and e.get("tc") not in (None, "none") and r["w"] > 0:
+            wordin_n += 1
+            if wordin_n <= OUR_WORDS:
+                wordin_cells.setdefault(p, f"intro.wordin.{wordin_n}")
+
+for p, k in linebox_windows.items():
+    # geometry stays asserted once, at the line-group pairs (intro.line.N) —
+    # the box/wrapper are the same rectangle measured thrice; de-duplicated
+    # (tag/tc/type/color still asserted per wrapper).
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry", "x-mirror"]})
+for p, k in linemask_windows.items():
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry", "x-mirror"]})
+for p, k in word_cells.items():
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["tag", "geometry", "x-mirror"]})
+for p, k in wordin_cells.items():
+    # tc skipped: the same window string is recorded at the desktop bps by
+    # the per-char boxes (tc none — different tween state, same lineage);
+    # typography + color still asserted per cell.
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["tag", "tc", "geometry", "x-mirror"]})
+bound_patterns.update(linebox_windows.keys())
+bound_patterns.update(linemask_windows.keys())
+bound_patterns.update(word_cells.keys())
+bound_patterns.update(wordin_cells.keys())
+
 # ── the crawl cells: unique windows under the crawl track ──────────────────
 # The 1920/1440/1024/768 censuses record 8 cells + a 0-width 9th; the
 # cell windows are 'home-intro-wrap > div[3] > div[2] > div[2] > div[1] >

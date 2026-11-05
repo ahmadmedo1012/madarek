@@ -145,6 +145,14 @@
   display: block;
 }
 
+/* R338 T-03c: the reference's line nest — line box + mask wrapper, one
+ * full-width block per level (the split-text tween's own scaffolding,
+ * now real counterparts carrying data-spec). */
+.st-line-in,
+.st-line-mask {
+  display: block;
+}
+
 /* ═══ the pill link ═══ */
 .st-pill {
   display: inline-flex;
