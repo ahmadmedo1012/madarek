@@ -3,16 +3,17 @@ Legend: `[ ]` todo · `[~]` running · `[x]` done (result) · `[!]` blocked (rea
 Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --fast + pull --rebase between each), raise ratchet to the measured value, push, report CI of the previous wave's merges. Split rule: a task that overruns its box twice is split in two and re-queued — never dropped, never excuse-done.
 
 ## WAVE 1 (launched)
-- [~] T-00 A-Verify · recon: CI state of main/aaac8a4c via Actions API, branch map, r337/usecase (e8253686) rebase-clean check, repo layout/package manager, ratchet value, playwright availability. Acc: ≤10-line report. 15m.
-- [~] T-01 A-Medic · fix red main at ROOT cause. Known roots: ubuntu-latest rolled to 26.04 (pin ubuntu-24.04 on Playwright jobs), E2E timing-window flakes (widen window per its own comment, keep assertions), bundle 776.2 vs 776 KB (cut real code), stale source-contract pins (re-pin to live contract). Acc: main green. May land on main. 25m.
-- [~] T-02 Lander + usecase residual · `verify.sh --fast --sections <usecase keys>` on r337/usecase → pull --rebase → push main → raise ratchet (commit ratchet.json). Then T-02b: fix residual 8.6% (word-split animation leaves; lh/geometry tension — fix in OUR css, never re-pin the spec). Acc: main green, usecase ≥95%, ratchet raised. 45m.
-- [~] T-03 intro · Statement.tsx, statement.css, journey.css (+ journey TSX per mapping). 24–31% → ≥90% on 5 bps + dark + webkit. 25m.
-- [~] T-04 problem/pains · Live.tsx, pains.css. → ≥90%. 25m.
-- [~] T-05 why · Why.tsx, WhyScene.tsx, why.css. → ≥90%. 25m.
-- [~] T-06 footer · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
-- [~] T-07 A-Scroll · live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
+- [x] T-00 A-Verify (main RED@37705268 CI+Size; usecase merged; r337/problem 1 unmerged wip 73.6%; no webkit) · recon: CI state of main/aaac8a4c via Actions API, branch map, r337/usecase (e8253686) rebase-clean check, repo layout/package manager, ratchet value, playwright availability. Acc: ≤10-line report. 15m.
+- [~] T-01 A-Medic (wave1 agent died infra; respawned 1b with T-00 facts) · fix red main at ROOT cause. Known roots: ubuntu-latest rolled to 26.04 (pin ubuntu-24.04 on Playwright jobs), E2E timing-window flakes (widen window per its own comment, keep assertions), bundle 776.2 vs 776 KB (cut real code), stale source-contract pins (re-pin to live contract). Acc: main green. May land on main. 25m.
+- [~] T-02 usecase residual + ratchet (merge already happened; residual word-split leaves + lh/geometry →≥95%) · `verify.sh --fast --sections <usecase keys>` on r337/usecase → pull --rebase → push main → raise ratchet (commit ratchet.json). Then T-02b: fix residual 8.6% (word-split animation leaves; lh/geometry tension — fix in OUR css, never re-pin the spec). Acc: main green, usecase ≥95%, ratchet raised. 45m.
+- [~] T-03 intro (71.6% on main →≥90%; base=main; r337/intro merged) · Statement.tsx, statement.css, journey.css (+ journey TSX per mapping). 24–31% → ≥90% on 5 bps + dark + webkit. 25m.
+- [~] T-04 problem/pains (base=r337/problem wip 73.6% →≥90%; files=Chapters.tsx+pains.css) · Live.tsx, pains.css. → ≥90%. 25m.
+- [~] T-05 why (respawned 1b) · Why.tsx, WhyScene.tsx, why.css. → ≥90%. 25m.
+- [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
+- [~] T-07 A-Scroll (respawned 1b) · live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
 ## WAVE 2 (next up)
+- [ ] T-06b footer: measure r338/t06-footer (5bps+dark), iterate ≥90%, regenerate mapping/footer.json data-spec bindings, excuse 0×0 defs/overlay residue.
 - [ ] L-2 Lander · merge wave-1 section branches (each: verify --fast --sections theirs, rebase, push, ratchet); watch CI of T-02's merge; fix or escalate reds.
 - [ ] T-08 platform/plan · files per mapping. → ≥90% 5bps+dark+webkit. 25m.
 - [ ] T-09 map · files per mapping. → ≥90%. 25m.

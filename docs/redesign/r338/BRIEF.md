@@ -38,3 +38,12 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - madarek.onrender.com is NOT reachable from this sandbox. 2× product-UI crops must come from the LOCAL dev server/build of this repo. heronaiapp.com IS reachable.
 - No gh CLI, no yarn/pnpm on PATH. GitHub API via curl + jq: https://api.github.com/repos/ahmadmedo1012/madarek with header "Authorization: Bearer $GITHUB_TOKEN". Never print .git/config or remote URLs (they embed auth).
 - git identity preset in /home/z/madarek; worktrees inherit it.
+
+## ENV ADDENDUM (wave-1b, lead)
+- Shared install RESTARTED by the lead — poll /tmp/madarek-install.done (up to 20 min, sleep 20). Do DEP-FREE work first (read specs/mappings, author TSX+CSS, commit+push). Do NOT self-install; if the log tail shows a hard error, report BLOCKER install.
+- webkit absent from pw cache (install attempted after npm ci). If still absent at measure time → webkit cells = RESIDUAL, documented in excusals.md. Never fake.
+- Section keys (scripts/conformance/mapping/): home-hero-wrap, home-intro-wrap, home-problem-wrap, home-why-wrap, home-platform-wrap, home-map-wrap, home-usecase-wrap, home-cta-wrap, footer (+ _chrome for chrome specs).
+- OWNERSHIP corrections: problem → Chapters.tsx + pains.css (Live.tsx belongs to PLATFORM, T-08); cta → Vision.tsx + cta.css; map → map seat + colleges.css (verify in OWNERSHIP).
+- Conformance: `bash scripts/verify.sh --sections <keys>`; run.mjs `--gate` = check vs ratchet, `--ratchet` = raise floor to current (NEVER lower — current floor 53.7). `verify.sh --fast` = tsc + vitest + bundle gate (~4 min).
+- State: r337/usecase ALREADY MERGED into main. r337/problem holds 1 unmerged wip (73.6%). r337/intro fully merged. main RED at 37705268 (CI + Size gate) — medic is on it; land on main ONLY if your own verify.sh --fast is green, else push branch + report.
+- Dead-agent rule: if /home/z/wt/<task-id> exists from a dead agent, continue from its last commit (git log) — never redo landed work.
