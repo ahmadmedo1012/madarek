@@ -77,3 +77,9 @@
   four capture seats) — worth ~40-60 cells at 390/768.
 - 768 head h2 wraps 3 lines in heron (88px) but 2 in Arabic (transformed
   text) — h-cell fail by line-count, not fixable without copy change.
+
+## T-05f why — residuals (62.8% → 63.5%)
+- desktop 1920/1440/1024 x-mirror:~96 + y:~400 heuristic-ordinal cells + the ~33-cell bundle-diet regression: heuristic pairing of ≥992 stage seats (pts/map/player) still mis-ordinates; needs per-element explicit data-spec bindings in mapping (d=19 → ~60), not excused as impossible.
+- 768 h2 h-fail (our Arabic 3-line vs spec 2-line): re-seat needs a wider .wy-h2w col; parked (risk to x/w cells), Arabic line-height floor rule queued.
+- map-path w/h (SVG path geometry): CSS inset doesn't apply to inner SVG paths — viewBox-scaled geometry only approximates spec rects; y-region corrected via the re-seated .wy-map box.
+- dark 67.4%: geometry drift under flip remains; token flips=217, contrast 0 fails.

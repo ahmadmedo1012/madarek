@@ -523,6 +523,15 @@
   fill: none;
 }
 
+/* the per-row hairline rule — real counterpart of the spec's 694×1
+   row rules (≤991 belt); no ≥992 spec seat, so hidden on desktop. */
+.wy-rrule {
+  position: absolute;
+  display: none;
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
 /* ═══ ≤991 — the COMPACT tablet belt, re-seated to the measured 768
    spec (section 753×1882: ruled 2-col head 202 · full hairline ·
    1680px stage with the centred 1px axis · four 338px alternating
@@ -721,22 +730,78 @@
     inline-size: 10.75rem; block-size: 6.95rem;
   }
 
-  .wy-vic,
-  .wy-spinz,
-  .wy-loadz,
-  .wy-chk,
-  .wy-dots,
-  .wy-pt {
-    display: none;                      /* no ≤991 spec seat */
-  }
-
-  /* row 4 — the dashed route map inside the right-hand card */
+  /* row-4 dashed route map — re-seated to the measured map-box rect
+     (spec paths x425-686 · y1574-1765 → row4-rel 46.2rem × 28.95rem) */
   .wy-map {
-    inset-block-start: 7.17rem;
+    inset-block-start: 28.95rem;
     inset-inline-start: 46.17rem;
     inline-size: 28.46rem;
     block-size: 20.97rem;
   }
+
+  /* the per-row 694×1 rules (x29 · row-rel y371) */
+  .wy-rrule {
+    display: block;
+    inset-inline-start: 3.15rem;
+    inset-block-start: 40.33rem;
+    inline-size: 75.44rem;
+  }
+
+  /* row-3 player bits — the ≤991 icon-cluster seats (spec 13/15/13px
+     icons x298-308 · 6×2 loader · 7×7 dots; row3-rel px ÷ 9.2) */
+  .wy-player2 .wy-vic {
+    inset-inline-start: 32.4rem;
+    inset-block-start: 28.9rem;
+    inline-size: 1.41rem;
+    block-size: 1.41rem;
+  }
+  .wy-player2 .wy-spinz {
+    inset-inline-start: 33.5rem;
+    inset-block-start: 46.8rem;
+    inline-size: 1.63rem;
+    block-size: 1.63rem;
+  }
+  .wy-player2 .wy-chk {
+    inset-inline-start: 32.4rem;
+    inset-block-start: 63.6rem;
+    inline-size: 1.41rem;
+    block-size: 1.52rem;
+  }
+  .wy-player2 .wy-loadz {
+    inset-inline-start: 11.1rem;
+    inset-block-start: 50.5rem;
+    inline-size: 0.65rem;
+    block-size: 0.22rem;
+  }
+  .wy-player2 .wy-dots {
+    inset-inline-start: 75.9rem;
+    inset-block-start: 37.6rem;
+    inline-size: 0.76rem;
+    block-size: 0.76rem;
+  }
+
+  /* row-4 point reveals ×12 — 7×7 seats (spec row4-rel, ÷ 9.2) */
+  .wy-row[data-spec="why.row4"] .wy-pt {
+    --wy-pt-s: 1;
+    inline-size: 0.76rem;
+    block-size: 0.76rem;
+  }
+  .wy-row[data-spec="why.row4"] .wy-pt-in {
+    inline-size: 0.54rem;
+    block-size: 0.54rem;
+  }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="0"]  { inset-inline-start: 46rem;   inset-block-start: 45.9rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="1"]  { inset-inline-start: 46rem;   inset-block-start: 34.6rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="2"]  { inset-inline-start: 51.9rem; inset-block-start: 29rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="3"]  { inset-inline-start: 60.7rem; inset-block-start: 29rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="4"]  { inset-inline-start: 70rem;   inset-block-start: 32.2rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="5"]  { inset-inline-start: 73.9rem; inset-block-start: 36rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="6"]  { inset-inline-start: 59.2rem; inset-block-start: 49.6rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="7"]  { inset-inline-start: 51.9rem; inset-block-start: 40rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="8"]  { inset-inline-start: 57.2rem; inset-block-start: 40rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="9"]  { inset-inline-start: 57.2rem; inset-block-start: 43.4rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="10"] { inset-inline-start: 64.7rem; inset-block-start: 45.9rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="11"] { inset-inline-start: 59rem;   inset-block-start: 37.8rem; }
 }
 
 /* ═══ ≤767 — the mobile deck: the 390 spec's horizontal row carousel
@@ -851,10 +916,67 @@
     inline-size: 10.08rem; block-size: 2.12rem;
   }
 
+  .wy-rrule { display: none; }          /* no 390 per-row rule spec seat */
+
   .wy-map {
-    inset-block-start: 8.6rem;
-    inset-inline-start: 21.3rem;
-    inline-size: 13.13rem;
-    block-size: 9.67rem;
+    inset-block-start: 8.3rem;
+    inset-inline-start: 4.8rem;
+    inline-size: 27rem;
+    block-size: 19.8rem;
   }
+
+  /* row-3 player bits — 390 deck seats (row3-rel px ÷ 9.94) */
+  .wy-player2 .wy-vic {
+    inset-inline-start: 29.1rem;
+    inset-block-start: 16.3rem;
+    inline-size: 1.41rem;
+    block-size: 1.41rem;
+  }
+  .wy-player2 .wy-spinz {
+    inset-inline-start: 30.2rem;
+    inset-block-start: 18.2rem;
+    inline-size: 1.51rem;
+    block-size: 1.61rem;
+  }
+  .wy-player2 .wy-chk {
+    inset-inline-start: 29.1rem;
+    inset-block-start: 20.3rem;
+    inline-size: 1.41rem;
+    block-size: 1.41rem;
+  }
+  .wy-player2 .wy-loadz {
+    inset-inline-start: 8.65rem;
+    inset-block-start: 32.8rem;
+    inline-size: 0.7rem;
+    block-size: 0.2rem;
+  }
+  .wy-player2 .wy-dots {
+    inset-inline-start: 33.5rem;
+    inset-block-start: 40.2rem;
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+  }
+
+  /* row-4 point reveals ×12 — 8×8 seats (row4-rel px ÷ 9.94) */
+  .wy-row[data-spec="why.row4"] .wy-pt {
+    --wy-pt-s: 1;
+    inline-size: 0.8rem;
+    block-size: 0.8rem;
+  }
+  .wy-row[data-spec="why.row4"] .wy-pt-in {
+    inline-size: 0.6rem;
+    block-size: 0.6rem;
+  }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="0"]  { inset-inline-start: 4.8rem;  inset-block-start: 24.4rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="1"]  { inset-inline-start: 4.8rem;  inset-block-start: 13.6rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="2"]  { inset-inline-start: 10.5rem; inset-block-start: 8.3rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="3"]  { inset-inline-start: 19rem;   inset-block-start: 8.3rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="4"]  { inset-inline-start: 28rem;   inset-block-start: 11.3rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="5"]  { inset-inline-start: 31.7rem; inset-block-start: 15rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="6"]  { inset-inline-start: 17.5rem; inset-block-start: 28rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="7"]  { inset-inline-start: 10.5rem; inset-block-start: 18.8rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="8"]  { inset-inline-start: 15.6rem; inset-block-start: 18.8rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="9"]  { inset-inline-start: 15.6rem; inset-block-start: 22rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="10"] { inset-inline-start: 22.8rem; inset-block-start: 24.4rem; }
+  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="11"] { inset-inline-start: 17.4rem; inset-block-start: 16.7rem; }
 }

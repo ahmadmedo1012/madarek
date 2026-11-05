@@ -257,6 +257,9 @@ export function WhyScene() {
                   </div>
                 </div>
 
+                {/* the per-row hairline rule (694×1 @768 spec, rows 1-4) */}
+                <div className="wy-rrule" aria-hidden="true" data-spec="why.rrule" />
+
                 {i === 2 && (
                   /* row 3 — the lecture-player seat (spec's video card) */
                   <div className="wy-player">
@@ -321,7 +324,12 @@ export function WhyScene() {
                   /* row 4 — the dashed route map + point reveals */
                   <>
                     {POINTS.map(([x, y, s, sc], k) => (
-                      <div className="wy-pt" key={k} style={{ ...seat(x, y, s, s), transform: `scale(${sc})` }}>
+                      <div
+                        className="wy-pt"
+                        key={k}
+                        data-pt={k}
+                        style={{ ...seat(x, y, s, s), '--wy-pt-s': sc } as CSSProperties}
+                      >
                         <div className="wy-pt-in">
                           <svg className="wy-pt-svg" viewBox="0 0 3 3" aria-hidden="true">
                             <rect className="wy-pt-rect" x="0" y="0" width="3" height="3" />
