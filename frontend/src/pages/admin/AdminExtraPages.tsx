@@ -22,7 +22,8 @@ import { toast } from '../../lib/toast';
 import { useFaculties, useCurrentInstitutionSlug, useStudentEnrollments, useEnrollmentOfferings, useEnrollStudent, useDropEnrollment, apiErrorMessage } from '../../hooks/useResources';
 import { ConfirmDialog } from '../../components/owner/ConfirmDialog';
 import { BulkImportModal } from '../../components/admin/BulkImportModal';
-import { TablePaginationFooter } from './AdminPages';
+/* T-24: footer moved to the shared leaf (AdminPages cycle severance). */
+import { TablePaginationFooter } from './TablePaginationFooter';
 /* P2.2 dedup: re-pointed off AdminPages' retired byte-identical copy
  * onto the canonical owner StatStripSkeleton (components/owner). */
 import { StatStripSkeleton } from '../../components/owner/StripSkeletons';

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronLeft, ChevronRight, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { Building2, BookOpen, BarChart3, FileText, TrendingUp, ClipboardCheck, AlertTriangle, Search, X, ChevronDown, ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import { Card, Badge, Tabs, UserAvatar, AlertRow, FormField } from '../../components/primitives';
 import { StatStrip, LedgerPanel, LedgerRow } from '../../components/primitives/Ledger';
 /* R304 (workstream 4D): the admin family rides the shell patterns —
@@ -39,7 +39,9 @@ import {
   type FacultyFormInput, type DepartmentFormInput, type OfferingFormInput,
   apiErrorMessage,
 } from '../../hooks/useResources';
-import { pageList } from './AdminGovernancePages';
+/* T-24: pageList + TablePaginationFooter live in their own leaf module
+ * now (was AdminGovernancePages ↔ AdminPages cycle — deadcode baseline). */
+import { TablePaginationFooter, PAPER_UNIT } from './TablePaginationFooter';
 import { api, unwrap } from '../../lib/api';
 import { useInstitutionScope } from '../../stores/auth.store';
 import { withInstitutionScope } from '../../lib/queryClient';
@@ -1077,77 +1079,6 @@ function PaperRow({ p }: { p: AdminPaper }) {
       </td>
       <td data-label="تاريخ الرفع">{formatRelativeArShort(p.uploadedAt)}</td>
     </tr>
-  );
-}
-
-/** countAr forms for the papers register — the footer's birth noun,
- *  kept as the unit default (r157 / 6A9 #2). */
-const PAPER_UNIT: [string, string, string, string] = ['ورقة واحدة', 'ورقتان', 'أوراق', 'ورقة'];
-
-/** The pagination footer convention (OwnerUsersPage): bounded windowed
- *  page list inside .table-wrap, RTL-correct chevrons.
- *
- *  r157 (6A9 #2): the counted-noun unit is a prop now — the countAr
- *  [one, two, few, many] forms every call site already uses — so the
- *  footer reads its roster's noun (papers «ورقة», courses «مقرّر»,
- *  students «طالب») instead of the hardcoded «ورقة» it shipped with
- *  back when the papers register was its only consumer. Exported: the
- *  students roster (AdminExtraPages) joined the family this round. */
-/* (r299's local StatStripSkeleton copy lived here; P2.2 retired the
- *  byte-identical twin for components/owner/StripSkeletons.tsx — the
- *  canonical import above keeps both call sites + AdminExtraPages.) */
-export function TablePaginationFooter({
-  page, totalPages, total, unit = PAPER_UNIT, onPage,
-}: {
-  page: number;
-  totalPages: number;
-  total: number;
-  /** countAr forms — [one, two, few (3–10), many (11+)]. Defaults to
-   *  the papers noun (the register this footer was born on). */
-  unit?: [string, string, string, string];
-  onPage: (p: number) => void;
-}) {
-  return (
-    <div className="table-pagination">
-      <span>
-        الصفحة {page} من {totalPages} · {countAr(total, unit)}
-      </span>
-      <div className="table-pagination-actions">
-        <button
-          type="button"
-          onClick={() => onPage(Math.max(1, page - 1))}
-          disabled={page <= 1}
-          aria-label="الصفحة السابقة"
-        >
-          <Icon icon={ChevronRight} size={14} />
-          السابق
-        </button>
-        {pageList(page, totalPages).map((item, i) =>
-          item === 'gap' ? (
-            <span key={`gap-${i}`} aria-hidden style={{ color: 'var(--text-muted)' }}>…</span>
-          ) : (
-            <button
-              key={item}
-              type="button"
-              aria-current={item === page ? 'page' : undefined}
-              aria-label={`الصفحة ${item}`}
-              onClick={() => onPage(item)}
-            >
-              {item}
-            </button>
-          ),
-        )}
-        <button
-          type="button"
-          onClick={() => onPage(Math.min(totalPages, page + 1))}
-          disabled={page >= totalPages}
-          aria-label="الصفحة التالية"
-        >
-          التالي
-          <Icon icon={ChevronLeft} size={14} />
-        </button>
-      </div>
-    </div>
   );
 }
 
