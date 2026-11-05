@@ -1,207 +1,227 @@
-# AGENTS.md — Madarek repo guide (for humans and AI agents)
+# AGENTS.md — دليل وكلاء الذكاء الاصطناعي العاملين على مدارك
 
-Madarek (مدارك) is an independent, Arabic-first smart-learning platform: one service —
-Express + TypeScript + Prisma backend that also serves the built React 18 + Vite SPA —
-deployed to Render with Neon PostgreSQL. The UI is fully Arabic RTL. **Code wins over
-docs**: on any conflict, fix the doc in the same change. Platform docs (docs/01–16,
-docs/modules/) are Arabic; generated references (docs/*-REFERENCE.md) are English.
+هذا الملف عقد العمل لوكلاء الذكاء الاصطناعي (وكذلك المرجع السريع للمطورين).
+يجعل التعديل الآمن على مدارك قابلًا للتنفيذ دون تخمين: كل معلومة لها مصدر
+حقيقة واحد، وكل تغيير له خطوات تحقق إلزامية.
 
-## 1. Repo map (one line per directory)
+## 1. ما هذا المشروع؟
 
-| path | what lives there |
+**مدارك** — منصّة تعليم ذكي **مستقلّة** (عربية-أولًا، بلا انتماء مؤسسي): تطبيق
+واحد يضم خلفية Express + TypeScript + Prisma وواجهة React 18 + Vite، يُشحَن
+كخدمة واحدة على Render مع قاعدة بيانات Neon PostgreSQL. عربية RTL بالكامل.
+نظام التصميم موثق بالكامل في `DESIGN.md` ومقيّد ببوابات تحقق آلية.
+
+> لا يوجد اعتماد أو تبني رسمي من أي جهة تعليمية. بيانات جامعة الزاوية
+> (الكلّيات/الحقائق/المزامنة) هي بيانات **مؤسّسة العرض المرجعية** لوضع
+> الطيار الحالي. خطة تحوّل المنصّة لخدمة مؤسسات متعددة عبر عضوية لكل
+> مؤسّسة موثّقة في `docs/architecture/multi-institution/`.
+
+## 2. مصادر الحقيقة (لا تُخمّن — اقرأ المصدر)
+
+| المعلومة | المصدر الوحيد الموثوق |
 |---|---|
-| `frontend/` | `@madarek/frontend` — React 18 + Vite SPA: `src/App.tsx` shell, `src/pages/` (incl. `LandingPage.tsx`), `src/components/landing/sections/*.tsx` (landing seats), `src/styles/` (token + layer + feature CSS), `stores/` (zustand), `tests/` (vitest + Playwright e2e/audit/r305) |
-| `backend/` | Express + TS + Prisma workspace: `src/app.ts`, `src/http/routes/*.ts` (API), `src/modules/*`, `src/lib/` (permissions, governance, storage), `prisma/schema.prisma` + `migrations/` + `seed.ts` |
-| `apps/mobile/` | Expo ~58 (React Native) app with its own lockfile — see `apps/mobile/README.md` |
-| `scripts/` | `verify.sh` (the ONE gate set) + gates: `check-bundle-size.mjs`, `check-{icons,colors,raw-css,motion-tokens,csp-hash}.sh`, `tokens/build.mjs`, `verify-parity-export.mjs`, `spec/extract-heron.mjs`, round dirs (`r314…r324`), `gates/` |
-| `scripts/conformance/` | visual conformance instrument: `run.mjs`, `scroll.mjs`, `interact.mjs`, `mapping/*.json` (section→DOM binding), `ratchet.json` (monotonic floor), `results.json` |
-| `shared/` | `design-tokens.json` (source of generated tokens), `brand/`, `testAccounts.ts` |
-| `specs/` | SpeckKit feature specs (001–012); live status is `docs/SPECS-REFERENCE.md`, **not** `specs/*/spec.md` |
-| `tools/` | `boot-pg.sh` (local postgres), `daemon.js` |
-| `docs/` | Arabic platform docs 01–16 + `modules/` + `architecture/` + `redesign/` (round history r305…r338; `redesign/r335/heron-spec/*.json` = frozen reference; `redesign/r338/` = current program: BRIEF/HANDOFF/QUEUE/excusals/arsenal) |
-| `.github/workflows/` | `ci.yml` (full gate matrix), `size-gate.yml`, `mobile.yml`, `deploy-smoke.yml`, `keep-warm.yml`, `build-ios-sidestore.yml`, `mobile-builds-ledger.yml` — runners pinned to `ubuntu-24.04` |
+| المسارات والـendpoints | `backend/src/app.ts` + `backend/src/http/routes/*.ts` — الجدول الكامل المولّد: `docs/API-REFERENCE.md` |
+| النماذج والعلاقات | `backend/prisma/schema.prisma` — الشرح: `docs/DATABASE-REFERENCE.md` |
+| متغيرات البيئة وسلوكها | `backend/src/env.ts` — الجدول: `docs/06-configuration.md` |
+| حالة الميزات المنفَّذة | الشيفرة نفسها + `docs/02-features.md` |
+| نظام التصميم والسمات | `frontend/src/styles/tokens.css` (يفوز عند التعارض) + `DESIGN.md` |
+| حالة الميزات الكبرى (specs) | `docs/SPECS-REFERENCE.md` (وليس ملفات `specs/*/spec.md`) |
+| أوامر التشغيل والاختبار | `package.json` (الجذر) + `backend/package.json` + `frontend/package.json` |
+| النشر | `render.yaml` + `.github/workflows/ci.yml` — الشرح: `docs/12-deployment.md` |
 
-Sources of truth (don't guess, read): endpoints → `backend/src/app.ts` + `http/routes/`
-(full table: `docs/API-REFERENCE.md`); models → `backend/prisma/schema.prisma`
-(`docs/DATABASE-REFERENCE.md`); env vars → `backend/src/env.ts` (`docs/06-configuration.md`);
-design tokens → `frontend/src/styles/tokens.css` (wins over `DESIGN.md`) +
-`shared/design-tokens.json`; commands → the three `package.json` files; deploy →
-`render.yaml` + `.github/workflows/ci.yml`.
+> قاعدة عامة: عند أي تعارض بين وثيقة والشيفرة، **الشيفرة تفوز** — صحّح
+> الوثيقة في نفس التغيير.
 
-## 2. Commands
+## 3. خريطة الوحدات
 
-Package manager is **npm only** (no pnpm/yarn). Node `>=20 <25`. Workspaces: `backend`, `frontend`.
-
-```bash
-npm install                    # both workspaces (root)
-npm run dev                    # backend on :4000 (tsx watch)
-npm run dev:web                # frontend vite on :5173, /api proxied → :4000
-npm run dev:full               # scripts/r319/dev-full.mjs (both + local pg)
-npm run lint                   # eslint frontend/src backend/src — 0 errors required
-npm run typecheck              # tsc both sides + tests — needs no database
-npm test                       # vitest both sides, no DB (≈3051 tests on main — measure yours)
-# single test file / case:
-cd frontend && TZ=UTC npx vitest run src/lib/foo.test.ts [-t "case name"]
-cd backend && npx vitest run src/modules/bar.test.ts
-npm run build -w frontend      # tsc -b && vite build — needs no DB
-# NEVER run root `npm run build` without a live DATABASE_URL (it migrates + seeds)
-cd frontend && npx playwright test tests/e2e/<file>.ts   # single e2e spec
-```
-
-Verification — the ONE local gate set (run before every push):
-
-```bash
-bash scripts/verify.sh                       # full set = what CI runs (~8 min)
-bash scripts/verify.sh --fast                # tsc + vitest + bundle gate (~4 min)
-bash scripts/verify.sh --sections home-why-wrap   # scope conformance by section keys
-bash scripts/verify.sh --specs r305-shell-heron   # scope e2e by spec file stem
-```
-
-Conformance instrument (`scripts/conformance/run.mjs`) — always point it at YOUR OWN dev
-server, never a shared one:
-
-```bash
-cd frontend && npx vite --port 5320 --strictPort &        # your own port
-node scripts/conformance/run.mjs --url http://localhost:5320 \
-     --sections home-why-wrap,footer --bps 1440,390        # default: all 9 sections × 5 bps
-```
-
-Flags: `--url <base>` (default `:5173`) · `--sections <keys>` · `--bps <list>` ·
-`--gate` (check vs `ratchet.json`) · `--ratchet` (raise floor to current — NEVER lower) ·
-`--dark` (re-assert the same pairs under the site's own `html[data-theme=dark]` flip +
-token-flip census + WCAG contrast ≥3.0) · `--scroll` / `--interact` (scroll-feel curves,
-hover/focus-visible deltas). Section keys: `home-{hero,intro,problem,why,platform,map,
-usecase,cta}-wrap`, `footer` (+ `_chrome` for chrome specs).
-
-CSS: `npm run lint:css -w frontend` (stylelint 16), `npm run gate:css-coverage -w frontend`.
-
-## 3. Gates & ceilings
-
-CI (`ci.yml` jobs: lint, typecheck, build, test-frontend, test-backend, db-integration,
-e2e, ios-webkit, design-gates, conform-gate, surface-drift; plus `size-gate.yml`) mirrors
-these local gates — all runners pinned `ubuntu-24.04`:
-
-- **Bundle** — `scripts/check-bundle-size.mjs`, gz, `dist/assets/*.js` ONLY (CSS is not in
-  the gate): **total ≤ 777 KB HARD** (r337 documented raise), entry ≤ 92, pdf ≤ 110. It
-  sums ALL js chunks **including async chunks** — lazy-splitting only moves weight; the
-  honest lever is real code cuts (e.g. the axios→native-fetch diet, −17.9 KB).
-- **Conformance ratchet** — `scripts/conformance/ratchet.json` is monotonic: `--gate`
-  checks, `--ratchet` raises, never lower. Section target = ≥90% on ALL 5 breakpoints +
-  dark (+ WebKit where available). No-counterpart = FAIL. Skipped plumbing (defs/mask/
-  filter scaffolding) must be declared in the mapping's `plumbing: [{section, heron,
-  skip, reason}]` — skipped cells are counted, never silent.
-- **Design gates** — `check-icons.sh` (Lucide icons only, via `Icon.tsx`),
-  `check-colors.sh --strict` (no raw hex/rgb), `check-raw-css.sh --strict` (no raw
-  type/radius/spacing), `check-motion-tokens.sh`, `check-csp-hash.sh` (update the CSP
-  hash in `backend/src/app.ts` whenever `frontend/index.html` changes),
-  `tokens/build.mjs --check` (generated-token drift), `verify-parity-export.mjs`.
-- **E2E / contract tests are LAW** (e.g. r162 focus-visible, r168 aria-labels, r177,
-  r307 funnel 5+5 counts, r320 `/contact`, r321 legal-row nine links, landing-funnel six
-  surfaces): reconcile the markup, never the tests.
-- Test counts and conformance numbers are measured from the current tree — never copied
-  from a previous round.
-
-## 4. Ownership (r338 program)
-
-Binding: `docs/redesign/r337/OWNERSHIP.md` + `scripts/conformance/mapping/*.json`.
-Own ONLY the files your task names; everything else is a merge block. The seats moved in
-P2-0 — the R338 rulings below supersede stale r337 rows:
-
-| section key | component(s) | CSS sheet(s) |
+| الوحدة | الملفات المفتاحية | وثيقة التفصيل |
 |---|---|---|
-| `home-hero-wrap` | `sections/Hero.tsx` (+ `landing/hero/*`) | `hero.css` + `hero-mechanics.css` |
-| `home-intro-wrap` | `sections/Statement.tsx` | `statement.css` |
-| `home-problem-wrap` | `sections/Chapters.tsx` | `pains.css` |
-| `home-why-wrap` | `sections/Why.tsx` + `WhyScene.tsx` | `why.css` |
-| `home-platform-wrap` | `sections/Product.tsx` + `sections/Live.tsx` (R338 ruling) | `platform.css` |
-| `home-map-wrap` | `landing/journey/JourneyScene.tsx` + `journey/*.tsx` (R338 ruling) | `journey.css` |
-| `home-usecase-wrap` | `sections/Roles.tsx` | `roles.css` |
-| `home-cta-wrap` | `sections/Vision.tsx` | `cta.css` + `colleges.css` (R338: colleges.css = cta) |
-| `footer` | `sections/Footer.tsx` | `footer.css` |
-| `_chrome` | `frontend/src/lib/motion/*` | `preloader.css`, `nav.css`, `consent-edge.css` |
+| الخلفية — المصادقة والحاكمية | `backend/src/modules/auth/`، `http/routes/auth.routes.ts`، `owner.routes.ts`، `lib/permissions.ts`، `lib/governance.ts` | `docs/modules/platform.md` |
+| الخلفية — قطاع الطالب والتعلم | `http/routes/learning.routes.ts` (أكبر ملف)، `student-dashboard.routes.ts`، `training.routes.ts` | `docs/modules/student.md` |
+| الخلفية — قطاع الأستاذ | `http/routes/teacher*.routes.ts`، `curriculum.routes.ts`، `submissions.routes.ts`، `offerings.routes.ts` | `docs/modules/teacher.md` |
+| الخلفية — المسجل العام والمزامنة | `http/routes/users.routes.ts`، `courses.routes.ts`، `catalog.routes.ts`، `admin-extras.routes.ts`، `sync.routes.ts` | `docs/modules/admin.md` |
+| الخلفية — قطاع الجودة | 6 مسارات `/quality/*` داخل `learning.routes.ts` | `docs/modules/quality.md` |
+| الواجهة — الهيكل والمخازن | `frontend/src/App.tsx`، `components/layout/AppShell.tsx`، `stores/`، `lib/api.ts`، `hooks/useResources.ts` | `docs/03-architecture.md` |
+| الواجهة — نظام التصميم | `frontend/src/styles/tokens.css`، `motion.css`، `fonts.css` | `docs/modules/platform.md` + `DESIGN.md` |
+| قاعدة البيانات | `backend/prisma/schema.prisma`، `migrations/`، `seed.ts`، `scripts/migrate-deploy.mjs` | `docs/07-database.md` |
 
-Other zones: inner pages (`pages/{auth,about,help,app}*`, `styles/auth.css`…) have a
-dedicated owner; `apps/mobile/**` + mobile workflows belong to the mobile track;
-`scripts/conformance/run.mjs` is the **lead-controlled shared instrument** — section
-agents never edit it; `.github/workflows`, ceilings and baselines are lead-only.
-Cross-dependency: problem's copy-driven line-counts live in platform-owned `Live.tsx`.
-Current round state (section scores, landings, rulings): `docs/redesign/r338/HANDOFF.md`.
+## 4. الأوامر الصحيحة (من ملفات المشروع الفعلية)
 
-## 5. Adding a section / page / mobile screen
+```bash
+npm install                  # تثبيت (workspaces: backend + frontend)
+npm run lint                 # ESLint على frontend/src + backend/src (0 أخطاء إلزامية؛ 15 تحذير exhaustive-deps مسموح موثق — r307)
+npm run typecheck            # tsc للشيفرة والاختبارات في الجهتين — لا يحتاج قاعدة بيانات
+npm test                     # vitest للجهتين — لا يحتاج قاعدة بيانات (2460 واجهة + 1783 خلفية — r307) — والأرقام تُقاس من الشجرة الحاليّة لا تُنسخ من الجولات السابقة
+npm run test:integration    # حزام تكامل DB الاختياري (12 ملفًا / 116 اختبارًا — r186) — يحتاج DATABASE_URL محلية تجريبية (الحراس يرفض غيرها)
+npm run dev                  # خلفية على :4000 (tsx watch)
+npm run dev:web              # واجهة على :5173 مع proxy ‏/api → :4000
+npm run build -w frontend    # بناء الواجهة فقط (لا يحتاج DB)
+npm run build -w backend     # بناء الخلفية فقط (prisma generate + tsc)
+npm run db:migrate           # prisma migrate dev محليًا — يحتاج DATABASE_URL حية
+npm run db:seed              # بذر البيانات التجريبية — يحتاج DATABASE_URL حية
+node scripts/verify-parity-export.mjs   # بوابة التكافؤ 191/191 (بلا اعتماديات؛ r305: أزواج التصدير أُعيد بناؤها والأقفال أُعيد تثبيتها على أساس Heron — كانت البوابة حمراء 76/190 عند قاعدة r305)
+bash scripts/check-icons.sh             # انضباط الأيقونات (Lucide فقط)
+bash scripts/check-motion-tokens.sh     # منع قيم الحركة الخام
+bash scripts/check-csp-hash.sh          # مطابقة بصمات CSP بعد أي تعديل على frontend/index.html
+npm run validate:colleges               # هوية 25 كلية (تباين AA، أصول، أيقونات)
+npm run db:provision-owner              # تجهيز مالك بهوية المشغّل (r187 — عقد مُثبَّت في db-ops.test.ts)
+```
 
-- **Landing section**: create `frontend/src/components/landing/sections/X.tsx` +
-  `frontend/src/styles/landing/x.css` (component imports its own sheet — see
-  `LandingPage.tsx` header note); add the seat + import in `pages/LandingPage.tsx`; add
-  `scripts/conformance/mapping/<key>.json` (ourSection/seat ids must match the DOM);
-  measure with `run.mjs`; total bundle must stay ≤777 KB.
-- **App page**: `frontend/src/pages/X.tsx` + route in `App.tsx` — mind entry-chunk weight
-  (`App.tsx`, `GlobalSearch` are eager; prefer lazy routes); light+dark themes, RTL and
-  a11y are contract, and `check-csp-hash.sh` must stay green.
-- **Mobile screen**: `apps/mobile/app/**` (Expo ~58, expo-router, own lockfile) — start
-  from `apps/mobile/README.md`; builds go through the `mobile.yml` / EAS workflows.
-- **Backend route**: `backend/src/http/routes/*.ts` following the envelope + error-code
-  conventions (`BACKEND.md`, `docs/08-api-reference.md`); keep decision logic in pure
-  DB-free functions (tests mock `../../src/db.js`); schema change = edit
-  `schema.prisma`, `npm run db:migrate` locally, attach the generated migration.
+ملاحظات إلزامية:
 
-## 6. CSS layer & token conventions
+- `npm run build` (الجذر) يشغّل `db:deploy` ثم `db:seed` في النهاية —
+  **لا تشغّله بدون `DATABASE_URL` حية**؛ استخدم بناء كل workspace منفصلًا
+  في CI/محليًا بلا DB. البذرة (r183) في بيئة بناء Render: **إقلاع أولي
+  تلقائي** على قاعدة فارغة (لا مستخدمين) فقط — **القاعدة المؤسَّسة
+  تُتخطى بالكامل** (صفر كتابات: لا تصفير كلمات ولا لمس بيانات)، وإعادة
+  ضبط حسابات العرض الواعية فعل مشغِّل صريح: `MADAREK_SEED_FORCE=1`
+  (`npm run db:seed:force`) — التفصيل في `docs/12-deployment.md`.
+- الاختبارات تحقن `NODE_ENV=test` تلقائيًا فتتجنب طلب أسرار حقيقية.
+- مدير الحزم الرسمي **npm** (لا pnpm في هذا المستودع).
 
-- Order: `tokens.css` (+ `tokens.generated.css`, generated from
-  `shared/design-tokens.json` by `scripts/tokens/build.mjs` — never hand-edit) →
-  `motion.css` (durations/easings) → `layers.css` → `base/layout/patterns` → per-feature
-  sheets → per-section landing sheets in `styles/landing/`.
-- No raw colors, raw type/radius/spacing, or raw motion values anywhere outside the
-  token sheets (CI design gates reject them). `tokens.css` wins over `DESIGN.md`;
-  document token values as loaded from the sheet.
-- Icons: Lucide only, imported through `Icon.tsx`.
-- Arabic-first rules: letter-spacing 0, RTL mirrors are transformed expectations, Arabic
-  line-height floor pattern `max(heronLh, 1.35×fs)`.
-- Measured color deltas vs the frozen spec: define a **section-scoped** CSS var in the
-  section's own sheet set to the MEASURED value (e.g. platform CTA orange
-  `rgb(250,54,0)` in `platform.css`) — never mutate global tokens ad hoc (global token
-  unification is a dedicated task).
-- `npm run lint:css -w frontend` (stylelint 16) must pass.
+## 5. قيود معمارية لا تُتجاوز
 
-## 7. Never-do list
+1. **خدمة واحدة**: الخلفية تخدم SPA المبني من `frontend/dist` في الإنتاج
+   (`env.serveStatic`). لا تُدخل خلفية منفصلة أو CDN للواجهة دون قرار صريح.
+2. **اختبارات بلا DB**: كل وحدة خلفية تحتفظ بدوال قرار نقية تُختبر مباشرة؛
+   استخدم `vi.mock('../../src/db.js')` عند الضرورة. لا تُدخل قاعدة بيانات
+   اختبارية ضمن `npm test`.
+3. **سياسة اللغة D17-3**: أكواد الأخطاء إنجليزية UPPER_SNAKE، والرسائل
+   الموجهة للمستخدم عربية. النصوص الواجهية عربية صريحة (لا i18n بعد —
+   انظر `docs/16-decisions-and-limitations.md`).
+4. **نظام التصميم**: لا قيم حركة/ألوان خام خارج `tokens.css`/`motion.css`
+   (بوابات CI ترفض). الأيقونات Lucide فقط عبر `Icon.tsx`. عند تعديل
+   `frontend/index.html` الداخلي — حدّث بصمة CSP في `backend/src/app.ts`.
+   **وسائط r307**: المقاعد النقطية المرخّصة ثلاث فقط (DESIGN.md §6a-6c):
+   صور جامعات بتراخيص مفتوحة (`MediaFrame` + `manifest.json` بمصدر كل
+   ملف وترخيصه — أي ملف جديد يُسجَّل فيه)، فيديوهات القنوات الرسمية
+   عبر واجهة النقر-للتحميل فقط (`VideoCard`)، ولقطات منتجات حقيقية من
+   بيئة العرض (`ProductFrame`). ممنوع: صور مخزون عامة، إعادة استضافة
+   بلا ترخيص، أو مصغّرات طرف ثالث.
+   الكانون البصري الحالي (r306) = **هيرون فقط** على كل سطح: ورق
+   `#F6F8FA`، حبر `#282828`، إشارة برتقالية واحدة `#FA3600` (نصّها
+   الآمن `#C72E00`، وتسميات الحشوات `--warm-ink` — الأبيض محظور على
+   البرتقالي)، خطوط شعرية `--grid-line`، معاملات مونو `[NN]`، زوايا شبه
+   مربّعة (2/4/6/8/12/16/20 + pill)، وسلم حركة 80/200/400/500/650/900
+   على `cubic-bezier(.23,1,.32,1)`. صفحة الهبوط = «لوحة مدارك» (r306):
+   رسم SVG تقني مسطّح + مصفوفات شعرية — عالم 3D و`--poster-*` و«ذروة
+   النحاس» كلها مُحالة للتقاعد (بوابة التكافؤ تحرس الإملاءات). الذهبي
+   `--gold` للإنجازات فقط — ليس لونًا ثانيًا. القرار الكامل والأدلة:
+   `docs/redesign/r306-heron-exclusivity-spec.md` + مرجع القياس
+   `docs/redesign/r305-heron-reference-spec.md` + الكانون الموثّق
+   `DESIGN.md`.
+   **تحديث R313 (قانون التكافؤ — بأمر المالك):** الكانون البصري الحالي هو
+   **منظومة تكافؤ Heron الكاملة**: تطابق بصري وسلوكي مع heronaiapp.com، وهو
+   يعلو على كل توجية سابق يخالفه في المظهر — سلّم الحواف 2/4/6/8/12/16/20،
+   ظلال الارتفاعات، منع اختطاف التمرير، وسلّم الخط الثابت بالبكسل، والورق
+   `#F6F8FA` — كلها استُبدلت: الحواف 0 (مع `--r-full` للدوائر)، بلا ظلال
+   زخرفية، التمرير عبر Lenis على صفحات الزوّار فقط، الجذر مرن
+   `0.5787037037vw` بأرضية 13px للعربية، والورق `#F6F6EE`. المرجع الكامل:
+   قسم «R313 — Heron parity canon (owner override)» في `DESIGN.md` + دفتر
+   التجاوزات `docs/archive/redesign/r313/OVERRIDE-LEDGER.md`. العقود الصلبة لا يمسّها
+   التجاوز: الوصول (a11y)، النسخ الصادقة، بصمة CSP، قوابس القمع 5+5، وحظر
+   الأصول الاحتكارية (BT Grotesk محظور — تبقى Alexandria/IBM Plex)؛ وعند
+   أي تعارض: الشيفرة تفوز ويُصحَّح المستند في نفس التغيير (§2).
+5. **الحاكمية**: تعديلات الأدوار/الحالة تمر عبر حرّاس `lib/governance.ts`
+   (قفل آخر مالك نشط بـ`SELECT … FOR UPDATE` + صف `AuditLog` بنفس المعاملة).
+6. **رفع PDF عبر تجريد التخزين**: الرفع منفَّذ الآن — جسم خام
+   `application/pdf` فقط (بلا multipart عبر `express.raw`) خلف
+   `backend/src/lib/storage.ts`، ببصمات `%PDF-` وسقف 20MB ومفاتيح cuid.
+   السائق المحلي (الافتراضي) للتطوير؛ سائق `s3` (SigV4 يدوي) أو سائق
+   `postgres` (r175 — صفوف BYTEA في `BinaryObject` عبر ترحيل
+   `20261016190858`) للدوام في الإنتاج: خطة Render المجانية بلا أقراص
+   دائمة تعمل الآن بسائق `postgres` (وضع طيار 5–10 طلبة، بلا متغيرات
+   إضافية)، والتوسّع يستوجب `STORAGE_DRIVER=s3` مع `S3_*` (يُسجَّل تحذير
+   إقلاع واحد صريح عند اختيار local في الإنتاج). كل ملف يُقدَّم عبر
+   مسارات مصرَّدة فقط (`files.routes.ts` ببوابات ملكية/تسجيل/إشراف)، ولا
+   يُفتح للعامة أبدًا.
+7. **لا إعادة هيكلة تجميلية**: لا تغيير أسماء واجهات/دوال/مسارات/نماذج
+   دون مبرر وظيفي — أسماء المسارات والحقول جزء من عقد الواجهات.
 
-- Never raise a ceiling (777 / 92 / 110), re-pin the Heron spec baseline
-  (`scripts/spec/extract-heron.mjs`), weaken an assertion or test, lower the ratchet, or
-  add `continue-on-error`.
-- Never paste Heron (heronaiapp.com) source, text, images or fonts — reproduce MEASURED
-  parameters (geometry, type, colour, durations, easings, triggers) in our own code.
-  Fonts are Alexandria/IBM Plex (BT Grotesk is banned).
-- Never commit secrets (`GITHUB_TOKEN`, `EXPO_TOKEN`, `DATABASE_URL`…), never print
-  `.git/config` or remote URLs; `.env` stays ignored.
-- Never touch other agents' exclusive files, gates, baselines or `.github/workflows`
-  unless your task says so. Never force-push.
-- Never run root `npm run build`, `db:seed` or migrations against a production DB; seed
-  wipes demo content and refuses to run at `NODE_ENV=production`.
-- Never report conformance/test numbers you did not measure yourself; never self-close
-  audit rows (r314 judges close them); impossible conformance cells are excused only
-  with a written reason in `docs/redesign/r338/excusals.md` (section target stays ≥90%).
-- No cosmetic renames of routes/fields/models — names are part of the API contract.
-- Never write into `node_modules` (worktree installs are hardlink copies — re-copy from
-  the main clone if broken).
+## 6. قواعد قاعدة البيانات والأسرار
 
-## 8. Environment notes (r338 sandbox fleet)
+- لا تنفّذ ترحيلات على أي قاعدة بيانات إنتاجية؛ `db:migrate` للمحلي فقط،
+  والإنتاج يطبق الترحيلات في خطوة بناء Render عبر `scripts/migrate-deploy.mjs`.
+- أي تعديل مخطط: عدّل `schema.prisma` ثم `npm run db:migrate` محليًا،
+  وأرفق ملف الترحيل المولّد (لا تعدّل ترحيلات مطبقة).
+- **لا تضع أسرارًا حقيقية أبدًا** في الشيفرة أو الوثائق أو الاختبارات.
+  `.env` مُتجاهل عمدًا؛ القالب `.env.example` بقيم بديلة فقط.
+- بذور `seed.ts` تعيد تعيين كلمات مرور الحسابات التجريبية الخمسة وتدمج
+  (wipe) جداول الإعلانات/المسابقات/الأحداث **ومحتوى الاختبارات بالكامل
+  (examAnswer→question) وفصول/دروس المسارات التدريبية** — لا تشغّلها إلا
+  على بيئة تطوير. حارس r145: ترفض الاشتغال فورًا عند
+  `NODE_ENV=production` قبل أي استعلام.
+- البحث النصي العربي يعتمد تطبيعًا موحدًا في `backend/src/modules/search/normalize.ts`
+  مع مرآة في الواجهة — أي تعديل يُطبق على الجهتين معًا.
 
-- 2 CPUs, ~7 GB disk: no parallel builds inside a task; ≤4 concurrent agents.
-- One worktree per task (`/home/z/wt/<task-id>`, branch `r338/<task-id>`), commit AND
-  push after every completed sub-step (agents die without warning); never force-push;
-  continue a dead agent's branch instead of redoing landed work.
-- Dev servers: each task runs its OWN vite on port 53NN (t04 → 5304) with
-  `--strictPort` and points the instrument at it via `run.mjs --url`; never a
-  shared/global server; `pkill -f 'vite.*53NN'` when done. `flock` is broken on this box.
-- `verify.sh` is heavy — only lead/lander/medic runs it (guarded by `/tmp/verify.busy`);
-  section agents mirror individual gates instead.
-- Playwright browsers are shared in `~/.cache/ms-playwright`; if the instrument demands
-  a missing build, use the symlink fallback: `PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers`
-  with the requested build name symlinked to `chromium-1200`. WebKit is often absent →
-  report it as RESIDUAL, never fake the number.
-- Dark cells: measure with `run.mjs --dark` (site's own `html[data-theme=dark]` flip).
-- `madarek.onrender.com` is NOT reachable from the sandbox — take product-UI crops from
-  the local dev server/build; `heronaiapp.com` IS reachable.
-- No `gh` CLI, no pnpm/yarn on PATH; GitHub API via `curl` + token header. git identity
-  is preset in `/home/z/madarek` (worktrees inherit it).
-- Commits: `type(rNNN): subject` (feat|fix|chore|docs); section rewrites carry
-  `conformance <section>: a% → b%` in the message.
+## 7. إجراء إلزامي قبل التعديل وبعده
+
+قبل التعديل:
+
+1. `git status` — تأكد أن الشجرة نظيفة أو اعرف ما تتعامل معه.
+2. اقرأ صف الوحدة من القسم 3 (الوثيقة المخصصة + الملفات المفتاحية).
+3. حدد أصغر نطاق يحقق الهدف دون تغيير سلوك خارج النطاق.
+
+بعد التعديل (الحد الأدنى للتحقق):
+
+```bash
+npm run lint && npm run typecheck && npm test
+node scripts/verify-parity-export.mjs && bash scripts/check-csp-hash.sh
+```
+
+- تعديلات الواجهة: أضف `npm run build -w frontend` + تحقق بصري بالنمطين
+  الفاتح والداكن واتجاه RTL.
+- تعديلات مخطط/استعلامات: تحقق يدوي على بيئة تطوير بقاعدة حية.
+- عدّلت `DESIGN.md`؟ وثّق القيمة كما تشحنها من `tokens.css` (tokens تفوز).
+
+## 8. معيار اعتبار المهمة مكتملة
+
+- الفحوص أعلاه كلها خضراء فعلًا (لا تفترض النجاح).
+- لا أسرار في الفرق النهائي (`git diff` مُراجَع).
+- الوثائق المتأثرة حُدّثت في نفس التغيير (بما فيها `CHANGELOG.md` للجولات
+  الوظيفية وفق `CONTRIBUTING.md`).
+- الوصف الذاتي للتغيير يذكر ما اختُبر وما لم يُختبر بصدق.
+
+## 9. أسلوب الالتزامات والتوثيق
+
+- الالتزام: `type(rNNN): موضوع` — النوع `feat|fix|chore|docs`، والرقم rNNN
+  يسلسل مع الجولات السابقة (انظر `git log`). النسخ الواجهية عربية أولًا.
+- لغة التوثيق: العربي لغة التوثيق الأساسية (`docs/01-…` حتى `16-…` و
+  `modules/`)، والمراجع التقنية المولّدة إنجليزية (`docs/*-REFERENCE.md`) —
+  حافظ على هذا التقسيم ولا تكرر محتوى مرجع بين اللغتين؛ اربط.
+- المصطلحات التقنية ومسارات الملفات تبقى بأسمائها الأصلية (لا تُترجم).
+
+## 10. ملفات تُقرأ قبل العمل على كل وحدة
+
+| قبل التعديل على… | اقرأ |
+|---|---|
+| أي مسار خلفية | `BACKEND.md` + `docs/08-api-reference.md` (اتفاقية الأظرف والأخطاء) |
+| `learning.routes.ts` أو مصفوفة الإتقان | `docs/modules/student.md` |
+| مصادقة/جلسات/أدوار | `docs/modules/platform.md` + `docs/10-security.md` |
+| سمة/نمط/حركة | `DESIGN.md` + `docs/modules/platform.md` (قسم نظام التصميم) |
+| ترحيل/نموذج Prisma | `docs/07-database.md` + `docs/DATABASE-REFERENCE.md` |
+| نشر/بيئة/أسرار | `docs/12-deployment.md` + `docs/06-configuration.md` + `docs/SECRETS-REFERENCE.md` |
+| مواصفات ميزة قائمة | `docs/SPECS-REFERENCE.md` ثم `specs/README.md` |
+
+
+---
+
+## R314 «الحقيقة البصرية» — قانون التجاوزات (cycle 1)
+
+أمر المالك يعلو: التطابق البصري مع المرجع (الشكل/الإحساس/التركيب/الحركة)
+يتجاوز قواعد r306/r308/r313 أدناه في هذه المقاعد فقط:
+
+1. **البطل**: مقعد raster واحد (رسم حبري مشتق من صورة مرخّصة —
+   `manifest.json → renders[]`، ShareAlike محفوظ). مسار إعادة الإنتاج:
+   `scripts/r314/ink-render.mjs`.
+2. **لافتة الموافقة**: مبنية (عكس تعطيل r313) — بوابة تخزين محلي
+   صادقة، `window.MadarekConsent`.
+3. **min-block-size للأقسام**: مُقاعد على ≤760px (الأقسام محتوى-القياس
+   كالمرجع).
+4. **STAGES/bp-panel**: أُقعدا مع الرسم الخطّي؛ النسخة الصادقة في
+   محطات `HeroInspect`.
+5. **اختبارات r306/assets/funnel**: أُعيد تثبيتها بملاحظات
+   `R314 override` في نفس الـ commits (45f8c32…ae70a16).
+
+القضاة (`scripts/r314/*` + `audits/evidence/r314/`) هم وحدهم من يغلق
+الصفوف — لا إغلاق ذاتيًا. النتيجة الجارية: `PARITY.md`.
