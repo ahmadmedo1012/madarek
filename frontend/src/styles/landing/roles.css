@@ -383,3 +383,14 @@
   color: var(--text);
   border-block-end-color: var(--rule-strong);
 }
+
+/* T-13 residual: the open row's resting icon ink at ≥1500 already sits
+   on the hover pair, so the delta needs its own channel — the dim. */
+.rl-row-icon:hover,
+.rl-row-icon.probe-hover {
+  opacity: 0.72;
+}
+
+.rl-row-icon:focus-visible {
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-strong);
+}

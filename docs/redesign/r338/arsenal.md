@@ -87,3 +87,5 @@ T-22 | knip@5.88.1 + jscpd@5.4.2 + dependency-cruiser@18.7.2 (temp-prefix instal
 L-c | verify.sh --fast | landing gate tsc+vitest+bundle
 L-c | vite build + scripts/check-bundle-size.mjs | bundle ceiling check <=777 gz
 L-c | npm install --package-lock-only | lockfile sync after t22 devDep removal
+T-13r | playwright (repo node_modules, chromium via /tmp/pw-browsers symlink fallback per ADDENDUM 3) | interact.mjs hover/focus-visible delta probing against vite :5313, 5 bps
+T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + channel-class census driving the fix plan

@@ -475,3 +475,24 @@
     animation: none;
   }
 }
+
+/* ── T-13 interaction states — the recorded footer hover/focus-visible
+   deltas (heron ordinals 7–24 · 26–35: color+bd flip to the accent pair
+   on every seat; ordinals [5]/[6] record NO change and stay unbound).
+   .probe-hover is the conformance probe's hover-equivalent class — it
+   never occurs for real users; the :focus-visible twin is the same ink
+   shift plus the standard r162 ring (keyboard parity, WCAG). ── */
+.fo-footer a[data-spec-hover]:hover,
+.fo-footer a[data-spec-hover].probe-hover,
+.fo-footer button[data-spec-hover]:hover,
+.fo-footer button[data-spec-hover].probe-hover {
+  color: var(--accent-ink);
+  border-block-end-color: var(--accent);
+}
+
+.fo-footer a[data-spec-hover]:focus-visible,
+.fo-footer button[data-spec-hover]:focus-visible {
+  color: var(--accent-ink);
+  border-block-end-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-strong);
+}
