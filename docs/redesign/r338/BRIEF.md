@@ -56,3 +56,9 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - Browser cache: chromium-1200 present and WORKS. If the instrument demands a newer build and /tmp/pw-install2.log shows it still downloading, use T-03's validated fallback: a private PLAYWRIGHT_BROWSERS_PATH dir with the requested build name symlinked to chromium-1200.
 - Concurrency is deliberately ≤4 agents (backend + 2-CPU box die at 6+). If the box feels saturated, do dep-free authoring and defer measurement.
 - Dark mode: the instrument currently has NO dark path (run.mjs) — dark cells are RESIDUAL until task T-14a lands. Webkit: browser absent; install retrying in background; residual if absent. Never fake either.
+
+## ENV ADDENDUM 3 (wave-4, lead)
+- Standardized browser fallback (validated by 3 agents): `mkdir -p /tmp/pw-browsers && for d in ~/.cache/ms-playwright/*; do ln -sfn "$d" /tmp/pw-browsers/$(basename "$d"); done && ln -sfn ~/.cache/ms-playwright/chromium-1200 /tmp/pw-browsers/chromium-1223 && export PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers` — use if the instrument complains about a missing browser build.
+- Bundle ceiling on main is 777 KB gz (r337's documented raise, already merged). Do NOT exceed 777; prefer real cuts.
+- Conformance honest baselines (chromium, 5-bp avg): usecase 87.9 (claimed 91.4 did not reproduce), problem 84.6, intro 74.7. why/footer rewrites landed on branches but UNMEASURED.
+- run.mjs is shared instrument code: T-02a added the charSplit "wordset" rule on branch r338/t02-usecase-residual (NOT yet on main). If your task touches run.mjs, base your worktree on the branch that last touched it to avoid conflicts.
