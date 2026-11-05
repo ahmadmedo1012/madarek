@@ -190,3 +190,4 @@ T-09d | conformance run.mjs (+webkit temp-copy probe) | map pass-4 type/colour r
 T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath
 L-10 | git merge --no-ff train + vite/check-bundle-size + verify.sh --fast + curl+jq Actions API | w16 land: axios diet + why rewrite + intro
 T-03f | conformance/run.mjs --dark + plumbing mapping | intro junk-pool skip census (269 entries), pill icon seat re-measure 5bp+dark
+T-14b | playwright probe scripts (light↔dark DOM diff: geometry/type/color/contrast) + run.mjs --dark + check-colors --strict | dark census for usecase/problem, footer+cta dark numbers, soft-ink flip verification

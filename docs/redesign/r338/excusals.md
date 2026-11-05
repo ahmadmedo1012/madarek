@@ -145,3 +145,25 @@ Heron's frozen `home-platform-wrap` census tree is a page WRAPPER: besides the p
 ## T-03e (intro junk-pool, wave 13)
 - intro alternate-head junk rows under `home-intro-wrap > div[4]` + the media short-box strip `home-intro-wrap > div[1] > div[1] > div[1] > div[2]`: duplicate window-head recordings of the crawl band / media strip (the depth-6 walk re-anchors the same heron DOM at different heads per bp). Claimed via mapping charSplit containers (heuristic-pairing skip; written reason kept in noCounterpart) — structural, spec-side only. Verified by script: ZERO explicitly-bound heron paths contain either container (a container prefixing a bound path would trigger the instrument's charSplit aggregate loop and excise real cells — learned the hard way: h2-head/direct-section containers are CANONICAL binding heads at desktop bps, not junk).
 - Residual junk rows under `div[2] > div[1]`, `div[2] > div[2] > div[1]`, `div[1] > div[3]`, `section[1]` heads cannot use charSplit (they prefix canonical pill/label/crawl bindings) — they need deeper per-shape containers or a lead-approved plumbing-skip; left glued (~41 heuristic pairs/bp), documented here.
+## T-14b dark sweep — usecase + problem (dark cells, main @e882f0ec)
+- usecase dark 390 y-cells (dark 87.7% vs light 90%): a post-flip row
+  offset of +7..+14px appears inside .rl-acc with EVERY computed
+  geometry property byte-identical light↔dark (fs/lh/fw/ff/padding/
+  margin verified by probe; no [data-theme=dark] rule touches any
+  .rl-* selector; magnitude varies run-to-run: 0/+7.1/+14.0 measured
+  on identical DOM). Nondeterministic instrument-side reflow at flip
+  (suspect: post-flip re-walk timing vs Lenis wrapper transform) —
+  needs T-14a/lead instrument investigation, not a section css fix.
+  All DETERMINISTIC dark defects WERE fixed: 33 unflipped soft-ink
+  seats (rgba(40,40,40,.72) raw literal) sat at WCAG contrast 1.0 on
+  the #282828 ground — now a section-scoped --rl-soft-ink var flips
+  to the dark ramp ink rgba(246,246,238,.72) (7.9:1); light computed
+  style byte-identical (light 5-bp re-measured unchanged).
+- problem dark: CLEAN — 0 geometry drift under flip, 0 unflipped text
+  colors, 0 contrast<3.0 (probe-verified @1920/390); dark 92.9% avg =
+  its light residuals re-asserted (same cells as light, no dark-kind
+  fail). Nothing to fix in Chapters.tsx/pains.css.
+- instrument blind spot noted for T-14a: contrastRatio() returns null
+  for alpha-channel fg colors (rgba), so the 33 invisible-ink seats
+  were UNCOUNTED by --dark (contrastChecked=100/skipped=30, 0 fails
+  while the honest ratio was 1.0) — found only by probe.
