@@ -913,3 +913,150 @@
     transition: none;
   }
 }
+
+/* ══ R338 T-11c — the measured restyle pass. Every value below is a
+   MEASURED parameter from the frozen reference spec
+   (docs/redesign/r335/heron-spec/home-hero-wrap.*.json) reproduced in
+   Madarek's own construction — never pasted reference styling. Scoped
+   vars carry the measured inks per the r338 wave-9 token ruling. ══ */
+.hro {
+  --hro-ink-72: rgba(40, 40, 40, 0.72); /* measured strip/lead ink */
+  --hro-flare: rgb(250, 54, 0);         /* measured secondary flare */
+  --hro-paper: rgb(255, 255, 255);      /* measured deco caption ink */
+}
+
+/* [S] the band seat — measured 0.981–0.988vh per breakpoint */
+@media (max-width: 767px) { .hro.fo-hero { min-block-size: calc(100svh - 16px); } }
+@media (min-width: 768px) and (max-width: 1023px) { .hro.fo-hero { min-block-size: calc(100svh - 16px); } }
+@media (min-width: 1024px) and (max-width: 1439px) { .hro.fo-hero { min-block-size: calc(100svh - 9px); } }
+@media (min-width: 1440px) and (max-width: 1919px) { .hro.fo-hero { min-block-size: calc(100svh - 13px); } }
+@media (min-width: 1920px) { .hro.fo-hero { min-block-size: calc(100svh - 17px); } }
+
+/* [T] the display title — measured fs (31.76/36.83px, 3.241vw ≥1024)
+   with the Arabic line-height floor max(heronLh, 1.35×fs) */
+section.fo-hero .hro-title.fo-hero-title { font-size: 31.76px; line-height: 1.35; }
+@media (min-width: 768px) and (max-width: 1023px) {
+  section.fo-hero .hro-title.fo-hero-title { font-size: 36.83px; }
+}
+@media (min-width: 1024px) {
+  section.fo-hero .hro-title.fo-hero-title { font-size: 3.241vw; }
+}
+
+/* [C] the primary CTA — the reference's measured TEXT-LINK voice:
+   ink rgb(40,40,40) on a transparent ground, zero chrome, single
+   color 0.4s/ease token. The funnel contract classes stay on the
+   markup; only the skin follows the measured box. */
+section.fo-hero .hro-actions .hro-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-block-size: 0;
+  padding: 0;
+  border: 0;
+  background-color: transparent;
+  color: var(--text);
+  font-size: 15.88px;
+  line-height: 1.35;
+  font-weight: 500;
+  transition: color 0.4s ease;
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  section.fo-hero .hro-actions .hro-cta { font-size: 14.73px; }
+}
+@media (min-width: 1024px) {
+  section.fo-hero .hro-actions .hro-cta { font-size: 0.926vw; }
+}
+
+/* [A] the secondary block — measured flare ink rgb(250,54,0) + the
+   measured block seats (374×64 / 157×202 / 9.9vw×6.73vw) */
+section.fo-hero .hro-alt {
+  display: flex;
+  align-items: flex-start;
+  inline-size: 374px;
+  min-block-size: 64px;
+  color: var(--hro-flare);
+  font-size: 15.88px;
+  line-height: 1.35;
+  transition: color 0.4s ease;
+}
+@media (min-width: 768px) and (max-width: 1023px) {
+  section.fo-hero .hro-alt { inline-size: 157px; min-block-size: 202px; font-size: 14.73px; }
+}
+@media (min-width: 1024px) {
+  section.fo-hero .hro-alt { inline-size: 9.9vw; min-block-size: 6.73vw; font-size: 0.926vw; }
+}
+
+/* [W] the work strip — the measured six-box grid: fixed per-subject
+   widths on a 2.2vw rail (153/126/117 @1920 exact), ink at 72% */
+.hro .hro-work-item {
+  flex: 0 0 auto;
+  inline-size: 136px;
+  font-size: 13.89px;
+  line-height: 1.35;
+  color: var(--hro-ink-72);
+}
+.hro .hro-work-item:nth-of-type(3n + 2) { inline-size: 112px; }
+.hro .hro-work-item:nth-of-type(3n) { inline-size: 104px; }
+
+@media (max-width: 767px) {
+  .hro .hro-work-track { gap: 38px; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hro .hro-work { margin-inline: 0; padding-inline: 0; }
+  .hro .hro-work-track {
+    gap: 35px;
+    padding-inline: 0;
+    padding-inline-start: 167px;
+  }
+  .hro .hro-work-item { font-size: 12.89px; line-height: 1.4; }
+}
+
+@media (min-width: 1024px) {
+  .hro .hro-work { margin-inline: 0; padding-inline: 0; overflow: hidden; }
+  .hro .hro-work-track {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+    justify-content: flex-start;
+    gap: 2.2vw;
+    padding-inline: 0;
+  }
+  .hro .hro-work-item { font-size: 0.811vw; line-height: 1.4; inline-size: 8.3vw; }
+  .hro .hro-work-item:nth-of-type(3n + 2) { inline-size: 6.84vw; }
+  .hro .hro-work-item:nth-of-type(3n) { inline-size: 6.35vw; }
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .hro .hro-work-track { padding-inline-start: 330px; }
+}
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .hro .hro-work-track { padding-inline-start: 759px; }
+}
+@media (min-width: 1920px) {
+  .hro .hro-work-track { padding-inline-start: 817px; }
+  .hro .hro-work-item { inline-size: 153px; }
+  .hro .hro-work-item:nth-of-type(3n + 2) { inline-size: 126px; }
+  .hro .hro-work-item:nth-of-type(3n) { inline-size: 117px; }
+}
+
+/* [D] the deco captions — measured paper ink on the ink cards */
+.hro .hro-deco-text {
+  color: var(--hro-paper);
+  font-size: 12.89px;
+  line-height: 1.4;
+}
+@media (min-width: 1024px) {
+  .hro .hro-deco-text { font-size: 0.811vw; }
+}
+
+/* [X] single-entry measured transitions — the reference's svg paths
+   and links carry exactly one 0.4s/ease token (T-11b residual: the
+   2-entry list read as "0.4s/ease, ease") */
+.landing.intro-done .hro-stage .bp-drawable {
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing.intro-done .hro-stage .bp-drawable,
+  .hro .hro-alt,
+  section.fo-hero .hro-actions .hro-cta { transition: none; }
+}

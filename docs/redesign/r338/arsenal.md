@@ -48,3 +48,4 @@ T-05f | playwright probe + heron-spec.768/390.json rect extraction | measured ro
 T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification
 T-11 | run.mjs --sections/--url + python census | hero baseline, failure families, spec-path binding generator
 T-11b | run.mjs+playwright(chromium-1200 fallback) | hero pass-2 plumbing-skip + measured transition fixes
+T-11c | node + playwright chromium (run.mjs --dark) + vite 5311 | hero measured restyle: span→div tags, work-strip 6-box grid (2.2vw rail, measured w/gap/start), CTA text-link reskin, alt flare block, h1 ar-floor, single-entry 0.4s/ease transitions, vh seats
