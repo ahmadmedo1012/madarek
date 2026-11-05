@@ -1810,6 +1810,46 @@
       "section": "home-map-wrap",
       "heron": "div.home-map-wrap",
       "reason": "heron sticky-window sibling station recording (depth-0 path under the map driver) — starved at measurement scroll inside heron's tall driver; our window is the div[1] twin (.jt-window/.jt-map-col explicit), heron's per-step siblings have no 1:1 seat in the R315 walkthrough"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[6] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[7] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[8] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > svg[2]",
+      "reason": "heron route-overlay svg root (svg[2]): its 13 path leaves are census-paired into our authored plan path art (the T-09e measured rest/reveal register — opacity 0 + filter 0.4s/ease); the root itself is capture scaffolding over the same single .jt-plan svg — no separate root seat by design"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[2] > div[8] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
+    },
+    {
+      "section": "home-map-wrap",
+      "heron": "home-map-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > svg[1]",
+      "reason": "heron station/demo-card svg root — capture scaffolding around per-card art: our band is ONE authored plan svg (.jt-plan, the R315 single-walkthrough architecture) whose leaf path/group art is census-paired by ordinal with the reveal wiring (JourneyScene T-09e); no separate svg-root seat exists by design — the card content lives inside the plan drawing"
     }
   ],
   "plumbing": [

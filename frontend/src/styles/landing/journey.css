@@ -369,6 +369,36 @@
   fill-opacity: 1;
 }
 
+/* ═══ T-09e — the measured motion register (heron home-map band) ═══
+   The band's authored art carries Heron's measured motion class: the
+   drawn path art tweens 0.4s/ease (the demo-row svgs' transform, the
+   route overlay svg[2]'s filter), the frame's annotation groups tween
+   opacity 0.4s/ease. Section-scoped vars carry the MEASURED 0.4s/ease
+   (the platform CTA-orange ruling pattern — the global motion tokens
+   are never mutated for one band). The census-paired rest
+   states (route overlay + 3 annotation groups at 0, 3 tints at 0.24)
+   are written by the JourneyScene driver (the reveal wiring), not
+   here — the no-JS frame keeps the full static plan. */
+.jt {
+  --jt-t-art: 0.4s; /* measured — heron home-map band art tween */
+  --jt-e-art: ease; /* measured — heron home-map band art tween */
+}
+
+.jt .jt-plan path {
+  transition: transform var(--jt-t-art) var(--jt-e-art);
+}
+
+.jt .jt-plan .pl-l-frame > g {
+  transition: opacity var(--jt-t-art) var(--jt-e-art);
+}
+
+/* T-09e — the frame's ruled lines read at FULL opacity in the frozen
+   band (the census-paired line seats measure 1; our 0.5 wash was an
+   authoring choice, not a measured value). */
+.jt .jt-plan .pl-l-frame .bp-gridline {
+  opacity: 1;
+}
+
 /* C4-A — the door markers + their violation chips resolve with the
  * annotation layer and STAY; R322 (3-b): the chips now key on
  * [data-wash] — the ACTIVE room's callout, rotating with the layer
@@ -1119,7 +1149,10 @@
      * pair the Heron ledger uses (the pre-X14 probe read the stale
      * contain-intrinsic-size guess): 466dvh lands the section at
      * 5455 vs Heron 5454 (+0.02%). */
-    block-size: 539.2dvh;
+    /* T-09e — restored to the PINNED 466dvh rung (the r312
+     * reconciliation; the 539.2 experiment reverted — the spec/tests
+     * are the law, our geometry re-seats around the pin). */
+    block-size: 466dvh;
     padding-inline: 8px; /* spacing-gate: allow — the A8 sheet-frame inset seat (Heron's own mobile plan inset) */
   }
 
