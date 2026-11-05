@@ -91,6 +91,23 @@
 .fo-ilink-t { color: rgba(40, 40, 40, 0.72); } /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 .fo-ilink:hover .fo-ilink-t { color: var(--text); }
 
+/* r188/r320 §D — the independence paragraph (VERBATIM the About
+   page's own sentence) + the r320 contact-cell heading */
+.fo-footer-about {
+  margin: 1rem 0 0;
+  font-size: 1.4rem;
+  line-height: 1.96rem; /* ar lh floor ≥ 1.35×fs */
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.fo-contact-h {
+  margin: 0.6rem 0 0;
+  font-size: 1.6rem;
+  line-height: 2.16rem; /* ar lh floor ≥ 1.35×fs */
+  font-weight: 600;
+  color: var(--text);
+}
+
 /* T-06f: the spec-measured seat panel — the heron c1sub box paints
    rgb(179,179,175) (measured at every bp) */
 .fo-c1-sub { padding: 1.6rem; background: var(--rule-strong); }
@@ -131,10 +148,9 @@
   transition: border-color 0.45s ease;
 }
 .fo-input::placeholder { color: var(--rule-strong); }
-.fo-input:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -2px;
-}
+/* r162/r172a §3: NO :focus-visible rules on this sheet — the universal
+   focus language in base.css owns the rings (the private sub-language
+   is deleted; the outline below was the last stray) */
 .fo-go {
   inline-size: 4.8rem;
   block-size: 4.8rem;
@@ -155,7 +171,7 @@
   vector-effect: non-scaling-stroke;
 }
 .fo-go:hover { color: var(--accent); border-color: var(--accent); }
-.fo-go:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+/* (r172a §3 — the go button's ring also delegates to base.css) */
 
 /* ── col2: the wide index — 3 mono-labelled groups up, 3 seats down ── */
 .fo-c2-top,
@@ -237,7 +253,7 @@
 .fo-mark-img { inline-size: 25.8rem; block-size: 0; }
 
 /* ═══ the strip band: OUR ink render + the grayscale twin + chrome ═══ */
-.fo-strip { position: relative; block-size: 37.68rem; overflow: hidden; }
+.fo-fstrip { position: relative; block-size: 37.68rem; overflow: hidden; }
 .fo-strip-in { position: absolute; inset: 0; }
 .fo-strip-media,
 .fo-strip-twin { position: absolute; inset: 0; }
@@ -277,8 +293,8 @@
 .fo-reg-bl { inset-block-end: -0.24rem; inset-inline-start: -0.24rem; }
 .fo-reg-br { inset-block-end: -0.24rem; inset-inline-end: -0.24rem; }
 
-/* ═══ the legal row: © + the ruled nav links ═══ */
-.fo-legal {
+/* ═══ the © bar + the legal row (R321 §A2 — one ruled line) ═══ */
+.fo-footer-bottom {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
@@ -300,25 +316,33 @@
   transition: color 0.3s ease;
 }
 .fo-legal-a:hover { color: var(--accent); }
-.fo-legal-r { display: flex; align-items: stretch; }
-.fo-legal-nav {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-inline: 2rem;
-  text-decoration: none;
-  color: var(--text);
-  transition: color 0.4s ease;
-}
-.fo-legal-nav .fo-rule-v { align-self: stretch; }
-.fo-legal-nav-t1,
-.fo-legal-nav-t2 {
-  font-size: 1.6rem;
-  line-height: 2.04rem;
+.fo-mono,
+.fo-footer-cluster {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  line-height: 1.82rem;
   font-weight: 500;
-  color: inherit;
 }
-.fo-legal-nav:hover { color: var(--accent); }
+.fo-legal-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fo-legal-link {
+  display: inline-flex;
+  align-items: center;
+  padding-inline: 1.2rem;
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.4rem;
+  line-height: 1.82rem;
+  font-weight: 500;
+  /* the 44px touch floor (the footer link ladder) */
+  min-block-size: 44px;
+  transition: color 0.3s ease;
+}
+.fo-legal-link:hover { color: var(--accent); }
+.fo-legal-sep { color: var(--rule-strong); }
 
 /* the grid's own closing hairline (its 4th child, full-bleed) */
 .fo-grid-rule { grid-column: 1 / -1; }
@@ -329,22 +353,37 @@
   /* T-06f re-seat (heron 768 model): col1 377 stack · col2 label|link
      rows · the col3 rail (w251) with its vertical rule (h331) + mark 207
      + the 311-wide 0-height markimg twin seat */
-  .fo-grid { grid-template-columns: 45.3rem 1fr 30.1rem; }
-  .fo-col { display: contents; }
+  .fo-grid { grid-template-columns: 37.7rem 1fr 25.1rem; }
+  /* T-06g2: col1/col3 are REAL grid boxes now (heron 768 rects: col1
+     377 · col3 251×331 — display:contents gave the instrument −pageY
+     y-artifacts: no box ⇒ rect 0,0); col2 stays unwrapped (heron's
+     0×0 col2 cell at 390/768) */
+  .fo-col {
+    display: block;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
   .fo-col2 { display: contents; }
   .fo-col2 > div:first-child { display: contents; }
-  .fo-c1-top { grid-column: 1; grid-row: 1; }
-  .fo-c1-sub { grid-column: 1; grid-row: 2; }
   .fo-c2-top { grid-column: 2; grid-row: 1 / span 2; grid-template-columns: 1fr; }
   .fo-c2-bottom { grid-column: 2; grid-row: 3; grid-template-columns: 1fr; }
   .fo-lgroup { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; align-items: start; }
-  .fo-col3rule { grid-column: 3; grid-row: 3 / span 2; }
-  .fo-mark { grid-column: 3; grid-row: 3; }
-  .fo-mark-img { grid-column: 3; grid-row: 4; inline-size: 37.3rem; block-size: 0; margin-block-start: -12.24rem; }
+  .fo-col3 {
+    display: grid;
+    grid-column: 3;
+    grid-row: 3 / span 2;
+    grid-template-columns: 0.1rem 24.84rem;
+    grid-template-rows: 24.84rem auto;
+    block-size: 33.1rem;
+    align-items: start;
+  }
+  .fo-col3rule { grid-column: 1; grid-row: 1 / span 2; }
+  .fo-mark { grid-column: 2; grid-row: 1; }
+  .fo-mark-img { grid-column: 2; grid-row: 2; inline-size: 37.3rem; block-size: 0; margin-block-start: -12.24rem; }
   .fo-grid-rule { grid-row: 5; }
   .fo-mark { inline-size: 24.84rem; block-size: 24.84rem; }
   .fo-c2-bottom .fo-lgroup { display: block; }
-  .fo-strip { block-size: 21.7rem; }
+  .fo-fstrip { block-size: 21.7rem; }
   .fo-strip-chrome { inset: 1.32rem; }
   .fo-biglink { block-size: 4.8rem; font-size: 2.3rem; line-height: 2.4rem; }
   .fo-social { block-size: 3rem; }
@@ -382,7 +421,7 @@
   .fo-c2-bottom { grid-template-columns: 1fr; }
   .fo-input,
   .fo-go { block-size: 4.84rem; }
-  .fo-strip { block-size: 9.6rem; }
+  .fo-fstrip { block-size: 9.6rem; }
   .fo-strip-in { block-size: 5rem; }
   .fo-strip-media,
   .fo-strip-twin { inline-size: 21.8rem; block-size: 2.6rem; inset-inline: 0; margin-inline: auto; inset-block: 1.1rem auto; }
@@ -392,9 +431,9 @@
   .fo-socials { row-gap: 1.8rem; }
   .fo-lg-links { line-height: 1.85rem; }
   .fo-lg-links a { padding-block: 0; }
-  .fo-legal { margin-block-start: -9.6rem; }
+  .fo-footer-bottom { margin-block-start: -9.6rem; }
   .fo-legal-l { padding: 0.6rem 1.6rem 0.4rem; }
-  .fo-legal-r { block-size: 4.6rem; }
+  .fo-legal-row { row-gap: 0; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 1.44rem; block-size: 0.72rem; }
   .fo-sc-l,
@@ -408,9 +447,9 @@
   .fo-reg-bl { inset-inline-start: -0.12rem; }
   .fo-reg-tr,
   .fo-reg-br { inset-inline-end: -0.12rem; }
-  .fo-legal { flex-direction: column; }
+  .fo-footer-bottom { flex-direction: column; }
   .fo-legal-l { padding: 1rem 1.6rem; justify-content: center; }
-  .fo-legal-r { justify-content: space-between; }
+  .fo-legal-row { justify-content: space-between; }
 }
 
 /* ═══ dark theme: the 72% soft-ink literals above are the LIGHT
@@ -422,3 +461,17 @@
 [data-theme='dark'] .fo-form-copy-t,
 [data-theme='dark'] .fo-legal-p { color: var(--text-secondary); }
 [data-theme='dark'] .fo-mono-label { color: var(--neutral-400); }
+
+/* ═══ reduced motion (r306/r308 family belt): this sheet carries the
+    wy verb-snap protective collapses — the r313 contract's RM seats,
+    parked on the footer sheet per section-file ownership (the r306
+    belt reads the landing family concatenation; the selectors mirror
+    the reference's own RM belt entries verbatim) ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
+  .wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
+  .wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-verb,
+  .wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
+    animation: none;
+  }
+}

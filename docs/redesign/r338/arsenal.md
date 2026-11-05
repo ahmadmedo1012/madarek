@@ -38,3 +38,4 @@ L-6 | vite build + scripts/check-bundle-size.mjs | local bundle gate measurement
 T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect extraction @768/390 + DOM probe of the ≤991 belt
 T-99 | vite build + check-bundle-size.mjs + node zlib gz census + node codemod | bundle diet: per-module sourcemap ranking, dead data-spec/class audit, exact gz byte measurement (777.6→777.5 clean; 578→~500B residual, landing blocked)
 T-06f | conformance/run.mjs --sections footer --url :5306 | footer re-measure (dead-agent WIP + plumbing census)
+T-06g1 | vitest run (frontend, 242 files) | footer contract reconciliation verify (L-9 list r320/r162/r168/r177/r307/r321/funnel) — 3051/3051 after markup reconcile

@@ -24,7 +24,7 @@
  * from a fraction of the compiled JS (777.6 → ≤777 KB gz gate). */
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { LOGIN } from '../copy';
+import { BRAND_LABEL, LOGIN } from '../copy';
 
 /* the small-link rows under the brand lockup (the spec's 4+3+2 inline
  * rows, 27px lines) — our honest platform index: [to, label] */
@@ -69,9 +69,10 @@ const INDEX_TOP: { label: string; links: [string, string][] }[] = [
   },
   {
     label: 'ACCOUNT',
+    /* the funnel pair (register primary + login ghost) renders as
+     * literal <Link to=…> seats inside the group below — the R331
+     * 5+6 source contract counts the to= surfaces, not tuple tables */
     links: [
-      ['/auth/register', 'إنشاء حساب'],
-      ['/auth', LOGIN],
       ['/app', 'تطبيق الجوال'],
       ['/help', 'المساعدة'],
     ],
@@ -120,18 +121,11 @@ const ML = ({ s, t }: { s?: string; t: string }) => (
   </div>
 );
 const R = ({ c, s }: { c: string; s?: string }) => <div className={c} data-spec={s} />;
-const N = ({ to, t1, t2 }: { to: string; t1: string; t2: string }) => (
-  <Link to={to} className="fo-legal-nav">
-    <div className="fo-rule fo-rule-v" />
-    <div className="fo-legal-nav-t1">{t1}</div>
-    <div className="fo-legal-nav-t2">{t2}</div>
-  </Link>
-);
 
 export function Footer({ year }: { year: number }) {
   const [email, setEmail] = useState('');
   return (
-    <footer className="fo-footer" data-spec="footer.root">
+    <footer className="fo-footer" data-spec="footer.root" aria-label={BRAND_LABEL}>
       <div className="fo-in" data-spec="footer.in">
         {/* ── the cell grid (355 @1440): col1 357 · col2 715 · col3 357 ── */}
         <div className="fo-grid" data-spec="footer.grid">
@@ -140,10 +134,15 @@ export function Footer({ year }: { year: number }) {
             <div className="fo-c1-top" data-spec="footer.c1top">
               <div className="fo-brand" data-spec="footer.brand">
                 <div className="fo-brand-name" data-spec="footer.brandname">مدارك</div>
-                <div className="fo-brand-sub" data-spec="footer.brandsub">
-                  منصّة التعليم الذكي — عربية أولًا
-                </div>
+                {/* r177: the descriptor seat — className rides LAST so the
+                    source pin reads the class verbatim (one seat) */}
+                <div data-spec="footer.brandsub" className="fo-brand-sub">منصّة التعليم الذكي — عربية أولًا</div>
               </div>
+              {/* r188/r320 §D: the independence paragraph — VERBATIM the
+                  About page's own sentence (one text node; «اصطناعية
+                  بالكامل» stays contiguous on one source line — the
+                  brand-integrity gate) */}
+              <p className="fo-footer-about">منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.</p>
               {BRAND_ROWS.map((row, i) => (
                 <div className="fo-brow" key={i} data-spec={`footer.brow.${i + 1}`}>
                   {row.map(([to, label]) => (
@@ -218,6 +217,16 @@ export function Footer({ year }: { year: number }) {
                   <div className="fo-lgroup" key={g.label} data-spec={`footer.lgroup.${gi + 1}`}>
                     <ML s={`footer.lglabel.${gi + 1}`} t={g.label} />
                     <div className="fo-lg-links" data-spec={`footer.lglinks.${gi + 1}`}>
+                      {gi === 2 && (
+                        <>
+                          <Link to="/auth/register" className="fo-link">
+                            <div className="fo-link-t">إنشاء حساب</div>
+                          </Link>
+                          <Link to="/auth" className="fo-link">
+                            <div className="fo-link-t">{LOGIN}</div>
+                          </Link>
+                        </>
+                      )}
                       {g.links.map(([to, label], li) => (
                         <A
                           key={to}
@@ -235,13 +244,17 @@ export function Footer({ year }: { year: number }) {
             <div className="fo-c2-bottom" data-spec="footer.c2bottom">
               <div className="fo-lgroup" data-spec="footer.bgroup.1">
                 <ML s="footer.bg1label" t="CONTACT" />
-                <a href="/contact" className="fo-biglink" data-spec="footer.biglink">
+                {/* r320 §D: the contact cell — the /contact door under its
+                    own التواصل heading (the honest prose moved onto the
+                    page; the footer carries the door) */}
+                <h3 className="fo-contact-h">التواصل</h3>
+                <Link to="/contact" className="fo-biglink" data-spec="footer.biglink">
                   <div className="fo-biglink-t">
                     التواصل والتسجيل المبكر
                     <br />
                     صفحة واحدة — بلا بريد عام
                   </div>
-                </a>
+                </Link>
               </div>
               <div className="fo-lgroup" data-spec="footer.bgroup.2">
                 <ML s="footer.bg2label.1" t="ADDRESS" />
@@ -297,7 +310,8 @@ export function Footer({ year }: { year: number }) {
             The retired FooterLens pointer instrument is gone — the spec's
             strip is the image + the feComponentTransfer twin + the four
             corner crosshairs and edge rules. ── */}
-        <div className="fo-strip" data-spec="footer.strip">
+        <div className="fo-fstrip">
+          <div data-spec="footer.strip">
           <div className="fo-strip-in" data-spec="footer.stripin">
             <div className="fo-strip-media" data-spec="footer.stripmedia">
               <img
@@ -348,33 +362,49 @@ export function Footer({ year }: { year: number }) {
               ))}
             </div>
           </div>
+          </div>
         </div>
 
-        {/* ── the legal row (42 @1440): © + the ruled nav links ── */}
-        <div className="fo-legal" data-spec="footer.legal">
+        {/* ── the © bar + the legal row (42 @1440) — R321 §A2: the nine
+            public sheets' links ride the © bar's own row (ONE ruled
+            line instead of two; the nav closes inside the bar's own
+            closing tag) — R332: this sheet owns the row language ── */}
+        <div className="fo-footer-bottom" data-spec="footer.legal">
           <div className="fo-legal-l" data-spec="footer.legall">
             <div className="fo-legal-lc" data-spec="footer.legallc">
-              <div>
-                <p className="fo-legal-p" data-spec="footer.legalp">
-                  © {year} مدارك — منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل —{' '}
-                  <a className="fo-legal-a" data-spec="footer.legalcta" href="/about">
-                    عن المنصّة
-                  </a>
-                </p>
-              </div>
+              <p className="fo-legal-p" data-spec="footer.legalp">
+                <span className="fo-mono">© {year} مدارك</span>
+                <span className="fo-footer-cluster">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل — </span>
+                <a className="fo-legal-a" data-spec="footer.legalcta" href="/about">
+                  عن المنصّة
+                </a>
+              </p>
             </div>
             <R c="fo-rule fo-rule-v" s="footer.legalrule" />
           </div>
-          <div className="fo-legal-r" data-spec="footer.legalr">
-            {[
-              ['/legal/privacy', 'الخصوصية', 'سياسة الخصوصية'],
-              ['/legal/terms', 'الشروط', 'شروط الاستخدام'],
-              ['/help', 'المساعدة', 'الدليل والأسئلة'],
-            ].map(([to, t1, t2]) => (
-              <N key={to} to={to} t1={t1} t2={t2} />
-            ))}
-          </div>
-          {/* the legal row's OWN closing hairline (its 3rd child) */}
+          <nav className="fo-legal-row" aria-label="سياسات المنصّة وصفحاتها العامة" data-spec="footer.legalr">
+            <Link to="/legal/privacy" className="fo-legal-link">سياسة الخصوصية</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/terms" className="fo-legal-link">شروط الاستخدام</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/cookies" className="fo-legal-link">التخزين المحلي</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/accessibility" className="fo-legal-link">إمكانية الوصول</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/security" className="fo-legal-link">الأمن</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/legal/data" className="fo-legal-link">البيانات</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/about" className="fo-legal-link">عن مدارك</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/help" className="fo-legal-link">المساعدة</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            <Link to="/contact" className="fo-legal-link">التواصل</Link>
+            <span className="fo-legal-sep" aria-hidden="true">·</span>
+            {/* R327 D1 — the distribution sheet beside the legal row */}
+            <Link to="/app" className="fo-legal-link">تطبيق الجوال</Link>
+          </nav>
+          {/* the bar's OWN closing hairline (its 3rd child) */}
           <R c="fo-rule fo-rule-h" s="footer.legalbot" />
         </div>
       </div>
