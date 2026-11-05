@@ -44,3 +44,4 @@ T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measu
 T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
 T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
 >>>>>>> origin/r338/t10-cta
+T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
