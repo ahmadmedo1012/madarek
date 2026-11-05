@@ -57,7 +57,7 @@ env:
 jobs:
   mobile-gates:
     name: Mobile gates (typecheck · lint · contract · export)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     defaults:
       run:
@@ -122,7 +122,7 @@ jobs:
     name: EAS Update (OTA to production + preview)
     needs: mobile-gates
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     defaults:
       run:
@@ -148,7 +148,7 @@ jobs:
     # push: only native-affecting changes; manual dispatch: always (the
     # human pressed the button — that IS the intent).
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     defaults:
       run:

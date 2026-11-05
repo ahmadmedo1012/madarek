@@ -31,7 +31,7 @@ env:
 jobs:
   ping:
     name: Ping the health endpoint
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 3
     steps:
       - name: curl GET /api/v1/health

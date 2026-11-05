@@ -32,7 +32,7 @@ env:
 jobs:
   wait-for-deploy:
     name: Wait for the Render deploy (buildId == ${{ github.sha }})
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     outputs:
       deployed: ${{ steps.wait.outputs.deployed }}
@@ -56,7 +56,7 @@ jobs:
   smoke:
     name: Smoke the live service
     needs: wait-for-deploy
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4

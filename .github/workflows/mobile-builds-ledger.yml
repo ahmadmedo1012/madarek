@@ -23,7 +23,7 @@ concurrency:
 jobs:
   ledger:
     name: eas build:list (the recent cuts)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 6
     defaults:
       run:
