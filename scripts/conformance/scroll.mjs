@@ -116,11 +116,39 @@ const PAGE_LIB_JS = String.raw`
     if (mi && document.documentElement.scrollHeight <= window.innerHeight + 60 && mi.scrollHeight > mi.clientHeight + 60) { mi.scrollTop = Math.max(0, Math.round(y)); return; }
     window.scrollTo(0, Math.max(0, Math.round(y)));
   };
-  const lum = (rgb) => {
-    const m = rgb && rgb.match(/rgba?\(([^)]+)\)/);
-    if (!m) return 0;
-    const [r, g, b] = m[1].split(",").map(Number);
-    return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+  /* luminance of any computed serialisation: rgb()/rgba() (0–255),
+   * color(srgb r g b [/ a]) (0–1 floats — color-mix/modern-CSS output,
+   * e.g. our .wr-i words), color(srgb-linear …) (linear → gamma),
+   * oklab(L a b). Unparseable → null (never a fake 0). */
+  const lum = (c) => {
+    if (!c) return null;
+    let m = c.match(/rgba?\(([\d.]+), ?([\d.]+), ?([\d.]+)/);
+    if (m) return (0.2126 * +m[1] + 0.7152 * +m[2] + 0.0722 * +m[3]) / 255;
+    m = c.match(/color\(srgb ([\d.e+-]+) ([\d.e+-]+) ([\d.e+-]+)/);
+    if (m) return 0.2126 * +m[1] + 0.7152 * +m[2] + 0.0722 * +m[3];
+    m = c.match(/color\(srgb-linear ([\d.e+-]+) ([\d.e+-]+) ([\d.e+-]+)/);
+    if (m) { const g = (x) => Math.pow(Math.max(0, +x), 1 / 2.2); return 0.2126 * g(+m[1]) + 0.7152 * g(+m[2]) + 0.0722 * g(+m[3]); }
+    m = c.match(/oklab\(([\d.e+-]+)%?/);
+    if (m) return Math.max(0, Math.min(1, +m[1] / (c.includes("%") ? 100 : 1)));
+    return null;
+  };
+  /* seat + wait until the scrub has settled: a minimum 280ms (Lenis
+   * fights a native scrollTop jump for a few hundred ms — measured on
+   * Heron: a 620px backward jump still read the PRE-jump pole at
+   * ~110–180ms, clean ghost at 500ms), then two identical scrub-probe
+   * reads 120ms apart (capped). The probe must be a colour that RIDES
+   * the scrub (leaf word spans sampled across the stagger), never a
+   * static wrapper. */
+  const settledSeat = async (y, probe) => {
+    seat(y);
+    await new Promise((r) => setTimeout(r, 280));
+    let a = probe();
+    for (let i = 0; i < 5; i++) {
+      await new Promise((r) => setTimeout(r, 120));
+      const b = probe();
+      if (JSON.stringify(a) === JSON.stringify(b)) return;
+      a = b;
+    }
   };
   const readProps = (el) => {
     const cs = getComputedStyle(el);
@@ -150,16 +178,22 @@ const PAGE_LIB_JS = String.raw`
     inkCoverage: {
       discover: (root) => ({ spans: leafSpans(root).length }),
       sample: (root, endpoints) => {
-        const spans = leafSpans(root);
-        if (!spans.length) return null;
+        const lums = leafSpans(root).map((s) => lum(getComputedStyle(s).color)).filter((x) => x != null && isFinite(x));
+        if (!lums.length) return null;
         if (endpoints) {
-          const vals = spans.map((s) => lum(getComputedStyle(s).color));
-          const lo = Math.min(...endpoints.ghost, ...vals), hi = Math.max(...endpoints.ink, ...vals);
+          const ghost = endpoints.ghost.filter((x) => x != null && isFinite(x)), ink = endpoints.ink.filter((x) => x != null && isFinite(x));
+          if (!ghost.length || !ink.length) return null;
+          const vals = lums;
+          /* FIXED poles (endpoints only): lo/hi must be constant across
+           * seats — deriving them from the current seat's own values made
+           * seat 0 degenerate (lo=hi=ghost → d fallback → coverage 1,
+           * the inverted head of the first frozen curve). */
+          const lo = Math.min(...ghost, ...ink), hi = Math.max(...ghost, ...ink);
           const d = hi - lo < 1e-6 ? 1 : hi - lo;
           /* orientation: coverage grows towards the INK endpoint — if the
            * ghost seat is the lighter pole, darker = more inked */
-          const ghostMean = endpoints.ghost.reduce((a, x) => a + x, 0) / endpoints.ghost.length;
-          const inkMean = endpoints.ink.reduce((a, x) => a + x, 0) / endpoints.ink.length;
+          const ghostMean = ghost.reduce((a, x) => a + x, 0) / ghost.length;
+          const inkMean = ink.reduce((a, x) => a + x, 0) / ink.length;
           const inv = ghostMean > inkMean;
           const cover = (x) => {
             const n = Math.max(0, Math.min(1, (x - lo) / d));
@@ -167,11 +201,11 @@ const PAGE_LIB_JS = String.raw`
           };
           return Math.round((vals.reduce((a, x) => a + cover(x), 0) / vals.length) * 1000) / 1000;
         }
-        return { ghost: spans.map((s) => lum(getComputedStyle(s).color)), ink: spans.map((s) => lum(getComputedStyle(s).color)) };
+        return { ghost: lums, ink: lums };
       },
     },
   };
-  return { resolveSpec, seat, lum, readProps, metrics, leafSpans };
+  return { resolveSpec, seat, settledSeat, lum, readProps, metrics, leafSpans };
 })()
 `;
 
@@ -185,26 +219,32 @@ const SAMPLE_JS = String.raw`
 async (cfg, libSrc) => {
   const N = 11;
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const { resolveSpec, seat, readProps, metrics } = eval(libSrc);
+  const { resolveSpec, seat, settledSeat, lum, readProps, metrics, leafSpans } = eval(libSrc);
   const out = { targetFound: false, samples: {}, progress: [] };
   const el = cfg.path ? resolveSpec(cfg.path) : document.querySelector(cfg.sel);
   if (!el) return out;
   out.targetFound = true;
   const metric = metrics[cfg.metric || "inkCoverage"];
+  /* scrub probe: leaf-span colours sampled across the whole stagger
+   * (first/mid/…/last) — changes while the scrub renders, so the
+   * settle check only returns once the seat truly rests */
+  const probe = () => {
+    const ls = leafSpans(el);
+    if (!ls.length) return el.textContent.length;
+    const step = Math.max(1, Math.floor(ls.length / 6));
+    return ls.filter((_, i) => i % step === 0).map((s) => getComputedStyle(s).color).join("|");
+  };
   /* endpoints pass: measure the site's own ghost/ink at the range ends */
-  seat(Math.max(0, Math.round(cfg.start)));
-  await sleep(140);
+  await settledSeat(Math.max(0, Math.round(cfg.start)), probe);
   const atStart = metric.sample(el, null);
-  seat(Math.max(0, Math.round(cfg.end)));
-  await sleep(140);
+  await settledSeat(Math.max(0, Math.round(cfg.end)), probe);
   const atEnd = metric.sample(el, null);
   const endpoints = { ghost: atStart.ghost, ink: atEnd.ink };
   const key = cfg.metric || "inkCoverage";
   out.samples[key] = [];
   for (let i = 0; i < N; i++) {
     const y = cfg.start + ((cfg.end - cfg.start) * i) / (N - 1);
-    seat(Math.max(0, Math.round(y)));
-    await sleep(110); /* lenis settle + a raf */
+    await settledSeat(Math.max(0, Math.round(y)), probe); /* settle-checked (seat-0 artifact fix) */
     out.samples[key].push(metric.sample(el, endpoints));
     if (window.ScrollTrigger && window.ScrollTrigger.getAll) {
       const st = window.ScrollTrigger.getAll().find((t) => t.trigger === el);
@@ -213,7 +253,7 @@ async (cfg, libSrc) => {
   }
   out.spans = metric.discover ? metric.discover(el) : null;
   seat(0);
-  await sleep(150);
+  await sleep(200);
   return out;
 }
 `;
@@ -254,7 +294,7 @@ export async function extract(bps, url = "https://heronaiapp.com/") {
         const wrapKey = t.trigger.split(" > ")[0];
         const map = CURVE_COUNTERPARTS[wrapKey];
         const live = await page.evaluate(async ({ lib, path }) => {
-          const { resolveSpec, seat, readProps, leafSpans } = eval(lib);
+          const { resolveSpec, seat, settledSeat, readProps, leafSpans } = eval(lib);
           const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
           const el = resolveSpec(path);
           if (!el) return { targetFound: false };
@@ -279,11 +319,10 @@ export async function extract(bps, url = "https://heronaiapp.com/") {
           /* animated-descendant discovery: diff computed styles at the
            * range ends (settled — scrub needs a raf after each seat) */
           const snap = () => { const o = {}; let i = 0; for (const d of [...el.querySelectorAll("*")].slice(0, 400)) o[i++] = readProps(d); return o; };
-          seat(Math.round(st.start));
-          await sleep(180);
+          const probe = () => { const ls = leafSpans(el); if (!ls.length) return el.textContent.length; const step = Math.max(1, Math.floor(ls.length / 6)); return ls.filter((_, i) => i % step === 0).map((s) => getComputedStyle(s).color).join("|"); };
+          await settledSeat(Math.round(st.start), probe);
           const s0 = snap();
-          seat(Math.round(st.end));
-          await sleep(180);
+          await settledSeat(Math.round(st.end), probe);
           const s1 = snap();
           const animated = [];
           const desc = [...el.querySelectorAll("*")].slice(0, 400);
@@ -318,12 +357,12 @@ export async function extract(bps, url = "https://heronaiapp.com/") {
         if (!live.targetFound) { rec.note = live.err || "spec path not resolvable on the live page"; pending.push(rec); continue; }
         if (map && live.liveStart != null) {
           const cfg = { path: t.trigger, start: live.liveStart, end: live.liveEnd, metric: map.metric };
-          const s = await page.evaluate("(" + SAMPLE_JS + ")(" + JSON.stringify(cfg) + "," + JSON.stringify(PAGE_LIB_JS) + ")").catch(() => null);
+          const s = await page.evaluate("(" + SAMPLE_JS + ")(" + JSON.stringify(cfg) + "," + JSON.stringify(PAGE_LIB_JS) + ")").catch((e) => ({ err: String(e).slice(0, 200) }));
           rec.ours = map.ours;
           rec.anchors = map.anchors;
           rec.metric = map.metric;
           if (s && s.targetFound) { rec.samples = s.samples; rec.progressAtSeats = s.progress; rec.spans = s.spans; curves.push(rec); }
-          else { rec.note = "metric sampling failed on live page"; pending.push(rec); }
+          else { rec.note = "metric sampling failed on live page: " + (s?.err || "target lost"); pending.push(rec); }
         } else {
           rec.note = rec.note || "no counterpart mapping yet (section motion not built) — measured inventory";
           pending.push(rec);

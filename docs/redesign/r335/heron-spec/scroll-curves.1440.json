@@ -2,7 +2,7 @@
  "meta": {
   "bp": "1440",
   "url": "https://heronaiapp.com/",
-  "extractedAt": "2026-11-05T11:27:20.678Z",
+  "extractedAt": "2026-11-05T11:49:27.703Z",
   "source": "live .main-inner seat sampling @11 seats + ScrollTrigger introspection (chromium; webkit residual)"
  },
  "curves": [
@@ -41,9 +41,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6925,
+      "opacity": 0.9037,
       "x": 0,
-      "y": 10.25,
+      "y": 3.2089,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -67,9 +67,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6833,
+      "opacity": 0.8995,
       "x": 0,
-      "y": 10.5567,
+      "y": 3.35098,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -93,9 +93,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6739,
+      "opacity": 0.8951,
       "x": 0,
-      "y": 10.8694,
+      "y": 3.49715,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -119,9 +119,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6643,
+      "opacity": 0.8906,
       "x": 0,
-      "y": 11.1883,
+      "y": 3.64756,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -145,9 +145,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6545,
+      "opacity": 0.8859,
       "x": 0,
-      "y": 11.5134,
+      "y": 3.80221,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -171,9 +171,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6446,
+      "opacity": 0.8811,
       "x": 0,
-      "y": 11.8447,
+      "y": 3.96118,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -197,9 +197,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6345,
+      "opacity": 0.8762,
       "x": 0,
-      "y": 12.1823,
+      "y": 4.12449,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -223,9 +223,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6242,
+      "opacity": 0.8712,
       "x": 0,
-      "y": 12.5262,
+      "y": 4.29226,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -249,9 +249,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6136,
+      "opacity": 0.866,
       "x": 0,
-      "y": 12.8766,
+      "y": 4.4645,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -275,9 +275,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.6029,
+      "opacity": 0.8607,
       "x": 0,
-      "y": 13.2334,
+      "y": 4.64127,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -301,9 +301,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[8] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.592,
+      "opacity": 0.8553,
       "x": 0,
-      "y": 13.5968,
+      "y": 4.82268,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -327,9 +327,9 @@
      "path": "h2[1] > div[1] > div[1] > div[1] > div[2] > div[9] > div[1]",
      "props": {
       "color": "rgb(40, 40, 40)",
-      "opacity": 0.5809,
+      "opacity": 0.8497,
       "x": 0,
-      "y": 13.9668,
+      "y": 5.00875,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -347,8 +347,8 @@
    "metric": "inkCoverage",
    "samples": {
     "inkCoverage": [
-     1,
-     0.074,
+     0,
+     0.073,
      0.185,
      0.297,
      0.41,
@@ -356,7 +356,7 @@
      0.634,
      0.746,
      0.859,
-     0.959,
+     0.97,
      1
     ]
    },
@@ -674,9 +674,9 @@
      "path": "div[2] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
      "props": {
       "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0,
+      "opacity": 0.471,
       "x": 0,
-      "y": 11.6719,
+      "y": 6.17424,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -687,9 +687,9 @@
      "path": "div[2] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
      "props": {
       "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0,
+      "opacity": 0.4204,
       "x": 0,
-      "y": 11.6719,
+      "y": 6.76469,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -1021,7 +1021,7 @@
      "path": "div[1] > div[1] > div[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
      "props": {
       "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.0266096,
+      "opacity": 0,
       "x": 0,
       "y": 0,
       "scale": 1,
@@ -1031,12 +1031,12 @@
      }
     },
     {
-     "path": "div[2] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+     "path": "section[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
      "props": {
       "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.8136,
+      "opacity": 1,
       "x": 0,
-      "y": 2.1758,
+      "y": 0,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -1044,7 +1044,7 @@
      }
     }
    ],
-   "animatedCount": 59,
+   "animatedCount": 101,
    "note": "no counterpart mapping yet (section motion not built) — measured inventory"
   },
   {
@@ -1069,308 +1069,9 @@
      "path": "div[1]",
      "props": {
       "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
+      "opacity": 0.00905512,
       "x": 0,
       "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[1] > div[1] > div[1]",
-     "props": {
-      "color": "rgb(180, 180, 176)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[1] > div[2]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[1] > div[3]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0.000277,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9999,
-      "x": 0,
-      "y": 0.00216406,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9996,
-      "x": 0,
-      "y": 0.00730587,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[6]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.999,
-      "x": 0,
-      "y": 0.0173125,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[7]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.998,
-      "x": 0,
-      "y": 0.0338113,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[8]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9966,
-      "x": 0,
-      "y": 0.0584297,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[9]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9946,
-      "x": 0,
-      "y": 0.0927777,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[10]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.992,
-      "x": 0,
-      "y": 0.1385,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[11]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9886,
-      "x": 0,
-      "y": 0.197207,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[12]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9844,
-      "x": 0,
-      "y": 0.270508,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[1] > div[1] > div[13]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9792,
-      "x": 0,
-      "y": 0.360048,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 1,
-      "x": 0,
-      "y": 0,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.973,
-      "x": 0,
-      "y": 0.467438,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9657,
-      "x": 0,
-      "y": 0.594303,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9571,
-      "x": 0,
-      "y": 0.742273,
-      "scale": 1,
-      "rotate": 0,
-      "clipPath": 0,
-      "filter": 0
-     }
-    },
-    {
-     "path": "div[1] > div[2] > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
-     "props": {
-      "color": "rgba(40, 40, 40, 0.72)",
-      "opacity": 0.9473,
-      "x": 0,
-      "y": 0.912957,
       "scale": 1,
       "rotate": 0,
       "clipPath": 0,
@@ -1378,7 +1079,7 @@
      }
     }
    ],
-   "animatedCount": 80,
+   "animatedCount": 1,
    "note": "no counterpart mapping yet (section motion not built) — measured inventory"
   }
  ]
