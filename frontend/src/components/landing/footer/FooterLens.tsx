@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * FooterLens — R308 «شريط الفحص» — the footer's pointer instrument.
  *

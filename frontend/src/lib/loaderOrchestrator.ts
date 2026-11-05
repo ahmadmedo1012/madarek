@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../lib/motion-media';
 /* ═════════════════════════════════════════════════════════════════════
  * loaderOrchestrator — R323 §A2 (task 1-b) — the ONE loading surface.
  * ═════════════════════════════════════════════════════════════════════

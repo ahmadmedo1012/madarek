@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * SheetCursor — R308 «أداة الإشارة» — the landing's custom pointer.
  *

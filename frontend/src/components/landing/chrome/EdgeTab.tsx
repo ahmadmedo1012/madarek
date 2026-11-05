@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * EdgeTab — R314 (V12) — the right-edge vertical chrome tab.
  *

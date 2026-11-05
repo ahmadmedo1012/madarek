@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../../lib/motion-media';
 /**
  * SheetLoader — R313 «لوحة البدء» — the entrance sequence, rebuilt to
  * the reference's loader semantics (D10).

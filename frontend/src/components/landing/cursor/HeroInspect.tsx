@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * HeroInspect — R308 «محطات الفحص» · R309 the corrected frame.
  *

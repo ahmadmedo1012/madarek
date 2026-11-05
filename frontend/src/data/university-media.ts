@@ -271,56 +271,6 @@ export type RoleKey = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'QUALITY' | 'OWNER';
 /* The four role-seat captures (r307): the non-student dashboards the
    role selector swaps in. ProductCapture shape (same loader); routes
    point at the real surfaces — the frames carry no funnel CTA. */
-export const ROLE_CAPTURES: ProductCapture[] = [
-  {
-    /* the student seat mirrors PRODUCT_CAPTURES' student-dashboard row —
-       the registry is per-slot, the lookup stays single-source. */
-    id: 'student-dashboard',
-    titleAr: 'لوحة الطالب',
-    captionAr: 'نظرة الطالب على يومه: جدول اليوم، والمهام، والتقدّم',
-    altAr: 'لقطة حقيقية من لوحة الطالب في مدارك — بيانات العرض التجريبية',
-    route: '/student/dashboard',
-    widths: [720, 1280],
-    sizes: '(min-width: 992px) 40rem, 100vw',
-  },
-  {
-    id: 'teacher-dashboard',
-    titleAr: 'لوحة الأستاذ',
-    captionAr: 'متابعة الأقسام والطلاب والمقرّرات',
-    altAr: 'لقطة حقيقية من لوحة الأستاذ في مدارك — بيانات العرض التجريبية',
-    route: '/teacher/dashboard',
-    widths: [720, 1280],
-    sizes: '(min-width: 992px) 40rem, 100vw',
-  },
-  {
-    id: 'admin-dashboard',
-    titleAr: 'لوحة المسجل العام',
-    captionAr: 'مؤشرات الكليات والطلاب والأساتذة',
-    altAr: 'لقطة حقيقية من لوحة المسجل العام في مدارك — بيانات العرض التجريبية',
-    route: '/admin/dashboard',
-    widths: [720, 1280],
-    sizes: '(min-width: 992px) 40rem, 100vw',
-  },
-  {
-    id: 'quality-dashboard',
-    titleAr: 'لوحة ضمان الجودة',
-    captionAr: 'مجالس الجودة ومؤشرات الالتزام',
-    altAr: 'لقطة حقيقية من لوحة ضمان الجودة في مدارك — بيانات العرض التجريبية',
-    route: '/quality/dashboard',
-    widths: [720, 1280],
-    sizes: '(min-width: 992px) 40rem, 100vw',
-  },
-  {
-    id: 'owner-dashboard',
-    titleAr: 'لوحة المالك',
-    captionAr: 'الحاكمية والمؤسّسات وسجلّ التدقيق',
-    altAr: 'لقطة حقيقية من لوحة مالك المنصّة في مدارك — بيانات العرض التجريبية',
-    route: '/owner/dashboard',
-    widths: [720, 1280],
-    sizes: '(min-width: 992px) 40rem, 100vw',
-  },
-];
-
 export interface RoleShowcase {
   key: RoleKey;
   roleAr: string;

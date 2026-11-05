@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
 /**
  * Preloader — R333 «تتابع الدخول» — the entry overlay (heron-craft row 1).
  *

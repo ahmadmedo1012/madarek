@@ -1,5 +1,5 @@
-import { PREFERS_REDUCED_MOTION } from '../../../hooks/usePrefersReducedMotion';
-import { MASTERY_SCORE_LINE, LECTURE_INTERACTIVE} from '../copy';
+import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
+import { LECTURE_INTERACTIVE, MASTERY_SCORE_LINE } from '../copy';
 /**
  * JourneyScene — R308 «رحلة التعلّم» · R310–R319 the plan scene's own
  * history · **R322 (3-b) — THE MAP TRANSPLANT** (Heron `home-map`).

@@ -1,4 +1,4 @@
-import { PREFERS_REDUCED_MOTION } from '../hooks/usePrefersReducedMotion';
+import { PREFERS_REDUCED_MOTION } from '../lib/motion-media';
 /**
  * reveals — R333 (P-C) — the ONE scroll-reveal recipe for the landing's
  * second half, riding the HOUSE reveal contract (heron-craft §2 themes
