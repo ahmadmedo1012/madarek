@@ -13,9 +13,103 @@
   border-block-start: 1px solid var(--rule-strong);
 }
 
+<<<<<<< HEAD
 .fo-cta-frame,
 .fo-cta-sheet {
   display: block;
+||||||| a8c62a03
+/* R332 W5 — the ≥992 owner seat: the strata tiers dissolved HERE (ONE
+   definition per property — the strata 4.8/3.84rem + R328 12/8rem
+   duplicates retire). Values are the WINNING cascade verbatim: the
+   R328 one-ladder closer (opens at the scene's 12rem, closes at the
+   quiet 8rem — var(--space-12xl)/var(--space-8xl)), the W3 floor and
+   the compact inner rungs. Height holds 697.9 vs the twin's 698.2
+   (Δ0.04% measured, run-001). The rhythm FIX (the registry strip
+   flush under the resolve) rides the ≥1025 block at file end. */
+@media (min-width: 992px) {
+  .fo-cta {
+    padding-block: var(--space-12xl) var(--space-8xl);
+    /* R315 cycle-3 (W3 — the desktop law): the floor rides the root as a
+     * CONSTANT REM height — 83.75rem = 496 @1024 · 621 @1280 · 698 @1440 ·
+     * 931 @1920 (the fresh manifest's own quartet, ±0.1rem). The old
+     * 77.5vh share was exact at 900px height only: −47 @1080, +30 @768 —
+     * the reference's band is width-driven, not height-driven. */
+    min-block-size: 83.75rem;
+  }
+
+  .fo-cta-inner {
+    /* R333 (P-C): the display-scale title (+6.7px over D2) re-seats on
+       the next spacing rung so the taller block keeps its air — the
+       band's 83.75rem floor absorbs it (content stays under the twin
+       height; verified in the r333 evidence run). */
+    gap: 2.4rem;
+  }
+
+  .fo-cta-lede {
+    line-height: 1.6;
+  }
+
+  .cg-strip {
+    /* R333 P-F3 — margin 0 from the ≥992 floor up (was 2.4rem, which
+       read 14.2px @1024 — the matrix-1024 rhythm FAIL): the strip sits
+       FLUSH under the resolve at every ≥992 width; the 83.75rem band
+       floor absorbs the air exactly like the ≥1025 seat did (height
+       holds 496 @1024 · 698 @1440). */
+    margin-block-start: 0;
+    padding-block-start: 1.92rem;
+  }
+=======
+/* R332 W5 — the ≥992 owner seat: the strata tiers dissolved HERE (ONE
+   definition per property — the strata 4.8/3.84rem + R328 12/8rem
+   duplicates retire). Values are the WINNING cascade verbatim: the
+   R328 one-ladder closer (opens at the scene's 12rem, closes at the
+   quiet 8rem — var(--space-12xl)/var(--space-8xl)), the W3 floor and
+   the compact inner rungs. Height holds 697.9 vs the twin's 698.2
+   (Δ0.04% measured, run-001). The rhythm FIX (the registry strip
+   flush under the resolve) rides the ≥1025 block at file end. */
+@media (min-width: 992px) {
+  .fo-cta {
+    padding-block: var(--space-12xl) var(--space-8xl);
+    /* R315 cycle-3 (W3 — the desktop law): the floor rides the root as a
+     * CONSTANT REM height — 83.75rem = 496 @1024 · 621 @1280 · 698 @1440 ·
+     * 931 @1920 (the fresh manifest's own quartet, ±0.1rem). The old
+     * 77.5vh share was exact at 900px height only: −47 @1080, +30 @768 —
+     * the reference's band is width-driven, not height-driven. */
+    min-block-size: 83.75rem;
+  }
+
+  .fo-cta-inner {
+    /* R333 (P-C): the display-scale title (+6.7px over D2) re-seats on
+       the next spacing rung so the taller block keeps its air — the
+       band's 83.75rem floor absorbs it (content stays under the twin
+       height; verified in the r333 evidence run). */
+    gap: 2.4rem;
+  }
+
+  /* R338 T-10 first pass — heron cta h2 lh is FLAT 1.0 on every ≥768 rung
+     (40/40 · 53.33/53.33 · 28.44/28.44 · 29.47/29.47 measured); only the
+     390 phone rung carries 1.1 (23.82/26.2 — the base seat below). */
+  .fo-cta-title {
+    line-height: 1;
+  }
+
+  /* R338 T-10 — heron lede lh is 1.3 on EVERY rung (17.33/13.33 ·
+     23.11/17.78 · 12.33/9.48 · 19.15/14.73 · 18.06/13.89). */
+  .fo-cta-lede {
+    font-size: 1em;
+    line-height: 1.3;
+  }
+
+  .cg-strip {
+    /* R333 P-F3 — margin 0 from the ≥992 floor up (was 2.4rem, which
+       read 14.2px @1024 — the matrix-1024 rhythm FAIL): the strip sits
+       FLUSH under the resolve at every ≥992 width; the 83.75rem band
+       floor absorbs the air exactly like the ≥1025 seat did (height
+       holds 496 @1024 · 698 @1440). */
+    margin-block-start: 0;
+    padding-block-start: 1.92rem;
+  }
+>>>>>>> origin/r338/t10-cta
 }
 
 /* the 1px rules are real nodes (heron measures them as elements):
@@ -51,6 +145,23 @@
 }
 
 .fo-cta-lede {
+<<<<<<< HEAD
+||||||| a8c62a03
+  /* R333 (P-C): +1 rung off the 15px body-lg lead — 16.7px @1440,
+     13px floor-gated (the ladder's max(floor, Nrem) convention); the
+     closing band's copy must carry the resolve, not whisper it. */
+  font-size: max(14px, 2rem);
+  line-height: 1.7;
+=======
+  /* R333 (P-C): +1 rung off the 15px body-lg lead — 16.7px @1440,
+     13px floor-gated (the ladder's max(floor, Nrem) convention); the
+     closing band's copy must carry the resolve, not whisper it. */
+  /* R338 T-10 — heron's lede is exactly 1em of the fluid body root
+     (13.33 @1440 · 17.78 @1920 · 14.73 @768 · 13.89 @390) at lh 1.3;
+     the old 2rem/1.7 resolve voice ran +50% over the twin. */
+  font-size: 1em;
+  line-height: 1.3;
+>>>>>>> origin/r338/t10-cta
   color: var(--text-secondary);
 }
 
@@ -201,6 +312,7 @@
   }
 
   .fo-cta-lede {
+<<<<<<< HEAD
     font-size: 1.6rem;
   }
 
@@ -243,6 +355,15 @@
   .fo-cta-lede-wrap {
     inline-size: min(79.4rem, 100%);
     margin-block-start: 1.68rem;
+||||||| a8c62a03
+    line-height: 1.5;
+=======
+    line-height: 1.3;
+  }
+
+  .fo-cta-title {
+    line-height: 1;
+>>>>>>> origin/r338/t10-cta
   }
 
   .fo-cta-actions {

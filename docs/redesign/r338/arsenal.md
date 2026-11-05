@@ -35,6 +35,12 @@ T-04b | node scripts/conformance/run.mjs --url :5304 | measured problem 84.6→8
 T-04c | playwright chromium (/tmp/pw-browsers symlink fallback) + scripts/conformance/run.mjs --url :5304 + vitest r306 + check-colors --strict | 390 DOM forensics (phantom 56px section pad), pm-meta border restore, conformance re-measure, CI test verify
 T-04c | curl+jq Actions API + vitest/eslint/tsc/size-gate.sh/design-gates local mirrors + conformance run.mjs --url | CI forensics (fleet-wide red) + 90.5% re-measure
 L-9 | git/vite/check-bundle-size/verify.sh/curl+jq | staged landing w15: per-merge bundle checks + fast verify
+<<<<<<< HEAD
 T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
 T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
 T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measurement
+||||||| a8c62a03
+=======
+T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
+T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
+>>>>>>> origin/r338/t10-cta

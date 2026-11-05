@@ -46,6 +46,7 @@ function SketchArt() {
 
 export function Vision({ year }: { year: number }) {
   return (
+<<<<<<< HEAD
     <section className="fo-cta" id="vision" data-spec="cta.section" aria-label="ابدأ رحلتك — أنشئ حسابك">
       <div className="fo-cta-frame" data-spec="cta.frame">
         <section className="fo-cta-sheet" data-spec="cta.sheet" aria-label="الخاتمة">
@@ -128,6 +129,49 @@ export function Vision({ year }: { year: number }) {
           </div>
           <div className="fo-cta-sheet-rule" data-spec="cta.sheet-rule" aria-hidden="true" />
         </section>
+||||||| a8c62a03
+    <section className="fo-cta" id="vision" aria-label="ابدأ رحلتك — أنشئ حسابك">
+      <div className="fo-cta-inner">
+        <h2 className="fo-cta-title" data-mdrk-reveal="lines">
+          جاهز لبدء <em>رحلتك</em>؟
+        </h2>
+        <p className="fo-cta-lede" data-mdrk-reveal="item">
+          أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
+          وتابع تقدّمك من أول محاضرة.
+        </p>
+        <div className="fo-cta-actions" data-mdrk-reveal="item" id="cta">
+          <Link to="/auth/register" className="btn accent lg">
+            {REGISTER}
+            <Icon icon={ArrowLeft} size={16} />
+          </Link>
+          <Link to="/auth" className="btn ghost lg">{LOGIN}</Link>
+        </div>
+        <p className="fo-cta-meta" data-mdrk-reveal="item">
+          <Icon icon={Check} size={13} />
+          مدارك · {year} · منصّة تعليمية مستقلّة
+        </p>
+=======
+    <section className="fo-cta" id="vision" data-spec="cta.section" aria-label="ابدأ رحلتك — أنشئ حسابك">
+      <div className="fo-cta-inner" data-spec="cta.inner">
+        <h2 className="fo-cta-title" data-spec="cta.title" data-mdrk-reveal="lines">
+          جاهز لبدء <em>رحلتك</em>؟
+        </h2>
+        <p className="fo-cta-lede" data-spec="cta.lede" data-mdrk-reveal="item">
+          أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
+          وتابع تقدّمك من أول محاضرة.
+        </p>
+        <div className="fo-cta-actions" data-spec="cta.actions" data-mdrk-reveal="item" id="cta">
+          <Link to="/auth/register" className="btn accent lg" data-spec="cta.primary">
+            {REGISTER}
+            <Icon icon={ArrowLeft} size={16} />
+          </Link>
+          <Link to="/auth" className="btn ghost lg" data-spec="cta.secondary">{LOGIN}</Link>
+        </div>
+        <p className="fo-cta-meta" data-spec="cta.meta" data-mdrk-reveal="item">
+          <Icon icon={Check} size={13} />
+          مدارك · {year} · منصّة تعليمية مستقلّة
+        </p>
+>>>>>>> origin/r338/t10-cta
       </div>
 
       <p className="fo-cta-meta" data-spec="cta.meta" data-mdrk-reveal="item">
@@ -141,9 +185,27 @@ export function Vision({ year }: { year: number }) {
           row, never a tooltip). The TRUE numbers (colleges,
           campuses, the live-capability count) ride HERE, computed
           from the real config/data — never invented. */}
+<<<<<<< HEAD
       <div className="cg-strip" id="colleges" data-spec="cta.registry">
         <span className="cg-strip-label fo-mono" dir="ltr" data-spec="cta.registry-label">[08] · REGISTRY</span>
         <p className="cg-strip-text" data-spec="cta.registry-text">
+||||||| a8c62a03
+      <div className="cg-strip" id="colleges">
+        {/* R328 (H5): the index renumbers [09]→[08] — the footer's
+            old [08] drawn-mark cell retired in R323, so the sheet's
+            own ladder ran hero[01]…roles[07] then skipped to [09];
+            the registry strip IS the eighth band. */}
+        <span className="cg-strip-label fo-mono" dir="ltr">[08] · REGISTRY</span>
+        <p className="cg-strip-text">
+=======
+      <div className="cg-strip" id="colleges" data-spec="cta.registry">
+        {/* R328 (H5): the index renumbers [09]→[08] — the footer's
+            old [08] drawn-mark cell retired in R323, so the sheet's
+            own ladder ran hero[01]…roles[07] then skipped to [09];
+            the registry strip IS the eighth band. */}
+        <span className="cg-strip-label fo-mono" dir="ltr" data-spec="cta.registry-label">[08] · REGISTRY</span>
+        <p className="cg-strip-text" data-spec="cta.registry-text">
+>>>>>>> origin/r338/t10-cta
           <strong><span className="fo-mono" dir="ltr">{formatInt(colleges.length)}</span> كلية</strong> في{' '}
           <span className="fo-mono" dir="ltr">{formatInt(CAMPUS_COUNT)}</span> أحرام —{' '}
           <span className="fo-mono" dir="ltr">[{String(LIVE_COUNT).padStart(2, '0')}]</span> قدرات تعمل اليوم.
