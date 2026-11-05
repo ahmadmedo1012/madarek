@@ -1,5 +1,5 @@
 {
-  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: pinned chapters walkthrough — section#chapters.chapters (sections/Chapters.tsx).]",
+  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). [P2-0 split: one file per our-section key. This file: home-map-wrap — the pinned 51% walkthrough, our section#chapters.chapters (sections/Chapters.tsx, scene in journey/JourneyScene). T-09 r338 first pass: explicit bindings for the primary tree (kills the ~54 junk heuristic pairs — the h=7560-wrapper vs 96px-node gluing measured at 45.8% baseline), noCounterpart reasons for heron authored-SVG internal leaves + retired raster stills, plumbing geometry-skips for svg roots.]",
   "ourSection": {
     "home-map-wrap": "section#chapters.chapters"
   },
@@ -9,5 +9,60 @@
   "scaleFactor": {
     "home-map-wrap": 1
   },
-  "explicit": []
+  "explicit": [
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1]", "ours": ".jt" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[2]", "ours": ".chapters-head" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[2] > div[1] > div[2] > h2[1]", "ours": ".chapters-title" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[2] > div[1] > div[2] > div[3] > div[1]", "ours": ".chapters-lede" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[1]", "ours": ".jt-pin" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[1] > div[1]", "ours": ".jt-map-col" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[1]", "ours": ".jt-map-in" },
+    { "section": "home-map-wrap", "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1]", "ours": ".jt-window" }
+  ],
+  "noCounterpart": [
+    { "section": "home-map-wrap", "heron": "svg[1] > path[1]", "reason": "heron authored-SVG internal leaf — the reference's line-art is raster-captured per path node; our counterpart is our OWN authored inline-SVG drawing (different honest node structure). The drawing is asserted at its window container (.jt-window, explicitly bound); node-level pairing is impossible by construction (r337 platform svg-internals precedent)." },
+    { "section": "home-map-wrap", "heron": "svg[1] > path[2]", "reason": "heron authored-SVG internal leaf — see svg[1] > path[1] reason: our own authored drawing, asserted at the bound window container." },
+    { "section": "home-map-wrap", "heron": "svg[1] > path[3]", "reason": "heron authored-SVG internal leaf — see svg[1] > path[1] reason: our own authored drawing, asserted at the bound window container." },
+    { "section": "home-map-wrap", "heron": "svg[1] > path[4]", "reason": "heron authored-SVG internal leaf — see svg[1] > path[1] reason: our own authored drawing, asserted at the bound window container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[1]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[2]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[3]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[4]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[5]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[6]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[7]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[8]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[9]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[10]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[11]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[12]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[2] > path[13]", "reason": "heron authored-SVG internal leaf (13-path station drawing) — our own authored drawing differs in node structure; asserted at its container." },
+    { "section": "home-map-wrap", "heron": "svg[1] > line[3]", "reason": "heron authored-SVG internal rule/line leaf — our authored grid uses its own line count; asserted at the window container." },
+    { "section": "home-map-wrap", "heron": "svg[1] > line[4]", "reason": "heron authored-SVG internal rule/line leaf — our authored grid uses its own line count; asserted at the window container." },
+    { "section": "home-map-wrap", "heron": "svg[1] > line[5]", "reason": "heron authored-SVG internal rule/line leaf — our authored grid uses its own line count; asserted at the window container." },
+    { "section": "home-map-wrap", "heron": "g[2] > path[1]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[2] > path[2]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[4] > path[1]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[4] > path[2]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[4] > path[3]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[4] > g[5] > path[1]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[4] > g[5] > path[2]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[6] > path[1]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[6] > path[2]", "reason": "heron authored-SVG g-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[2] > g[3] > g[1] > path[1]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[2] > g[4] > path[1]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[2] > g[4] > path[2]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[6] > g[3] > g[1] > path[1]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[6] > g[4] > path[1]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "g[6] > g[4] > path[2]", "reason": "heron authored-SVG deep-nested leaf — internal plumbing of the reference line-art; our authored drawing differs in node structure." },
+    { "section": "home-map-wrap", "heron": "div[1] > img[1]", "reason": "heron walkthrough chapter stills are raster <img> captures; R315 K-E re-seat: our walkthrough reproduces the reference's map states with the authored inline-SVG drawing (no raster stills by design) — the drawing window is the asserted counterpart." },
+    { "section": "home-map-wrap", "heron": "div[2] > div[1] > div[1] > div[2] > div[1] > br[1]", "reason": "heron <br> line-break plumbing node — not a box; our Arabic line wrapping is native (no break scaffolding)." }
+  ],
+  "plumbing": [
+    { "section": "home-map-wrap", "heron": "div[1] > svg[1]", "skip": ["geometry"], "reason": "heron walkthrough svg root: capture-scoped viewBox plumbing — our authored svg root carries its own viewBox/aspect; the visible drawing is asserted at .jt-window" },
+    { "section": "home-map-wrap", "heron": "div[4] > div[1] > svg[1]", "skip": ["geometry"], "reason": "heron station svg root: viewBox plumbing — asserted at its container" },
+    { "section": "home-map-wrap", "heron": "div[3] > div[3] > div[1] > div[1] > svg[1]", "skip": ["geometry"], "reason": "heron station svg root: viewBox plumbing — asserted at its container" },
+    { "section": "home-map-wrap", "heron": "div[2] > div[3] > div[1] > div[1] > svg[1]", "skip": ["geometry"], "reason": "heron station svg root: viewBox plumbing — asserted at its container" },
+    { "section": "home-map-wrap", "heron": "div[1] > div[4] > div[1] > svg[1]", "skip": ["geometry"], "reason": "heron map-detail svg root: viewBox plumbing — asserted at its container" }
+  ]
 }
