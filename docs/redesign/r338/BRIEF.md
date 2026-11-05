@@ -101,3 +101,10 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - CRITICAL GATE FACT: check-bundle-size.mjs sums ALL dist/assets/*.js INCLUDING async chunks — lazy-splitting moves weight and adds fragmentation glue; it can NEVER lower the total. The only honest lever is REAL code cuts (axios→native fetch migration ≈ −5-6 KB gz; dead App.tsx weight). The t99br lazy-split branch is shelved (also fixed a pre-existing Footer.tsx tsc `as const` error).
 - main @0188bf2f carries: usecase 91.2 ✓, intro 74.8, platform 56.3 (branch now at 78.7 — lands next), + t14a instrument. The t99 train (dd0fd5c4) holds problem 90.5 + footer 69.2 + why-merge; lands after the axios diet.
 - Platform CTA orange ruling APPLIED (section-scoped var rgb(250,54,0)); lh ar-floor max(heronLh,1.35×fs) pattern established — reuse it.
+
+## ENV ADDENDUM 11 (wave-15, lead)
+- main @11670879 carries: usecase 93.9 ✓, platform 80 ✓ (+dark 80.5) ✓, intro 74.8, t14a instrument, runner pins (ubuntu-24.04 ×20). Bundle on main: 776.3 KB gz (margin to 777 = 0.7).
+- CI incident NOT cleared by the runner pin (all runs still red, logs 404) — GitHub-side; local verify remains the landing evidence; flag for owner in final report.
+- Remaining unlanded: problem 90.5 (d2a7a2e7, ≈+0.6-0.7KB), why 63.5 (t05-why-f 3c647923, ≈+0.9KB), footer 69.2 (fc13324a, ≈+0.6KB). Per-merge bundle staging decides what fits the 0.7 margin — problem first.
+- Diet tasks died 3×: diet is now best-effort; landing what fits without it takes priority.
+- Intro plumbing: the t14a `plumbing:[...]` mapping mechanism IS available for intro's ~41 junk pairs/bp (T-03e asked for "lead plumbing-skip" — that IS the mechanism; next intro pass uses it with reasons).
