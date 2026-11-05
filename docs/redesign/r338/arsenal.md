@@ -422,3 +422,7 @@ T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | comput
 T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
 >>>>>>> origin/r338/t10-cta
 T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
+L-12 | git merge --no-ff | landed 6-branch backlog (t20,t21,t09-map,t03-intro,t06g,t10-cta) on r338/land-w20
+L-12 | npx vite build + scripts/check-bundle-size.mjs | per-code-merge bundle gate (760.1/760.0/760.5/761.3 ≤ 777)
+L-12 | scripts/verify.sh --fast | landing gate (tsc+vitest+bundle) before push to main
+L-12 | curl GitHub Actions API | post-push CI run ids (quota-dead, ids only)
