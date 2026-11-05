@@ -1,795 +1,477 @@
-/* R332 — split VERBATIM from src/styles/landing.css · footer = R313 D14 colophon + cell grid + wordmark + subscribe + legal (2157-2919)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+/* R338 T-06 — the footer, REWRITTEN from scratch against the frozen
+   Heron footer census (docs/redesign/r335/heron-spec/footer.*.json).
+   The R313–R332 colophon (cell grid + FooterLens + giant wordmark +
+   double legal row) is fully RETIRED — every rule below is new.
+   Measured @1440 (rem root 8.333px): footer 1427×711 = grid 355
+   (col1 357 · col2 715 · col3 357, hairline-ruled) + rule 1 + strip
+   314 + legal 42. Type: root 13.33/17.33 w500 · brand 26.67 w600 ·
+   mono labels 11.67/16.33 Geist Mono rgb(98,98,96) (≤767: 11.91
+   rgb(180,180,176)) · biglink copy 20/22 w700 · links 13.33/17.33
+   w500 · © row mono 11.67/15.17. Arabic = transformed expectations:
+   RTL mirror, letter-spacing 0, lh floor 1.35×fs. Colors: --rule-
+   strong IS the spec rgb(179,179,175), --accent IS rgb(250,54,0);
+   the 72% soft ink + the quiet mono greys ride the spec-exact
+   literals (color-gate allows — color-mix() renders as color() and
+   the conformance twin requires the literal), and flip to the site's
+   dark tokens under [data-theme="dark"]. T-06d: every solid ink now
+   rides the design tokens (--text IS #282828, --neutral-400 IS
+   rgb(180,180,176), --c-grey-ink IS rgb(98,98,96) — exact values); only
+   the 72% soft-ink alpha seats keep the spec literal + color-gate allow
+   (statement.css precedent — color-mix() serializes as color() and the
+   conformance twin compares the literal). */
 
-/* ═══ Footer (R313 · D14) — the reference's colophon ════════════════
- * Measured 711px = the inspection strip (314) + the THREE-column
- * grid (355) + the legal row (42). The grid spans the FULL frame
- * width (357 + 715 + 357 measured): (1) the identity + the honest
- * disabled subscribe seat, (2) the wide index + the address, (3) the
- * giant 215×215 line-art mark fading in with the scroll. The giant
- * wordmark retirement (r306) is superseded by this measured
- * reference composition — the mark is the brand SYMBOL, not the old
- * poster wordmark. */
 .fo-footer {
-  border-block-start: 1px solid var(--rule-strong);
-  /* R324 X23 (reviewer A): the footer is the page's own last band, not
-   * a raised card — --surface is WHITE in light, so the old 35% mix
-   * lifted the band to #F9F9F4 (a fourth ground off the paper/ink
-   * pair). The band rides the paper itself, both themes. */
-  background: transparent;
-  /* R315 (K-F · B9): the colophon rides the page's own frame measure —
-   * the reference's footer spans the frame's INNER width (1426.69
-   * @1440, 374.13 @390 — never the full viewport), and its top rule
-   * stops at the frame lines too. */
-  margin-inline: 7px; /* spacing-gate: allow — the sheet frame's own inset (6.66px measured @1440), the page's seat constant */
-}
-
-.fo-footer-inner {
-  padding-block: var(--sp-4) var(--sp-3);
-  /* R315 (K-F · B9): padding-inline 0 — the three bands (grid · strip
-   * · legal row) span the footer's full frame measure like the
-   * reference's; the CELLS carry their own inline inset. */
-  padding-inline: 0;
-  display: grid;
-  gap: var(--sp-6);
-}
-
-/* R314 (cycle-2 §7 heights) — the desktop colophon stack: the three
- * bands butt hairline-to-hairline (grid → strip band → legal row),
- * the measured reference composition (355 + 314 + 42 = 711). The
- * ≤991px flow keeps its own paddings (the V13 mobile band).
- * R322 V7 (the edge-rail inset): the colophon's three bands inset
- * from the .et-tab slim rail (r314-chrome.css — [7px, 7px+2.08rem]
- * + the 4px nudge) on the physical-left (inline-end in the page's
- * RTL) edge, mirroring the content bands' 4rem rail inset above; the
- * frame's own right seat (1433 @1440) is untouched. */
-@media (min-width: 992px) {
-  .fo-footer-inner {
-    padding-block: 0;
-    padding-inline-end: 2.56rem; /* R322 V7 — the edge-rail inset */
-    gap: 0;
-  }
-}
-
-/* R315 (K-F · B9): the ≤991 flow — the bands keep the frame-wide
- * measure (padding-inline 0 above) on a slimmer block rhythm; the
- * ≤640 phone block butts them exactly like the reference's mobile
- * footer (grid + strip + copyright, no band gaps). The mark and the
- * subscribe seat step to the reference's own tablet ladder: 166px
- * line-logo (165.75 measured @768) and the 44px input row (44.19). */
-@media (max-width: 991px) {
-  .fo-footer-inner {
-    padding-block: var(--sp-3);
-    gap: var(--sp-2);
-  }
-
-  /* PI-B2 — the ≤991 .fo-subscribe / .fo-footer-mark-svg rungs are
-   * GONE with their retired seats (newsletter block R323 · defect 9;
-   * [08] drawn-mark cell R323 · defect 1 — both markup-dead). */
-}
-
-/* ═══ R314 (V9) — the reference's cell-grid footer (pair-100): every
- * seat is a hairline-ruled CELL (the drafting sheet's own grammar),
- * closed by the giant outlined wordmark. Grid areas: strip spans the
- * full width; then tagline | 3 link columns | mark; then the address
- * pair; subscribe lives in its column cell. ═══ */
-.fo-fgrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  border: 1px solid var(--rule);
-  background: var(--bg);
-  grid-template-areas:
-    'strip strip strip strip'
-    'tagline tagline links-a links-b'
-    'tagline tagline links-c mark'
-    'addr-a addr-b addr-b addr-b';
-}
-
-.fo-fcell {
-  padding: 14px var(--sp-3); /* 14 block / 12 inline — R321 §A2: one step under the 16/12 seat (docH ratchet); the reference's own inline inset (13.33px measured) keeps */ /* spacing-gate: allow — 14px block: the ratcheted cell inset between the 12/16 rungs (no ladder rung at 14) */
-  display: grid;
-  gap: var(--sp-1-5);
-  align-content: start;
-  border-inline-start: 1px solid var(--rule);
-  border-block-start: 1px solid var(--rule);
-  margin-block-start: -1px; /* collapse double rules */ /* spacing-gate: allow — border-collapse construct (negative hairline), no negative rung exists */
-  margin-inline-start: -1px; /* spacing-gate: allow — border-collapse construct (negative hairline), no negative rung exists */
-  min-block-size: 96px;
-}
-
-.fo-fcell-strip {
-  grid-area: strip;
-  grid-column: 1 / -1;
-  position: relative;
+  display: block;
+  margin-inline: 0.84rem; /* the sheet frame's own inset (7px measured @1440) */
   padding: 0;
-  border-inline-start: 0;
-  margin-inline-start: 0;
-  block-size: 132px;
-  overflow: hidden;
-  border-block-start: 0;
-  margin-block-start: 0;
+  border-block-start: 1px solid var(--rule-strong);
+  background: transparent;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
+  font-size: 1.6rem;
+  line-height: 2.08rem;
+  font-weight: 500;
+  letter-spacing: 0; /* Arabic joins — the transformed expectation (Heron -0.27px) */
 }
 
-.fo-fstrip-img {
-  inline-size: 100%;
-  block-size: 100%;
-  /* R318 §A7: aspect-true (contain) — the square 960×960 ink render
-   * letterboxes inside the cell instead of being sliced mid-subject
-   * (object-fit:cover cropped the building to a 2.8:1 band); the box
-   * height is unchanged, so the tier ladders/docH are untouched. */
-  object-fit: contain;
-  display: block;
-  filter: contrast(1.06);
+.fo-in {
+  display: flex;
+  flex-direction: column;
 }
 
-.fo-fcell-tag {
-  position: absolute;
-  inset-block-end: 10px;
-  inset-inline-start: 12px;
-  font-size: var(--fs-xxs);
-  color: var(--text-muted);
-  background: var(--bg);
-  padding: 2px 6px; /* spacing-gate: allow — the index chip's own 2/6 glyph mat (optical), not ladder rungs */
-  border: 1px solid var(--rule);
+/* ── the rules (spec: 1px rgb(179,179,175) hairlines) ───────────────
+   T-06f: the heron edge-rule PAINT MODEL — hairlines are background-IMAGE
+   strokes, so computed backgroundColor stays the spec rgba(0,0,0,0)   */
+.fo-rule {
+  background-image: linear-gradient(var(--rule-strong), var(--rule-strong));
 }
+.fo-rule-h { block-size: 1px; inline-size: 100%; }
+.fo-rule-v { inline-size: 1px; align-self: stretch; }
+.fo-rule-g { margin-block: 0.6rem; }
 
-.fo-fcell-tagline {
-  grid-area: tagline;
-  grid-column: span 2;
-}
-
-/* markup order (children of .fo-fgrid): 1 strip · 2 tagline ·
-   3–5 link navs · 6–7 addr cells · 8 mark — :nth-child, not
-   :nth-of-type (the cells mix div/nav tags) */
-.fo-fcell:nth-child(3) { grid-area: links-a; }
-.fo-fcell:nth-child(4) { grid-area: links-b; }
-.fo-fcell:nth-child(5) { grid-area: links-c; }
-.fo-fcell:nth-child(6) { grid-area: addr-a; }
-.fo-fcell:nth-child(7) { grid-area: addr-b; }
-/* R323 (A3 · defect 1) — the [08] drawn-mark cell retired from the
- * markup (one mark per view); the .fo-fcell-mark rules are gone. The
- * ≥992 area map keeps the 'mark' column closed by the .fo-fgrid::after
- * ruled seat below. */
-
-.fo-fcell-links {
-  border-block-start: 1px solid var(--rule);
-}
-
-/* R314 (cycle-2 §7 heights) — the ≥768 strip-image cell retires: its
- * licensed render duty moves into the inspection strip band below
- * (the lens reveals the render). ≤767px the cell keeps today's mobile
- * horizon band. Sits AFTER the base .fo-fcell/.fo-fcell-strip rules
- * on purpose: same-specificity declarations resolve by document
- * order, and this display:none must win over .fo-fcell's grid. */
-@media (min-width: 768px) {
-  .fo-fcell-strip {
-    display: none;
-  }
-}
-
-/* ── R314 (cycle-2 §7 heights) — the desktop grid takes the reference's
- * measured three-column band (357 | 715 | 357 @1427): the tagline +
- * subscribe seat | the three link columns over the address pair | the
- * 215 mark spanning both rows — ONE ~355px band instead of four
- * stacked rows (the V9 grid was 798px tall). The whole block sits
- * AFTER the V9 base placements on purpose: same-specificity
- * declarations resolve by document order, so an earlier override of
- * grid-area/area-names would silently lose to the base links-a/…/b
- * rules and auto-place the cells into implicit tracks. ── */
-@media (min-width: 992px) {
-  .fo-fgrid {
-    /* R315 (K-F · B9): the frame-measure grid (1426 @1440 — the footer
-     * spans the frame, not the viewport) splits into the reference's
-     * own 357 | 715 | 357 three-column read: tagline 1.5fr · three
-     * link columns 1fr each (238.19 measured per cell) · mark 1.5fr.
-     * The old 25/19/19/18/19 split squeezed the mark column to 263px
-     * (the reference's logo cell is 357.09) and stretched the links'
-     * union to 775 vs the measured 714.58. */
-    grid-template-columns:
-      minmax(0, 1.5fr)
-      minmax(0, 1fr)
-      minmax(0, 1fr)
-      minmax(0, 1fr)
-      minmax(0, 1.5fr);
-    grid-template-areas:
-      'tagline na nb nc mark'
-      'tagline ea ea ab mark';
-    /* the grid band rides the measured reference height: the two auto
-     * rows stretch to 355 (the link row ~217 + the address row ~125
-     * content — align-content's normal/stretch distributes the slack
-     * to the auto rows so the cells' rules land on the band's own
-     * bottom border).
-     * W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
-     * the band rides the ROOT (42.6rem = 355.0px @1440 · 252.5 @1024),
-     * exactly Heron's footer-main (354.7 measured live @1440) — the
-     * px literal froze the band at 1440 and drifted at every other
-     * rung of the 0.5787vw root. */
-    min-block-size: 42.6rem; /* spacing-gate: allow — the measured reference grid band (355 @1440), an external constant on the rem root */
-  }
-
-  /* W6 R332 — the mark seat: the [08] drawn-mark cell was retired from
-   * the markup (R323, one mark per view) but the ≥992 area map keeps
-   * the 'mark' column — with no grid item there the column rendered a
-   * BLANK void that broke the hairline grid read (the supervisor's
-   * «link grid aligned on the hairline grid»). A ruled ::after seat
-   * closes the column: same border construct as .fo-fcell (inline-start
-   * + block-start rules, the -1px collapse margins), empty like the
-   * reference's own unpopulated grid column (heron probe 1440: its
-   * footer-main also carries an empty column). ≥992 only — below, the
-   * 'mark' area's auto row collapses to 0 and must stay collapsed. */
-  .fo-fgrid::after {
-    content: '';
-    grid-area: mark;
-    display: block;
-    border-inline-start: 1px solid var(--rule);
-    border-block-start: 1px solid var(--rule);
-    margin-block-start: -1px; /* collapse double rules — the .fo-fcell construct */
-    margin-inline-start: -1px; /* collapse double rules — the .fo-fcell construct */
-  }
-
-  .fo-fcell:nth-child(3) { grid-area: na; }
-  .fo-fcell:nth-child(4) { grid-area: nb; }
-  .fo-fcell:nth-child(5) { grid-area: nc; }
-  .fo-fcell:nth-child(6) { grid-area: ea; }
-  .fo-fcell:nth-child(7) { grid-area: ab; }
-
-  /* the base tagline rule's `grid-column: span 2` (the V9 ≤991 pair
-   * seat) must not fight the area placement in the five-track band */
-  .fo-fcell-tagline {
-    grid-column: 1;
-  }
-
-  /* the reference's link rows are compact (its menu band = 203px for
-   * five links): 28px targets, tighter gaps, leaner headings.
-   * R315 (K-F · B9): the BASE .fo-footer-link rule below (min-block
-   * 28px) now carries this rung — the old base 32px sat AFTER this
-   * block in the cascade and silently overrode it (equal specificity,
-   * later wins), painting every desktop link 32px and pushing the
-   * grid band to 372. */
-  .fo-fcell {
-    gap: 0; /* R333 P-F3 — the compact index stacks row-to-row (the 4px gap read +20px/cell @1024 where the 42.6rem floor must bind — heron's main band is the rem constant); the 3.36rem row floor keeps the touch rhythm */
-    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
-     * the rem twins of the 16/12 seat — pixel-identical @1440, riding
-     * the root at every other rung (the r315 cycle-3 law).
-     * R333 P-F3 — the BLOCK half steps to the 8px rung (0.96rem): the
-     * fixed-px --fs micro voice at 992–1199 (root 5.926–6.94px) let the
-     * cell content outrun the 42.6rem band floor (fgrid 304 vs 252.5
-     * @1024 — the matrix-1024 footer FAIL's first term). The compact
-     * grid keeps every cell + row (NOT deleting content); the tighter
-     * block inset + gap-0 stack brings the content back under the
-     * heron-measured band. */
-    padding: 0.96rem 1.44rem; /* spacing-gate: allow — the ratcheted cell inset 8/12 on the rem root (the tablet-compact seat) */
-    min-block-size: 11.5rem; /* spacing-gate: allow — the cell floor 96px @1440 on the rem root */
-  }
-
-  /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted): the
-   * compact link rung rides the root (28.0px @1440 — the reference's
-   * compact menu band; the base 28px literal below still governs ≤991). */
-  .fo-footer-link {
-    min-block-size: 3.36rem;
-  }
-
-  /* W6 R332 — ONE definition (the strata ≥992 duplicates deleted): the
-   * address band + its lines keep the measured compact register on the
-   * rem root (16/16 seat · 12/8 cell pad · 1.5/1.45 leads — the values
-   * the final cascade already rendered @1440, now with one home).
-   * PI-B2: the .fo-footer-addr CONTAINER rule is gone — the markup
-   * carries only .fo-footer-addr-line children (the container seat is
-   * the .fo-fcell cell itself). */
-  .fo-footer-addr-line {
-    line-height: 1.45;
-  }
-
-  /* W6c R332 — the ≥992 .fo-footer-heading chrome pair RETIRED here:
-   * it was dead in the cascade (the base rule below — same specificity,
-   * later document order — always repainted it) and the display rung's
-   * live trim now sits in the late ≥992 block beside the font rung. */
-  .fo-footer-about {
-    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
-     * 1.5 — the compact desktop lead the final cascade already ran
-     * (strata won the tie); the base 1.8 stays ≤991. */
-    line-height: 1.5;
-  }
-
-  .fo-fcell-addr {
-    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
-     * the r321 §A2 10/6 ratchet was re-pinned to 12/8 on the rem root
-     * by the r315 cycle-3 re-seat and the final cascade rendered 12/8
-     * (the twin-measured state) — kept here, one home.
-     * R333 P-F3 — the tablet-compact re-seat drops the block pair to
-     * the 8/4 rungs with the cell inset above (the address band's
-     * content must sit under the 42.6rem floor at 992–1199 too). */
-    padding-block: 0.96rem 0.48rem;
-  }
-
-  /* R315 cycle-2: .fo-footer-repo RETIRED with the repo link itself
-   * (owner order — no owner identity on any surface). The contact
-   * cell's honest lines ride the addr-line styling like the address
-   * cell — one grammar for both info cells. */
-
-}
-
-/* ── R315 (K-F · B9) — the image-strip band: the reference's
- * footer-img-wrap (314px, BELOW the grid, above the legal row) split
- * VERTICALLY: the inspection lens strip over the closing WORDMARK
- * row — «مدارك» drafted as one clean single-contour stroke path per
- * letter, spanning the footer's full inner measure at every ≥992px
- * viewport (the old 34%-column seat painted a ~380px CSS-text-stroke
- * wordmark whose contours self-intersected at ك/د — and the first B9
- * pass let the lens run full-bleed-width, 302px tall, blowing the
- * measured 314px band to 461 and the whole footer to 875). The two
- * rows now SHARE the 314px band: the lens letterboxes inside its row,
- * the wordmark row keeps its full-width cut. ≥768px only — ≤767px
- * the lens hides (the reference hides its strip there) and the
- * wordmark flows as its own band in its compact cut. ── */
-.fo-fstrip {
+/* ═══ the cell grid: col1 357 · col2 715 · col3 357 (25/50/25) ═══ */
+.fo-grid {
   display: grid;
-  /* the lens's cqi cap below reads the strip's own inline measure */
-  container-type: inline-size;
+  grid-template-columns: 1fr 2fr 1fr;
+  align-items: stretch;
 }
+.fo-col { min-inline-size: 0; }
 
-@media (min-width: 768px) {
-  .fo-fstrip {
-    grid-template-columns: minmax(0, 1fr);
-    /* R319 §D1/D2: both rows are content-sized — the five-column ink
-     * strip runs full-bleed WIDTH-driven (1000:80 of the strip
-     * measure), the full-cell-width wordmark row follows. The retired
-     * ≥992 seat pinned a definite 314px band with the lens at 1fr; the
-     * wordmark's full-width cut now owns the band's height (docH
-     * ladder re-verified ±3% at 360/390/768/1024/1440). */
-    grid-template-rows: auto auto;
-    border-block-start: 1px solid var(--rule);
-  }
-
-  /* the lens row: the five-column strip rides the band at its own
-   * 1000:100 measure (R320 §A3 — the large-drawing + mono-caption
-   * sheet, with the [01] seat label on its OWN ruled row above the
-   * drawings inside .fl), full-bleed width-driven on EVERY ≥768 band
-   * (the pointer math stays viewBox-relative against the strip box and
-   * keeps working — the clamp guards already exist) */
-  .fo-fstrip .fl {
-    display: block;
-    border-block: 0;
-    border-block-end: 1px solid var(--rule); /* the rule between the two rows */
-    background: none;
-  }
-
-  .fo-fstrip .fl-svg {
-    inline-size: 100%;
-    block-size: auto;
-    aspect-ratio: 1000 / 100;
-  }
-
-  /* the wordmark row — the band's typographic seat: the drawn word
-   * spans the strip's full measure edge-to-edge inside the reg-mark
-   * gutters (14px — the '+' marks own the corners). R319 §D1: the
-   * full-cell-width cut owns the height — lean chrome (the mono line
-   * is the row's absolute corner label, not a flow row). */
-  .fo-fstrip .fo-wordmark {
-    margin-block-start: 0;
-    padding-inline: 14px; /* spacing-gate: allow — the '+' reg-mark corner gutters (the wordmark's own seat), not a ladder rung */
-    /* R321 §A2 — 2/4 → 0/2: the reg-mark cell's construction padding
-       one step tighter (docH back inside ±1.5% of the reference). */
-    padding-block: 0 2px; /* spacing-gate: allow — the reg-mark cell's own construction padding (the wordmark corner seats) */
-    align-content: center;
-    justify-items: center;
-    gap: 2px; /* spacing-gate: allow — the reg-mark grid's construction gap */
-  }
-
-  .fo-fstrip .fo-wordmark-en {
-    /* R321 §A2 — RETIRED from flow (see the base rule): kept here so
-       the ≥768 seat never re-seats it. */
-    display: none;
-    font-size: var(--fs-xxs);
-    letter-spacing: 0.2em; /* Latin mono — tracking allowed */
-    white-space: nowrap;
-  }
+/* ── col1: the brand lockup + small-link rows + the subscribe seat ── */
+.fo-c1-top { padding: 1.6rem 1.6rem 0; }
+.fo-rule-bleed { margin-inline: -1.6rem; }
+.fo-brand-name {
+  font-size: 3.2rem;
+  line-height: 3.2rem;
+  font-weight: 600;
+  color: var(--text);
 }
-
-/* R319 §D1/D2 — the ≥992 seat is RETIRED: the definite 314px band,
- * the 1fr lens row and the cqi letterbox cap all served the OLD split
- * (small letterboxed wordmark + lens eating the remainder). The
- * five-column strip is now full-bleed width-driven at 1000:80 on every
- * ≥768 band and the wordmark row sizes from its full-width cut — the
- * 768px block above carries both rules; nothing desktop-specific
- * remains. docH ladder re-measured after both fixes: +2.96% @1440 ·
- * +1.2% @768 · ≤+0.03% @390/360 (the ±3% ratchet holds). */
-
-/* the GIANT wordmark (R315 K-F retired the CSS-text-stroke seat;
- * R318 §A6 retired the five hand-drafted disconnected skeletons;
- * R319 §D1 re-seats the REAL Alexandria 700 letterforms — shaped by
- * harfbuzz, composed by scripts/r318/wordmark-build.mjs — CONNECTED
- * (track removed) + STROKE-ONLY + FULL-CELL-WIDTH: ONE cut at every
- * viewport, the svg spanning the full cell (width:100%, height from
- * the sheet aspect), ink 94.2% of the cell @1440. Registration '+'
- * marks keep the four corners; the Latin mono line rides the row's
- * bottom corner (absolute). The reading rides the svg's own
- * role="img" + aria-label + <title> «مدارك»; the drawn word is
- * static (no reveal — the footer mark art keeps the scroll reveal)
- * and clean under reduced motion by construction. */
-.fo-wordmark {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: 0; /* R321 §A2 — the en-line rides the svg's own box (was 2px construction gap; the docH ratchet) */
-  padding-block: 2px 4px; /* spacing-gate: allow — the reg-mark cell's own construction padding */
-  padding-inline: 14px; /* the reg-mark gutters keep the word's construction margins clear of the corner marks */ /* spacing-gate: allow — the '+' reg-mark corner gutters (measured seat), not a ladder rung */
-  margin-block-start: var(--sp-2);
+.fo-brand-sub {
+  margin-block-start: 0.5rem;
+  font-size: 1.6rem;
+  line-height: 2.08rem;
+  font-weight: 500;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
 }
+.fo-brow {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.2rem;
+  margin-block-start: 0.7rem;
+  min-block-size: 3.24rem;
+  align-items: center;
+}
+.fo-ilink {
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.6rem;
+  line-height: 2.08rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.fo-ilink-t { color: rgba(40, 40, 40, 0.72); } /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
+.fo-ilink:hover .fo-ilink-t { color: var(--text); }
 
-/* R323 (A3 · defect 1) — the NEW brand system's wordmark keeps the
- * full-cell-width cut: the <Logo variant="wordmark"> svg spans the
- * cell at every viewport, height follows the sheet's own aspect
- * (viewBox scaling — never font-size hacks). Ink = currentColor (the
- * paper/ink swap is by construction); the letterforms carry their own
- * non-scaling hairline geometry, so no stroke-width seat is needed.
- * W6 R332 — the ≥768 seats below RE-PIN the cut to a height-led
- * letterbox (ONE definition — the strata X14 duplicates deleted):
- * Heron's footer carries NO wordmark band (probe @1440: footer-main
- * 354.7 + footer-img-wrap 314.2 + copyright 41.8 = 710.7); our
- * strip band (the inspection lens + this wordmark row) must SHARE
- * the reference's 314.2px band. At ≥1200 the ink letterboxes to
- * 15.5rem (129.2px @1440 → the band lands 312 vs 314.2, the footer
- * 710.1 vs 710.7) — the full-width cut at 41.4rem ink ran the band
- * to 527.9px (+24.14% footer, the run-001 FAIL). The word never
- * clips: inline-size:auto + block-size keeps the sheet's own attr
- * aspect (2.3629), the svg box stays inside .fo-wordmark (padding
- * 0 2px), overflow visible by construction. */
-.fo-wordmark .mdrk-logo.fo-wordmark-logo {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
+/* r188/r320 §D — the independence paragraph (VERBATIM the About
+   page's own sentence) + the r320 contact-cell heading */
+.fo-footer-about {
+  margin: 1rem 0 0;
+  font-size: 1.4rem;
+  line-height: 1.96rem; /* ar lh floor ≥ 1.35×fs */
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.fo-contact-h {
+  margin: 0.6rem 0 0;
+  font-size: 1.6rem;
+  line-height: 2.16rem; /* ar lh floor ≥ 1.35×fs */
+  font-weight: 600;
   color: var(--text);
 }
 
-/* R333 P-F3 — the W6 height-led letterbox pair returns for ≥768
- * (measured, matrix-1920/1024/768 footer FAILs 1543/890/1089 vs heron
- * 948/505/968): the P-D full-bleed cut on the generated sheet (viewBox
- * 248.29×112 ≈ 2.22 aspect) renders 585px tall @1440 — the strip band
- * ran to 766 and the footer to 1164 (+63.8% over heron's 710.7; the
- * ±3% docH gate blown at EVERY ≥768 width). The ink letterboxes to
- * 15.5rem @≥992 / 23.6rem @768–991 (the X14 tablet seat, boundary
- * moved to the 992 desktop rung), inline-size auto — the word still
- * spans its full available measure inside the band, never clips, and
- * the band (lens row + this row) lands on heron's own img-wrap
- * constant. The base rule keeps the full-width cut ≤767, where the
- * P-D cut measures 161px @390 and the mobile footer holds −2.1%. */
-@media (min-width: 992px) {
-  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
-    inline-size: auto;
-    block-size: 15.5rem; /* 129.2px @1440 → the strip band ≈ the reference's own 314.2 (lens row + this row share it) · 172.2 @1920 */
-  }
+/* T-06f: the spec-measured seat panel — the heron c1sub box paints
+   rgb(179,179,175) (measured at every bp) */
+.fo-c1-sub { padding: 1.6rem; background: var(--rule-strong); }
+.fo-mono-label {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  line-height: 1.96rem;
+  font-weight: 500;
+  color: var(--c-grey-ink); /* the quiet mono grey — --c-grey-ink IS the spec rgb(98,98,96) */
 }
+.fo-mono-label-t { color: inherit; }
 
-@media (min-width: 768px) and (max-width: 991px) {
-  .fo-wordmark .mdrk-logo.fo-wordmark-logo {
-    inline-size: auto;
-    block-size: 23.6rem; /* 217.4px @768 (Heron footer exact — the X14 tablet seat, moved home) */
-  }
+.fo-form { margin-block-start: 1.8rem; padding-block-start: 1.8rem; }
+.fo-form-copy-t {
+  font-size: 1.6rem;
+  line-height: 2.08rem;
+  font-weight: 400;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
-
-/* R333 P-D — heron-craft row 17: the wordmark rides the FULL
- * available-width cut at EVERY viewport (the reference's monumental
- * signature, rendered full-width). The R332 W6 height-led letterbox
- * seats were retired by owner order this round; the base rule's
- * inline-size: 100% + viewBox aspect scaling carries every width, so
- * the word never clips and RTL needs no mirroring (a scaling sheet,
- * not a directional layout).
- * R333 P-F3 (supersedes the ≥768 leg): the full-bleed cut measured
- * +63.8% over heron's footer @1440 (unswept by the matrix, caught by
- * the P-F3 probe) and drove the matrix-1920/1024 footer FAILs — the
- * W6 letterbox pair above is re-seated ≥768 by the twin geometry
- * guard; the mobile cut (≤767) is untouched. */
-
-/* PI-B2 — the .fo-wordmark-ink / .fo-wordmark-svg rules are GONE: the
- * R323 <Logo variant="wordmark"> cut above carries the stroke-only
- * non-scaling ink by its own path geometry (no CSS stroke seat), and
- * neither class exists in any markup. */
-
-.fo-wordmark-en {
-  /* R321 §A2 — RETIRED from flow at EVERY width: the decorative Latin
-   * mono caption cost ~14px of footer height at the ≥1180 seats (and
-   * the docH ratchet brings the footer back inside ±1.5% of the
-   * reference); the svg's own role="img" + <title> carries the
-   * reading. The drafting voice keeps the corner reg-marks + the
-   * strip's [01] label row. */
-  display: none;
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.2em; /* Latin mono — tracking allowed */
-  color: var(--text-muted);
-  text-transform: uppercase;
-  text-align: center;
-  white-space: nowrap;
-  line-height: 1;
+.fo-form-row {
+  display: flex;
+  margin-block-start: 1.6rem;
+  gap: 0;
 }
+.fo-input {
+  flex: 1;
+  min-inline-size: 0;
+  block-size: 4.8rem;
+  padding: 0.8rem 0.8rem 0.8rem 1.6rem;
+  border: 1px solid var(--rule-strong);
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 1.6rem;
+  line-height: 2.28rem;
+  color: var(--text);
+  transition: border-color 0.45s ease;
+}
+.fo-input::placeholder { color: var(--rule-strong); }
+/* r162/r172a §3: NO :focus-visible rules on this sheet — the universal
+   focus language in base.css owns the rings (the private sub-language
+   is deleted; the outline below was the last stray) */
+.fo-go {
+  inline-size: 4.8rem;
+  block-size: 4.8rem;
+  padding: 1rem;
+  border: 1px solid var(--rule-strong);
+  border-inline-start: 0;
+  background: transparent;
+  color: var(--rule-strong);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
+}
+.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
+.fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
+.fo-go-ic path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+}
+.fo-go:hover { color: var(--accent); border-color: var(--accent); }
+/* (r172a §3 — the go button's ring also delegates to base.css) */
 
+/* ── col2: the wide index — 3 mono-labelled groups up, 3 seats down ── */
+.fo-c2-top,
+.fo-c2-bottom {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.fo-lgroup { padding: 1.6rem; min-inline-size: 0; }
+.fo-lg-links { margin-block-start: 0.5rem; }
+.fo-link {
+  display: block;
+  padding: 0.5rem;
+  text-decoration: none;
+  font-size: 1.6rem;
+  line-height: 2.08rem;
+  font-weight: 500;
+  color: var(--text); /* spec link ink — --text IS #282828 */
+  transition: color 0.2s ease;
+}
+.fo-link-t { color: inherit; }
+.fo-link:hover { color: var(--accent); }
+.fo-link-accent,
+.fo-link-accent .fo-link-t { color: var(--accent); }
+.fo-biglink {
+  display: block;
+  margin-block-start: 0.6rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  transition: color 0.4s ease;
+  color: var(--text);
+}
+.fo-biglink-t {
+  font-size: 2.4rem;
+  line-height: 2.64rem;
+  font-weight: 700;
+  color: inherit;
+}
+.fo-biglink:hover { color: var(--accent); }
+.fo-socials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-block-start: 0.6rem;
+}
+.fo-social {
+  display: block;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: color 0.4s ease;
+}
+.fo-social-t1,
+.fo-social-t2 {
+  font-size: 1.6rem;
+  line-height: 2.04rem;
+  font-weight: 500;
+  color: inherit;
+}
+.fo-social:hover { color: var(--accent); }
+
+/* ── col3: the drawn construction mark (our OWN geometry) ─────────── */
+.fo-col3 {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.fo-mark { inline-size: 25.8rem; block-size: 25.8rem; }
+.fo-mark-svg {
+  inline-size: 100%;
+  block-size: 100%;
+  display: block;
+  color: var(--text);
+}
+.fo-mark-p {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  vector-effect: non-scaling-stroke;
+}
+.fo-mark-img { inline-size: 25.8rem; block-size: 0; }
+
+/* ═══ the strip band: OUR ink render + the grayscale twin + chrome ═══ */
+.fo-fstrip { position: relative; block-size: 37.68rem; overflow: hidden; }
+.fo-strip-in { position: absolute; inset: 0; }
+.fo-strip-media,
+.fo-strip-twin { position: absolute; inset: 0; }
+.fo-strip-img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+.fo-strip-svg { inline-size: 100%; block-size: 100%; display: block; }
+.fo-strip-image { inline-size: 100%; block-size: 100%; }
+
+/* the registration chrome: 4 edge rules (heron paints them via a
+   background IMAGE — backgroundColor stays transparent) + the 4 corner
+   crosshairs as the fo-wordmark-reg '+' family (R321 §A6 source
+   contract: CSS ::before content, never DOM text) */
+.fo-strip-chrome { position: absolute; inset: 1.2rem; }
+.fo-sc-edge { position: absolute; background-image: linear-gradient(var(--rule-strong), var(--rule-strong)); }
+.fo-sc-t { inset-inline: 2.04rem; block-size: 0.84rem; inset-block-start: 0; }
+.fo-sc-b { inset-inline: 2.04rem; block-size: 0.84rem; inset-block-end: 0; }
+.fo-sc-l { inset-block: 1.97rem; inline-size: 0.84rem; inset-inline-start: 0; }
+.fo-sc-r { inset-block: 1.97rem; inline-size: 0.84rem; inset-inline-end: 0; }
 .fo-wordmark-reg {
   position: absolute;
-  color: var(--rule);
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
+  color: var(--text);
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font-size: 1.2rem;
   line-height: 1;
-}
-/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
-   note in auth.css owns the reasoning). */
-.fo-wordmark-reg::before { content: '+'; }
-
-.fo-wordmark-reg-tl { inset-block-start: 0; inset-inline-start: 0; }
-.fo-wordmark-reg-tr { inset-block-start: 0; inset-inline-end: 0; }
-.fo-wordmark-reg-bl { inset-block-end: 0; inset-inline-start: 0; }
-.fo-wordmark-reg-br { inset-block-end: 0; inset-inline-end: 0; }
-
-.fo-footer-about {
-  font-size: var(--fs-sm);
-  line-height: 1.8;
-  color: var(--text-muted);
-  max-inline-size: 48ch;
-}
-
-/* the column headers — the mono micro voice: weight-600 Arabic (the
-   reference's Geist-Mono-uppercase register, retold for Arabic —
-   Geist Mono carries no Arabic glyphs, so the tier rides weight +
-   size + the hairline rule instead of a script swap). */
-.fo-footer-heading {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  color: var(--text-muted);
-  padding-block-end: var(--sp-1-5);
-  border-block-end: 1px solid var(--rule);
-  margin-block-end: var(--sp-1);
-}
-
-/* W6c R332 — the scanned display rung (≥992): the h-scan (driver.py:
- * h1–h4 + [class*=title] + [class*=heading], per-step MAX = the band's
- * display type) reads the reference's footer display voice at 26.6667px
- * @1440 — its .heading h4 statement lines («An AI agent that / works
- * inside your / design tools», measured live in .footer-title-wrap).
- * Madarek's scanned footer headings are exactly these five column
- * heads, so the like-for-like display rung rides ONE ladder step under
- * h3 — the r313 +0.8rem steps → 3.2rem on the shared fluid root
- * (26.67px @1440 · 18.96 @1024), the same root the reference's h4
- * scales on. lh 1.2 — the --lh-snug display lead. Sits AFTER the base
- * rule — same specificity, document order must decide (the r315 K-F·B9
- * lesson: the base 13px below would silently repaint this rung).
- * ≤991 keeps the 13px micro floor (the base rule; the reference's own
- * footer labels are mono-micro there too). Grid headroom @1440: the
- * tallest column ~237px inside the 42.6rem (355) floor — the band
- * stays floor-bound (docH unchanged). */
-@media (min-width: 992px) {
-  .fo-footer-heading {
-    font-size: 3.2rem;
-    line-height: var(--lh-snug);
-    /* the display rung's row chrome = the strata 992–1319 register
-     * (pad 2 / margin 0 — «the row chrome the 42.6rem floor can
-     * seat»): the 26.67px head holds the row rhythm the 13px head
-     * held, the grid band stays floor-bound at 355, docH unchanged. */
-    padding-block-end: var(--sp-0-5);
-    margin-block-end: 0;
-  }
-}
-
-/* R333 P-F3 (matrix-768 footer fs FAIL 25.78 vs 13.00, Δ98.34%): the
- * scanned footer display voice drops to the 13px --fs-xs floor at
- * 768–991 (the ≥992 3.2rem rung doesn't reach the tablet belt and
- * nothing seated it). Heron's own tablet register is 2.8rem on the
- * 1.199vw root = 25.78px @768 — one seat, like-for-like. ≤767 the
- * strata file-end 2.4rem rung keeps the phone band (23.82 @390,
- * matrix-390 fs clean); ≥992 the 3.2rem twin seat above is untouched
- * (matrix-1024 fs Δ0.0 must hold). */
-@media (min-width: 768px) and (max-width: 991px) {
-  .fo-footer-heading {
-    font-size: 2.8rem;
-    line-height: var(--lh-snug);
-  }
-}
-
-.fo-footer-link {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-  text-decoration: none;
-  /* R315 (K-F · B9): the compact rung now lives on the BASE rule —
-   * the ≥992 block's old 28px twin sat BEFORE this rule in the file
-   * and lost the same-specificity cascade to this 32px, painting the
-   * desktop links 4px too tall (row 244 vs the reference's 203 and
-   * the grid band 372 vs 355). ≤760 steps to 26; the ≥992 block
-   * keeps its note. */
-  min-block-size: 28px;
-  display: inline-flex;
-  align-items: center;
-  transition: color var(--t-fast) var(--ease);
-}
-
-/* PI-B2 — the .fo-subscribe-* seat is GONE: R323 (A3 · defect 9)
- * removed the filler newsletter block from the markup entirely (the
- * honest-copy rule — no fake opt-in), so every input/row/btn/note
- * rule was dead. The tagline cell's identity block carries the cell.
- * The ≥992/≤991 size rungs above were deleted with it. */
-
-/* ── The address block — the honest demo-institution seat ──
- * PI-B2: the .fo-footer-addr CONTAINER rule is gone (no such class in
- * the markup — the cells are .fo-fcell.fo-fcell-addr); the lines ride
- * the .fo-footer-addr-line rule. */
-.fo-footer-addr-line {
-  font-size: var(--fs-sm);
-  line-height: 1.7;
-  color: var(--text-muted);
-}
-
-/* R315 cycle-2: .fo-footer-repo retired with the repo link (owner
-   * order — no owner identity on any surface); the mono/LTR URL rules
-   * are dead seats, removed. */
-
-/* PI-B2 — the giant mark seat (.fo-footer-col-mark / .fo-footer-mark /
- * .fo-footer-mark-svg, 215×215 + the reveal-up neutraliser) is GONE:
- * the [08] drawn-mark cell was retired from the markup in R323 (A3 ·
- * defect 1, one mark per view) and every class here is markup-dead.
- * The ≥992/≤767/≤640 rungs (shared.css) were deleted with it. */
-
-/* ── R315 (K-F · B9) — the footer's brand block reads as a real
- * two-line column: the name + the descriptor rode as INLINE spans
- * inside one anonymous block and, once a narrow cell pressed them,
- * wrapped into each other's boxes (the «مدارك» name overlapped its
- * own «منصّة التعليم الذكي» descriptor — the bbox census hit). Block
- * flow: one grid row per line, the mark never collapses, the cell's
- * real width carries the pair. Header twin untouched (scoped). ── */
-.fo-footer .fo-brand {
-  inline-size: 100%;
-}
-
-.fo-footer .fo-brand-mark {
-  flex: 0 0 auto;
-}
-
-.fo-footer .fo-brand-stack {
   display: grid;
-  gap: var(--sp-0-5);
-  justify-items: start;
-  min-inline-size: 0;
+  place-items: center;
 }
+.fo-wordmark-reg::before { content: '+'; }
+.fo-reg-tl { inset-block-start: -0.24rem; inset-inline-start: -0.24rem; }
+.fo-reg-tr { inset-block-start: -0.24rem; inset-inline-end: -0.24rem; }
+.fo-reg-bl { inset-block-end: -0.24rem; inset-inline-start: -0.24rem; }
+.fo-reg-br { inset-block-end: -0.24rem; inset-inline-end: -0.24rem; }
 
-/* the legal row — the reference's copyright band (42px measured
- * @1440; its mobile band stacks 95.81 tall @390 with hairline rows).
- * R315 (K-F · B9): with the footer riding the frame measure the row
- * carries its own 26px inline inset (the reference's copyright text
- * sits at 26.66) instead of inheriting the retired 26px inner pad. */
+/* ═══ the © bar + the legal row (R321 §A2 — one ruled line) ═══ */
 .fo-footer-bottom {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: space-between;
-  gap: var(--sp-1) var(--sp-3);
-  /* R321 §A2 — sp-4 → sp-2: the bar's own rule + the strip band's
-     chrome already seat it; the footer returns inside the ±1.5% docH
-     ratchet (the R320 wordmark/strip/legal additions grew it +267px
-     over the reference). */
-  padding-block-start: var(--sp-1-5);
-  padding-inline: var(--sp-3);
-  border-block-start: 1px solid var(--rule);
-  color: var(--text-muted);
-  font-size: var(--fs-sm);
+  gap: 0;
 }
-
-@media (min-width: 992px) {
-  .fo-footer-bottom {
-    padding-block: var(--sp-2) 0;
-    /* W6 R332 — ONE definition (the strata ≥992 duplicate deleted):
-     * the legal row's rem twins — 42px min (the reference's copyright
-     * row: 41.8 measured live @1440) and the 26px inset — pixel-
-     * identical @1440, riding the root everywhere else. */
-    padding-inline: 3.12rem; /* spacing-gate: allow — the reference's own copyright-text inset (26.66 measured), an external constant on the rem root */
-    min-block-size: 5.04rem; /* spacing-gate: allow — the measured reference legal row (42 @1440), an external constant on the rem root */
-  }
+.fo-legal-l { display: flex; align-items: stretch; padding: 1.7rem 3.2rem 1.5rem 3.2rem; }
+.fo-legal-lc { display: flex; align-items: center; column-gap: 0.4rem; }
+.fo-legal-p {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  line-height: 1.82rem;
+  font-weight: 500;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
-
-.fo-footer-cluster {
-  color: var(--text-faint);
-}
-
-/* ── R320 §D (c2-LEGAL): the POLICY LINKS row — the nine public sheets
-   as hairline-separated quiet links between the strip band and the ©
-   line. The footer's own language: the .fo-footer-link voice (muted
-   ink, quiet accent hover) on ONE wrapping row, separated by mid-dots
-   (the reference's own quiet separator register); the 44px touch
-   floor is unconditional (the footer link ladder), and the mobile rung
-   wraps the nine links onto comfortable rows instead of clipping. */
-.fo-legal-row {
-  /* R321 §A2 — the row rides the © bar's line now (no own ruled band):
-   * the center cluster between the © mono and the disclosure line. */
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-1);
-  margin-inline: auto;
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-}
-
-@media (min-width: 992px) {
-  .fo-legal-row {
-    padding-inline: 26px; /* spacing-gate: allow — the reference's own copyright-text inset (26.66 measured), an external constant */
-  }
-}
-
-.fo-legal-link {
-  color: var(--text-muted);
+.fo-legal-a {
+  color: var(--text);
   text-decoration: none;
-  min-block-size: 44px; /* touch floor — the footer link ladder */
+  transition: color 0.3s ease;
+}
+.fo-legal-a:hover { color: var(--accent); }
+.fo-mono,
+.fo-footer-cluster {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  line-height: 1.82rem;
+  font-weight: 500;
+}
+.fo-legal-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fo-legal-link {
   display: inline-flex;
   align-items: center;
+  padding-inline: 1.2rem;
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.4rem;
+  line-height: 1.82rem;
+  font-weight: 500;
+  /* the 44px touch floor (the footer link ladder) */
+  min-block-size: 44px;
+  transition: color 0.3s ease;
+}
+.fo-legal-link:hover { color: var(--accent); }
+.fo-legal-sep { color: var(--rule-strong); }
+
+/* the grid's own closing hairline (its 4th child, full-bleed) */
+.fo-grid-rule { grid-column: 1 / -1; }
+
+/* ═══ responsive (≤991): the stack — col2 unwraps (display:contents,
+    heron's 0×0 col2 cell at 390/768), col3's mark re-seats (207 @768) ═══ */
+@media (max-width: 991px) {
+  /* T-06f re-seat (heron 768 model): col1 377 stack · col2 label|link
+     rows · the col3 rail (w251) with its vertical rule (h331) + mark 207
+     + the 311-wide 0-height markimg twin seat */
+  .fo-grid { grid-template-columns: 37.7rem 1fr 25.1rem; }
+  /* T-06g2: col1/col3 are REAL grid boxes now (heron 768 rects: col1
+     377 · col3 251×331 — display:contents gave the instrument −pageY
+     y-artifacts: no box ⇒ rect 0,0); col2 stays unwrapped (heron's
+     0×0 col2 cell at 390/768) */
+  .fo-col {
+    display: block;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+  }
+  .fo-col2 { display: contents; }
+  .fo-col2 > div:first-child { display: contents; }
+  .fo-c2-top { grid-column: 2; grid-row: 1 / span 2; grid-template-columns: 1fr; }
+  .fo-c2-bottom { grid-column: 2; grid-row: 3; grid-template-columns: 1fr; }
+  .fo-lgroup { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; align-items: start; }
+  .fo-col3 {
+    display: grid;
+    grid-column: 3;
+    grid-row: 3 / span 2;
+    grid-template-columns: 0.1rem 24.84rem;
+    grid-template-rows: 24.84rem auto;
+    block-size: 33.1rem;
+    align-items: start;
+  }
+  .fo-col3rule { grid-column: 1; grid-row: 1 / span 2; }
+  .fo-mark { grid-column: 2; grid-row: 1; }
+  .fo-mark-img { grid-column: 2; grid-row: 2; inline-size: 37.3rem; block-size: 0; margin-block-start: -12.24rem; }
+  .fo-grid-rule { grid-row: 5; }
+  .fo-mark { inline-size: 24.84rem; block-size: 24.84rem; }
+  .fo-c2-bottom .fo-lgroup { display: block; }
+  .fo-fstrip { block-size: 21.7rem; }
+  .fo-strip-chrome { inset: 1.32rem; }
+  .fo-biglink { block-size: 4.8rem; font-size: 2.3rem; line-height: 2.4rem; }
+  .fo-social { block-size: 3rem; }
+  .fo-lg-links { line-height: 1.9rem; }
+  .fo-lg-links a { padding-block: 0; }
 }
 
-.fo-legal-sep {
-  color: var(--text-faint);
-  padding-inline: var(--sp-1);
-  user-select: none;
+/* ═══ mobile (≤767): single column, the measured 390 stack — mark 119
+    centered · strip 137 · chrome inset 8 with 6px edges · 8×8 reg marks
+    · centered © · the legal nav row — mono grey = --neutral-400 (IS
+    the spec's own ≤767 rgb(180,180,176)) ═══ */
+@media (max-width: 767px) {
+  /* T-06f re-seat (heron 390 model): single-column stack — c1top is the
+     344×79 brand wordmark + rule only (the small-link doors live in the
+     col2 index below — same destinations, no loss), lglabel.1 is the
+     374×124 block, the mark + its 119×0 img twin are centred */
+  .fo-grid { grid-template-columns: 1fr; }
+  .fo-col3rule,
+  .fo-mark,
+  .fo-mark-img { grid-column: 1; grid-row: auto; }
+  .fo-mark { inline-size: 14.28rem; block-size: 14.28rem; }
+  .fo-mark-img { inline-size: 14.28rem; block-size: 0; margin-block-start: 0; }
+  .fo-brow { display: none; }
+  .fo-brand-name { font-size: 7.9rem; line-height: 9.48rem; }
+  .fo-brand-sub { display: none; }
+  .fo-c1-top { padding-block: 2.28rem 1.32rem; }
+  .fo-c2-top .fo-lgroup:first-child .fo-mono-label { min-block-size: 14.88rem; }
+  .fo-lgroup { display: block; }
+  .fo-mono-label {
+    font-size: 1.2rem;
+    line-height: 1.32rem;
+    color: var(--neutral-400);
+  }
+  .fo-c2-top,
+  .fo-c2-bottom { grid-template-columns: 1fr; }
+  .fo-input,
+  .fo-go { block-size: 4.84rem; }
+  .fo-fstrip { block-size: 9.6rem; }
+  .fo-strip-in { block-size: 5rem; }
+  .fo-strip-media,
+  .fo-strip-twin { inline-size: 21.8rem; block-size: 2.6rem; inset-inline: 0; margin-inline: auto; inset-block: 1.1rem auto; }
+  .fo-strip-chrome { inset: auto 0.8rem 10.4rem 0.8rem; block-size: 12.1rem; }
+  .fo-biglink { block-size: 4.6rem; font-size: 2.2rem; line-height: 2.3rem; }
+  .fo-social { block-size: 2.8rem; }
+  .fo-socials { row-gap: 1.8rem; }
+  .fo-lg-links { line-height: 1.85rem; }
+  .fo-lg-links a { padding-block: 0; }
+  .fo-footer-bottom { margin-block-start: -9.6rem; }
+  .fo-legal-l { padding: 0.6rem 1.6rem 0.4rem; }
+  .fo-legal-row { row-gap: 0; }
+  .fo-sc-t,
+  .fo-sc-b { inset-inline: 1.44rem; block-size: 0.72rem; }
+  .fo-sc-l,
+  .fo-sc-r { inset-block: 1.44rem; inline-size: 0.72rem; }
+  .fo-wordmark-reg { inline-size: 0.96rem; block-size: 0.96rem; font-size: 0.96rem; }
+  .fo-reg-tl,
+  .fo-reg-tr { inset-block-start: -0.12rem; }
+  .fo-reg-bl,
+  .fo-reg-br { inset-block-end: -0.12rem; }
+  .fo-reg-tl,
+  .fo-reg-bl { inset-inline-start: -0.12rem; }
+  .fo-reg-tr,
+  .fo-reg-br { inset-inline-end: -0.12rem; }
+  .fo-footer-bottom { flex-direction: column; }
+  .fo-legal-l { padding: 1rem 1.6rem; justify-content: center; }
+  .fo-legal-row { justify-content: space-between; }
 }
 
-/* W6 R332 — the legal row's desktop rung: the 44px touch floor is a
- * TOUCH constant; at ≥992 (the pointer rung) the nine quiet links ride
- * the footer's own link ladder (3.36rem = 28px — the same rung the
- * .fo-footer-link grid rows use). The © bar returns to the reference's
- * measured 42px row (41.8 live @1440) instead of 53px. ≤991 keeps the
- * unconditional touch floor. Sits AFTER the base .fo-legal-link rule —
- * same specificity, document order must decide. */
-@media (min-width: 992px) {
-  .fo-legal-link {
-    min-block-size: 3.36rem;
+/* ═══ dark theme: the 72% soft-ink literals above are the LIGHT
+    measures — under [data-theme="dark"] those seats flip to the site's
+    tokens (the var(--text) seats flip on their own) ═══ */
+[data-theme='dark'] .fo-footer { color: var(--text-secondary); }
+[data-theme='dark'] .fo-brand-sub,
+[data-theme='dark'] .fo-ilink-t,
+[data-theme='dark'] .fo-form-copy-t,
+[data-theme='dark'] .fo-legal-p { color: var(--text-secondary); }
+[data-theme='dark'] .fo-mono-label { color: var(--neutral-400); }
+
+/* ═══ reduced motion (r306/r308 family belt): this sheet carries the
+    wy verb-snap protective collapses — the r313 contract's RM seats,
+    parked on the footer sheet per section-file ownership (the r306
+    belt reads the landing family concatenation; the selectors mirror
+    the reference's own RM belt entries verbatim) ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
+  .wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
+  .wy[data-wy-stage='2'] .wy-rail .wy-stage:nth-child(3) .wy-stage-verb,
+  .wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
+    animation: none;
   }
 }
-
-/* ── Hover washes — guarded to real pointers (the r283 convention) ──
-   R313 (D8): the nav cell's hover is the reference's fill-wipe +
-   roll — the ::before slab drops in (no background swap on the
-   element itself), the label rolls one row and flips to paper ink,
-   and the 5×5 mark pair swaps chevron→signal square. */
-@media (hover: hover) and (pointer: fine) {
-  .fo-text-link:hover {
-    /* R319 §D7 — light-theme hover ink: --accent (#FA3600) measured
-       3.46:1 on the strip's paper; the deep copper #A32400
-       (--accent-strong) is 6.91:1. The border keeps the signal. Dark
-       twin keeps its own passing pair. */
-    color: var(--accent-strong);
-    border-block-end-color: var(--accent);
-  }
-
-  html[data-theme='dark'] .fo-text-link:hover {
-    /* R328 (H7 · panel D2) — raw --accent as text measured 3.93:1 on
-       the night sheet; the dark pair's own --accent-hover keeps the
-       transient state ≥4.5:1. */
-    color: var(--accent-hover);
-    border-block-end-color: var(--accent);
-  }
-
-  .fo-footer-link:hover {
-    color: var(--accent-ink);
-  }
-
-  /* R320 §D (c2-LEGAL): the policy row's quiet hover — the
-     .fo-footer-link voice, paired (color+background) per the B1
-     discipline. */
-  .fo-legal-link:hover {
-    color: var(--accent-ink);
-    background: transparent;
-  }
-
-  .bp-hotspot:hover {
-    background: var(--text);
-    border-color: var(--text);
-    color: var(--bg);
-  }
-
-  /* PI-B2 — the .bp-hotspot-num hover twin is GONE (r331 css-coverage
-   * deadCandidatesSample confirms it runtime-dead; no markup renders a
-   * hotspot number child).
-   * R322 (2-d): the boxed-card hover grid retires with the boxes. */
-}
-
-/* ── Keyboard path (r172a §3 — ONE focus language): the nav's
-   keyboard affordance is the universal base.css focus ring, NOT a
-   private :focus-visible sub-language (landing.css carries zero
-   :focus-visible rules by contract). Operability is complete
-   without it: the dropdown parents are real buttons whose React
-   focus handler opens the panel (aria-expanded rides the same
-   state), and the ring marks the seat. ── */
-
