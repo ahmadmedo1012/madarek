@@ -268,7 +268,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -277,7 +278,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -286,7 +288,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -295,7 +298,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[4]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -304,7 +308,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[5]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -313,7 +318,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[6]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -322,7 +328,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[7]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -331,7 +338,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[8]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -340,7 +348,8 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[9]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry"
+        "geometry",
+        "x-mirror"
       ]
     },
     {
@@ -3277,6 +3286,16 @@
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
       "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+    }
+  ],
+  "charSplit": [
+    {
+      "section": "home-intro-wrap",
+      "container": "h2[1]"
+    },
+    {
+      "section": "home-intro-wrap",
+      "container": "section[1] > div[1] > div[1] > div[1] > div[1]"
     }
   ]
 }

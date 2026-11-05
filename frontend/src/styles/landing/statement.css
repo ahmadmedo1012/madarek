@@ -489,3 +489,11 @@
 @media (max-width: 479px) {
   .st-section.st-section { min-block-size: 0; padding-block: 0; }
 }
+
+/* r338 T-03b: the reference roll token — the pill ink (intro.ctaspanin) and
+   the label arrow ins (intro.labelarrowin/2) tween on the reference's own
+   0.48s cubic-bezier(0.625, 0.05, 0, 1) curve (transform, hover roll). */
+.st-pill-t,
+.st-parrow-in {
+  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
+}

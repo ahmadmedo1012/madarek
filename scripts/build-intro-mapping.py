@@ -182,7 +182,7 @@ for bp in BPS:
                 crawl_windows.setdefault(p, idx)
 
 for p, idx in crawl_windows.items():
-    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": f"intro.cell.{idx}", "skip": ["geometry"]})
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": f"intro.cell.{idx}", "skip": ["geometry", "x-mirror"]})
 bound_patterns.update(crawl_windows.keys())
 
 # the cell children (logo box / img / sep): unique windows one level deeper
@@ -205,7 +205,7 @@ for bp in BPS:
                 cell_child_windows.setdefault(p, f"intro.cellsep.{idx}")
 
 for p, k in cell_child_windows.items():
-    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry"]})
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry", "x-mirror"]})
 bound_patterns.update(cell_child_windows.keys())
 
 # ── the label row internals: unique windows ─────────────────────────────────
@@ -341,7 +341,7 @@ for bp in BPS:
             crawl_children2.setdefault(p, "intro.cellimg." + segs[4].strip("div[]"))
 
 for p, k in crawl_children2.items():
-    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry"]})
+    explicit.append({"section": "home-intro-wrap", "heron": p, "spec": p, "ours": k, "skip": ["geometry", "x-mirror"]})
 bound_patterns.update(crawl_children2.keys())
 
 
@@ -398,6 +398,17 @@ mapping = {
     "scaleFactor": {"home-intro-wrap": 1},
     "explicit": explicit,
     "noCounterpart": no_counterpart,
+    # r338 T-03b (r337 ar-char-split precedent): the h2's per-character
+    # scaffold boxes and the media cell's tween plumbing (the two full-bleed
+    # divs wrapping the masked svg) must NEVER enter heuristic pairing —
+    # tag+tc ordinal gluing welds them to crawl/label elements and produces
+    # junk failures. Explicitly-bound elements are unaffected (explicit
+    # pairing runs first); the rest become unmatched and ride the written
+    # noCounterpart excuses above.
+    "charSplit": [
+        {"section": "home-intro-wrap", "container": "h2[1]"},
+        {"section": "home-intro-wrap", "container": "section[1] > div[1] > div[1] > div[1] > div[1]"},
+    ],
 }
 
 OUT.write_text(json.dumps(mapping, indent=2, ensure_ascii=False) + "\n", encoding="utf8")
