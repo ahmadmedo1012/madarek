@@ -1,739 +1,493 @@
-/* R332 — split VERBATIM from src/styles/landing.css · platform = r325 Y2 pr band + prf frames (3412-3932)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+/* ══ r338 T-08c — المنصّة فعليًا (pass-3 rewrite on the frozen heron
+ * spec docs/redesign/r335/heron-spec/home-platform-wrap.<bp>.json).
+ * Every geometry/type/colour value below is MEASURED from the spec
+ * (rem-exact on the site's fluid root: 11.11px @1920 · 8.33 @1440 ·
+ * 9.2 @768 · 9.925 @390), never heron source.
+ *
+ * MEASURED GRAMMAR — the band is a hairline-ruled sheet:
+ *   · top/bottom 1px rules rgb(179,179,175) + a 3-col row grid ≥992
+ *     (head 25.24% | images 42.16% | side 32.6% — 481/802/619 @1920,
+ *     rem-exact 361/601/464 @1440), rows 42.57rem ×2 (473+473 @1920).
+ *   · TWO platform items: ≥992 the row copies cross-fade on the SAME
+ *     measured rects (heron's marquee pair); ≤991 each item takes a
+ *     row (768: img 377 | head 85 + side 169; 390: img 226 + head 87
+ *     + side 161 stacked, rows 474/474).
+ *   · head cell 17.37rem: label 1.4rem/lh1.4 rgb(180,180,176) @3.15rem,
+ *     title 3.2rem/lh1 (label-top→title-top 9rem), ruled block/end.
+ *   · side cell: long text 1.6rem/lh1.3 ink-72, then the CTA strip
+ *     4.77rem (rule + two 1.4rem/lh1.4 lines + dual circular 4.5rem
+ *     arrows with 2rem line-art) and the dark hover menu 56.16×14.04rem.
+ *   · ≥992 the per-row image and ≤991 the central image column both
+ *     collapse to 0×0 — heron's own census state at those bps.
+ * COLOURS: section-scoped MEASURED vars per the r338 ADDENDUM 9 TOKEN
+ * RULING (the global --accent stays rgb(199,46,0) until T-25 unifies
+ * it); literals also serialize as the spec's own rgb() strings. The
+ * dark theme re-points them at the flipping house tokens (the light
+ * spec is never re-pinned; dark = internal consistency only). ══ */
 
-/* ── pr — المنصّة فعليًا (r325 Y2 rebuild): ONE product frame + a
-   hairline step list beside it + the inline-end surface cells — the
-   extracted 3/5/4 twelve-col seat (full-<bp>.json, home-platform
-   361/601/464 @1440). Hairline figures, mono index chrome, the ONE
-   accent orange, radius 0. The band holds ~79vh (the reference's
-   710px / 5.7%). ── */
 .pr-section {
-  padding-block: var(--sp-7);
-  border-block-start: 1px solid var(--rule-strong);
-  min-block-size: 79vh;
-}
-
-.pr-head {
-  display: grid;
-  gap: var(--sp-3);
-  margin-block-end: var(--sp-8);
-}
-
-/* ═══ r325 Y2 — the showcase frame family (the X3 family re-drawn) ═══
- * PlatformShowcase renders ONE figure: the drawn lecture-player
- * (bar · slide screen · checkpoint card) + the CAPTION below the art
- * (the former plan pin, re-seated — nothing floats over the drawing).
- * The r323 frame-head chrome retired with Y2 (the «[05] · MADAREK ·
- * UI GRAMMAR» label carried no information). The family rides the
- * section's own grammar: hairline frames, mono chrome bars, square
- * corners, the ONE accent orange, tokens only (dark rides the same
- * tokens). Mobile-first: the base stack serves ≤767; ≥992 the stage
- * seats the centre 5 cols of the 12-col grid (the extracted img-wrap
- * seat) with the steps in the head column and the surfaces at the
- * inline end. ═══ */
-.pr-stage {
-  min-inline-size: 0;
-}
-
-.pr-frame {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  min-inline-size: 0;
-  border: 1px solid var(--rule);
-}
-
-/* the frame's drawing body — the player chrome + the checkpoint card
-   (aria-hidden; the honest read is the caption below) */
-.pr-frame-art {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-block-size: 0;
-}
-
-.pr-frame-cap {
-  display: grid;
-  gap: 0.2rem;
-  padding: var(--sp-2) var(--sp-3);
-  border-block-start: 1px solid var(--rule);
-}
-
-.pr-cap-title {
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--text);
-}
-
-.pr-cap-line {
-  font-size: var(--fs-sm);
+  /* r338 T-08c — MEASURED heron platform palette (spec
+   * home-platform-wrap.*.json). Section-scoped per ADDENDUM 9 TOKEN
+   * RULING; the global token unification is queued as T-25. */
+  --pr-ink: rgb(40, 40, 40);          /* color-gate: allow — measured heron ink (T-25 unifies) */
+  --pr-ink-72: rgb(40, 40, 40, 0.72); /* color-gate: allow — measured heron body voice */
+  --pr-label: rgb(180, 180, 176);     /* color-gate: allow — measured heron label muted */
+  --pr-rule-ink: rgb(179, 179, 175);  /* color-gate: allow — measured heron hairline */
+  --pr-cta: rgb(250, 54, 0);          /* color-gate: allow — ADDENDUM 9 TOKEN RULING: measured CTA orange */
+  margin-inline: 0.81rem; /* 9px @1920 · 7 @1440 · 8 @390 — measured sheet margins */
+  font-size: 1.6rem;      /* 17.78 @1920 · 14.73 @768 — the measured body voice */
+  line-height: 1.3;       /* 23.11/17.78 — the measured body line-height */
   font-weight: 500;
-  line-height: 1.45;
-  color: var(--text-muted);
+  color: var(--pr-ink-72);
 }
 
-/* the player screen — the slide's drafted plate on the sheet's own
- * grid paper (the air reads as drawing paper, never a dead void), the
- * concept chain with the ONE accent checkpoint node, over the playhead
- * track */
-.pr-screen {
-  position: relative;
-  flex: 1;
-  min-block-size: 8.75rem;
-  display: flex;
-  flex-direction: column;
-  margin: var(--sp-2) var(--sp-3) 0;
-  border: 1px solid var(--rule);
-  background-image:
-    repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px 2.4rem),
-    repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px 2.4rem);
+html[data-theme='dark'] .pr-section {
+  /* dark: re-point at the flipping house tokens — the light spec is
+   * never re-pinned; the dark pass measures internal consistency */
+  --pr-ink: var(--text);
+  --pr-ink-72: color-mix(in srgb, var(--text) 72%, transparent);
+  --pr-label: var(--text-muted);
+  --pr-rule-ink: var(--rule-strong);
 }
 
-/* the slide position readout — the player's own counter (the
-   checkpoint is the second of the four concepts) */
-.pr-slide-kicker {
-  position: absolute;
-  inset-block-start: var(--sp-2);
-  inset-inline-start: var(--sp-2);
-  color: var(--text-muted);
-}
-
-.pr-slide {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-3);
-  padding: var(--sp-4) var(--sp-3);
-}
-
-/* the slide's heading mass — the drafted title bar + its sub-rule */
-.pr-slide-rule {
-  inline-size: 46%;
-  block-size: 10px;
-  background: var(--text);
-}
-
-.pr-slide-rule.is-sub {
-  inline-size: 30%;
-  block-size: 4px;
-  background: var(--rule-strong);
-}
-
-.pr-chain {
-  display: flex;
-  align-items: center;
-}
-
-/* the concept node — a hairline plate with its own drafted label
-   rules; the accent node carries the checkpoint dot (the frame's
-   single orange signal) */
-.pr-node {
-  inline-size: 6rem;
-  block-size: 4.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px; /* spacing-gate: allow — the drafted plate's inner label rhythm (matches the mastery-row rung family), an external constant */
-  border: 1px solid var(--rule-strong);
-  background: var(--bg);
-}
-
-.pr-node.is-acc { border-color: var(--accent); }
-
-.pr-node-dot {
-  inline-size: 10px;
-  block-size: 10px;
-  background: var(--accent);
-}
-
-.pr-node-line {
-  inline-size: 60%;
-  block-size: 3px;
-  background: var(--rule-strong);
-}
-
-.pr-node-line.is-short { inline-size: 40%; }
-
-.pr-chain-link {
-  inline-size: 2.4rem;
-  block-size: 1px;
-  background: var(--rule-strong);
-}
-
-.pr-slide-line {
-  inline-size: 52%;
-  block-size: 1px;
-  background: var(--rule-strong);
-}
-
-.pr-slide-line.is-short { inline-size: 34%; }
-
-/* the playhead track — accent elapsed + chapter ticks + the head */
-.pr-track {
-  position: relative;
-  block-size: 3px;
-  margin: 0 var(--sp-3) var(--sp-2);
-  background: var(--rule);
-}
-
-.pr-track-fill {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: 38%;
-  background: var(--accent);
-}
-
-.pr-track-head {
-  position: absolute;
-  inset-block-start: -3px;
-  inset-inline-start: 38%;
-  inline-size: 2px;
-  block-size: 9px;
-  background: var(--text);
-}
-
-.pr-tick {
-  position: absolute;
-  inset-block-start: -2px;
-  inline-size: 1px;
-  block-size: 7px;
-  background: var(--rule-strong);
-}
-
-.pr-tick:nth-of-type(1) { inset-inline-start: 25%; }
-.pr-tick:nth-of-type(2) { inset-inline-start: 50%; }
-.pr-tick:nth-of-type(3) { inset-inline-start: 75%; }
-
-.pr-cell {
-  display: flex;
-  flex-direction: column;
-  min-inline-size: 0;
-}
-
-.pr-cell-bar {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  padding: 0.44rem 0.8rem;
-  border-block-end: 1px solid var(--rule);
-}
-
-.pr-cell-idx {
-  color: var(--text-muted);
-  font-size: var(--fs-mono-xs);
-}
-
-.pr-cell-title {
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--text);
-  /* the bidi-safe end-edge push: the auto margin lives on the RTL
-     title (inline-end = physical left), never on the dir=ltr note
-     (whose inline-start is its physical LEFT — the auto margin there
-     opened the space on the wrong side and the time stamp hugged the
-     title). The note lands at the bar's far end at every dir. */
-  margin-inline-end: auto;
-}
-
-.pr-cell-note {
-  color: var(--text-muted);
-  font-size: var(--fs-mono-xs);
-}
-
-/* the concept step list — the player's index (the head column's
-   hairline rows: mono index ≥ the 11px floor · concept name · the
-   orange «now» square) */
-.pr-chapters {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  min-inline-size: 0;
-}
-
-.pr-ch {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding-block: var(--sp-1-5);
-  border-block-start: 1px solid var(--rule);
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  line-height: 1.45;
-  color: var(--text-secondary);
-}
-
-.pr-ch .fo-mono {
-  font-size: var(--fs-mono-xs);
-  color: var(--text-muted);
-}
-
-.pr-ch.is-done { color: var(--text-muted); }
-
-.pr-ch.is-now {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.pr-ch-play {
-  margin-inline-start: auto;
-  inline-size: 8px;
-  block-size: 8px;
-  background: var(--accent);
-  align-self: center;
-}
-
-/* the checkpoint card — the one orange-adjacent honest surface */
-.pr-check {
-  margin: var(--sp-2) var(--sp-3) var(--sp-3);
-  display: grid;
-  gap: 0.3rem;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid var(--rule-strong);
-}
-
-.pr-check-k {
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-  font-weight: 500;
-}
-
-.pr-check-q {
-  margin: 0;
-  font-size: var(--fs-sm);
-  line-height: 1.5;
-  color: var(--text);
-}
-
-.pr-check-btn {
-  justify-self: start;
-  padding: 0.22rem 0.72rem;
-  border: 1px solid var(--rule-strong);
-  font-size: var(--fs-sm);
-  line-height: 1.4;
-  color: var(--text);
-}
-
-/* the mastery matrix — 4×2 hairline cells, the solid accent fills as
-   the single signal, the warm cells keep the outline voice.
-   r325 Y2: the plate centres in the side cell's stretched tail —
-   the cell's air reads around the diagram, never as a dead strip. */
-.pr-matrix {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  /* r324 spacing-gate: the 6px cell gap rides the exact --sp-1-5 rung */
-  gap: var(--sp-1-5);
-  padding: 0.8rem 0.8rem 0.6rem;
-  margin-block-start: auto;
-}
-
-.pr-mc {
-  aspect-ratio: 1;
-  border: 1px solid var(--rule);
-}
-
-.pr-mc.is-hot {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.pr-mc.is-warm { border-color: var(--accent); }
-
-/* the mastery rows — ink progress lines on hairline tracks */
-.pr-mrows {
-  display: grid;
-  gap: 7px; /* spacing-gate: allow — the Heron-extracted mastery-row rhythm (the reference's own 7px track gap; no ladder rung sits between 6 and 8) */
-  padding: 0 0.8rem 0.8rem;
-  margin-block-end: auto;
-}
-
-.pr-mrow {
-  block-size: 4px;
-  background: var(--rule);
-}
-
-.pr-mfill {
+/* the sheet's top/bottom rules (heron section div[1]/div[2]) */
+.pr-sheet-rule {
   display: block;
-  block-size: 100%;
-  background: var(--text);
+  block-size: 1px;
+  background: var(--pr-rule-ink);
 }
 
-/* the assistant bubble cell */
-.pr-ai-q {
-  margin: 0;
-  padding: 0.6rem 0.8rem 0;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  line-height: 1.5;
-  color: var(--text);
+/* the per-cell hairlines (heron's absolute 1px rule divs) */
+.pr-cell-rule {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--pr-rule-ink);
 }
 
-.pr-ai-a {
-  margin: 0;
-  padding: 0.2rem 0.8rem 0.8rem;
-  font-size: var(--fs-sm);
-  line-height: 1.55;
-  color: var(--text-secondary);
+.pr-cell-rule.is-top { inset-block-start: 0; }
+.pr-cell-rule.is-end { inset-block-end: 0; }
+
+/* ── the head cell — label + title on heron's body-voice wrappers ── */
+.pr-head {
+  position: relative;
+  display: block;
 }
 
-.pr-frame-cta {
-  font-size: var(--fs-sm);
-  white-space: nowrap;
-}
-
-.pr-frame-demo {
-  color: var(--text-muted);
-  font-size: var(--fs-mono-xs);
-}
-
-/* the row-2 inspector line — the ONE demo disclosure + the CTA. The
-   ≥992 seat (cols 9–12, row 2) is the reference's own note position;
-   the base line rides under the frame at ≤767. Hidden with the head
-   at the strips-only 768–1024 bands. */
-.pr-note {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--sp-2);
-  margin-block-start: var(--sp-2);
-}
-
-/* the inline-end surface column — the drawn matrix + assistant cells
-   (the extracted content-right seat; hairline cells on the section
-   grid; hidden with the head at the strips-only ≤1024 bands) */
-.pr-side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-3);
+.pr-head-box {
+  display: grid;
   min-inline-size: 0;
 }
 
-.pr-side .pr-cell {
-  border: 1px solid var(--rule);
+.pr-label {
+  font-size: 1.4rem;   /* 15.56 @1920 · 12.89 @768 — measured label voice */
+  line-height: 1.4;    /* 21.78/15.56 — measured */
+  font-weight: 500;
+  color: var(--pr-label);
 }
 
-.pr-cell-matrix {
-  flex: 1;
-}
-
-/* the assistant cell rides the side column's tail (r325 Y2) */
-.pr-cell-ai {
-  flex: 0 0 auto;
+.pr-title-wrap {
+  font-size: 1.6rem;
+  line-height: 1.3;
+  color: var(--pr-ink); /* the wrapper carries the full ink (measured) */
 }
 
 .pr-title {
-  /* R332 W4c — the twin label-scale re-pair (platform). Heron's
-     home-platform band's display voice is the feature titles'
-     .heading.h4 seat («Heron Chat widget» / «Heron Dashboard») —
-     measured 26.6667px w600 lh 1 across all 51 twin steps (3.2rem on
-     the shared root; the 13.33px rows in the same slice are the
-     [class*=title] WRAPPERS around it, and run-001's first-6 missed
-     the h4 seats entirely). Ours drops from the D2 statement rung
-     (40px @1440, fsΔ 66.67%) to that measured h4 rung; the body-voice
-     pairing (family: the sans, no mono chip) is kept — Heron's h4
-     rides its body face like ours inherits the band's. The D2 seat's
-     own history (R318 §A5 h4 → R322 1-d rung) retires with it.
-     ≤767 mirrors Heron's mb-h4 step (2rem/1.2 = 19.85px @390); the
-     768–991 band folds .pr-head. The band keeps its 79vh min-block
-     floor and the ≥992 .pr-head seat, so the height twin (Δ0.04%)
-     is untouched. */
-  font-size: 3.2rem; /* 26.67px @1440 — Heron's measured .heading.h4 twin */
-  font-weight: 600;
-  line-height: 1;
-  text-wrap: balance;
-  color: var(--text);
-}
-
-@media (max-width: 767px) {
-  /* Heron's own mb-h4 step (.heading.mb-h4: 2rem / 1.2em) */
-  .pr-title {
-    font-size: 2rem; /* 19.85px @390 */
-    line-height: 1.2;
-  }
-}
-
-.pr-lede {
-  font-size: var(--fs-body);
-  line-height: 1.7;
-  color: var(--text-secondary);
-  max-inline-size: 64ch;
-}
-
-/* r324 X3/r325 Y2: the R313-era .pr-grid pair and the .pr-note text
-   seat retire — the note is the showcase's CTA line, the band is the
-   3/5/4 seat drawn above. */
-
-/* ── prf — ProductFrame: the real-capture figure ────────────────────
-   Flat frame + the three-part caption: the mono «real-ui» tag, the
-   title/line body, the demo disclosure. The CTA is a text link — it
-   scrolls to the conversion row (never an extra funnel link). ── */
-.prf {
-  display: grid;
-  gap: var(--sp-2);
-  min-inline-size: 0;
-}
-
-.prf-photo {
-  overflow: clip;
-  border: 1px solid var(--border-strong);
-  border-radius: var(--r-xs);
-  background: var(--surface);
-}
-
-.prf-photo img {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-}
-
-.prf-caption {
-  display: grid;
-  /* r324 X4 — the tag column retired with the «real-ui» chip:
-     body first, the demo disclosure at the far edge. */
-  grid-template-columns: 1fr auto;
-  align-items: baseline;
-  gap: var(--sp-3);
-  padding-inline: var(--sp-0-5);
-}
-
-/* r324 X4 — .prf-caption-tag retires with the chip. */
-
-.prf-caption-body {
-  display: grid;
-  gap: var(--sp-0-5);
-  min-inline-size: 0;
-}
-
-.prf-caption-title {
-  font-size: var(--fs-sm);
-  font-weight: 700;
-  color: var(--text);
-}
-
-.prf-caption-line {
-  font-size: var(--fs-xs);
-  color: var(--text-muted);
-}
-
-.prf-caption-demo {
-  font-size: var(--fs-xxs);
-  color: var(--text-faint);
-}
-
-.prf-cta {
-  white-space: nowrap;
-}
-
-/* ── Responsive re-composition (never a naive scale-down) ─────────── */
-/* R313 (D7): the fluid root already scales the sheet at tablet widths
-   (the media families moved to /campus — their responsive rules moved
-   with them into campus.css); the pr-grid keeps its two-block shape
-   until the phone band. */
-
-/* ── P-A2 R333 (INV-08 · heron-craft row 13) — the product-proof
-   strip ──────────────────────────────────────────────────────────────
-   The band's REAL 2× captures (2880×1740 → 1440×870 @1×, the heron
-   platform frame's own ratio) as three prf-card-grammar panels:
-   hairline 1px --rule frame, radius 0, --surface ground, zero
-   shadow — plus the SVG corner-tick layer (the drafting frame
-   treatment, aria-hidden) and the paper caption chip (mono index +
-   Arabic label — the chip is a figcaption, real content).
-
-   GEOMETRY CONTRACT (the twin): ≥992 the strip is the section grid's
-   row 3 (grid-column 1 / -1) — the row-1 minmax(0,1fr) stretch
-   absorbs it, so the 85.2rem floor still pins the band's height
-   (height-neutral by construction; verified against the probe).
-   ≤991 the band's capture-free fold stands (the twin lock, the same
-   law the ≤767 .wy-stack fold rides) — the strip renders ≥992 only.
-
-   ENTRANCE: none here — the panels ride reveals.ts CARD_SEL →
-   .reveal-card (row 13's imgCardReveal, scale 0.8→1); reduced motion
-   bails before arming and the strip ships visible (reveals.css belt). */
-.pr-shots {
-  /* the proof band's media height — one tunable seat (the row-1
-     stretch's slack owns it; rem so the fluid root scales it) */
-  --pr-shot-h: 13rem;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--sp-3);
-  min-inline-size: 0;
-  margin-block-start: var(--sp-4);
-}
-
-.pr-shot {
-  position: relative;
   margin: 0;
+  font-size: 3.2rem;   /* 35.56 @1920 · 26.67 @1440 — measured h4 twin */
+  line-height: 1;      /* 35.56/35.56 — measured */
+  font-weight: 600;
+  color: var(--pr-ink);
+  text-wrap: balance;
+}
+
+/* ── the side cell — the long text + the CTA strip ────────────────── */
+.pr-side {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   min-inline-size: 0;
 }
 
-.pr-shot-media {
-  position: relative; /* the tick layer's positioning context */
-  overflow: clip;
-  border: 1px solid var(--rule);
-  border-radius: 0;
-  background: var(--surface);
+.pr-sidebox {
+  min-inline-size: 0;
 }
 
-.pr-shot-media img {
+.pr-text {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.3;
+  font-weight: 500;
+  color: var(--pr-ink-72);
+}
+
+/* the CTA strip — heron's a[2]: rule + body(row[line1 + dual arrows],
+ * line2). The anchor itself carries the measured orange; the inner
+ * rows carry the full ink (both measured). */
+.pr-cta {
+  position: relative;
   display: block;
-  inline-size: 100%;
-  block-size: var(--pr-shot-h);
-  object-fit: cover;
-  object-position: top; /* the UI chrome (bars/headers) leads the crop */
+  margin-block-start: auto;
+  color: var(--pr-cta);
+  text-decoration: none;
+  transition: color 0.3s ease; /* motion-token: allow — heron-measured hover fade (TR on a[2]) */
 }
 
-/* the drafting frame layer — four corner registration marks inside
-   the hairline box. R333: they ride the repo's proven CSS plus-mark
-   grammar (hero.css .bp-plus — the glyph is pseudo-element content,
-   mono, tokenized ink; no icon import, no raw svg under the icon
-   gate). Anchored to .pr-shot-media (its positioning context). */
-.pr-shot-tick {
-  position: absolute;
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-mono-md);
-  line-height: 1;
-  pointer-events: none;
+.pr-cta-rule {
+  display: block;
+  block-size: 1px;
+  background: var(--pr-rule-ink);
 }
 
-/* the glyph is pseudo-element content — out of innerText (R321 §A6,
-   the .bp-plus note in hero.css) */
-.pr-shot-tick::before { content: '+'; }
+.pr-cta-body {
+  display: block;
+  padding-block-start: 1.44rem; /* line1 top = 16px from the strip top (measured) */
+  padding-inline-start: 3.15rem;
+}
 
-.pr-shot-tick-tl { inset-block-start: 3px; inset-inline-start: 4px; }
-.pr-shot-tick-tr { inset-block-start: 3px; inset-inline-end: 4px; }
-.pr-shot-tick-bl { inset-block-end: 3px; inset-inline-start: 4px; }
-.pr-shot-tick-br { inset-block-end: 3px; inset-inline-end: 4px; }
-
-/* the caption chip — the shared .prf-idxchip grammar (product-frame.css)
-   widened for the index + label pair. The chip IS content here
-   (figcaption — the honest surface name), never aria-hidden. */
-.pr-shot .prf-idxchip {
+.pr-cta-row {
   display: flex;
-  align-items: baseline;
-  gap: var(--sp-1-5);
+  align-items: center;
+  gap: 1.26rem; /* line-end → icon-start = 14px @1920 (measured) */
+  color: var(--pr-ink);
 }
 
-.pr-shot-label {
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--text);
+.pr-cta-line {
+  font-size: 1.4rem;  /* 15.56 @1920 · 12.89 @768 — measured CTA voice */
+  line-height: 1.4;   /* 21.78/15.56 — measured */
+  font-weight: 500;
+  color: var(--pr-ink);
   white-space: nowrap;
 }
 
-/* ≤991: the band's capture-free fold stands (the twin lock — the
-   768–991 strips and the ≤767 stack keep their measured shapes). */
-@media (max-width: 991px) {
-  .pr-shots {
-    display: none;
-  }
+.pr-cta-icons {
+  margin-inline-start: auto;
+  display: flex;
 }
 
-/* ≥992: the strip is the section grid's row 3, full width — the
-   row-1 stretch (the head/stage/side slack) absorbs it. */
+/* heron's dual circular arrows — two tangent 50×50 rings (measured
+ * 37 @1440 · 41 @768), each centring 22×22 line-art (17/18 measured) */
+.pr-cta-ic {
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--pr-ink);
+  border-radius: 50%; /* the measured ring shape (a ratio, not a rung) */
+  color: var(--pr-ink);
+}
+
+.pr-cta-icbox {
+  inline-size: 2rem;
+  block-size: 2rem;
+  display: grid;
+  place-items: center;
+}
+
+.pr-cta-icbox svg {
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+
+/* the dark hover menu — heron's a[2] > div[2] > div[1] > div[1]:
+ * 624×156 rgb(40,40,40) hanging 52px above the strip (measured).
+ * The assistant panel; opens on hover/focus, rect never moves. */
+.pr-menu {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: -4.68rem;
+  inline-size: 56.16rem;
+  block-size: 14.04rem;
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
+  padding: 1.44rem 2.7rem;
+  background: var(--pr-ink);
+  color: var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease; /* motion-token: allow — heron-measured menu fade */
+  z-index: 1;
+}
+
+.pr-cta:hover .pr-menu,
+.pr-cta:focus-visible .pr-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pr-menu-k {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.pr-menu-q {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.pr-menu-a {
+  font-size: 1.4rem;
+  line-height: 1.4;
+  font-weight: 500;
+  opacity: 0.72;
+}
+
+/* the per-row image — ≥992 display:none (heron's own 0×0 census) */
+.pr-rowimg {
+  position: relative;
+  min-inline-size: 0;
+}
+
+.pr-rowimg img {
+  display: block;
+  inline-size: 100%;
+  object-fit: cover;
+  object-position: top; /* the UI chrome leads the crop */
+}
+
+.pr-rowimg-rule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0;
+  inline-size: 1px;
+  background: var(--pr-rule-ink);
+}
+
+/* the central image column — ≥992 only (≤991 display:none = heron 0×0) */
+.pr-imgs {
+  position: relative;
+  display: grid;
+  min-inline-size: 0;
+}
+
+.pr-img {
+  margin: 0;
+  overflow: clip;
+}
+
+/* the column's measured hairlines — the flanking verticals
+   (@x490/x1291 @1920) and the rule between the two captures */
+.pr-imgs-vrule {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 1px;
+  background: var(--pr-rule-ink);
+}
+
+.pr-imgs-vrule:first-child { inset-inline-start: 0; }
+.pr-imgs-vrule:last-child { inset-inline-end: 0; }
+
+.pr-imgs-hrule {
+  block-size: 1px;
+  background: var(--pr-rule-ink);
+}
+
+.pr-img img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* ── ≥992 — the measured 3-col row grid with the cross-fade pair ──── */
 @media (min-width: 992px) {
-  .pr-shots {
+  .pr-section {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .pr-grid {
+    display: grid;
+    grid-template-columns: 25.24% 42.16% 32.6%; /* 481/802/619 @1920 (measured) */
+    grid-template-rows: 42.57rem 42.57rem;      /* 473+473 @1920 (measured) */
+  }
+
+  .pr-rows {
     grid-column: 1 / -1;
-    grid-row: 3;
-  }
-}
-
-
-/* ═══ r338 T-08b — the heron 481/802/619 row-grid re-seat (≥992).
-   Measured @1920: section 1902×947 (0.81rem side margins), rows
-   473+473, cols 481/802/619 (rem-exact: 361/601/464 @1440,
-   257/428 @1024 — heron's own fluid ladder), head row 193 with
-   label 392×22 fs15.56/lh21.78 @y36 + title 392×36 fs35.56/lh1
-   @y136, side cells 619×140, CTA row 619×53, body voice lh 1.3.
-   RTL: the head col seats the inline-start (right) edge — the
-   mirror of heron's LTR left col. Overrides the shared.css 3/5/4
-   seat by specificity only (no shared.css edit — T-08 ownership). ═══ */
-@media (min-width: 992px) {
-  .pr-section.pr-section {
+    grid-row: 1 / -1;
     display: grid;
     grid-template-columns: 25.24% 42.16% 32.6%;
     grid-template-rows: 42.57rem 42.57rem;
-    margin-inline: 0.81rem;
-    padding-block: 0;
-    line-height: 1.3;
-    color: color-mix(in srgb, var(--text) 72%, transparent);
-    border-block-end: 1px solid var(--rule-strong);
   }
-  .pr-section .pr-head {
-    grid-column: 1;
+
+  /* the two row copies share the SAME rects (heron's marquee pair);
+   * the cross-fade is opacity-only so no measured box ever moves */
+  .pr-row {
+    grid-column: 1 / -1;
     grid-row: 1;
     align-self: start;
-    gap: 0;
-    margin: 0;
-    block-size: 17.37rem;
-    padding: 3.24rem 3.24rem 1.181rem 4.77rem;
-    border-block-end: 1px solid var(--rule-strong);
-  }
-  .pr-section .pr-head .fo-label {
-    font-size: 1.4rem;   /* 15.56px @1920 — heron's small label voice */
-    line-height: 1.4;    /* 21.78px */
-  }
-  .pr-section .pr-title { margin-block-start: 7.02rem; }
-  .pr-section .pr-head-more {
-    grid-column: 1;
-    grid-row: 2;
-    align-self: start;
+    block-size: 17.37rem; /* 193 @1920 · 145 @1440 (measured) */
     display: grid;
-    gap: var(--sp-4);
-    padding: 2.025rem 3.24rem 0 4.77rem;
-    overflow: clip;
+    grid-template-columns: 25.24% 42.16% 32.6%;
   }
-  .pr-section .pr-stage {
+
+  .pr-row + .pr-row {
+    animation: pr-item-fade 14s ease-in-out infinite;
+  }
+
+  .pr-row:first-child {
+    animation: pr-item-fade 14s ease-in-out infinite;
+    animation-delay: -7s;
+  }
+
+  @keyframes pr-item-fade {
+    0%, 42% { opacity: 1; }
+    50%, 92% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pr-row,
+    .pr-row + .pr-row {
+      animation: none;
+    }
+
+    .pr-row + .pr-row {
+      opacity: 0;
+    }
+  }
+
+  .pr-head {
+    grid-column: 1;
+    block-size: 17.37rem;
+    padding: 3.15rem 4.05rem 0 3.96rem; /* inner box x44/x45 y35 @1920 (measured) */
+  }
+
+  .pr-title-wrap {
+    margin-block-start: 7.02rem; /* label-top→title-top = 9rem (measured) */
+  }
+
+  .pr-side {
+    grid-column: 3;
+    block-size: 17.37rem;
+  }
+
+  .pr-sidebox {
+    padding: 3.15rem 3.24rem 0 3.15rem; /* text 548×69 @x1327 y10620 (measured) */
+  }
+
+  .pr-cta {
+    block-size: 4.77rem; /* 53 @1920 · 40 @1440 (measured) */
+  }
+
+  .pr-rowimg {
+    display: none; /* heron's per-row img is 0×0 ≥992 (measured census) */
+  }
+
+  .pr-imgs {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    grid-template-rows: 42.57rem 42.57rem;
+      grid-template-rows: 42.57rem auto 42.57rem;
+  }
+}
+
+/* ── 768–991 — the two-col fold: img | head+side, rows 254/258 ────── */
+@media (max-width: 991px) {
+  .pr-imgs {
+    display: none; /* heron's central column is 0×0 ≤991 (measured census) */
+  }
+
+  .pr-row {
+    display: grid;
+    grid-template-columns: 50% 50%; /* img 377 | content 376 @768 (measured) */
+    grid-template-rows: auto auto;
+    align-items: start;
+  }
+
+  .pr-rowimg {
+    grid-column: 1;
+    grid-row: 1 / -1;
+  }
+
+  .pr-rowimg img {
+    block-size: 27.6rem; /* 254px @768 (measured) */
+  }
+
+  .pr-head {
     grid-column: 2;
     grid-row: 1;
-    block-size: 42.57rem;
+    block-size: 9.24rem; /* 85 @768 (measured) */
+    padding: 2.4rem 2.4rem 0 2.4rem; /* label @x406 y7628 (measured) */
   }
-  .pr-section .pr-stage .pr-frame { block-size: 100%; }
-  .pr-section .pr-shots {
+
+  .pr-title-wrap {
+    margin-block-start: 0.76rem; /* title-top = label-top + 25px @768 (measured) */
+  }
+
+  .pr-title {
+    font-size: 2.4rem; /* 22.1 @768 — the measured mb-h4 step */
+    line-height: 1.2;  /* 26.52/22.1 (measured) */
+  }
+
+  .pr-side {
     grid-column: 2;
     grid-row: 2;
-    margin: 0;
-    gap: 0;
+  }
+
+  .pr-sidebox {
+    padding: 1.2rem 2.4rem 0 2.4rem; /* text @x406 y7702 (measured) */
+  }
+
+  .pr-cta {
+    block-size: 4.78rem; /* 44 @768 (measured) */
+  }
+
+  .pr-menu {
+    inline-size: 100%;
+    inset-block-start: auto;
+    inset-block-end: 4.9rem;
+  }
+}
+
+/* ── ≤767 — the stacked fold: img 226 + head 87 + side, rows 474 ──── */
+@media (max-width: 767px) {
+  .pr-row {
     grid-template-columns: 1fr;
   }
-  .pr-section .pr-shot:not(:first-child) { display: none; }
-  .pr-section .pr-shot-media img { block-size: 42.48rem; }
-  .pr-section .pr-shot .prf-idxchip {
-    position: absolute;
-    inset-block-end: 0;
-    inset-inline-start: 0;
-  }
-  .pr-section .pr-side {
-    grid-column: 3;
+
+  .pr-rowimg {
     grid-row: 1;
-    align-self: start;
-    gap: 0;
   }
-  .pr-section .pr-cell-matrix,
-  .pr-section .pr-cell-ai {
-    flex: none;
-    block-size: 12.6rem;
-    overflow: clip;
+
+  .pr-rowimg img {
+    block-size: 22.77rem; /* 226px @390 (measured) */
   }
-  .pr-section .pr-note {
-    grid-column: 3;
+
+  .pr-head {
+    grid-column: 1;
     grid-row: 2;
-    align-self: start;
-    align-items: center;
-    block-size: 4.77rem;
-    margin: 0;
-    border-block-start: 1px solid var(--rule-strong);
+    block-size: 8.77rem; /* 87 @390 (measured) */
+    padding: 3.22rem 2.42rem 0 2.42rem; /* label @x24 y7630 (measured) */
   }
-  .pr-section .pr-frame-cta {
-    font-size: 1.6rem;  /* 17.78px @1920 — heron's CTA voice */
-    line-height: 1.3;
-    white-space: normal;
+
+  .pr-label {
+    line-height: 1.1; /* 15.28/13.89 @390 — the measured tight label voice */
+  }
+
+  .pr-title-wrap {
+    margin-block-start: 0.78rem; /* title-top = label-top + 23px @390 (measured) */
+  }
+
+  .pr-title {
+    font-size: 2rem;  /* 19.85 @390 — the measured mb-h4 step */
+    line-height: 1.2; /* 23.82/19.85 (measured) */
+  }
+
+  .pr-side {
+    grid-column: 1;
+    grid-row: 3;
+  }
+
+  .pr-sidebox {
+    padding: 1.2rem 2.42rem 0 2.42rem; /* text @x24 y7697 (measured) */
+  }
+
+  .pr-cta {
+    block-size: 4.33rem; /* 43 @390 (measured) */
   }
 }
