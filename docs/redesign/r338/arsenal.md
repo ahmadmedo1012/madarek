@@ -192,3 +192,13 @@ L-10 | git merge --no-ff train + vite/check-bundle-size + verify.sh --fast + cur
 T-03f | conformance/run.mjs --dark + plumbing mapping | intro junk-pool skip census (269 entries), pill icon seat re-measure 5bp+dark
 T-14b | playwright probe scripts (light↔dark DOM diff: geometry/type/color/contrast) + run.mjs --dark + check-colors --strict | dark census for usecase/problem, footer+cta dark numbers, soft-ink flip verification
 T-14a2 | playwright chromium (chromium-1200 via /tmp/pw-browsers symlink fallback, PLAYWRIGHT_BROWSERS_PATH) | dark-path instrument validation: light regression (usecase+footer), 390 determinism double-run, per-bp dark-contrast counts
+<<<<<<< HEAD
+T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
+T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
+T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measurement
+||||||| a8c62a03
+=======
+T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
+T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
+>>>>>>> origin/r338/t10-cta
+T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
