@@ -19,7 +19,10 @@
   padding: 0;
   margin: 0;
   background: var(--bg);
-  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
+  /* the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%):
+     color-mix() serializes as color(srgb …) which the conformance
+     twin cannot parse — statement.css precedent for the literal */
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
   font-size: 1.6rem;
   line-height: 2.16rem;
   font-weight: 500;
@@ -87,7 +90,7 @@
   font-size: 1.4rem;
   line-height: 1.96rem;
   font-weight: 500;
-  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72)); color-mix() renders as color() and the conformance twin requires the literal */
 }
 .rl-label .fo-mono { font-size: 1.4rem; color: inherit; }
 .rl-h2box { margin: 0; }
@@ -154,15 +157,20 @@
   font-size: 1.6rem;
   line-height: 2.16rem;
   font-weight: 500;
-  color: color-mix(in srgb, var(--c-grey-deep) 72%, transparent);
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72)); color-mix() renders as color() and the conformance twin requires the literal */
 }
 .rl-row-rule {
   position: absolute;
   inset-inline: 0;
   block-size: 1px;
-  background: var(--rule-strong);
   pointer-events: none;
 }
+/* the frozen census: the rows' bottom + unfold rules (rule1/rule2) read
+   TRANSPARENT at every bp — only the open row's top rule (rule-t) carries
+   the construction hairline #B3B3AF. The boxes stay real (h=1, full
+   inline size) exactly as the spec records them. */
+.rl-row-rule-o, .rl-row-rule-b { background: transparent; }
+.rl-row-rule-t { background: var(--rule-strong); }
 .rl-row-rule-b, .rl-row-rule-o { inset-block-end: 0; }
 .rl-row-rule-t { inset-block-start: 0; }
 .rl-row-zero {
@@ -173,17 +181,29 @@
 }
 
 /* ═══ desktop belts: the column's stretch + the acc gap ═══ */
+/* the spec's titlecol children (labelbox + h2box) read 609 wide at
+   1920 — content-sized to the h2's longest line, not full column
+   blocks; a single min-content grid track gives both boxes that width */
+@media (min-width: 992px) {
+  .rl-titlecol { display: grid; grid-template-columns: min-content; }
+}
 .rl-titlecol { padding-block-start: 3.2rem; }
 .rl-labelbox { margin-block-end: 1.5rem; }
 .rl-titlecol { padding-block-end: 9.04rem; }
 .rl-accwrap { margin-block-start: 3.06rem; }
 @media (min-width: 1440px) and (max-width: 1919px) {
-  .rl-titlecol { padding-block-end: 14.56rem; }
-  .rl-accwrap { margin-block-start: 8.4rem; }
+  /* spec 1440: accwrap y=367, row1 y=387 — re-seated from the measured
+     overshoot (427→367) + the spec's own 20px accwrap→row1 offset */
+  .rl-titlecol { padding-block-end: 0; }
+  .rl-accwrap { margin-block-start: -4.05rem; }
+  .rl-acc { padding-block-start: 1.8rem; }
 }
 @media (min-width: 992px) and (max-width: 1439px) {
-  .rl-titlecol { padding-block-end: 25.3rem; }
-  .rl-accwrap { margin-block-start: 19.24rem; }
+  /* spec 1024: accwrap y=389, row1 y=403 — same re-seat (468→389) with
+     the 14px accwrap→row1 offset */
+  .rl-titlecol { padding-block-end: 22.04rem; }
+  .rl-accwrap { margin-block-start: 0; }
+  .rl-acc { padding-block-start: 1.26rem; }
 }
 @media (min-width: 992px) and (max-width: 1919px) {
   /* the twin bottom rule + the open row's top rule collapse to 0 width
@@ -259,8 +279,8 @@
     padding-block: 2rem;
     padding-inline: 1.6rem;
   }
-  .rl-row-title { font-size: 1.8rem; line-height: 2.43rem; }
-  .rl-row-iconbtn, .rl-row-svg { inline-size: 2.4rem; block-size: 2.4rem; }
+  .rl-row-title { font-size: 1.8rem; line-height: 2.1rem; }
+  .rl-row-iconbtn, .rl-row-svg { inline-size: 2rem; block-size: 2rem; }
 }
 
 /* ═══ interaction ═══ */
