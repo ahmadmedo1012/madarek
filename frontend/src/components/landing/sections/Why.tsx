@@ -26,14 +26,14 @@ export function Why() {
         </RevealCssClass>
         <div className="wy-side" data-spec="why.side">
           <div className="wy-rule-v" aria-hidden="true" data-spec="why.rulev" />
-          <div className="wy-lede" data-spec="why.lede">
-            <div className="wy-lede-t" data-spec="why.ledet">
+          <div className="wy-lede">
+            <div className="wy-lede-t">
               شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر داخل
               مدارك، ولكل مرحلة سطح حقيقي من أسطح الطالب نعرضه هنا كما هو تمامًا.
             </div>
           </div>
-          <div className="wy-note" data-spec="why.note">
-            <div className="wy-note-t" data-spec="why.notet">اللقطات من بيئة العرض التجريبية</div>
+          <div className="wy-note">
+            <div className="wy-note-t">اللقطات من بيئة العرض التجريبية</div>
           </div>
         </div>
       </div>
