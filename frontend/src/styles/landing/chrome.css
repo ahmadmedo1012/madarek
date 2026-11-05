@@ -150,9 +150,10 @@ html[data-theme='dark'] body.mdrk-grain::before {
    7px inset, with their own ~26px seat padding.)
    PI-B2: the retired hero seats (.fo-hero-copy/.fo-hero-fig/
    .fo-hero-meta — no such classes in any markup) are trimmed from the
-   group; the live bands keep the measure. */
+   group; the live bands keep the measure.
+   R337 A-problem: .pm-section left this group — the problem band is
+   full-bleed in the frozen spec (strata.css carries the note). */
 .st-section,
-.pm-section,
 .chapters,
 .pr-section,
 .wy-section,

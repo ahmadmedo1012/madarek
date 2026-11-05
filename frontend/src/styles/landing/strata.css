@@ -263,9 +263,8 @@
   /* ── pm: 905 → 857 (target 869) — the sp-10 bands step to the
      reference's compact share; the grouped V13 rule above keeps
      .st-section/.chapters at their own rungs ── */
-  .pm-section {
-    padding-block: var(--sp-8) var(--sp-6);
-  }
+  /* R337 A-problem: the .pm-section compact pads retired — the ≤767
+     rewrite owns the head band's 6.4/1.6/3.2/1.6rem box. */
 
   /* ── pr: the phones' single-cell platform band — the decorative
      mock-UI fragment strip (aria-hidden collage, r314-productframe)
@@ -445,11 +444,13 @@
    * R332 W5: the .wy/.rl/.fo-cta seats of this group and their padding
    * lines dissolved to the owner sheets (why/roles/cta.css, file end)
    * — verbatim winners, ONE definition each. */
-  .st-section, .pm-section, .pr-section {
+  .st-section, .pr-section {
     min-block-size: 0;
   }
   .st-section { padding-block: var(--sp-6) var(--sp-5); } /* R332 W390b −28px: the +13.1 statement overhang fed the whole downstream trigger cascade (heron 847.2, floor 821.8) */
-  .pm-section { padding-block: var(--sp-8) var(--sp-7); }
+  /* R337 A-problem: the .pm-section tablet pad/min block pair retired —
+     the 144.8rem floor below is the spec-exact band height; the pads
+     fought the rewrite's own head band (pad 4/1.5/3/1.5rem). */
   .pr-section { padding-block: var(--sp-5) var(--sp-4); }
 
   /* 2 — R322 (1-d): the sheet-title tablet clamp RETIRES — the rung
@@ -617,7 +618,6 @@
    * [7px, 7px+2.08rem] + the 4px hover nudge; 4rem clears it with a
    * ~9px gap @1440 and rides the root at every tier). */
   .st-section,
-  .pm-section,
   .chapters,
   .pr-section,
   .wy-section,
@@ -626,6 +626,9 @@
     padding-inline: 3.2rem; /* spacing-gate: allow — the reference's own measured section padding (3.2rem, content 1373.4 @1440), an external constant */
     padding-inline-end: 4rem; /* R322 V7 — the edge-rail inset (see the note above) */
   }
+  /* R337 A-problem: .pm-section left this group — the problem band is
+     full-bleed in the frozen spec (wrap pad 0; the head's own 3.2rem
+     box pad is the inset), and the rewrite owns the seat now. */
 
   /* .rl-section left the edge-rail group + the 100svh floor with the
      r337 usecase rewrite (roles.css's own ≥992 guard — max-inline-size:
@@ -874,7 +877,7 @@
 @media (max-width: 479px) {
   /* ── THE LAW — every band pins the reference's constant-rem height ── */
   .st-section { min-block-size: 84.25rem; }
-  .pm-section { min-block-size: 87.65rem; padding-block: 4.03rem 3.22rem; }
+  .pm-section { min-block-size: 87.65rem; } /* R337 A-problem: pads retired — the rewrite owns the box */
   .pr-section { min-block-size: 52.1rem; padding-block: 0.81rem 0.61rem; } /* R332 W390b −12px → ≈560 (heron 557.8) */
   /* R325 Y3: the wy 81.2rem floor RETIRES — the phone band folds the
      captures away (the rail carries the strip), so the floor pinned
@@ -1037,7 +1040,7 @@
    * DELETED — the ≤767 transplant belt owns the hero now; a stale
    * twin here re-pinned the min under the new reserve. */
   .st-section { min-block-size: 84.25rem; }
-  .pm-section { min-block-size: 87.65rem; padding-block: var(--sp-8) var(--sp-6); }
+  .pm-section { min-block-size: 87.65rem; }
   .pr-section { min-block-size: 52.1rem; }
   /* R325 Y3: the wy 81.2rem floor RETIRES (the ≤479 note above — the
      large-phone band folds the captures too; the floor was pure void). */
@@ -1569,7 +1572,6 @@
  * is honest on first paint and the walk never moves it (gate:height
  * pins load == post-walk within ±0.5 %). */
 .st-section,
-.pm-section,
 .chapters,
 .pr-section,
 .wy-section,
@@ -1578,6 +1580,9 @@
   content-visibility: auto;
   contain: layout paint style;
 }
+/* R337 A-problem: .pm-section left the cv/contain group — the rewrite's
+   band height differs from the R324 placeholder fits; re-measure before
+   re-adding (scripts/r324/measure-intrinsic.mjs). */
 
 /* ≥992 — the desktop composition is FLUID (the root scales with vw),
  * so the placeholders are too: a two-rung linear fit over the measured
@@ -1585,7 +1590,6 @@
  * section-intrinsic.json), each rung anchored EXACT at its gate
  * breakpoint (1024 / 1440) with the local measured slope. */
 .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }   /* 502 @1024 · 597 @1440 — r324 X14 re-measure (59:50 art) */
-.pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }   /* 432 @1024 · 609 @1440 — r324 X14 (89.1rem floor seat) */
 .chapters   { contain-intrinsic-size: auto calc(3127px + 209.9vw); } /* 5276 @1024 · 6150 @1440 — R332 W4 re-measure post mono-re-seat + reserved closing cell (the X14 seat ran +96 stale pre-wave) */
 .pr-section { contain-intrinsic-size: auto calc(-2px + 40.14vw); }  /* 409 @1024 · 576 @1440 — R328 (H5) re-measure post-rhythm-ladder (the r325 seat ran +69 stale) */
 /* R325 Y3 re-measure: the wy floors retired, so the placeholder re-fits
@@ -1598,7 +1602,6 @@
 /* 992–1179 — the rung below the 1180 red-team line (anchored @1024) */
 @media (min-width: 992px) and (max-width: 1179px) {
   .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }
-  .pm-section { contain-intrinsic-size: auto calc(-4px + 42.55vw); }
   .chapters   { contain-intrinsic-size: auto calc(3127px + 209.9vw); }
   /* R328 (H5) re-measure (post-rhythm-ladder, BPS=1440,1024):
      pr 409→576 · rl 663→753 · cta 376→530 — the two-anchor
@@ -1611,7 +1614,6 @@
 /* 768–991 — the tablet composition (measured @768) */
 @media (min-width: 768px) and (max-width: 991px) {
   .st-section { contain-intrinsic-size: auto 544px; }
-  .pm-section { contain-intrinsic-size: auto 1260px; }
   .chapters   { contain-intrinsic-size: auto 4685px; }
   .pr-section { contain-intrinsic-size: auto 471px; }   /* r325 merged re-measure (471 @768) */
   .wy-section { contain-intrinsic-size: auto 616px; } /* r325 Y3 re-measure */
@@ -1621,7 +1623,6 @@
 /* 480–767 — the large-phone band (measured @600) */
 @media (min-width: 480px) and (max-width: 767px) {
   .st-section { contain-intrinsic-size: auto 1143px; }
-  .pm-section { contain-intrinsic-size: auto 1257px; }
   .chapters   { contain-intrinsic-size: auto 4168px; }
   .pr-section { contain-intrinsic-size: auto 856px; }   /* r325 merged re-measure (856 @600) */
   .wy-section { contain-intrinsic-size: auto 990px; } /* R325 Y3 re-measure — the phone rail folds back to the ONE-column state list */
@@ -1631,7 +1632,6 @@
 /* ≤479 — the phone composition (measured @390) */
 @media (max-width: 479px) {
   .st-section { contain-intrinsic-size: auto 820px; }
-  .pm-section { contain-intrinsic-size: auto 797px; }
   .chapters   { contain-intrinsic-size: auto 4559px; }   /* R332 W390a re-measure: the 4rem phone title + sp-5 head seat (was 4536 pre-title-rung) */
   .pr-section { contain-intrinsic-size: auto 551px; }   /* R332 W390a re-measure (654→572 rendered; the 617 guess ran +65 stale) */
   .wy-section { contain-intrinsic-size: auto 817px; } /* R332 W390b re-measure — the pad-inside composition (head 251 + list 463 + note 103) renders 817; the 613 guess ran −204 stale */
@@ -1641,7 +1641,6 @@
 /* ≤374 — the narrow-phone rung (measured @360) */
 @media (max-width: 374px) {
   .st-section { contain-intrinsic-size: auto 798px; }
-  .pm-section { contain-intrinsic-size: auto 748px; }
   .chapters   { contain-intrinsic-size: auto 4976px; }
   .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 merged re-measure (605 @360) */
   .wy-section { contain-intrinsic-size: auto 646px; } /* R325 Y3 re-measure — the ONE-column state list */

@@ -1,5 +1,5 @@
 {
-  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: pains band — section#live.pm-section (sections/Live.tsx).]",
+  "_readme": "R337 A-problem — home-problem-wrap ledger, REGENERATED against the frozen spec by scripts/build-problem-mapping.py (re-run after changing Live.tsx hooks). TRUE paths (≤6 segments from the wrap) bind the structural containers (wrap/section/toprule/frame/head/band/bandrule/cols/titleblock/subwrap); the head's recorded windows bind problem.kicker/.h2/.sub; the unique column windows bind problem.<seat>.<n> (col, keyroll, tgrid, artcolor, cue, metarule, zonerule, colrule, artin) classified from each recording's own geometry+transition census. Colliding windows (the four columns share 6-seg shapes) ride the heuristic tag+tc fallback against the mirrored DOM; the reference's svg line-art shapes, <br> plumbing, 0x0 tween boxes and mobile swiper rail spans are excused with written reasons. ourSection: section#live.pm-section (sections/Live.tsx — the r337 Heron rebuild: ruled ledger of four columns).",
   "ourSection": {
     "home-problem-wrap": "section#live.pm-section"
   },
@@ -9,5 +9,1021 @@
   "scaleFactor": {
     "home-problem-wrap": 1
   },
-  "explicit": []
+  "explicit": [
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1]",
+      "spec": "home-problem-wrap > div[1]",
+      "ours": "problem.wrap"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1]",
+      "spec": "home-problem-wrap > div[1] > section[1]",
+      "ours": "problem.section"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[1]",
+      "ours": "problem.toprule"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2]",
+      "ours": "problem.frame"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1]",
+      "ours": "problem.inner"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1]",
+      "ours": "problem.head"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2]",
+      "ours": "problem.subwrap"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2] > div[1]",
+      "ours": "problem.bandrule"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2] > div[2]",
+      "spec": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2] > div[2]",
+      "ours": "problem.bandinner"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "problem.kicker"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "problem.kickertext"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > h2[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > h2[1]",
+      "ours": "problem.h2"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[1]",
+      "ours": "problem.artcolor.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[2] > div[1]",
+      "ours": "problem.tgrid.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "ours": "problem.metarule.1"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[1]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[1]",
+      "ours": "problem.keyroll.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[4]",
+      "spec": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[4]",
+      "ours": "problem.cue.4"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "spec": "home-problem-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "ours": "problem.artin.4"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[1] > svg[1] > defs[1] > mask[1]",
+      "reason": "SVG defs/mask plumbing inside the reference's filtered tonal image (0x0, non-visual)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[4] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[1] > div[5] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths at six segments, so the four columns' same-seat elements share this recorded path; only one counterpart could bind. The conforming seats are bound where unique and ride the heuristic tag+tc fallback otherwise (our DOM mirrors the column-for-column ordinal, so heuristic pairing is exact)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "window collision: the walk truncates paths at six segments, so the four columns' same-seat elements share this recorded path; only one counterpart could bind. The conforming seats are bound where unique and ride the heuristic tag+tc fallback otherwise (our DOM mirrors the column-for-column ordinal, so heuristic pairing is exact)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[2] > div[1] > div[4] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[3] > div[3] > div[2] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[4] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[1] > div[5] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > div[4] > div[3] > div[2] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[2] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[1] > section[1] > div[2] > div[1] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > ellipse[2]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > line[6]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > line[7]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[10]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[11]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[12]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[13]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[14]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[15]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[16]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[17]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[3]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[4]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[5]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[8]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[9]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths at six segments, so the four columns' same-seat elements share this recorded path; only one counterpart could bind. The conforming seats are bound where unique and ride the heuristic tag+tc fallback otherwise (our DOM mirrors the column-for-column ordinal, so heuristic pairing is exact)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[2]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[3]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[4]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[5]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[2] > div[3] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[2] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[2]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[3]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[4]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[1] > div[5]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[3] > div[3] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[2] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[2]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[3]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[4]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[1] > div[5]",
+      "reason": "0x0 tween-residue box (the reference's staged entrance marker — scale-0 svg wrappers that never render); our column fade is the 0.2s opacity transition on the bound column box."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[1] > div[4] > div[3] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > br[1]",
+      "reason": "the title's <br> line breaks: Arabic titles break at different words than the reference's English; our title box is bound and measured as a whole (2 lines at every bp by construction)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > br[2]",
+      "reason": "the title's <br> line breaks: Arabic titles break at different words than the reference's English; our title box is bound and measured as a whole (2 lines at every bp by construction)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[2] > div[4]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[3] > div[3] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[2] > div[3]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[3] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[2] > div[1] > div[4] > div[3] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[2] > div[3] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > circle[2]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > defs[1]",
+      "reason": "SVG defs/mask plumbing inside the reference's filtered tonal image (0x0, non-visual)"
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > ellipse[3]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[10]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[11]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[12]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[13]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[14]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[15]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[16]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[17]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[2]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[3]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[4]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[5]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[6]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[7]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[8]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[9]",
+      "reason": "svg line-art shape: the reference's own drawing motif inside the column art box — our PainArt draws Madarek's own four motifs in the same 20rem box (bound separately); per-shape geometry is content art, not layout structure."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > br[1]",
+      "reason": "the title's <br> line breaks: Arabic titles break at different words than the reference's English; our title box is bound and measured as a whole (2 lines at every bp by construction)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > br[2]",
+      "reason": "the title's <br> line breaks: Arabic titles break at different words than the reference's English; our title box is bound and measured as a whole (2 lines at every bp by construction)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths at six segments, so the four columns' same-seat elements share this recorded path; only one counterpart could bind. The conforming seats are bound where unique and ride the heuristic tag+tc fallback otherwise (our DOM mirrors the column-for-column ordinal, so heuristic pairing is exact)."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[3] > div[3] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > svg[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > div[4] > div[3] > div[2] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "reason": "deep-window residue: the reference's column internals below the bound containers (window paths truncated by the walk); the seat renders inside the explicitly-bound conforming containers."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[2] > span[2]",
+      "reason": "the mobile swiper's progress rail spans (390-only, 20x2 bars under the band) — swiper chrome, not product structure; our own dot rail keeps the belt contract."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[1]",
+      "reason": "the mobile swiper's progress rail spans (390-only, 20x2 bars under the band) — swiper chrome, not product structure; our own dot rail keeps the belt contract."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[2]",
+      "reason": "the mobile swiper's progress rail spans (390-only, 20x2 bars under the band) — swiper chrome, not product structure; our own dot rail keeps the belt contract."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[3]",
+      "reason": "the mobile swiper's progress rail spans (390-only, 20x2 bars under the band) — swiper chrome, not product structure; our own dot rail keeps the belt contract."
+    },
+    {
+      "section": "home-problem-wrap",
+      "heron": "home-problem-wrap > section[1] > div[2] > div[1] > div[2] > div[3] > span[4]",
+      "reason": "the mobile swiper's progress rail spans (390-only, 20x2 bars under the band) — swiper chrome, not product structure; our own dot rail keeps the belt contract."
+    }
+  ]
 }
