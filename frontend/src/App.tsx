@@ -759,11 +759,21 @@ export function AppRoutes() {
  * flight (onNativeScroll only resyncs when it is not smooth-animating;
  * the in-flight glide would win the next frame and drag the new page
  * back down). Engine off (authenticated shell, reduced motion) → the
- * plain native reset, exactly as before. */
+ * plain native reset, exactly as before.
+ *
+ * R338 (T-07 · scroll.mjs `scroll:scrollRestoration-manual`): the app
+ * owns every scroll seat — the landing loader owns the initial position
+ * (the preloader's scroll seat, not the browser's stored offset) and
+ * THIS hook owns the PUSH reset — so the History API's automatic
+ * restoration is turned off once, on mount: history.scrollRestoration
+ * = 'manual' (asserted by scripts/conformance/scroll.mjs feel). A
+ * reload then re-enters through the loader at 0 instead of the browser
+ * yanking the page to a stale offset under it. */
 function ScrollResetOnPush() {
   const action = useNavigationType();
   const { pathname, search } = useLocation();
   useEffect(() => {
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
     if (action === 'PUSH') {
       const engine = getLenis();
       if (engine) engine.scrollTo(0, { immediate: true });
