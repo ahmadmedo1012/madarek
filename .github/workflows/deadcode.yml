@@ -1,0 +1,26 @@
+name: deadcode
+
+# T-22 Track B: dead-code / duplication / circular-dep ratchet gate.
+# CI is currently quota-dead; this job exists so the gate runs when quota returns.
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  deadcode-ratchet:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install repo deps (analyzers resolve against the real tree)
+        run: npm ci --ignore-scripts
+      - name: Install pinned analyzers
+        run: npm install -g knip@5.88.1 jscpd@5.4.2 dependency-cruiser@18.7.2 typescript@5.7.2
+      - name: Dead-code ratchet (knip + jscpd + dependency-cruiser vs baseline)
+        run: bash scripts/deadcode/check.sh

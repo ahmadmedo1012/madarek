@@ -1,0 +1,4 @@
+{
+  "$schema": "https://unpkg.com/knip@5.88.1/schema.json",
+  "entry": ["src/main.tsx"]
+}
