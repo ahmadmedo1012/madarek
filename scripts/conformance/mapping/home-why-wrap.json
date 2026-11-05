@@ -30,56 +30,92 @@
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
    "ours": "why.h2w"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > h2[1]",
-   "spec": "home-why-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > h2[1]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > h2[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > h2[1]",
    "ours": "why.title"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[3]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[3]",
    "ours": "why.hrule"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[2]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2]",
    "ours": "why.stage"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[1]",
    "ours": "why.axis"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2]",
    "ours": "why.stagein"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
-   "spec": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[1]",
    "ours": "why.progress"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2]",
+   "ours": "why.mk1"
+  },
+  {
+   "section": "home-why-wrap",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1]",
+   "ours": "why.mk1in"
+  },
+  {
+   "section": "home-why-wrap",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1] > svg[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1] > svg[1]",
+   "ours": "why.mk1svg"
+  },
+  {
+   "section": "home-why-wrap",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3]",
+   "ours": "why.mk2"
+  },
+  {
+   "section": "home-why-wrap",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1]",
+   "ours": "why.mk2in"
+  },
+  {
+   "section": "home-why-wrap",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1] > svg[1]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1] > svg[1]",
+   "ours": "why.mk2svg"
+  },
+  {
+   "section": "home-why-wrap",
+   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[3]",
+   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[3]",
    "ours": "why.track"
   },
   {
    "section": "home-why-wrap",
-   "heron": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
-   "spec": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2]",
    "ours": "why.rows"
   },
   {
@@ -134,60 +170,18 @@
    "section": "home-why-wrap",
    "heron": "home-why-wrap > div[1] > section[1]",
    "ours": "section.wy-section"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
-   "ours": "why.side"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-   "ours": "why.rulev"
   }
  ],
  "noCounterpart": [
   {
    "section": "home-why-wrap",
    "heron": "home-why-wrap > div[1]",
-   "reason": "page-level wrap div above the our-section container — box identical to the bound section element; measuring both would double-count the same rect"
+   "reason": "page-level wrap div above the our-section container — box identical to the bound section element (why.stage root binding via section.wy-section); measuring both would double-count the same rect"
   },
   {
    "section": "home-why-wrap",
    "heron": "home-why-wrap > div[1] > section[1] > div[1]",
-   "reason": "structural head-row wrapper — no our counterpart node; all measured children (head, side, hrule) are individually bound, wrapper rect is their union"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "svg[1] > defs[2]",
-   "reason": "SVG defs scaffolding — non-rendering container (0x0); our inline svgs carry no defs2 node; r337 precedent: 0x0 svg scaffolding excused with written justification"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "svg[1] > defs[2] > filter[1]",
-   "reason": "SVG filter scaffolding — non-rendering (0x0); our line-art reproduces the visual without filters; r337 precedent"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "svg[1] > defs[2] > filter[1] > femerge[5]",
-   "reason": "SVG feMerge primitive — non-rendering filter plumbing (0x0); no visual counterpart possible"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "svg[1] > defs[2] > clippath[2]",
-   "reason": "SVG clipPath scaffolding — non-rendering (0x0); our crops clip via CSS overflow, r337 precedent"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "svg[1] > mask[1]",
-   "reason": "SVG mask scaffolding — non-rendering (0x0); our reveal masks are CSS opacity, r337 precedent"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "svg[1] > defs[1]",
-   "reason": "SVG defs scaffolding — non-rendering container (0x0)"
+   "reason": "structural head-row wrapper — no our counterpart node; all measured children (why.head, why.side, why.hrule) are individually bound and fully measured, wrapper rect is their union"
   }
  ]
 }
