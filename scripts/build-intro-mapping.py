@@ -528,6 +528,49 @@ for p in sorted(all_paths):
             )
     no_counterpart.append({"section": "home-intro-wrap", "heron": p, "reason": reason})
 
+# ── r338 T-03e: charSplit — the alternate-head junk pool never pairs ─ ─ ──
+# The depth-6 truncating walk records the SAME heron DOM under DIFFERENT
+# window heads at different bps (the wrap's direct children shift with the
+# responsive restructure: 'div[1] > section[1] > …' vs 'section[1] > …',
+# 'div[1] > div[2] > div[2] > div[1] > h2[1] > …' vs 'h2[1] > …'). The
+# canonical families are bound explicitly above; the head-variant recordings
+# are DUPLICATES of bound cells + tween/roll plumbing (parked roll copies,
+# loop duplicate tracks, 0x0 tween boxes, SVG defs). Letting them into the
+# heuristic tag+tc ordinal pool glues them to unrelated OUR elements and
+# mints junk failure rows (the T-03d per-char bindings freed that pool —
+# this claims it). Structural, spec-side only (head families, no value
+# comparison); every skipped row keeps its written noCounterpart reason and
+# is counted as excused, never silent.
+# SAFE heads only: verified by script that NO explicitly-bound heron path
+# contains these substrings (the instrument's charSplit aggregate loop
+# treats any PAIRED path containing the container as a line container —
+# a head that prefixes a canonical binding would pull real cells out).
+ALT_HEADS = [
+    "home-intro-wrap > div[4]",
+    "home-intro-wrap > div[1] > div[1] > div[1] > div[2]",
+]
+CHAR_SPLIT = [
+    {
+        "section": "home-intro-wrap",
+        "container": head,
+        "note": (
+            "R338 T-03e — alternate window-head recording of an explicitly-bound "
+            "canonical family (the walk anchors the same heron DOM at a different "
+            "head at other bps). Structural spec-side detection: the head-variant "
+            "rows never enter heuristic pairing; real cells stay bound at their "
+            "canonical heads and fully measured."
+        ),
+        "reason": (
+            "duplicate window-head residue: this recording is the same tween/roll "
+            "scaffold (parked roll copy, loop-duplicate crawl track, 0x0 tween box, "
+            "SVG defs plumbing) that the canonical family binds explicitly — the "
+            "head variant must not glue by ordinal; excused with the written "
+            "noCounterpart reason, counted, never silent"
+        ),
+    }
+    for head in ALT_HEADS
+]
+
 mapping = {
     "_readme": (
         "R337 A-intro — home-intro-wrap ledger, REGENERATED against the frozen spec by "
@@ -547,6 +590,7 @@ mapping = {
     "scaleFactor": {"home-intro-wrap": 1},
     "explicit": explicit,
     "noCounterpart": no_counterpart,
+    "charSplit": CHAR_SPLIT,
 }
 
 OUT.write_text(json.dumps(mapping, indent=2, ensure_ascii=False) + "\n", encoding="utf8")

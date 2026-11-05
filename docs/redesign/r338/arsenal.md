@@ -45,3 +45,4 @@ T-05d | conformance/run.mjs --sections home-why-wrap --url :5305 | post-reseat w
 T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect extraction @768/390 + DOM probe of the ≤991 belt
 T-05f | python3 (results.json cluster forensics) | grouped 800 failure rows to find the 224 display:none y≈-8074 hidden-counterpart clusters
 T-05f | playwright probe + heron-spec.768/390.json rect extraction | measured row-relative seats for player bits + 12 point-reveals + map box
+T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification

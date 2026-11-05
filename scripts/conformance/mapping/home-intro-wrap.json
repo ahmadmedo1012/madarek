@@ -5103,5 +5103,19 @@
       "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
       "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
     }
+  ],
+  "charSplit": [
+    {
+      "section": "home-intro-wrap",
+      "container": "home-intro-wrap > div[4]",
+      "note": "R338 T-03e — alternate window-head recording of an explicitly-bound canonical family (the walk anchors the same heron DOM at a different head at other bps). Structural spec-side detection: the head-variant rows never enter heuristic pairing; real cells stay bound at their canonical heads and fully measured.",
+      "reason": "duplicate window-head residue: this recording is the same tween/roll scaffold (parked roll copy, loop-duplicate crawl track, 0x0 tween box, SVG defs plumbing) that the canonical family binds explicitly — the head variant must not glue by ordinal; excused with the written noCounterpart reason, counted, never silent"
+    },
+    {
+      "section": "home-intro-wrap",
+      "container": "home-intro-wrap > div[1] > div[1] > div[1] > div[2]",
+      "note": "R338 T-03e — alternate window-head recording of an explicitly-bound canonical family (the walk anchors the same heron DOM at a different head at other bps). Structural spec-side detection: the head-variant rows never enter heuristic pairing; real cells stay bound at their canonical heads and fully measured.",
+      "reason": "duplicate window-head residue: this recording is the same tween/roll scaffold (parked roll copy, loop-duplicate crawl track, 0x0 tween box, SVG defs plumbing) that the canonical family binds explicitly — the head variant must not glue by ordinal; excused with the written noCounterpart reason, counted, never silent"
+    }
   ]
 }
