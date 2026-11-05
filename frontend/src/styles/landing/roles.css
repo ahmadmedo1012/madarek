@@ -21,11 +21,26 @@
   background: var(--bg);
   /* the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%):
      color-mix() serializes as color(srgb …) which the conformance
-     twin cannot parse — statement.css precedent for the literal */
-  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+     twin cannot parse — statement.css precedent for the literal.
+     R338 T-14b: the literal now rides a section-scoped var so the
+     dark arm can re-point it (a raw literal never flips with the
+     theme — 33 text seats sat at contrast 1.0 on the charcoal
+     ground); the LIGHT computed style is byte-identical. */
+  --rl-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+  color: var(--rl-soft-ink);
   font-size: 1.6rem;
   line-height: 2.16rem;
   font-weight: 500;
+}
+
+/* R338 T-14b dark arm — the soft ink's night seat: the same 72%
+   strength pointed at the dark ramp's own ink (--text = #F6F6EE,
+   the paper twin). 7.9:1 on the charcoal ground #282828 (WCAG AAA;
+   the --dark contrast floor ≥3.0 passes with room). The theme flip
+   must not move a box: only the color changes, no geometry rule
+   differs between the arms. */
+[data-theme="dark"] .rl-section {
+  --rl-soft-ink: rgba(246, 246, 238, 0.72); /* color-gate: allow — the dark ramp's own ink --text #F6F6EE at the spec's 72% strength (7.9:1 on the #282828 ground); the light arm keeps the frozen Heron literal */
 }
 
 /* the frame's top + bottom hairlines */
@@ -103,7 +118,7 @@
   font-size: 1.4rem;
   line-height: 1.96rem;
   font-weight: 500;
-  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72)); color-mix() renders as color() and the conformance twin requires the literal */
+  color: var(--rl-soft-ink);
 }
 .rl-label .fo-mono { font-size: 1.4rem; color: inherit; }
 /* the h2's container box reads OPAQUE ink (rgb(40,40,40)) at every bp in
@@ -178,7 +193,7 @@
   font-size: 1.6rem;
   line-height: 2.16rem;
   font-weight: 500;
-  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72)); color-mix() renders as color() and the conformance twin requires the literal */
+  color: var(--rl-soft-ink);
 }
 .rl-row-rule {
   position: absolute;

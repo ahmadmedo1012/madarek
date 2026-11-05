@@ -247,3 +247,25 @@ T-06 | footer × webkit (all 5 bps) | ~/.cache/ms-playwright has chromium only �
 - home-cta-wrap scaffolding: svg defs/mask/filter/fecomponenttransfer/image + the tween wrapper divs are excused via mapping noCounterpart with per-path written reasons (T-14a grammar) — plumbing, not measured design.
 - heron cta band rails (top ledger band, kicker rail, column rules, sketch-band wrappers, masked img): structural first-pass excuse with written reasons; REAL counterparts (ruled ledger via the existing `.fo-cta .fo-hero-meta` css seat + authored inline-SVG sketch band) are the next cta pass's work. Leaf design (title/lede/primary button/actions box) is bound and fully measured.
 >>>>>>> origin/r338/t10-cta
+## T-14b dark sweep — usecase + problem (dark cells, main @e882f0ec)
+- usecase dark 390 y-cells (dark 87.7% vs light 90%): a post-flip row
+  offset of +7..+14px appears inside .rl-acc with EVERY computed
+  geometry property byte-identical light↔dark (fs/lh/fw/ff/padding/
+  margin verified by probe; no [data-theme=dark] rule touches any
+  .rl-* selector; magnitude varies run-to-run: 0/+7.1/+14.0 measured
+  on identical DOM). Nondeterministic instrument-side reflow at flip
+  (suspect: post-flip re-walk timing vs Lenis wrapper transform) —
+  needs T-14a/lead instrument investigation, not a section css fix.
+  All DETERMINISTIC dark defects WERE fixed: 33 unflipped soft-ink
+  seats (rgba(40,40,40,.72) raw literal) sat at WCAG contrast 1.0 on
+  the #282828 ground — now a section-scoped --rl-soft-ink var flips
+  to the dark ramp ink rgba(246,246,238,.72) (7.9:1); light computed
+  style byte-identical (light 5-bp re-measured unchanged).
+- problem dark: CLEAN — 0 geometry drift under flip, 0 unflipped text
+  colors, 0 contrast<3.0 (probe-verified @1920/390); dark 92.9% avg =
+  its light residuals re-asserted (same cells as light, no dark-kind
+  fail). Nothing to fix in Chapters.tsx/pains.css.
+- instrument blind spot noted for T-14a: contrastRatio() returns null
+  for alpha-channel fg colors (rgba), so the 33 invisible-ink seats
+  were UNCOUNTED by --dark (contrastChecked=100/skipped=30, 0 fails
+  while the honest ratio was 1.0) — found only by probe.
