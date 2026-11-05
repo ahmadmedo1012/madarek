@@ -32,3 +32,6 @@ T-06d | python3 (json spec/mapping forensics) | heron footer.{390,768,1440}.json
 T-06d | vitest (r321-decor-innertext) | source-contract fix verification for fo-wordmark-reg
 T-06d | scripts/check-colors.sh --strict | color-token gate verification
 T-06d | playwright-probe (cmp-t06.mjs sr-seat diff) + node conformance/run.mjs | mobile seat delta table @390/768, re-measure
+L-6 | curl+jq (GitHub Actions API — run verdicts, rerun-failed-jobs, log 404 probe) | medic incident diagnosis
+L-6 | postcss (node API in repo node_modules) | surgically retire dead legacy footer/why css rules
+L-6 | vite build + scripts/check-bundle-size.mjs | local bundle gate measurement (found gate = JS-only)
