@@ -1,4 +1,5 @@
 import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
+import type { ReactNode } from "react";
 import { LECTURE_INTERACTIVE, MASTERY_SCORE_LINE } from '../copy';
 /**
  * JourneyScene — R308 «رحلة التعلّم» · R310–R319 the plan scene's own
@@ -414,7 +415,7 @@ function writeCard(
   setSheetVar(el.style, 'visibility', o <= 0 ? 'hidden' : 'visible');
 }
 
-export function JourneyScene() {
+export function JourneyScene({ head }: { head?: ReactNode }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const mapInRef = useRef<HTMLDivElement | null>(null);
   const windowRef = useRef<HTMLDivElement | null>(null);
@@ -661,6 +662,10 @@ export function JourneyScene() {
       data-wash="none"
       data-rm="off"
     >
+      {/* T-09c — the head SEATED INSIDE the track: heron seats its head
+          column at the track top (same y as the track, the sticky window
+          overlapping it); absolute so the pin flow is untouched. */}
+      {head}
       <div className="jt-pin">
         {/* the PLAN COLUMN — flex:1 of the frame @≥992; the scroll
             track (the sticky's containing block) @≤991 */}
