@@ -72,14 +72,8 @@
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
-      "ours": "footer.brow.1"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
       "ours": "footer.c1rule"
     },
     {
@@ -90,26 +84,26 @@
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[1]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
       "ours": "footer.c2top"
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
       "ours": "footer.lgroup.1"
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
       "ours": "footer.lgroup.2"
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[1] > div[2] > div[2]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
       "ours": "footer.c2rule"
     },
     {
@@ -132,8 +126,8 @@
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[2]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[4]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[4]",
       "ours": "footer.striprule"
     },
     {
@@ -156,8 +150,8 @@
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[2]",
-      "spec": "footer > footer[1] > div[1] > div[3] > div[1] > div[2]",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[2]",
       "ours": "footer.stripchrome"
     },
     {
@@ -189,18 +183,6 @@
       "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
       "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
       "ours": "footer.sublabel"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
-      "spec": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
-      "ours": "footer.brow.2"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
-      "spec": "footer > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
-      "ours": "footer.brow.3"
     },
     {
       "section": "footer",
@@ -393,6 +375,36 @@
       "heron": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
       "spec": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]",
       "ours": "footer.bg2label.1"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "footer.c1sub"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "ours": "footer.lgroup.3"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[3]",
+      "ours": "footer.legal"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "ours": "footer.legall"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[3]",
+      "spec": "footer > footer[1] > div[1] > div[3] > div[3]",
+      "ours": "footer.legalbot"
     }
   ],
   "noCounterpart": [
@@ -1690,6 +1702,11 @@
       "section": "footer",
       "heron": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
       "reason": "window collision: the walk truncates paths to six segments so distinct spec elements share this recorded path; the conforming container is bound explicitly and this residue rides the tag+tc heuristic fallback or is tween plumbing below the bound containers"
+    },
+    {
+      "section": "footer",
+      "heron": "(our authored brow index rows)",
+      "reason": "T-06d: heron c1-top (footer.1440/390.json) has exactly 2 children (brand block + the 1px hairline) — our brow index rows are Madarek-authored honest-platform content with no heron counterpart"
     }
   ]
 }
