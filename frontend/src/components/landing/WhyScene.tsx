@@ -120,7 +120,12 @@ const MAP: Array<[string, string, string, string]> = [
 ];
 
 const cap = (id: string) => PRODUCT_CAPTURES.find((c) => c.id === id);
-const capSrc = (id: string) => cap(id)?.src ?? '';
+/* the /media/product ladder (ProductFrame's loader contract) — the
+ * 1× intrinsic seat of the seeded capture, CLS-safe with the rem box */
+const capSrc = (id: string) => {
+  const c = cap(id) ?? (CAPTURE_LECTURE_CHECKPOINT_2X.id === id ? CAPTURE_LECTURE_CHECKPOINT_2X : undefined);
+  return c ? `/media/product/${c.id}-${c.widths[0]}.webp` : '';
+};
 
 /** the 13px icon cluster — white core (4px glyph) + accent swap + ring. */
 function IconCluster({ x }: { x: string }) {
@@ -215,8 +220,9 @@ export function WhyScene() {
     }
   });
 
-  const lecture = cap('student-lecture-player');
-  const lecture2x = { ...lecture, src: lectureShot2x, ...CAPTURE_LECTURE_CHECKPOINT_2X };
+  /* the 2× lecture seat rides the Vite asset pipeline (ProductFrame's
+   * twoXSrc override contract) — hashed dist asset, 1440×870 @1× */
+  const lecture2xSrc = lectureShot2x;
 
   return (
     <div className="wy-stage" ref={stageRef} data-wy-stage="0">
@@ -238,7 +244,7 @@ export function WhyScene() {
                   <div className="wy-card-in">
                     <img
                       className="wy-img"
-                      src={i === 0 ? lecture2x.src : capSrc(r.cardId)}
+                      src={i === 0 ? lecture2xSrc : capSrc(r.cardId)}
                       alt=""
                       loading="lazy"
                     />
