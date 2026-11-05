@@ -32,7 +32,7 @@
  * onto the words one by one — reversible, scrub-linked, the
  * reference's intro-title behaviour.
  */
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
 import { RevealCssClass } from '../../../hooks/useReveal';
 
 const MAX_STAGGER = 14;
@@ -81,6 +81,18 @@ export interface ScrubRevealProps {
   className?: string;
   /** the element carrying --wr-p (defaults to self) */
   progressRef?: React.RefObject<HTMLElement | null>;
+  /**
+   * R337 (A-intro): an optional explicit line split. The frozen Heron
+   * spec records the intro title as one div per LINE (its own
+   * split-text tween leaves the line boxes in the DOM); Arabic keeps
+   * its natural wrapping, so the caller may author the line breaks and
+   * receive each line's word run wrapped in its own element. The
+   * words still split on spaces only (the joining law) and the scrub
+   * indices stay GLOBAL across lines (one --wr-n run).
+   */
+  lines?: readonly string[];
+  /** renders one line's word run (ScrubReveal's own word markup) */
+  renderLine?: (line: ReactNode, key: string, index: number) => ReactNode;
 }
 
 /**
@@ -88,27 +100,47 @@ export interface ScrubRevealProps {
  * `--wr-p` custom property (0..1); each word unmasks in sequence as
  * the progress passes its index.
  */
-export function ScrubReveal({ text, className }: ScrubRevealProps) {
+export function ScrubReveal({ text, className, lines, renderLine }: ScrubRevealProps) {
   const words = text.split(' ');
   const n = words.length;
+  const run = (from: number, to: number) =>
+    words.slice(from, to).map((w, i) => {
+      const gi = from + i;
+      return (
+        <Fragment key={`${w}-${gi}`}>
+          <span
+            className="wr-w"
+            aria-hidden="true"
+            style={{ ['--wr-i' as string]: gi }}
+          >
+            <span className="wr-i">{w}</span>
+          </span>
+          {gi < words.length - 1 ? SPACE : null}
+        </Fragment>
+      );
+    });
+  /* the explicit line split (R337 A-intro): the word runs join the
+   * authored lines; without `lines` the flat word run ships as before */
+  let body: ReactNode;
+  if (lines && renderLine) {
+    let from = 0;
+    body = lines.map((line, li) => {
+      const count = line.trim() ? line.trim().split(/\s+/).length : 0;
+      const to = Math.min(from + count, words.length);
+      const node = renderLine(run(from, to), `st-line-${from}`, li);
+      from = to;
+      return node;
+    });
+  } else {
+    body = run(0, words.length);
+  }
   return (
     <span
       className={['wr wr-scrub', className].filter(Boolean).join(' ')}
       aria-label={text}
       style={{ ['--wr-n' as string]: n }}
     >
-      {words.map((w, i) => (
-        <Fragment key={`${w}-${i}`}>
-          <span
-            className="wr-w"
-            aria-hidden="true"
-            style={{ ['--wr-i' as string]: i }}
-          >
-            <span className="wr-i">{w}</span>
-          </span>
-          {i < words.length - 1 ? SPACE : null}
-        </Fragment>
-      ))}
+      {body}
     </span>
   );
 }

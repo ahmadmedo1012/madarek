@@ -1,168 +1,443 @@
-/* R332 — split VERBATIM from src/styles/landing.css · statement = R322 2-c statement band (1096-1226)
-   full map + proof: docs/redesign/r332/css-split-landing.md */
+/* R337 A-intro — البيان, REBUILT against the frozen Heron spec
+   (docs/redesign/r335/heron-spec/home-intro-wrap.{390,768,1024,1440,
+   1920}.json). The R322 transplant (6+6 grid + StatementArt square +
+   .st-partner strip) is RETIRED with this rewrite; every rule below
+   is new. The DOM (Statement.tsx) mirrors the spec census:
 
-/* ═══ البيان — the statement (the reference's intro band): the
-            scrub-revealed declaration + the universities ticker. r308:
-            the title unmasks word-by-word, scrub-linked + reversible
-            to the scroll. R313 (D7 §2): the band holds ~80vh (the
-            reference's 723px / 5.9%). ═══ */
-/* ═══ [2] البيان — R322 (2-c): the measured 6+6 split transplant.
-   The square ink art cell rides inline-start (the reading start in
-   RTL — the reference's LEFT cell mirrored); the body column rides
-   inline-end behind a 1px strong hairline on its inline-start edge,
-   holding ONLY the scrub title + one CTA (content pad 6.4/15/3.2/15rem
-   — the reference's own cell, the 15rem side gutter is the band's
-   personality), closed by the partner strip. The old .st-spread /
-   .st-copy / .st-lines trio (statement 6.1: orphan text rows on no
-   grid) retires with the transplant. Every spacing value rides the
-   --space-* scale. ═══ */
-/* R328 (H7 · panel) — the doubled fold rule dies: the hero's work
-   strip already closes the band with its own border-block-end (the
-   measured pair: y887 + y892 on dark read as one accidental heavy
-   rule). The statement opens on the hero's closing hairline. */
+     section.st-section[intro.wrap] > .st-band[intro.section] >
+       .st-grid[intro.grid]
+       > media > mediain > [mediainner > img · tonesvg]
+       · stmt > rule · stmtin > titlebox > h2 > line.N ·
+         pill(cta > ctaink > [ctaspan>spanin>text ×2 · ctaicons >
+         icon > iconin > glyph > svg])
+       · ticker > rule · tickerin > labelrow(label > labeltext ·
+         rules · arrows×2) · crawl(crawlin > track > cells) ·
+         desc(desctext · descrule)
+
+   Measured spec on OUR rem root (≥992 0.5787037vw · ≤991
+   1.1990407674vw · ≤767 2.5445292621vw): desktop 'media stmt /
+   media ticker' — band 86.7rem (cols 67.7 + ticker 19.1), stmt pad
+   6.4/15/3.2/15rem, h2 4/4rem, pill ~5rem, crawl viewport ~11.4rem;
+   768–991 'media stmt / ticker ticker' — stmt pad 2.4rem, h2
+   2.4/2.88rem; ≤767 stacked — stmt pad 2.4/1.6rem, h2 2.4/2.64rem.
+
+   Colors: the rules are var(--rule-strong) (the spec's own
+   rgb(179,179,175)), the ghost text var(--neutral-400) (the spec's
+   rgb(180,180,176)), the accent var(--accent) (the spec's
+   rgb(250,54,0)); the soft 72%-ink text rides the spec-exact rgba
+   (a documented color-gate allow — color-mix() renders as a
+   color() function the twin cannot equate). */
+
+/* ═══ the wrap: three same-box shells over the grid ═══ */
 .st-section {
-  padding-block: var(--space-8xl);
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+  font-size: 1.6rem;
+  line-height: 2.16rem;
+  font-weight: 500;
+  contain: paint;
 }
-
+.st-band {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+}
 .st-grid {
   display: grid;
-  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-  align-items: stretch;
-}
-
-.st-art-cell {
-  min-inline-size: 0;
-  display: grid;
-}
-
-/* the square massing study fills its 6-col cell edge to edge at
-   every breakpoint — the artwork's own aspect drives the band
-   (the reference's 1766×1766 contain equivalent), dark twin included.
-   R324/X14: the band ran +101/+84/+90/+109px over the Heron intro at
-   1440/1024/768/390 — the square 1:1 art owned the band at every
-   breakpoint. The Heron-matched cut is 59:50 (art 590px on the 690px
-   cell @1440 → band 723 = Heron exact; 520/533 ≈ 514/527 at the
-   tablet pairs): the drawing letterboxes inside the wider cell (the
-   svg's own xMidYMid meet centers it on transparent paper). */
-.st-art-cell .st-art-svg {
-  inline-size: 100%;
-  block-size: auto;
-  aspect-ratio: 59 / 50;
-}
-
-.st-body-col {
-  min-inline-size: 0;
-  display: grid;
-  grid-template-rows: 1fr auto;
-  border-inline-start: 1px solid var(--rule-strong);
-  padding: var(--space-8xl) var(--space-12xl) var(--space-4xl) var(--space-12xl);
-}
-
-.st-body {
-  align-self: end;
-  display: grid;
-  justify-items: start;
-  gap: var(--space-4xl);
-}
-
-.st-title {
-  font-family: var(--font-display);
-  /* R322 (1-d FINAL) seat: the statement band's scrub title — Heron's
-     own per-char color-scrub intro title: 4rem/33.33px w600 @1440 →
-     2.4rem/23.8px @390, band-independent, lh 1.10 (the scrub spans'
-     overflow wrappers need the headroom), balance. NOT the D2 rung —
-     Heron sizes the scrub title a rung under its section H2s.
-     R332 W2: the size line moved to the .st-grid seat below —
-     r330-home.css re-seats this title at (0,2,0) AFTER this sheet's
-     import, so the rem ladder must own a higher-specificity seat to
-     rule the final cascade (the twin judges the computed value, not
-     this file). */
-  font-weight: 600;
-  line-height: 1.1;
-  text-wrap: balance;
-  color: var(--text);
   margin: 0;
+  padding: 0;
+  grid-template-areas:
+    'media stmt'
+    'media ticker';
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto;
+}
+.st-media { grid-area: media; }
+.st-stmt { grid-area: stmt; }
+.st-ticker { grid-area: ticker; }
+
+/* ═══ the media cell ═══ */
+.st-media {
+  position: relative;
+  overflow: hidden;
+  min-inline-size: 0;
+}
+.st-media-in,
+.st-media-inner {
+  position: absolute;
+  inset: 0;
+}
+.st-media-img {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+/* the tonal veil the reference draws as a filtered svg — ours is the
+   ink scrim over the photograph (the photograph reads as texture) */
+.st-media-tone {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
 }
 
-/* R332 W2 — the display type re-bound to the rem ladder (twin run-001:
-   43.92px vs Heron 33.33px @1440 = +24.1% FAIL · 47.63px vs 23.8px @390
-   = 2× FAIL — r330-home.css's display-rung clamp owned the final
-   cascade). Heron's statement title is rem-pure on the SAME fluid root
-   this sheet already rides (tokens.css html rate: 0.5787vw ≥992 ·
-   1.19904vw ≤991 · 2.54453vw ≤767): 4rem @≥992 (33.33px @1440), 2.4rem
-   @≤991 (22.1px @768 on the tablet rate) — the ≤767 phone rate lands
-   the same 2.4rem rung at 23.82px @390, Heron-exact, so no third fork
-   exists to write. (0,3,0) seat: beats r330-home.css's
-   `.st-body-col .st-title` (0,2,0) regardless of import order. */
-.st-grid .st-body-col .st-title {
-  font-size: 4rem;
+/* ═══ the statement cell ═══ */
+.st-stmt {
+  position: relative;
+  min-inline-size: 0;
 }
-
-/* the reference's statement CTA (16.34×5rem — the measured button
-   mass, one per band): rides the .btn grammar with the fill-wipe
-   hover; the st-cta seat only pins the measured size. */
-.st-cta {
-  padding-inline: var(--space-4xl);
-  min-block-size: 5rem;
-  font-size: var(--fs-body-lg);
+.st-stmt-rule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--rule-strong);
 }
-
-/* the partner strip — the reference's label-row + logo-track + desc
-   anatomy riding the documented-universities crawl (honest: توثيق
-   وسائط لا شراكة — the desc carries the media-disclosure line). */
-.st-partner {
-  display: grid;
-  gap: var(--space-sm);
-  padding-block-start: var(--space-lg);
-  border-block-start: 1px solid var(--rule);
-}
-
-.st-partner-row {
+.st-stmt-in {
   display: flex;
-  align-items: baseline;
-  gap: var(--space-sm);
+  flex-direction: column;
+  align-items: flex-start;
+  block-size: 100%;
+  padding: 6.4rem 15rem 3.2rem;
+  color: inherit;
+  font: inherit;
 }
 
-.st-partner-label {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
+/* the title box: the spec's own margin cell (bottom margin 3.2rem to
+   the pill) */
+.st-titlebox {
+  margin-block-end: 3.2rem;
 }
-
-.st-partner .fo-ticker {
-  inline-size: 100%;
-  /* R332 W2: the crawl rides INSIDE the partner strip (R322 2-c) — the
-     base .fo-ticker seat (hero.css, margin-block-start: var(--sp-8)) is
-     the hero band's separator air and donates 40px of dead margin here;
-     the strip's own gap + pad-top own the rhythm (the twin's phone
-     height read that 40px against Heron's 847px intro). The crawl is
-     this strip's only consumer, so the re-seat is band-local. */
-  margin-block-start: 0;
-}
-
-.st-partner .fo-ticker-item {
-  font-size: var(--fs-sm);
-  color: var(--text-secondary);
-}
-
-.st-partner-desc {
+.st-title {
   margin: 0;
-  font-size: var(--fs-xs);
-  line-height: 1.7;
-  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 4rem;
+  line-height: 4rem;
+  font-weight: 600;
+  color: var(--neutral-400);
 }
 
-.st-partner-desc .fo-text-link {
-  color: var(--text-secondary);
+/* the scrub lines: the spec's split-text boxes (one div per line,
+   full width, one word-box per word — the words are ScrubReveal's
+   .wr-w/.wr-i spans) */
+.st-line {
+  display: block;
 }
 
-/* R332 W2 — the ladder's ≤991 rung, seated AFTER the base (same (0,3,0)
-   specificity, later in the sheet → wins inside the band): 2.4rem rides
-   the 1.19904vw tablet rate (22.1px @768) and the 2.54453vw phone rate
-   (23.82px @390 — Heron's measured 23.8px) with one rule, exactly like
-   the reference's own band-independent rung. */
-@media (max-width: 991px) {
-  .st-grid .st-body-col .st-title {
-    font-size: 2.4rem;
+/* ═══ the pill link ═══ */
+.st-pill {
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.st-pill-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.45rem;
+  padding: 0.2rem 0.1rem;
+  transition: border-color 0.3s ease, color 0.3s var(--ease-in);
+}
+/* the roll pair: label A rides in place, label B parks one line below
+   (the reference's own hover roll; RM: the transition collapses) */
+.st-pill-ink {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  margin-block: 1.5rem;
+}
+.st-pill-t {
+  display: block;
+}
+.st-pill-t-in {
+  display: block;
+  line-height: 2.05rem;
+  color: var(--text);
+  transition: transform 0.48s var(--ease-in);
+}
+.st-pill-ink-b { position: absolute; inset-block-start: 100%; }
+@media (hover: hover) and (pointer: fine) {
+  .st-pill:hover .st-pill-t-in { transform: translateY(-2.05rem); }
+}
+/* the icon pair: A in place, B parked one icon-width away (the same
+   roll, on the icon axis) */
+.st-pill-icons {
+  display: inline-flex;
+  align-items: center;
+}
+.st-pill-icon {
+  display: block;
+  position: relative;
+}
+.st-pill-icon-in {
+  display: block;
+  position: relative;
+}
+.st-pill-glyph {
+  display: grid;
+  place-items: center;
+  inline-size: 2.45rem;
+  block-size: 2.45rem;
+  padding: 0.8rem;
+  box-sizing: content-box;
+  transition: transform 0.48s var(--ease-in);
+}
+.st-pill-icon-b .st-pill-glyph {
+  transform: translateX(2.45rem);
+  margin-inline-end: -2.45rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .st-pill:hover .st-pill-icon .st-pill-glyph { transform: translateX(2.45rem); }
+  .st-pill:hover .st-pill-icon-b .st-pill-glyph { transform: translateX(0); margin-inline-end: 0; }
+}
+.st-arrow-svg {
+  inline-size: 2.45rem;
+  block-size: 2.45rem;
+  overflow: visible;
+}
+.st-arrow-path {
+  stroke: currentColor;
+  stroke-width: 1.5;
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+/* ═══ the ticker cell ═══ */
+.st-ticker {
+  position: relative;
+}
+.st-ticker-rule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--rule-strong);
+}
+.st-ticker-in {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  color: inherit;
+  font: inherit;
+}
+
+/* the partner label row: the mono label + its two hairlines + the two
+   arrow buttons at the row's end */
+.st-plabel-row {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: stretch;
+  block-size: 4.8rem;
+  padding-inline-end: 3.2rem;
+}
+.st-plabel {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text);
+}
+.st-plabel-in {
+  font-size: 1.4rem;
+  line-height: 2.16rem;
+  font-weight: 600;
+}
+.st-plabel-rule,
+.st-plabel-toprule {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1px;
+  background: var(--rule-strong);
+  pointer-events: none;
+}
+.st-plabel-rule { inset-block-end: 0; }
+.st-plabel-toprule { inset-block-start: 0; }
+.st-parrows {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: stretch;
+  position: relative;
+}
+.st-parrow {
+  display: block;
+  inline-size: 2.95rem;
+}
+.st-parrow-in {
+  display: grid;
+  place-items: center;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.st-parrow-box {
+  display: grid;
+  place-items: center;
+  inline-size: 2.45rem;
+  block-size: 2.45rem;
+  padding: 0.8rem;
+  box-sizing: content-box;
+}
+.st-parrow-b .st-parrow-box {
+  transform: translateX(2.95rem);
+  margin-inline-end: -2.95rem;
+}
+
+/* the universities crawl: the documented-institutions logo track.
+   One track duplicated per cell for the seamless loop (the
+   fo-ticker grammar, re-seated on this band's own measures). The
+   conformance twin freezes the animation at the spec's own first
+   frame, so the track sits at its translateX(0) home. */
+.st-crawl {
+  overflow: hidden;
+  display: block;
+}
+.st-crawl-in {
+  display: block;
+  overflow: hidden;
+}
+.st-crawl-track {
+  display: flex;
+  inline-size: max-content;
+  animation: fo-ticker-rtl 36s linear infinite;
+}
+.st-crawl-cell {
+  display: block;
+  flex: none;
+}
+.st-crawl-logo {
+  display: grid;
+  place-items: center;
+  block-size: 11.4rem;
+}
+.st-crawl-logo img {
+  display: block;
+  inline-size: 7rem;
+  block-size: auto;
+  filter: grayscale(1) opacity(0.72);
+}
+.st-crawl-sep {
+  display: block;
+  inline-size: 1px;
+  background: var(--rule-strong);
+  opacity: 0.5;
+}
+
+/* the disclosure desc row */
+.st-desc {
+  position: relative;
+  display: block;
+  padding: 0.8rem 2rem;
+}
+.st-desc-text {
+  margin: 0;
+  text-align: end;
+  font-size: 0.75rem;
+  line-height: 1.3rem;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (--text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+}
+.st-desc-text .fo-text-link {
+  color: inherit;
+}
+.st-desc-rule {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  block-size: 1px;
+  background: var(--rule-strong);
+  pointer-events: none;
+}
+
+/* ═══ desktop height law (≥992): the band = 86.7rem — the cols row
+   67.7 + the ticker 19.1; the media cell spans both rows ═══ */
+@media (min-width: 992px) {
+  .st-grid {
+    grid-template-rows: 67.7rem auto;
   }
+  .st-section { min-block-size: 86.7rem; }
 }
 
+/* ═══ the tablet band (768–991): media | stmt side by side (the
+   square media drives the row), the ticker full-width under ═══ */
+@media (min-width: 768px) and (max-width: 991px) {
+  .st-grid {
+    grid-template-areas:
+      'media stmt'
+      'ticker ticker';
+    grid-template-rows: auto auto;
+  }
+  .st-media { aspect-ratio: 1 / 1; }
+  .st-stmt-in { padding: 2.4rem; }
+  .st-title { font-size: 2.4rem; line-height: 2.88rem; }
+  .st-crawl-logo { block-size: 8.7rem; }
+  .st-crawl-logo img { inline-size: 4.4rem; }
+  .st-plabel-row { padding-inline-end: 2.4rem; block-size: 4.5rem; }
+  .st-desc { padding: 0.8rem 2.4rem; }
+}
+
+/* ═══ the phone band (≤767): media · stmt · ticker stacked ═══ */
+@media (max-width: 767px) {
+  .st-grid {
+    grid-template-areas:
+      'media'
+      'stmt'
+      'ticker';
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto;
+  }
+  .st-media { aspect-ratio: 1 / 1; }
+  .st-stmt-rule { display: none; }
+  .st-stmt-in { padding: 2.4rem 1.6rem; }
+  .st-title { font-size: 2.4rem; line-height: 2.64rem; }
+  .st-crawl-logo { block-size: 6.5rem; }
+  .st-crawl-logo img { inline-size: 3.5rem; }
+  .st-plabel-row { padding-inline-end: 1.6rem; block-size: 4.1rem; }
+  .st-desc { padding: 0.8rem 1.6rem; }
+}
+
+/* ═══ reduced motion: the crawl stands, the roll pair rests ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .st-crawl-track { animation: none; } /* rides the fo-ticker grammar — the shared RM belt collapses it */
+  .st-pill-ink-b,
+  .st-pill-icon-b,
+  .st-parrow-b { display: none; }
+  .st-pill-t-in,
+  .st-pill-glyph { transition: none; }
+}
+
+/* ═══ cascade guards — the retired transplant's cross-sheet seats ═══
+   home.css / shared.css / strata.css / pains.css still pin the R322
+   DOM (.st-grid, .st-body-col, .st-partner…) this rewrite replaced,
+   and strata's belts re-assert .st-section floors + pads that would
+   fight the spec's own height law. The .st-section.st-section bump
+   (0,2,0) carries every belt; the retired classes have no consumers
+   in this DOM, so only the .st-section seats needed guarding. */
+.st-section.st-section {
+  min-block-size: 0;
+  padding-block: 0;
+}
+
+@media (min-width: 992px) {
+  .st-section.st-section { min-block-size: 86.7rem; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .st-section.st-section { min-block-size: 0; padding-block: 0; }
+}
+@media (min-width: 480px) and (max-width: 767px) {
+  .st-section.st-section { min-block-size: 0; padding-block: 0; }
+}
+@media (min-width: 400px) and (max-width: 479px) {
+  .st-section.st-section { min-block-size: 0; }
+}
+@media (max-width: 479px) {
+  .st-section.st-section { min-block-size: 0; padding-block: 0; }
+}
