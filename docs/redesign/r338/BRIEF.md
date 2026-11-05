@@ -47,3 +47,12 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - Conformance: `bash scripts/verify.sh --sections <keys>`; run.mjs `--gate` = check vs ratchet, `--ratchet` = raise floor to current (NEVER lower — current floor 53.7). `verify.sh --fast` = tsc + vitest + bundle gate (~4 min).
 - State: r337/usecase ALREADY MERGED into main. r337/problem holds 1 unmerged wip (73.6%). r337/intro fully merged. main RED at 37705268 (CI + Size gate) — medic is on it; land on main ONLY if your own verify.sh --fast is green, else push branch + report.
 - Dead-agent rule: if /home/z/wt/<task-id> exists from a dead agent, continue from its last commit (git log) — never redo landed work.
+
+## ENV ADDENDUM 2 (wave-2, lead — SUPERSEDES all flock instructions above)
+- DO NOT USE flock — it is broken on this box (silently no-ops or starves for the whole window). Serialization is now: your OWN worktree + your OWN vite port + run.mjs --url. No shared locks except /tmp/verify.busy (below).
+- DEDICATED PORTS: task tNN runs its own dev server on port 53NN (t02→5302, t04→5304 …) — e.g. `cd frontend && nohup npx vite --port 5304 --strictPort > /tmp/vite-t04.log 2>&1 &` then run the conformance instrument with `--url http://localhost:5304` (confirm exact flag in scripts/README.md — validated working by T-03). Kill your vite when done: `pkill -f 'vite.*5304'`.
+- NEVER run the instrument against a shared/global server; never run verify.sh unless you are the medic/lander of this wave (verify.sh is heavy). Medic/lander: `mkdir /tmp/verify.busy` before verify.sh, `rmdir` after.
+- COMMIT + PUSH AFTER EVERY COMPLETED SUB-STEP — agents on this box die without warning; your pushed branch is your progress. If your worktree already holds a dead agent's work: `git log --oneline -5` + `git status`, continue, never redo.
+- Browser cache: chromium-1200 present and WORKS. If the instrument demands a newer build and /tmp/pw-install2.log shows it still downloading, use T-03's validated fallback: a private PLAYWRIGHT_BROWSERS_PATH dir with the requested build name symlinked to chromium-1200.
+- Concurrency is deliberately ≤4 agents (backend + 2-CPU box die at 6+). If the box feels saturated, do dep-free authoring and defer measurement.
+- Dark mode: the instrument currently has NO dark path (run.mjs) — dark cells are RESIDUAL until task T-14a lands. Webkit: browser absent; install retrying in background; residual if absent. Never fake either.
