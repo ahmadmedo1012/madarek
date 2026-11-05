@@ -230,3 +230,20 @@ T-06 | footer × webkit (all 5 bps) | ~/.cache/ms-playwright has chromium only �
 - footer.col2 y/x-mirror @390/768: heron's col2 cell is a collapsed 0x0 window (display:contents-like); its recorded y = −heronSectionPageY, an artifact of the heron page height above the footer. Our col2 (also display:contents, gBCR zeros) yields −ourSectionPageY. The delta is our-vs-heron page height above the footer — not reproducible without falsifying page layout. Geometry stays measured (never skipped); cells documented as impossible.
 - footer.markpath.1-8 geometry: our col3 mark is Madarek's OWN authored line-art (hard rule: never Heron paths) — path-level geometry divergence is by law, not by omission.
 - footer.c1sub h @390/768 (exp 1px): the heron element recorded at the c1sub-bound path at mobile bps is a 1px hairline twin (window collision); collapsing our real subscribe seat to 1px would delete a functional door. bg corrected to spec rgb(179,179,175); h stays measured and fails, documented.
+<<<<<<< HEAD
+
+## T-10 (cta first pass, r338/t10-cta)
+- home-cta-wrap scaffolding: svg defs/mask/filter/fecomponenttransfer/image + the tween wrapper divs are excused via mapping noCounterpart with per-path written reasons (T-14a grammar) — plumbing, not measured design.
+- heron cta band rails (top ledger band, kicker rail, column rules, sketch-band wrappers, masked img): structural first-pass excuse with written reasons; REAL counterparts (ruled ledger via the existing `.fo-cta .fo-hero-meta` css seat + authored inline-SVG sketch band) are the next cta pass's work. Leaf design (title/lede/primary button/actions box) is bound and fully measured.
+
+## T-10b cta pass-2 (r338)
+- **cg-strip (colleges registry)** — no heron counterpart: heron's cta spec ends at the bottom sheet rule (y1078); the registry strip is a product requirement (R323: the true colleges/campuses/live-capability numbers ride the strip). Our-side extra below the sheet; unbound by design.
+- **kicker/rule ink (color skip)** — heron's ledger kickers + 1px rules carry an ink tone not yet mapped to a design token; scoped skip with reason in mapping (T-25 token unification will un-skip).
+- **section vh span @phone** — heron's @390 band heights are content-driven; our retired 77vh seat is replaced by the measured band rungs (9.6/auto/21.6rem); phone y/h residuals documented in results.
+||||||| a8c62a03
+=======
+
+## T-10 (cta first pass, r338/t10-cta)
+- home-cta-wrap scaffolding: svg defs/mask/filter/fecomponenttransfer/image + the tween wrapper divs are excused via mapping noCounterpart with per-path written reasons (T-14a grammar) — plumbing, not measured design.
+- heron cta band rails (top ledger band, kicker rail, column rules, sketch-band wrappers, masked img): structural first-pass excuse with written reasons; REAL counterparts (ruled ledger via the existing `.fo-cta .fo-hero-meta` css seat + authored inline-SVG sketch band) are the next cta pass's work. Leaf design (title/lede/primary button/actions box) is bound and fully measured.
+>>>>>>> origin/r338/t10-cta

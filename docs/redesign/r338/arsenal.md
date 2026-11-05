@@ -220,3 +220,13 @@ T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect ex
 T-99 | vite build + check-bundle-size.mjs + node zlib gz census + node codemod | bundle diet: per-module sourcemap ranking, dead data-spec/class audit, exact gz byte measurement (777.6→777.5 clean; 578→~500B residual, landing blocked)
 T-06f | conformance/run.mjs --sections footer --url :5306 | footer re-measure (dead-agent WIP + plumbing census)
 T-06g1 | vitest run (frontend, 242 files) | footer contract reconciliation verify (L-9 list r320/r162/r168/r177/r307/r321/funnel) — 3051/3051 after markup reconcile
+<<<<<<< HEAD
+T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
+T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
+T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measurement
+||||||| a8c62a03
+=======
+T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
+T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
+>>>>>>> origin/r338/t10-cta
+T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
