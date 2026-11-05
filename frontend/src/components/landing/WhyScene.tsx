@@ -171,28 +171,28 @@ function MiniSeat({ m, id }: { m: Mini; id: string }) {
 }
 
 /** the pinned dark caption bar — title + sub + accent dot. */
-function CaptionBar({ x, title, sub }: { x: string; title: string; sub: string }) {
+function CaptionBar({ x, ds, title, sub }: { x: string; ds: string; title: string; sub: string }) {
   return (
-    <div className="wy-tag" style={{ insetInlineStart: x }}>
-      <div className="wy-tag-in">
-        <div className="wy-tag-title-w">
-          <div className="wy-tag-title">{title}</div>
+    <div className="wy-tag" data-spec={`why.${ds}`} style={{ insetInlineStart: x }}>
+      <div className="wy-tag-in" data-spec={`why.${ds}in`}>
+        <div className="wy-tag-title-w" data-spec={`why.${ds}tw`}>
+          <div className="wy-tag-title" data-spec={`why.${ds}t`}>{title}</div>
         </div>
-        <div className="wy-tag-sub-w">
-          <div className="wy-tag-sub">{sub}</div>
+        <div className="wy-tag-sub-w" data-spec={`why.${ds}sw`}>
+          <div className="wy-tag-sub" data-spec={`why.${ds}s`}>{sub}</div>
         </div>
       </div>
-      <div className="wy-tag-dot" aria-hidden="true" />
+      <div className="wy-tag-dot" aria-hidden="true" data-spec={`why.${ds}dot`} />
     </div>
   );
 }
 
 /** the 10px axis way-marker (+ / – svg paths). */
-function Marker({ y }: { y: string }) {
+function Marker({ y, ds }: { y: string; ds: string }) {
   return (
-    <div className="wy-mk" style={{ insetBlockStart: y }}>
-      <div className="wy-mk-in">
-        <svg className="wy-mk-svg" viewBox="0 0 10 10" aria-hidden="true">
+    <div className="wy-mk" data-spec={`why.${ds}`} style={{ insetBlockStart: y }}>
+      <div className="wy-mk-in" data-spec={`why.${ds}in`}>
+        <svg className="wy-mk-svg" data-spec={`why.${ds}svg`} viewBox="0 0 10 10" aria-hidden="true">
           <path className="wy-mk-path" d="M10 5 H0" />
           <path className="wy-mk-path" d="M5 0 V10" />
         </svg>
@@ -225,22 +225,23 @@ export function WhyScene() {
   const lecture2xSrc = lectureShot2x;
 
   return (
-    <div className="wy-stage" ref={stageRef} data-wy-stage="0">
-      <div className="wy-axis" aria-hidden="true" />
-      <div className="wy-stage-in">
+    <div className="wy-stage" data-spec="why.stage" ref={stageRef} data-wy-stage="0">
+      <div className="wy-axis" aria-hidden="true" data-spec="why.axis" />
+      <div className="wy-stage-in" data-spec="why.stagein">
         <div className="wy-fade" aria-hidden="true" />
-        <Marker y="-0.12rem" />
-        <Marker y="262.8rem" />
-        <div className="wy-track">
-          <div className="wy-progress" aria-hidden="true" />
-          <div className="wy-track-in">
+        <Marker y="-0.12rem" ds="mk1" />
+        <Marker y="262.8rem" ds="mk2" />
+        <div className="wy-track" data-spec="why.track">
+          <div className="wy-progress" aria-hidden="true" data-spec="why.progress" />
+          <div className="wy-track-in" data-spec="why.rows">
             {ROWS.map((r, i) => (
               <div
                 className="wy-row"
+                data-spec={`why.row${i + 1}`}
                 key={r.title}
                 style={{ insetBlockStart: `${[0, 62.16, 124.32, 186.48][i]}rem` }}
               >
-                <div className="wy-card" style={{ insetInlineStart: r.card[0] }}>
+                <div className="wy-card" data-spec={`why.card${i + 1}`} style={{ insetInlineStart: r.card[0] }}>
                   <div className="wy-card-in">
                     <img
                       className="wy-img"
@@ -383,7 +384,7 @@ export function WhyScene() {
                 {r.minis.map((m, k) => (
                   <MiniSeat m={m} key={k} id={r.cardId} />
                 ))}
-                <CaptionBar x={r.tagX} title={r.title} sub={r.sub} />
+                <CaptionBar x={r.tagX} ds={`tag${i + 1}`} title={r.title} sub={r.sub} />
               </div>
             ))}
           </div>

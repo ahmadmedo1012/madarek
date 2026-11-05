@@ -16,30 +16,30 @@ export function Why() {
   return (
     <section className="wy-section" aria-labelledby="wy-title">
       {/* the ruled editorial head — eyebrow + display title (left lane) */}
-      <div className="wy-head">
-        <div className="wy-eyebrow">
-          <div className="wy-eyebrow-t">[06] لماذا مدارك</div>
+      <div className="wy-head" data-spec="why.head">
+        <div className="wy-eyebrow" data-spec="why.eyebrow">
+          <div className="wy-eyebrow-t" data-spec="why.eyebrowt">[06] لماذا مدارك</div>
         </div>
-        <RevealCssClass as="div" className="wy-h2w" delay={1}>
-          <h2 className="wy-title" id="wy-title">الرحلة في أربع مراحل</h2>
+        <RevealCssClass as="div" className="wy-h2w" data-spec="why.h2w" delay={1}>
+          <h2 className="wy-title" id="wy-title" data-spec="why.title">الرحلة في أربع مراحل</h2>
         </RevealCssClass>
       </div>
 
       {/* the side rail — vertical rule + lede + muted note (mirrored RTL) */}
-      <div className="wy-side">
-        <div className="wy-rule-v" aria-hidden="true" />
-        <div className="wy-lede">
-          <div className="wy-lede-t">
+      <div className="wy-side" data-spec="why.side">
+        <div className="wy-rule-v" aria-hidden="true" data-spec="why.rulev" />
+        <div className="wy-lede" data-spec="why.lede">
+          <div className="wy-lede-t" data-spec="why.ledet">
             شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر داخل
             مدارك، ولكل مرحلة سطح حقيقي من أسطح الطالب نعرضه هنا كما هو تمامًا.
           </div>
         </div>
-        <div className="wy-note">
-          <div className="wy-note-t">اللقطات من بيئة العرض التجريبية</div>
+        <div className="wy-note" data-spec="why.note">
+          <div className="wy-note-t" data-spec="why.notet">اللقطات من بيئة العرض التجريبية</div>
         </div>
       </div>
 
-      <div className="wy-hrule" aria-hidden="true" />
+      <div className="wy-hrule" aria-hidden="true" data-spec="why.hrule" />
 
       <WhyScene />
     </section>
