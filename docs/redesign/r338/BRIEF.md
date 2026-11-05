@@ -77,3 +77,8 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 ## ENV ADDENDUM 6 (wave-7, lead)
 - Instrument upgrade on branch r338/t14a-instrument (562cba47, landing this wave): (1) `--dark` flag — measures under the site's own html[data-theme=dark] (geometry/type/border vs frozen light spec + token-flip census + WCAG contrast ≥3.0); (2) mapping `plumbing:[{section,heron,skip:["geometry"],reason}]` mechanism — skipped cells counted, never silent. Section agents: after t14a lands on main, run your section with `--dark` and fix reported dark-kind fails (e.g. footer dark y:154/w:96/x-mirror:86); add plumbing skips for defs/filter/mask scaffolding with reasons.
 - why branch @eaaf5ebb: bundle gate PASS (777.0≤777), head rebuilt to measured seat; 61.1% with ~33 x-mirror cells regressed by the bundle diet (suspect ≤991 section width min(171.24rem,100%) vs 768/390 spec rects) — T-05e owns the recheck + mobile re-seat.
+
+## ENV ADDENDUM 7 (wave-8, lead)
+- CI INFRA INCIDENT (13:25–14:05 pushes): every r338 branch push red (CI + Size gate), job logs 404 BlobNotFound (log retention broken). Branch agents mirrored ALL gates locally GREEN (vitest 3051, lint 0, tsc, design-gates 9/9, size-gate exit 0, check-colors, r321). Until the incident clears: red branch CI alone is NOT exclusion evidence — mirror locally before excluding; try POST /actions/runs/<id>/rerun-failed-jobs (worked for T-01 before).
+- Problem @d2a7a2e7 = 90.5% avg (93/93/93/89/85) — first section at target. Footer @7974d0b8 = 69.2% (blockers cleared locally).
+- After t14a lands: sections opt into `--dark` + plumbing-skip (see ADDENDUM 6).
