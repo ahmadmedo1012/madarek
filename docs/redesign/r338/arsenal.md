@@ -8,3 +8,6 @@ T-03 | scripts/conformance/run.mjs (direct, --url own vite :5183) | baseline mea
 T-03 | PLAYWRIGHT_BROWSERS_PATH private symlink dir (.pw-browsers, 1200→1223) | chromium launch workaround while lead's 1223 download stalled at 80%
 T-03 | python3 analysis of scripts/conformance/results.json | failure census by kind/path family (x-mirror 231, w 183, y 160, h 110, transition 55, bg 32)
 T-03b | scripts/conformance/run.mjs + build-intro-mapping.py (regen) + python census on results.json | mapping desync fix (ROOT→CLI arg, 58→64 explicit bindings, svg collision unbound) + failure census on own vite :5303
+L-4b | curl+jq GitHub Actions API | per-branch CI verdicts, failed job/step forensics, post-push run ids
+L-4b | git merge + union/dedupe resolution | excusals.md union, arsenal.md add/add, results.json mainline, .pw-browsers symlink drop
+L-4b | scripts/verify.sh --fast | landing gate (tsc+vitest+bundle) on combined branch
