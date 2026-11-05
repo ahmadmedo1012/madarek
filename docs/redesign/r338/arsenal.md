@@ -87,3 +87,4 @@ L-d | curl+jq GitHub Actions API | post-landing run id check
 T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath
 L-10 | git merge --no-ff train + vite/check-bundle-size + verify.sh --fast + curl+jq Actions API | w16 land: axios diet + why rewrite + intro
 T-90 | playwright (repo node_modules, chromium-1200) | blind-panel screenshot capture (36) + ComputedStyle/contrast evidence
+T-24 | depcruise/madge-style import scan + knip | circular-dep fix AdminPages↔AdminGovernancePages + dead archive scripts
