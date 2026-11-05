@@ -14,13 +14,46 @@
 }
 
 .chapters-head {
+  /* T-09c — the head re-seat INSIDE the track. Heron: the head column is
+     the track's own top zone (wrap > section[1] > div[1]×4): y = track
+     top, w 1284@1920 · 963@1440 · 685@1024 (≈67.5% of the track) and
+     full track width ≤991 (753@768 · 374@390); measured h 1062 · 887 ·
+     759 · 885 · 828. Absolute: heron's sticky window OVERLAPS the zone
+     (window y = track y + 13), so the head never participates in the
+     pin flow. */
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 0;
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: var(--sp-8);
   align-items: end;
-  margin-block-end: var(--sp-8);
+  width: 67.5%;
+  min-height: 887px; /* 1440 measured */
   border-block-start: 1px solid var(--rule-strong);
   padding-block-start: var(--sp-8);
+  margin-block-end: 0;
+}
+
+@media (min-width: 1920px) {
+  .chapters-head { min-height: 1062px; } /* measured @1920 */
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .chapters-head { min-height: 759px; } /* measured @1024 */
+}
+
+@media (max-width: 1023px) {
+  .chapters-head { width: 100%; } /* full track width ≤991 (753@768 · 374@390) */
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .chapters-head { min-height: 885px; } /* measured @768 */
+}
+
+@media (max-width: 767px) {
+  .chapters-head { min-height: 828px; } /* measured @390 */
 }
 
 .chapters-head-copy {
