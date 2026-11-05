@@ -46,3 +46,4 @@ T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect ex
 T-05f | python3 (results.json cluster forensics) | grouped 800 failure rows to find the 224 display:none y≈-8074 hidden-counterpart clusters
 T-05f | playwright probe + heron-spec.768/390.json rect extraction | measured row-relative seats for player bits + 12 point-reveals + map box
 T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification
+T-20 | targeted source reads (rg/grep + package.json x2, scripts/README + verify.sh + run.mjs flags, OWNERSHIP.md, ci.yml, HANDOFF.md, check-bundle-size.mjs, mapping/, styles/landing/, apps/mobile/) | fact-base for AGENTS.md (verified every command, gate, ceiling, seat binding)
