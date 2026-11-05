@@ -12,29 +12,33 @@
    only (house law — no gsap); the reveal engine drives the intro and
    the ONE scrub var --wy-p drives the accent progress rule. ═══ */
 
-/* ── the section shell — spec @1440: x=7 · w=1427 (≈7px gutters) ── */
+/* ── the section shell — heron: fluid 171.24rem wide (1427 @1440 ·
+   1902 @1920 · 1015 @1024), centred, ZERO padding — the head, the
+   hairline and the stage all run full-bleed to the measured rect ── */
 .wy-section {
   position: relative;
-  inline-size: 100%;
-  max-inline-size: none;
+  inline-size: min(171.24rem, 100%);
   margin-inline: auto;
-  padding-inline: 0.84rem;
-  padding-block: 6.6rem 4.8rem;
+  padding-inline: 0;
+  padding-block: 0;
 }
 
-/* ── the ruled editorial head: left lane (eyebrow + display h2),
-   right rail (vertical rule + lede + muted note) ── */
+/* ── the ruled editorial head — heron @1440: 0,0 1427×269 two-column:
+   left lane (1fr ≈ 962: eyebrow y133 + h2w y162) | side rail (464px:
+   rule + lede + note, pad-top 133). Explicit grid seats — the h2w
+   stays in the left lane, the side rail spans both rows at col 2 ── */
 .wy-head {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 55.68rem;
-  column-gap: 5.4rem;
   align-items: start;
-  padding-inline-start: 3.12rem;
 }
 
 .wy-eyebrow {
   display: block;
-  padding-block-start: 5.76rem; /* the head's 163px top pad → eyebrow baseline */
+  grid-column: 1;
+  grid-row: 1;
+  padding-block-start: 15.92rem;   /* lane y106 + lane pad 26.67 → eyebrow y133 */
+  padding-inline-start: 3.2rem;     /* the lane's 26.67px text inset */
 }
 
 .wy-eyebrow-t {
@@ -48,7 +52,12 @@
 
 .wy-h2w {
   display: block;
-  margin-block-start: 1.8rem;
+  grid-column: 1;
+  grid-row: 2;
+  margin-block-start: 1.56rem;      /* eyebrow bottom 149 → h2w top 162 */
+  margin-inline-start: 3.2rem;
+  inline-size: 45rem;                /* the measured 375px text box */
+  min-block-size: 9.6rem;            /* the 80px two-line seat */
 }
 
 .wy-title {
@@ -58,32 +67,35 @@
   line-height: 1;                      /* 40/40 measured */
   letter-spacing: 0;                   /* Arabic: ls 0 by law */
   text-wrap: balance;
+  min-block-size: 9.6rem;            /* the measured 2-line box */
   color: var(--text);
 }
 
-/* the side rail — mirrored RTL: the rule rides the rail's inline-start */
+/* the side rail — heron: x962 y0 464x269, pad 133.33/26.67/26.67 —
+   mirrored RTL: the rule rides the rail's inline-start, full height */
 .wy-side {
   position: relative;
-  padding-inline-start: 3.24rem;       /* 996−969 = 27px → the lede's inset */
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  padding-block-start: 16rem;        /* 133.33px -> the lede lands at y133 */
+  padding-inline: 3.2rem;
+  min-block-size: 32.28rem;          /* the full 269px head height */
 }
 
 .wy-rule-v {
   position: absolute;
   inset-inline-start: 0;
-  inset-block: 3.6rem 0;               /* 269px tall from the head top */
-  inline-size: 0.12rem;                /* the 1px hairline */
+  inset-block: 0;                    /* 0->269: the full head height */
+  inline-size: 0.12rem;              /* the 1px hairline */
   background: var(--rule-strong);
 }
 
-.wy-lede {
-  padding-block-start: 3.84rem;        /* lede top at head y+134 */
-}
+/* the lede rides the side rail's 16rem pad-top (y133 measured) */
 
 .wy-lede-t {
   font-family: var(--font-body);
   font-size: var(--fs-body);           /* 13.33px @1440 — Heron txt-16 */
   font-weight: 500;
-  line-height: 1.3;                    /* 17.33px — ≥ the 1.35 Arabic floor… */
   line-height: 1.35;                   /* …Arabic ascenders law */
   color: var(--text-secondary);
 }
@@ -100,11 +112,11 @@
   color: var(--text-faint);            /* rgb(180,180,176) */
 }
 
-/* the full-width hairline under the head — 1427×1 @ y=642 */
+/* the full-width hairline under the head — 1427x1 at y=269 */
 .wy-hrule {
   block-size: 0.12rem;
   background: var(--rule-strong);
-  margin-block-start: 2.28rem;
+  margin-block-start: 0;
 }
 
 /* ═══ THE STAGE — 2218px tall @1440 (2.76 vh-units rect) ═══ */
@@ -129,14 +141,6 @@
   inset: 0;
 }
 
-.wy-fade {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline: 0;
-  block-size: 2.4rem;
-  background: linear-gradient(var(--bg), transparent);
-  opacity: 0;
-}
 
 /* the 10px axis way-markers (+ cross svg line-art) at the stage's left edge */
 .wy-mk {
@@ -383,6 +387,12 @@
   display: block;
 }
 
+.wy-vic-path {
+  stroke: var(--text-secondary);
+  stroke-width: 1.5;
+  fill: none;
+}
+
 .wy-spinz,
 .wy-loadz {
   position: absolute;
@@ -405,12 +415,6 @@
   fill: none;
 }
 
-.wy-load-tail,
-.wy-tail-svg {
-  inline-size: 100%;
-  block-size: 100%;
-  display: block;
-}
 
 .wy-chk {
   position: absolute;
@@ -422,6 +426,12 @@
   inline-size: 100%;
   block-size: 100%;
   display: block;
+}
+
+.wy-chk-path {
+  stroke: var(--text-secondary);
+  stroke-width: 1;
+  fill: none;
 }
 
 .wy-dots {
@@ -494,24 +504,41 @@
 
   .wy-head {
     grid-template-columns: minmax(0, 1fr);
-    padding-inline-start: 0;
     row-gap: var(--sp-4);
   }
 
   .wy-eyebrow {
+    grid-column: 1;
+    grid-row: auto;
     padding-block-start: 0;
+    padding-inline-start: 0;
+  }
+
+  .wy-h2w {
+    grid-column: 1;
+    grid-row: auto;
+    margin-block-start: var(--sp-1-5);
+    margin-inline-start: 0;
+    inline-size: auto;
+    min-block-size: 0;
+  }
+
+  .wy-title {
+    min-block-size: 0;
   }
 
   .wy-side {
+    grid-column: 1;
+    grid-row: auto;
     padding-inline-start: 0;
     padding-block-start: var(--sp-1-5);
+    min-block-size: 0;
   }
 
   .wy-rule-v {
     inset-block: 0;
     inset-inline-start: auto;
     inset-inline-end: 0;
-    block-size: 100%;
     inline-size: 100%;
     block-size: 0.12rem;
   }
@@ -530,7 +557,6 @@
 
   .wy-axis,
   .wy-mk,
-  .wy-fade,
   .wy-progress {
     display: none;
   }

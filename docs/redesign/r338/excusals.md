@@ -40,3 +40,19 @@
   remain (mini-capture 0x0 spec imgs, row-4 map paths + point reveals, caption
   clusters) — need real counterparts or individual excusals. (5) mk1/mk2 way-markers
   unbindable by path (truncation collision) — heuristic-paired only.
+
+## T-05d why (r338, bundle-diet + head-reseat session)
+- MEASURED (own vite :5305, chromium, pw-browsers fallback per ADDENDUM 3):
+  home-why-wrap 62.2% → 61.1% (65/65/58/58/57 per bp) — NET −1.1: the
+  bundle-diet DOM cuts (dead svg defs/filter/mask scaffolding, 16-path spinner
+  → circles, unbound data-spec attrs, dead data-wy-stage writer) shifted
+  heuristic ordinals (x-mirror fails 120→153) while the head 2-col reseat to
+  the measured 1427×269 seat + the full-bleed stage improved y-fails 505→449.
+  BUNDLE GATE: 777.4 → 777.0 KB gz PASS (ceiling 777, CI blocker cleared).
+- webkit cells (no build) + dark cells (no instrument path): still RESIDUAL.
+- Residual work-list: (a) recover the ~33 x-mirror cells — prime suspect the
+  ≤991 section width min(171.24rem,100%) vs heron's mobile shell; needs the
+  768/390 spec section rects before re-seating; (b) mobile compact re-seat
+  (ours 8591/7221px tall vs heron 1882/808 — the ≤991 belt still stacks);
+  (c) ~317 no-counterpart FAILs (mini clusters, map paths, caption clusters)
+  unchanged from T-05c.
