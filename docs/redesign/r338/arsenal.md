@@ -88,3 +88,5 @@ T-08c | node one-liners | failure clustering from scripts/conformance/results.js
 L-10 | git merge --no-ff train + vite/check-bundle-size + verify.sh --fast + curl+jq Actions API | w16 land: axios diet + why rewrite + intro
 T-90 | playwright (repo node_modules, chromium-1200) | blind-panel screenshot capture (36) + ComputedStyle/contrast evidence
 T-24 | depcruise/madge-style import scan + knip | circular-dep fix AdminPages↔AdminGovernancePages + dead archive scripts
+T-13r | playwright (repo node_modules, chromium via /tmp/pw-browsers symlink fallback per ADDENDUM 3) | interact.mjs hover/focus-visible delta probing against vite :5313, 5 bps
+T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + channel-class census driving the fix plan

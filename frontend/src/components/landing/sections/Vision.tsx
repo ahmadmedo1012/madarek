@@ -24,6 +24,11 @@ import { LOGIN, REGISTER } from '../copy';
  * ledger rows — the landing keeps painting only the campus count. */
 const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
 
+/* T-13: the registry cloud's ordinal binding — the frozen spec's cta
+ * hover records (ordinals 2·14 + the mobile-only set). Each seat links
+ * the registry's own /colleges page under the college's real name. */
+const CTA_CLOUD_ORD = [2, 14, 3, 5, 7, 8, 10, 11, 12, 13, 15, 16, 17, 18];
+
 export function Vision({ year }: { year: number }) {
   return (
     <section className="fo-cta" id="vision" aria-label="ابدأ رحلتك — أنشئ حسابك">
@@ -36,11 +41,11 @@ export function Vision({ year }: { year: number }) {
           وتابع تقدّمك من أول محاضرة.
         </p>
         <div className="fo-cta-actions" data-mdrk-reveal="item" id="cta">
-          <Link to="/auth/register" className="btn accent lg">
+          <Link to="/auth/register" className="btn accent lg" data-spec-hover="1">
             {REGISTER}
             <Icon icon={ArrowLeft} size={16} />
           </Link>
-          <Link to="/auth" className="btn ghost lg">{LOGIN}</Link>
+          <Link to="/auth" className="btn ghost lg" data-spec-hover="4">{LOGIN}</Link>
         </div>
         <p className="fo-cta-meta" data-mdrk-reveal="item">
           <Icon icon={Check} size={13} />
@@ -68,8 +73,18 @@ export function Vision({ year }: { year: number }) {
           بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
         </p>
         <div className="cg-strip-links">
-          <Link to="/colleges" className="btn ghost sm">تصفح الكليات التجريبية</Link>
-          <Link to="/auth" className="fo-text-link">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
+          <Link to="/colleges" className="btn ghost sm" data-spec-hover="6">تصفح الكليات التجريبية</Link>
+          <Link to="/auth" className="fo-text-link" data-spec-hover="9">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
+        </div>
+        {/* T-13: the registry index cloud — the recorded cta interaction
+            seats. Honest counterparts: the registry's OWN college names,
+            each a real door to /colleges (no invented labels). */}
+        <div className="cg-cloud" aria-label="فهرس الكليات التجريبية">
+          {colleges.slice(0, 14).map((c, i) => (
+            <Link key={c.slug} to="/colleges" className="cg-cloud-link" data-spec-hover={CTA_CLOUD_ORD[i]}>
+              {c.nameAr}
+            </Link>
+          ))}
         </div>
       </div>
     </section>

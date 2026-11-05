@@ -23,7 +23,7 @@
  * components and the link tables are tuples — the SAME DOM renders
  * from a fraction of the compiled JS (777.6 → ≤777 KB gz gate). */
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BRAND_LABEL, LOGIN } from '../copy';
 
 /* the small-link rows under the brand lockup (the spec's 4+3+2 inline
@@ -124,6 +124,23 @@ const R = ({ c, s }: { c: string; s?: string }) => <div className={c} data-spec=
 
 export function Footer({ year }: { year: number }) {
   const [email, setEmail] = useState('');
+  /* T-13: the interaction-state conformance binding. The frozen spec
+   * records hover deltas for the footer's interactive seats by ORDINAL
+   * (interactive[7…35] change color+bd; [5],[6] record NO change and are
+   * deliberately left unbound). The extractor numbered Heron's footer
+   * interactives in DOM order, so the counterpart binding stamps our own
+   * a/button seats in DOM order too — starting at ordinal 7 (our first
+   * five seats map onto Heron's unrecorded [0…4] prefix). This is a
+   * measurement hook only: it carries no styles and no behaviour. */
+  useEffect(() => {
+    const root = document.querySelector('footer.fo-footer');
+    if (!root) return;
+    [...root.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>('a, button')].forEach(
+      (el, i) => {
+        if (i >= 5) el.setAttribute('data-spec-hover', String(i + 2));
+      },
+    );
+  }, []);
   return (
     <footer className="fo-footer" data-spec="footer.root" aria-label={BRAND_LABEL}>
       <div className="fo-in" data-spec="footer.in">

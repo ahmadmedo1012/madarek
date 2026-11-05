@@ -118,7 +118,10 @@ export async function interact(url, bps, sections) {
   const out = { pass: 0, fail: 0, failures: [], hoverChecked: 0, patternsChecked: 0 };
   try {
     for (const bpName of bps) {
-      const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+      // T-13 bugfix (reported): viewport was hardcoded 1440 for every bp —
+      // the per-bp spec records were all probed against the desktop layout.
+      // Probe each bp at its own recorded width.
+      const page = await browser.newPage({ viewport: { width: Number(bpName) || 1440, height: 900 } });
       await page.addStyleTag({ content: ".probe-hover:hover, .probe-hover { /* marker only — real hover comes from :hover */ }" });
       await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
       await page.waitForTimeout(2000);

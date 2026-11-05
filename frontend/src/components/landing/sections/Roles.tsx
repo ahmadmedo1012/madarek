@@ -100,6 +100,9 @@ const ROLE_ROWS: RoleRow[] = [
 /** the row that starts open (and whose slide starts active) */
 const FIRST_OPEN = 0;
 
+/* T-13: heron faq hover ordinals (spec hovers: 5/6/7 · 20/21/22 · 35). */
+const ROLE_HOVER_ORD = [5, 6, 7, 20, 21, 22, 35];
+
 export function Roles() {
   /* the accordion's open row (and the deck's active slide). Clicking a
    * row's icon opens it — the rows themselves stay non-controls (the
@@ -192,9 +195,18 @@ export function Roles() {
                       </div>
                       <div
                         className="rl-row-icon"
-                        data-spec-hover={String(i * 15 + 5)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={r.title}
+                        data-spec-hover={String(ROLE_HOVER_ORD[i] ?? 305 + i * 15)}
                         data-spec={`roles.rowicon.${i + 1}`}
                         onClick={() => setOpen(i)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setOpen(i);
+                          }
+                        }}
                       >
                         <div className="rl-row-iconbtn" data-spec={`roles.rowiconbtn.${i + 1}`}>
                           <svg
