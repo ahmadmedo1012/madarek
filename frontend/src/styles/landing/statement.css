@@ -1,28 +1,32 @@
-/* R337 A-intro — البيان, REBUILT against the frozen Heron spec
+/* R338 T-03 — البيان, REWRITTEN against the frozen Heron spec
    (docs/redesign/r335/heron-spec/home-intro-wrap.{390,768,1024,1440,
-   1920}.json). The R322 transplant (6+6 grid + StatementArt square +
-   .st-partner strip) is RETIRED with this rewrite; every rule below
-   is new. The DOM (Statement.tsx) mirrors the spec census:
+   1920}.json). Every rule below is the r338 rewrite of the r337 sheet;
+   the retired transplant rules die with it. The DOM (Statement.tsx)
+   mirrors the spec census:
 
      section.st-section[intro.wrap] > .st-band[intro.section] >
        .st-grid[intro.grid]
-       > media > mediain > [mediainner > img · tonesvg]
-       · stmt > rule · stmtin > titlebox > h2 > line.N ·
+       > media > mediain > [mediainner > img · tonesvg(rect)]
+       · stmt > rule · stmtin > titlebox(100% wide) > h2 > line.N ·
          pill(cta > ctaink > [ctaspan>spanin>text ×2 · ctaicons >
-         icon > iconin > glyph > svg])
+         icon×2 > iconin > glyph > svg > path])
        · ticker > rule · tickerin > labelrow(label > labeltext ·
-         rules · arrows×2) · crawl(crawlin > track > cells) ·
-         desc(desctext · descrule)
+         rules · arrows > arrow×2 > in > box > svg > path) ·
+         crawl(crawlin > span.track > cells) · desc(desctext · descrule)
 
    Measured spec on OUR rem root (≥992 0.5787037vw · ≤991
    1.1990407674vw · ≤767 2.5445292621vw): desktop 'media stmt /
-   media ticker' — band 86.7rem (cols 67.7 + ticker 19.1), stmt pad
-   6.4/15/3.2/15rem, h2 4/4rem, pill ~5rem, crawl viewport ~11.4rem;
-   768–991 'media stmt / ticker ticker' — stmt pad 2.4rem, h2
-   2.4/2.88rem; ≤767 stacked — stmt pad 2.4/1.6rem, h2 2.4/2.64rem.
+   media ticker' — band 86.7rem (rows 67.7 + auto), stmt pad
+   6.4/15/3.2/15rem, h2 4rem/600/lh 4rem, line boxes full cell width,
+   pill ~16.3×5.04rem, labelrow 4.44rem tall, arrow buttons 4.44rem
+   square (svg 2.04rem, path 11×7), crawl cell 17.16×11.4rem with img
+   11.16rem and a 1px end rule, cell hover 0.4s ease; 768–991 'media
+   stmt / ticker ticker' — stmt pad 2.4rem, h2 2.4/2.52rem, labelrow
+   4.45rem; ≤767 stacked — stmt pad 2.4/1.7rem, h2 2.4/2.66rem,
+   labelrow 4.13rem.
 
    Colors: the rules are var(--rule-strong) (the spec's own
-   rgb(179,179,175)), the ghost text var(--neutral-400) (the spec's
+   rgb(179,179,175)), the ghost title var(--neutral-400) (the spec's
    rgb(180,180,176)), the accent var(--accent) (the spec's
    rgb(250,54,0)); the soft 72%-ink text rides the spec-exact rgba
    (a documented color-gate allow — color-mix() renders as a
@@ -37,7 +41,7 @@
   background: transparent;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
   font-size: 1.6rem;
-  line-height: 2.16rem;
+  line-height: 2.08rem;
   font-weight: 500;
   contain: paint;
 }
@@ -80,14 +84,20 @@
   block-size: 100%;
   object-fit: cover;
 }
-/* the tonal veil the reference draws as a filtered svg — ours is the
-   ink scrim over the photograph (the photograph reads as texture) */
+/* the tonal veil the reference draws as a filtered svg — ours is a
+   transparent-background svg whose rect carries the ink (the record's
+   own svg seat keeps backgroundColor rgba(0,0,0,0); the tone is the
+   svg's own paint, never a css background-color) */
 .st-media-tone {
   position: absolute;
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
-  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  background: transparent;
+}
+.st-media-tone-rect {
+  fill: currentColor;
+  opacity: 0.78;
 }
 
 /* ═══ the statement cell ═══ */
@@ -112,13 +122,15 @@
   font: inherit;
 }
 
-/* the title box: the spec's own margin cell (bottom margin 3.2rem to
-   the pill) */
+/* the title box: the spec's own margin cell — full padded width (the
+   reference's line containers are full-width boxes, one per line) */
 .st-titlebox {
-  margin-block-end: 3.2rem;
+  inline-size: 100%;
+  margin-block-end: 4.25rem;
 }
 .st-title {
   margin: 0;
+  inline-size: 100%;
   font-family: var(--font-display);
   font-size: 4rem;
   line-height: 4rem;
@@ -126,9 +138,9 @@
   color: var(--neutral-400);
 }
 
-/* the scrub lines: the spec's split-text boxes (one div per line,
-   full width, one word-box per word — the words are ScrubReveal's
-   .wr-w/.wr-i spans) */
+/* the scrub lines: the spec's split-text line containers — block,
+   full cell width, one word-box span per word (the words are
+   ScrubReveal's .wr-w/.wr-i spans, off the pairable census) */
 .st-line {
   display: block;
 }
@@ -168,12 +180,15 @@
   color: var(--text);
   transition: transform 0.48s var(--ease-in);
 }
-.st-pill-ink-b { position: absolute; inset-block-start: 100%; }
+.st-pill-ink-b .st-pill-t {
+  position: absolute;
+  inset-block-start: 100%;
+}
 @media (hover: hover) and (pointer: fine) {
   .st-pill:hover .st-pill-t-in { transform: translateY(-2.05rem); }
 }
-/* the icon pair: A in place, B parked one icon-width away (the same
-   roll, on the icon axis) */
+/* the icon pair: two inline arrow glyphs (the reference's own twin
+   icons, 2.04rem each) — the pair slides one seat on hover */
 .st-pill-icons {
   display: inline-flex;
   align-items: center;
@@ -189,8 +204,8 @@
 .st-pill-glyph {
   display: grid;
   place-items: center;
-  inline-size: 2.45rem;
-  block-size: 2.45rem;
+  inline-size: 2.04rem;
+  block-size: 2.04rem;
   padding: 0.8rem;
   box-sizing: content-box;
   transition: transform 0.48s var(--ease-in);
@@ -204,8 +219,8 @@
   .st-pill:hover .st-pill-icon-b .st-pill-glyph { transform: translateX(0); margin-inline-end: 0; }
 }
 .st-arrow-svg {
-  inline-size: 2.45rem;
-  block-size: 2.45rem;
+  inline-size: 2.04rem;
+  block-size: 2.04rem;
   overflow: visible;
 }
 .st-arrow-path {
@@ -233,14 +248,16 @@
   font: inherit;
 }
 
-/* the partner label row: the mono label + its two hairlines + the two
-   arrow buttons at the row's end */
+/* the partner label row: the mono label at the reading start, the two
+   hairlines spanning it, the two arrow buttons at its end (each
+   4.44rem square with a 1px end rule and a 2.04rem glyph — the
+   record's own arrow-button seats) */
 .st-plabel-row {
   position: relative;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: stretch;
-  block-size: 4.8rem;
+  block-size: 4.44rem;
   padding-inline-end: 3.2rem;
 }
 .st-plabel {
@@ -250,8 +267,9 @@
 }
 .st-plabel-in {
   font-size: 1.4rem;
-  line-height: 2.16rem;
+  line-height: 1.37;
   font-weight: 600;
+  padding-inline: 0.3rem;
 }
 .st-plabel-rule,
 .st-plabel-toprule {
@@ -271,30 +289,36 @@
 }
 .st-parrow {
   display: block;
-  inline-size: 2.95rem;
+  inline-size: 4.44rem;
+  block-size: 4.44rem;
+  border-inline-end: 1px solid var(--rule-strong);
+  transition: background-color 0.4s ease;
+  cursor: pointer;
 }
+.st-parrow:last-child { border-inline-end: 0; }
 .st-parrow-in {
   display: grid;
   place-items: center;
   inline-size: 100%;
   block-size: 100%;
+  transition: transform 0.48s var(--ease-in);
 }
 .st-parrow-box {
   display: grid;
   place-items: center;
-  inline-size: 2.45rem;
-  block-size: 2.45rem;
-  padding: 0.8rem;
-  box-sizing: content-box;
+  inline-size: 2.04rem;
+  block-size: 2.04rem;
 }
-.st-parrow-b .st-parrow-box {
-  transform: translateX(2.95rem);
-  margin-inline-end: -2.95rem;
+@media (hover: hover) and (pointer: fine) {
+  .st-parrow:hover { background: var(--rule); }
+  .st-parrow:hover .st-parrow-in { transform: translateX(-0.4rem); }
+  .st-parrow-b:hover .st-parrow-in { transform: translateX(0.4rem); }
 }
 
 /* the universities crawl: the documented-institutions logo track.
    One track duplicated per cell for the seamless loop (the
-   fo-ticker grammar, re-seated on this band's own measures). The
+   fo-ticker grammar, re-seated on this band's own measures: cell
+   17.16×11.4rem, img 11.16rem, 1px end rule, 0.4s ease hover). The
    conformance twin freezes the animation at the spec's own first
    frame, so the track sits at its translateX(0) home. */
 .st-crawl {
@@ -313,23 +337,37 @@
 .st-crawl-cell {
   display: block;
   flex: none;
+  inline-size: 17.16rem;
+  block-size: 11.4rem;
+  transition: background-color 0.4s ease;
 }
 .st-crawl-logo {
   display: grid;
   place-items: center;
-  block-size: 11.4rem;
+  block-size: 100%;
 }
-.st-crawl-logo img {
+.st-crawl-logo img,
+.st-crawl-logo-bg {
   display: block;
-  inline-size: 7rem;
-  block-size: auto;
+  inline-size: 11.16rem;
+  block-size: 5.62rem;
+  object-fit: contain;
   filter: grayscale(1) opacity(0.72);
+}
+.st-crawl-logo-bg {
+  background-image: var(--crawl-img);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 .st-crawl-sep {
   display: block;
   inline-size: 1px;
+  block-size: 11.4rem;
   background: var(--rule-strong);
   opacity: 0.5;
+}
+@media (hover: hover) and (pointer: fine) {
+  .st-crawl-cell:hover { background: var(--rule); }
 }
 
 /* the disclosure desc row */
@@ -358,12 +396,17 @@
 }
 
 /* ═══ desktop height law (≥992): the band = 86.7rem — the cols row
-   67.7 + the ticker 19.1; the media cell spans both rows ═══ */
+   67.7 + the ticker 19.1; the media cell spans both rows. The wrap
+   bleeds to the reference's own 9px gutters (the record measures the
+   section at 1902/1427 against our sheet's 30/40px page gutters) ═══ */
 @media (min-width: 992px) {
   .st-grid {
     grid-template-rows: 67.7rem auto;
   }
-  .st-section { min-block-size: 86.7rem; }
+  .st-section {
+    min-block-size: 86.7rem;
+    margin-inline: calc(var(--space-2xl) - 9px);
+  }
 }
 
 /* ═══ the tablet band (768–991): media | stmt side by side (the
@@ -377,10 +420,13 @@
   }
   .st-media { aspect-ratio: 1 / 1; }
   .st-stmt-in { padding: 2.4rem; }
-  .st-title { font-size: 2.4rem; line-height: 2.88rem; }
-  .st-crawl-logo { block-size: 8.7rem; }
-  .st-crawl-logo img { inline-size: 4.4rem; }
-  .st-plabel-row { padding-inline-end: 2.4rem; block-size: 4.5rem; }
+  .st-title { font-size: 2.4rem; line-height: 2.52rem; }
+  .st-crawl-cell { inline-size: 15.4rem; block-size: 9.7rem; }
+  .st-crawl-sep { block-size: 9.7rem; }
+  .st-crawl-logo img,
+  .st-crawl-logo-bg { inline-size: 8.6rem; block-size: 4.3rem; }
+  .st-plabel-row { padding-inline-end: 2.4rem; block-size: 4.45rem; }
+  .st-parrow { inline-size: 4.45rem; block-size: 4.45rem; }
   .st-desc { padding: 0.8rem 2.4rem; }
 }
 
@@ -396,31 +442,33 @@
   }
   .st-media { aspect-ratio: 1 / 1; }
   .st-stmt-rule { display: none; }
-  .st-stmt-in { padding: 2.4rem 1.6rem; }
-  .st-title { font-size: 2.4rem; line-height: 2.64rem; }
-  .st-crawl-logo { block-size: 6.5rem; }
-  .st-crawl-logo img { inline-size: 3.5rem; }
-  .st-plabel-row { padding-inline-end: 1.6rem; block-size: 4.1rem; }
+  .st-stmt-in { padding: 2.4rem 1.7rem; }
+  .st-title { font-size: 2.4rem; line-height: 2.66rem; }
+  .st-crawl-cell { inline-size: 15.7rem; block-size: 6.6rem; }
+  .st-crawl-sep { block-size: 6.6rem; }
+  .st-crawl-logo img,
+  .st-crawl-logo-bg { inline-size: 7rem; block-size: 3.5rem; }
+  .st-plabel-row { padding-inline-end: 1.6rem; block-size: 4.13rem; }
+  .st-parrow { inline-size: 4.13rem; block-size: 4.13rem; }
   .st-desc { padding: 0.8rem 1.6rem; }
 }
 
 /* ═══ reduced motion: the crawl stands, the roll pair rests ═══ */
 @media (prefers-reduced-motion: reduce) {
   .st-crawl-track { animation: none; } /* rides the fo-ticker grammar — the shared RM belt collapses it */
-  .st-pill-ink-b,
-  .st-pill-icon-b,
-  .st-parrow-b { display: none; }
+  .st-pill-ink-b { display: none; }
   .st-pill-t-in,
-  .st-pill-glyph { transition: none; }
+  .st-pill-glyph,
+  .st-parrow-in { transition: none; }
 }
 
 /* ═══ cascade guards — the retired transplant's cross-sheet seats ═══
-   home.css / shared.css / strata.css / pains.css still pin the R322
-   DOM (.st-grid, .st-body-col, .st-partner…) this rewrite replaced,
-   and strata's belts re-assert .st-section floors + pads that would
-   fight the spec's own height law. The .st-section.st-section bump
-   (0,2,0) carries every belt; the retired classes have no consumers
-   in this DOM, so only the .st-section seats needed guarding. */
+   home.css / shared.css / strata.css still pin the R322 DOM (.st-grid,
+   .st-body-col, .st-partner…) this rewrite replaced, and strata's
+   belts re-assert .st-section floors + pads that would fight the
+   spec's own height law. The .st-section.st-section bump (0,2,0)
+   carries every belt; the retired classes have no consumers in this
+   DOM, so only the .st-section seats needed guarding. */
 .st-section.st-section {
   min-block-size: 0;
   padding-block: 0;
