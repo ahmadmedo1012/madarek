@@ -61,6 +61,18 @@ const STATEMENT_LINES = [
   'مع كل فصل.',
 ] as const;
 
+/* R338 T-03d — the reference's per-word char-scaffold census (frozen spec,
+ * identical at 768/1024/1440/1920): its split-text tween leaves one empty
+ * tc-none overflow box per CHARACTER inside every word cell — 26 words,
+ * 127 char boxes (3,10,5,… chars per word in document order). Our
+ * ScrubReveal mirrors that scaffold grammar with empty aria-hidden boxes
+ * (intro.wchar.N.M) so every reference char box has an explicit 1:1
+ * counterpart; the shaped Arabic text itself stays whole per word — the
+ * joining law (per-word splits only) is never broken. */
+const HERON_CHAR_COUNTS = [
+  3, 10, 5, 2, 9, 9, 3, 4, 4, 5, 7, 3, 7, 6, 4, 2, 3, 3, 4, 7, 2, 3, 7, 3, 3, 9,
+] as const;
+
 /* ── The r307 media truth: distinct Libyan universities documented —
  * Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata, Sebha
  * (official-channel videos). The crawl pairs each name with its
@@ -161,6 +173,14 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                      * the mapping binds the reference's split-text word
                      * cells explicitly instead of heuristic-gluing them. */
                     wordSpec={(gi: number) => `intro.word.${gi + 1}`}
+                    /* R338 T-03d: the reference's per-char tween scaffold,
+                     * mirrored 1:1 — every heron char box (h2 > line > box >
+                     * mask > word > char) binds its own intro.wchar.N.M box
+                     * explicitly; typography + color asserted per char box
+                     * (it inherits the title's own type), geometry rides the
+                     * word/line level (English↔Arabic char runs differ). */
+                    charCounts={HERON_CHAR_COUNTS}
+                    charSpec={(gi: number, ci: number) => `intro.wchar.${gi + 1}.${ci + 1}`}
                     renderLine={(line: ReactNode, key: string, index: number) => (
                       /* the reference's own line nest: line group > line box
                        * > mask wrapper > word cells — one full-width box per

@@ -24,3 +24,5 @@ T-08c | playwright (repo node_modules + /tmp/pw-browsers chromium-1200→1223 fa
 T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath |
 T-08c1 | node -e census over scripts/conformance/results.json + docs/redesign/r335/heron-spec/*.json | color/lh family census, spec-value mining (aLh ar-floor + per-bp label/menu/CTA voices)
 T-08c2 | conformance/run.mjs (--sections home-platform-wrap --url :5308, light+dark), python/json (mapping rebind analysis + rewrite) | re-pairing + dark pass
+||||||| 0188bf2f
+T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-char scaffold mirror bindings (intro.wchar.N.M) + 5-bp measurement
