@@ -83,6 +83,7 @@
 
 .pm-titleblock {
   min-inline-size: 0;
+  color: var(--text); /* the spec's head title block is full-ink (the soft 72% rides the sub note only) */
 }
 
 .pm-kicker {
@@ -165,13 +166,14 @@
   background: transparent;
 }
 
-/* ═══ the meta row — the padded box over the dashed rule ═══ */
+/* ═══ the meta row — the padded box over its own dashed rule ═══ */
 .pm-meta {
   position: relative;
   display: flex;
   align-items: flex-start;
   gap: 1.6rem;
-  padding: 1.6rem 3.2rem;
+  padding: 1.6rem 3.2rem calc(1.6rem - 1px); /* the −1px pays for the border so the measured box holds */
+  border-block-end: 1px dashed var(--rule-strong); /* the ruled-row contract: the meta row's own dashed rule (the source contract's seat) */
   color: var(--text); /* the keyword + index seat: the spec's full-ink meta strip */
 }
 .pm-meta .pm-keyword {
@@ -183,6 +185,7 @@
 }
 .pm-index-roll {
   margin-inline-start: auto;
+  color: var(--neutral-400); /* the ghost index seat (rgb(180,180,176)) — the reference's index box carries it, not the indextext alone */
 }
 .pm-keyword {
   color: inherit;
@@ -217,11 +220,10 @@
   inset-block-end: 0;
   inset-inline: 0;
   block-size: 1px;
-  background-image: repeating-linear-gradient(
-    to inline-end,
-    var(--rule-strong) 0 6px,
-    transparent 6px 12px
-  );
+  /* the dash itself rides .pm-meta's border-block-end now (one
+     rule, not two); this seat keeps the mapped 1px window for the
+     spec pairing — same box, no double line */
+  background: none;
 }
 
 /* ═══ the body zone — art over text ═══ */
@@ -288,11 +290,12 @@
 }
 .pm-answrap {
   padding-block-start: 1.6rem;
+  color: var(--text); /* the spec's answer wrap is full-ink; the body text below re-seats the soft ink */
 }
 .pm-item-sub {
   margin: 0;
   font-weight: 400;
-  color: inherit;
+  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
 }
 .pm-ans {
   font-weight: 500;
@@ -320,6 +323,15 @@
 }
 
 @media (max-width: 767px) {
+  /* the (0,2,0) belt guard (statement.css r337 precedent): a
+     ≤767 belt sheet pads the section 56px (the phone header
+     reserve) — the frozen spec's phone band carries NO section pad
+     (kicker window y=64 = toprule 1 + head pad 63.5), so the guard
+     restores the measured 0/0 box. */
+  .pm-section.pm-section {
+    padding-block: 0;
+  }
+
   .pm-head {
     grid-template-columns: minmax(0, 1fr);
     padding: 6.4rem 1.6rem 3.2rem; /* census 63.51/15.88/31.76/15.88px ✓ */
@@ -361,7 +373,7 @@
   }
 
   .pm-meta {
-    padding: 0.8rem 1.6rem;
+    padding: 0.8rem 1.6rem calc(0.8rem - 1px);
     gap: 0.8rem;
   }
   .pm-cue {
@@ -454,7 +466,7 @@
   }
 
   .pm-meta {
-    padding: 1.2rem 2.4rem; /* census 11.05/22.1px */
+    padding: 1.2rem 2.4rem calc(1.2rem - 1px); /* census 11.05/22.1px + the border's own 1px */
   }
   .pm-cue {
     inset-inline-start: 2.4rem;
