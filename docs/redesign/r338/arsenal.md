@@ -230,3 +230,7 @@ T-11d | conformance run.mjs --dark + vite:5311 | hero dark-contrast baseline/aft
 T-09c | playwright(chromium via /tmp/pw-browsers symlink fallback) + run.mjs --sections/--url | baseline+remeasure map conformance
 T-09d | conformance run.mjs (+webkit temp-copy probe) | map pass-4 type/colour rhythm measurement; webkit launch blocked by host libs (libgtk-4 etc.)
 T-09e | node+JSON edit | mapping noCounterpart batch-add (8 svg-root families, 45 cells)
+L-d | git-merge | land r338/t11-hero + r338/t09e-map onto main (union excusals/arsenal, newest results.json, prefer-branch hero/map files)
+L-d | vite build + check-bundle-size.mjs | ONE bundle gate check on merged head
+L-d | scripts/verify.sh --fast | landing evidence (tsc+vitest+bundle)
+L-d | curl+jq GitHub Actions API | post-landing run id check
