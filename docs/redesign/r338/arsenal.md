@@ -34,3 +34,4 @@ T-04b | python3 (json census diffing of heron-spec vs results.json) | decomposed
 T-04b | node scripts/conformance/run.mjs --url :5304 | measured problem 84.6→88.8
 T-04c | playwright chromium (/tmp/pw-browsers symlink fallback) + scripts/conformance/run.mjs --url :5304 + vitest r306 + check-colors --strict | 390 DOM forensics (phantom 56px section pad), pm-meta border restore, conformance re-measure, CI test verify
 T-04c | curl+jq Actions API + vitest/eslint/tsc/size-gate.sh/design-gates local mirrors + conformance run.mjs --url | CI forensics (fleet-wide red) + 90.5% re-measure
+L-9 | git/vite/check-bundle-size/verify.sh/curl+jq | staged landing w15: per-merge bundle checks + fast verify
