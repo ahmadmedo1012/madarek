@@ -49,20 +49,20 @@ const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 /* R320 cycle-3 (PAGES-GAP P2-3/4/5): the routed error sheets — the
  * boundary stays the crash net; these are the designed, linkable,
  * gate-capturable states (the /404 precedent). */
-const Error500Page = lazy(() => import('./pages/Error500Page'));
-const Error403Page = lazy(() => import('./pages/Error403Page'));
-const MaintenancePage = lazy(() => import('./pages/MaintenancePage'));
+const Error500Page = lazy(() => import('./pages/ErrorPages').then((m) => ({ default: m.Error500Page })));
+const Error403Page = lazy(() => import('./pages/ErrorPages').then((m) => ({ default: m.Error403Page })));
+const MaintenancePage = lazy(() => import('./pages/ErrorPages').then((m) => ({ default: m.MaintenancePage })));
 /* R320 cycle-3 (PAGES-GAP P2-1): the ANY-AUTHED account settings —
  * mounts like /vision (no role allow): theme + change-password (every
  * role — teachers had NO change-password UI) + honest seats. */
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
-const AuthPage = lazy(() => import('./pages/AuthPage'));
-const RegisterPage = lazy(() => import('./pages/RegisterPage'));
+const AuthPage = lazy(() => import('./pages/AuthPages').then((m) => ({ default: m.AuthPage })));
+const RegisterPage = lazy(() => import('./pages/AuthPages').then((m) => ({ default: m.RegisterPage })));
 /* R320 §D (PAGES-GAP §5): the forgot-password flow's two guest sheets —
  * same GuestRoute seat (authed visitors bounce to their role home;
  * a signed-in visitor has no business resetting a password here). */
-const ForgotPasswordPage = lazy(() => import('./pages/auth/ForgotPasswordPage'));
-const ResetPasswordPage = lazy(() => import('./pages/auth/ResetPasswordPage'));
+const ForgotPasswordPage = lazy(() => import('./pages/AuthPages').then((m) => ({ default: m.ForgotPasswordPage })));
+const ResetPasswordPage = lazy(() => import('./pages/AuthPages').then((m) => ({ default: m.ResetPasswordPage })));
 
 const StudentDashboardPage = lazy(() => import('./pages/student/DashboardPage'));
 // r164-c: the student one-calendar view (schedule + assignments + exam

@@ -42,3 +42,4 @@ T-02c | conformance/run.mjs --sections home-usecase-wrap --url http://localhost:
 T-06e | conformance/run.mjs --dark + mapping plumbing-skip + own vite :5306 + private pw-browsers symlink dir (headless-shell-1223→1200) | dark opt-in baseline (68.5%) + plumbing-skip seed for svg defs/filter pairs
 T-08 | node+playwright(dev-server dump + conformance run.mjs) | platform baseline census, explicit-binding structural pass
 T-08b | playwright (chromium-1200 symlinked as 1223 via /tmp/pw-browsers) + conformance run.mjs --url | baseline+re-measure platform bp matrix
+T-99b | vite build + check-bundle-size.mjs | measured entry-diet levers: GlobalSearch/AppShell async split RAISES total (777.9→783.4, micro-chunk tax); landed family-bundling instead (MorePages pattern)
