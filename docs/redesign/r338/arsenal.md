@@ -187,3 +187,6 @@ T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-c
 T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification
 T-09c | playwright(chromium via /tmp/pw-browsers symlink fallback) + run.mjs --sections/--url | baseline+remeasure map conformance
 T-09d | conformance run.mjs (+webkit temp-copy probe) | map pass-4 type/colour rhythm measurement; webkit launch blocked by host libs (libgtk-4 etc.)
+T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath
+L-10 | git merge --no-ff train + vite/check-bundle-size + verify.sh --fast + curl+jq Actions API | w16 land: axios diet + why rewrite + intro
+T-03f | conformance/run.mjs --dark + plumbing mapping | intro junk-pool skip census (269 entries), pill icon seat re-measure 5bp+dark

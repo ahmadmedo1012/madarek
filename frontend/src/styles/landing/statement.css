@@ -201,35 +201,49 @@
 .st-pill-icons {
   display: inline-flex;
   align-items: center;
-}
-.st-pill-icon {
-  display: block;
   position: relative;
+}
+/* r338 T-03f icon seat forensics (heron a[2] windows, measured px): the
+   pair is two 1-seat boxes — A rides the seat beside the label, B parks
+   one FULL box further in (the label-side ghost seat, its tail overlapping
+   the label the way the record's own parked copy does). Box/svg per the
+   record: 50/22 @1920, 37/17 @1440, 41/18 @768, 41/16 @390; the roll tween
+   (0.48s cubic-bezier(0.625, 0.05, 0, 1)) rides the BOX itself. */
+.st-pill-icon {
+  display: grid;
+  place-items: center;
+  inline-size: 50px;
+  block-size: 50px;
+  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }
 .st-pill-icon-in {
   display: block;
-  position: relative;
 }
 .st-pill-glyph {
-  display: grid;
-  place-items: center;
-  inline-size: 2.04rem;
-  block-size: 2.04rem;
-  padding: 0.8rem;
-  box-sizing: content-box;
-  transition: transform 0.48s var(--ease-in);
+  display: block;
 }
-.st-pill-icon-b .st-pill-glyph {
-  transform: translateX(2.45rem);
-  margin-inline-end: -2.45rem;
+.st-pill-icon-b {
+  position: absolute;
+  inset-inline-end: 100%; /* RTL: one full seat inboard, the label side */
+}
+@media (max-width: 1439px) {
+  .st-pill-icon { inline-size: 37px; block-size: 37px; }
+  .st-arrow-svg { inline-size: 17px; block-size: 17px; }
+}
+@media (max-width: 1023px) {
+  .st-pill-icon { inline-size: 41px; block-size: 41px; }
+  .st-arrow-svg { inline-size: 18px; block-size: 18px; }
+}
+@media (max-width: 767px) {
+  .st-arrow-svg { inline-size: 16px; block-size: 16px; }
 }
 @media (hover: hover) and (pointer: fine) {
-  .st-pill:hover .st-pill-icon .st-pill-glyph { transform: translateX(2.45rem); }
-  .st-pill:hover .st-pill-icon-b .st-pill-glyph { transform: translateX(0); margin-inline-end: 0; }
+  .st-pill:hover .st-pill-icon { transform: translateX(100%); }
+  .st-pill:hover .st-pill-icon-b { transform: translateX(100%); }
 }
 .st-arrow-svg {
-  inline-size: 2.04rem;
-  block-size: 2.04rem;
+  inline-size: 22px;
+  block-size: 22px;
   overflow: visible;
 }
 .st-arrow-path {
@@ -467,6 +481,7 @@
   .st-crawl-track { animation: none; } /* rides the fo-ticker grammar — the shared RM belt collapses it */
   .st-pill-t-b { display: none; }
   .st-pill-t-in,
+  .st-pill-icon,
   .st-pill-glyph,
   .st-parrow-in { transition: none; }
 }
