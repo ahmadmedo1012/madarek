@@ -232,3 +232,4 @@ T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
 T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
 T-14b | playwright probe scripts (light↔dark DOM diff: geometry/type/color/contrast) + run.mjs --dark + check-colors --strict | dark census for usecase/problem, footer+cta dark numbers, soft-ink flip verification
 T-11 | run.mjs --sections/--url + python census | hero baseline, failure families, spec-path binding generator
+T-22 | knip@5.88.1 + jscpd@5.4.2 + dependency-cruiser@18.7.2 (temp-prefix installs /home/z/.t22-tools, zero writes into node_modules) | dead-code/duplication/circular-dep baselines as ratcheted gate (scripts/deadcode/check.sh)

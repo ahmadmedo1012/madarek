@@ -41,7 +41,6 @@
     "zustand": "5.0.2"
   },
   "devDependencies": {
-    "@axe-core/playwright": "^4.11.3",
     "@axe-core/react": "4.10.2",
     "@playwright/test": "^1.60.0",
     "@testing-library/jest-dom": "6.6.3",
