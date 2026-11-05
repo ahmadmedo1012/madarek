@@ -17,3 +17,4 @@ T-06d | python3 (json spec/mapping forensics) | heron footer.{390,768,1440}.json
 T-06d | vitest (r321-decor-innertext) | source-contract fix verification for fo-wordmark-reg
 T-06d | scripts/check-colors.sh --strict | color-token gate verification
 T-06d | playwright-probe (cmp-t06.mjs sr-seat diff) + node conformance/run.mjs | mobile seat delta table @390/768, re-measure
+T-06e | conformance/run.mjs --dark + mapping plumbing-skip + own vite :5306 + private pw-browsers symlink dir (headless-shell-1223→1200) | dark opt-in baseline (68.5%) + plumbing-skip seed for svg defs/filter pairs
