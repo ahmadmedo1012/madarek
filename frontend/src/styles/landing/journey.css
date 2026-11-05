@@ -133,7 +133,7 @@
      exactly at the track's end — the closing state IS the end of the
      track: the old 809px map-end dead band is dead by construction
      (the revealed column rides the release up). */
-  block-size: 658dvh;
+  block-size: 700dvh;
   margin-block-start: var(--sp-6);
 }
 
@@ -1037,7 +1037,7 @@
      * pair the Heron ledger uses (the pre-X14 probe read the stale
      * contain-intrinsic-size guess): 466dvh lands the section at
      * 5455 vs Heron 5454 (+0.02%). */
-    block-size: 466dvh;
+    block-size: 539.2dvh;
     padding-inline: 8px; /* spacing-gate: allow — the A8 sheet-frame inset seat (Heron's own mobile plan inset) */
   }
 
