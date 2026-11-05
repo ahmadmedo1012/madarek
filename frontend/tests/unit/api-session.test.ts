@@ -2,14 +2,13 @@
  * lib/api session-boundary tests (audit P0-1 frontend half + single-
  * flight refresh pinning).
  *
- * Network responses are simulated with a custom axios adapter installed
- * on BOTH the `api` instance and the bare global axios — the refresh
- * call deliberately bypasses the `api` instance to avoid interceptor
- * recursion.
+ * Network responses are simulated with a transport adapter installed on
+ * the `api` client's test seam (`api.defaults.adapter`) — the refresh
+ * call deliberately bypasses the pipeline (no auth header, no 401
+ * retry) but shares the same seam, so one handler simulates both.
  */
-import axios, { AxiosError, type AxiosAdapter, type AxiosResponse, type InternalAxiosRequestConfig } from 'axios';
 import { beforeEach, describe, expect, it } from 'vitest';
-import { api, unwrap } from '../../src/lib/api';
+import { api, unwrap, ApiError, type ApiRequestConfig, type ApiResponse } from '../../src/lib/api';
 import { queryClient } from '../../src/lib/queryClient';
 import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
 
@@ -21,26 +20,21 @@ const USER_A: AuthUser = {
   role: 'STUDENT',
 };
 
-function respond<T>(config: InternalAxiosRequestConfig, status: number, data: T): AxiosResponse<T> {
-  return { data, status, statusText: String(status), headers: {}, config, request: {} };
+function respond<T>(config: ApiRequestConfig, status: number, data: T): ApiResponse<T> {
+  return { data, status, statusText: String(status), headers: {}, config };
 }
 
-function rejectWith(config: InternalAxiosRequestConfig, status: number, data: unknown): never {
-  throw new AxiosError('Request failed', AxiosError.ERR_BAD_REQUEST, config, {}, respond(config, status, data));
+function rejectWith(config: ApiRequestConfig, status: number, data: unknown): never {
+  throw new ApiError('Request failed', config, 'ERR_BAD_REQUEST', respond(config, status, data));
 }
 
 function installAdapter(
-  handler: (config: InternalAxiosRequestConfig) => AxiosResponse | Promise<AxiosResponse>,
+  handler: (config: ApiRequestConfig) => ApiResponse | Promise<ApiResponse>,
 ): void {
-  const adapter: AxiosAdapter = (config) => Promise.resolve().then(() => handler(config));
-  api.defaults.adapter = adapter;
-  axios.defaults.adapter = adapter;
+  api.defaults.adapter = (config) => Promise.resolve().then(() => handler(config));
 }
 
-const authHeaderOf = (config: InternalAxiosRequestConfig): string => {
-  const value = config.headers?.get('Authorization');
-  return typeof value === 'string' ? value : '';
-};
+const authHeaderOf = (config: ApiRequestConfig): string => config.headers?.Authorization ?? '';
 
 beforeEach(() => {
   useAuthStore.setState({ user: null, accessToken: null });
@@ -85,7 +79,7 @@ describe('single-flight refresh', () => {
     installAdapter((config) => {
       if ((config.url ?? '').includes('/auth/refresh')) {
         refreshCalls += 1;
-        return new Promise<AxiosResponse>((resolve) => {
+        return new Promise<ApiResponse>((resolve) => {
           // Delay so both 401s reach the interceptor while the refresh
           // is still in flight.
           setTimeout(() => {
@@ -204,9 +198,9 @@ describe('refresh request hardening (15-d P2-6)', () => {
     useAuthStore.getState().setSession(USER_A, 'expired-token');
 
     await expect(unwrap(api.get('/anything'))).rejects.toMatchObject({ response: { status: 401 } });
-    // The refresh deliberately bypasses the `api` instance (and its
-    // 20s timeout) — without an explicit timeout, a hung endpoint
-    // pinned the refreshPromise singleton for the browser default.
+    // The refresh deliberately bypasses the pipeline (and its 20s
+    // timeout) — without an explicit timeout, a hung endpoint pinned
+    // the refreshPromise singleton for the browser default.
     expect(refreshTimeout).toBe(15_000);
   });
 });

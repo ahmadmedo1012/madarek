@@ -19,15 +19,12 @@ L-7 | vite build + check-bundle-size.mjs | per-stage bundle truth: main 776.4 / 
 L-7 | scripts/verify.sh --fast | landing gate on final train before push to main
 L-7 | GitHub Actions API via curl | post-landing triggered-run status check
 T02 | playwright probe + spec census diff | y/h geometry re-seat (h2 3-line 64% seat, deck scale model)
-||||||| 36a32694
 T-08c | playwright (repo node_modules + /tmp/pw-browsers chromium-1200→1223 fallback) | section-relative rect probe of our platform band + mirror-aware rect→data-spec binding generator (/tmp/rectbind.mjs) |
-T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath |
+T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath
 T-08c1 | node -e census over scripts/conformance/results.json + docs/redesign/r335/heron-spec/*.json | color/lh family census, spec-value mining (aLh ar-floor + per-bp label/menu/CTA voices)
 T-08c2 | conformance/run.mjs (--sections home-platform-wrap --url :5308, light+dark), python/json (mapping rebind analysis + rewrite) | re-pairing + dark pass
-||||||| 0188bf2f
 T-03d | conformance run.mjs (--url :5303) + build-intro-mapping.py | intro per-char scaffold mirror bindings (intro.wchar.N.M) + 5-bp measurement
 L-8 | verify.sh --fast + vite build/check-bundle-size.mjs + vitest/tsc + curl GitHub API | landed t02+t08+t03 (3 gate fixes), runner pin ubuntu-24.04
-||||||| 37705268
 T-04a | python census over scripts/conformance/results.json (check-kind × element-family grouping) | top-family failure census
 T-04a | playwright probe (repo node_modules; PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-t04 chromium-1200→1223 symlink fallback) | root fs + pm-frame/head/bandinner geometry sanity
 T-04b | python3 (json census diffing of heron-spec vs results.json) | decomposed the height/y residuals into per-bp rem targets
@@ -35,3 +32,5 @@ T-04b | node scripts/conformance/run.mjs --url :5304 | measured problem 84.6→8
 T-04c | playwright chromium (/tmp/pw-browsers symlink fallback) + scripts/conformance/run.mjs --url :5304 + vitest r306 + check-colors --strict | 390 DOM forensics (phantom 56px section pad), pm-meta border restore, conformance re-measure, CI test verify
 T-04c | curl+jq Actions API + vitest/eslint/tsc/size-gate.sh/design-gates local mirrors + conformance run.mjs --url | CI forensics (fleet-wide red) + 90.5% re-measure
 L-9 | git/vite/check-bundle-size/verify.sh/curl+jq | staged landing w15: per-merge bundle checks + fast verify
+T-99d2 | tsc+vitest+vite/check-bundle-size | axios→native-fetch migration gates + bundle truth
+L-10 | git merge --no-ff train + vite/check-bundle-size + verify.sh --fast + curl+jq Actions API | w16 land: axios diet + why rewrite + intro
