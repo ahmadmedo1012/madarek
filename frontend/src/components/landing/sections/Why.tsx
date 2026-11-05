@@ -1,37 +1,47 @@
-/* P2-0 (r335 split) — [6] لماذا مدارك — the Watch/Check/Test/Master stage
- * strip (the reference's why): the four journey verbs beside
- * the four real student-surface captures, cross-fading on the
- * scroll (the 74%-hold plateau grammar); static + fully
- * readable under reduced motion and ≤991px.
+/* T-05 (r338) — [06] لماذا مدارك — REWRITTEN from the frozen Heron
+ * home-why-wrap spec (docs/redesign/r335/heron-spec/home-why-wrap.*.json).
  *
- * The cross-fade scrub lives inside WhyScene — this section is a
- * pure mount: head copy + the scene + the one disclosure line. */
+ * The reference's why strip: a ruled editorial head (eyebrow + display
+ * h2 | vertical rule + lede + muted note), a full-width hairline, then
+ * a TALL pinned stage (2.76 viewport-heights @1440) — a centred axis
+ * with two svg way-markers, a scrubbed accent progress rule, and four
+ * 464px capture rows (the alternating big card + small-capture + icon
+ * cluster + the pinned dark caption bar grammar), closing on the
+ * dashed route-map row. This file is the pure mount: head copy + the
+ * scene; every measured geometry value lives in WhyScene + why.css. */
 import { RevealCssClass } from '../../../hooks/useReveal';
 import { WhyScene } from '../WhyScene';
 
 export function Why() {
   return (
     <section className="wy-section" aria-labelledby="wy-title">
+      {/* the ruled editorial head — eyebrow + display title (left lane) */}
       <div className="wy-head">
-        <span className="fo-label"><span className="fo-mono" dir="ltr">[06]</span> لماذا مدارك</span>
-        <RevealCssClass as="h2" className="wy-title" delay={1} id="wy-title">
-          الرحلة في <em>أربع مراحل</em>
-        </RevealCssClass>
-        <RevealCssClass as="p" className="wy-lede" delay={2}>
-          شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر،
-          ولكل منها سطح حقيقي داخل المنصّة.
+        <div className="wy-eyebrow">
+          <div className="wy-eyebrow-t">[06] لماذا مدارك</div>
+        </div>
+        <RevealCssClass as="div" className="wy-h2w" delay={1}>
+          <h2 className="wy-title" id="wy-title">الرحلة في أربع مراحل</h2>
         </RevealCssClass>
       </div>
 
-      <WhyScene />
+      {/* the side rail — vertical rule + lede + muted note (mirrored RTL) */}
+      <div className="wy-side">
+        <div className="wy-rule-v" aria-hidden="true" />
+        <div className="wy-lede">
+          <div className="wy-lede-t">
+            شاهد، تحقّق، اختبر، أتقن — المراحل الأربع التي تعبرها في كل مقرّر داخل
+            مدارك، ولكل مرحلة سطح حقيقي من أسطح الطالب نعرضه هنا كما هو تمامًا.
+          </div>
+        </div>
+        <div className="wy-note">
+          <div className="wy-note-t">اللقطات من بيئة العرض التجريبية</div>
+        </div>
+      </div>
 
-      {/* R325 Y3 — the strip's ONE disclosure line: the per-frame
-          caption demos retired with the overlay chrome (both rode
-          the art or duplicated this note); this note carries the
-          demo-data confession once, below the whole strip. */}
-      <RevealCssClass as="p" className="wy-note" delay={3}>
-        اللقطات من بيئة العرض — بيانات «جامعة مدارك التجريبية» اصطناعية بالكامل.
-      </RevealCssClass>
+      <div className="wy-hrule" aria-hidden="true" />
+
+      <WhyScene />
     </section>
   );
 }
