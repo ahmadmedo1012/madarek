@@ -80,94 +80,17 @@
   font-size: var(--fs-sm);
 }
 
-/* ═══ [3] PAINS — the ruled table: shared hairlines, open columns ═══ */
+/* ═══ [3] PAINS — R337 A-problem: the ruled ledger owns its sheet now
+   (styles/landing/pains.css, the frozen-spec rebuild). The old
+   open-column transplant rules here are retired. ═══ */
 
-/* Heron's home-problem is NOT a gapped card row — it is four open
- * columns separated by the page's hairline grammar, each with its own
- * 1px top rule. The 3rem gutters die; the hairlines take their place.
- * ≥768 only (≤767 stays the snap carousel with the dot rail). */
-@media (min-width: 768px) {
-  .pm-cols {
-    gap: 0;
-  }
-
-  .pm-col {
-    padding-inline: var(--space-2xl);
-    padding-block-start: var(--space-xl);
-    padding-block-end: var(--space-2xl);
-    border-inline-start: 1px solid var(--rule);
-    border-block-start: 1px solid var(--rule);
-  }
-
-  .pm-col:first-child {
-    border-inline-start: 0;
-    padding-inline-start: 0;
+/* the RM belt keeps the reveal family collapsed (the .pm-col reveal
+   rides the reveals.css card rung) */
+@media (prefers-reduced-motion: reduce) {
+  .pm-section .reveal-up {
+    transform: none;
   }
 }
-
-/* the 2×2 tablet wrap: the row's odd cells sit at the reading-start
- * edge — their inline-start rule would face the page margin. */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .pm-cols .pm-col:nth-child(odd) {
-    border-inline-start: 0;
-    padding-inline-start: 0;
-  }
-}
-
-/* The meta row — the keyword sits in the label voice; the reference's
- * red dot is opacity-0 until reveal/hover (it lands with the
- * column's own .in-view — the same one-shot belt the column rides). */
-.pm-keyword {
-  letter-spacing: 0.12em;
-}
-.pm-dot {
-  opacity: 0;
-  transition: opacity var(--t-base) var(--ease);
-}
-.pm-col.in-view .pm-dot,
-.pm-col:focus-within .pm-dot {
-  opacity: 1;
-}
-@media (hover: hover) and (pointer: fine) {
-  .pm-col:hover .pm-dot {
-    opacity: 1;
-  }
-}
-
-/* The art zone breathes one step taller so the 20rem drawing holds
- * its zone the way the reference's 20×20rem sits in 36.01rem.
- * Scoped ≥992 — the 768–991 and ≤767 tiers re-pin the zone to 0
- * (their own slide/cell anatomy owns the air there). */
-@media (min-width: 992px) {
-  .pm-section .pm-artzone {
-    min-block-size: 26rem;
-  }
-}
-
-/* ONE orange accent per section: the H2's em keeps the emphasis, the
- * section's signal stays with the meta dots + the honest answers. */
-.pm-section .pm-title em {
-  color: inherit;
-}
-
-/* The drawing's pop — the reference's signature reveal (item-img
- * scale+autoAlpha, expo-out): the drawing arrives at 0.9 scale under
- * its column's own reveal, riding the same belt/tokens (RM: the
- * tokens collapse to 0ms and the static drawing stands). */
-.pm-col .pm-art {
-  opacity: 0;
-  transform: scale(0.9);
-  transition:
-    opacity var(--t-slower) var(--ease-out),
-    transform var(--t-slower) var(--ease-out);
-}
-.pm-col.in-view .pm-art {
-  opacity: 1;
-  transform: scale(1);
-}
-.pm-cols .pm-col:nth-child(2).in-view .pm-art { transition-delay: 80ms; }
-.pm-cols .pm-col:nth-child(3).in-view .pm-art { transition-delay: 160ms; }
-.pm-cols .pm-col:nth-child(4).in-view .pm-art { transition-delay: 240ms; }
 
 /* ═══ [4] MOTION — the shared belt, deepened for these three bands ══ */
 
@@ -182,10 +105,5 @@
   .st-section .reveal-up,
   .pm-section .reveal-up {
     transform: none;
-  }
-  .pm-col .pm-art {
-    opacity: 1;
-    transform: none;
-    transition: none;
   }
 }

@@ -61,3 +61,5 @@
   (ours 8591/7221px tall vs heron 1882/808 — the ≤991 belt still stacks);
   (c) ~317 no-counterpart FAILs (mini clusters, map paths, caption clusters)
   unchanged from T-05c.
+## T-04a — home-problem-wrap heuristic de-junk (baseline 80.3%, this pass 80.5%)
+- Excluded 55 container roots from heuristic pairing + 0 exact-path excuses: heron's div[1]>div[1..6] siblings of section[1] and the div[2] subtree are the extractor's staged duplicate scroll-state recordings of the already-bound seats (TRUE paths + problem.<seat>.<n> data-spec own the geometry); svg line/path/circle/ellipse internals are the reference's art motif inside the bound 20rem artcolor boxes (our PainArt draws Madarek's own motifs in the same boxes). Ordinal tag+tc pairing of these against our classless plumbing divs produced junk y/h/x-mirror/w failures (≈76% of the 800 listed baseline failures). Containers verified NOT substrings of any explicit binding, so no measured pair lost an assertion (explicit pairs form before the exclusion; only heuristic fallback is filtered).
