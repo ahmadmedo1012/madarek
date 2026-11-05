@@ -47,3 +47,4 @@ T-05f | python3 (results.json cluster forensics) | grouped 800 failure rows to f
 T-05f | playwright probe + heron-spec.768/390.json rect extraction | measured row-relative seats for player bits + 12 point-reveals + map box
 T-03e | run.mjs conformance instrument (--url mode) + build-intro-mapping.py | measured intro junk-pool claims, charSplit container safety verification
 T-14a2 | playwright chromium (chromium-1200 via /tmp/pw-browsers symlink fallback, PLAYWRIGHT_BROWSERS_PATH) | dark-path instrument validation: light regression (usecase+footer), 390 determinism double-run, per-bp dark-contrast counts
+T-02e | scripts/conformance/run.mjs --dark + vite --port 5302 | usecase dark-ink contrast measurement: rgba composite census 44/43/35/35/35 fails → 0 (43+35 soft-ink seats + 1 seat 2.71@390 via --rl-soft-ink dark arm)
