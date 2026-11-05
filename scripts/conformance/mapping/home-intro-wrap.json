@@ -108,8 +108,8 @@
     },
     {
       "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-      "spec": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
       "ours": "intro.label"
     },
     {
@@ -375,15 +375,51 @@
     },
     {
       "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "spec": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
-      "ours": "intro.labelarrowsvg"
+      "heron": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[2]",
+      "spec": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[2]",
+      "ours": "intro.labelarrow2"
     },
     {
       "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "spec": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
-      "ours": "intro.labelarrowpath"
+      "heron": "home-intro-wrap > div[2] > div[1] > div[4] > div[1] > div[1] > div[1]",
+      "spec": "home-intro-wrap > div[2] > div[1] > div[4] > div[1] > div[1] > div[1]",
+      "ours": "intro.labelarrowin"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[2] > div[1]",
+      "spec": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[2] > div[1]",
+      "ours": "intro.labelarrowin2"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-intro-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "intro.labelarrowbox"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "spec": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+      "ours": "intro.labelarrowbox2"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[1]",
+      "spec": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[1]",
+      "ours": "intro.ctaicon"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[2]",
+      "spec": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[2]",
+      "ours": "intro.ctaicon2"
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+      "spec": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+      "ours": "intro.mediasvg"
     }
   ],
   "noCounterpart": [
@@ -395,11 +431,6 @@
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
-      "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-    },
-    {
-      "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
       "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
     },
     {
@@ -520,6 +551,11 @@
     {
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+    },
+    {
+      "section": "home-intro-wrap",
+      "heron": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
       "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
     },
     {
@@ -1531,16 +1567,6 @@
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[9]",
       "reason": "h2 split-text tween residue: the reference's split-text tween wraps every word in its own overflow box; the recorded 6-segment windows collide (the walk truncates deeper paths). Our ScrubReveal renders one word span per word — the word cells ride the heuristic tag+tc fallback; the wrappers are the tween's own plumbing."
-    },
-    {
-      "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[1]",
-      "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-    },
-    {
-      "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[2]",
-      "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
     },
     {
       "section": "home-intro-wrap",
@@ -3239,11 +3265,6 @@
     },
     {
       "section": "home-intro-wrap",
-      "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
-      "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-    },
-    {
-      "section": "home-intro-wrap",
       "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[2]",
       "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
     },
@@ -3256,14 +3277,6 @@
       "section": "home-intro-wrap",
       "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
       "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
-    }
-  ],
-  "charSplit": [
-    {
-      "section": "home-intro-wrap",
-      "container": "h2[1] > div[",
-      "note": "pattern — every direct line container of the h2 (specPathMatches suffix law); the aggregate asserts typography, the scaffold boxes are excused with the word-law reason",
-      "reason": "h2 split-text tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes)"
     }
   ]
 }
