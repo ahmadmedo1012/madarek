@@ -32,7 +32,7 @@ import aiTutorShot from '../../../assets/product/ai-tutor.webp';
 const PLATFORM_ITEMS = [
   {
     label: '[05] المنصّة فعليًا',
-    title: 'لا وعود — هذه الواجهة نفسها',
+    title: 'هذه الواجهة نفسها',
     text: 'بنية الواجهات نفسها برسم داخلي: مشغّل المحاضرة بنقاط الفحص، ومصفوفة الإتقان، والمساعد الأكاديمي — كما تعمل اليوم داخل المنصّة.',
     cta1: 'أنشئ حسابك',
     cta2: 'لتجربتها حيّة الآن',
@@ -41,7 +41,7 @@ const PLATFORM_ITEMS = [
   },
   {
     label: '[05] المنصّة فعليًا',
-    title: 'أدوات التعلّم داخل قاعة واحدة',
+    title: 'كل الأدوات في قاعة',
     text: 'من نقطة الفحص داخل المحاضرة إلى خطة المراجعة: كل أداة تعمل على بيانات الطالب نفسها، فلا ينتقل الفهم بين أنظمة متفرّقة.',
     cta1: 'ابدأ بجلسة',
     cta2: 'محاضرة حيّة الآن',
@@ -57,7 +57,7 @@ const PLATFORM_ITEMS = [
 function PlatformRow({ item, idx, hidden }: { item: typeof PLATFORM_ITEMS[number]; idx: 1 | 2; hidden?: boolean }) {
   const ds = (k: string) => `platform.${k}${idx}`;
   return (
-    <article className="pr-row" data-spec={ds('row')} aria-hidden={hidden || undefined}>
+    <div className="pr-row" data-spec={ds('row')} aria-hidden={hidden || undefined}>
       {/* the head cell — 481×193 @1920 */}
       <div className="pr-head" data-spec={ds('head')}>
         <div className="pr-cell-rule is-top" data-spec={ds('headruleA')} aria-hidden="true" />
@@ -87,9 +87,9 @@ function PlatformRow({ item, idx, hidden }: { item: typeof PLATFORM_ITEMS[number
               {/* heron's dark hover menu (624×156) — the assistant
                   panel; opens on hover/focus, rect never moves */}
               <span className="pr-menu" data-spec={ds('aicell')}>
-                <span className="pr-menu-k">المساعد الأكاديمي</span>
-                <span className="pr-menu-q">اشرح لي مفهوم «نقطة الفحص»</span>
-                <span className="pr-menu-a">سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</span>
+                <span className="pr-menu-k" data-spec={ds('menuk')}>المساعد الأكاديمي</span>
+                <span className="pr-menu-q" data-spec={ds('menuq')}>اشرح لي مفهوم «نقطة الفحص»</span>
+                <span className="pr-menu-a" data-spec={ds('menua')}>سؤال قصير داخل المحاضرة يُصحَّح فورًا، فيثبُت الفهم قبل الانتقال.</span>
               </span>
               <span className="pr-cta-line" data-spec={ds('ctaline1')}><span data-spec={ds('ctaline1t')}>{item.cta1}</span></span>
               <span className="pr-cta-icons" data-spec={ds('icons')}>
@@ -117,7 +117,7 @@ function PlatformRow({ item, idx, hidden }: { item: typeof PLATFORM_ITEMS[number
         <img src={item.img} data-spec={ds('rowimgimg')} alt={item.alt} loading="lazy" decoding="async" width={1440} height={870} />
         <div className="pr-rowimg-rule" data-spec={ds('rowimgrule')} aria-hidden="true" />
       </div>
-    </article>
+    </div>
   );
 }
 
@@ -140,13 +140,13 @@ export function Product() {
             (heron's own 0×0 census at 768/390) */}
         <div className="pr-imgs" data-spec="platform.imgs" aria-hidden="true">
           <div className="pr-imgs-vrule" data-spec="platform.imgsvruleA" aria-hidden="true" />
-          <figure className="pr-img" data-spec="platform.img1">
+          <div className="pr-img" data-spec="platform.img1">
             <img src={PLATFORM_ITEMS[0].img} data-spec="platform.img1img" alt="" loading="lazy" decoding="async" width={1440} height={870} />
-          </figure>
+          </div>
           <div className="pr-imgs-hrule" data-spec="platform.imghruleA" aria-hidden="true" />
-          <figure className="pr-img" data-spec="platform.img2">
+          <div className="pr-img" data-spec="platform.img2">
             <img src={PLATFORM_ITEMS[1].img} data-spec="platform.img2img" alt="" loading="lazy" decoding="async" width={1440} height={870} />
-          </figure>
+          </div>
           <div className="pr-imgs-vrule" data-spec="platform.imgsvruleB" aria-hidden="true" />
         </div>
       </div>

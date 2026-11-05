@@ -11,3 +11,5 @@ T-03b | scripts/conformance/run.mjs + build-intro-mapping.py (regen) + python ce
 T-14a | conformance/run.mjs (--dark + plumbing-skip) + own vite :5314 + chromium-1200 via PLAYWRIGHT_BROWSERS_PATH symlink dir | dark internal-consistency measurement, plumbing-skip selftest, light regression check (9511/12493 identical)
 T-08 | node+playwright(dev-server dump + conformance run.mjs) | platform baseline census, explicit-binding structural pass
 T-08b | playwright (chromium-1200 symlinked as 1223 via /tmp/pw-browsers) + conformance run.mjs --url | baseline+re-measure platform bp matrix
+T-08c | playwright (repo node_modules + /tmp/pw-browsers chromium-1200→1223 fallback) | section-relative rect probe of our platform band + mirror-aware rect→data-spec binding generator (/tmp/rectbind.mjs) |
+T-08c | node one-liners | failure clustering from scripts/conformance/results.json by kind/selector/heronPath |

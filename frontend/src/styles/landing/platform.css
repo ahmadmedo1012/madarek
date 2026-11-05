@@ -25,7 +25,11 @@
  * dark theme re-points them at the flipping house tokens (the light
  * spec is never re-pinned; dark = internal consistency only). ══ */
 
-.pr-section {
+section.pr-section {
+  /* the legacy strata 12-col band + its 88.9/35.6 sheet padding are
+   * fully retired by this pass — the band is the 3-track sheet */
+  grid-template-columns: none;
+  padding: 0;
   /* r338 T-08c — MEASURED heron platform palette (spec
    * home-platform-wrap.*.json). Section-scoped per ADDENDUM 9 TOKEN
    * RULING; the global token unification is queued as T-25. */
@@ -51,14 +55,14 @@ html[data-theme='dark'] .pr-section {
 }
 
 /* the sheet's top/bottom rules (heron section div[1]/div[2]) */
-.pr-sheet-rule {
+.pr-section .pr-sheet-rule {
   display: block;
   block-size: 1px;
   background: var(--pr-rule-ink);
 }
 
 /* the per-cell hairlines (heron's absolute 1px rule divs) */
-.pr-cell-rule {
+.pr-section .pr-cell-rule {
   position: absolute;
   inset-inline: 0;
   block-size: 1px;
@@ -69,31 +73,32 @@ html[data-theme='dark'] .pr-section {
 .pr-cell-rule.is-end { inset-block-end: 0; }
 
 /* ── the head cell — label + title on heron's body-voice wrappers ── */
-.pr-head {
+.pr-section .pr-head {
   position: relative;
   display: block;
 }
 
-.pr-head-box {
+.pr-section .pr-head-box {
   display: grid;
   min-inline-size: 0;
 }
 
-.pr-label {
+.pr-section .pr-label {
   font-size: 1.4rem;   /* 15.56 @1920 · 12.89 @768 — measured label voice */
   line-height: 1.4;    /* 21.78/15.56 — measured */
   font-weight: 500;
   color: var(--pr-label);
 }
 
-.pr-title-wrap {
+.pr-section .pr-title-wrap {
   font-size: 1.6rem;
   line-height: 1.3;
   color: var(--pr-ink); /* the wrapper carries the full ink (measured) */
 }
 
-.pr-title {
+.pr-section .pr-title {
   margin: 0;
+  white-space: nowrap; /* heron's title is a one-line 392×36 box (measured) */
   font-size: 3.2rem;   /* 35.56 @1920 · 26.67 @1440 — measured h4 twin */
   line-height: 1;      /* 35.56/35.56 — measured */
   font-weight: 600;
@@ -102,18 +107,19 @@ html[data-theme='dark'] .pr-section {
 }
 
 /* ── the side cell — the long text + the CTA strip ────────────────── */
-.pr-side {
+.pr-section .pr-side {
   position: relative;
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
 }
 
-.pr-sidebox {
+.pr-section .pr-sidebox {
   min-inline-size: 0;
+  line-height: 1.35; /* 24.0 @1920 — heron's measured wrapper voice */
 }
 
-.pr-text {
+.pr-section .pr-text {
   margin: 0;
   font-size: 1.6rem;
   line-height: 1.3;
@@ -124,35 +130,39 @@ html[data-theme='dark'] .pr-section {
 /* the CTA strip — heron's a[2]: rule + body(row[line1 + dual arrows],
  * line2). The anchor itself carries the measured orange; the inner
  * rows carry the full ink (both measured). */
-.pr-cta {
+.pr-section .pr-cta {
   position: relative;
   display: block;
   margin-block-start: auto;
   color: var(--pr-cta);
   text-decoration: none;
-  transition: color 0.3s ease; /* motion-token: allow — heron-measured hover fade (TR on a[2]) */
+  transition: color 0.4s ease; /* motion-token: allow — heron-measured a[2] hover fade (TR 0.4s/ease) */
 }
 
-.pr-cta-rule {
+.pr-section .pr-cta-rule {
   display: block;
   block-size: 1px;
   background: var(--pr-rule-ink);
 }
 
-.pr-cta-body {
+.pr-section .pr-cta-body {
   display: block;
   padding-block-start: 1.44rem; /* line1 top = 16px from the strip top (measured) */
   padding-inline-start: 3.15rem;
 }
 
-.pr-cta-row {
+.pr-section .pr-cta-row {
   display: flex;
   align-items: center;
   gap: 1.26rem; /* line-end → icon-start = 14px @1920 (measured) */
   color: var(--pr-ink);
 }
 
-.pr-cta-line {
+.pr-section .pr-cta-line, .pr-cta-ic {
+  transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); /* motion-token: allow — heron-measured line/icon easing */
+}
+
+.pr-section .pr-cta-line {
   font-size: 1.4rem;  /* 15.56 @1920 · 12.89 @768 — measured CTA voice */
   line-height: 1.4;   /* 21.78/15.56 — measured */
   font-weight: 500;
@@ -160,14 +170,14 @@ html[data-theme='dark'] .pr-section {
   white-space: nowrap;
 }
 
-.pr-cta-icons {
+.pr-section .pr-cta-icons {
   margin-inline-start: auto;
   display: flex;
 }
 
 /* heron's dual circular arrows — two tangent 50×50 rings (measured
  * 37 @1440 · 41 @768), each centring 22×22 line-art (17/18 measured) */
-.pr-cta-ic {
+.pr-section .pr-cta-ic {
   inline-size: 4.5rem;
   block-size: 4.5rem;
   display: grid;
@@ -177,14 +187,14 @@ html[data-theme='dark'] .pr-section {
   color: var(--pr-ink);
 }
 
-.pr-cta-icbox {
+.pr-section .pr-cta-icbox {
   inline-size: 2rem;
   block-size: 2rem;
   display: grid;
   place-items: center;
 }
 
-.pr-cta-icbox svg {
+.pr-section .pr-cta-icbox svg {
   inline-size: 2rem;
   block-size: 2rem;
 }
@@ -192,7 +202,7 @@ html[data-theme='dark'] .pr-section {
 /* the dark hover menu — heron's a[2] > div[2] > div[1] > div[1]:
  * 624×156 rgb(40,40,40) hanging 52px above the strip (measured).
  * The assistant panel; opens on hover/focus, rect never moves. */
-.pr-menu {
+.pr-section .pr-menu {
   position: absolute;
   inset-inline-start: 0;
   inset-block-start: -4.68rem;
@@ -210,25 +220,25 @@ html[data-theme='dark'] .pr-section {
   z-index: 1;
 }
 
-.pr-cta:hover .pr-menu,
+.pr-section .pr-cta:hover .pr-menu,
 .pr-cta:focus-visible .pr-menu {
   opacity: 1;
   visibility: visible;
 }
 
-.pr-menu-k {
+.pr-section .pr-menu-k {
   font-size: 1.4rem;
   line-height: 1.4;
   font-weight: 600;
 }
 
-.pr-menu-q {
+.pr-section .pr-menu-q {
   font-size: 1.4rem;
   line-height: 1.4;
   font-weight: 500;
 }
 
-.pr-menu-a {
+.pr-section .pr-menu-a {
   font-size: 1.4rem;
   line-height: 1.4;
   font-weight: 500;
@@ -236,19 +246,19 @@ html[data-theme='dark'] .pr-section {
 }
 
 /* the per-row image — ≥992 display:none (heron's own 0×0 census) */
-.pr-rowimg {
+.pr-section .pr-rowimg {
   position: relative;
   min-inline-size: 0;
 }
 
-.pr-rowimg img {
+.pr-section .pr-rowimg img {
   display: block;
   inline-size: 100%;
   object-fit: cover;
   object-position: top; /* the UI chrome leads the crop */
 }
 
-.pr-rowimg-rule {
+.pr-section .pr-rowimg-rule {
   position: absolute;
   inset-block: 0;
   inset-inline-end: 0;
@@ -257,20 +267,20 @@ html[data-theme='dark'] .pr-section {
 }
 
 /* the central image column — ≥992 only (≤991 display:none = heron 0×0) */
-.pr-imgs {
+.pr-section .pr-imgs {
   position: relative;
   display: grid;
   min-inline-size: 0;
 }
 
-.pr-img {
+.pr-section .pr-img {
   margin: 0;
   overflow: clip;
 }
 
 /* the column's measured hairlines — the flanking verticals
    (@x490/x1291 @1920) and the rule between the two captures */
-.pr-imgs-vrule {
+.pr-section .pr-imgs-vrule {
   position: absolute;
   inset-block: 0;
   inline-size: 1px;
@@ -280,12 +290,12 @@ html[data-theme='dark'] .pr-section {
 .pr-imgs-vrule:first-child { inset-inline-start: 0; }
 .pr-imgs-vrule:last-child { inset-inline-end: 0; }
 
-.pr-imgs-hrule {
+.pr-section .pr-imgs-hrule {
   block-size: 1px;
   background: var(--pr-rule-ink);
 }
 
-.pr-img img {
+.pr-section .pr-img img {
   display: block;
   inline-size: 100%;
   block-size: 100%;
@@ -300,13 +310,13 @@ html[data-theme='dark'] .pr-section {
     grid-template-rows: auto 1fr auto;
   }
 
-  .pr-grid {
+  .pr-section .pr-grid {
     display: grid;
     grid-template-columns: 25.24% 42.16% 32.6%; /* 481/802/619 @1920 (measured) */
     grid-template-rows: 42.57rem 42.57rem;      /* 473+473 @1920 (measured) */
   }
 
-  .pr-rows {
+  .pr-section .pr-rows {
     grid-column: 1 / -1;
     grid-row: 1 / -1;
     display: grid;
@@ -316,20 +326,21 @@ html[data-theme='dark'] .pr-section {
 
   /* the two row copies share the SAME rects (heron's marquee pair);
    * the cross-fade is opacity-only so no measured box ever moves */
-  .pr-row {
+  .pr-section .pr-row {
     grid-column: 1 / -1;
     grid-row: 1;
+    transition: opacity 0.4s ease; /* motion-token: allow — heron row cross-fade (TR 0.4s/ease) */
     align-self: start;
     block-size: 17.37rem; /* 193 @1920 · 145 @1440 (measured) */
     display: grid;
     grid-template-columns: 25.24% 42.16% 32.6%;
   }
 
-  .pr-row + .pr-row {
+  .pr-section .pr-row + .pr-row {
     animation: pr-item-fade 14s ease-in-out infinite;
   }
 
-  .pr-row:first-child {
+  .pr-section .pr-row:first-child {
     animation: pr-item-fade 14s ease-in-out infinite;
     animation-delay: -7s;
   }
@@ -346,43 +357,46 @@ html[data-theme='dark'] .pr-section {
       animation: none;
     }
 
-    .pr-row + .pr-row {
+    .pr-section .pr-row + .pr-row {
       opacity: 0;
     }
   }
 
-  .pr-head {
+  .pr-section .pr-head {
     grid-column: 1;
+    grid-row: 1;
+    margin-inline: 0;
     block-size: 17.37rem;
     padding: 3.15rem 4.05rem 0 3.96rem; /* inner box x44/x45 y35 @1920 (measured) */
   }
 
-  .pr-title-wrap {
+  .pr-section .pr-title-wrap {
     margin-block-start: 7.02rem; /* label-top→title-top = 9rem (measured) */
   }
 
-  .pr-side {
+  .pr-section .pr-side {
     grid-column: 3;
+    grid-row: 1;
+    margin-inline: 0;
     block-size: 17.37rem;
   }
 
-  .pr-sidebox {
+  .pr-section .pr-sidebox {
     padding: 3.15rem 3.24rem 0 3.15rem; /* text 548×69 @x1327 y10620 (measured) */
   }
 
-  .pr-cta {
+  .pr-section .pr-cta {
     block-size: 4.77rem; /* 53 @1920 · 40 @1440 (measured) */
   }
 
-  .pr-rowimg {
+  .pr-section .pr-rowimg {
     display: none; /* heron's per-row img is 0×0 ≥992 (measured census) */
   }
 
-  .pr-imgs {
+  .pr-section .pr-imgs {
     grid-column: 2;
     grid-row: 1 / -1;
-    grid-template-rows: 42.57rem 42.57rem;
-      grid-template-rows: 42.57rem auto 42.57rem;
+    grid-template-rows: 42.57rem auto 42.57rem;
   }
 }
 
@@ -392,52 +406,52 @@ html[data-theme='dark'] .pr-section {
     display: none; /* heron's central column is 0×0 ≤991 (measured census) */
   }
 
-  .pr-row {
+  .pr-section .pr-row {
     display: grid;
     grid-template-columns: 50% 50%; /* img 377 | content 376 @768 (measured) */
     grid-template-rows: auto auto;
     align-items: start;
   }
 
-  .pr-rowimg {
+  .pr-section .pr-rowimg {
     grid-column: 1;
     grid-row: 1 / -1;
   }
 
-  .pr-rowimg img {
+  .pr-section .pr-rowimg img {
     block-size: 27.6rem; /* 254px @768 (measured) */
   }
 
-  .pr-head {
+  .pr-section .pr-head {
     grid-column: 2;
     grid-row: 1;
     block-size: 9.24rem; /* 85 @768 (measured) */
     padding: 2.4rem 2.4rem 0 2.4rem; /* label @x406 y7628 (measured) */
   }
 
-  .pr-title-wrap {
+  .pr-section .pr-title-wrap {
     margin-block-start: 0.76rem; /* title-top = label-top + 25px @768 (measured) */
   }
 
-  .pr-title {
+  .pr-section .pr-title {
     font-size: 2.4rem; /* 22.1 @768 — the measured mb-h4 step */
     line-height: 1.2;  /* 26.52/22.1 (measured) */
   }
 
-  .pr-side {
+  .pr-section .pr-side {
     grid-column: 2;
     grid-row: 2;
   }
 
-  .pr-sidebox {
+  .pr-section .pr-sidebox {
     padding: 1.2rem 2.4rem 0 2.4rem; /* text @x406 y7702 (measured) */
   }
 
-  .pr-cta {
+  .pr-section .pr-cta {
     block-size: 4.78rem; /* 44 @768 (measured) */
   }
 
-  .pr-menu {
+  .pr-section .pr-menu {
     inline-size: 100%;
     inset-block-start: auto;
     inset-block-end: 4.9rem;
@@ -450,44 +464,44 @@ html[data-theme='dark'] .pr-section {
     grid-template-columns: 1fr;
   }
 
-  .pr-rowimg {
+  .pr-section .pr-rowimg {
     grid-row: 1;
   }
 
-  .pr-rowimg img {
+  .pr-section .pr-rowimg img {
     block-size: 22.77rem; /* 226px @390 (measured) */
   }
 
-  .pr-head {
+  .pr-section .pr-head {
     grid-column: 1;
     grid-row: 2;
     block-size: 8.77rem; /* 87 @390 (measured) */
     padding: 3.22rem 2.42rem 0 2.42rem; /* label @x24 y7630 (measured) */
   }
 
-  .pr-label {
+  .pr-section .pr-label {
     line-height: 1.1; /* 15.28/13.89 @390 — the measured tight label voice */
   }
 
-  .pr-title-wrap {
+  .pr-section .pr-title-wrap {
     margin-block-start: 0.78rem; /* title-top = label-top + 23px @390 (measured) */
   }
 
-  .pr-title {
+  .pr-section .pr-title {
     font-size: 2rem;  /* 19.85 @390 — the measured mb-h4 step */
     line-height: 1.2; /* 23.82/19.85 (measured) */
   }
 
-  .pr-side {
+  .pr-section .pr-side {
     grid-column: 1;
     grid-row: 3;
   }
 
-  .pr-sidebox {
+  .pr-section .pr-sidebox {
     padding: 1.2rem 2.42rem 0 2.42rem; /* text @x24 y7697 (measured) */
   }
 
-  .pr-cta {
+  .pr-section .pr-cta {
     block-size: 4.33rem; /* 43 @390 (measured) */
   }
 }

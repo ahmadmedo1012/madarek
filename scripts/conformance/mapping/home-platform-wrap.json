@@ -507,6 +507,336 @@
       "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[4]",
       "spec": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[4]",
       "ours": "platform.imgsvruleB"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "platform.headruleA1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[3]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[3]",
+      "ours": "platform.headruleB1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "platform.side1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
+      "ours": "platform.cta1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "ours": "platform.ctarule1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[2]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[2]",
+      "ours": "platform.cta1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "ours": "platform.cta1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]",
+      "ours": "platform.aicell1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "ours": "platform.sideruleB1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
+      "ours": "platform.sideruleA1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "platform.headruleA1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "ours": "platform.headruleB1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "platform.side1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
+      "ours": "platform.cta1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[1]",
+      "ours": "platform.ctarule1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[2]",
+      "spec": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[2]",
+      "ours": "platform.cta1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "ours": "platform.cta1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "ours": "platform.sideruleB1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
+      "ours": "platform.sideruleA1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "ours": "platform.img1img"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "ours": "platform.img1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "ours": "platform.img2img"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "spec": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "spec": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "ours": "platform.img2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.headbox1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.label1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "platform.label1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
+      "spec": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
+      "ours": "platform.icon21"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[1]",
+      "spec": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[1]",
+      "ours": "platform.icon21"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "spec": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "ours": "platform.iconbox21"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "ours": "platform.iconbox21"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "spec": "home-platform-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "ours": "platform.iconbox21"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "spec": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "ours": "platform.iconbox21"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
+      "spec": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
+      "ours": "platform.icon11"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "spec": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "ours": "platform.iconbox11"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "spec": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "ours": "platform.iconbox11"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "spec": "home-platform-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "ours": "~svg1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "spec": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "ours": "~path1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > img[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > img[1]",
+      "ours": "platform.rowimgimg1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > div[3]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > div[3]",
+      "ours": "platform.rowimgrule1"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > img[1]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > img[1]",
+      "ours": "platform.rowimgimg2"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > div[2]",
+      "spec": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > div[2]",
+      "ours": "platform.rowimgrule2"
     }
   ],
   "noCounterpart": [],
@@ -638,6 +968,526 @@
         "geometry"
       ],
       "reason": "heron arrow glyph path (11x7) vs our house chevron line-art — same 22x22 box, glyph internals are art not design geometry"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color",
+        "border",
+        "radius",
+        "bg"
+      ],
+      "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
     }
   ]
 }
