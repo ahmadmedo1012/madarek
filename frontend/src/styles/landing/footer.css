@@ -331,8 +331,12 @@
   .fo-mark-img { inline-size: 19.92rem; block-size: 2.28rem; }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr 1fr; }
-  .fo-strip { block-size: 26.04rem; }
+  .fo-strip { block-size: 21.7rem; }
   .fo-strip-chrome { inset: 1.32rem; }
+  .fo-biglink { block-size: 4.8rem; font-size: 2.3rem; line-height: 2.4rem; }
+  .fo-social { block-size: 3rem; }
+  .fo-lg-links { line-height: 1.9rem; }
+  .fo-lg-links a { padding-block: 0; }
 }
 
 /* ═══ mobile (≤767): single column, the measured 390 stack — mark 119
@@ -350,10 +354,21 @@
   .fo-input,
   .fo-go { block-size: 4.84rem; }
   .fo-col3rule { display: none; }
-  .fo-mark { inline-size: 14.28rem; block-size: 14.28rem; }
-  .fo-mark-img { inline-size: 14.28rem; block-size: 2.52rem; }
-  .fo-strip { block-size: 16.44rem; }
-  .fo-strip-chrome { inset: 0.96rem; }
+  .fo-mark { inline-size: 11.9rem; block-size: 11.9rem; }
+  .fo-mark-img { inline-size: 11.9rem; block-size: 0; }
+  .fo-strip { block-size: 9.6rem; }
+  .fo-strip-in { block-size: 5rem; }
+  .fo-strip-media,
+  .fo-strip-twin { inline-size: 21.8rem; block-size: 2.6rem; inset-inline: 0; margin-inline: auto; inset-block: 1.1rem auto; }
+  .fo-strip-chrome { inset: auto 0.8rem 10.4rem 0.8rem; block-size: 12.1rem; }
+  .fo-biglink { block-size: 4.6rem; font-size: 2.2rem; line-height: 2.3rem; }
+  .fo-social { block-size: 2.8rem; }
+  .fo-socials { row-gap: 1.8rem; }
+  .fo-lg-links { line-height: 1.85rem; }
+  .fo-lg-links a { padding-block: 0; }
+  .fo-legal { margin-block-start: -9.6rem; }
+  .fo-legal-l { padding: 0.6rem 1.6rem 0.4rem; }
+  .fo-legal-r { block-size: 4.6rem; }
   .fo-sc-t,
   .fo-sc-b { inset-inline: 1.44rem; block-size: 0.72rem; }
   .fo-sc-l,
