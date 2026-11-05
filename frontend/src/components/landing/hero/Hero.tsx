@@ -129,7 +129,7 @@ export function Hero() {
             <div key={d.code} className={`hro-deco hro-deco-${i + 1}`} aria-hidden="true">
               <span className="hro-deco-sq" />
               <span className="hro-deco-label fo-mono" dir="ltr">[{d.code}]</span>
-              <span className="hro-deco-text">{d.text}</span>
+              <div className="hro-deco-text">{d.text}</div>
             </div>
           ))}
 
@@ -159,7 +159,8 @@ export function Hero() {
         </div>
 
         <div className="hro-sub-cell">
-          <p className="hro-lead">
+          {/* div, not p — the reference's lead is a measured div box (T-11c) */}
+          <div className="hro-lead">
             {LEAD_LINES.map((line, i) => (
               <Fragment key={line}>
                 {i > 0 ? ' ' : null}
@@ -168,7 +169,7 @@ export function Hero() {
                 </span>
               </Fragment>
             ))}
-          </p>
+          </div>
 
           {/* the funnel contract (r164b → r188, kept byte-identical):
               ONE primary «أنشئ حسابك الجامعي» → /auth/register, now
@@ -191,11 +192,13 @@ export function Hero() {
           below — riding the work-card rise (3.2rem · 1s p3.out). ══ */}
       <div className="hro-work fo-hero-work" aria-label="قدرات مدارك العاملة اليوم">
         <div className="hro-work-track">
+          {/* divs, not spans — the instrument asserts the reference's
+              measured div boxes (T-11c) */}
           {HERO_WORK_ITEMS.map((cap, i) => (
-            <span key={cap} className="hro-work-item">
+            <div key={cap} className="hro-work-item">
               <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
               {cap}
-            </span>
+            </div>
           ))}
         </div>
       </div>

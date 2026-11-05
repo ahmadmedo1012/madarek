@@ -50,3 +50,6 @@ T-20 | targeted source reads (rg/grep + package.json x2, scripts/README + verify
 T-21 | git mv + du/rg script-dep audit (heron-spec/r331-twin/r320-gate/assets refs) | archive closed redesign rounds into docs/archive/redesign, add docs/INDEX.md, fix AGENTS.md r313 link
 T-14a2 | playwright chromium (chromium-1200 via /tmp/pw-browsers symlink fallback, PLAYWRIGHT_BROWSERS_PATH) | dark-path instrument validation: light regression (usecase+footer), 390 determinism double-run, per-bp dark-contrast counts
 T-02e | scripts/conformance/run.mjs --dark + vite --port 5302 | usecase dark-ink contrast measurement: rgba composite census 44/43/35/35/35 fails → 0 (43+35 soft-ink seats + 1 seat 2.71@390 via --rl-soft-ink dark arm)
+T-11 | run.mjs --sections/--url + python census | hero baseline, failure families, spec-path binding generator
+T-11b | run.mjs+playwright(chromium-1200 fallback) | hero pass-2 plumbing-skip + measured transition fixes
+T-11c | node + playwright chromium (run.mjs --dark) + vite 5311 | hero measured restyle: span→div tags, work-strip 6-box grid (2.2vw rail, measured w/gap/start), CTA text-link reskin, alt flare block, h1 ar-floor, single-entry 0.4s/ease transitions, vh seats
