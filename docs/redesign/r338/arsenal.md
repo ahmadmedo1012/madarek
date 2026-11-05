@@ -18,3 +18,4 @@ L-7 | git merge --no-ff train | bundle-neutral land: t02+t03+t08 merged; t05(3c6
 L-7 | vite build + check-bundle-size.mjs | per-stage bundle truth: main 776.4 / +t02 776.1 / +t03 776.4 / +t05 777.3 offender / +t08 777.3
 L-7 | scripts/verify.sh --fast | landing gate on final train before push to main
 L-7 | GitHub Actions API via curl | post-landing triggered-run status check
+T02 | playwright probe + spec census diff | y/h geometry re-seat (h2 3-line 64% seat, deck scale model)

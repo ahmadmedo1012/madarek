@@ -15,3 +15,15 @@
 - **#hm color twins (3 cells: 1920/768/390)**: our unbound row-1 ink wrapper heuristically pairs with opaque label/title seats while sibling 0.72 body-word seats share the identical spec paths (row-1 capture ambiguity above); measured residual after aligning the wrapper to the opaque title-box model.
 <!-- T-03c continuation note (NOT an excusal — measured residue, 2026 wave-10) -->
 - T-03c charSplit attempt REVERTED (measured 59.9%, −14.8): mapping `charSplit:[{container:"h2[1]"}]` makes run.mjs's per-container aggregate treat EVERY bound h2 pair (intro.line/linein/linemask/word/wordin.N) as a container, excise them from accounting and assert one aggregate → mass fail (fontSize:85 color:113 interactive:91). The container mode fits usecase's single-line rows, NOT intro's per-word bindings; wordset mode would skip our explicit word bindings (wordSet members are excluded in loop (a)). Remaining intro residue, file-level: (1) 26 desktop char-cell heron paths `home-intro-wrap > h2[1] > div[L] > div[1] > div[1] > div[K] > div[M]` (per-CHAR scaffold, tc none) still heuristic-glued to `#hm:div.none` ≈500 fail rows (y/w/h/x-mirror/lh/fs/bg) — need per-char→word explicit bindings (offset arithmetic from STATEMENT_LINES) or a purpose-built scaffold rule; (2) pill parked B-copy x-mirror intro.ctaspan2/ctaicon2/ctatext2 (~47 rows); (3) crawl/label svg+path+img heuristic x-mirror (~35 paths).
+
+## T-02d1r — usecase y/h geometry residuals (93.9%, measured)
+- 390 rows 7-8 +17px drift (rowrule/rowtw/rowicon clusters): the phone band's
+  row box (2rem pad) accumulates ~2.4px/row vs the census by row 7; re-seating
+  the band's row padding moves rows 1-6 (currently passing) off their seats —
+  left as residual for a parked-deck micro-pass; 390 holds 90% ≥ floor.
+- 390 h2/h2box y +20: the label's box (20 vs 15) + the 12px margin seat the
+  Arabic label's taller metric line; both y cells ride the same trade-off.
+- 1024 deck: slide.1 h -28.8 / slideimg.1 -30 residual — the spec's 1024
+  active-slide (785) exceeds its own frame (759) by 3.4%; reproduced via the
+  scale(1.0343) seat, img lands 782 vs 812 — the img overflow at that bp reads
+  3.4% (vs 2.7% at 1920) and the two remaining h cells are the accepted gap.
