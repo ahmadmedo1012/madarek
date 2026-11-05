@@ -189,3 +189,4 @@ T-20 | targeted source reads (rg/grep + package.json x2, scripts/README + verify
 T-21 | git mv + du/rg script-dep audit (heron-spec/r331-twin/r320-gate/assets refs) | archive closed redesign rounds into docs/archive/redesign, add docs/INDEX.md, fix AGENTS.md r313 link
 T-09c | playwright(chromium via /tmp/pw-browsers symlink fallback) + run.mjs --sections/--url | baseline+remeasure map conformance
 T-09d | conformance run.mjs (+webkit temp-copy probe) | map pass-4 type/colour rhythm measurement; webkit launch blocked by host libs (libgtk-4 etc.)
+T-03f | conformance/run.mjs --dark + plumbing mapping | intro junk-pool skip census (269 entries), pill icon seat re-measure 5bp+dark
