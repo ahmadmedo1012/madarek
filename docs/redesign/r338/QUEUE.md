@@ -12,11 +12,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [x] T-06 footer PARTIAL (rewrite landed r338/t06-footer, unmeasured) · footer files per mapping (grep footer in frontend/src + mapping json). → ≥90%. 25m.
 - [x] T-07 A-Scroll DONE: r338/t07-scroll — scroll cells 0/5 fail-closed → 5/5 pass (≤5% dev), feel 30/30 @5bps, scrollRestoration=manual, tsc clean; 3 scrub families frozen unasserted for section owners; awaiting lander live-extract Heron scrub/pin curves via Playwright hook on ScrollTrigger (window.gsap/ScrollTrigger): for every scrub/pin trigger sample animated props (getComputedStyle transform/opacity/etc. + progress) at 11 evenly spaced scroll positions; record trigger start/end, pin spacing, snap. Freeze to heron-spec/_curves.*.json (match existing heron-spec naming — explore the dir first). Fix the `scrollRestoration=auto` finding; align Lenis/scroll-behavior/anchor findings per scripts/conformance/scroll.mjs. Acc: scroll cells pass measured (not fail-closed). 25m.
 
+## WAVE 20
+- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
+- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
+- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
+- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
-- [~] T-10b3 cta counterparts+bindings ONLY.
-- [~] T-09d map pass-4 (lh/fs rhythm, curve clocks, color/opacity, 1024 pass).
-- [~] T-21 docs diet (archive closed rounds; KEEP r335/heron-spec + OWNERSHIP.md + r338; one-page INDEX).
+- [x] T-10b3 DONE: r338/t10-cta @119b7fd9 — 64.4→67.1% (repaired dead-agent conflict-marker corruption; 26 bindings rewritten to census-truncated paths, d17→35, junk 27→12); T-10c residual: y:246 lh:224 w:122 h:70 x-mirror:65 fs:48 + 8 divergent-path bindings (grammar limit documented) ·
+- [x] T-09d DONE: r338/t09-map @53d7fccf — 67.1→82.2% (82/82/82/83/82) + DARK 83% (flips 5); lh/fs/color families fixed; WEBKIT host-blocked (libs missing, no root — documented); T-09e residual: transition 27/bp, opacity 25/bp reveal wiring, 390 minors, 45 nc ·
+- [x] T-21 DONE: r338/t21-docs @8538fa44 — 161 files archived to docs/archive/redesign/ (script-deps audited: heron-spec/r331/r320/assets STAYED); docs/INDEX.md written; links fixed; release-offload candidates listed ·
 
 ## WAVE 18
 - [x] T-06g1 DONE: r338/t06g @bd51df71 — vitest 3051/3051 GREEN (contracts reconciled; dead-agent WIP completed); conformance 69.4 (floor dip from contract restructures — T-06h owns ≤991 re-seat) ·
@@ -131,11 +137,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-23 repo courtesy · CODEOWNERS, PR template, commitlint + husky + lint-staged, CONTRIBUTING.md. Acc: all merged, hooks green on a test commit. 25m.
 - [ ] T-31 CSS liveness batch A · PI-00 dead lists + CSS coverage per route (incl. authed) + DOM probes → PostCSS codemod deletion. Unit-test pins are LAW (restore pinned rules at original position; full vitest per batch). Acc: line count down, vitest green, conformance ≥ before. 45m.
 
+## WAVE 20
+- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
+- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
+- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
+- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
-- [~] T-10b3 cta counterparts+bindings ONLY.
-- [~] T-09d map pass-4 (lh/fs rhythm, curve clocks, color/opacity, 1024 pass).
-- [~] T-21 docs diet (archive closed rounds; KEEP r335/heron-spec + OWNERSHIP.md + r338; one-page INDEX).
+- [x] T-10b3 DONE: r338/t10-cta @119b7fd9 — 64.4→67.1% (repaired dead-agent conflict-marker corruption; 26 bindings rewritten to census-truncated paths, d17→35, junk 27→12); T-10c residual: y:246 lh:224 w:122 h:70 x-mirror:65 fs:48 + 8 divergent-path bindings (grammar limit documented) ·
+- [x] T-09d DONE: r338/t09-map @53d7fccf — 67.1→82.2% (82/82/82/83/82) + DARK 83% (flips 5); lh/fs/color families fixed; WEBKIT host-blocked (libs missing, no root — documented); T-09e residual: transition 27/bp, opacity 25/bp reveal wiring, 390 minors, 45 nc ·
+- [x] T-21 DONE: r338/t21-docs @8538fa44 — 161 files archived to docs/archive/redesign/ (script-deps audited: heron-spec/r331/r320/assets STAYED); docs/INDEX.md written; links fixed; release-offload candidates listed ·
 
 ## WAVE 18
 - [x] T-06g1 DONE: r338/t06g @bd51df71 — vitest 3051/3051 GREEN (contracts reconciled; dead-agent WIP completed); conformance 69.4 (floor dip from contract restructures — T-06h owns ≤991 re-seat) ·
@@ -225,11 +237,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-42 help page · same loop. Acc: ≥90%. 25m.
 - [ ] T-43 app/download page · same loop. Acc: ≥90%. 25m.
 
+## WAVE 20
+- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
+- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
+- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
+- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
-- [~] T-10b3 cta counterparts+bindings ONLY.
-- [~] T-09d map pass-4 (lh/fs rhythm, curve clocks, color/opacity, 1024 pass).
-- [~] T-21 docs diet (archive closed rounds; KEEP r335/heron-spec + OWNERSHIP.md + r338; one-page INDEX).
+- [x] T-10b3 DONE: r338/t10-cta @119b7fd9 — 64.4→67.1% (repaired dead-agent conflict-marker corruption; 26 bindings rewritten to census-truncated paths, d17→35, junk 27→12); T-10c residual: y:246 lh:224 w:122 h:70 x-mirror:65 fs:48 + 8 divergent-path bindings (grammar limit documented) ·
+- [x] T-09d DONE: r338/t09-map @53d7fccf — 67.1→82.2% (82/82/82/83/82) + DARK 83% (flips 5); lh/fs/color families fixed; WEBKIT host-blocked (libs missing, no root — documented); T-09e residual: transition 27/bp, opacity 25/bp reveal wiring, 390 minors, 45 nc ·
+- [x] T-21 DONE: r338/t21-docs @8538fa44 — 161 files archived to docs/archive/redesign/ (script-deps audited: heron-spec/r331/r320/assets STAYED); docs/INDEX.md written; links fixed; release-offload candidates listed ·
 
 ## WAVE 18
 - [x] T-06g1 DONE: r338/t06g @bd51df71 — vitest 3051/3051 GREEN (contracts reconciled; dead-agent WIP completed); conformance 69.4 (floor dip from contract restructures — T-06h owns ≤991 re-seat) ·
@@ -314,11 +332,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-47 registrar role shell + top 3 screens · 45m.
 - [ ] T-16 residual sweep · continuations (T-xxb) for any section below bar, queued here as discovered. 25m.
 
+## WAVE 20
+- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
+- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
+- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
+- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
-- [~] T-10b3 cta counterparts+bindings ONLY.
-- [~] T-09d map pass-4 (lh/fs rhythm, curve clocks, color/opacity, 1024 pass).
-- [~] T-21 docs diet (archive closed rounds; KEEP r335/heron-spec + OWNERSHIP.md + r338; one-page INDEX).
+- [x] T-10b3 DONE: r338/t10-cta @119b7fd9 — 64.4→67.1% (repaired dead-agent conflict-marker corruption; 26 bindings rewritten to census-truncated paths, d17→35, junk 27→12); T-10c residual: y:246 lh:224 w:122 h:70 x-mirror:65 fs:48 + 8 divergent-path bindings (grammar limit documented) ·
+- [x] T-09d DONE: r338/t09-map @53d7fccf — 67.1→82.2% (82/82/82/83/82) + DARK 83% (flips 5); lh/fs/color families fixed; WEBKIT host-blocked (libs missing, no root — documented); T-09e residual: transition 27/bp, opacity 25/bp reveal wiring, 390 minors, 45 nc ·
+- [x] T-21 DONE: r338/t21-docs @8538fa44 — 161 files archived to docs/archive/redesign/ (script-deps audited: heron-spec/r331/r320/assets STAYED); docs/INDEX.md written; links fixed; release-offload candidates listed ·
 
 ## WAVE 18
 - [x] T-06g1 DONE: r338/t06g @bd51df71 — vitest 3051/3051 GREEN (contracts reconciled; dead-agent WIP completed); conformance 69.4 (floor dip from contract restructures — T-06h owns ≤991 re-seat) ·
@@ -396,11 +420,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-37 `!important` → 0 · legacy wrapped in a low layer; fix each specificity cause. Acc: count 0 (or pinned documented exceptions), stylelint green, no visual diff. 45m.
 - [ ] T-50 mobile P1 tickets · docs/mobile/review/*.md + FIXES.md: bidi isolation, sparse-state dead space, ~10 motionless screens via existing src/motion, src/haptics, AppSheet, DataList, FormScreen; predictive-back. Acc: tickets closed, mobile gates green. 45m.
 
+## WAVE 20
+- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
+- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
+- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
+- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
-- [~] T-10b3 cta counterparts+bindings ONLY.
-- [~] T-09d map pass-4 (lh/fs rhythm, curve clocks, color/opacity, 1024 pass).
-- [~] T-21 docs diet (archive closed rounds; KEEP r335/heron-spec + OWNERSHIP.md + r338; one-page INDEX).
+- [x] T-10b3 DONE: r338/t10-cta @119b7fd9 — 64.4→67.1% (repaired dead-agent conflict-marker corruption; 26 bindings rewritten to census-truncated paths, d17→35, junk 27→12); T-10c residual: y:246 lh:224 w:122 h:70 x-mirror:65 fs:48 + 8 divergent-path bindings (grammar limit documented) ·
+- [x] T-09d DONE: r338/t09-map @53d7fccf — 67.1→82.2% (82/82/82/83/82) + DARK 83% (flips 5); lh/fs/color families fixed; WEBKIT host-blocked (libs missing, no root — documented); T-09e residual: transition 27/bp, opacity 25/bp reveal wiring, 390 minors, 45 nc ·
+- [x] T-21 DONE: r338/t21-docs @8538fa44 — 161 files archived to docs/archive/redesign/ (script-deps audited: heron-spec/r331/r320/assets STAYED); docs/INDEX.md written; links fixed; release-offload candidates listed ·
 
 ## WAVE 18
 - [x] T-06g1 DONE: r338/t06g @bd51df71 — vitest 3051/3051 GREEN (contracts reconciled; dead-agent WIP completed); conformance 69.4 (floor dip from contract restructures — T-06h owns ≤991 re-seat) ·
@@ -474,11 +504,17 @@ Lander duty (every wave): merge green `r338/*` branches one-by-one (verify.sh --
 - [ ] T-53 mobile gates + OTA · after every mobile batch: tsc 0, jest green, lint 0 errors, contract/tokens, export; OTA via existing eas-ota job — record update ids. Acc: gates green, ids recorded. 25m.
 - [ ] T-51 mobile review ≥9 · one re-review at the end. Acc: score ≥9. 25m.
 
+## WAVE 20
+- [~] L-12 Lander: land the 6-branch backlog (docs first, then map 82.2 → intro 77.0 → footer 69.4 → cta 67.1; staged bundle checks; why-conflicts prefer main).
+- [~] T-11 hero first pass (Hero.tsx + hero/* + hero.css + hero-mechanics.css).
+- [~] T-14b dark sweep: usecase + problem --dark runs + fixes (contrast 0 fails).
+- [~] T-22 dead-code baselines (knip/jscpd/depcruise via bunx; configs + standalone gate script; NO verify.sh changes).
+
 ## WAVE 19
 - [~] L-11 Lander: land t09-map (ea5373fe 67.1%) + t06g (bd51df71 footer, vitest-green; why-conflicts prefer MAIN) + t03-intro (cdd6cace 77.0) + t20-agents (4ca3314a docs); staged bundle checks; verify; push.
-- [~] T-10b3 cta counterparts+bindings ONLY.
-- [~] T-09d map pass-4 (lh/fs rhythm, curve clocks, color/opacity, 1024 pass).
-- [~] T-21 docs diet (archive closed rounds; KEEP r335/heron-spec + OWNERSHIP.md + r338; one-page INDEX).
+- [x] T-10b3 DONE: r338/t10-cta @119b7fd9 — 64.4→67.1% (repaired dead-agent conflict-marker corruption; 26 bindings rewritten to census-truncated paths, d17→35, junk 27→12); T-10c residual: y:246 lh:224 w:122 h:70 x-mirror:65 fs:48 + 8 divergent-path bindings (grammar limit documented) ·
+- [x] T-09d DONE: r338/t09-map @53d7fccf — 67.1→82.2% (82/82/82/83/82) + DARK 83% (flips 5); lh/fs/color families fixed; WEBKIT host-blocked (libs missing, no root — documented); T-09e residual: transition 27/bp, opacity 25/bp reveal wiring, 390 minors, 45 nc ·
+- [x] T-21 DONE: r338/t21-docs @8538fa44 — 161 files archived to docs/archive/redesign/ (script-deps audited: heron-spec/r331/r320/assets STAYED); docs/INDEX.md written; links fixed; release-offload candidates listed ·
 
 ## WAVE 18
 - [x] T-06g1 DONE: r338/t06g @bd51df71 — vitest 3051/3051 GREEN (contracts reconciled; dead-agent WIP completed); conformance 69.4 (floor dip from contract restructures — T-06h owns ≤991 re-seat) ·

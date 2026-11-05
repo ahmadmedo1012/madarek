@@ -114,3 +114,10 @@ This harness has NO Claude plugin marketplace: ponytail, impeccable, ui-ux-pro-m
 - r338/t99d2-axios (3929a7af): −17.9 KB gz (776.3→758.4), vitest 3051/3051, wrapper-only migration — landing this wave, creates 18.6 KB headroom.
 - Footer is bundle-fine but CONTRACT-BLOCKED: its rewrite breaks r321 (legal-row nine links/.fo-legal-row), r320 (/contact cell), r162 (focus-visible), r168 (aria-labels), r177, r307 (5+5 counts), landing-funnel (six surfaces). Tests are LAW — reconcile the markup, never the tests.
 - main @a8c62a03: usecase 93.9 ✓, problem 90.5 ✓, platform 80 ✓, intro 74.8. Unlanded: why 63.5+dark, footer 69.8+dark, intro 75.8 (06537cbe), map 47.6 (branch).
+
+## ENV ADDENDUM 13 (wave-20, lead)
+- WEBKIT IS HOST-BLOCKED: webkit-2287 downloaded but launch needs libgtk-4/libGLESv2/libwoff2dec — no root on this box. Webkit cells = documented environment blocker (exit-table item; no number may be faked). A future pass could try a static webkit build or container; flagged for owner.
+- CI quota blocker confirmed (all jobs steps:0). Local verify = landing evidence. Both go in the final report as owner-side items.
+- Branch backlog awaiting landing: t09-map 82.2+dark83 (53d7fccf), t03-intro 77.0+dark79.7 (cdd6cace), t06g footer 69.4 vitest-green (bd51df71), t10-cta 67.1 (119b7fd9), t20-agents (4ca3314a), t21-docs (8538fa44).
+- Binding grammar limit found (cta): single-string heron paths can't cover 390-vs-≥768 divergent wrappers — documented in commit body; a future instrument pass could allow per-bp path arrays.
+- Dark runs still missing: usecase, problem (on main), cta.
