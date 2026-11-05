@@ -156,9 +156,22 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                     text={STATEMENT_TEXT}
                     lines={STATEMENT_LINES}
                     className="st-scrub"
+                    /* R338 T-03c: per-word census bindings — every word mask
+                     * carries intro.word.N (its text box intro.wordin.N), so
+                     * the mapping binds the reference's split-text word
+                     * cells explicitly instead of heuristic-gluing them. */
+                    wordSpec={(gi: number) => `intro.word.${gi + 1}`}
                     renderLine={(line: ReactNode, key: string, index: number) => (
+                      /* the reference's own line nest: line group > line box
+                       * > mask wrapper > word cells — one full-width box per
+                       * level, all carrying data-spec (intro.line.N /
+                       * intro.linein.N / intro.linemask.N). */
                       <div className="st-line" key={key} data-spec={`intro.line.${index + 1}`}>
-                        {line}
+                        <div className="st-line-in" data-spec={`intro.linein.${index + 1}`}>
+                          <div className="st-line-mask" data-spec={`intro.linemask.${index + 1}`}>
+                            {line}
+                          </div>
+                        </div>
                       </div>
                     )}
                   />

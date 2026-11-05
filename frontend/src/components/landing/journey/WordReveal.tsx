@@ -93,6 +93,15 @@ export interface ScrubRevealProps {
   lines?: readonly string[];
   /** renders one line's word run (ScrubReveal's own word markup) */
   renderLine?: (line: ReactNode, key: string, index: number) => ReactNode;
+  /**
+   * R338 T-03c (intro word census): optional per-word data-spec hook —
+   * receives the GLOBAL word index (scrub order across all lines) and
+   * returns the data-spec key for the word's mask box (the inner text
+   * span automatically carries the same key + "in"). Lets the caller
+   * bind every word cell explicitly in the conformance mapping instead
+   * of leaving the masks to the heuristic tag+tc fallback.
+   */
+  wordSpec?: (globalIndex: number) => string | undefined;
 }
 
 /**
@@ -100,20 +109,22 @@ export interface ScrubRevealProps {
  * `--wr-p` custom property (0..1); each word unmasks in sequence as
  * the progress passes its index.
  */
-export function ScrubReveal({ text, className, lines, renderLine }: ScrubRevealProps) {
+export function ScrubReveal({ text, className, lines, renderLine, wordSpec }: ScrubRevealProps) {
   const words = text.split(' ');
   const n = words.length;
   const run = (from: number, to: number) =>
     words.slice(from, to).map((w, i) => {
       const gi = from + i;
+      const ds = wordSpec?.(gi);
       return (
         <Fragment key={`${w}-${gi}`}>
           <span
             className="wr-w"
             aria-hidden="true"
+            data-spec={ds}
             style={{ ['--wr-i' as string]: gi }}
           >
-            <span className="wr-i">{w}</span>
+            <span className="wr-i" data-spec={ds ? ds.replace('.word.', '.wordin.') : undefined}>{w}</span>
           </span>
           {gi < words.length - 1 ? SPACE : null}
         </Fragment>
