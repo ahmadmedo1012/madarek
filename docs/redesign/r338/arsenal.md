@@ -37,3 +37,5 @@ L-6 | postcss (node API in repo node_modules) | surgically retire dead legacy fo
 L-6 | vite build + scripts/check-bundle-size.mjs | local bundle gate measurement (found gate = JS-only)
 T-05e | node/playwright (pw-browsers chromium-1223 fallback) | spec-tree rect extraction @768/390 + DOM probe of the ≤991 belt
 T-99 | vite build + check-bundle-size.mjs + node zlib gz census + node codemod | bundle diet: per-module sourcemap ranking, dead data-spec/class audit, exact gz byte measurement (777.6→777.5 clean; 578→~500B residual, landing blocked)
+T-02c | python3 census over scripts/conformance/results.json + heron-spec/home-usecase-wrap.*.json | color/lh family decomposition (39 color = rowink/h2box opaque-ink seats; 26 lh = 1.35 floor), spec seat lookup by heron path
+T-02c | conformance/run.mjs --sections home-usecase-wrap --url http://localhost:5302 (own vite) + PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers symlink fallback | baseline 90.8 + post-fix measurement

@@ -204,8 +204,12 @@ export function Roles() {
                             aria-hidden="true"
                             data-spec={`roles.rowsvg.${i + 1}`}
                           >
-                            <path className="rl-p1" d="M0 8h16" data-spec={`roles.rowpath1.${i + 1}`} />
-                            <path className="rl-p2" d="M8 0v16" data-spec={`roles.rowpath2.${i + 1}`} />
+                            {/* the spec's own glyph metrics: the strokes
+                                span 11.64/16 of the box — 16px inside the
+                                22px icon at 1920, 14.55px inside the 20px
+                                icon at 390 (x-offset 3px both) */}
+                            <path className="rl-p1" d="M2.18 8h11.64" data-spec={`roles.rowpath1.${i + 1}`} />
+                            <path className="rl-p2" d="M8 2.18v11.64" data-spec={`roles.rowpath2.${i + 1}`} />
                           </svg>
                         </div>
                       </div>
