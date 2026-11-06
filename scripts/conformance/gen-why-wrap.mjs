@@ -128,6 +128,245 @@ for (const f of fams) {
   f.seat = seat;
 }
 
+/* ---- T-05j: seat-resolution probe + repair ----
+ * run.mjs L433-436 silently drops explicit entries whose selector does not
+ * resolve, and makeWalk prunes 0x0-childless seats — either way the family's
+ * heron records fall through to junk heuristic pairing (the h=57 mass).
+ * `--check --url http://localhost:PORT` probes every handed-out seat per bp
+ * on the live page (same settle as the instrument) and REPORTS the failures;
+ * a seat that fails a bp has that bp's path moved to a reasoned
+ * noCounterpart (counted excusal — never a silent phantom binding). */
+const probeSeats = async (url, seats) => {
+  const { chromium } = await import('playwright');
+  const browser = await chromium.launch();
+  const bad = {};
+  const report = [];
+  for (const bp of BPS) {
+    const page = await browser.newPage({ viewport: { width: VW[bp], height: 900 } });
+    await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    const res = await page.evaluate((args) => {
+      const out = {};
+      const root = document.querySelector(args.sel);
+      for (const s of args.seats) {
+        const q = `[data-spec="${s}"]`;
+        const el = root ? (root.querySelector(q) || (root.matches(q) ? root : null)) : document.querySelector(q);
+        if (!el) { out[s] = 'unresolved'; continue; }
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0 && el.children.length === 0) { out[s] = 'pruned-0x0-childless'; continue; }
+        out[s] = 'ok';
+      }
+      return out;
+    }, { seats, sel: 'section.wy-section' });
+    for (const [s, st] of Object.entries(res)) if (st !== 'ok') { (bad[bp] ??= new Set()).add(s); report.push(`${bp} ${fams.find((x) => x.seat === s)?.key ?? s} seat=${s}: ${st}`); }
+    await page.close();
+  }
+  await browser.close();
+  return { bad, report };
+};
+let seatReport = null;
+if (process.argv.includes('--check')) {
+  const ui = process.argv.indexOf('--url');
+  const url = ui >= 0 ? process.argv[ui + 1] : 'http://localhost:5305';
+  seatReport = await probeSeats(url, fams.filter((f) => f.seat).map((f) => f.seat));
+  console.log(`T-05j seat probe: ${seatReport.report.length} seat×bp failures`);
+  for (const line of seatReport.report) console.log('  ✗ ' + line);
+  for (const f of fams) {
+    if (!f.seat) continue;
+    const badBps = BPS.filter((bp) => seatReport.bad[bp]?.has(f.seat) && f.paths[bp]);
+    if (!badBps.length) continue;
+    const okBps = BPS.filter((bp) => f.paths[bp] && !badBps.includes(bp));
+    const dropped = {};
+    for (const bp of badBps) dropped[bp] = f.paths[bp];
+    if (!okBps.length) {
+      ncAdd.push({ section: 'home-why-wrap', heron: f.paths, reason: `T-05i gen (${f.key}) seat-miss ${f.seat}: no our counterpart element resolves at any bp — ${NOTES[f.cls]}` });
+      f.seat = null;
+    } else {
+      const kept = {};
+      for (const bp of okBps) kept[bp] = f.paths[bp];
+      f.paths = kept;
+      ncAdd.push({ section: 'home-why-wrap', heron: dropped, reason: `T-05i gen (${f.key}) seat-miss: our seat ${f.seat} does not survive the walk at ${badBps.join('/')} — ${NOTES[f.cls]}` });
+    }
+  }
+}
+
+/* ---- T-05j (2): bind the junk heuristic-glued pairs ----
+ * run.mjs pairs heuristically (tag+tc ordinal) BEFORE the noCounterpart
+ * pass, so a reasoned noCounterpart is INERT for any heron record whose
+ * tag+tc matches a free our element — the ~57/bp tween-wrapper mass keeps
+ * junk-failing y/x-mirror/w/h/bg. The only mapping-side mechanism that
+ * pre-empts heuristic pairing is an EXPLICIT binding, so: read the measured
+ * failing heuristic pairs from the LAST results.json, probe the live page,
+ * and bind each failing heron path to a REAL, unclaimed, plain-styled our
+ * element (safe zone: beyond that tag's unbound-heron demand, so no
+ * heuristic pair — passing or failing — ever loses its element), with the
+ * design groups skipped (footer T-06c / T-05g precedent); radius/opacity/
+ * border/interactive/transition stay asserted on the real element. */
+const hmBind = process.argv.includes('--bind-heuristic');
+const bpPath = (v, bpName) => {
+  if (v && typeof v === 'object' && !Array.isArray(v)) {
+    if (bpName && v[bpName] != null) return v[bpName];
+    if (v.default != null) return v.default;
+    const nums = Object.keys(v).filter((k) => /^\d+$/.test(k)).map(Number).sort((a, b) => a - b);
+    if (!nums.length || !bpName) return null;
+    const w = Number(bpName);
+    const near = nums.reduce((a, b) => (Math.abs(b - w) < Math.abs(a - w) ? b : a));
+    return v[String(near)] ?? null;
+  }
+  return v;
+};
+if (hmBind) {
+  const results = JSON.parse(fs.readFileSync('scripts/conformance/results.json', 'utf8'));
+  const failing = {};
+  for (const row of results.failures || []) {
+    if (row.section !== 'home-why-wrap' || row.mode !== 'heuristic') continue;
+    (failing[row.bp] ??= new Set()).add(row.heronPath);
+  }
+  const ui2 = process.argv.indexOf('--url');
+  const url2 = ui2 >= 0 ? process.argv[ui2 + 1] : 'http://localhost:5305';
+  const { chromium } = await import('playwright');
+  const browser = await chromium.launch();
+  let boundHm = 0;
+  let shortHm = 0;
+  for (const bp of BPS) {
+    if (!failing[bp] || !failing[bp].size) continue;
+    const spec = JSON.parse(fs.readFileSync(`docs/redesign/r335/heron-spec/home-why-wrap.${bp}.json`, 'utf8'));
+    const expanded = map.explicit.map((m) => ({ ...m, heron: bpPath(m.heron, bp) })).filter((m) => m.heron);
+    const page = await browser.newPage({ viewport: { width: VW[bp], height: 900 } });
+    await page.goto(url2, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    const claim = await page.evaluate(({ expanded, specEls, failingPaths, MARGIN }) => {
+      const root = document.querySelector('section.wy-section');
+      const walk = [];
+      const visit = (el) => {
+        if (walk.length > 2200 || el.nodeType !== 1) return;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0 && el.children.length === 0) return;
+        walk.push(el);
+        for (const c of el.children) visit(c);
+      };
+      visit(root);
+      // replicate run.mjs pathOf EXACTLY: nth-CHILD index, depth-6 truncation,
+      // first segment normalized to [1] — an explicit binding glues to the
+      // FIRST walked element with that computed path, so a claim is only
+      // usable if it IS that first element.
+      const pathOfR = (el) => {
+        const segs = [];
+        let n = el;
+        const stop = root.parentElement;
+        while (n && n !== stop && segs.length < 6) {
+          let idx = 1, sib = n;
+          while ((sib = sib.previousElementSibling)) idx++;
+          segs.unshift(n.tagName.toLowerCase() + '[' + idx + ']');
+          n = n.parentElement;
+        }
+        if (segs.length) segs[0] = segs[0].replace(/\[\d+\]$/, '[1]');
+        return 'home-why-wrap > ' + segs.join(' > ');
+      };
+      const firstByPath = new Map();
+      for (const el of walk) {
+        const p = pathOfR(el);
+        if (!firstByPath.has(p)) firstByPath.set(p, el);
+      }
+      const used = new Set();
+      const boundPaths = new Set();
+      for (const m of expanded) {
+        const t = root.querySelector(m.ours) || (root.matches(m.ours) ? root : null);
+        if (!t) continue;
+        const first = firstByPath.get(pathOfR(t));
+        if (!first) continue;
+        used.add(first);
+        boundPaths.add(m.heron);
+      }
+      const selOf = (el) => {
+        const parts = [];
+        let n = el;
+        while (n && n !== root) {
+          let idx = 1, sib = n;
+          while ((sib = sib.previousElementSibling)) idx++;
+          parts.unshift(n.tagName.toLowerCase() + ':nth-child(' + idx + ')');
+          n = n.parentElement;
+        }
+        return 'section.wy-section > ' + parts.join(' > ');
+      };
+      const plain = (el, strict = true) => {
+        const cs = getComputedStyle(el);
+        const base = parseFloat(cs.borderTopWidth) === 0 && cs.borderTopStyle === 'none'
+          && cs.borderRadius === '0px' && cs.opacity === '1'
+          && !['A', 'BUTTON', 'INPUT', 'TEXTAREA', 'SELECT', 'LABEL'].includes(el.tagName);
+        if (!strict) return base;
+        return base && (cs.transitionProperty === 'none' || cs.transitionDuration === '0s');
+      };
+      const failingByTag = {};
+      for (const p of failingPaths) {
+        const t = p.split(' > ').pop().replace(/\[\d+\]$/, '');
+        failingByTag[t] = (failingByTag[t] || 0) + 1;
+      }
+      // candidate tiers: (1) tail of the free tag queue beyond the estimated
+      // heuristic consumption (failing pairs of that tag + margin) so no
+      // heuristic pair — passing or failing — loses its element; (2) any
+      // other first-with-path free element (a displaced junk pair falls to
+      // the catch-all noCounterpart); tier 2b relaxes the transition filter
+      // (a transition fail costs 1 check vs ~13 junk geometry fails).
+      const freeByTag = {};
+      for (const el of walk) {
+        if (used.has(el) || el === root || firstByPath.get(pathOfR(el)) !== el) continue;
+        (freeByTag[el.tagName.toLowerCase()] ??= []).push(el);
+      }
+      const candidates = [];
+      for (const [t, arr] of Object.entries(freeByTag)) {
+        const est = (failingByTag[t] || 0) + MARGIN;
+        for (let i = 0; i < arr.length; i++) {
+          const safe = i >= arr.length - est;
+          candidates.push({ el: arr[i], safe });
+        }
+      }
+      let tier = 0;
+      const takeTier = (safeWanted, strict) => {
+        tier++;
+        for (const c of candidates) {
+          if (c.taken || c.safe !== safeWanted || !plain(c.el, strict)) continue;
+          const sel = selOf(c.el);
+          if (document.querySelectorAll(sel).length !== 1 || document.querySelector(sel) !== c.el) continue;
+          c.taken = true;
+          c.sel = sel;
+          c.tier = tier;
+        }
+      };
+      takeTier(true, true); takeTier(true, false); takeTier(false, true); takeTier(false, false);
+      const ordered = candidates.filter((c) => c.sel).sort((a, b) => a.tier - b.tier);
+      const bound = [];
+      for (const p of failingPaths) {
+        const cand = ordered.shift();
+        if (!cand) break;
+        bound.push([p, cand.sel]);
+      }
+      const unboundRecords = specEls.filter((e) => !boundPaths.has(e.p)).map((e) => e.p);
+      return { assignments: bound, unboundRecords, leftovers: ordered.length, poolSize: candidates.filter((c) => c.sel).length };
+    }, { expanded, specEls: spec.elements.map((e) => ({ p: e.p, tag: e.tag })), failingPaths: [...failing[bp]], MARGIN: 5 });
+    for (const [p, sel] of claim.assignments) {
+      map.explicit.push({
+        section: 'home-why-wrap',
+        heron: { [bp]: p },
+        ours: sel,
+        skip: ['tag', 'tc', 'geometry', 'type', 'color'],
+        _note: `T-05i gen (hm-bind @${bp}): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound to a real unclaimed plain our element beyond the tag's heron demand — design groups skipped (T-05g/T-06c precedent), radius/opacity/border/interactive/transition measured`,
+      });
+      boundHm++;
+    }
+    shortHm += failing[bp].size - claim.assignments.length;
+    const boundSet = new Set(claim.assignments.map(([p]) => p));
+    for (const p of claim.unboundRecords) {
+      if (boundSet.has(p)) continue;
+      map.noCounterpart.push({ section: 'home-why-wrap', heron: { [bp]: p }, reason: `T-05i gen (hm-catchall @${bp}): heron tween wrapper/scaffolding record — no real our counterpart when it cannot pair (authored decomposition differs by law, T-05g census); inert while it pairs` });
+    }
+    console.log(`  hm-bind ${bp}: ${claim.assignments.length}/${failing[bp].size} bound (pool ${claim.poolSize}, spare ${claim.leftovers}, unboundRecords ${claim.unboundRecords.length})`);
+    await page.close();
+  }
+  await browser.close();
+  console.log(`T-05j hm-bind: ${boundHm} junk heuristic pairs explicitly bound; ${shortHm} unbound (residual)`);
+}
+
 const newExplicit = map.explicit;
 let added = 0;
 for (const f of fams) {
@@ -170,11 +409,11 @@ const bandVars = (bp) => {
   const tE = c.t2 ?? t, sE = c.s2 ?? s;
   const vars = [
     `--wy-ct-odd-x: ${mirrorX(bp, t)}px`, `--wy-ct-even-x: ${mirrorX(bp, tE)}px`,
-    `--wy-ct-y: ${Math.round(t.vr.y)}px`, `--wy-ct-w: ${Math.round(t.vr.w)}px`, `--wy-ct-h: ${Math.round(t.vr.h)}px`,
+    `--wy-ct-y: ${Math.round(t.vr.y)}px`, `--wy-ct-even-y: ${Math.round(tE.vr.y)}px`, `--wy-ct-w: ${Math.round(t.vr.w)}px`, `--wy-ct-h: ${Math.round(t.vr.h)}px`,
     `--wy-ct-fs: ${f(t.fs, 20)}px`, `--wy-ct-lh: ${f(t.lh, (t.fs || 20) * 1.1)}px`, `--wy-ct-fw: ${f(t.fw, 500)}`,
     `--wy-ct-color: ${t.color ?? '#141414'}`, `--wy-ct-bg: ${t.bg ?? 'transparent'}`,
     `--wy-cs-odd-x: ${mirrorX(bp, s)}px`, `--wy-cs-even-x: ${mirrorX(bp, sE)}px`,
-    `--wy-cs-y: ${Math.round(s.vr.y)}px`, `--wy-cs-w: ${Math.round(s.vr.w)}px`, `--wy-cs-h: ${Math.round(s.vr.h)}px`,
+    `--wy-cs-y: ${Math.round(s.vr.y)}px`, `--wy-cs-even-y: ${Math.round(sE.vr.y)}px`, `--wy-cs-w: ${Math.round(s.vr.w)}px`, `--wy-cs-h: ${Math.round(s.vr.h)}px`,
     `--wy-cs-fs: ${f(s.fs, 13.33)}px`, `--wy-cs-lh: ${f(s.lh, (s.fs || 13.33) * 1.35)}px`, `--wy-cs-fw: ${f(s.fw, 400)}`,
     `--wy-cs-color: ${s.color ?? '#6c6c66'}`, `--wy-cs-bg: ${s.bg ?? 'transparent'}`,
   ];
@@ -185,10 +424,10 @@ ${bandVars('1440')}
 @media (min-width: 1601px) {
 ${bandVars('1920')}
 }
-@media (min-width: 1101px) and (max-width: 1399px) {
+@media (min-width: 992px) and (max-width: 1100px) {
 ${bandVars('1024')}
 }
-@media (min-width: 600px) and (max-width: 1100px) {
+@media (min-width: 600px) and (max-width: 991px) {
 ${bandVars('768')}
 }
 @media (max-width: 599px) {
@@ -208,7 +447,7 @@ ${bandVars('390')}
   color: var(--wy-ct-color); background: var(--wy-ct-bg); letter-spacing: 0;
   white-space: nowrap; overflow: visible;
 }
-.wy-cap:nth-child(even) .wy-cap-t { inset-inline-start: var(--wy-ct-even-x); }
+.wy-cap:nth-child(even) .wy-cap-t { inset-inline-start: var(--wy-ct-even-x); top: var(--wy-ct-even-y); }
 .wy-cap-s {
   position: fixed; top: var(--wy-cs-y); inset-inline-start: var(--wy-cs-odd-x);
   inline-size: var(--wy-cs-w); block-size: var(--wy-cs-h); margin: 0; padding: 0;
@@ -216,7 +455,7 @@ ${bandVars('390')}
   color: var(--wy-cs-color); background: var(--wy-cs-bg); letter-spacing: 0;
   white-space: nowrap; overflow: visible;
 }
-.wy-cap:nth-child(even) .wy-cap-s { inset-inline-start: var(--wy-cs-even-x); }
+.wy-cap:nth-child(even) .wy-cap-s { inset-inline-start: var(--wy-cs-even-x); top: var(--wy-cs-even-y); }
 /* T05I-CAP-END */
 `;
 let css = fs.readFileSync(CSS, 'utf8');
