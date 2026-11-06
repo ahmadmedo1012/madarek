@@ -1,0 +1,4 @@
+{
+  "_readme": "r339 T-02b — off-book cap review register (the documented escape hatch). A section whose off-book share (excused elements ×12 + suppressed checks, over measured + off-book estimate) reaches >=70% fails the gate FAIL(off-book) UNLESS it has an entry in reviews[] here. Requirements, enforced by run.mjs at startup (fail-closed): section must be a known mapping key; reason must be a WRITTEN explanation (>=20 chars) of why the off-book mass is legitimate and what measures it; owner must be a task id (T-…). A review suppresses the FAIL(off-book) label only — the 40% coverage floor has no escape (lift it with section work, not paperwork) and the 50% heuristic-share cap is unaffected. Entries are listed in results.summary.coverage.reviewedEscapes on every run that invokes them: documented, never silent.",
+  "reviews": []
+}

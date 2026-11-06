@@ -36,3 +36,11 @@
 - [T-15] curl — 200-check the vite dev server before webkit cells
 - [T-15] rg — verify prior patch state + locate --bps/--engine flags in run.mjs
 - [T-15] node (failure-set diff) — prove webkit/chromium cells differ only by sub-pixel drift
+- [T-02b] node (playwright chromium via scripts/conformance/run.mjs) — smoke runs proving each new honesty gate triggers (footer/map/usecase) + negative tests (scoped --ratchet refusal, invalid/valid coverage-review entries)
+- [T-02b] python3 — spec-side 390 gutter math (section root x/w per <section>.390.json) + results.json inspection of darkInkReport/sectionEdges/provenance
+- [T-02b] bash (setsid/nohup detached vite) — dev server on :5302 that survives tool-call teardown
+- [T-02b] rg — locate anchors in run.mjs before each edit round
+- [T-02b] curl — vite health check on :5302
+- [T-02b] git — commit+push cadence on r339/t02b
+- [T-02b] node (foreground chunk runs) — full matrix finished as 5 per-bp provenance chunks (1920/1440/1024/768/390, --dark); exposed + fixed the splice(800) report cap eating edge390/darkInk FAIL rows (re-run verified)
+- [T-02b] python3 (json merge) — honest full-matrix numbers by summing per-cell counts across chunks (93.0% light / 92.9% dark / cov 24.7%) into T-02B-HARDENING.md
