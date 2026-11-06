@@ -23,6 +23,7 @@
  */
 import { useSheetScroll } from '../../lib/motion/useSheetScroll';
 import { useRef } from 'react';
+import { createPortal } from 'react-dom';
 import {
   CAPTURE_LECTURE_CHECKPOINT_2X,
   PRODUCT_CAPTURES,
@@ -61,7 +62,7 @@ const ROWS: Row[] = [
     card: CARD_R, cardId: 'student-dashboard',
     minis: [
       { box: ['118.32rem', '12.48rem', '15.96rem', '15.96rem'], bx: '134.28rem', ic: '131.88rem' },
-      { box: ['128.28rem', '93.12rem', '25.44rem', '21.6rem'], img: true },
+      { box: ['128.28rem', '30.96rem', '25.44rem', '21.6rem'], img: true },
     ],
     tagX: '3.12rem',
     title: 'تحقّق من لوحتك',
@@ -76,7 +77,7 @@ const ROWS: Row[] = [
   },
   {
     card: CARD_R, cardId: 'student-matrix',
-    minis: [{ box: ['103.8rem', '182.16rem', '13.68rem', '10.92rem'], img: true }],
+    minis: [{ box: ['90.96rem', '40.56rem', '13.68rem', '10.92rem'], img: true }],
     tagX: '3.12rem',
     title: 'أتقن المهارات',
     sub: 'مصفوفة إتقان تُظهر ما أتممت وما بقي عليك',
@@ -191,6 +192,15 @@ function Marker({ y, ds }: { y: string; ds: string }) {
 
 export function WhyScene() {
   const stageRef = useRef<HTMLDivElement>(null);
+  /* the pinned caption bar is PORTALED to document.body: the why
+   * section rides the r323 content-visibility skirt (strata.css),
+   * whose layout+paint containment makes the section the containing
+   * block of its position:fixed descendants — the viewport-pinned
+   * captions were trapped at section-top+48px (invisible mid-scrub,
+   * clipped mid-word at the section's paint boundary). At body level
+   * the fixed seats pin to the real viewport, exactly like the frozen
+   * spec's recorded seats. */
+  const capbarRef = useRef<HTMLDivElement>(null);
 
   /* the ONE scroll driver: traversal → --wy-p (the progress rule width)
    * + data-wy-stage — imperative, zero renders per tick (useSheetScroll
@@ -203,6 +213,14 @@ export function WhyScene() {
     if (el.dataset.wyStage !== String(stage)) el.dataset.wyStage = String(stage);
     const live = traversal > 0.002 && traversal < 0.998 ? '1' : '0';
     if (el.dataset.wyLive !== live) el.dataset.wyLive = live;
+    /* the portaled caption bar carries the same state flags — it is
+     * no longer a .wy-stage descendant, so the CSS gates read its own
+     * data attributes (idempotent setAttribute law, zero renders). */
+    const cap = capbarRef.current;
+    if (cap) {
+      if (cap.dataset.wyStage !== String(stage)) cap.dataset.wyStage = String(stage);
+      if (cap.dataset.wyLive !== live) cap.dataset.wyLive = live;
+    }
     const p = traversal.toFixed(4);
     if (p !== lastP) {
       el.style.setProperty('--wy-p', p);
@@ -246,12 +264,12 @@ export function WhyScene() {
                   /* row 3 — the lecture-player seat (spec's video card) */
                   <div className="wy-player" data-spec="why.player">
                     <div className="wy-player2" data-spec="why.player2">
-                      <div className="wy-vid" data-spec="why.vid1" style={{ insetInlineStart: '22.08rem', insetBlockStart: '114.12rem' }}>
+                      <div className="wy-vid" data-spec="why.vid1" style={{ insetInlineStart: '22.92rem', insetBlockStart: '-10.44rem', inlineSize: '38.76rem', blockSize: '23.88rem' }}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={lectureShot2x} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-vic" data-spec="why.vic" style={{ insetInlineStart: '58.68rem', insetBlockStart: '134.88rem' }}>
+                      <div className="wy-vic" data-spec="why.vic" style={{ insetInlineStart: '58.68rem', insetBlockStart: '10.56rem' }}>
                         <div className="wy-vic-in" data-spec="why.vicin">
                           <svg className="wy-vic-svg" data-spec="why.vicsvg" viewBox="0 0 18 18" aria-hidden="true">
                             <mask id={`wyvm${i}`}>
@@ -261,12 +279,12 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
-                      <div className="wy-vid wy-vid2" data-spec="why.vid2" style={{ insetInlineStart: '20.88rem', insetBlockStart: '139.08rem', inlineSize: '42.72rem', blockSize: '26.28rem' }}>
+                      <div className="wy-vid wy-vid2" data-spec="why.vid2" style={{ insetInlineStart: '20.88rem', insetBlockStart: '14.76rem', inlineSize: '42.72rem', blockSize: '26.28rem' }}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={capSrc('student-dashboard')} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-spinz" data-spec="why.spinz" style={{ insetInlineStart: '59.52rem', insetBlockStart: '162rem' }}>
+                      <div className="wy-spinz" data-spec="why.spinz" style={{ insetInlineStart: '59.52rem', insetBlockStart: '37.68rem' }}>
                         <div className="wy-spin" data-spec="why.spin">
                           <svg className="wy-spin-svg" data-spec="why.spinsvg" viewBox="0 0 24 24" aria-hidden="true">
                             <g>
@@ -284,7 +302,7 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
-                      <div className="wy-chk" data-spec="why.chk" style={{ insetInlineStart: '60.36rem', insetBlockStart: '118.08rem' }}>
+                      <div className="wy-chk" data-spec="why.chk" style={{ insetInlineStart: '60.36rem', insetBlockStart: '-6.24rem' }}>
                         <svg className="wy-chk-svg" data-spec="why.chksvg" viewBox="0 0 6 6" aria-hidden="true">
                           <mask id="wycm1">
                             <path d="M1 3 l1.5 1.5 L5 1.5" />
@@ -292,12 +310,12 @@ export function WhyScene() {
                           </mask>
                         </svg>
                       </div>
-                      <div className="wy-vid wy-vid3" data-spec="why.vid3" style={{ insetInlineStart: '22.08rem', insetBlockStart: '121.68rem' }}>
+                      <div className="wy-vid wy-vid3" data-spec="why.vid3" style={{ insetInlineStart: '22.92rem', insetBlockStart: '42.6rem', inlineSize: '38.76rem', blockSize: '23.88rem' }}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={capSrc('student-library')} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-loadz" data-spec="why.loadz" style={{ insetInlineStart: '57.84rem', insetBlockStart: '142.56rem' }}>
+                      <div className="wy-loadz" data-spec="why.loadz" style={{ insetInlineStart: '57.84rem', insetBlockStart: '18.24rem' }}>
                         <div className="wy-load" data-spec="why.load">
                           <svg className="wy-load-svg" data-spec="why.loadsvg" viewBox="0 0 24 24" aria-hidden="true">
                             <g>
@@ -325,12 +343,12 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
-                      <div className="wy-vid wy-vid4" data-spec="why.vid4" style={{ insetInlineStart: '19.8rem', insetBlockStart: '122.04rem', inlineSize: '16.32rem', blockSize: '10.44rem' }}>
+                      <div className="wy-vid wy-vid4" data-spec="why.vid4" style={{ insetInlineStart: '20.64rem', insetBlockStart: '42.6rem', inlineSize: '16.32rem', blockSize: '10.44rem' }}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={capSrc('student-matrix')} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-dots" data-spec="why.dots" style={{ insetInlineStart: '25.44rem', insetBlockStart: '123.6rem' }}>
+                      <div className="wy-dots" data-spec="why.dots" style={{ insetInlineStart: '25.44rem', insetBlockStart: '-0.72rem' }}>
                         <div className="wy-dot" data-spec="why.dot1" />
                         <div className="wy-dot" data-spec="why.dot2" />
                         <div className="wy-dot wy-dot-3" data-spec="why.dot3" />
@@ -382,8 +400,10 @@ export function WhyScene() {
 
         {/* the pinned caption bar — ONE stage-driven bar at viewport y48
          * (the spec's four tween captions all pin there, sr.y -326 @1440):
-         * four fixed-seat states, data-wy-stage swaps the live one. */}
-        <div className="wy-capbar" data-spec="why.capbar">
+         * four fixed-seat states, data-wy-stage swaps the live one.
+         * Portaled to body (see capbarRef note above). */}
+        {createPortal(
+          <div className="wy-capbar" data-spec="why.capbar" ref={capbarRef}>
           {ROWS.map((r, i) => (
             <div className="wy-cap" data-spec={`why.tag${i + 1}`} key={r.title}>
               <div className="wy-cap-in" data-spec={`why.tag${i + 1}in`}>
@@ -397,7 +417,9 @@ export function WhyScene() {
               <div className="wy-cap-dot" aria-hidden="true" data-spec={`why.tag${i + 1}dot`} />
             </div>
           ))}
-        </div>
+          </div>,
+          document.body,
+        )}
       </div>
     </div>
   );
