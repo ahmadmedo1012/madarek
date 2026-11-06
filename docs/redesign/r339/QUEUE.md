@@ -3,16 +3,16 @@ Legend: `[ ]` todo · `[~]` running · `[x]` done (result) · `[!]` blocked (rea
 Rules in force: ≤4 heavy agents; each = own worktree + port 53NN + `run.mjs --url`; commit+push ≤10 min; `verify.sh --fast` before every source push; tests are law; never raise a ceiling/re-pin/weaken; CI is owner-dead (local verify = evidence); avoid branch names matching `r338/t13*` (ruleset). A task that overruns its box twice is split, never dropped.
 
 ## P0 — housekeeping (runs first; nothing waits on T-00)
-- [~] T-00 branch triage & cleanup · tag `archive/<branch>` + push for EVERY unmerged origin branch, then delete; merge-tree no-op check; review real source deltas (statement.css +44, roles.css +17, strata.css +4, WhyScene/Why +4/+12, t99b App/Auth/Error, t99br AppShell/Topbar/Footer, t99c ~+1k Footer/why) — cherry-pick only what still improves a number (verify + conformance cell), document the rest; prune worktrees. Acc: 0 stale branches, deltas dispositioned. 60m.
-- [~] T-01 A-Medic (standing) · restore bundle ceiling 777→770 (dedicated commit, real size 764); verify.sh --fast green on fresh sandbox baseline; one-page owner note (Actions quota + ruleset + WebKit libs) → docs/redesign/r339/OWNER-NOTE.md. Acc: ceiling commit on main, note linked from HANDOFF. 25m.
-- [~] T-02 instrument audit · per-section excusal rate (cap 5%), no-counterpart count, heuristic-vs-explicit mapping ratio from scripts/conformance/mapping/*.json + results.json; flag anything gaming the metric. Acc: audit table in docs/redesign/r339/T-02-AUDIT.md. 25m.
-- [~] T-15 WebKit user-space · apt-get download libgtk-4/libGLESv2/libwoff2dec .debs → dpkg -x prefix → LD_LIBRARY_PATH → point Playwright webkit at it; if still blocked, document + move on. Acc: webkit cells passing or documented block. 30m.
+- [x] T-00 DONE · 74→4 remote branches, 72 archive tags pushed + branches deleted, 0 cherry-picks (all superseded; t99c landed as dd0fd5c4), disposition table T-00-TRIAGE.md, worktrees pruned.
+- [x] T-01 DONE · baseline verify green (3051 tests, 764.3 KB gz), ceiling restored 777→770 (c8a61806), OWNER-NOTE.md written.
+- [x] T-02 DONE · audit: hero 94.8% off-book, overall ≈77% off-book, heur 18%; 5 anti-gaming fixes + 438 dead letters landed; footer honest 92.3→87.9 same code. → spawned T-02b hardening (wave 2).
+- [x] T-15 DONE · WebKit LAUNCHES user-space (14 debs, webkit-libs.sh); footer webkit 90.8% ≈ chromium 90.7%; --engine webkit landed. Engine of record stays chromium.
+- [~] T-02b instrument hardening (wave 2) · owns run.mjs: coverage% per section beside passRate + coverage floor gate (≥40%); off-book cap (<70% w/ listed review); heuristic-share cap per section; per-section results artifacts (scripts/conformance/results/); all-nodes dark-contrast check (--dark: every text node ≥4.5:1); 390 side-margin assertion; honest chunked full-matrix re-baseline + ratchet re-pin proposal (downward re-pin = instrument honesty correction, documented).
 
 ## P1 — close the feel gap (blind panel 66/84 → ≥74)
-- [ ] T-10 chrome specs · nav/preloader/cursor/consent spec files extracted from Heron, asserted in instrument (row is 0/0 today). Acc: chrome assertions exist + pass. 45m.
-- [ ] T-11 motion richness · tween-coverage metric (recorded Heron tweens vs ours: target/property/distance/duration/ease/trigger/stagger, ≥90%) then implement missing tweens per section on house reveal engine / WAAPI / CSS animation-timeline. Bundle ≤770. 60m.
-- [ ] T-12 dark-mode ink · all-nodes dark contrast ≥4.5:1 (text) check in matrix; fix every out-of-cell ink (problem/platform/log…). Acc: 0 dark text fails site-wide. 45m.
-- [ ] T-13 390px edge margins · 7–8px → Heron measured side margin on all sections; add to assertions. 30m.
+- [~] T-10 chrome specs (wave 2) · nav/preloader/cursor/consent spec files extracted from Heron, asserted in instrument (row is 0/0 today). Acc: chrome assertions exist + pass. 45m.
+- [~] T-11a tween-coverage metric + our tween inventory (wave 2; owns NEW scripts/conformance/tween.mjs) · recorded Heron tweens vs ours: target/property/distance/duration/ease/trigger/stagger; produce per-section missing-tween work-list. T-11b (implement) next wave.
+- [~] T-12+T-13 feel-gap CSS fixes (wave 2, one agent) · dark-mode ink: every text node ≥4.5:1 in dark (fix out-of-cell inks problem/platform/log/…) + 390px edge margins 7–8px → Heron measured side margin on all sections. Acc: 0 dark text fails, 390 margins conformed.
 - [ ] T-14 pattern library + census · numeral [nn], hairline, eyebrow, CTA pair, card grid, marquee, pinned scene — one shared component/CSS class each; sections import them; census 39→≤5 inconsistencies. PREREQ for P3 + main CSS-shrink lever. 60m.
 - [ ] T-16 mini blind panel (after T-10..T-13) · ONE run, target ≥74/84, no criterion <8. 20m.
 
