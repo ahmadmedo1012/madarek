@@ -614,6 +614,23 @@ try {
           const cfw = charEls.map((e) => e.fw), ccol = charEls.map((e) => e.color);
           // our word boxes: the text-bearing descendants of OUR container
           const ourTextEls = o.elements.filter((e) => e.p.startsWith(lineO.p + " > ") && e.tc !== "none");
+          // R338 lead (footer anull): an aggregate whose OUR container has
+          // NO text-bearing descendants has nothing to measure — the raw
+          // fields would all fail with actual:null (junk). Count it as a
+          // SKIPPED cell with the written reason (never silent); the char
+          // scaffold boxes below still excuse+count exactly once, and any
+          // container that DOES carry text stays fully asserted.
+          if (!ourTextEls.length) {
+            cell.skipped += 4; // the four typography fields of this aggregate
+            results.skippedReport.push({ section: key, bp: bp.name, heronPath: `${lineH.p} (ar-char-split aggregate)`, reason: "ar-char-split aggregate: our container carries no text-bearing descendants — nothing to measure (counterpart is structural chrome); counted, not failed" });
+            for (const e of charEls) {
+              if (excusedScaffold.has(e.p)) continue;
+              excusedScaffold.add(e.p);
+              cell.excused++;
+              results.unmatchedReport.push({ section: key, bp: bp.name, heronPath: e.p, excused: true, reason: "ar-char-split: tween char-scaffolding — Arabic word-split law (joining forbids per-character boxes); container carries no text counterpart" });
+            }
+            continue;
+          }
           const ofs = ourTextEls.map((e) => T.num(e.fs)), olh = ourTextEls.map((e) => T.num(e.lh));
           const ofw = ourTextEls.map((e) => e.fw), ocol = ourTextEls.map((e) => e.color);
           const sel = mode === "data-spec" ? `#ds:${lineO.ds}` : (lineO.p || MAPPING.ourSection[key]);
