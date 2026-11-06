@@ -1528,6 +1528,542 @@
         "bg"
       ],
       "reason": "svg defs/mask/filter scaffolding (ADDENDUM 6/8 plumbing census)"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > a[2] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > a[2] > div[2] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > a[2] > div[2] > div[1] > div[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[2] > svg[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies (C/D/E twins): loop-translated duplicates of the cross-fade pair — geometry is transient marquee translation (vr.y 0/off-page in heron engine); content/type/colour asserted on the cross-fade pair + the rendered platform.*3..5 clones"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > section[1] > div[3] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > a[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > a[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[2] > div[2] > div[1] > a[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[1] > div[3] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
+    },
+    {
+      "section": "home-platform-wrap",
+      "heron": "home-platform-wrap > section[1] > div[3] > div[1] > div[2] > div[3] > img[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "heron marquee loop copies C/D/E (wrapper-crossover nodes): loop-translated off-page band seats (census vr.y -7606/-7372) — geometry is transient marquee translation; content/type/colour stay asserted on the rendered clones (platform.*3..5) and the cross-fade pair"
     }
   ]
 }
