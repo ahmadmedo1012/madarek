@@ -300,9 +300,7 @@
  * weight), bp-micro (the mono technical voice), and the texture
  * patterns (stippled walls, hatched ground) — all line work. */
 .bp-ink { stroke: var(--text); stroke-width: 1.5; fill: none; }
-.bp-ink-2 { stroke-width: 2; } /* the primary-structure weight */
-.bp-ink-fill { stroke: var(--text); stroke-width: 1.5; fill: none; }
-.bp-hair { stroke: var(--grid-line); stroke-width: 1; fill: none; }
+.bp-ink-2 { stroke-width: 2; } /* the primary-structure weight */.bp-hair { stroke: var(--grid-line); stroke-width: 1; fill: none; }
 .bp-dash { stroke: var(--rule-strong); stroke-width: 1; fill: none; stroke-dasharray: 5 5; }
 .bp-dash-2 { stroke-width: 1.5; }
 .bp-signal { stroke: var(--accent); stroke-width: 1.5; fill: none; }
@@ -347,11 +345,7 @@
 /* the active stage — the red-pencil revision: the active volume's
  * envelope warms to the signal (R310 wires the R306 rule that never
  * matched a selector — the volumes carry bp-vol + bp-on). */
-.bp-vol.bp-on .bp-fill,
-.bp-vol.bp-on .bp-ink-fill {
-  stroke: var(--accent);
-}
-.bp-vol.bp-on .bp-ink {
+.bp-vol.bp-on .bp-fill,.bp-vol.bp-on .bp-ink {
   stroke: var(--accent-ink);
 }
 
@@ -412,15 +406,6 @@
  * R313 (D7 §8): the block moved from the hero to the closing section
  * (the hero band holds one viewport); it reads as a two-column ruled
  * table there (see .fo-cta .fo-hero-meta). */
-.fo-hero-meta {
-  display: grid;
-  gap: 0;
-  align-content: start;
-  border: 1px solid var(--rule);
-  background: color-mix(in srgb, var(--surface) 55%, transparent);
-  overflow: clip;
-}
-
 .fo-meta-row {
   display: grid;
   grid-template-columns: minmax(96px, auto) 1fr;

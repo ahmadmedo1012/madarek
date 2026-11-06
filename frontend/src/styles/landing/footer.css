@@ -101,9 +101,6 @@
   font-weight: 500;
   transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
 }
-.fo-ilink-t { color: rgba(40, 40, 40, 0.72); } /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
-.fo-ilink:hover .fo-ilink-t { color: var(--text); }
-
 /* r188/r320 §D — the independence paragraph (VERBATIM the About
    page's own sentence) + the r320 contact-cell heading */
 .fo-footer-about {
@@ -314,10 +311,6 @@
   place-items: center;
 }
 .fo-wordmark-reg::before { content: '+'; }
-.fo-reg-tl { inset-block-start: calc(var(--fu) * -2); inset-inline-start: calc(var(--fu) * -2); }
-.fo-reg-tr { inset-block-start: calc(var(--fu) * -2); inset-inline-end: calc(var(--fu) * -2); }
-.fo-reg-bl { inset-block-end: calc(var(--fu) * -2); inset-inline-start: calc(var(--fu) * -2); }
-.fo-reg-br { inset-block-end: calc(var(--fu) * -2); inset-inline-end: calc(var(--fu) * -2); }
 
 @media (min-width: 1700px) { .fo-fstrip { margin-block-start: -37px; } }
 @media (min-width: 992px) and (max-width: 1299.98px) { .fo-fstrip { margin-block-start: -29px; } }
@@ -574,14 +567,6 @@
   .fo-sc-l,
   .fo-sc-r { inset-block: 12px; inline-size: 6px; }
   .fo-wordmark-reg { inline-size: 8px; block-size: 8px; font-size: 15.88px; line-height: 1.35; }
-  .fo-reg-tl,
-  .fo-reg-tr { inset-block-start: -1px; }
-  .fo-reg-bl,
-  .fo-reg-br { inset-block-end: -1px; }
-  .fo-reg-tl,
-  .fo-reg-bl { inset-inline-start: -1px; }
-  .fo-reg-tr,
-  .fo-reg-br { inset-inline-end: -1px; }
   .fo-legal-l { padding: 8.33px 13.33px; }
   .fo-legal-strip { inline-size: 218px; }
   .fo-legal-lc { column-gap: 3.33px; }
@@ -599,7 +584,6 @@
     tokens (the var(--text) seats flip on their own) ═══ */
 [data-theme='dark'] .fo-footer { color: var(--text-secondary); }
 [data-theme='dark'] .fo-brand-sub,
-[data-theme='dark'] .fo-ilink-t,
 [data-theme='dark'] .fo-form-copy-t,
 [data-theme='dark'] .fo-legal-p { color: var(--text-secondary); }
 /* r339 T-12 — --neutral-400 measures 4.25:1 on the dark ground (under

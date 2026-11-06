@@ -568,9 +568,7 @@
      pitch is the record's own 26.2px (2.62rem), the pill sits 1.92rem
      under the titlebox, and the seats step down to the 4.13rem phone
      measure */
-  .st-section { margin-inline: 8px; }
-  .st-stmt-rule { display: none; }
-  .st-stmt-in { padding: 2.4rem 1.7rem; }
+  .st-section { margin-inline: 8px; }  .st-stmt-in { padding: 2.4rem 1.7rem; }
   .st-title { font-size: 2.4rem; line-height: 3.24rem; }
   .st-line { block-size: 2.62rem; }
   .st-titlebox { margin-block-end: 1.92rem; }

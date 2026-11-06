@@ -51,11 +51,7 @@
  * band height (the drawing's own 59:50 ink centers on the square
  * paper exactly like the reference's contained 1766×1766 render),
  * and the ink thickens one step so the massing study carries the
- * half from 1 metre. */
-.st-section .st-art-cell .st-art-svg {
-  aspect-ratio: 1 / 1;
-}
-.st-section .st-art-svg .bp-ink {
+ * half from 1 metre. */.st-section .st-art-svg .bp-ink {
   stroke-width: 3;
 }
 .st-section .st-art-svg .bp-ink-2 {

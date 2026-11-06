@@ -379,12 +379,6 @@
   display: block;
 }
 
-.wy-vic-path {
-  stroke: var(--text-secondary);
-  stroke-width: 1.5;
-  fill: none;
-}
-
 .wy-spinz,
 .wy-loadz {
   position: absolute;
@@ -422,12 +416,6 @@
   inline-size: 100%;
   block-size: 100%;
   display: block;
-}
-
-.wy-chk-path {
-  stroke: var(--text-secondary);
-  stroke-width: 1;
-  fill: none;
 }
 
 .wy-dots {
@@ -614,18 +602,6 @@
   .wy-row:nth-child(even) .wy-card { inset-inline-start: 41.93rem; }
 
   /* the pinned caption bar — the 367px col opposite the card */
-
-  .wy-row:nth-child(odd) .wy-tag {
-    inset-inline-start: 41.93rem;
-    inset-block-start: 14.45rem;
-    padding-inline-start: 2.06rem;
-  }
-
-  .wy-row:nth-child(even) .wy-tag {
-    inset-inline-start: 0.76rem;
-    inset-block-start: 13.36rem;
-    padding-inline-start: 5.21rem;
-  }
 
 
   /* mini-captures — the measured 768 overlay seats (row-relative) */
