@@ -390,7 +390,6 @@
 /* the col3 rail ink — the census seat is OPAQUE text ink, not the 72%
    soft ink the footer root carries */
 .fo-col3 { color: var(--text); }
-.fo-col3rule { border-color: var(--rule-strong); }
 .fo-grid-rule { grid-column: 1 / -1; }
 
 /* ═══ 768 belt — the dumped heron grid model (T-06j), FIXED px:
@@ -446,7 +445,6 @@
     block-size: 331px;
     align-items: start;
   }
-  .fo-col3rule { grid-column: 1; grid-row: 1 / span 2; }
   .fo-mark { grid-column: 2; grid-row: 1; inline-size: 207px; block-size: 207px; }
   /* T-06i: heron 768 seats the img twin at 166×0 inside the rail */
   .fo-mark-img { grid-column: 2; grid-row: 2; margin-inline-start: 21px; inline-size: 166px; block-size: 0; }
