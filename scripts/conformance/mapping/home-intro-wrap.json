@@ -1,5 +1,5 @@
 {
- "_readme": "R337 A-intro — home-intro-wrap ledger, REGENERATED against the frozen spec by scripts/build-intro-mapping.py (re-run after changing Statement.tsx hooks). TRUE paths (≤6 segments from the wrap) bind the structural containers; the h2's recorded window path binds intro.h2; the pill/label/crawl internals bind their unique recorded windows; the line groups bind intro.line.${i}; the word and char cells bind intro.word/wordin/wchar.N.M (the split-text mirror — empty scaffold spans, Arabic text whole per word). The walk truncates deeper paths into colliding 6-segment windows — that residue (word wrappers, parked roll copies, loop duplicates, 0x0 tween boxes, SVG defs) is excused with written reasons. ourSection: section#statement.st-section (sections/Statement.tsx — the r337 Heron rebuild: media cell + statement cell + ticker cell on one grid).",
+ "_readme": "R337 A-intro — home-intro-wrap ledger, REGENERATED against the frozen spec by scripts/build-intro-mapping.py (re-run after changing Statement.tsx hooks). TRUE paths (≤6 segments from the wrap) bind the structural containers; the h2's recorded window path binds intro.h2; the pill/label/crawl internals bind their unique recorded windows; the line groups bind intro.line.${i}; the word and char cells bind intro.word/wordin/wchar.N.M (the split-text mirror — empty scaffold spans, Arabic text whole per word). The walk truncates deeper paths into colliding 6-segment windows — that residue (word wrappers, parked roll copies, loop duplicates, 0x0 tween boxes, SVG defs) is excused with written reasons. ourSection: section#statement.st-section (sections/Statement.tsx — the r337 Heron rebuild: media cell + statement cell + ticker cell on one grid). T-03h addendum: hand-added noCounterpart rows for the walk-truncation residue (div.none misglue + unmatched + h2 tween-span windows) - build-intro-mapping.py regen MUST preserve/re-add them.",
  "ourSection": {
   "home-intro-wrap": "section#statement.st-section"
  },
@@ -5102,6 +5102,11 @@
    "section": "home-intro-wrap",
    "heron": "home-intro-wrap > section[1] > div[1] > div[3] > div[2] > div[1] > div[4]",
    "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "heron": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "reason": "walk 6-segment truncation residue (depth>6 window head / h2 tween span) - no 1:1 counterpart exists by design; heuristic misglue onto unclassed plumbing. T-03h, docs/redesign/r338/excusals.md"
   }
  ],
  "charSplit": [
