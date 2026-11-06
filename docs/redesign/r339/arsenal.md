@@ -36,3 +36,9 @@
 - [T-15] curl — 200-check the vite dev server before webkit cells
 - [T-15] rg — verify prior patch state + locate --bps/--engine flags in run.mjs
 - [T-15] node (failure-set diff) — prove webkit/chromium cells differ only by sub-pixel drift
+- [T-02b] node (playwright chromium via scripts/conformance/run.mjs) — smoke runs proving each new honesty gate triggers (footer/map/usecase) + negative tests (scoped --ratchet refusal, invalid/valid coverage-review entries)
+- [T-02b] python3 — spec-side 390 gutter math (section root x/w per <section>.390.json) + results.json inspection of darkInkReport/sectionEdges/provenance
+- [T-02b] bash (setsid/nohup detached vite) — dev server on :5302 that survives tool-call teardown
+- [T-02b] rg — locate anchors in run.mjs before each edit round
+- [T-02b] curl — vite health check on :5302
+- [T-02b] git — commit+push cadence on r339/t02b
