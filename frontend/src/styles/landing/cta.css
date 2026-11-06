@@ -24,6 +24,17 @@ html[data-theme='dark'] .fo-cta {
    * is never re-pinned; the dark pass measures internal consistency
    * (token-flip census + contrast floor), per the platform pattern. */
   --cta-ink: color-mix(in srgb, var(--text) 72%, transparent);
+  /* r339 T-12 — the resolve button's night seat: the frozen light pair
+   * (white ink on the light copper #FA3600) reads 3.76:1 — under the
+   * 4.5:1 text floor on all 13 census spans (label lines + icon cells
+   * @1440 and their 390 twins). The house night signal discipline
+   * (r305): the fill is the luminous ember --accent (#FF5A1F) with the
+   * theme-fixed --warm-ink labels — 5.6:1 (the ink re-seat rides the
+   * rbtn rule below: the <a> is a TRANSPARENT shell over the section
+   * ground, so the white literal ink stays correct for its own seat —
+   * 13:1 on #282828). Light keeps the frozen measured literals
+   * (spec law). */
+  --cta-resolve-bg: var(--accent);
 }
 
 .fo-cta-frame,
@@ -148,6 +159,44 @@ html[data-theme='dark'] .fo-cta {
   transition:
     border-color 0.3s ease,
     color 0.3s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+/* r339 T-12 — the frozen-flip seat (the platform lesson, same class):
+ * the inner wash carries the resolve ink for everything inside the fill
+ * (labels + currentColor chevrons inherit it), and a `color` transition
+ * leg + this re-point can latch the LIGHT literal in Chromium — white
+ * on the night ember, under the census floor. The dark arm re-seats the
+ * label tier at --warm-ink (#191918 on the #FF5A1F ember = 5.6:1) with
+ * the same measured voice (0.3s/ease first leg; the bezier second leg —
+ * aTransition asserts duration+easing only) MINUS the color leg, so the
+ * night ink and the ember fill snap with the theme. Light keeps the
+ * frozen measured pair (spec law). */
+html[data-theme='dark'] .fo-cta .fo-cta-rbtn {
+  color: var(--warm-ink);
+  transition:
+    border-color 0.3s ease,
+    opacity 0.3s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+/* r339 T-12 — the ghost/text-link anchors' frozen-flip seats (the
+ * platform lesson, same class): the shared .btn voice (polish.css)
+ * and the base `a { transition: color … }` carry a color leg, and a
+ * reveal-settled anchor can latch the LIGHT ink literal when the theme
+ * flip re-points --text/--accent-ink — rgb(40,40,40) and #C72E00 on
+ * the #282828 ground = 1:1 / 2.68:1 (the census's 10 cta rows across
+ * the belts). The dark arm re-seats the same measured voice MINUS the
+ * color leg (d/e preserved per leg — aTransition asserts
+ * duration+easing only), so the night ink snaps with the theme.
+ * Light keeps the frozen transitions (spec law); hover never touched
+ * color here (transform + border only), so no feel change. */
+html[data-theme='dark'] .fo-cta .btn.ghost {
+  transition:
+    background var(--t-base) var(--ease),
+    border-color var(--t-base) var(--ease),
+    transform var(--motion-duration-micro) var(--ease);
+}
+html[data-theme='dark'] .fo-cta .fo-text-link {
+  transition: opacity var(--t-fast) var(--ease);
 }
 
 .fo-cta-rlabel {

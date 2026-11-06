@@ -228,10 +228,13 @@ describe('r183-B8 — CI bundle-size gate (A11 finding 1)', () => {
     // the gz total WORSE) — 776→777 (+0.13%, the smallest raise in the
     // gate's history, documented in the gate header; a landing-family
     // diet owns the reduction; re-pin DOWN with it, never up).
-    // R339 re-pin DOWN (the sanctioned direction): the gate header's own
-    // restore 777→770 (commit c8a61806 — measured 764.1; r337's 777 left
-    // 13 KB slack that invited bloat; 770 keeps ~6 KB real headroom).
-    // Entry/pdf ceilings unchanged.
+    // R339 re-pin DOWN (the sanctioned direction): c8a61806 restored the
+    // gate 777→770 (measured 764.1 — the r337 raise's 13KB slack invited
+    // bloat; 770 keeps ~6KB real headroom) but left this pin at the old
+    // 777, so main's vitest read red on an assertion whose law had
+    // already moved. The pin is reconciled the 992d520d way: it follows
+    // the documented gate ceiling DOWN, never up — 770 is STRICTER than
+    // 777, no assertion is weakened.
     expect(script).toContain('LIMIT_TOTAL_KB = 770');
     expect(script).toContain('LIMIT_ENTRY_KB = 92');
     expect(script).toContain('LIMIT_PDF_KB = 110');
