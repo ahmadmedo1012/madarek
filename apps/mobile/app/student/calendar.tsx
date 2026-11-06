@@ -17,6 +17,7 @@
  */
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
+import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import ChevronLeft from "lucide-react-native/icons/chevron-left";
@@ -38,6 +39,8 @@ import { LedgerRow, RowList } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { AR_DAYS, timeOf, useNumerals } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
+import { fadeIn, useStaggerEntrance } from "@/motion";
 import { countAr } from "@/features/student/more";
 import {
   PushFrame,
@@ -78,6 +81,7 @@ interface DaySheet {
 export default function CalendarScreen() {
   const scope = useInstitutionScope();
   const p = usePalette();
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
   const tones = useStatusTones();
   const { formatNumber } = useNumerals();
 
@@ -167,12 +171,14 @@ export default function CalendarScreen() {
   const awayFromToday =
     view.y !== today.y || view.m !== today.m;
   const shiftMonth = (delta: number) => {
+    haptics.selection();
     setView((v) => {
       const d = new Date(Date.UTC(v.y, v.m - 1 + delta, 1));
       return { y: d.getUTCFullYear(), m: d.getUTCMonth() + 1 };
     });
   };
   const goToday = () => {
+    haptics.selection();
     const t = tripoliToday();
     setView({ y: t.y, m: t.m });
   };
@@ -192,7 +198,10 @@ export default function CalendarScreen() {
         }}
       >
       {/* Legend — words + dots */}
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[10], rowGap: 4 }}>
+      {/* T-50 (review-1 T12): the calendar was a motionless seat —
+          legend + month block take the staggered entrance, month swaps
+          fade (remount key), day taps fire selection haptics. */}
+      <Animated.View entering={entering(0)} style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[10], rowGap: 4 }}>
         {(Object.keys(KIND_LABEL) as CalKind[]).map((kind) => (
           <View key={kind} style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
             <View style={{ width: 8, height: 8, backgroundColor: dotColor(kind) }} />
@@ -201,7 +210,7 @@ export default function CalendarScreen() {
             </T>
           </View>
         ))}
-      </View>
+      </Animated.View>
 
       {loading ? (
         <SkeletonList rows={6} rowHeight={56} />
@@ -212,6 +221,11 @@ export default function CalendarScreen() {
       ) : (
         <>
           {/* Month navigation — RTL: السابق sits on the right. */}
+          <Animated.View
+            key={`${view.y}-${view.m}`}
+            entering={fadeIn()}
+            style={{ gap: sp[8] }}
+          >
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
             <IconButton label="الشهر السابق" onPress={() => shiftMonth(-1)}>
               <ChevronRight size={20} color={p.text} />
@@ -232,7 +246,6 @@ export default function CalendarScreen() {
               <ChevronLeft size={20} color={p.text} />
             </IconButton>
           </View>
-
           {/* Weekday header — Sunday-first, RTL flow (starts at the right). */}
           <View style={{ flexDirection: "row" }}>
             {AR_DAYS.map((name) => (
@@ -259,14 +272,15 @@ export default function CalendarScreen() {
                       accessibilityLabel={
                         `${AR_DAYS[cell.dow]} ${formatNumber(cell.day)}${count > 0 ? ` — ${formatNumber(count)} ${count === 1 ? "حدث" : "أحداث"}` : ""}`
                       }
-                      onPress={() =>
+                      onPress={() => {
+                        haptics.selection();
                         setDaySheet({
                           key: cell.key,
                           dow: cell.dow,
                           day: cell.day,
                           events: byDay.get(cell.key) ?? [],
-                        })
-                      }
+                        });
+                      }}
                       style={[
                         styles.cell,
                         {
@@ -299,6 +313,7 @@ export default function CalendarScreen() {
               </View>
             ))}
           </View>
+          </Animated.View>
 
           {/* Hint — the events themselves live in the day sheet now. */}
           <T variant="xs" color="faint">

@@ -23,7 +23,7 @@ import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette } from "@/design/theme";
 import { sp, touchFloor } from "@/design/tokens";
 import { Screen, SectionBar } from "@/components/ui/screen";
-import { T } from "@/components/ui/text";
+import { BidiText, T } from "@/components/ui/text";
 import { DataList, makeRow } from "@/components/ui/data";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { FilterSheet } from "@/components/ui/sheet";
@@ -100,9 +100,11 @@ const CourseListCard = makeRow<EnrollmentRow, { index: number }>(({ item, index 
             <T variant="bodyLg" weight="bold" numberOfLines={2}>
               {c.name}
             </T>
-            <T variant="sm" color="secondary" numberOfLines={1}>
+            {/* BidiText — the Latin course code at the string end must not
+                drag the «·» separator across the direction boundary (T-50). */}
+            <BidiText variant="sm" color="secondary" numberOfLines={1}>
               {`${teacherLine(item)} · ${c.code}`}
-            </T>
+            </BidiText>
             {slots.length > 0 ? (
               <T variant="xs" color="muted" numberOfLines={1}>
                 {scheduleSummary}
@@ -171,9 +173,9 @@ const CourseGridCard = makeRow<EnrollmentRow, { index: number }>(({ item, index 
         <T variant="body" weight="bold" numberOfLines={2}>
           {c.name}
         </T>
-        <T variant="xs" color="secondary" numberOfLines={1}>
+        <BidiText variant="xs" color="secondary" numberOfLines={1}>
           {teacherLine(item)}
-        </T>
+        </BidiText>
       </PressableScale>
     </Animated.View>
   );

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
 import CalendarClock from "lucide-react-native/icons/calendar-clock";
@@ -18,6 +19,8 @@ import { Segmented } from "@/components/ui/fields";
 import { DataList, LedgerRow, makeRow } from "@/components/ui/data";
 import { EmptyState } from "@/components/ui/states";
 import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
+import { useStaggerEntrance } from "@/motion";
 import { dateTime, latn, num, shortDate } from "@/lib/format";
 import {
   KIND_LABEL,
@@ -111,7 +114,6 @@ type ExamRowProps = { item: ExamTemplateRow; last: boolean; now: number };
 function ExamRowInner({ item: exam, last, now }: ExamRowProps) {
   const ws = examWindowState(exam, now);
   const status = examStatusChip(exam, now);
-
   const windowText = exam.openAt
     ? exam.closeAt
       ? `من ${shortDate(exam.openAt)} · حتى ${dateTime(exam.closeAt)}`
@@ -132,7 +134,10 @@ function ExamRowInner({ item: exam, last, now }: ExamRowProps) {
   return (
     <LedgerRow
       last={last}
-      onPress={() => router.push(`/student/online-exams/${exam.id}` as never)}
+      onPress={() => {
+        haptics.selection();
+        router.push(`/student/online-exams/${exam.id}` as never);
+      }}
       accessibilityLabel={`${exam.title} — ${KIND_LABEL[exam.kind] ?? "اختبار"} — ${status.label}`}
     >
       <View style={{ flexDirection: "row", alignItems: "flex-start", gap: sp[8] }}>
@@ -195,6 +200,7 @@ export default function OnlineExamsScreen() {
   const scope = useInstitutionScope();
   const [filter, setFilter] = useState("all");
   const [nowTick, setNowTick] = useState(() => Date.now());
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
   const feed = useQuery({
     queryKey: ["exams", "me", scope],
     queryFn: () => examsApi.myExams(),
@@ -222,7 +228,9 @@ export default function OnlineExamsScreen() {
   return (
     <Screen scroll={false} padded={false}>
       <StackHeader title="الاختبارات الإلكترونية" kicker="مركز الاختبارات" />
-      <View style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
+      {/* T-50 (review-1 T13): the exam center was a motionless seat —
+          header + filter now take the standard staggered entrance. */}
+      <Animated.View entering={entering(0)} style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
         <Segmented
           options={[
             { id: "all", label: "الكل" },
@@ -230,7 +238,10 @@ export default function OnlineExamsScreen() {
             { id: "taken", label: "منجزة" },
           ]}
           selectedId={filter}
-          onSelect={setFilter}
+          onSelect={(id) => {
+            haptics.selection();
+            setFilter(id);
+          }}
         />
         <T variant="sm" color="muted">
           اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات — لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية.
@@ -240,7 +251,7 @@ export default function OnlineExamsScreen() {
             {countAr(visible.length, ["اختبار واحد", "اختباران", "اختبارات", "اختباراً"])}
           </T>
         ) : null}
-      </View>
+      </Animated.View>
       <View style={{ flex: 1 }}>
         <DataList
           data={visible}
@@ -257,6 +268,7 @@ export default function OnlineExamsScreen() {
           isRefetching={feed.isRefetching}
           emptySlot={
             <EmptyState
+              fill
               room="exam-hall"
               title={filter === "all" ? undefined : "لا توجد اختبارات هنا"}
               message={

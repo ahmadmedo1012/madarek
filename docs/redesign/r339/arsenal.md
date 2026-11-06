@@ -101,3 +101,10 @@
 - [T-30] npx stylelint@16 — baseline run: 45 errors / 57 warnings (JSON report lands on STDERR, not stdout — gate adapted); no plugin load path without devDependency → stylelint-order queued.
 - [T-30] git mv + sed — tokens.css + tokens.generated.css → styles/tokens/ (16 refs swept: main.tsx, 7 tests, build.mjs OUT_CSS join-args, check-colors/-motion/-raw-css sanctioned zones, parity export, design-tokens.json $doc); check-raw-css ladder loader needed a manual pathlib fix (STYLES/'tokens'/…) — caught by running the gate, not the diff.
 - [T-30] bash gates — found PRE-EXISTING rot on clean main (git stash A/B): check-colors.sh --strict + check-motion-tokens.sh both fail with 5 findings each (landing/cta, preloader, hero-mechanics…) — NOT T-30 breakage; flagged for the medic.
+# Arsenal log — r339
+- [T-50] ripgrep (Grep tool) — P1 finding triage across docs/mobile/review + apps/mobile greps
+- [T-50] node/npm — mobile gates (install, typecheck, jest, lint) in apps/mobile
+- [T-50] skills check — /home/z/my-project/skills has NO expo/ or react-native-skills/ docs; loaded nothing from there (logged per instruction); repo-local kit docs used instead
+- [T-50] npm scripts (tsc/jest/expo lint/tokens:check/contract-check) — mobile gates per batch, all green
+- [T-50] jest @testing-library/react-native — BidiText contract net (6 cases)
+- [T-50] git — 3 commits on r339/t50 + push

@@ -4,9 +4,12 @@
  * (gradeAttempt — verdict صحيحة/خاطئة + ملاحظة لكل إجابة معلَّقة).
  */
 import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
+import { useStaggerEntrance } from "@/motion";
 import { usePalette } from "@/design/theme";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { useLocalSearchParams } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -74,6 +77,7 @@ export default function ExamTemplateDetail() {
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const id = templateId ?? "";
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
 
   const template = useQuery({
     queryKey: ["exams", "template", id, scope],
@@ -224,6 +228,10 @@ export default function ExamTemplateDetail() {
   return (
     <Screen scroll>
       <StackHeader title={t.title} kicker={EXAM_KIND_LABEL[t.kind] ?? undefined} />
+      {/* T-50 (review-3 §4.1): template detail was a zero-motion seat —
+          the detail block takes the kit stagger; edit/save presses fire
+          through the throttled haptics door. */}
+      <Animated.View entering={entering(0)}>
       <PageHeader title={t.title} kicker="دورة حياة القالب: مسودة ← مراجعة الجودة ← الاعتماد ← النشر للطلاب." />
 
       <View style={{ flexDirection: "row", gap: sp[6], flexWrap: "wrap", alignItems: "center" }}>
@@ -242,6 +250,7 @@ export default function ExamTemplateDetail() {
               kind="ghost"
               small
               onPress={() => {
+                haptics.selection();
                 setTitle(t.title);
                 setDurationMin(String(t.durationMin ?? 60));
                 setPassingScore(String(t.passingScore ?? 50));
@@ -553,6 +562,7 @@ export default function ExamTemplateDetail() {
           </View>
         ) : null}
       </Sheet>
+      </Animated.View>
     </Screen>
   );
 }

@@ -3,6 +3,7 @@ import { Text, type StyleProp, type TextProps, type TextStyle } from "react-nati
 import { usePalette, useStatusTones } from "@/design/theme";
 import { fonts } from "@/design/fonts";
 import { type } from "@/design/tokens";
+import { ltrText } from "@/design/type";
 
 export type TextVariant =
   | "display"
@@ -114,4 +115,46 @@ export function MonoLabel({ children, style }: { children: ReactNode; style?: St
       {children}
     </Text>
   );
+}
+
+/**
+ * BidiText — mixed-direction isolation for Arabic prose carrying Latin runs
+ * (review-2 P0-1, reclassified P1 · T-50).
+ *
+ * The Unicode bidi algorithm orders INLINE Latin/digit runs inside RTL prose
+ * correctly (the type.ts policy), but a Latin run at a string BOUNDARY drags
+ * its neighboring neutrals («·», «—», «.») across the direction switch and
+ * flips their placement on Android — «د. سلام · SE301» renders its dot on
+ * the wrong side, «مخططات UML — Use Case» swaps its dash. BidiText keeps
+ * the copy byte-identical and seats each Latin fragment in its own nested
+ * <Text> with `ltrText` (the documented LTR-island pattern from
+ * design/type.ts): a strong-LTR island the RTL paragraph cannot reorder
+ * against. Digit-only runs (times, percentages) carry no strong direction
+ * and are deliberately left inline.
+ *
+ * Non-string children pass through untouched — safe around any <T> slot.
+ */
+export function BidiText({ children, ...rest }: TProps) {
+  return <T {...rest}>{typeof children === "string" ? isolateLatinRuns(children) : children}</T>;
+}
+
+/** Latin fragment: starts with a letter, may carry codes/emails/URLs inside. */
+const LATIN_RUN = /[A-Za-z][A-Za-z0-9@._:/+#&%-]*/g;
+
+/** Split a string into prose + isolated Latin islands (keys stable per index). */
+export function isolateLatinRuns(input: string): ReactNode[] {
+  const out: ReactNode[] = [];
+  let last = 0;
+  for (const match of input.matchAll(LATIN_RUN)) {
+    const at = match.index ?? 0;
+    if (at > last) out.push(input.slice(last, at));
+    out.push(
+      <Text key={`lat-${at}`} style={ltrText}>
+        {match[0]}
+      </Text>,
+    );
+    last = at + match[0].length;
+  }
+  if (last < input.length) out.push(input.slice(last));
+  return out;
 }
