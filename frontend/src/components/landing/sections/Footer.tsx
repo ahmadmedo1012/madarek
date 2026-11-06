@@ -169,7 +169,7 @@ export function Footer({ year }: { year: number }) {
               ))}
               {/* the hairline is the c1-top block's OWN last child (the
                   heron paint model — full-bleed past the cell padding) */}
-              <R c="fo-rule fo-rule-h fo-rule-bleed" s="footer.c1rule" />
+              <R c="fo-rule fo-rule-h fo-rule-bleed fo-rule-solid" s="footer.c1rule" />
             </div>
             <div className="fo-c1-sub" data-spec="footer.c1sub">
               <ML s="footer.sublabel" t="[ EARLY ACCESS ]" />
@@ -295,7 +295,7 @@ export function Footer({ year }: { year: number }) {
               Madarek's OWN mark geometry, authored inline line-art (the
               circle + orbit + point construction), never Heron's paths */}
           <div className="fo-col fo-col3" data-spec="footer.col3">
-            <R c="fo-rule fo-rule-v" s="footer.col3rule" />
+            <R c="fo-rule fo-rule-v fo-rule-solid" s="footer.col3rule" />
             <div className="fo-mark" data-spec="footer.mark">
               <svg
                 className="fo-mark-svg"
@@ -327,10 +327,9 @@ export function Footer({ year }: { year: number }) {
             The retired FooterLens pointer instrument is gone — the spec's
             strip is the image + the feComponentTransfer twin + the four
             corner crosshairs and edge rules. ── */}
-        <div className="fo-fstrip">
-          <div data-spec="footer.strip">
+        <div className="fo-fstrip" data-spec="footer.strip">
           <div className="fo-strip-in" data-spec="footer.stripin">
-            <div className="fo-strip-media" data-spec="footer.stripmedia">
+            <div className="fo-strip-media">
               <img
                 className="fo-strip-img"
                 data-spec="footer.stripimg"
@@ -379,7 +378,6 @@ export function Footer({ year }: { year: number }) {
               ))}
             </div>
           </div>
-          </div>
         </div>
 
         {/* ── the © bar + the legal row (42 @1440) — R321 §A2: the nine
@@ -388,6 +386,11 @@ export function Footer({ year }: { year: number }) {
             closing tag) — R332: this sheet owns the row language ── */}
         <div className="fo-footer-bottom" data-spec="footer.legal">
           <div className="fo-legal-l" data-spec="footer.legall">
+            {/* T-06k — the spec's strip-media seat: heron nests a © line
+                box (431×15 @1440, the stripmedia binding) between the
+                legal-l box and the lc line box — the strip family lives IN
+                the legal zone, not on the ink band */}
+            <div className="fo-legal-strip" data-spec="footer.stripmedia">
             <div className="fo-legal-lc" data-spec="footer.legallc">
               <p className="fo-legal-p" data-spec="footer.legalp">
                 <span className="fo-mono">© {year} مدارك</span>
@@ -396,6 +399,7 @@ export function Footer({ year }: { year: number }) {
                   عن المنصّة
                 </a>
               </p>
+            </div>
             </div>
             <R c="fo-rule fo-rule-v" s="footer.legalrule" />
           </div>
@@ -421,8 +425,9 @@ export function Footer({ year }: { year: number }) {
             {/* R327 D1 — the distribution sheet beside the legal row */}
             <Link to="/app" className="fo-legal-link">تطبيق الجوال</Link>
           </nav>
-          {/* the bar's OWN closing hairline (its 3rd child) */}
-          <R c="fo-rule fo-rule-h" s="footer.legalbot" />
+          {/* the bar's OWN closing hairline — full-bleed at the row top
+              (the census divider between the band and the legal row) */}
+          <R c="fo-rule fo-rule-h fo-rule-solid fo-legalbot" s="footer.legalbot" />
         </div>
       </div>
     </footer>

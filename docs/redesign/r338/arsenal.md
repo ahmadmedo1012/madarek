@@ -97,3 +97,8 @@ T-08c5 | node + playwright probe (repo node_modules, chromium via /tmp/pw-browse
 T-05g | run.mjs census copy (uncapped /tmp splice variant) + python census | enumerate full 119 no-counterpart set + failure families
 T-05h | node + repo playwright (chromium-1200 via /tmp/pw-browsers fallback) | per-bp DOM walk replicating run.mjs WALK_JS to geometry-match spec records and generate per-recorded-path bindings
 T-05i | repo conformance (run.mjs --url 5305, gen-why-wrap.mjs) + vite + playwright/chromium | why per-bp family bindings, dup-twin excuses, caption-bar geometry vars
+T-06h | node+playwright (conformance run.mjs --sections footer --url :5306 --dark) + python3 results.json census | unblocked the aTransition multi-ease crash, honest light 69.2/dark 68.3 baseline
+T-06i | node + repo conformance instrument (scripts/conformance/run.mjs --sections footer --url :5306 + --dark) | footer census fix pass (bg solid seats, col2 real box, mark-img negative-margin delete, 390 c1top re-seat)
+T-06j | node (spec-rect dump + plumbing generator) | derived the vw-linear law from the census + generated 219 counted plumbing skips into mapping/footer.json
+T-06j | playwright/chromium via scripts/conformance/run.mjs | light+dark footer conformance @own vite :5306
+T-06k | scripts/conformance/run.mjs (--sections footer --url http://localhost:5306, light + --dark) | strip-family/legal-zone restructure + 768 c1top re-seat + heuristic-glue census (3 measured passes)
