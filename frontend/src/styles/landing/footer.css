@@ -593,6 +593,10 @@
 [data-theme='dark'] .fo-form-copy-t,
 [data-theme='dark'] .fo-legal-p { color: var(--text-secondary); }
 [data-theme='dark'] .fo-mono-label { color: var(--neutral-400); }
+/* T-06m: dark-arm the go-ink — the scoped --rule-strong seat fails the dark
+   WCAG floor 3.0 (3 cells); the proven dark text token passes on the same
+   surface family. Light spec group untouched (spec is law in light). */
+[data-theme='dark'] .fo-go { color: var(--text-secondary); }
 
 /* ═══ reduced motion (r306/r308 family belt): this sheet carries the
     wy verb-snap protective collapses — the r313 contract's RM seats,

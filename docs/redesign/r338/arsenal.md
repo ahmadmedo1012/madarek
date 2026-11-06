@@ -118,3 +118,4 @@ T-05k | playwright (repo node_modules, chromium-1200 via /tmp/pw-browsers) + run
 T-03h | jq + python3 | failure-cluster forensics from results.json; data-driven noCounterpart mapping rows
 T-03h | node scripts/conformance/run.mjs --sections home-intro-wrap --url | light re-measure on port 5303
 T-03h | vite --port 5303 | dev server for the conformance instrument
+- T-06m | python3 (json census over docs/redesign/r335/heron-spec/footer.*.json) | enumerate 284 unique spec paths, bound/unbound split, container-collision + aggregate-expectation replication to re-scope footer.json suppression
