@@ -31,6 +31,15 @@ html[data-theme='dark'] .fo-cta {
   display: block;
 }
 
+/* T-10c: the measured anchor→frame seat — heron's cta frame sits
+   350px below the wrap anchor at 390 (we held 21): the missing 329px
+   on our 9.92 root = 33.17rem. One rule per belt below (768/991 and
+   ≥992) steps it to heron's 289/380-506-270 ladder; the whole subtree
+   rides the same shift, so every internal y re-seats with it. */
+.fo-cta-frame {
+  margin-block-start: 33.17rem;
+}
+
 /* the 1px rules are real nodes (heron measures them as elements):
    zero-size boxes + a 1px border = w/h 1 without raw px sizing. */
 .fo-cta-vrule {
@@ -226,6 +235,11 @@ html[data-theme='dark'] .fo-cta {
     min-block-size: 58.8rem;
   }
 
+  .fo-cta-frame {
+    /* heron anchor→frame 289 @768, we held 1: +288 on the 9.21 root. */
+    margin-block-start: 31.27rem;
+  }
+
   .fo-cta-ledger {
     grid-template-rows: 9.6rem 27.6rem 21.6rem;
   }
@@ -254,6 +268,13 @@ html[data-theme='dark'] .fo-cta {
 @media (min-width: 992px) {
   .fo-cta {
     min-block-size: 83.75rem;
+  }
+
+  .fo-cta-frame {
+    /* heron anchor→frame 506/380/270 @1920/1440/1024 (we held
+       134/101/72): the fluid root scales the gap with the viewport —
+       +33.47rem of it lands all three rungs within a px. */
+    margin-block-start: 33.47rem;
   }
 
   .fo-cta-ledger {

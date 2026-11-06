@@ -310,6 +310,12 @@
       "skip": [
         "color"
       ]
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+      "spec": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > svg[1]",
+      "ours": "cta.sketch-art"
     }
   ],
   "plumbing": [
