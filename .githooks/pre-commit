@@ -1,0 +1,47 @@
+#!/bin/sh
+# .githooks/pre-commit — r339/T-23: fast staged-file lint guard (<30s).
+#
+# lint-staged is NOT a dependency (dependency-conscious repo; knip gate).
+# If it ever lands (node_modules/.bin/lint-staged), it takes precedence.
+# Until then the equivalent fast guard: `eslint --quiet` on the staged
+# TS/TSX files under frontend/src + backend/src — the same trees the
+# `npm run lint` gate and CI's Lint job cover, just scoped to the diff.
+#
+# Known limit (documented trade-off vs lint-staged): a PARTIALLY staged
+# file is linted as it sits in the working tree, not the staged hunks.
+# CI's full `npm run lint` remains the backstop; this hook is a fast
+# pre-feedback net, not a replacement gate.
+#
+# Missing-tooling policy mirrors .githooks/pre-push precedent: a LOUD
+# skip (fresh clone before `npm install`), never a silent pass.
+set -u
+
+# 1) lint-staged, if it is ever installed, owns this step.
+if [ -x node_modules/.bin/lint-staged ]; then
+  echo "[pre-commit] lint-staged…"
+  exec node_modules/.bin/lint-staged
+fi
+
+# 2) Fast guard: eslint --quiet on staged src files only.
+ESLINT=node_modules/.bin/eslint
+if [ ! -x "$ESLINT" ]; then
+  echo "[pre-commit] eslint: SKIP (node_modules not installed — run npm ci; CI lint job remains the gate)"
+  exit 0
+fi
+
+STAGED=$(git diff --cached --name-only --diff-filter=ACM -- 'frontend/src/**/*.ts' 'frontend/src/**/*.tsx' 'backend/src/**/*.ts' 'backend/src/**/*.tsx' | tr '\n' ' ')
+# POSIX sh (dash) has no ${var//pat/str} — strip spaces via tr instead.
+if [ -z "$(printf '%s' "$STAGED" | tr -d ' ')" ]; then
+  echo "[pre-commit] no staged frontend/backend src files — nothing to lint"
+  exit 0
+fi
+
+echo "[pre-commit] eslint --quiet on staged files…"
+# shellcheck disable=SC2086 — word-splitting is the point here.
+if ! "$ESLINT" --quiet $STAGED; then
+  echo "[pre-commit] BLOCKED: eslint errors in staged files — fix before committing"
+  echo "[pre-commit] بالعربية: أخطاء eslint في الملفات المُرحَّلة — صحِّح ثم أعد الالتزام"
+  exit 1
+fi
+echo "[pre-commit] staged files clean"
+exit 0

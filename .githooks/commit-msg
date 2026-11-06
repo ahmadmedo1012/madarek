@@ -1,0 +1,12 @@
+#!/bin/sh
+# .githooks/commit-msg — r339/T-23: conventional-commit gate (zero deps).
+#
+# The rules live in the root commitlint.config.mjs (single source of
+# truth); the engine is commit-msg.mjs next to this file. Wiring is the
+# EXISTING one: `git config core.hooksPath .githooks` (package.json
+# "prepare") — unchanged; .githooks/pre-push keeps its own contract.
+#
+# git-native messages (plain `Merge branch …` / `Revert "…"` / fixups)
+# are exempted inside the engine, so ordinary merges keep working.
+set -u
+exec node "$(dirname "$0")/commit-msg.mjs" "$@"

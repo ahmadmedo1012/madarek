@@ -1,35 +1,32 @@
+<!-- r339/T-23 — PR checklist (Arabic-first). Keep answers honest: a red gate stated beats a green box ticked blind. -->
+
 ## 📌 الملخص | Summary
 
-ماذا يغيّر هذا الـ PR ولماذا؟
+ماذا يغيّر هذا الـ PR ولماذا؟ (مرجع الجولة/المهمة إن وجد — round/task ref)
 What does this PR change and why?
 
-(مرجع الجولة/التدقيق إن وجد | round / audit ref if any)
+## ✅ قائمة تدقيق R339 | R339 checklist
 
-## 🧭 نوع التغيير | Type of change
+**البوابات | Gates**
 
-- [ ] 🐞 fix — إصلاح خطأ | bug fix
-- [ ] ✨ feat — ميزة جديدة | new feature
-- [ ] 🎨 polish — صقل واجهة | UI polish
-- [ ] 📚 docs — توثيق | documentation
-- [ ] ♻️ chore — صيانة | maintenance
+- [ ] `bash scripts/verify.sh --fast` أخضر قبل الدفع | green before push (tsc + vitest + bundle gate)
+- [ ] حجم الحزمة مذكور ورقمه ≤ 770 KB gz | bundle size stated, ≤ 770 KB gz (before → after)
+- [ ] الاختبارات قانون | tests are law — لا اختبار حُذف أو أُضعف تأكيدُه | no test deleted, no assertion weakened
 
-## ✅ قائمة التدقيق | Checklist
+**الأثر المطابَقي | Conformance impact**
 
-**بوابات الجودة | Quality gates**
+- [ ] الأثر مذكور: الأقسام المتأثرة + قبل ← بعد | stated: sections touched + before → after
+- [ ] انضباط السقف: لا رفع سقوف ولا إعادة تثبيت خطوط أساس | ratchet discipline: no ceiling raise, no baseline re-pin
+- [ ] دلتا الاستثناء < 5% | excusal (excused-element) delta < 5%
 
-- [ ] `lint` — صفر أخطاء | zero errors
-- [ ] `tsc` / `build` — صفر أخطاء أنواع | zero type errors
-- [ ] `tests` — الاختبارات خضراء | test suites green
-- [ ] `parity` — تكافؤ التصميم أخضر | design-parity gate green
+**التحقق اليدوي | Manual verification**
 
-**تحقق يدوي | Manual verification**
-
-- [ ] المظهران: الليلي والنهاري | both dark & light themes verified
-- [ ] RTL — العربية أولًا | Arabic-first right-to-left verified
-- [ ] لوحة المفاتيح والتركيز | keyboard navigation & focus verified
-- [ ] لقطات شاشة مرفقة لتغييرات الواجهة | screenshots attached for UI changes
+- [ ] المظهران ليلي + نهاري | dark + light both checked
+- [ ] ‏390px محمول مُتحقق منه | mobile 390 checked
+- [ ] RTL عربي أولًا | Arabic-first RTL correct
+- [ ] لقطات شاشة لتغييرات الواجهة | screenshots for UI changes
 
 **النظافة | Hygiene**
 
 - [ ] لا أسرار في الـ diff | no secrets in the diff
-- [ ] `CHANGELOG.md` مُحدَّث إن كان التغيير يستحق سطرًا | CHANGELOG updated if user-relevant
+- [ ] `CHANGELOG.md` مُحدَّث إن استحق سطرًا | CHANGELOG updated if user-relevant
