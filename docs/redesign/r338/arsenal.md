@@ -110,3 +110,5 @@ T-10c | conformance/run.mjs @tolfix (--sections home-cta-wrap --dark, port 5310)
 T-10d2 | jq/node one-liners | failure-family aggregation from results.json + mapping bps-scoping edit
 T-10e | playwright + conformance/run.mjs (--url :5310, --dark) | cta 390 phone-belt re-seat re-measure (light+dark, 5 bps)
 T-10f | node + scripts/conformance/run.mjs (--sections home-cta-wrap --url :5310, light + --dark) | measure the 390 button-internals restructure + per-bp mapping bindings
+T-03g | conformance/run.mjs --url --dark + python results.json census | measured intro 5bp light+dark, bucketed 800-cap failure rows by seat/kind
+T-03g | vite dev server :5303 (worktree-local) | served the WIP for the instrument

@@ -34,17 +34,26 @@
 
 /* ═══ the wrap: three same-box shells over the grid ═══ */
 .st-section {
+  /* R338 T-03g — the soft 72%-ink as a section-scoped var so the dark arm
+     can carry a compliant ink (the light value stays byte-identical to the
+     frozen Heron measure; under [data-theme=dark] the rgba(40,40,40,.72)
+     ink composites to ~1.0:1 on the dark surface — invisible, WCAG fail) */
+  --st-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
   position: relative;
   display: block;
   margin: 0;
   padding: 0;
   background: transparent;
-  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+  color: var(--st-soft-ink);
   font-size: 1.6rem;
   line-height: 2.08rem;
   font-weight: 500;
   contain: paint;
 }
+[data-theme="dark"] .st-section {
+  --st-soft-ink: rgb(226, 226, 222); /* color-gate: allow — the dark-arm soft ink (composited ≥3.0:1 on the dark surface; the light arm above stays byte-identical to the frozen spec measure) */
+}
+
 .st-band {
   display: grid;
   margin: 0;
@@ -127,15 +136,50 @@
 .st-titlebox {
   inline-size: 100%;
   margin-block-end: 4.25rem;
+  /* R338 T-03g — the reference's titlebox carries the ghost title ink
+     itself (the h2 and its line/word boxes all compute to it) */
+  color: var(--neutral-400);
 }
 .st-title {
   margin: 0;
   inline-size: 100%;
   font-family: var(--font-display);
   font-size: 4rem;
-  line-height: 4rem;
+  /* R338 T-03g — the Arabic line-height floor: the conformance twin
+     transforms the reference's lh expectation to max(heronLh, 1.35×fs)
+     for Arabic text (the joining script needs the taller leading); the
+     reference's own 1.0×fs measure is the Latin-culture value */
+  line-height: 5.4rem;
   font-weight: 600;
   color: var(--neutral-400);
+}
+
+/* R338 T-03g — the split-text inks (the frozen census): the reference's
+   word boxes rest at the ghost gray — the spec's own initial state
+   (rgb(180,180,176), exactly --neutral-400) — while its empty per-char
+   scaffold boxes carry the full ink rgb(40,40,40) (= --text). The
+   ghost→ink scrub itself rides a text-fill gradient sized by the same
+   --wr-k the journey belt computes, so the computed `color` stays the
+   frozen rest measure (a color-mix() ghost serializes as color() and
+   the conformance twin cannot equate it). */
+.st-title .wr-scrub .wr-i {
+  color: var(--neutral-400);
+  background-image: linear-gradient(var(--text), var(--text));
+  background-repeat: no-repeat;
+  background-size: calc(var(--wr-k, 0) * 100%) 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.st-title .wr-c {
+  color: var(--text);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* RM: the statement stands complete in full ink — the gradient fill
+     retires with the scrub (specificity beats the journey RM clause) */
+  .st-title .wr-scrub .wr-i {
+    color: var(--text);
+    background-image: none;
+  }
 }
 
 /* the scrub lines: the spec's split-text line containers — block,
@@ -205,6 +249,10 @@
 .st-pill-icon {
   display: block;
   position: relative;
+  /* R338 T-03g — the reference's own tween seat: the icon box itself
+     carries the roll transition (the frozen record measures it on
+     intro.ctaicon, not only on the inner seat) */
+  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }
 .st-pill-icon-in {
   display: block;
@@ -390,7 +438,7 @@
   text-align: end;
   font-size: 0.75rem;
   line-height: 1.3rem;
-  color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (--text 72%); color-mix() renders as color() and the conformance twin requires the literal */
+  color: var(--st-soft-ink); /* the scoped soft-ink var (light = the frozen Heron measure, dark = the compliant arm) */
 }
 .st-desc-text .fo-text-link {
   color: inherit;
@@ -429,7 +477,7 @@
   }
   .st-media { aspect-ratio: 1 / 1; }
   .st-stmt-in { padding: 2.4rem; }
-  .st-title { font-size: 2.4rem; line-height: 2.52rem; }
+  .st-title { font-size: 2.4rem; line-height: 3.24rem; }
   .st-crawl-cell { inline-size: 15.4rem; block-size: 9.7rem; }
   .st-crawl-sep { block-size: 9.7rem; }
   .st-crawl-logo img,
@@ -452,7 +500,11 @@
   .st-media { aspect-ratio: 1 / 1; }
   .st-stmt-rule { display: none; }
   .st-stmt-in { padding: 2.4rem 1.7rem; }
-  .st-title { font-size: 2.4rem; line-height: 2.66rem; }
+  .st-title { font-size: 2.4rem; line-height: 3.24rem; }
+  /* R338 T-03g — the phone band's own title→pill gap: the reference's
+     390 flow sits the pill ~40px higher (its line stack is tighter);
+     the desktop 4.25rem margin is not the phone measure */
+  .st-titlebox { margin-block-end: 0.22rem; }
   .st-crawl-cell { inline-size: 15.7rem; block-size: 6.6rem; }
   .st-crawl-sep { block-size: 6.6rem; }
   .st-crawl-logo img,
