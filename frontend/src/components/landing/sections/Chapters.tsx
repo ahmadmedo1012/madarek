@@ -10,6 +10,9 @@
  * mount: header copy + the scene, no composer refs. */
 import { RevealCssClass } from '../../../hooks/useReveal';
 import { JourneyScene } from '../journey/JourneyScene';
+// T-14 (r339) — the head's kicker rides the shared pattern library
+// (lp-eyebrow = the chrome fo-label grammar, computed-equal swap).
+import { Eyebrow } from '../patterns';
 
 export function Chapters() {
   return (
@@ -31,7 +34,7 @@ export function Chapters() {
         head={
           <header className="chapters-head">
             <div className="chapters-head-copy">
-              <span className="fo-label"><span className="fo-mono" dir="ltr">[04]</span> الفصول</span>
+              <Eyebrow n={4}>الفصول</Eyebrow>
               <RevealCssClass as="h2" className="chapters-title" delay={1} id="chapters-title">
                 الرحلة — <em>أربعة فصول تتحرك أمامك</em>
               </RevealCssClass>

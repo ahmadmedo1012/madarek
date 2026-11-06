@@ -79,6 +79,10 @@ import '../styles/landing/consent-edge.css';
 // (r323 chrome last-word, r330 override, r331 nav last-word) holds.
 // The old landing.css path survives as an EMPTY stub (gates enumerate it).
 import '../styles/landing/chrome.css';
+// T-14 (r339) — the pattern library: the 7 canonical patterns' base
+// grammar. Loads after chrome, BEFORE every section sheet, so the
+// spec-locked section overrides always out-specify the lp-* bases.
+import '../styles/landing/patterns.css';
 import '../styles/landing/hero.css';
 import '../styles/landing/statement.css';
 import '../styles/landing/reveals.css';

@@ -1,0 +1,137 @@
+/* T-14 (r339) — the landing pattern library: the 7 canonical patterns
+ * (numeral · hairline · eyebrow · CTA pair · card grid · marquee · pin).
+ * Every param below is the MEASURED grammar of the Heron-conformant
+ * sections — chrome's .fo-label/.fo-mono (eyebrow/numeral), cta's
+ * .fo-cta-actions pair, roles' 1fr 1fr grid, hero's .fo-ticker,
+ * journey's .jt-pin. No invented values; existing tokens only;
+ * RTL-first (logical properties); spec-locked section divergences
+ * stay as overrides ON TOP of these bases, never beneath them. */
+
+/* ── Numeral `[nn]` — the mono bracketed index (chrome .fo-mono). ── */
+.lp-numeral {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Eyebrow — the drafting kicker (chrome .fo-label grammar):
+ * index + Arabic label + the 1px dash. Seated label voice: fs-sm/600
+ * with the muted ink; the index drops to fs-xxs/faint. ──────────── */
+.lp-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lp-eyebrow::before {
+  content: '';
+  inline-size: var(--sp-5);
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.lp-eyebrow .lp-numeral {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+/* ── Hairline — the 1px rule (statement/chrome grammar: bg technique,
+ * --rule-strong ink). Base owns the ink; the geometry variants are the
+ * two measured seats (statement plabel/desc = h · stmt/ticker = v);
+ * --border only where a border edge is structural. ───────────────── */
+.lp-hairline {
+  background: var(--rule-strong);
+}
+
+.lp-hairline--h {
+  position: absolute;
+  inset-inline: 0;
+  block-size: 1px;
+  pointer-events: none;
+}
+
+.lp-hairline--v {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 1px;
+}
+
+.lp-hairline--border {
+  block-size: 0;
+  border-block-start: 1px solid var(--rule-strong);
+  background: none;
+}
+
+/* ── Kicker (mono label) — the eyebrow's undashed sibling (cta
+ * .fo-cta-kicker grammar): mono/500, tracking 0 (Arabic joins forbid
+ * it); ink set by context or the --cta-ink variant. ──────────────── */
+.lp-kicker {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.lp-kicker--cta-ink {
+  color: var(--cta-ink);
+}
+
+/* ── CTA pair — primary + secondary (cta .fo-cta-actions grammar):
+ * the pair rides the global btn system (accent lg + ghost lg); the
+ * container owns only the seat + the gap ladder. ─────────────────── */
+.lp-cta-pair {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+@media (inline-size <= 767px) {
+  .lp-cta-pair { gap: var(--sp-4); }
+}
+
+/* ── Card grid (roles grammar): 2 equal lanes, floor-guarded, one
+ * column under 768 — the measured card cadence. ──────────────────── */
+.lp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-8);
+}
+
+@media (inline-size <= 767px) {
+  .lp-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ── Marquee (hero .fo-ticker grammar): edge-fed crawl, reading
+ * direction honored by the shared fo-ticker-rtl keyframes; the RM
+ * belt stops it dead (motion tokens live in hero.css, the owner). */
+.lp-marquee {
+  display: flex;
+  overflow: hidden;
+  gap: var(--sp-8);
+  border-block: 1px solid var(--rule-strong);
+}
+
+.lp-marquee-track {
+  display: flex;
+  flex: 0 0 auto;
+  min-inline-size: 100%;
+  align-items: center;
+  gap: var(--sp-8);
+  animation: fo-ticker-rtl 36s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-marquee-track { animation: none; }
+}
+
+/* ── Pinned scene (journey .jt-pin grammar): the full-height sticky
+ * stage with the page gutter — the map's own measured seat. ──────── */
+.lp-pin {
+  position: sticky;
+  inset-block-start: 0;
+  block-size: 100dvh;
+  padding-inline: var(--page-gutter);
+}

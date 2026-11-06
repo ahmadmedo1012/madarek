@@ -158,6 +158,9 @@ export function Roles() {
         <div className="rl-titlecol" data-spec="roles.titlecol">
           <div className="rl-labelbox" data-spec="roles.labelbox">
             <div className="rl-label" data-spec="roles.label">
+              {/* T-14: kept hand-rolled — r306-landing-sheet.test.ts
+                  pins this exact template (the numeral VOICE: mono,
+                  Latin, dir=ltr, tabular); lp-numeral is its equal. */}
               <span className="fo-mono" dir="ltr">[{active.num}]</span> {active.title}
             </div>
           </div>

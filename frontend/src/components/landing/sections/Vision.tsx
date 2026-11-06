@@ -71,18 +71,18 @@ export function Vision({ year }: { year: number }) {
               <div className="fo-cta-hrule" data-spec="cta.top-hrule" aria-hidden="true" />
               <div className="fo-cta-cell fo-cta-rail" data-spec="cta.top-rail">
                 <div className="fo-cta-kick" data-spec="cta.top-rail-kick-wrap">
-                  <div className="fo-cta-kicker fo-mono" dir="ltr" data-spec="cta.top-rail-kicker">[07] CTA</div>
+                  <div className="lp-kicker lp-kicker--cta-ink fo-mono" dir="ltr" data-spec="cta.top-rail-kicker">[07] CTA</div>
                 </div>
               </div>
               <div className="fo-cta-cell fo-cta-mid" data-spec="cta.top-mid">
                 <div className="fo-cta-kick" data-spec="cta.top-mid-kick-wrap">
-                  <div className="fo-cta-kicker fo-mono" dir="ltr" data-spec="cta.top-mid-kicker">RESOLVE</div>
+                  <div className="lp-kicker lp-kicker--cta-ink fo-mono" dir="ltr" data-spec="cta.top-mid-kicker">RESOLVE</div>
                 </div>
                 <div className="fo-cta-vrule" data-spec="cta.top-mid-rule" aria-hidden="true" />
               </div>
               <div className="fo-cta-cell fo-cta-side" data-spec="cta.top-side">
                 <div className="fo-cta-kick" data-spec="cta.top-side-kick-wrap">
-                  <div className="fo-cta-kicker fo-mono" dir="ltr" data-spec="cta.top-side-kicker">MADAREK</div>
+                  <div className="lp-kicker lp-kicker--cta-ink fo-mono" dir="ltr" data-spec="cta.top-side-kicker">MADAREK</div>
                 </div>
                 <div className="fo-cta-vrule" data-spec="cta.top-side-rule" aria-hidden="true" />
               </div>
@@ -92,7 +92,7 @@ export function Vision({ year }: { year: number }) {
             <div className="fo-cta-band fo-cta-band-title" data-spec="cta.band-title">
               <div className="fo-cta-cell fo-cta-rail" data-spec="cta.title-rail">
                 <div className="fo-cta-kick" data-spec="cta.title-rail-kick-wrap">
-                  <div className="fo-cta-kicker fo-mono" dir="ltr" data-spec="cta.title-rail-kicker">FIN</div>
+                  <div className="lp-kicker lp-kicker--cta-ink fo-mono" dir="ltr" data-spec="cta.title-rail-kicker">FIN</div>
                 </div>
               </div>
               <div className="fo-cta-cell fo-cta-inner" data-spec="cta.title-mid">

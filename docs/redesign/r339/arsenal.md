@@ -81,3 +81,7 @@
 - [T-11c] playwright standalone probes (/tmp/t11c-probe*.mjs, createRequire frontend/node_modules) — proved the lead-mask blind spot: walk0 dropped `scale: 0` elements (zero rect) and the tolerant role join read the first title mask's `0 1` as their from-state; also confirmed the sandbox's ≤2-core navigator skips the intro (WAAPI_PATCH env override is load-bearing for any manual probing of the entrance)
 - [T-11c] node — final tween.mjs measure @1440+@390 (32/32 + 30/30); scale-property zero-rect tracking + occ join landed in the instrument
 - [T-11c] verify.sh --fast — GREEN (3051 vitest, bundle 765.1/770 KB gz); no r306 whitelist additions (preloader exit is transitions-only)
+- [T-14] ripgrep — census of the 7 patterns across landing sections + chrome (eyebrow/hairline/numeral/CTA/grid/marquee/pin class sprawl)
+- [T-14] node/vite — dev server :5315 (root node_modules, worktree-local) + conformance baseline run
+- [T-14] playwright (via scripts/conformance/run.mjs) — before/after no-regression proof on touched sections
+- [T-14] skills — /home/z/my-project/skills has NO frontend-design / web-design-guidelines docs (checked; only pdf/xlsx/charts/docx/etc.) — logged as absent, proceeding on repo-internal Heron specs

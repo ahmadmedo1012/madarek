@@ -73,12 +73,6 @@ html[data-theme='dark'] .fo-cta {
   border-block-start: 1px solid var(--rule-strong);
 }
 
-.fo-cta-kicker {
-  font-family: var(--font-mono);
-  font-weight: 500;
-  color: var(--cta-ink);
-  letter-spacing: 0;
-}
 
 .fo-cta-title {
   font-family: var(--font-display);
@@ -484,14 +478,14 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
   padding: var(--sp-1);
 }
 
-.fo-cta-kicker {
+.lp-kicker {
   font-size: 1.05rem;
 }
 
 /* T-10d: the mono kickers re-voice on the section ladder — heron seats
    them at 1.2rem from 768 up (11.05/7.11/10/13.33px) with the Arabic
    lh floor 1.35; the (0,2,0) hook out-specifies the shared mono voice. */
-.fo-cta .fo-cta-kicker {
+.fo-cta .lp-kicker {
   line-height: 1.35;
 }
 
@@ -577,7 +571,7 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
     line-height: 1.35;
   }
 
-  .fo-cta .fo-cta-kicker {
+  .fo-cta .lp-kicker {
     font-size: 1.2rem;
     line-height: 1.35;
   }
@@ -618,7 +612,7 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
     line-height: 1.35;
   }
 
-  .fo-cta .fo-cta-kicker {
+  .fo-cta .lp-kicker {
     font-size: 1.2rem;
     line-height: 1.35;
   }
