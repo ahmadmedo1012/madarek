@@ -91,3 +91,4 @@ T-24 | depcruise/madge-style import scan + knip | circular-dep fix AdminPages↔
 T-13r | playwright (repo node_modules, chromium via /tmp/pw-browsers symlink fallback per ADDENDUM 3) | interact.mjs hover/focus-visible delta probing against vite :5313, 5 bps
 T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + channel-class census driving the fix plan
 T-05g | run.mjs census copy (uncapped /tmp splice variant) + python census | enumerate full 119 no-counterpart set + failure families
+T-05h | node + repo playwright (chromium-1200 via /tmp/pw-browsers fallback) | per-bp DOM walk replicating run.mjs WALK_JS to geometry-match spec records and generate per-recorded-path bindings
