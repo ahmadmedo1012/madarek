@@ -123,3 +123,4 @@ T-05l | node scripts/conformance/run.mjs --sections home-why-wrap --dark | light
 - T-06m | python3 (json census over docs/redesign/r335/heron-spec/footer.*.json) | enumerate 284 unique spec paths, bound/unbound split, container-collision + aggregate-expectation replication to re-scope footer.json suppression
 T-06n | scripts/conformance/run.mjs (--sections footer --url :5306, light + --dark; anull post-skip re-baseline) | re-measure + verify root-lh/reg-floor/dark-go-ink fixes
 T-06n | npx vite --port 5306 + PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers fallback symlinks | dev seat for the instrument
+T-13b | interact.mjs (--url vite:5313, --sections home-hero-wrap, 5 bps) + playwright chromium (/tmp/pw-browsers fallback) + node heron-spec census enumeration | hero interaction-state seats authored + measured per-bp (41% → 98.3%)

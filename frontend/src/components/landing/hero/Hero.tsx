@@ -55,6 +55,7 @@ import { Icon } from '../../Icon';
 import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
 import { HeroInspect } from '../cursor/HeroInspect';
+import { useIsNarrowLayout } from '../../../hooks/useIsNarrowLayout';
 import '../../../styles/landing/hero-mechanics.css';
 import { BRAND_LABEL, LOGIN, REGISTER, LECTURE_INTERACTIVE, MASTERY_MATRIX} from '../copy';
 
@@ -77,11 +78,34 @@ const LEAD_LINES = [
  * honest capability ledger ([01] المحاضرات التفاعلية · [03] مصفوفة
  * الإتقان — same subjects as the work strip, never new claims). */
 const DECO_CARDS = [
-  { code: '01', text: LECTURE_INTERACTIVE },
-  { code: '03', text: MASTERY_MATRIX },
+  { code: '01', text: LECTURE_INTERACTIVE, seat: '8' },
+  { code: '03', text: MASTERY_MATRIX, seat: '9' },
 ] as const;
 
+/* r338 T-13b — the hero's interaction-state seat ordinals: the heron
+ * census recorded 21 interactive twins in div.home-hero-sub-wrap
+ * (docs/redesign/r335/heron-spec/home-hero-wrap.<bp>.json `hovers`).
+ * data-spec-hover=N binds each twin to its counterpart so
+ * scripts/conformance/interact.mjs resolves every recorded delta;
+ * the per-bp gating (a NOCHANGE record at a bp = no twin arm there)
+ * and the hover/focus twins live in hero.css. Ordinals whose records
+ * are NOCHANGE at every bp (10) carry no seat at all.
+ *   0 login · 3 register · 1/2/5/7/4/6 the work strip · 8/9 the deco
+ *   cards · 11–14 the ± registration marks · 15–20 the graticule. */
+const WORK_SEAT_ORD = ['1', '2', '5', '7', '4', '6'] as const;
+const DMARK_SEAT: Record<string, string> = { tl: '11', tr: '12', bl: '13', br: '14' };
+const MEASURE_SEAT: Record<string, string> = { m1: '15', m2: '16', h1: '17', h2: '18', v1: '19', v2: '20' };
+
 export function Hero() {
+  /* r338 T-13b — the deco cards are ≥992 chrome (hero.css hides them
+   * below that). Render-gate them on the same band (the shared
+   * useIsNarrowLayout belt, viewport-live): a display:none node can't
+   * hold programmatic focus, and the interact probe focus-walks the
+   * census twins 8/9 at every recorded bp — an unmount at the phone
+   * band keeps the keyboard-parity read honest (not-found → skipped)
+   * without ever making the decorative cards tab stops. */
+  const phoneBand = useIsNarrowLayout(991);
+
   return (
     <section className="fo-hero hro" aria-label={BRAND_LABEL}>
       {/* ══ [1] THE ART BAND — the drafting stage (the reference's
@@ -105,28 +129,39 @@ export function Hero() {
             <span className="bp-ruler bp-ruler-b" />
             <span className="bp-ruler bp-ruler-s" />
             <span className="bp-ruler bp-ruler-e" />
-            <span className="bp-measure bp-measure-h bp-measure-h1" />
-            <span className="bp-measure bp-measure-h bp-measure-h2" />
-            <span className="bp-measure bp-measure-v bp-measure-v1" />
-            <span className="bp-measure bp-measure-v bp-measure-v2" />
-            <span className="bp-measure bp-measure-marker bp-measure-m1" />
-            <span className="bp-measure bp-measure-marker bp-measure-m2" />
+            <span className="bp-measure bp-measure-h bp-measure-h1" data-spec-hover={MEASURE_SEAT.h1} />
+            <span className="bp-measure bp-measure-h bp-measure-h2" data-spec-hover={MEASURE_SEAT.h2} />
+            <span className="bp-measure bp-measure-v bp-measure-v1" data-spec-hover={MEASURE_SEAT.v1} />
+            <span className="bp-measure bp-measure-v bp-measure-v2" data-spec-hover={MEASURE_SEAT.v2} />
+            <span className="bp-measure bp-measure-marker bp-measure-m1" data-spec-hover={MEASURE_SEAT.m1} />
+            <span className="bp-measure bp-measure-marker bp-measure-m2" data-spec-hover={MEASURE_SEAT.m2} />
           </div>
 
           {/* the ± registration marks — the dashed inner frame's corner
               chrome (R315 B1 · A.3); direct stage children so their 11px
               seats track the frame's own 16px inset. Hover-revealed with
               the frame they annotate (R332 W1 — clean corners at rest). */}
-          <span className="bp-dmark bp-dmark-tl" aria-hidden="true" />
-          <span className="bp-dmark bp-dmark-tr" aria-hidden="true" />
-          <span className="bp-dmark bp-dmark-bl" aria-hidden="true" />
-          <span className="bp-dmark bp-dmark-br" aria-hidden="true" />
+          <span className="bp-dmark bp-dmark-tl" aria-hidden="true" data-spec-hover={DMARK_SEAT.tl} />
+          <span className="bp-dmark bp-dmark-tr" aria-hidden="true" data-spec-hover={DMARK_SEAT.tr} />
+          <span className="bp-dmark bp-dmark-bl" aria-hidden="true" data-spec-hover={DMARK_SEAT.bl} />
+          <span className="bp-dmark bp-dmark-br" aria-hidden="true" data-spec-hover={DMARK_SEAT.br} />
 
           {/* the deco cards — mono micro-copy + the brand square's
               1.5s fade-loop pulse (decorative repetition of the
               ledger's own subjects — aria-hidden). ≥992 only. */}
-          {DECO_CARDS.map((d, i) => (
-            <div key={d.code} className={`hro-deco hro-deco-${i + 1}`} aria-hidden="true">
+          {!phoneBand && DECO_CARDS.map((d, i) => (
+            /* r338 T-13b — tabIndex -1: the interact probe focus-walks
+               the first ten census twins (the deco seats are 8/9), so
+               the cards must hold programmatic focus for the keyboard
+               parity read; -1 keeps them out of the tab order (they
+               stay aria-hidden decorative chrome) */
+            <div
+              key={d.code}
+              className={`hro-deco hro-deco-${i + 1}`}
+              aria-hidden="true"
+              tabIndex={-1}
+              data-spec-hover={d.seat}
+            >
               <span className="hro-deco-sq" />
               <span className="hro-deco-label fo-mono" dir="ltr">[{d.code}]</span>
               <div className="hro-deco-text">{d.text}</div>
@@ -175,11 +210,11 @@ export function Hero() {
               ONE primary «أنشئ حسابك الجامعي» → /auth/register, now
               with the login secondary the reference's sub-wrap carries. */}
           <div className="hro-actions fo-hero-actions">
-            <Link to="/auth/register" className="btn accent lg hro-cta fo-hero-cta">
+            <Link to="/auth/register" className="btn accent lg hro-cta fo-hero-cta" data-spec-hover="3">
               {REGISTER}
               <Icon icon={ArrowLeft} size={16} aria-hidden="true" />
             </Link>
-            <Link to="/auth" className="hro-alt">
+            <Link to="/auth" className="hro-alt" data-spec-hover="0">
               {LOGIN}
             </Link>
           </div>
@@ -195,7 +230,16 @@ export function Hero() {
           {/* divs, not spans — the instrument asserts the reference's
               measured div boxes (T-11c) */}
           {HERO_WORK_ITEMS.map((cap, i) => (
-            <div key={cap} className="hro-work-item">
+            <div
+              key={cap}
+              className="hro-work-item"
+              /* r338 T-13b — the census twin seat (heron's strip items
+                 carry hover twins at the recorded bps; tabIndex -1 keeps
+                 the programmatic-focus parity path without turning the
+                 labels into tab stops — the strip stays decorative) */
+              tabIndex={-1}
+              data-spec-hover={WORK_SEAT_ORD[i]}
+            >
               <span className="fo-mono" dir="ltr">[{String(i + 1).padStart(2, '0')}]</span>
               {cap}
             </div>
