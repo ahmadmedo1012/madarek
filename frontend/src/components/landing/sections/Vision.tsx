@@ -7,7 +7,7 @@
  * campuses, live capabilities) still ride the registry strip below,
  * computed from the real config. Debug text is not content. */
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { Icon } from '../../Icon';
 import { colleges } from '../../../data/colleges.config';
 import { LIVE_COUNT } from '../../../data/landing-ledger';
@@ -15,6 +15,13 @@ import { formatInt } from '../../../utils/numbers';
 import { LOGIN, REGISTER } from '../copy';
 
 const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
+
+/* T-10f: heron's resolve label is a TWO-LINE stack inside a fixed label
+ * column (w80 @phone) — the register copy splits on its natural Arabic
+ * phrase break (copy.ts stays the single source). */
+const REGISTER_WORDS = REGISTER.split(' ');
+const REGISTER_L1 = REGISTER_WORDS.slice(0, 2).join(' ');
+const REGISTER_L2 = REGISTER_WORDS.slice(2).join(' ');
 
 /* The sketch band's authored line-art: ruled baselines, the three-step
  * registration path, the account mark — pure stroke work. */
@@ -91,15 +98,51 @@ export function Vision({ year }: { year: number }) {
                   </h2>
                 </div>
                 <div className="fo-cta-lede-wrap" data-spec="cta.lede-wrap">
-                  <p className="fo-cta-lede" data-spec="cta.lede" data-mdrk-reveal="item">
+                  {/* T-10f: the instrument asserts tags — heron's lede seat is a
+                      div (p margins are globally reset, so the swap is neutral). */}
+                  <div className="fo-cta-lede" data-spec="cta.lede" data-mdrk-reveal="item">
                     أنشئ حسابك الجامعي في دقائق — ببريدك الإلكتروني ورقم قيدك،
                     وتابع تقدّمك من أول محاضرة.
-                  </p>
+                  </div>
                 </div>
                 <div className="fo-cta-actions" data-spec="cta.actions" data-mdrk-reveal="item" id="cta">
+                  {/* T-10f RESTRUCTURE — heron's measured resolve-button tree:
+                      a (transparent interactive shell) > bg div (the orange
+                      wash + border-color/color voice) > label column (two
+                      masked two-line wrappers, transform tween) + icon box
+                      (dual swap chevrons, transform tween). The arrow is our
+                      own authored line-art, mirrored for RTL. */}
                   <Link to="/auth/register" className="btn accent lg" data-spec="cta.primary" data-spec-hover="1">
-                    {REGISTER}
-                    <Icon icon={ArrowLeft} size={16} />
+                    <div className="fo-cta-rbtn" data-spec="cta.primary-bg">
+                      <div className="fo-cta-rlabel" data-spec="cta.primary-label">
+                        <div className="fo-cta-rline" data-spec="cta.primary-l1">
+                          <div className="fo-cta-rtext" data-spec="cta.primary-l1t">{REGISTER_L1}</div>
+                        </div>
+                        <div className="fo-cta-rline fo-cta-rline2" data-spec="cta.primary-l2">
+                          <div className="fo-cta-rtext" data-spec="cta.primary-l2t">{REGISTER_L2}</div>
+                        </div>
+                      </div>
+                      <div className="fo-cta-ricons" data-spec="cta.primary-icons">
+                        <div className="fo-cta-ricon" data-spec="cta.primary-i1">
+                          <div className="fo-cta-ricell" data-spec="cta.primary-i1c">
+                            <div className="fo-cta-ricore" data-spec="cta.primary-i1k">
+                              <svg className="fo-cta-rsvg" data-spec="cta.primary-i1s" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+                                <path data-spec="cta.primary-i1p" d="M14 8.5H3.5M6.5 5.5 3.5 8.5l3 3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="fo-cta-ricon fo-cta-ricon2" data-spec="cta.primary-i2">
+                          <div className="fo-cta-ricell" data-spec="cta.primary-i2c">
+                            <div className="fo-cta-ricore" data-spec="cta.primary-i2k">
+                              <svg className="fo-cta-rsvg" data-spec="cta.primary-i2s" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false">
+                                <path data-spec="cta.primary-i2p" d="M14 8.5H3.5M6.5 5.5 3.5 8.5l3 3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </Link>
                   <Link to="/auth" className="btn ghost lg" data-spec="cta.secondary" data-spec-hover="4">{LOGIN}</Link>
                 </div>

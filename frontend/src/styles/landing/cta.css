@@ -109,6 +109,152 @@ html[data-theme='dark'] .fo-cta {
   line-height: inherit;
 }
 
+/* ── T-10f: heron's resolve-button INTERNALS — the measured tree
+   (frozen spec, all 5 bps): the <a> is a transparent interactive shell
+   (no transition, radius 0, pad 0); the orange wash + the border-color/
+   color 0.3s voice ride the inner bg div; the label is a fixed column
+   of two masked line wrappers (transform 0.48s tween) and the icon box
+   stages a dual chevron swap behind an overflow clip. Rungs per belt
+   ride the html root (9.92/9.2/5.92/8.33/11.11): label col 80/80/50/
+   70/90, icon pad 12.4/11.51/7.41/10.42/13.89 = 1.25rem, chevron cell
+   16/18/12/17/22 ≈ 2rem. Arabic transform: label fs 1.4rem with the lh
+   floor (1.35 phone / 1.4 up), the chevron mirrors to point with the
+   RTL reading direction. ── */
+.fo-cta {
+  --cta-resolve-ink: rgb(255, 255, 255); /* color-gate: allow — measured heron resolve ink */
+  --cta-resolve-bg: rgb(250, 54, 0); /* color-gate: allow — measured heron resolve wash (ADDENDUM 9 scoped-var pattern; T-25 owns unification) */
+}
+
+.fo-cta .btn.accent.lg {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--cta-resolve-ink);
+  cursor: pointer;
+  transition: none;
+  inline-size: 15.32rem;
+  block-size: 4.33rem;
+}
+
+.fo-cta-rbtn {
+  display: flex;
+  inline-size: 100%;
+  block-size: 100%;
+  padding-inline-start: 1.6rem;
+  gap: 1.6rem;
+  background: var(--cta-resolve-bg);
+  transition:
+    border-color 0.3s ease,
+    color 0.3s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+.fo-cta-rlabel {
+  position: relative;
+  flex: none;
+  inline-size: 8.06rem;
+  block-size: 1.9rem;
+  margin-block-start: 1.4rem;
+}
+
+.fo-cta-rline {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 100%;
+  block-size: 1.9rem;
+  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+.fo-cta-rline2 {
+  inset-block-start: 1.9rem;
+}
+
+.fo-cta-rtext {
+  font-size: 1.4rem;
+  line-height: 1.35;
+  block-size: 1.9rem;
+  text-align: start;
+}
+
+.fo-cta-ricons {
+  position: relative;
+  flex: none;
+  inline-size: 4.13rem;
+  block-size: 100%;
+  overflow: hidden;
+}
+
+.fo-cta-ricon {
+  position: absolute;
+  inset-block-start: 0.12rem;
+  inset-inline-start: 0;
+  padding: 1.25rem;
+  transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
+}
+
+/* the staged swap twin — parked one chevron-width up the inline axis,
+   clipped by the icon box until the hover slide (heron's dual-chevron
+   swap, mirrored for RTL). */
+.fo-cta-ricon2 {
+  inset-inline-start: -100%;
+}
+
+.fo-cta-ricell {
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+
+.fo-cta-ricore,
+.fo-cta-rsvg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* the recorded hover seat: both chevrons slide one cell along the
+   inline axis — the lead chevron exits the clip, the twin lands in
+   its seat (.probe-hover is the conformance probe's hover class). */
+.fo-cta .btn.accent:hover .fo-cta-ricon,
+.fo-cta .btn.accent.probe-hover .fo-cta-ricon {
+  transform: translateX(-100%);
+}
+
+@media (min-width: 768px) {
+  .fo-cta .btn.accent.lg {
+    inline-size: 16.4rem;
+    block-size: 4.78rem;
+  }
+
+  .fo-cta-rlabel {
+    inline-size: 8.7rem;
+  }
+
+  .fo-cta-ricons {
+    inline-size: 4.46rem;
+  }
+
+  .fo-cta-rtext {
+    line-height: 1.4;
+  }
+}
+
+@media (min-width: 992px) {
+  .fo-cta .btn.accent.lg {
+    inline-size: 16rem;
+    block-size: 4.77rem;
+  }
+
+  .fo-cta-rlabel {
+    inline-size: 8.4rem;
+  }
+
+  .fo-cta-ricons {
+    inline-size: 4.44rem;
+  }
+}
+
 .fo-cta-sketch-wrap,
 .fo-cta-sketch-frame,
 .fo-cta-sketch-holder,
