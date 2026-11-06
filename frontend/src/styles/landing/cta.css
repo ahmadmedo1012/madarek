@@ -202,6 +202,60 @@ html[data-theme='dark'] .fo-cta {
     block-size: 0;
     overflow: hidden;
   }
+
+  /* T-10e: heron parks the band-top kick-wraps at 390 as well — 0×0
+     seats at the wrap top-centre (x-mirror 195, y 0); the ruled gutters
+     and the 6.05rem cells stay (the labels are desktop-only matter). */
+  .fo-cta-band-top .fo-cta-kick {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+  }
+
+  /* T-10e: the phone belt re-seat — the resolve column narrows to the
+     measured rects (copy 298 · lede 278 · primary 152) and the stack
+     anchors at the band top on the 9.92 root: title y479 · lede y540 ·
+     btn y600 (9.07rem lead rung, −2.12rem on the actions, 3.83rem inner
+     pads a side); the actions hold heron's single 43px row. */
+  .fo-cta-inner {
+    align-content: start;
+    padding-inline: 3.83rem;
+  }
+
+  .fo-cta-copy {
+    margin-block-start: 9.07rem;
+    color: rgb(40, 40, 40);
+  }
+
+  .fo-cta-title {
+    color: rgb(40, 40, 40);
+  }
+
+  .fo-cta-lede-wrap {
+    inline-size: 28.02rem;
+  }
+
+  .fo-cta-actions {
+    flex-wrap: nowrap;
+    margin-block-start: 1.12rem;
+  }
+
+  .fo-cta .btn.accent.lg {
+    inline-size: 15.32rem;
+  }
+}
+
+/* T-10e: the phone title seat speaks heron's solid ink (rgb(40,40,40))
+   at 390; the dark arm restores the flipping wash — the light spec is
+   never re-pinned and the dark pass keeps its contrast floor. */
+@media (max-width: 767px) {
+  html[data-theme='dark'] .fo-cta-copy,
+  html[data-theme='dark'] .fo-cta-title {
+    color: var(--cta-ink);
+  }
 }
 
 .fo-cta-cell {
