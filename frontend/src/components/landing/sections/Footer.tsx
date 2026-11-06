@@ -169,7 +169,7 @@ export function Footer({ year }: { year: number }) {
               ))}
               {/* the hairline is the c1-top block's OWN last child (the
                   heron paint model — full-bleed past the cell padding) */}
-              <R c="fo-rule fo-rule-h fo-rule-bleed" s="footer.c1rule" />
+              <R c="fo-rule fo-rule-h fo-rule-bleed fo-rule-solid" s="footer.c1rule" />
             </div>
             <div className="fo-c1-sub" data-spec="footer.c1sub">
               <ML s="footer.sublabel" t="[ EARLY ACCESS ]" />
@@ -295,7 +295,7 @@ export function Footer({ year }: { year: number }) {
               Madarek's OWN mark geometry, authored inline line-art (the
               circle + orbit + point construction), never Heron's paths */}
           <div className="fo-col fo-col3" data-spec="footer.col3">
-            <R c="fo-rule fo-rule-v" s="footer.col3rule" />
+            <R c="fo-rule fo-rule-v fo-rule-solid" s="footer.col3rule" />
             <div className="fo-mark" data-spec="footer.mark">
               <svg
                 className="fo-mark-svg"
@@ -422,7 +422,7 @@ export function Footer({ year }: { year: number }) {
             <Link to="/app" className="fo-legal-link">تطبيق الجوال</Link>
           </nav>
           {/* the bar's OWN closing hairline (its 3rd child) */}
-          <R c="fo-rule fo-rule-h" s="footer.legalbot" />
+          <R c="fo-rule fo-rule-h fo-rule-solid" s="footer.legalbot" />
         </div>
       </div>
     </footer>
