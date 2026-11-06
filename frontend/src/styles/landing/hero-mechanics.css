@@ -205,6 +205,20 @@
 
 /* ≤767 — Heron's own mobile frame inset (0.8rem) */
 @media (max-width: 767px) {
+  /* r339 T-13 — the phone sheet seat: heron's 390 hero root sits at
+     x8 w374 (the 8px sheet gutter — spec home-hero-wrap.390.json
+     div[1]); our full-bleed paper (the R332 W1 desktop verdict) ran
+     the art edge-to-edge — the 390 census read 0/0 gutters (Δ-8, the
+     blind panel's phone clearance). The art band re-seats on the same
+     0.81rem sheet inset the platform band uses (8px @390) — a MARGIN
+     so the band's own box joins the sheet frame (padding would leave
+     the full-bleed element box in the union); the JS-sized hi-layer
+     follows the svg box. Desktop full-bleed stands (spec law above
+     767). */
+  .hro-art {
+    margin-inline: 0.81rem;
+  }
+
   .hro-edge-t,
   .hro-edge-b {
     inset-inline: 0.8rem;
@@ -350,6 +364,20 @@
 .hro .bp-plus-tr { inset-block-start: calc(1.2rem - 0.7rem); inset-inline-end: calc(1.2rem - 0.7rem); }
 .hro .bp-plus-bl { inset-block-end: calc(1.2rem - 0.7rem); inset-inline-start: calc(1.2rem - 0.7rem); }
 .hro .bp-plus-br { inset-block-end: calc(1.2rem - 0.7rem); inset-inline-end: calc(1.2rem - 0.7rem); }
+
+/* r339 T-13 — the registration marks ride the sheet frame on phones:
+ * the section-anchored 0.5rem seat put them at x5/x385 (3px outside
+ * the 8px sheet — the census union's binding edge, Δ-3). Heron's own
+ * marks sit inside the window corner (spec: x15 vs window x16); the
+ * phone seat aligns them with the art band's 0.81rem sheet edge.
+ * Seated BELOW the base rules — the equal-specificity tie breaks on
+ * source order, and the base block above used to win. */
+@media (max-width: 767px) {
+  .hro .bp-plus-tl,
+  .hro .bp-plus-bl { inset-inline-start: 0.81rem; }
+  .hro .bp-plus-tr,
+  .hro .bp-plus-br { inset-inline-end: 0.81rem; }
+}
 
 /* the ± registration marks at the dashed inner frame's corners.
    R332 W1: they belong to the hover-revealed dashed inner frame —
@@ -816,13 +844,18 @@
 
   .hro-title-cell {
     padding-block: 1.6rem 1.2rem;
-    padding-inline: 1.8rem;
+    /* r339 T-13 — heron 390 seats the h1 at x18 w354 (the 14px content
+       box + 0.4rem); the 1.8rem seat read 31.9/326 — the phone title
+       gutter now measures Heron's own. */
+    padding-inline: 0.4rem;
   }
 
   .hro-sub-cell {
     border-inline-start: 0;
     padding-block: 1.2rem 0;
-    padding-inline: 1.8rem;
+    /* r339 T-13 — heron 390 seats the lead + link row at x24 w342
+       (the 14px content box + 1rem); was 1.8rem (31.9). */
+    padding-inline: 1rem;
     flex-direction: column;
     align-items: start;
   }
@@ -926,6 +959,12 @@
    theme flip moves no box — only the color changes. */
 [data-theme="dark"] .hro {
   --hro-ink-72: rgba(246, 246, 238, 0.72); /* color-gate: allow — the dark ramp's own ink --text #F6F6EE at the spec's 72% strength (7.9:1 on the #282828 ground); the light arm keeps the frozen Heron literal */
+  /* r339 T-12 — the secondary flare's night seat: the measured literal
+     rgb(250,54,0) is the LIGHT copper — on the #282828 dark ground it
+     reads 3.93:1 (under the 4.5:1 text floor; the blind panel's
+     «تسجيل الدخول» hero link). --accent-ink flips to #FF6B33 in dark:
+     5.2:1 on the same ground. */
+  --hro-flare: var(--accent-ink);
 }
 
 /* [S] the band seat — measured 0.981–0.988vh per breakpoint */

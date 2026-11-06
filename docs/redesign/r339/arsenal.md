@@ -36,3 +36,6 @@
 - [T-15] curl — 200-check the vite dev server before webkit cells
 - [T-15] rg — verify prior patch state + locate --bps/--engine flags in run.mjs
 - [T-15] node (failure-set diff) — prove webkit/chromium cells differ only by sub-pixel drift
+- [T-1213] run.mjs (t02b hardened, staged at /tmp/t12h — origin/r339/t02b not yet on main) — all-nodes darkInk census + edge390 gutters: found 28 dark-ink fails (platform 10 @1:1, footer 18 @3.97) + hero/why 390 gutter fails; verified 0 after fixes.
+- [T-1213] playwright CDP (CSS.getMatchedStylesForNode + getAnimations) — root-caused the dark 1:1 CTA strip: Chromium latches a transition's after-change style at STALE custom-property values on theme flip (transition:all/color + var() re-point ⇒ color frozen at the light literal); fixed by excluding the color leg from the dark-arm transition (duration+easing preserved — aTransition asserts d/e only).
+- [T-1213] playwright probes (/home/z/t1213-*.mjs) — dark-ink node pinpointing (class/data-spec/ratio), hero/why 390 visible-content-union walkers mirroring the census, before/after geometry diffs.

@@ -381,6 +381,11 @@
 }
 .fo-legal-link:hover { color: var(--accent); }
 .fo-legal-sep { color: var(--rule-strong); }
+/* r339 T-12 — the separator's night seat: --rule-strong flips to
+   #85857F in dark — 3.97:1 on the #282828 ground, under the 4.5:1
+   text floor the all-nodes census asserts on the «·» runs (18 cells).
+   --text-muted (#B4B4B0 dark) clears 7.0:1. Light spec law untouched. */
+[data-theme='dark'] .fo-legal-sep { color: var(--text-muted); }
 
 /* the col3 rail ink — the census seat is OPAQUE text ink, not the 72%
    soft ink the footer root carries */
@@ -534,7 +539,10 @@
   .fo-footer-about { display: none; }
   /* heron 390 group1 = the 374×124 block (label 13 + 2-col link rows
      28) — the 124 floor sits on the GROUP, not the label */
-  .fo-lgroup { display: block; padding: 0; }
+  /* r339 T-13 — the 390 content gutter: heron seats the c2 group text
+     at x24 inside the 8px sheet (16px inline inset); our groups rode
+     the sheet edge (x8) — the blind panel's 8px mobile clearance. */
+  .fo-lgroup { display: block; padding: 0 1.61rem; }
   .fo-c2-top .fo-lgroup:first-child { min-block-size: 124px; }
   .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; margin-block-start: 0; line-height: 15.4px; }
   .fo-lg-links a { padding-block: 0; }
@@ -596,7 +604,19 @@
 [data-theme='dark'] .fo-ilink-t,
 [data-theme='dark'] .fo-form-copy-t,
 [data-theme='dark'] .fo-legal-p { color: var(--text-secondary); }
-[data-theme='dark'] .fo-mono-label { color: var(--neutral-400); }
+/* r339 T-12 — --neutral-400 measures 4.25:1 on the dark ground (under
+   the 4.5:1 text floor); --text-muted (#B4B4B0 dark) clears 7.0:1 on
+   the page ground and 5.2:1 on the c1sub panel below. */
+[data-theme='dark'] .fo-mono-label { color: var(--text-muted); }
+/* r339 T-12 — the c1sub seat panel: light paints it --rule-strong
+   (the spec's rgb(179,179,175)) which in dark flips to #85857F — a
+   luminous gray card carrying light-theme inks (placeholder 1.0:1,
+   mono label 1.07:1, copy 2.23:1, go arrow 3.42:1 — the blind
+   panel's invisible footer form). The dark arm re-seats the panel on
+   the dark elevated surface; every ink on it re-flips via the rules
+   above + the placeholder seat below. Light is spec law, untouched. */
+[data-theme='dark'] .fo-c1-sub { background: var(--surface-3); }
+[data-theme='dark'] .fo-input::placeholder { color: var(--text-muted); }
 /* T-06m: dark-arm the go-ink — the scoped --rule-strong seat fails the dark
    WCAG floor 3.0 (3 cells); the proven dark text token passes on the same
    surface family. Light spec group untouched (spec is law in light). */

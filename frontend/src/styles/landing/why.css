@@ -809,6 +809,19 @@
    four 374×481 rows sit side-by-side — the 350px image square with
    overlaid minis + the caption stacked beneath, per deck card). ═══ */
 @media (max-width: 767px) {
+  /* r339 T-13 — the phone sheet seat: the shared ≤767 sheet-frame
+     margin (shared.css, 7px — imported AFTER this file, so it won the
+     equal-specificity tie) + this section's 100% inline-size
+     overflowed the RTL box 7px past the edge — the content read
+     x1/r15 gutters (root x-7) vs heron's 8/8 (spec
+     home-why-wrap.390.json div[1] = x8 w374). Zero margin (the
+     element-tagged seat out-ranks the shared list) + the existing
+     0.81rem padding seats the content box at x8 w374 — heron's own
+     390 root; the head/stage/track rows all ride it. */
+  section.wy-section {
+    margin-inline: 0;
+  }
+
   .wy-head {
     grid-template-columns: minmax(0, 1fr);
     block-size: 28.62rem;               /* 284px + hairline */

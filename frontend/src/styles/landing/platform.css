@@ -57,6 +57,31 @@ html[data-theme='dark'] .pr-section {
   --pr-ink-72: color-mix(in srgb, var(--text) 72%, transparent);
   --pr-label: var(--text-muted);
   --pr-rule-ink: var(--rule-strong);
+  /* r339 T-12 — the CTA flare's night seat: the measured literal
+     rgb(250,54,0) is the LIGHT copper — 3.93:1 on the #282828 dark
+     ground (under the 4.5:1 text floor). --accent-ink flips to
+     #FF6B33 in dark: 5.2:1. */
+  --pr-cta: var(--accent-ink);
+}
+
+/* r339 T-12 — the frozen-flip seat (the blind panel's 1:1 CTA strip).
+ * Chromium captures a transition's AFTER-change style with STALE custom
+ * properties when the flip rides a var() re-point: the cta line/ic/anchor
+ * transitions (`all` / `color`) then latch the LIGHT literal forever —
+ * rgb(40,40,40) ink on the #282828 ground = 1:1, all 10 census spans at
+ * 390 (rows + clones). The dark arm re-seats the SAME measured voice
+ * (0.48s / cubic-bezier(0.625,0.05,0,1); 0.4s/ease on the anchor — the
+ * instrument asserts duration+easing only, and parseEase takes the first
+ * component of the identical list) MINUS the color leg, so the night ink
+ * snaps with the theme. Light keeps the frozen measured `all` (spec law);
+ * opacity/background-color stay tweened for the menu reveal + strip. */
+html[data-theme='dark'] .pr-section .pr-cta-line,
+html[data-theme='dark'] .pr-section .pr-cta-ic {
+  transition: opacity 0.48s cubic-bezier(0.625, 0.05, 0, 1),
+    background-color 0.48s cubic-bezier(0.625, 0.05, 0, 1);
+}
+html[data-theme='dark'] .pr-section .pr-cta {
+  transition: opacity 0.4s ease, background-color 0.4s ease;
 }
 
 /* the sheet's top/bottom rules (heron section div[1]/div[2]) */
@@ -520,7 +545,11 @@ html[data-theme='dark'] .pr-section {
     grid-column: 1;
     grid-row: 2;
     block-size: 8.77rem; /* 87 @390 (measured) */
-    padding: 3.22rem 2.42rem 0 2.42rem; /* label @x24 y7630 (measured) */
+    /* r339 T-13 — the 390 content gutter: heron seats the label/title
+       at x24 inside the 8px sheet (16px inline); the 2.42rem seat read
+       x32/w326. Light spec values above stay (comment record: label
+       @x24 y7630 measured). */
+    padding: 3.22rem 1.61rem 0;
   }
 
   .pr-section .pr-cta-line {
