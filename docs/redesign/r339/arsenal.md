@@ -8,3 +8,8 @@
 - [T-00] git tag -a + git push (refs/tags/archive/*) — 72 annotated archive tags pushed and ls-remote-verified BEFORE any branch deletion
 - [T-00] git push origin --delete — remote branch deletion (72 branches, tags-first rule honored)
 - [T-00] git worktree prune — stale worktree cleanup check from /home/z/madarek (none dead)
+- [T-01] bash — fresh-sandbox installs (root + frontend), `verify.sh --fast` gate run, dedicated build+gate proof at the 770 ceiling
+- [T-01] git — branch status/commits/push of r339/t01-medic (ceiling commit + docs)
+- [T-01] npm — dependency install in worktree root and frontend/
+- [T-01] npx (tsc, vitest, vite) — via verify.sh --fast: typecheck, 3051 unit tests, production build for the bundle gate
+- [T-01] node — ran scripts/check-bundle-size.mjs to prove the gate passes at the restored 770 KB gz ceiling (measured 764.3)
