@@ -1,187 +1,771 @@
 {
- "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: why strip — section.wy-section (sections/Why.tsx).]",
- "ourSection": {
-  "home-why-wrap": "section.wy-section"
- },
- "heronPageKey": {
-  "home-why-wrap": "div.home-why-wrap"
- },
- "scaleFactor": {
-  "home-why-wrap": 1
- },
- "explicit": [
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1]",
-   "ours": "why.head"
+  "_readme": "R335 A-Conform — Heron (frozen spec) → OUR landing page mapping. Two modes: (a) 'explicit' — heron role path (exact or suffix match) → our CSS selector, resolved inside the section container; (b) heuristic fallback — match by structure: same tag + same text-class (tc) + same ordinal position within that (tag,tc) group in document order. Phase 2 agents add data-spec hooks and extend 'explicit'. 'ourSection' holds the REAL container selectors of our React SPA (verified against frontend/src/pages/LandingPage.tsx r335). 'scaleFactor' multiplies fs/lh tolerances per section (Arabic renders slightly different metric heights; default 1.0 until measured). [P2-0 split: one file per our-section key, named with the EXACT key run.mjs uses — run.mjs merges every *.json in this directory. This file: why strip — section.wy-section (sections/Why.tsx).]",
+  "ourSection": {
+    "home-why-wrap": "section.wy-section"
   },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
-   "ours": "why.eyebrow"
+  "heronPageKey": {
+    "home-why-wrap": "div.home-why-wrap"
   },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
-   "ours": "why.eyebrowt"
+  "scaleFactor": {
+    "home-why-wrap": 1
   },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
-   "ours": "why.h2w"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > h2[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > h2[1]",
-   "ours": "why.title"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[3]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[3]",
-   "ours": "why.hrule"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2]",
-   "ours": "why.stage"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[1]",
-   "ours": "why.axis"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2]",
-   "ours": "why.stagein"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[1]",
-   "ours": "why.progress"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2]",
-   "ours": "why.mk1"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1]",
-   "ours": "why.mk1in"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1] > svg[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1] > svg[1]",
-   "ours": "why.mk1svg"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3]",
-   "ours": "why.mk2"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1]",
-   "ours": "why.mk2in"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1] > svg[1]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1] > svg[1]",
-   "ours": "why.mk2svg"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[3]",
-   "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[3]",
-   "ours": "why.track"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2]",
-   "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2]",
-   "ours": "why.rows"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
-   "ours": "why.row1"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
-   "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
-   "ours": "why.row2"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
-   "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
-   "ours": "why.row3"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[4]",
-   "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[4]",
-   "ours": "why.row4"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
-   "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
-   "ours": "why.card1"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
-   "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
-   "ours": "why.card2"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
-   "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
-   "ours": "why.card3"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]",
-   "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]",
-   "ours": "why.card4"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1]",
-   "ours": "section.wy-section"
-  }
- ],
- "noCounterpart": [
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1]",
-   "reason": "page-level wrap div above the our-section container — box identical to the bound section element (why.stage root binding via section.wy-section); measuring both would double-count the same rect"
-  },
-  {
-   "section": "home-why-wrap",
-   "heron": "home-why-wrap > div[1] > section[1] > div[1]",
-   "reason": "structural head-row wrapper — no our counterpart node; all measured children (why.head, why.side, why.hrule) are individually bound and fully measured, wrapper rect is their union"
-  }
- ]
+  "explicit": [
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1]",
+      "ours": "why.head"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+      "ours": "why.eyebrow"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+      "ours": "why.eyebrowt"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "ours": "why.h2w"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+      "ours": "why.title"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1]",
+      "ours": "why.hrule"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1]",
+      "spec": "home-why-wrap > div[1] > section[1]",
+      "ours": "why.stage"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[1]",
+      "ours": "why.axis"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2]",
+      "ours": "why.stagein"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[1]",
+      "ours": "why.progress"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2]",
+      "ours": "why.mk1"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1]",
+      "ours": "why.mk1in"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1] > svg[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[2] > div[1] > svg[1]",
+      "ours": "why.mk1svg"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3]",
+      "ours": "why.mk2"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1]",
+      "ours": "why.mk2in"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1] > svg[1]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[2] > div[3] > div[1] > svg[1]",
+      "ours": "why.mk2svg"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[2] > div[3]",
+      "spec": "home-why-wrap > div[1] > section[1] > div[2] > div[3]",
+      "ours": "why.track"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2]",
+      "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2]",
+      "ours": "why.rows"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+      "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+      "ours": "why.row1"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
+      "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
+      "ours": "why.row2"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
+      "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
+      "ours": "why.row3"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[4]",
+      "spec": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[4]",
+      "ours": "why.row4"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+      "ours": "why.card1"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
+      "ours": "why.card2"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
+      "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
+      "ours": "why.card3"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]",
+      "spec": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]",
+      "ours": "why.card4"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1]",
+      "ours": "section.wy-section"
+    }
+  ],
+  "noCounterpart": [
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1]",
+      "reason": "page-level wrap div above the our-section container — box identical to the bound section element (why.stage root binding via section.wy-section); measuring both would double-count the same rect"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1]",
+      "reason": "structural head-row wrapper — no our counterpart node; all measured children (why.head, why.side, why.hrule) are individually bound and fully measured, wrapper rect is their union"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+      "reason": "heron tween-scene svg defs/mask/clip scaffolding — no visual surface, our authored scene carries no parallel defs structure (plumbing)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+      "reason": "heron tween-scene svg defs/mask/clip scaffolding — no visual surface, our authored scene carries no parallel defs structure (plumbing)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[13]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[14]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[15]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[16]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[2] > div[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[2]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[3]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[15]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[16]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[1]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[2]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[3]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[4]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[5]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[6]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[7]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[8]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[9]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[10]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[11]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[12]",
+      "reason": "heron tween-scene svg path/group decomposition — our scene is authored inline line-art with a different path decomposition; measured at svg-canvas + row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[14]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[14] > div[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[15]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[15] > div[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[2]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[3]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[2]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[4]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[4] > span[1]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[4] > span[2]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[4] > span[3]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[4] > span[4]",
+      "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+    }
+  ],
+  "plumbing": [
+    {
+      "section": "home-why-wrap",
+      "heron": "mask[1]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "mask[2]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "defs[1]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "defs[2]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "filter[1]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "filter[2]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "lineargradient[1]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "lineargradient[2]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "clippath[1]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "clippath[2]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "use[1]",
+      "skip": [
+        "tag",
+        "tc",
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[4]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[5]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[6]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[7]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[8]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[9]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[10]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[11]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[12]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[13]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[14]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[15]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[16]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "path[17]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "rect[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg rect scaffold — authored line-art decomposition differs (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "rect[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg rect scaffold — authored line-art decomposition differs (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "rect[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg rect scaffold — authored line-art decomposition differs (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "circle[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg circle scaffold — authored line-art decomposition differs (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "circle[2]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg circle scaffold — authored line-art decomposition differs (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "circle[3]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg circle scaffold — authored line-art decomposition differs (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "g[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "g[1] > g[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": "g[1] > g[1] > g[1]",
+      "skip": [
+        "geometry",
+        "type",
+        "color"
+      ],
+      "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+    }
+  ]
 }
