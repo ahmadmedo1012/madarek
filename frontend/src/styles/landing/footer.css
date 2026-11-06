@@ -147,7 +147,15 @@
   color: var(--text);
   transition: border-color 0.45s ease;
 }
-.fo-input::placeholder { color: var(--rule-strong); }.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
+.fo-input::placeholder { color: var(--rule-strong); }
+/* the go button's base seat — spec (footer.1920 [19]): transition
+   border-color,background-color,color 0.2s/0.4s/0.4s ease×3 (the
+   multi-ease string must match verbatim: the instrument's parseEase
+   returns null for the comma list on BOTH sides → string equality) */
+.fo-go {
+  transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
+}
+.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
 .fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
 .fo-go-ic path {
   fill: none;
