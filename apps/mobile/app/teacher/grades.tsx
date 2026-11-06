@@ -248,7 +248,7 @@ export default function Grades() {
         ) : offs.isError ? (
           <ErrorState message={humanizeError(offs.error)} onRetry={() => offs.refetch()} />
         ) : offerings.length === 0 ? (
-          <EmptyState title="لا مقرّرات" message="حدّد أحد مقرّراتك لعرض درجات طلابه — ستظهر هنا فور إسناد مقرّر لك." />
+          <EmptyState fill title="لا مقرّرات" message="حدّد أحد مقرّراتك لعرض درجات طلابه — ستظهر هنا فور إسناد مقرّر لك." />
         ) : (
           <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
         )}
@@ -379,7 +379,7 @@ export default function Grades() {
           ) : roster.isError ? (
             <ErrorState message={humanizeError(roster.error)} onRetry={() => roster.refetch()} />
           ) : rows.length === 0 ? (
-            <EmptyState title="لا يوجد طلاب" message="لا توجد تسجيلات في هذا المقرّر بعد." />
+            <EmptyState fill title="لا يوجد طلاب" message="لا توجد تسجيلات في هذا المقرّر بعد." />
           ) : (
             <DataList
               data={rows}

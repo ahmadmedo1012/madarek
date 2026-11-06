@@ -165,6 +165,7 @@ export function EmptyState({
   icon,
   art,
   room,
+  fill,
 }: {
   /** Optional when `room` carries its default; overrides the room copy. */
   title?: string;
@@ -179,6 +180,13 @@ export function EmptyState({
   art?: ReactNode;
   /** R334 B8: stage the state inside one of the four blueprint rooms. */
   room?: EmptyRoom;
+  /**
+   * T-50 (review-2 P1-4 / review-3 P0-2): grow + optically center in the
+   * leftover viewport — the sparse-state fix for the 40–70% dead band
+   * below top-stuck empties. Opt-in so inline section empties (small
+   * variants inside populated screens) keep their scroll-flow seat.
+   */
+  fill?: boolean;
 }) {
   const p = usePalette();
   const sheet = room ? ROOMS[room] : undefined;
@@ -186,7 +194,12 @@ export function EmptyState({
   const resolvedMessage = message ?? sheet?.message;
   const resolvedArt = art ?? (sheet ? <sheet.Art width={216} accessibilityLabel={sheet.a11y} /> : null);
   return (
-    <View style={{ alignItems: "center", paddingVertical: sp[40], gap: sp[8], paddingHorizontal: sp[24] }}>
+    <View
+      style={[
+        { alignItems: "center", paddingVertical: sp[40], gap: sp[8], paddingHorizontal: sp[24] },
+        fill ? { flexGrow: 1, justifyContent: "center" } : null,
+      ]}
+    >
       {resolvedArt}
       {/* B4 re-review (R2+R3, three panels): the icon frame rendered even
           with NO icon — a blank 56×56 bordered square that every reviewer

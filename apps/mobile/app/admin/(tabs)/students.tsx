@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
+import { useStaggerEntrance } from "@/motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import GraduationCap from "lucide-react-native/icons/graduation-cap";
 import UserMinus from "lucide-react-native/icons/user-minus";
@@ -36,6 +39,7 @@ export default function AdminStudents() {
   const qc = useQueryClient();
   const [q, setQ] = useState("");
   const [appliedQ, setAppliedQ] = useState("");
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
 
   const appliedRef = useRef(appliedQ);
   useEffect(() => {
@@ -60,7 +64,9 @@ export default function AdminStudents() {
   return (
     <Screen scroll={false} padded={false}>
       <AppTopBar alertsPath="/admin/alerts" />
-      <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
+      {/* T-50 (review-3 §4.1): admin registry was a zero-motion seat —
+          the title + search block takes the kit stagger. */}
+      <Animated.View entering={entering(0)} style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
         <View>
           <T variant="h2" weight="bold">
             إدارة الطلاب
@@ -74,13 +80,24 @@ export default function AdminStudents() {
           value={q}
           onChange={setQ}
           placeholder="ابحث بالاسم أو البريد…"
-          onClear={() => setQ("")}
+          onClear={() => {
+            haptics.selection();
+            setQ("");
+          }}
         />
-      </View>
+      </Animated.View>
       <View style={{ flex: 1 }}>
         <DataList
           data={users.items}
-          renderItem={({ item }) => <StudentRow item={item} onSelect={setSelected} />}
+          renderItem={({ item }) => (
+            <StudentRow
+              item={item}
+              onSelect={(row) => {
+                haptics.selection();
+                setSelected(row);
+              }}
+            />
+          )}
           keyExtractor={(s) => s.id}
           isLoading={users.isLoading}
           isError={users.isError}

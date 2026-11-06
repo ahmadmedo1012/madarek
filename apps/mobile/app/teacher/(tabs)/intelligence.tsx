@@ -4,8 +4,11 @@
  * + the template-simulated curriculum suggestion with its honest badge).
  */
 import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
+import { useStaggerEntrance } from "@/motion";
 import { useMemo, useState } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Lightbulb from "lucide-react-native/icons/lightbulb";
 import Sparkles from "lucide-react-native/icons/sparkles";
@@ -140,6 +143,7 @@ export default function TeacherIntelligence() {
   const offerings = offs.data ?? [];
   const [offeringId, setOfferingId] = useState<string>("");
   const effectiveId = offeringId || offerings[0]?.id || "";
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
 
   const risks = useQuery({
     queryKey: ["teacher", "risks", scope],
@@ -183,6 +187,9 @@ export default function TeacherIntelligence() {
   return (
     <Screen scroll>
       <AppTopBar alertsPath="/teacher/alerts" />
+      {/* T-50 (review-3 §4.1): intelligence was a zero-motion seat — the
+          header + risk panel + analytics block take the kit stagger. */}
+      <Animated.View entering={entering(0)}>
       <PageHeader
         title="الذكاء الأكاديمي"
         kicker="متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية."
@@ -274,7 +281,15 @@ export default function TeacherIntelligence() {
         </Card>
       ) : (
         <>
-          <OfferingPicker offerings={offerings} value={effectiveId} onChange={setOfferingId} label="المقرّر" />
+          <OfferingPicker
+            offerings={offerings}
+            value={effectiveId}
+            onChange={(id) => {
+              haptics.selection();
+              setOfferingId(id);
+            }}
+            label="المقرّر"
+          />
           {analytics.isLoading ? (
             <SkeletonList rows={3} rowHeight={44} />
           ) : analytics.isError ? (
@@ -314,7 +329,10 @@ export default function TeacherIntelligence() {
               kind="accent"
               loading={suggest.isPending}
               disabled={effectiveId === ""}
-              onPress={() => suggest.mutate()}
+              onPress={() => {
+                haptics.impact("light");
+                suggest.mutate();
+              }}
             />
             {suggest.isError ? (
               <T variant="sm" color="danger" style={{ paddingTop: sp[8] }}>
@@ -329,6 +347,7 @@ export default function TeacherIntelligence() {
           </Card>
         </>
       )}
+      </Animated.View>
     </Screen>
   );
 }

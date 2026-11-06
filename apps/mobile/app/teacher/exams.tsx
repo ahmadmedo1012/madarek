@@ -5,8 +5,11 @@
  * per-type choices/correct-answer editor).
  */
 import { humanizeError } from "@/lib/errors";
+import { haptics } from "@/haptics";
+import { useStaggerEntrance } from "@/motion";
 import { useState } from "react";
 import { View } from "react-native";
+import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -48,6 +51,7 @@ export default function Exams() {
   const scope = useInstitutionScope();
   const qc = useQueryClient();
   const [tab, setTab] = useState<"templates" | "bank">("templates");
+  const entering = useStaggerEntrance({ base: 40, step: 60 });
 
   const templates = useQuery({
     queryKey: ["exams", "templates", scope],
@@ -159,6 +163,10 @@ export default function Exams() {
   return (
     <Screen scroll>
       <StackHeader title="بنك الأسئلة والاختبارات" />
+      {/* T-50 (review-3 §4.1): exams authoring was a zero-motion seat —
+          header + segmented filter take the kit stagger; tab/row presses
+          fire selection haptics. */}
+      <Animated.View entering={entering(0)}>
       <PageHeader
         title="بنك الأسئلة والاختبارات"
         kicker="تأليف الأسئلة وبناء قوالب الاختبارات الموحَّدة، ومتابعة اعتمادها من الجودة حتى النشر."
@@ -169,7 +177,10 @@ export default function Exams() {
           { id: "bank", label: "بنك الأسئلة" },
         ]}
         selectedId={tab}
-        onSelect={(id) => setTab(id as "templates" | "bank")}
+        onSelect={(id) => {
+          haptics.selection();
+          setTab(id as "templates" | "bank");
+        }}
       />
 
       {tab === "templates" ? (
@@ -192,7 +203,10 @@ export default function Exams() {
                   <LedgerRow
                     key={t.id}
                     last={i === (templates.data ?? []).length - 1}
-                    onPress={() => router.push(`/teacher/exams/${t.id}` as never)}
+                    onPress={() => {
+                      haptics.selection();
+                      router.push(`/teacher/exams/${t.id}` as never);
+                    }}
                     accessibilityLabel={`قالب ${t.title}`}
                   >
                     <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
@@ -228,7 +242,10 @@ export default function Exams() {
                         label="عرض"
                         kind="ghost"
                         small
-                        onPress={() => router.push(`/teacher/exams/${t.id}` as never)}
+                        onPress={() => {
+                          haptics.selection();
+                          router.push(`/teacher/exams/${t.id}` as never);
+                        }}
                       />
                     </View>
                     {gate ? (
@@ -457,6 +474,7 @@ export default function Exams() {
           />
         </View>
       </Sheet>
+      </Animated.View>
     </Screen>
   );
 }

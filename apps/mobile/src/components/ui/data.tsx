@@ -427,6 +427,10 @@ export function DataList<T>(props: DataListProps<T>) {
     ) : undefined;
 
   const contentContainerStyle: StyleProp<ViewStyle> = [
+    /* T-50 (review-3 P0-2): the list body grows to the viewport so a
+       filling EmptyState can optically center instead of top-sticking.
+       No effect on populated lists (content already exceeds viewport). */
+    { flexGrow: 1 },
     padX !== undefined ? { paddingHorizontal: padX } : null,
     contentPadding?.top !== undefined ? { paddingTop: sp[contentPadding.top] } : null,
     contentPadding?.bottom !== undefined ? { paddingBottom: sp[contentPadding.bottom] } : null,

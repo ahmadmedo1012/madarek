@@ -36,7 +36,12 @@ const config: ExpoConfig = {
       backgroundImage: "./assets/images/adaptive-background.png",
       monochromeImage: "./assets/images/adaptive-monochrome.png",
     },
-    predictiveBackGestureEnabled: false,
+    // T-50 (P1-d): Android 14+ predictive back — the app has ZERO
+    // BackHandler.preventDefault() calls (grep-verified), so enabling the
+    // gesture is safe: sheets/dialogs close with the system cross-activity
+    // back animation. Takes effect with the next EAS/gradle build (T-51
+    // owns the build + fingerprint bump; OTA alone cannot ship this flag).
+    predictiveBackGestureEnabled: true,
   },
   web: {
     output: "single",

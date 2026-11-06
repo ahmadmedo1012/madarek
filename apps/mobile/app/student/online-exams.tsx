@@ -268,6 +268,7 @@ export default function OnlineExamsScreen() {
           isRefetching={feed.isRefetching}
           emptySlot={
             <EmptyState
+              fill
               room="exam-hall"
               title={filter === "all" ? undefined : "لا توجد اختبارات هنا"}
               message={
