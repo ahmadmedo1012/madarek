@@ -74,3 +74,7 @@
 - [T-11b2] tween.mjs — coverage re-measure @1440/@390: map 0/2→2/2, platform 2/4→4/4, hero 2/6→4/6, overall 28.1→46.9%@1440 / 43.3→63.3%@390; scaleX/scaleY groups unreachable (PROP_FAMILY keeps CSS `scale` ≠ GSAP scaleX/scaleY; keyframes transform→translateY hard-map) — documented residual, conformance read-only
 - [T-11b2] run.mjs scoped 3-section A/B (stash-checkout baseline @58af8bfa) — 91.2%→91.2% (7426 vs 7421 of 8141, 0 new failure kinds; ±5 = stage-machine svg-opacity transients, run-to-run noise band)
 - [T-11b2] verify.sh --fast — GREEN (3051 vitest incl. the r306 whitelist re-pin; bundle 764.4/770)
+- [T-11c] node — npm install root+frontend, run tween.mjs baselines @1440+@390, drive the PROP_FAMILY bridge edit
+- [T-11c] playwright (via tween.mjs embedded) — live landing inventory at :5313 (WAAPI patch + CSSOM walk + Lenis journey)
+- [T-11c] ripgrep — locate scale-ladder/rl-rule-x seats, preloader exit, chrome header markup, r306 keyframe whitelist
+- [T-11c] gsap-skills/frontend-design — checked /home/z/my-project/skills: not present in sandbox (logged; Heron semantics taken from frozen _motion.<bp>.json + prior T-11 ledgers)

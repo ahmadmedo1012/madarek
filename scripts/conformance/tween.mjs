@@ -171,6 +171,46 @@ const PROP_FAMILY = {
 };
 const META_KEYS = new Set(["duration", "delay", "ease", "stagger", "scrollTrigger", "immediateRender", "startAt", "keyframes", "snap", "repeat", "yoyo", "text", "attr"]);
 
+/* ── T-11c PROP_FAMILY bridge (CSS ↔ Heron families, honest) ──────────────
+ * The census speaks GSAP var keys (scaleX/scaleY/scale); our CSS speaks the
+ * `scale` property ("0 1" = sx sy, "none" ≡ identity) and transform
+ * functions. The bridge decomposes per-axis and files ONLY the axes that
+ * actually change — `scale: 0 1`→`1 1` is scaleX-only (Heron scaleX);
+ * `scale: 0 0`→`1 1` changes both axes (scaleX + scaleY); uniform
+ * `0.8`→`1` stays the `scale` family. Never a blanket transform→anything. */
+const scaleAxes = (v) => {
+  if (v == null) return null;
+  const s = String(v).trim();
+  if (!s || s === "none") return [1, 1];
+  const nums = s.replace(/^scale\(/i, "").replace(/\)$/, "").split(/[\s,]+/).filter(Boolean).map(parseFloat);
+  if (!nums.length || nums.some((n) => !Number.isFinite(n))) return null;
+  return [nums[0], nums[1] ?? nums[0]];
+};
+const scaleFamilies = (fromV, toV) => {
+  const a = scaleAxes(fromV), b = scaleAxes(toV);
+  if (!a || !b) return [];
+  if (a[0] === a[1] && b[0] === b[1]) return a[0] === b[0] ? [] : ["scale"];
+  const fams = [];
+  if (a[0] !== b[0]) fams.push("scaleX");
+  if (a[1] !== b[1]) fams.push("scaleY");
+  return fams;
+};
+/* transform-function family: the ONE function family present in both the
+ * from and to stops (scale() decomposes per-axis via scaleFamilies).
+ * Returns null for mixed/absent → caller falls back to the documented
+ * house-keyframe assumption (translateY). */
+const TRANSFORM_FN = { translatex: "translateX", translatey: "translateY", scalex: "scaleX", scaley: "scaleY", rotate: "rotate", rotatex: "rotateX", rotatey: "rotateY" };
+const transformFamilyOf = (fromV, toV) => {
+  const fns = (v) => [...String(v).matchAll(/([a-zA-Z]+)\(([^)]*)\)/g)].map((m) => m[1].toLowerCase()).filter((n) => TRANSFORM_FN[n] != null || n === "scale");
+  const common = fns(fromV).filter((n) => fns(toV).includes(n));
+  if (common.length !== 1) return null;
+  if (common[0] === "scale") {
+    const arg = (v) => (String(v).match(/scale\(([^)]*)\)/) || [])[1] ?? "";
+    return scaleFamilies(arg(fromV), arg(toV));
+  }
+  return [TRANSFORM_FN[common[0]]];
+};
+
 /** cubic-bezier / named easing → family (out | in | inOut | linear | other). */
 function easeFamily(ease) {
   if (!ease || typeof ease !== "string") return null;
@@ -349,6 +389,7 @@ const WALK_JS = String.raw`
     transform: cs.transform,
     scale: cs.scale,
     clipPath: cs.clipPath,
+    bg: cs.backgroundColor, // T-11c: the recorded preloader exit tints the paper — the envelope needs the computed ground
   });
   const roots = sectionBindings
     .map((b) => ({ ...b, el: document.querySelector(b.sel) }))
@@ -603,6 +644,20 @@ async function collectOurs(url, bp) {
   } catch {
     // intro gate may be skipped (session flag / reduced-motion env) — proceed, note it.
   }
+  // PHASE 0.5 (T-11c) — the preloader EXIT FLIGHT: the overlay unmounts on
+  // the exit's last frame, so the four journey snapshots can never observe
+  // the exit end-state. Snapshot it MID-FLIGHT instead — 780ms into the
+  // 800ms wipe, where the recorded cubic-bezier(1,0,.44,1) is ≥99% settled
+  // (an observed computed frame, not an invented one). If the intro is
+  // skipped there is no .pl--exit — noted, never guessed.
+  let walkExit = { els: [], roots: [] };
+  try {
+    await page.waitForSelector(".pl--exit", { timeout: 6000, state: "attached" });
+    await page.waitForTimeout(780);
+    walkExit = await page.evaluate(`(${WALK_JS})(${JSON.stringify(OUR_SECTIONS.map(({ key, sel }) => ({ key, sel })))})`);
+  } catch {
+    walkExit = { els: [], roots: [], skipped: true };
+  }
   // The reveal ARM happens at/after intro-done (initReveals adds .reveal-up
   // whose own hide-transition runs ~650ms) — let it SETTLE before the rest
   // snapshot, or the "from" side samples mid-flight (measured live: op 0.59).
@@ -623,12 +678,12 @@ async function collectOurs(url, bp) {
   const waapiCalls = waapi === -1 ? null : waapi;
   const waapiSample = await page.evaluate("window.__tweenWaapi ? window.__tweenWaapi.slice(0, 5) : []");
   await browser.close();
-  return { walk0, walk1, walkMid, walk2, sampling, cssom, waapiCalls, waapiSample, errors };
+  return { walk0, walkExit, walk1, walkMid, walk2, sampling, cssom, waapiCalls, waapiSample, errors };
 }
 
 /** tracked-element states → our tween units (node-side derivation). */
 function deriveOurUnits(census) {
-  const { walk0, walk1, walkMid, walk2, sampling, cssom } = census;
+  const { walk0, walkExit, walk1, walkMid, walk2, sampling, cssom } = census;
   const steps = sampling.series ?? [];
 
   // per-key series from the sampler (keys join the walk records by exact
@@ -683,20 +738,42 @@ function deriveOurUnits(census) {
   const units = [];
   const unaccounted = [];
   const neverRevealed = [];
-  for (const el of walk2.els) {
+  // T-11c: the derivation iterates the SURVIVING elements (walk2) PLUS the
+  // exit-flight elements (walkExit — the preloader, unmounted before walk1;
+  // deduped by section+role so a lingering twin never double-counts).
+  const seenKey = new Set();
+  const elKey = (e) => `${e.section}|${e.role}|${e.grammarKey ?? ""}`;
+  const allEls = [...walk2.els, ...((census.walkExit?.els ?? []))].filter((e) => {
+    const k = elKey(e);
+    if (seenKey.has(k)) return false;
+    seenKey.add(k);
+    return true;
+  });
+  for (const el of allEls) {
     const twins = [
       ["walk0", twinOf(walk0.els ?? [], el)],
+      ["walkExit", twinOf(walkExit.els ?? [], el)],
       ["walk1", twinOf(walk1.els ?? [], el)],
       ["walkMid", twinOf(walkMid.els ?? [], el)],
-      ["walk2", el],
+      ["walk2", walk2.els.includes(el) ? el : twinOf(walk2.els ?? [], el)],
     ];
     const present = twins.filter(([, r]) => r);
     if (!present.length) continue;
-    const sorted = [...present].sort((a, b) => shownness(a[1]) - shownness(b[1]));
-    const fromRec = sorted[0], toRec = sorted[sorted.length - 1];
     const t0 = twinOf(walk0.els ?? [], el);
+    const tExit = twinOf(walkExit.els ?? [], el);
     const t1 = twinOf(walk1.els ?? [], el);
     const tMid = twinOf(walkMid.els ?? [], el);
+    // EXIT-FLIGHT (T-11c, the preloader): present at walk0 AND the mid-flight
+    // walkExit, absent from every later walk — the overlay unmounts on the
+    // exit's last frame, and that absence IS the evidence the exit ran. The
+    // flight is load-phase by construction (it fired between walk0 and walk1,
+    // before any scroll); shownness ordering would invert an exit, so the
+    // envelope is pinned walk0(rest)→walkExit(flown).
+    const exitFlight = !!t0 && !!tExit && !t1 && !tMid;
+    const sorted = exitFlight
+      ? [["walk0", t0], ["walkExit", tExit]]
+      : [...present].sort((a, b) => shownness(a[1]) - shownness(b[1]));
+    const fromRec = sorted[0], toRec = sorted[sorted.length - 1];
     const info = el.grammarKey ? infoByKey.get(el.grammarKey) : null;
 
     // params from the SHOWN state (the activated side is where the engine
@@ -723,8 +800,13 @@ function deriveOurUnits(census) {
     const kf = anim && cssom.keyframes[paramSrc.animName] ? cssom.keyframes[paramSrc.animName] : null;
     if (kf) {
       for (const [prop, stops] of Object.entries(kf.props)) {
-        const fam = prop === "transform" ? "translateY" : prop; // house keyframes are translateY-only (reveal-rise/mask-word-rise)
-        props.push({ family: fam, from: Object.values(stops)[0], to: Object.values(stops)[Object.keys(stops).length - 1], source: `@keyframes ${paramSrc.animName}` });
+        const from = Object.values(stops)[0], to = Object.values(stops)[Object.keys(stops).length - 1];
+        // T-11c bridge: transform/scale keyframes file under the function
+        // family they actually animate (scaleX()/scaleY()/scale() decomposed
+        // per-axis); the translateY fallback stays the documented assumption
+        // for mixed/absent functions (house keyframes are translateY-only).
+        const fams = prop === "transform" ? (transformFamilyOf(from, to) ?? ["translateY"]) : prop === "scale" ? scaleFamilies(from, to) : [prop];
+        for (const fam of fams) props.push({ family: fam, from, to, source: `@keyframes ${paramSrc.animName}` });
       }
     } else {
       const r = fromRec[1].rest, n2 = toRec[1].rest;
@@ -733,8 +815,24 @@ function deriveOurUnits(census) {
       if (r.transform !== n2.transform) {
         const tyR = tyOf(fromRec[1]), tyN = tyOf(toRec[1]);
         if (tyR != null && tyN != null && Math.abs(tyR - tyN) > 0.5) props.push({ family: "translateY", from: `${Math.round(tyR * 10) / 10}px`, to: `${Math.round(tyN * 10) / 10}px`, source: `computed ${label}` });
+        else {
+          // T-11c bridge: matrices that do NOT translate carry per-axis scale
+          // (scaleX()/scaleY() transitions land as matrices) — hypot of the
+          // column vectors; pure translations keep both axes at 1.
+          const mx = (tr) => { const m = tr?.rest?.transform?.match(/matrix\(([^)]+)\)/); if (!m) return null; const c = m[1].split(",").map(parseFloat); return { sx: Math.hypot(c[0], c[1]), sy: Math.hypot(c[2], c[3]) }; };
+          const mA = mx(fromRec[1]), mB = mx(toRec[1]);
+          if (mA && mB) {
+            if (Math.abs(mA.sx - mB.sx) > 0.01) props.push({ family: "scaleX", from: Math.round(mA.sx * 1000) / 1000, to: Math.round(mB.sx * 1000) / 1000, source: `computed ${label}` });
+            if (Math.abs(mA.sy - mB.sy) > 0.01) props.push({ family: "scaleY", from: Math.round(mA.sy * 1000) / 1000, to: Math.round(mB.sy * 1000) / 1000, source: `computed ${label}` });
+          }
+        }
       }
-      if (r.scale !== n2.scale && !(r.scale === "none" && n2.scale === "none")) props.push({ family: "scale", from: r.scale, to: n2.scale, source: `computed ${label}` });
+      // T-11c bridge: the `scale` property decomposes per-axis — only the
+      // axes that actually change file a family (uniform stays `scale`).
+      if (r.scale !== n2.scale && !(r.scale === "none" && n2.scale === "none")) {
+        for (const fam of scaleFamilies(r.scale, n2.scale)) props.push({ family: fam, from: r.scale, to: n2.scale, source: `computed ${label}` });
+      }
+      if (r.bg && n2.bg && r.bg !== n2.bg) props.push({ family: "background-color", from: r.bg, to: n2.bg, source: `computed ${label}` });
       if (r.clipPath && r.clipPath !== "none" && r.clipPath !== "" && r.clipPath !== n2.clipPath) props.push({ family: "clip-path", from: r.clipPath, to: n2.clipPath, source: `computed ${label}` });
       // scrub-varying elements: the property comes from the sampled range
       if (info && info.scrub) {
@@ -751,6 +849,7 @@ function deriveOurUnits(census) {
     let trigger;
     if (ambient) trigger = "ambient";
     else if (info && info.scrub) trigger = "scrub";
+    else if (exitFlight) trigger = "load"; // ran pre-scroll; unmount-before-walk1 is the completion evidence
     else if (hiddenAt(t0) && t1 && !hiddenAt(t1)) trigger = "load";
     else if (hiddenAt(t1)) trigger = "scroll-reveal";
     else trigger = "state";
@@ -892,6 +991,7 @@ function buildLimitations(census) {
   L.push("Our durations/eases are read from computed styles on the SHOWN state (walkMid at the bottom dwell / walk2); distances come from a most-hidden→most-shown envelope across the four snapshot walks (pre-intro, armed, at-bottom, back-at-top) — ordering of observed states, no value invented.");
   L.push("Scrub-side motion equivalence is asserted on property+trigger only (scrub duration is scroll distance, not time — the numeric curves are scroll.mjs/scroll-curves.<bp>.json territory, T-10).");
   L.push("Elements armed-hidden but never shown in any snapshot/sample (neverRevealed) are held OUT of coverage — their arm/hide transition is not a tween we run; they are reported by name in ours.neverRevealed.");
+  L.push("T-11c bridges: CSS `scale`-property and transform-function values decompose per-axis into the Heron scaleX/scaleY/scale families (only axes that change file a family; uniform stays `scale`); matrices that do not translate file their per-axis scale. The preloader EXIT is observed via a mid-flight walkExit snapshot (~780ms into the 800ms wipe) — the overlay unmounts before walk1, so the journey snapshots alone can never see the exit end-state; elements present at walk0+walkExit and absent later are exit-flight (trigger=load, envelope pinned rest→flown).");
   if (census.errors.length) L.push(`page errors during collection: ${census.errors.length} (first: ${census.errors[0]})`);
   return L;
 }
@@ -975,6 +1075,7 @@ const report = {
     scrubTracks: ours.scrubTracks,
     trackedGrammarElements: ours.trackedGrammar,
     walk0: { skipped: !!census.walk0.skipped, elements: census.walk0.els?.length ?? 0 },
+    walkExit: { skipped: !!census.walkExit?.skipped, elements: census.walkExit?.els?.length ?? 0 },
     walkMidElements: census.walkMid.els?.length ?? 0,
     waapiCalls: census.waapiCalls,
     waapiSample: census.waapiSample,
