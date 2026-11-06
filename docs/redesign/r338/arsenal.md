@@ -118,3 +118,5 @@ T-05k | playwright (repo node_modules, chromium-1200 via /tmp/pw-browsers) + run
 T-03h | jq + python3 | failure-cluster forensics from results.json; data-driven noCounterpart mapping rows
 T-03h | node scripts/conformance/run.mjs --sections home-intro-wrap --url | light re-measure on port 5303
 T-03h | vite --port 5303 | dev server for the conformance instrument
+T-05l | playwright (ad-hoc probe scripts) | live-DOM computed-style probes mapping failing oursSelectors -> classes/data-specs per bp
+T-05l | node scripts/conformance/run.mjs --sections home-why-wrap --dark | light + dark measurement @5305

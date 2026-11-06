@@ -64,7 +64,7 @@
   font-family: var(--font-display);
   font-size: var(--fs-d2);             /* 40px @1440 — the D2 rung */
   font-weight: 600;
-  line-height: 1;                      /* 40/40 measured */
+  line-height: 1.35;                   /* heron 72/53.33 @1920 · 54/40 @1440 — the ar-floor rung */
   letter-spacing: 0;                   /* Arabic: ls 0 by law */
   text-wrap: balance;
   min-block-size: 9.6rem;            /* the measured 2-line box */
@@ -570,7 +570,7 @@
 
   .wy-title {
     font-size: 3.2rem;                  /* 29.47px @768 */
-    line-height: 1;
+    line-height: 1.35;                 /* 39.78 = 1.35×fs @768 */
     min-block-size: 0;
   }
 
@@ -996,7 +996,7 @@
     --wy-ct-w: 167px;
     --wy-ct-h: 22px;
     --wy-ct-fs: 20px;
-    --wy-ct-lh: 22px;
+    --wy-ct-lh: 27px;                  /* heron 27 @1440 = 1.35×fs */
     --wy-ct-fw: 700;
     --wy-ct-color: rgb(255, 255, 255);
     --wy-ct-bg: rgba(0, 0, 0, 0);
@@ -1021,7 +1021,7 @@
     --wy-ct-w: 222px;
     --wy-ct-h: 29px;
     --wy-ct-fs: 26.67px;
-    --wy-ct-lh: 29.33px;
+    --wy-ct-lh: 36px;                  /* heron 36 @1920 = 1.35×fs */
     --wy-ct-fw: 700;
     --wy-ct-color: rgb(255, 255, 255);
     --wy-ct-bg: rgba(0, 0, 0, 0);
@@ -1099,7 +1099,7 @@
     --wy-ct-w: 98px;
     --wy-ct-h: 22px;
     --wy-ct-fs: 19.85px;
-    --wy-ct-lh: 21.83px;
+    --wy-ct-lh: 26.8px;                /* heron 26.8 @390 = 1.35×fs */
     --wy-ct-fw: 700;
     --wy-ct-color: rgb(255, 255, 255);
     --wy-ct-bg: rgba(0, 0, 0, 0);
@@ -1140,3 +1140,90 @@
 }
 .wy-cap:nth-child(even) .wy-cap-s { inset-inline-start: var(--wy-cs-even-x); top: var(--wy-cs-even-y); }
 /* T05I-CAP-END */
+
+/* ═══ T-05l — the measured tween-wrapper arms: per-bp wrapper line-height
+   (heron's own box: 24 @1920 · 22 @1440 · 12.8 @1024 · 24.31 @768 ·
+   21.44 @390 — empty wrappers, the ar-floor text seats above keep their
+   own ratios), the scene tween transitions (0.4s/ease scrub grammar,
+   0.3s route-map arm, 0.1s micro seats, per-bp mobile arms) and the
+   measured radii (heron 0 on the icon-cluster shells + dots; 99 on the
+   mini2_1c cluster core/box @≥992, its ring @≤599, the card3 capture
+   shell @1024/390, the vid2/vid3 + load-tail shells @768, the mini2_2
+   shell @1024/390) ═══ */
+.wy-section { line-height: 18px; }
+@media (min-width: 1601px) { .wy-section { line-height: 24px; } }
+@media (min-width: 992px) and (max-width: 1100px) { .wy-section { font-size: 9.48px; line-height: 12.8px; } }
+@media (min-width: 600px) and (max-width: 991px) { .wy-section { line-height: 19.89px; } }
+@media (max-width: 599px) { .wy-section { line-height: 21.44px; } }
+
+/* eyebrow — heron seats it at 0.875× the wrapper fs in the tablet/mobile/
+   1024 bands (12.89 @768 · 13.89 @390 · 8.3 @1024); ≥1101 keeps the
+   mono rung (11.67 @1440 = 0.875×13.33 — same law, token-native) */
+@media (min-width: 992px) and (max-width: 1100px), (max-width: 991px) {
+  .wy-eyebrow-t { font-size: 0.875em; }
+}
+/* radii — the icon-cluster shells + dots are heron-square */
+.wy-ic-box, .wy-ic-bg, .wy-ic-ring, .wy-dot { border-radius: 0; }
+
+/* transitions — desktop (≥992) arms */
+@media (min-width: 992px) {
+  .wy-mk-path, .wy-vic, .wy-cap-tw, .wy-cap-dot { transition: 0.4s ease; }
+  .wy-chk { transition: 0.1s ease; }
+  .wy-loadz { transition: 0.4s ease; }
+  .wy-map-in { transition: 0.3s ease; }
+  [data-spec="why.mini2_1"] { transition: 0.4s ease; }
+  [data-spec="why.mini2_1c"] .wy-ic-bg { transition: 0.4s ease; }
+  [data-spec="why.mini1_2c"] .wy-ic-box { transition: 0.1s ease; }
+  [data-spec="why.pt4"], [data-spec="why.pt7"], [data-spec="why.pt12"] { transition: 0.3s ease; }
+  [data-spec="why.mini2_1c"] .wy-ic-box,
+  [data-spec="why.mini2_1c"] .wy-ic-core { border-radius: 99px; }
+}
+/* transitions — the 1024 band (992–1100) */
+@media (min-width: 992px) and (max-width: 1100px) {
+  [data-spec="why.vid1"] .wy-vid-in, [data-spec="why.vid3"] .wy-vid-in,
+  .wy-box[data-spec="why.mini1_1b"], .wy-ic[data-spec="why.mini1_1c"],
+  .wy-dot, .wy-cap-sw { transition: 0.4s ease; }
+  [data-spec="why.vid2"] .wy-vid-in,
+  [data-spec="why.pt2"] { transition: 0.1s ease; }
+  [data-spec="why.pt3"] { transition: 0.4s ease; }
+  [data-spec="why.mini1_2c"] .wy-ic-ring { transition: 0.3s ease; }
+  .wy-load { transition: 0.4s ease; }
+  [data-spec="why.card3"] .wy-card-in,
+  [data-spec="why.mini2_2"] .wy-mini-in { border-radius: 99px; }
+}
+/* transitions — the 768 band (600–991) */
+@media (min-width: 600px) and (max-width: 991px) {
+  .wy-cap-in { transition: 0.4s ease; }
+  .wy-map-in { transition: 0.3s ease; }
+  [data-spec="why.mk2"] { transition: 0.4s ease; }
+  [data-spec="why.vid4"] .wy-vid-in,
+  .wy-loadz { transition: 0.1s ease; }
+  [data-spec="why.mini1_1"] { transition: 0.4s ease; }
+  [data-spec="why.mini2_1"] { transition: 0.1s ease; }
+  [data-spec="why.mini2_1c"] .wy-ic-bg { transition: 0.4s ease; }
+  [data-spec="why.pt6"], [data-spec="why.pt9"] { transition: 0.3s ease; }
+  .wy-load { transition: 0.4s ease; }
+  [data-spec="why.card1"] .wy-card-in,
+  [data-spec="why.card4"] .wy-card-in { transition: 0.4s ease; }
+  [data-spec="why.vid2"] .wy-vid-in,
+  [data-spec="why.vid3"] .wy-vid-in,
+  .wy-load-tail { border-radius: 99px; }
+}
+/* transitions — the 390 band (≤599) */
+@media (max-width: 599px) {
+  .wy-map-in { transition: 0.3s ease; }
+  [data-spec="why.vid1"] .wy-vid-in,
+  .wy-vic-in { transition: 0.1s ease; }
+  [data-spec="why.vid2"] .wy-vid-in,
+  .wy-spinz, [data-spec="why.mk2in"],
+  .wy-ic[data-spec="why.mini2_1c"],
+  .wy-cap-in,
+  .wy-card[data-spec="why.card4"] { transition: 0.4s ease; }
+  [data-spec="why.mini2_1c"] .wy-ic-core { transition: 0.1s ease; }
+  [data-spec="why.mini2_1c"] .wy-ic-bg { transition: 0.3s ease; }
+  [data-spec="why.pt5"], [data-spec="why.pt8"] { transition: 0.3s ease; }
+  [data-spec="why.card3"] .wy-card-in,
+  [data-spec="why.mini2_2"] .wy-mini-in,
+  [data-spec="why.mini2_1c"] .wy-ic-ring { border-radius: 99px; }
+}
+/* T05L-END */
