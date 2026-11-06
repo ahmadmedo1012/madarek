@@ -39,9 +39,18 @@
 }
 
 /* ── the rules (spec: 1px rgb(179,179,175) hairlines) ───────────────
-   T-06f: the heron edge-rule PAINT MODEL — hairlines are background-IMAGE
-   strokes, so computed backgroundColor stays the spec rgba(0,0,0,0)   */
+   T-06i: the heron c1rule/col3rule/legalbot seats PAINT a real
+   background-color rgb(179,179,175) (bg-image-only left computed
+   backgroundColor rgba(0,0,0,0) — 23 bg cells); the gradient stroke
+   stays for the 1px crisp edge */
 .fo-rule {
+  background-image: linear-gradient(var(--rule-strong), var(--rule-strong));
+}
+/* T-06i: ONLY the heron-painted seats carry a real background-color
+   (c1rule · col3rule · legalbot paint rgb(179,179,175); the other
+   hairlines + sc-edges stay bg-image-only — computed transparent) */
+.fo-rule-solid {
+  background-color: var(--rule-strong);
   background-image: linear-gradient(var(--rule-strong), var(--rule-strong));
 }
 .fo-rule-h { block-size: 1px; inline-size: 100%; }
@@ -147,7 +156,15 @@
   color: var(--text);
   transition: border-color 0.45s ease;
 }
-.fo-input::placeholder { color: var(--rule-strong); }.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
+.fo-input::placeholder { color: var(--rule-strong); }
+/* the go button's base seat — spec (footer.1920 [19]): transition
+   border-color,background-color,color 0.2s/0.4s/0.4s ease×3 (the
+   multi-ease string must match verbatim: the instrument's parseEase
+   returns null for the comma list on BOTH sides → string equality) */
+.fo-go {
+  transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
+}
+.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
 .fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
 .fo-go-ic path {
   fill: none;
@@ -337,21 +354,27 @@
 @media (max-width: 991px) {
   /* T-06f re-seat (heron 768 model): col1 377 stack · col2 label|link
      rows · the col3 rail (w251) with its vertical rule (h331) + mark 207
-     + the 311-wide 0-height markimg twin seat */
+     + the 166-wide 0-height markimg twin seat */
   .fo-grid { grid-template-columns: 37.7rem 1fr 25.1rem; }
   /* T-06g2: col1/col3 are REAL grid boxes now (heron 768 rects: col1
      377 · col3 251×331 — display:contents gave the instrument −pageY
-     y-artifacts: no box ⇒ rect 0,0); col2 stays unwrapped (heron's
-     0×0 col2 cell at 390/768) */
+     y-artifacts: no box ⇒ rect 0,0); T-06i: col2 is a REAL box too
+     (its own data-spec seat had no rect under display:contents —
+     the −10861/−11886 y family) */
   .fo-col {
     display: block;
     grid-column: 1;
     grid-row: 1 / span 2;
   }
-  .fo-col2 { display: contents; }
+  .fo-col2 {
+    display: grid;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    grid-template-rows: auto auto;
+  }
   .fo-col2 > div:first-child { display: contents; }
-  .fo-c2-top { grid-column: 2; grid-row: 1 / span 2; grid-template-columns: 1fr; }
-  .fo-c2-bottom { grid-column: 2; grid-row: 3; grid-template-columns: 1fr; }
+  .fo-c2-top { grid-column: 1; grid-row: 1; grid-template-columns: 1fr; }
+  .fo-c2-bottom { grid-column: 1; grid-row: 2; grid-template-columns: 1fr; }
   .fo-lgroup { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; align-items: start; }
   .fo-col3 {
     display: grid;
@@ -364,7 +387,9 @@
   }
   .fo-col3rule { grid-column: 1; grid-row: 1 / span 2; }
   .fo-mark { grid-column: 2; grid-row: 1; }
-  .fo-mark-img { grid-column: 2; grid-row: 2; inline-size: 37.3rem; block-size: 0; margin-block-start: -12.24rem; }
+  /* T-06i: the −12.24rem negative-margin seat model is DELETED — heron
+     768 seats the img twin at 166×0 inside the rail (545,527,166,0) */
+  .fo-mark-img { grid-column: 2; grid-row: 2; inline-size: 19.92rem; block-size: 0; margin: 0; }
   .fo-grid-rule { grid-row: 5; }
   .fo-mark { inline-size: 24.84rem; block-size: 24.84rem; }
   .fo-c2-bottom .fo-lgroup { display: block; }
@@ -390,12 +415,19 @@
   .fo-mark,
   .fo-mark-img { grid-column: 1; grid-row: auto; }
   .fo-mark { inline-size: 14.28rem; block-size: 14.28rem; }
-  .fo-mark-img { inline-size: 14.28rem; block-size: 0; margin-block-start: 0; }
+  .fo-mark-img { inline-size: 0; block-size: 0; margin: 0; }
   .fo-brow { display: none; }
   .fo-brand-name { font-size: 7.9rem; line-height: 9.48rem; }
   .fo-brand-sub { display: none; }
-  .fo-c1-top { padding-block: 2.28rem 1.32rem; }
-  .fo-c2-top .fo-lgroup:first-child .fo-mono-label { min-block-size: 14.88rem; }
+  /* T-06i: heron 390 c1top = 344×79 brand + rule ONLY (0,0,374,118) —
+     the independence paragraph rides the ≥992 seats (DOM stays: the
+     r188/r320 §D contract reads the source, not the 390 paint) */
+  .fo-footer-about { display: none; }
+  .fo-c1-top { padding-block: 2.4rem 2.28rem; }
+  /* heron 390 group1 = the 374×124 block (label 13 + 2-col link rows
+     28) — the 124 floor sits on the GROUP, not the label */
+  .fo-c2-top .fo-lgroup:first-child { min-block-size: 14.88rem; }
+  .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; }
   .fo-lgroup { display: block; }
   .fo-mono-label {
     font-size: 1.2rem;
