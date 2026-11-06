@@ -92,3 +92,4 @@ T-13r | playwright (repo node_modules, chromium via /tmp/pw-browsers symlink fal
 T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + channel-class census driving the fix plan
 T-05g | run.mjs census copy (uncapped /tmp splice variant) + python census | enumerate full 119 no-counterpart set + failure families
 T-05h | node + repo playwright (chromium-1200 via /tmp/pw-browsers fallback) | per-bp DOM walk replicating run.mjs WALK_JS to geometry-match spec records and generate per-recorded-path bindings
+T-05i | repo conformance (run.mjs --url 5305, gen-why-wrap.mjs) + vite + playwright/chromium | why per-bp family bindings, dup-twin excuses, caption-bar geometry vars
