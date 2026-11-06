@@ -35,6 +35,8 @@
  *   node scripts/conformance/run.mjs --ratchet                  # raise ratchet to current rate
  *   node scripts/conformance/run.mjs --dark                     # + dark internal-consistency pass (spec is light-only)
  *   node scripts/conformance/run.mjs --url http://localhost:5174/
+ *   PLAYWRIGHT_WEBKIT_LD_PREFIX=/tmp/webkit-prefix node scripts/conformance/run.mjs --engine webkit \
+ *                                     # T-15: run cells under WebKit (user-space libs; see webkit-libs.sh)
  *
  * Output: console matrix + scripts/conformance/results.json.
  */
@@ -48,11 +50,11 @@ import { interact as interactStates, patterns as patternCheck } from "./interact
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = join(__dirname, "..", "..");
-let chromium;
+let chromium, webkit;
 try {
-  ({ chromium } = createRequire(join(WORKTREE, "frontend", "package.json"))("playwright"));
+  ({ chromium, webkit } = createRequire(join(WORKTREE, "frontend", "package.json"))("playwright"));
 } catch {
-  ({ chromium } = createRequire("/home/z/madarek/frontend/package.json"))("playwright");
+  ({ chromium, webkit } = createRequire("/home/z/madarek/frontend/package.json"))("playwright");
 }
 
 const SPEC_DIR = join(WORKTREE, "docs", "redesign", "r335", "heron-spec");
@@ -111,6 +113,23 @@ const RATCHET_FILE = join(__dirname, "ratchet.json");
 const OUT = arg("out", join(__dirname, "results.json"));
 const URL = arg("url", "http://localhost:5173/");
 const DARK = process.argv.includes("--dark");
+
+// T-15 (R339) -- user-space WebKit engine option. The sandbox has no root, so
+// WebKit's system libs (libgtk-4/libgles2/libwoff1/...) live in a dpkg-extracted
+// prefix instead of /usr. scripts/conformance/webkit-libs.sh builds that prefix
+// and prints the exports; PLAYWRIGHT_WEBKIT_LD_PREFIX lets run.mjs apply them to
+// the browser child process (must be set BEFORE launch so the MiniBrowser
+// wrapper inherits it -- it appends inherited LD_LIBRARY_PATH; note the GLVND
+// vendor-dir var is __EGL_VENDOR_LIBRARY_DIRS in this libglvnd build).
+const ENGINE = arg("engine", process.env.CONF_ENGINE ?? "chromium");
+if (ENGINE === "webkit") {
+  const p = process.env.PLAYWRIGHT_WEBKIT_LD_PREFIX;
+  if (p) {
+    process.env.LD_LIBRARY_PATH = `${p}/usr/lib/x86_64-linux-gnu:${p}/usr/lib:${process.env.LD_LIBRARY_PATH ?? ""}`;
+    process.env.__EGL_VENDOR_LIBRARY_DIRS = `${p}/usr/share/glvnd/egl_vendor.d`;
+  }
+  process.env.PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS ??= "1"; // ldconfig-cache check cannot see the prefix
+}
 const unknown = SECTIONS_WANTED.filter((s) => !MAPPING.ourSection[s]);
 if (unknown.length) {
   console.error(`unknown section key(s): ${unknown.join(", ")} — known: ${SECTIONS.join(", ")}`);
@@ -404,8 +423,8 @@ function isLineContainerPath(p) {
 }
 
 // ── runner ───────────────────────────────────────────────────────────────────
-const browser = await chromium.launch({ headless: true });
-const results = { generatedAt: new Date().toISOString(), url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [] };
+const browser = await (ENGINE === "webkit" ? webkit : chromium).launch({ headless: true });
+const results = { generatedAt: new Date().toISOString(), engine: ENGINE, url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [] };
 let totalPass = 0, totalFail = 0, exceptionUses = 0;
 let darkPass = 0, darkFail = 0, darkContrast = 0, darkContrastSkipped = 0;
 const darkSettle = []; // T-14a2: per-bp post-flip settle evidence (stability frames)
