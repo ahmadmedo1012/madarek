@@ -20,7 +20,11 @@ const CAMPUS_COUNT = new Set(colleges.map((c) => c.cityAr ?? '')).size;
  * column (w80 @phone) — the register copy splits on its natural Arabic
  * phrase break (copy.ts stays the single source). */
 const REGISTER_WORDS = REGISTER.split(' ');
-const REGISTER_L1 = REGISTER_WORDS.slice(0, 2).join(' ');
+/* Trailing space on L1: jsdom's innerText ≈ textContent concatenates the
+ * masked lines without whitespace — the funnel contract reads the full
+ * phrase «أنشئ حسابك الجامعي» off .btn.accent. CSS ignores the trailing
+ * space visually (the measured two-line masked wrappers are untouched). */
+const REGISTER_L1 = REGISTER_WORDS.slice(0, 2).join(' ') + ' ';
 const REGISTER_L2 = REGISTER_WORDS.slice(2).join(' ');
 
 /* The sketch band's authored line-art: ruled baselines, the three-step
