@@ -1,5 +1,5 @@
 {
-  "_readme": "R338 T-06 — footer ledger, REGENERATED against the frozen spec by scripts/build-footer-mapping.py (re-run after changing Footer.tsx hooks). Every unique recorded spec path binds to the data-spec key whose OWN recorded walk path (same 6-segment truncation law) is identical — our footer spec-mirrors the reference tree. SVG defs/filter plumbing and 0x0 residue boxes are excused with written reasons; colliding window families ride the tag+tc heuristic fallback. ourSection: footer.fo-footer (components/landing/sections/Footer.tsx — the r338 Heron rebuild: 357/715/357 grid + ink strip + 42px legal row).",
+  "_readme": "R338 T-06 — footer ledger, REGENERATED against the frozen spec by scripts/build-footer-mapping.py (re-run after changing Footer.tsx hooks). Every unique recorded spec path binds to the data-spec key whose OWN recorded walk path (same 6-segment truncation law) is identical — our footer spec-mirrors the reference tree. SVG defs/filter plumbing and 0x0 residue boxes are excused with written reasons; colliding window families ride the tag+tc heuristic fallback. ourSection: footer.fo-footer (components/landing/sections/Footer.tsx — the r338 Heron rebuild: 357/715/357 grid + ink strip + 42px legal row). T-06k: strip/stripin re-bound to the band zone (in>div[2]); the stripmedia key re-homed INTO the legal row (the spec © line box); charSplit suppressions + noCounterpart reasons kill the heuristic window-glue.",
   "ourSection": {
     "footer": "footer.fo-footer"
   },
@@ -132,14 +132,14 @@
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[3]",
-      "spec": "footer > footer[1] > div[1] > div[3]",
+      "heron": "footer > footer[1] > div[1] > div[2]",
+      "spec": "footer > footer[1] > div[1] > div[2]",
       "ours": "footer.strip"
     },
     {
       "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[3] > div[1]",
-      "spec": "footer > footer[1] > div[1] > div[3] > div[1]",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1]",
+      "spec": "footer > footer[1] > div[1] > div[2] > div[1]",
       "ours": "footer.stripin"
     },
     {
@@ -1707,6 +1707,46 @@
       "section": "footer",
       "heron": "(our authored brow index rows)",
       "reason": "T-06d: heron c1-top (footer.1440/390.json) has exactly 2 children (brand block + the 1px hairline) — our brow index rows are Madarek-authored honest-platform content with no heron counterpart"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "reason": "T-06k glue kill: staged-duplicate window capture / depth-6 path collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "T-06k glue kill: staged-duplicate window capture / depth-6 path collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "reason": "T-06k glue kill: staged-duplicate window capture / depth-6 path collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "reason": "T-06k glue kill: staged-duplicate window capture / depth-6 path collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
+      "reason": "T-06k glue kill (2nd pass): staged-duplicate window capture / depth-6 collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition/opacity junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1]",
+      "reason": "T-06k glue kill (2nd pass): staged-duplicate window capture / depth-6 collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition/opacity junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "reason": "T-06k glue kill (2nd pass): staged-duplicate window capture / depth-6 collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition/opacity junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2]",
+      "reason": "T-06k glue kill (2nd pass): staged-duplicate window capture / depth-6 collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition/opacity junk"
     }
   ],
   "plumbing": [
@@ -3495,6 +3535,663 @@
         "geometry"
       ],
       "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    }
+  ],
+  "charSplit": [
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[2] > div[2] > a[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[3] > div[1] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > br[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[5]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[2] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[2] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[3] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[2] > div[2] > a[2] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[3] > div[2] > a[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[3] > div[2] > a[3] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[4]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[5]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[6]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[2] > div[1] > div[1] > img[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[3] > div[2] > a[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[3] > div[2] > a[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[3] > div[2] > a[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[6]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[7]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[8]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
+      "note": "T-06k — heuristic-glue suppression for this recorded path (see noCounterpart reason)"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[4]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > form[1] > div[2] > button[2] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[1] > div[2] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[1] > div[2] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[1] > div[2] > div[2] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[3] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[3] > div[2] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[3] > div[2] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[5] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > a[6] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > button[2] > div[1] > div[1] > svg[1] > path[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > br[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[3] > div[2] > a[4] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[3] > div[2] > a[5] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > div[3] > div[2] > a[6] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > br[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[1] > form[1] > div[2] > button[2] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[1] > a[2] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[1] > a[3] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > div[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[2] > div[2] > div[1] > form[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[2] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[2] > div[2]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
+      "note": "T-06k 2nd-pass heuristic-glue suppression"
     }
   ]
 }

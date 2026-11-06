@@ -94,3 +94,4 @@ T-06h | node+playwright (conformance run.mjs --sections footer --url :5306 --dar
 T-06i | node + repo conformance instrument (scripts/conformance/run.mjs --sections footer --url :5306 + --dark) | footer census fix pass (bg solid seats, col2 real box, mark-img negative-margin delete, 390 c1top re-seat)
 T-06j | node (spec-rect dump + plumbing generator) | derived the vw-linear law from the census + generated 219 counted plumbing skips into mapping/footer.json
 T-06j | playwright/chromium via scripts/conformance/run.mjs | light+dark footer conformance @own vite :5306
+T-06k | scripts/conformance/run.mjs (--sections footer --url http://localhost:5306, light + --dark) | strip-family/legal-zone restructure + 768 c1top re-seat + heuristic-glue census (3 measured passes)
