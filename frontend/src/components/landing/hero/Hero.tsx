@@ -141,10 +141,10 @@ export function Hero() {
               chrome (R315 B1 · A.3); direct stage children so their 11px
               seats track the frame's own 16px inset. Hover-revealed with
               the frame they annotate (R332 W1 — clean corners at rest). */}
-          <span className="bp-dmark bp-dmark-tl" aria-hidden="true" data-spec-hover={DMARK_SEAT.tl} />
-          <span className="bp-dmark bp-dmark-tr" aria-hidden="true" data-spec-hover={DMARK_SEAT.tr} />
-          <span className="bp-dmark bp-dmark-bl" aria-hidden="true" data-spec-hover={DMARK_SEAT.bl} />
-          <span className="bp-dmark bp-dmark-br" aria-hidden="true" data-spec-hover={DMARK_SEAT.br} />
+          <span data-spec-hover={DMARK_SEAT.tl} className="bp-dmark bp-dmark-tl" aria-hidden="true" />
+          <span data-spec-hover={DMARK_SEAT.tr} className="bp-dmark bp-dmark-tr" aria-hidden="true" />
+          <span data-spec-hover={DMARK_SEAT.bl} className="bp-dmark bp-dmark-bl" aria-hidden="true" />
+          <span data-spec-hover={DMARK_SEAT.br} className="bp-dmark bp-dmark-br" aria-hidden="true" />
 
           {/* the deco cards — mono micro-copy + the brand square's
               1.5s fade-loop pulse (decorative repetition of the
