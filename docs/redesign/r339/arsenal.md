@@ -112,3 +112,6 @@
 - [T-31] node — css-counts.mjs ratchet + coverage harness runner
 - [T-31] playwright — DOM selector liveness probe via scripts/gates/css-coverage.mjs (reused, port 5321)
 - [T-31] skills loaded: none of /home/z/my-project/skills document a ponytail-audit method (checked dir listing — no such skill)
+- [T-16] playwright — chromium screenshots + A/B live comparison panel
+- [T-16] node — panel.mjs capture script (3 viewports × 2 themes, scroll frames, hovers, preloader)
+- [T-16] z-ai vision (VLM CLI) — side-by-side A/B adjudication of captures across 5 comparison rounds (hero/25%, 50/75%, mobile-390, dark+hover+carousel, true-dark)
