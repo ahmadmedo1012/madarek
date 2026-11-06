@@ -1,7 +1,7 @@
 /* ════════════════════════════════════════════════════════════════════
-   R333 P-D → r335 (W-chrome) — the entry preloader sheet, conformed to
-   the FROZEN r335 Heron motion spec (docs/redesign/r335/heron-spec/
-   _motion.1440.json + _motion.390.json, targets `.loading-*`):
+   R333 P-D → r335 (W-chrome) → r339 (T-11c) — the entry preloader sheet,
+   conformed to the FROZEN r335 Heron motion spec (docs/redesign/r335/
+   heron-spec/_motion.1440.json + _motion.390.json, targets `.loading-*`):
 
      · the loading CONTENT fades out first — recorded
        `to { duration:0.4, ease:power2.out, opacity:0 }` on
@@ -9,26 +9,33 @@
        → here: .pl-inner opacity→0 on var(--motion-duration-page)
        (400ms) with the house decel token (--ease-out, the register's
        power2.out-equivalent);
-     · the paper OPENS AS A TWO-BAND SPLIT — recorded on .loading-main
-       as widening clip polygons (slit 49.94%/50.06% → bands apart) and
-       on the .loading-progress-item pair as the exit flight
-       `to { duration:0.8, ease:cubic-bezier(1,0,0.44,1), y:∓… }`
-       → here: the paper lives on two half-bands (::before/::after)
-       that translate ∓101% apart across var(--motion-duration-sheet-exit)
-       (835ms — the R313-measured rung of this same reference exit)
-       on the recorded cubic-bezier(1,0,0.44,1);
+     · the paper OPENS ON THE RECORDED SLIT — the .loading-main clip
+       polygons (49.944%/50.056% hairline → the quads collapsed to the
+       top/bottom edges) → here: .pl-paper carries the same polygon pair
+       as a real clip-path transition across var(--motion-duration-sheet-exit)
+       (835ms — the R313-measured rung of this same reference exit) on the
+       recorded cubic-bezier(1,0,0.44,1);
+     · the band pair FLIES THE RECORDED FLIGHT — the .loading-progress-item
+       top/bot `to { duration:0.8, ease:cubic-bezier(1,0,0.44,1),
+       y:∓387.5px/+310.5px @1440 (∓150.6px/+263.9px @390),
+       backgroundColor:#b3b3af }` → here: two REAL .pl-band halves (the
+       flight must be a live element, not a ::before paint — the exit
+       params read from the computed style the moment the class lands)
+       translating the recorded per-breakpoint distances and tinting to
+       the recorded #b3b3af on the same rung/ease, DECLARED ON THE BASE
+       CLASS from mount so the legs are armed before the exit fires;
      · the overlay itself hides INSTANTLY and unmounts — recorded
        `to { duration:0, ease:power2.out, autoAlpha:0 }` on the
        loading-wrap seat; here the unmount is Preloader's
-       transitionend (guarded to the band's ::before) + cap twin, so
-       the overlay vanishes with the split's last frame. Zero JS
-       animation, zero @keyframes — the whole exit is two CSS
-       transitions on the .pl--exit class.
+       transitionend (guarded to the paper's clip-path leg) + cap twin,
+       so the overlay vanishes with the split's last frame. Zero JS
+       animation, zero @keyframes — the whole exit is CSS transitions
+       on the .pl--exit class.
 
-   Every duration is a token; the two raw easings carry their recorded
-   provenance. The mark/wordmark stroke-draw stays the brand system's
-   own <Logo animated> (its bespoke timing is the documented brand
-   spec). Reduced motion never mounts this sheet (the introGate
+   Every duration is a token; the raw easings and distances carry their
+   recorded provenance. The mark/wordmark stroke-draw stays the brand
+   system's own <Logo animated> (its bespoke timing is the documented
+   brand spec). Reduced motion never mounts this sheet (the introGate
    refuses); the belt below still pins the exit to an instant hide.
    ════════════════════════════════════════════════════════════════════ */
 
@@ -38,52 +45,78 @@
   z-index: 320; /* above the nav/cursor chrome (250/251) while it plays */
   display: grid;
   place-items: center;
-  /* the paper ground is the TWO-BAND pair below — the root stays
-     clear so the bands can fly apart without dragging the content's
+  /* the paper ground lives on the .pl-paper/.pl-band pair below — the
+     root stays clear so the bands can fly without dragging the content's
      paint with them (the recorded .loading-main split geometry) */
   background: transparent;
 }
 
-/* the paper bands — the top/bottom halves of the recorded
-   .loading-main clip split, meeting flush at the centreline at rest */
-.pl::before,
-.pl::after {
-  content: '';
+/* the paper — the recorded .loading-main seat: at rest the clip is the
+   recorded hairline slit (the 49.944%/50.056% polygon pair — the two
+   quads cover the sheet minus a 1px centreline gap that rides the
+   instrument crosshair); on exit the quads collapse to the top/bottom
+   edges and the sheet opens. Declared from mount so the leg is armed. */
+.pl-paper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 50.056%, 0% 50.056%, 0% 49.944%, 100% 49.944%, 100% 100%, 0% 100%);
+  transition: clip-path var(--motion-duration-sheet-exit) var(--motion-ease-band); /* easing-gate: allow — the recorded .loading-main slit curve (r335 _motion.1440) */
+}
+
+/* the band pair — the recorded .loading-progress-item top/bot seats:
+   the two paper halves, meeting flush at the centreline at rest; on
+   exit they fly the recorded per-breakpoint distances and tint to the
+   recorded #b3b3af ground (the chrome cell-grammar grey). */
+.pl-band {
   position: absolute;
   inset-inline: 0;
   background: var(--bg); /* the ONE paper ground — the entry sheet is
                             the same material as the page it reveals */
-  z-index: 0;
   pointer-events: none;
+  transition:
+    transform var(--motion-duration-sheet-exit) var(--motion-ease-band), /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+    background-color var(--motion-duration-sheet-exit) var(--motion-ease-band); /* easing-gate: allow — same recorded curve */
 }
 
-.pl::before {
+.pl-band--top {
   inset-block: 0 50%; /* the top band */
 }
 
-.pl::after {
+.pl-band--bot {
   inset-block: 50% 0; /* the bottom band */
 }
 
 /* ── THE EXIT (the .pl--exit class; Preloader adds it after the 100%
  * hold beat) — the recorded choreography, simultaneous:
- *   content fade 0.4s · bands fly apart 0.835s · instant hide+unmount.
- * transitionend lands on the root from the band's own ::before (the
- * longest transition), so the unmount waits for the split's last
- * frame — never for the shorter content fade. ══ */
-.pl--exit::before {
-  transform: translateY(-101%);
-  transition: transform var(--motion-duration-sheet-exit) var(--motion-ease-band); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+ *   content fade 0.4s · slit opens 0.835s · bands fly+tint 0.835s ·
+ *   instant hide+unmount. transitionend lands on the root from the
+ *   paper's own clip-path leg (the longest transition), so the unmount
+ *   waits for the split's last frame — never for the content fade. ══ */
+.pl--exit .pl-paper {
+  clip-path: polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%, 0% 100%, 100% 100%, 100% 100%, 0% 100%); /* the recorded end polygons — the quads collapsed to the edges */
 }
 
-.pl--exit::after {
-  transform: translateY(101%);
-  transition: transform var(--motion-duration-sheet-exit) var(--motion-ease-band); /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
+/* the recorded item flight (r335 _motion.1440: y −387.547/+310.5;
+   _motion.390: y −150.562/+263.891) + the recorded #b3b3af tint */
+.pl--exit .pl-band--top {
+  transform: translateY(-387.5px);
+  background-color: #b3b3af; /* the recorded exit ground — the reference's own value, not a token */
+}
+
+.pl--exit .pl-band--bot {
+  transform: translateY(310.5px);
+  background-color: #b3b3af; /* the recorded exit ground — the reference's own value, not a token */
+}
+
+@media (max-width: 991px) {
+  .pl--exit .pl-band--top { transform: translateY(-150.6px); }
+  .pl--exit .pl-band--bot { transform: translateY(263.9px); }
 }
 
 .pl--exit .pl-inner {
   opacity: 0;
-  transition: opacity var(--motion-duration-page) var(--ease-out); /* power2.out-equivalent — the house decel rung */
 }
 
 .pl-inner {
@@ -93,6 +126,7 @@
   justify-items: center;
   gap: var(--sp-3);
   text-align: center;
+  transition: opacity var(--motion-duration-page) var(--ease-out); /* power2.out-equivalent — the house decel rung; armed from mount so the exit leg reads in computed style */
 }
 
 .pl-mark,
@@ -215,9 +249,9 @@
    This belt pins the exit to an instant hide should the class ever
    land under RM: the bands stand open, the content stands hidden. ── */
 @media (prefers-reduced-motion: reduce) {
-  .pl--exit::before,
-  .pl--exit::after,
-  .pl--exit .pl-inner,
+  .pl-paper,
+  .pl-band,
+  .pl-inner,
   .pl-skip {
     transition: none;
   }

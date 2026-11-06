@@ -187,6 +187,45 @@ html[data-theme='dark'] .fo-header {
   transition: opacity var(--motion-duration-page) var(--ease-out) var(--motion-duration-page); /* 400ms fade · 400ms delay — resolves with the 835ms paper split */
 }
 
+/* ── the cell draw-up (r339 T-11c) — the recorded chrome entrance's
+ * scaleY family: _motion.1440/390.json record `fromTo {scaleY:0}` on
+ * the 12 .header-menu-item cells the moment the paper split completes
+ * (~85ms after the 0.8s exit flight; per-tween timing unrecorded — the
+ * page signature 800ms/power2.out/20ms stagger is the documented pick).
+ * Our seat: the bar's ruled cells (the brand cell + the six nav seats)
+ * draw up on the `scale` property — orthogonal to the cells' own
+ * transform grammar, the rl-rule-x precedent — with the base delay
+ * waiting out the paper split (two sheet-exit rungs ≈ the 700ms hold +
+ * 835ms wipe window) so the cells draw on the REVEALED sheet, and the
+ * 20ms ladder staggering them like the reference's menu rows. Non-intro
+ * visits (RM · return sessions) never see intro-draw: the cells stand
+ * at rest, zero transitions fire. */
+.landing.intro-draw .fo-brand,
+.landing.intro-draw .fo-nav-link {
+  scale: 1 0;
+}
+
+.landing.intro-done .fo-brand {
+  scale: 1 1;
+  transition: scale 800ms cubic-bezier(0.215, 0.61, 0.355, 1); /* easing-gate: allow — GSAP power2.out, the page signature (r335 _motion chrome rows) */
+  transition-delay: calc(var(--t-sheet-exit) * 2);
+}
+
+.landing.intro-done .fo-nav-link {
+  scale: 1 1;
+  transition:
+    color 0.4s ease, /* the measured cell colour clock (r339 T-10), kept */
+    scale 800ms cubic-bezier(0.215, 0.61, 0.355, 1); /* easing-gate: allow — GSAP power2.out, the page signature (r335 _motion chrome rows) */
+  transition-delay: 0s, calc(var(--t-sheet-exit) * 2);
+}
+
+/* the 20ms ladder — the reference's menu-row stagger */
+.landing.intro-done .fo-nav .fo-nav-link:nth-child(2) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 20ms); }
+.landing.intro-done .fo-nav .fo-nav-link:nth-child(3) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 40ms); }
+.landing.intro-done .fo-nav .fo-nav-link:nth-child(4) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 60ms); }
+.landing.intro-done .fo-nav .fo-nav-link:nth-child(5) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 80ms); }
+.landing.intro-done .fo-nav .fo-nav-link:nth-child(6) { transition-delay: 0s, calc(var(--t-sheet-exit) * 2 + 100ms); }
+
 .fo-header.on-hide .fo-header-inner {
   transform: translateY(-101%);
 }

@@ -10,18 +10,24 @@ import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
  * (document load + document.fonts.ready) bounded to min 900 ms /
  * max 2.2 s — the counter never lies and never stalls.
  *
- * Exit (r335 W-chrome — the FROZEN _motion spec's recorded choreography):
- * the content fades 0.4s (power2.out-equivalent house decel) while the
- * paper opens as the recorded TWO-BAND split — the top/bottom halves
- * (preloader.css ::before/::after) fly ∓101% apart across the R313
- * sheet-exit rung (835ms) on the recorded cubic-bezier(1,0,0.44,1) —
- * then the overlay hides instantly (the recorded autoAlpha:0 set) and
- * unmounts: the transitionend guard counts only the BAND's ::before
- * leg, so the unmount lands on the split's last frame. No JS animation
- * library — the .pl--exit class carries the whole choreography. At
- * exit START the component dispatches the `mdrk:entry-done` custom
- * event AND calls onExitStart, so downstream chrome (the consent
- * banner) mounts under the reveal and never overlaps the overlay.
+ * Exit (r335 W-chrome — the FROZEN _motion spec's recorded choreography;
+ * r339 T-11c upgrades it to the full recorded flight): the content fades
+ * 0.4s (power2.out-equivalent house decel) while the paper opens on the
+ * recorded TWO-BAND choreography — the .pl-paper clip slit (the recorded
+ * .loading-main polygon pair) widens to the edges across the R313
+ * sheet-exit rung (835ms) on the recorded cubic-bezier(1,0,0.44,1) WHILE
+ * the two real band halves (the recorded .loading-progress-item pair) fly
+ * the recorded ∓387.5px/+310.5px @≥992 (∓150.6px/+263.9px below) and tint
+ * to the recorded #b3b3af ground — then the overlay hides instantly (the
+ * recorded autoAlpha:0 set) and unmounts: the transitionend guard counts
+ * only the PAPER's clip-path leg (the longest flight), so the unmount
+ * lands on the split's last frame. No JS animation library — the
+ * .pl--exit class carries the whole choreography; the legs are declared
+ * on the base classes from mount so the exit params are live in the
+ * computed style the moment the class lands. At exit START the component
+ * dispatches the `mdrk:entry-done` custom event AND calls onExitStart, so
+ * downstream chrome (the consent banner) mounts under the reveal and
+ * never overlaps the overlay.
  *
  * Gating (owned by the parent through the introGate decision):
  * plays once per session (the `madarek-intro-seen` sessionStorage flag
@@ -133,12 +139,12 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
         cbsRef.current.onDone?.();
       };
       /* the unmount waits for the PAPER SPLIT's last frame: only the
-       * band's own ::before transition finishes the exit — the shorter
-       * content-fade transitionend bubbles past uncounted (r335
-       * conformance: the recorded autoAlpha:0 hide lands AFTER the
-       * 0.8s flight, never mid-split). */
+       * .pl-paper clip-path leg finishes the exit — the shorter
+       * content-fade and band-flight transitionends bubble past
+       * uncounted (r335 conformance: the recorded autoAlpha:0 hide
+       * lands AFTER the 0.8s flight, never mid-split). */
       const onBandEnd = (e: TransitionEvent) => {
-        if (e.pseudoElement !== '::before') return;
+        if (e.propertyName !== 'clip-path') return;
         root.removeEventListener('transitionend', onBandEnd);
         finish();
       };
@@ -209,6 +215,10 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
       aria-valuemax={100}
       aria-valuenow={pct}
     >
+      <div className="pl-paper" aria-hidden="true">
+        <div className="pl-band pl-band--top" aria-hidden="true" />
+        <div className="pl-band pl-band--bot" aria-hidden="true" />
+      </div>
       <div className="pl-inner pl-main">
         <span className="pl-cross-h" aria-hidden="true" />
         <span className="pl-cross-v" aria-hidden="true" />
