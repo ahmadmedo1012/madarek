@@ -44,6 +44,11 @@ function SketchArt() {
   );
 }
 
+/* T-13: the registry cloud's ordinal binding — the frozen spec's cta
+ * hover records (ordinals 2·14 + the mobile-only set). Each seat links
+ * the registry's own /colleges page under the college's real name. */
+const CTA_CLOUD_ORD = [2, 14, 3, 5, 7, 8, 10, 11, 12, 13, 15, 16, 17, 18];
+
 export function Vision({ year }: { year: number }) {
   return (
     <section className="fo-cta" id="vision" data-spec="cta.section" aria-label="ابدأ رحلتك — أنشئ حسابك">
@@ -92,11 +97,11 @@ export function Vision({ year }: { year: number }) {
                   </p>
                 </div>
                 <div className="fo-cta-actions" data-spec="cta.actions" data-mdrk-reveal="item" id="cta">
-                  <Link to="/auth/register" className="btn accent lg" data-spec="cta.primary">
+                  <Link to="/auth/register" className="btn accent lg" data-spec="cta.primary" data-spec-hover="1">
                     {REGISTER}
                     <Icon icon={ArrowLeft} size={16} />
                   </Link>
-                  <Link to="/auth" className="btn ghost lg" data-spec="cta.secondary">{LOGIN}</Link>
+                  <Link to="/auth" className="btn ghost lg" data-spec="cta.secondary" data-spec-hover="4">{LOGIN}</Link>
                 </div>
                 <div className="fo-cta-flank" data-spec="cta.flank-rule" aria-hidden="true" />
               </div>
@@ -116,6 +121,9 @@ export function Vision({ year }: { year: number }) {
                       <SketchArt />
                     </div>
                     <div className="fo-cta-sketch-veil" data-spec="cta.sketch-veil" aria-hidden="true" />
+                    {/* r321 §A6: the decorative registration mark — glyph
+                        lives in CSS ::before content, the span stays textless */}
+                    <span className="fo-cta-sketch-mark" aria-hidden="true" />
                   </div>
                   <div className="fo-cta-sketch-matte" data-spec="cta.sketch-matte" aria-hidden="true" />
                 </div>
@@ -150,8 +158,18 @@ export function Vision({ year }: { year: number }) {
           بيانات «جامعة مدارك التجريبية»: اصطناعية بالكامل لأغراض العرض.
         </p>
         <div className="cg-strip-links" data-spec="cta.registry-links">
-          <Link to="/colleges" className="btn ghost sm">تصفح الكليات التجريبية</Link>
-          <Link to="/auth" className="fo-text-link">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
+          <Link to="/colleges" className="btn ghost sm" data-spec-hover="6">تصفح الكليات التجريبية</Link>
+          <Link to="/auth" className="fo-text-link" data-spec-hover="9">سجل الدخول لاستعراض كليتك داخل المنصّة</Link>
+        </div>
+        {/* T-13: the registry index cloud — the recorded cta interaction
+            seats. Honest counterparts: the registry's OWN college names,
+            each a real door to /colleges (no invented labels). */}
+        <div className="cg-cloud" aria-label="فهرس الكليات التجريبية">
+          {colleges.slice(0, 14).map((c, i) => (
+            <Link key={c.slug} to="/colleges" className="cg-cloud-link" data-spec-hover={CTA_CLOUD_ORD[i]}>
+              {c.nameAr}
+            </Link>
+          ))}
         </div>
       </div>
     </section>

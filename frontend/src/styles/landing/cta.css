@@ -264,3 +264,79 @@
     padding-block-start: 1.92rem;
   }
 }
+/* ── T-13 interaction states — the recorded cta hover/focus-visible
+   deltas (heron ordinals 1/4/6/9: ≥769px bd/tr micro-drift on the
+   resolve seats; ≤768 color+bd on every seat). .probe-hover is the
+   conformance probe's hover-equivalent class — never real. ── */
+@media (min-width: 769px) {
+  .fo-cta .btn.accent:hover,
+  .fo-cta .btn.accent.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent-strong);
+  }
+
+  .fo-cta .btn.ghost:hover,
+  .fo-cta .btn.ghost.probe-hover,
+  .fo-cta .fo-text-link:hover,
+  .fo-cta .fo-text-link.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent);
+  }
+}
+
+@media (max-width: 768px) {
+  .fo-cta .btn.accent:hover,
+  .fo-cta .btn.accent.probe-hover {
+    border-block-end-color: var(--accent-ink);
+  }
+
+  .fo-cta .btn.ghost:hover,
+  .fo-cta .btn.ghost.probe-hover,
+  .fo-cta .fo-text-link:hover,
+  .fo-cta .fo-text-link.probe-hover {
+    color: var(--rule-strong);
+    border-block-end-color: var(--rule-strong);
+  }
+}
+/* ── T-13 registry cloud — the recorded cta seats beyond the button
+   pair (heron ordinals 2·3·5·7·8·10–13·14·15–18). The frozen spec's
+   ≤768 records give every registry seat a color+bd hover; at ≥769 only
+   the [14] seat moves (tr) and the [2] seat shifts its fill at the
+   wide (≥1500) and narrow (≤1100) desktop belts — the 1440 record for
+   [2] is a NO-change, mirrored exactly. ── */
+.cg-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem 1.25rem;
+  padding-block-start: 0.75rem;
+}
+
+.cg-cloud-link {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text);
+  text-decoration: none;
+  border-block-end: 1px solid transparent;
+}
+
+@media (max-width: 768px) {
+  .cg-cloud-link:hover,
+  .cg-cloud-link.probe-hover {
+    color: var(--accent-ink);
+    border-block-end-color: var(--accent);
+  }
+}
+
+@media (min-width: 769px) {
+  .cg-cloud-link[data-spec-hover="14"]:hover,
+  .cg-cloud-link[data-spec-hover="14"].probe-hover {
+    transform: translateX(-0.1875rem);
+  }
+}
+
+@media (min-width: 1500px), (max-width: 1100px) {
+  .cg-cloud-link[data-spec-hover="2"]:hover,
+  .cg-cloud-link[data-spec-hover="2"].probe-hover {
+    background-color: var(--rule-strong);
+  }
+}

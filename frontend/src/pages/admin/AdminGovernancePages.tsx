@@ -71,11 +71,14 @@ import '../../styles/admin.css'; // r150e: the borrowed admin-students-search ch
 // rule is scoped under the .r305ao page-root marker — zero leakage.
 import '../../styles/shared/heron-admin-owner.css';
 /* r299: the teachers roster's pagination rides the family's canonical
- * footer now (AdminPages' TablePaginationFooter — the cross-file
- * import precedent AdminPages itself set for pageList) instead of a
- * hand-rolled twin resting on an owner.css class this chunk never
- * loads (.owner-page-gap rendered as bare inline text here). */
-import { TablePaginationFooter } from './AdminPages';
+ * footer now (the shared TablePaginationFooter leaf — T-24 moved it out
+ * of AdminPages to sever the AdminPages ↔ AdminGovernancePages cycle)
+ * instead of a hand-rolled twin resting on an owner.css class this chunk
+ * never loads (.owner-page-gap rendered as bare inline text here). */
+import { TablePaginationFooter } from './TablePaginationFooter';
+/* T-24: pageList moved to the same leaf; re-exported so the contract
+ * test's import site (AdminGovernancePages.test) stays untouched. */
+export { pageList } from './TablePaginationFooter';
 import { formatDate } from '../../utils/numbers';
 
 const DEGREE_LABEL: Record<string, string> = {
@@ -208,33 +211,6 @@ function useVerifyTeacher() {
 
 
 /* ═══════════════ Teachers list with onboarding suggestions ═══════════════ */
-
-/** Pages rendered either side of the current one before an ellipsis gap. */
-const PAGE_NEIGHBORS = 2;
-
-/**
- * Bounded page list for the roster's pagination footer — the wave-6-b
- * OwnerUsersPage helper (always page 1 and the last page, a window of
- * PAGE_NEIGHBORS around the current one, 'gap' markers where numbers
- * were elided; a 200-page result renders ≤ 2·PAGE_NEIGHBORS + 4 buttons).
- * Local twin, not a cross-page import (pages must not pull each other's
- * lazy chunks); tests pin it against the OwnerUsersPage original so the
- * two cannot drift before a shared-lib extraction.
- */
-export function pageList(page: number, totalPages: number): Array<number | 'gap'> {
-  const include = new Set<number>([1, totalPages]);
-  const from = Math.max(1, page - PAGE_NEIGHBORS);
-  const to = Math.min(totalPages, page + PAGE_NEIGHBORS);
-  for (let p = from; p <= to; p++) include.add(p);
-  const out: Array<number | 'gap'> = [];
-  let prev = 0;
-  for (const p of [...include].sort((a, b) => a - b)) {
-    if (p - prev > 1) out.push('gap');
-    out.push(p);
-    prev = p;
-  }
-  return out;
-}
 
 /** Proper Arabic counted plural for the roster footer's teachers total —
  *  r299: the local twin of countAr's unit forms died with the hand-rolled
