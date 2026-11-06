@@ -102,3 +102,9 @@ T-06i | node + repo conformance instrument (scripts/conformance/run.mjs --sectio
 T-06j | node (spec-rect dump + plumbing generator) | derived the vw-linear law from the census + generated 219 counted plumbing skips into mapping/footer.json
 T-06j | playwright/chromium via scripts/conformance/run.mjs | light+dark footer conformance @own vite :5306
 T-06k | scripts/conformance/run.mjs (--sections footer --url http://localhost:5306, light + --dark) | strip-family/legal-zone restructure + 768 c1top re-seat + heuristic-glue census (3 measured passes)
+T-10 | python3 (spec census + mapping generator over heron-spec/*.json) | computed stable cross-bp heron paths, generated explicit bindings + classified noCounterpart entries
+T-10 | conformance/run.mjs --url :5310 | cta baseline + re-measure
+T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measurement
+T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
+T-10c | conformance/run.mjs @tolfix (--sections home-cta-wrap --dark, port 5310) + node failure-family census | cta light/dark measure + residual clustering
+T-10d2 | jq/node one-liners | failure-family aggregation from results.json + mapping bps-scoping edit
