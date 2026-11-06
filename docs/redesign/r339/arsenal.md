@@ -61,3 +61,7 @@
 - [T-1213] /home/z/t1213-auth-dark.mjs (playwright probe, run.mjs compositing law) — auth dark check login/register @1440+390: 224 text nodes, 0 fails
 - [T-1213] run.mjs (t02h, full matrix) — darkInk 9 sections × 5 bps: 193 fails before (cta 23, map 170) → 0/1289 checked; edge390 0; light A/B identical per-bp (stash/pop)
 - [T-1213] vitest re-pin (r183-B8) — reconciled the ceiling pin 777→770 DOWN after c8a61806 moved the gate law (stricter, 992d520d pattern); verify --fast GREEN, bundle 764.3/770
+- [T-11b1] node/npm/vite — installed root node_modules (237 pkgs), dev server :5313 for tween.mjs + probes
+- [T-11b1] ripgrep — located engine (lib/reveals.ts + hooks/useReveal.ts), journey (JourneyScene.tsx), hero, footer/intro/usecase files
+- [T-11b1] playwright (/home/z/t11b1-deadlock.mjs, t11b1-belt.mjs, t11b1-blast.mjs) — reproduced the reveal-deadlock: direct top→bottom jump = 32 elements armed-hidden (CTA title op 0, ty 14px, in-view false after 2s dwell); event log proved the belt trap (scroll@11644 after scrollend@11514, no trailing scrollend → settle canceled forever)
+- [T-11b1] node tsc --noEmit — engine fixes type-clean

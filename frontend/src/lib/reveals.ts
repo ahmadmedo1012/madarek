@@ -47,6 +47,28 @@ import { PREFERS_REDUCED_MOTION } from '../lib/motion-media';
  * window.__mdrkReveals guards double init; destroy() disconnects the
  * observers, removes every class this module added and the armed root
  * class — safe for landing remounts (React 18 double-effect included).
+ *
+ * ── R339 T-11b1 — the fling/jump hardening (the deadlock fix) ──────
+ * A one-shot IO alone permanently hides content on jumps — the same
+ * blind spot hooks/useReveal.ts quantified live (28/39 stuck on an
+ * instant jump): an element that hops from below the root to fully
+ * ABOVE the viewport between observation frames never changes its
+ * intersection state, so the IO delivers no isIntersecting entry and
+ * the element stays armed `opacity: 0` forever (measured: 32 elements
+ * on a plain top→bottom jump — the CTA title, the problem columns,
+ * the chapters heading, every product row). Two seats close it:
+ *   1. IO clause — a non-intersecting entry whose rect is fully above
+ *      the viewport means the user flung past it → reveal (the belt's
+ *      own clause (b), verbatim);
+ *   2. settle belt — a scroll-quiet debounce (120ms, the R319 §E-13
+ *      discipline) that reveals any pending element whose rect is
+ *      fully above the viewport OR inside it (the -12/-15% rootMargin
+ *      dead zone at the fold: a peeking element the shrunk root can
+ *      never intersect). Deliberately NOT keyed on scrollend — layout
+ *      clamping and engine-resync scrolls fire `scroll` with no
+ *      scrollend (the useReveal T-11b1 trap); plain scroll-quiet is
+ *      the only tail that always comes. A reveal must never hold
+ *      content below its start.
  */
 
 /** Root seam class — added BEFORE any hiding class lands (the arm order). */
@@ -140,6 +162,35 @@ export function initReveals(): RevealsHandle {
   pendingCards.forEach((el) => arm(el, 'reveal-card'));
   observe(pendingCards, OBSERVER_ROOT_MARGIN_LINES);
 
+  /* ── T-11b1 — the pending pool + the settle belt ─────────────
+   * Every armed-but-unrevealed element, rescued by scroll-quiet (see
+   * the header block). The pool drains as the IO reveals. */
+  const pending: Element[] = [...pendingLines, ...pendingItems, ...pendingCards];
+  const SETTLE_QUIET_MS = 120;
+  let settleTimer = 0;
+  const settle = () => {
+    settleTimer = 0;
+    if (!pending.length) return;
+    const vh = window.innerHeight;
+    const rescued: Element[] = [];
+    for (let i = pending.length - 1; i >= 0; i -= 1) {
+      const r = pending[i]!.getBoundingClientRect();
+      /* fully above the viewport (flung past) or inside it (the
+       * rootMargin dead zone at the fold) — the same rule the belt's
+       * reconcile holds: docTop - scrollY < vh. */
+      if (r.bottom <= 0 || r.top < vh) {
+        rescued.push(pending[i]!);
+        pending.splice(i, 1);
+      }
+    }
+    if (rescued.length) revealBatch(rescued.sort(byDocumentOrder));
+  };
+  const onScrollQuiet = () => {
+    if (settleTimer) window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(settle, SETTLE_QUIET_MS);
+  };
+  window.addEventListener('scroll', onScrollQuiet, { passive: true });
+
   /** ONE observer per root-margin bucket (the house bucket rule —
    * hooks/useReveal.ts): entries sharing a margin share one IO. */
   function observe(els: Element[], rootMargin: string) {
@@ -147,10 +198,20 @@ export function initReveals(): RevealsHandle {
     const io = new IntersectionObserver(
       (entries) => {
         const batch = entries
-          .filter((e) => e.isIntersecting)
+          /* T-11b1 — the flung-past clause (the belt's (b), verbatim):
+           * a non-intersecting entry fully above the viewport means the
+           * user jumped past this element between observation frames;
+           * one-shot semantics: passed ⇒ revealed. */
+          .filter((e) => e.isIntersecting || e.boundingClientRect.bottom < 0)
           .map((e) => e.target)
           .sort(byDocumentOrder);
-        if (batch.length) revealBatch(batch);
+        if (batch.length) {
+          revealBatch(batch);
+          batch.forEach((el) => {
+            const i = pending.indexOf(el);
+            if (i >= 0) pending.splice(i, 1);
+          });
+        }
         batch.forEach((el) => io.unobserve(el)); // once:true — never replays
       },
       { rootMargin },
@@ -174,6 +235,8 @@ export function initReveals(): RevealsHandle {
   const handle: RevealsHandle = {
     destroy() {
       observers.forEach((io) => io.disconnect());
+      if (settleTimer) window.clearTimeout(settleTimer);
+      window.removeEventListener('scroll', onScrollQuiet);
       touched.forEach(({ el, cls }) => el.classList.remove(cls));
       document.documentElement.classList.remove(ARMED_CLASS);
       delete w.__mdrkReveals;

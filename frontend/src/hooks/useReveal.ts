@@ -196,9 +196,28 @@ const scheduleReconcile = () => {
  * the reconcile (and its scrollHeight read) runs on a CLEAN tree — the
  * read is then free (0.008ms probe) and one forced layout per gesture
  * replaces ~118. The rAF-coalesced `scroll` fallback (no-scrollend
- * engines) is UNCHANGED — per-frame scheduling stays its contract. */
+ * engines) is UNCHANGED — per-frame scheduling stays its contract.
+ *
+ * ── R339 T-11b1 — the scroll-without-scrollend trap ─────────────────
+ * The debounce's cancel companion assumed EVERY scroll is eventually
+ * followed by a scrollend ("the next scrollend re-arms it"). That is
+ * FALSE: scrolls emitted by layout clamping (a late asset grows the
+ * document and re-clamps the max scroll) or by an engine resync fire
+ * `scroll` with NO scrollend — measured live on the landing: an
+ * instant bottom jump produced scroll@11514 → scrollend@11514 →
+ * scroll@11644 (66ms later) and nothing after. The companion ate the
+ * armed settle and the reconcile NEVER ran — every flung-past and
+ * dead-zone entry the settle belt exists to rescue stayed `opacity: 0`
+ * for the rest of the session (the reveal deadlock: 32 elements
+ * live on a plain top→bottom jump). The companion now re-arms a
+ * LONGER fallback settle on every scroll (500ms of total scroll
+ * quiet); a real scrollend still owns the fast 120ms path and cancels
+ * the fallback. Net timing is unchanged for every journey that
+ * behaves, and the silent-scroll tail can no longer wedge the belt. */
 const SETTLE_DEBOUNCE_MS = 120;
+const SETTLE_FALLBACK_MS = 500;
 let settleTimer = 0;
+let settleFallbackTimer = 0;
 
 const cancelPendingSettle = () => {
   if (settleTimer) {
@@ -207,8 +226,18 @@ const cancelPendingSettle = () => {
   }
 };
 
+const cancelSettleFallback = () => {
+  if (settleFallbackTimer) {
+    window.clearTimeout(settleFallbackTimer);
+    settleFallbackTimer = 0;
+  }
+};
+
 const onScrollSettle = () => {
   cancelPendingSettle();
+  /* a scrollend is the real settle marker — the slow quiet fallback
+   * is redundant from here (the fast debounce owns the reconcile). */
+  cancelSettleFallback();
   settleTimer = window.setTimeout(() => {
     settleTimer = 0;
     scheduleReconcile();
@@ -216,10 +245,20 @@ const onScrollSettle = () => {
 };
 
 /* a fresh scroll during the debounce window proves the scrollend was
- * not a true settle — drop the pending reconcile; the next scrollend
- * re-arms it. Passive, no layout reads. */
+ * not a true settle — drop the pending reconcile and re-arm the QUIET
+ * fallback: if no scrollend ever comes (layout-clamped / resync
+ * scrolls fire `scroll` alone — see the T-11b1 block above), the
+ * fallback still reconciles after SETTLE_FALLBACK_MS of scroll
+ * quiet, so a silent scroll tail can no longer wedge the belt.
+ * Passive, no layout reads; the churn is one clearTimeout + one
+ * setTimeout per scroll event. */
 const onScrollCancelSettle = () => {
   cancelPendingSettle();
+  cancelSettleFallback();
+  settleFallbackTimer = window.setTimeout(() => {
+    settleFallbackTimer = 0;
+    scheduleReconcile();
+  }, SETTLE_FALLBACK_MS);
 };
 
 /* the no-scrollend fallback keeps the immediate rAF schedule. */
@@ -322,6 +361,7 @@ const detachBelt = () => {
   // Removing a type that was never added (scrollend vs scroll) is a
   // no-op, so all are attempted unconditionally.
   cancelPendingSettle();
+  cancelSettleFallback(); // T-11b1 — the quiet fallback dies with the belt
   window.removeEventListener('scrollend', onScrollSettle);
   window.removeEventListener('scroll', onScrollSettle);
   window.removeEventListener('scroll', onScrollSettleFallback);
