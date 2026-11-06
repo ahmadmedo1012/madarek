@@ -1712,11 +1712,489 @@
   "plumbing": [
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[1] > div[2]",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2]",
       "skip": [
         "geometry"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > form[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > form[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > br[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[2] > button[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[2] > button[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > button[2] > div[1] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > br[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > a[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[2] > a[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[2] > a[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > a[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[2] > div[2] > a[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[2] > a[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > a[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[3] > div[2] > a[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[2] > a[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[1] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > br[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > a[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[1] > a[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[1] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > div[2] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
     },
     {
       "section": "footer",
@@ -1724,47 +2202,1267 @@
       "skip": [
         "geometry"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[4] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[5] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[3] > div[2] > a[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[2] > a[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[3] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
     },
     {
       "section": "footer",
       "heron": "footer > div[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
       "skip": [
-        "geometry"
+        "geometry",
+        "color"
       ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
     },
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[1] > div[3] > div[3] > img[1]",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
       "skip": [
-        "geometry"
+        "geometry",
+        "color"
       ],
-      "reason": "0-height image/svg twin stub — lazy-load plumbing seat, not a measured box (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
     },
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[1]",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
       "skip": [
-        "geometry"
+        "geometry",
+        "color"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
     },
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[2]",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
       "skip": [
-        "geometry"
+        "geometry",
+        "color"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
     },
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1]",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
       "skip": [
         "geometry"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: svg-internal capture (defs/filter/mask/path internals) — our authored line-art carries the visuals, path-level geometry is by-law divergent (T-06d markpath law)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[2] > a[3] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: unbound footer[1] internal under the depth-6 path-truncation collision — measured heuristic tag+tc glue asserts unrelated elements; the seat subtree stays fully measured under its explicit bindings, type/color/tag/tc remain asserted here"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[3] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[7]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[1] > div[1] > div[8]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[1] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[5]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[6]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > form[1] > div[1] > div[1] > div[3] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > form[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > a[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > a[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > a[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > a[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > div[2] > a[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > a[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > a[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > a[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > a[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > a[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > a[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > a[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > a[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[1] > div[1] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > a[2] > div[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[2] > div[1] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > a[3] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[1] > a[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[1] > div[4]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[1] > a[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > a[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[2] > div[1] > div[2] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[4] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[4] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[5] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[5] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[5] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[6] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[6] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[6] > div[1] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[1] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[1] > div[2] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[1] > div[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[1] > div[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[2] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[2] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[2] > div[2] > div[1] > div[1] > div[3]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[1] > div[3] > div[2] > a[3] > div[2] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[3] > div[2] > a[3] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[2] > div[1] > div[1] > div[1]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > div[2] > a[3] > div[2] > div[1] > div[1] > div[2]",
+      "skip": [
+        "geometry"
+      ],
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[1]",
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-06j plumbing: 0-area tween-residue/hidden capture box — geometry/color of the glue pair is meaningless (r337 T-05c/T-06f precedent)"
     },
     {
       "section": "footer",
@@ -1772,7 +3470,7 @@
       "skip": [
         "geometry"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
     },
     {
       "section": "footer",
@@ -1780,295 +3478,23 @@
       "skip": [
         "geometry"
       ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
     },
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > defs[1]",
+      "heron": "footer > div[2] > a[1] > div[2] > div[1] > div[1] > div[2]",
       "skip": [
         "geometry"
       ],
-      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
     },
     {
       "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > filter[2]",
+      "heron": "footer > form[1] > div[1] > div[1] > div[2] > div[1] > div[7]",
       "skip": [
         "geometry"
       ],
-      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[3]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[4]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[5]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[6]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[7]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > button[2] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg defs/filter/mask paint scaffolding — 0x0 plumbing twin, no measured design geometry (r338 t14a counted-skip; full 257-pair footer plumbing enumeration)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[5] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[6] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[7] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[8] > div[1] > svg[1] > path[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (crosshair/mark/filter vector paths) — paint plumbing under collapsed or decorative seats, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > form[1] > div[1] > div[1] > br[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[2] > div[1] > br[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[1] > a[2] > div[1] > br[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "0-width <br> line-break plumbing — text flow artifact, not a measured box (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[3] > div[2] > div[1] > svg[1] > path[8]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[1] > div[3] > div[3] > img[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "0-height image/svg twin stub — lazy-load plumbing seat, not a measured box (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[2] > div[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[2] > div[1] > div[2] > div[1] > div[2] > svg[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > footer[1] > div[1] > div[2] > div[1] > div[1]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "collapsed 0x0 residue seat — window/twin plumbing below bound containers, not measured design (r338 t14a counted-skip)"
-    },
-    {
-      "section": "footer",
-      "heron": "footer > div[1] > div[2] > div[1] > div[2] > svg[1] > image[3]",
-      "skip": [
-        "geometry"
-      ],
-      "reason": "svg-internal chrome (defs/filter/mask/vector paths) — paint scaffolding, geometry is not measured design (r338 t14a counted-skip)"
+      "reason": "T-06j plumbing: staged-duplicate window capture — the extractor re-anchored footer seats already asserted under their explicit footer.footer bindings; no separate DOM counterpart exists, ordinal tag+tc glue yields junk geometry (T-04a problem precedent, T-06c documented fix path)"
     }
   ]
 }

@@ -99,7 +99,7 @@
   font-size: calc(var(--fu) * 13.33);
   line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
 }
 .fo-ilink-t { color: rgba(40, 40, 40, 0.72); } /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 .fo-ilink:hover .fo-ilink-t { color: var(--text); }
@@ -133,7 +133,12 @@
 }
 .fo-mono-label-t { color: inherit; }
 
-.fo-form { margin-block-start: calc(var(--fu) * 15); padding-block-start: calc(var(--fu) * 15); }
+.fo-form {
+  margin-block-start: calc(var(--fu) * 15);
+  padding-block-start: calc(var(--fu) * 15);
+  transition: opacity 0.4s ease; /* the census form transition seat */
+}
+[data-spec='footer.bgroup.2'] { transition: opacity 0.4s ease; } /* the census bgroup.2 transition seat */
 .fo-form-copy-t {
   font-size: calc(var(--fu) * 13.33);
   line-height: calc(var(--fu) * 17.33);
@@ -195,7 +200,7 @@
   line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
   color: var(--text); /* spec link ink — --text IS #282828 */
-  transition: color 0.2s ease;
+  transition: color 0.4s ease; /* the census link transition (0.4s/ease seats) */
 }
 .fo-link-t { color: inherit; }
 .fo-link:hover { color: var(--accent); }
@@ -242,8 +247,13 @@
   position: relative;
   display: grid;
   place-items: center;
+  transition: opacity 0.65s cubic-bezier(0.59, 0.23, 0.22, 0.96); /* the census col3 transition seat */
 }
-.fo-mark { inline-size: calc(var(--fu) * 215); block-size: calc(var(--fu) * 215); } /* 153/215/287 — the census mark law */
+.fo-mark {
+  inline-size: calc(var(--fu) * 215);
+  block-size: calc(var(--fu) * 215); /* 153/215/287 — the census mark law */
+  transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census mark transition seat */
+}
 .fo-mark-svg {
   inline-size: 100%;
   block-size: 100%;
@@ -255,6 +265,7 @@
   stroke: currentColor;
   stroke-width: 1.7;
   vector-effect: non-scaling-stroke;
+  transition: stroke 0.5s cubic-bezier(0.23, 1, 0.32, 1); /* the census markpath transition seat */
 }
 .fo-mark-img { inline-size: calc(var(--fu) * 215); block-size: 0; }
 
