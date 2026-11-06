@@ -236,46 +236,6 @@
 }
 
 /* the pinned dark caption bar — title + sub + accent dot */
-.wy-tag {
-  position: absolute;
-  inset-block-start: 5.76rem;          /* y=48 row-relative */
-  inset-inline-start: var(--wy-tx);
-  display: grid;
-  row-gap: 0.72rem;
-}
-
-.wy-tag-in {
-  display: grid;
-  row-gap: 0.72rem;
-}
-
-.wy-tag-title-w,
-.wy-tag-sub-w {
-  display: block;
-}
-
-.wy-tag-title {
-  font-family: var(--font-display);
-  font-size: 2.4rem;                   /* 20px @1440 */
-  font-weight: 700;
-  line-height: 1.1;                    /* 22px — ≥ Arabic floor */
-  color: var(--paper-ink, var(--text));
-}
-
-.wy-tag-sub {
-  font-family: var(--font-body);
-  font-size: var(--fs-body);           /* 13.33px */
-  font-weight: 400;
-  line-height: 1.35;                   /* 18px — Arabic floor */
-  color: var(--paper-ink, var(--text));
-}
-
-.wy-tag-dot {
-  inline-size: 0.48rem;
-  block-size: 0.48rem;
-  margin-block-start: 0.84rem;
-  background: var(--accent-ink);
-}
 
 /* ── small captures + the 13px icon cluster ── */
 .wy-mini {
@@ -541,12 +501,6 @@
 
 /* the per-row hairline rule — real counterpart of the spec's 694×1
    row rules (≤991 belt); no ≥992 spec seat, so hidden on desktop. */
-.wy-rrule {
-  position: absolute;
-  display: none;
-  block-size: 1px;
-  background: var(--rule-strong);
-}
 
 /* ═══ ≤991 — the COMPACT tablet belt, re-seated to the measured 768
    spec (section 753×1882: ruled 2-col head 202 · full hairline ·
@@ -660,10 +614,6 @@
   .wy-row:nth-child(even) .wy-card { inset-inline-start: 41.93rem; }
 
   /* the pinned caption bar — the 367px col opposite the card */
-  .wy-tag {
-    inset-block-start: 13.4rem;
-    inline-size: 39.87rem;
-  }
 
   .wy-row:nth-child(odd) .wy-tag {
     inset-inline-start: 41.93rem;
@@ -677,15 +627,6 @@
     padding-inline-start: 5.21rem;
   }
 
-  .wy-tag-title {
-    font-size: 1.6rem;
-    line-height: 1.36;                  /* the 20px seat */
-  }
-
-  .wy-tag-sub {
-    font-size: 1.6rem;
-    line-height: 1.3;                   /* the 19px seat */
-  }
 
   /* mini-captures — the measured 768 overlay seats (row-relative) */
   .wy-row[data-spec="why.row1"] .wy-mini:nth-child(2) {
@@ -756,12 +697,6 @@
   }
 
   /* the per-row 694×1 rules (x29 · row-rel y371) */
-  .wy-rrule {
-    display: block;
-    inset-inline-start: 3.15rem;
-    inset-block-start: 40.33rem;
-    inline-size: 75.44rem;
-  }
 
   /* row-3 player bits — the ≤991 icon-cluster seats (spec 13/15/13px
      icons x298-308 · 6×2 loader · 7×7 dots; row3-rel px ÷ 9.2) */
@@ -806,18 +741,6 @@
     inline-size: 0.54rem;
     block-size: 0.54rem;
   }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="0"]  { inset-inline-start: 46rem;   inset-block-start: 45.9rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="1"]  { inset-inline-start: 46rem;   inset-block-start: 34.6rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="2"]  { inset-inline-start: 51.9rem; inset-block-start: 29rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="3"]  { inset-inline-start: 60.7rem; inset-block-start: 29rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="4"]  { inset-inline-start: 70rem;   inset-block-start: 32.2rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="5"]  { inset-inline-start: 73.9rem; inset-block-start: 36rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="6"]  { inset-inline-start: 59.2rem; inset-block-start: 49.6rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="7"]  { inset-inline-start: 51.9rem; inset-block-start: 40rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="8"]  { inset-inline-start: 57.2rem; inset-block-start: 40rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="9"]  { inset-inline-start: 57.2rem; inset-block-start: 43.4rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="10"] { inset-inline-start: 64.7rem; inset-block-start: 45.9rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="11"] { inset-inline-start: 59rem;   inset-block-start: 37.8rem; }
 }
 
 /* ═══ ≤767 — the mobile deck: the 390 spec's horizontal row carousel
@@ -895,16 +818,6 @@
   .wy-row:nth-child(odd) .wy-card,
   .wy-row:nth-child(even) .wy-card { inset-inline-start: 1.21rem; }
 
-  .wy-tag {
-    inset-block-start: 39.61rem;        /* y393 */
-    inset-inline-start: 1.21rem;
-    inline-size: 35.27rem;
-    padding-inline-start: 1.61rem;      /* label x28 */
-    padding-block-start: 1.21rem;
-  }
-
-  .wy-tag-title { line-height: 1.38; }  /* the 22px seat */
-  .wy-tag-sub { line-height: 1.32; }    /* the 21px seat */
 
   /* mini overlays re-seated to the 390 deck seats */
   .wy-row[data-spec="why.row1"] .wy-mini:nth-child(2) {
@@ -945,7 +858,6 @@
     inline-size: 10.08rem; block-size: 2.12rem;
   }
 
-  .wy-rrule { display: none; }          /* no 390 per-row rule spec seat */
 
   .wy-map {
     inset-block-start: 8.3rem;
@@ -996,18 +908,6 @@
     inline-size: 0.6rem;
     block-size: 0.6rem;
   }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="0"]  { inset-inline-start: 4.8rem;  inset-block-start: 24.4rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="1"]  { inset-inline-start: 4.8rem;  inset-block-start: 13.6rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="2"]  { inset-inline-start: 10.5rem; inset-block-start: 8.3rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="3"]  { inset-inline-start: 19rem;   inset-block-start: 8.3rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="4"]  { inset-inline-start: 28rem;   inset-block-start: 11.3rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="5"]  { inset-inline-start: 31.7rem; inset-block-start: 15rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="6"]  { inset-inline-start: 17.5rem; inset-block-start: 28rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="7"]  { inset-inline-start: 10.5rem; inset-block-start: 18.8rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="8"]  { inset-inline-start: 15.6rem; inset-block-start: 18.8rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="9"]  { inset-inline-start: 15.6rem; inset-block-start: 22rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="10"] { inset-inline-start: 22.8rem; inset-block-start: 24.4rem; }
-  .wy-row[data-spec="why.row4"] .wy-pt[data-pt="11"] { inset-inline-start: 17.4rem; inset-block-start: 16.7rem; }
 }
 
 /* T-05k — measured section height (sectionHeightVh spec: 1920 0.862 · 1440 0.776 · 1024 0.647 · 768 0.975; 390 already conforms) */

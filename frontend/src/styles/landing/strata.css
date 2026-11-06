@@ -23,24 +23,6 @@
  * positioned chip over the strip's top band (it overlapped the first
  * thumbnail at every ≥768 width; the owner measured it). One quiet
  * mono row, hairline-ruled underneath, clear of the drawings. */
-.fl-head {
-  display: flex;
-  align-items: center;
-  padding: var(--sp-2) var(--sp-3);
-  border-block-end: 1px solid var(--rule);
-}
-
-.fl-svg {
-  display: block;
-  inline-size: 100%;
-  /* R320 §A3: the five-column strip's own 1000:100 proportion — the
-   * LARGE drawing band (70u squares) + the mono caption baseline IS
-   * the sheet; full-bleed width-driven at every ≥768 band, xMidYMid
-   * meet keeps all five columns + the aligned captions in frame
-   * (hidden ≤767px below). */
-  block-size: auto;
-  aspect-ratio: 1000 / 100;
-}
 
 /* the reference hides the image strip ≤767px (its mobile footer
    swaps to a compact variant); the resolved drawing stands above. */
@@ -57,74 +39,18 @@
    compact cut»). Every feature stays visible; the ≥1180 seats are
    untouched. */
 @media (max-width: 1099px) {
-  .fl-svg {
-    max-inline-size: 80%;
-    margin-inline: auto;
-  }
   /* the © bar: © + disclosure share row one; the nine legal links
      take their own 44px-touch row under them (ONE ruled bar total). */
 }
 
-.fl-sketch line,
-.fl-sketch rect,
-.fl-sketch polygon {
-  fill: none;
-  stroke: var(--grid-line);
-  stroke-width: 1;
-}
-
-.fl-resolved {
-  transform-box: fill-box;
-}
 
 /* R314 cycle-2: the resolved layer's render — the licensed ink render
    (same asset + licence the strip-image cell carried; the old cell's
    contrast lift keeps the ink crisp over the thin band). A paper
    artifact in both themes (the hero + plan precedent). */
-.fl-render {
-  filter: contrast(1.06);
-}
-
-.fl-signal polygon,
-.fl-signal circle,
-.fl-signal rect {
-  fill: var(--accent);
-  stroke: none;
-}
-
-.fl-labels text {
-  /* R320 §A3 (owner order — the Heron caption register): SMALL MONO
-   * captions — the mono voice (Geist/Plex Mono for Latin/digits, IBM
-   * Plex Sans Arabic for the Arabic words — the --font-mono stack's
-   * own Arabic seat), 8.5u ≈ 11.9px @1440 (was 12.5u sans ≈ 17.8px
-   * semibold — the captions outweighed the 78px thumbnails; the
-   * owner's verdict), quiet weight, ONE shared baseline (y=94). */
-  font-family: var(--font-mono);
-  font-size: 8.5px;
-  font-weight: 400;
-  fill: var(--text-secondary);
-}
-
-.fl-pulse {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 1;
-  opacity: 0.2;
-}
-
-.fl-coord {
-  /* R320 §A3: in-flow inside .fl-head (its OWN row) — was absolutely
-   * positioned over the drawings (the overlap defect). */
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
-  letter-spacing: 0.05em;
-}
 
 /* the resolved layer is masked by the lens only when the instrument
    runs; without it (touch/RM) the strip is the resolved drawing. */
-.fl:not(:has(.fl-pulse)) .fl-resolved {
-  mask: none;
-}
 
 /* ── sx — the landing-exit sweep (appended to body) ────────────────── */
 .sx {
@@ -159,9 +85,6 @@
    rows moved to /capabilities with their vs-tag-snap keyframes
    (campus.css). The RM belt keeps the footer lens static. */
 @media (prefers-reduced-motion: reduce) {
-  .fl-pulse {
-    display: none;
-  }
 }
 
 /* R322 (3-b): the journey side column's assistant note retires with
@@ -210,9 +133,6 @@
     margin-block-end: var(--sp-3);
   }
 
-  .pr-lede {
-    line-height: 1.55;
-  }
 
   /* r325 Y2: the retired .pr-grid mobile fold retires with the class
      (the ≤767 band is the head + frame + caption + steps + note). */
@@ -385,7 +305,6 @@
    * band — the honest equivalent of the reference's strip captions),
    * the stage spans the full width, the surface column folds */
   .pr-head, .pr-note, .pr-side { display: none; }
-  .pr-stage { grid-column: 1 / -1; }
   .prf-photo { block-size: 15rem; }
   .prf-photo img { block-size: 100%; object-fit: cover; }
 
@@ -450,16 +369,6 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .st-body-col {
-    /* R332 W2: the cell's opening pad steps 4xl → 3xl — the reference's
-     * phone cell opens its text ~24px under the art (measured title-y
-     * 398 in the 847px band, art 374), so the band-scale 4xl gap read
-     * +16px of air per cell in the twin's phone height. The inline/bottom
-     * rungs keep the R322 seat. */
-    padding: var(--space-3xl) var(--space-xl) var(--space-3xl);
-    border-inline-start: 0;
-    border-block-start: 1px solid var(--rule-strong);
-  }
 }
 
 /* ═══ R315 cycle-3 (W3) — THE DESKTOP LAW (≥992): constant-rem bands ══
@@ -787,7 +696,6 @@
     margin-block-end: 1.21rem;
   }
 
-  .pr-lede { line-height: 1.5; }
 
   /* r324 X3: the .pr-note display:none RETIRES — the note is the
    * section's CTA line now (the demo disclosure + the r307 offer);
@@ -1215,18 +1123,8 @@
   /* the step index fills the column's tail: four equal ruled rows
      (the hairlines travel at even intervals; the rows centre their
      content — the extracted cell's tall single-cell index) */
-  .pr-head .pr-chapters {
-    grid-template-rows: repeat(4, 1fr);
-    align-self: stretch;
-  }
 
   /* the muted sub — the reference's 13.33px sheet sub-copy */
-  .pr-lede {
-    max-inline-size: none;
-    font-size: var(--fs-sm);
-    line-height: 1.55;
-    color: var(--text-secondary);
-  }
 
   /* ── THE ONE PRODUCT FRAME — the extracted img-wrap seat ────────
    * The stage rides the centre 5 cols; the figure stretches the row
@@ -1242,18 +1140,6 @@
   /* R332 W5: the .pr-head gutter-eat merged into the heading-column
      seat above — ONE definition. */
 
-  .pr-stage {
-    grid-column: 4 / span 5;
-    grid-row: 1;
-    min-inline-size: 0;
-    display: flex;
-    margin-inline-end: -2rem; /* spacing-gate: allow — the extracted img-wrap's gutter-eat (601 = 5 cols + 5 gutters), an external constant */
-  }
-
-  .pr-stage .pr-frame {
-    flex: 1;
-    min-block-size: 0;
-  }
 
   /* ── THE SURFACE COLUMN — the extracted content-right seat ──────
    * The matrix cell stretches (its plate centres in the tail); the
@@ -1544,18 +1430,14 @@
   /* the checkpoint card folds too — the caption BELOW the frame
      carries the checkpoint story on the compact band (the reference's
      own phone media is a 21px sliver; the full card rejoins ≥768) */
-  .pr-check { display: none; }
 
   /* the drawn screen keeps a compact but readable seat (the slide's
      chain + the track must both read) */
-  .pr-screen { min-block-size: 104px; }
 
   /* the steps stay in flow under the lede (the extracted phone cell
      carries the label run too) — rows ride their own hairlines */
-  .pr-head .pr-chapters { align-self: auto; }
 
   /* the caption's two-part read tightens to the phone rhythm */
-  .pr-frame-cap { padding: var(--sp-2) var(--sp-2); }
 }
 
 /* 768–991 — the strips-only tablet band: the frame + caption fill the
@@ -1563,8 +1445,6 @@
    flexes into the band's air — no dead strip under the frame) */
 @media (min-width: 768px) and (max-width: 991px) {
   .pr-section { display: flex; flex-direction: column; }
-  .pr-stage { flex: 1; display: flex; }
-  .pr-stage .pr-frame { flex: 1; min-block-size: 0; }
 }
 
 /* 992–1024 — the narrow-desktop slice keeps the strips-only read (the
@@ -1572,7 +1452,6 @@
    declared here so it stays the last word over the ≥992 3/5/4 seat */
 @media (min-width: 992px) and (max-width: 1024px) {
   .pr-head, .pr-note, .pr-side { display: none; }
-  .pr-stage { grid-column: 1 / -1; margin-inline-end: 0; }
   .pr-head { margin-inline-end: 0; }
 }
 
