@@ -13,7 +13,7 @@ import { PREFERS_REDUCED_MOTION } from '../../../lib/motion-media';
  * Exit (r335 W-chrome — the FROZEN _motion spec's recorded choreography;
  * r339 T-11c upgrades it to the full recorded flight): the content fades
  * 0.4s (power2.out-equivalent house decel) while the paper opens on the
- * recorded TWO-BAND choreography — the .pl-paper clip slit (the recorded
+ * recorded TWO-BAND choreography — the .pl-sheet clip slit (the recorded
  * .loading-main polygon pair) widens to the edges across the R313
  * sheet-exit rung (835ms) on the recorded cubic-bezier(1,0,0.44,1) WHILE
  * the two real band halves (the recorded .loading-progress-item pair) fly
@@ -139,7 +139,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
         cbsRef.current.onDone?.();
       };
       /* the unmount waits for the PAPER SPLIT's last frame: only the
-       * .pl-paper clip-path leg finishes the exit — the shorter
+       * .pl-sheet clip-path leg finishes the exit — the shorter
        * content-fade and band-flight transitionends bubble past
        * uncounted (r335 conformance: the recorded autoAlpha:0 hide
        * lands AFTER the 0.8s flight, never mid-split). */
@@ -215,7 +215,7 @@ export function Preloader({ onExitStart, onDone }: PreloaderProps) {
       aria-valuemax={100}
       aria-valuenow={pct}
     >
-      <div className="pl-paper" aria-hidden="true">
+      <div className="pl-sheet" aria-hidden="true">
         <div className="pl-band pl-band--top" aria-hidden="true" />
         <div className="pl-band pl-band--bot" aria-hidden="true" />
       </div>

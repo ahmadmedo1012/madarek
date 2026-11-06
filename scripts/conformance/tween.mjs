@@ -189,7 +189,16 @@ const scaleAxes = (v) => {
 const scaleFamilies = (fromV, toV) => {
   const a = scaleAxes(fromV), b = scaleAxes(toV);
   if (!a || !b) return [];
-  if (a[0] === a[1] && b[0] === b[1]) return a[0] === b[0] ? [] : ["scale"];
+  if (a[0] === a[1] && b[0] === b[1]) {
+    // UNIFORM and changing: the motion is simultaneously the `scale`
+    // family (the CSS/GSAP uniform intent — reveal-card 0.8→1) AND both
+    // axis families (Heron records scaleX+scaleY as separate var keys —
+    // the hero lead-line ladder `scale: 0 0`→`1 1` is her scaleX AND
+    // scaleY groups). All three statements are true of the same motion;
+    // each files its own unit, and only families the census speaks can
+    // ever match.
+    return a[0] === b[0] ? [] : ["scale", "scaleX", "scaleY"];
+  }
   const fams = [];
   if (a[0] !== b[0]) fams.push("scaleX");
   if (a[1] !== b[1]) fams.push("scaleY");
@@ -396,6 +405,7 @@ const WALK_JS = String.raw`
     .filter((b) => b.el);
   const out = [];
   const seen = new Set();
+  const rcount = {}; // T-11c: per (section|role) document-order occurrence — the element-identity join key for role-ambiguous siblings (all .hro-lmask lines share one role string)
   for (const root of roots) {
     const walk = (el) => {
       if (out.length > 1600 || seen.has(el)) return;
@@ -407,10 +417,19 @@ const WALK_JS = String.raw`
       const gram = el.matches(grammar);
       if (anim || trans || hid || gram) {
         const r = el.getBoundingClientRect();
-        if (r.width > 0 || r.height > 0) {
+        /* T-11c: a zero rect is not absence — an element collapsed by the
+           scale PROPERTY (the hero lead masks' armed scale: 0) is hidden
+           BY MOTION, exactly what this instrument measures; only
+           layout-absent elements (display:none subtrees, which never
+           author a scale collapse) stay dropped. */
+        const scaleCollapsed = !!cs.scale && cs.scale !== "none" && cs.scale !== "1";
+        if (r.width > 0 || r.height > 0 || scaleCollapsed) {
+          const role = el.getAttribute("data-spec") || el.tagName.toLowerCase() + "." + String(el.getAttribute("class") || "").split(/\s+/).filter(Boolean).slice(0, 2).join(".");
+          const rk = root.key + "|" + role;
           out.push({
             section: root.key,
-            role: el.getAttribute("data-spec") || el.tagName.toLowerCase() + "." + String(el.getAttribute("class") || "").split(/\s+/).filter(Boolean).slice(0, 2).join("."),
+            role,
+            occ: (rcount[rk] = (rcount[rk] || 0) + 1),
             animName: cs.animationName,
             animDur: cs.animationDuration,
             animEase: cs.animationTimingFunction,
@@ -646,15 +665,19 @@ async function collectOurs(url, bp) {
   }
   // PHASE 0.5 (T-11c) — the preloader EXIT FLIGHT: the overlay unmounts on
   // the exit's last frame, so the four journey snapshots can never observe
-  // the exit end-state. Snapshot it MID-FLIGHT instead — 780ms into the
-  // 800ms wipe, where the recorded cubic-bezier(1,0,.44,1) is ≥99% settled
+  // the exit end-state. Snapshot it MID-FLIGHT instead — 700ms into the
+  // 835ms wipe, where the recorded cubic-bezier(1,0,.44,1) is ≥99% settled
   // (an observed computed frame, not an invented one). If the intro is
   // skipped there is no .pl--exit — noted, never guessed.
   let walkExit = { els: [], roots: [] };
   try {
     await page.waitForSelector(".pl--exit", { timeout: 6000, state: "attached" });
-    await page.waitForTimeout(780);
-    walkExit = await page.evaluate(`(${WALK_JS})(${JSON.stringify(OUR_SECTIONS.map(({ key, sel }) => ({ key, sel })))})`);
+    await page.waitForTimeout(700);
+    // the roots are walked REVERSED for this snapshot: the preloader (.pl,
+    // pushed LAST in OUR_SECTIONS) unmounts at the flight's transitionend
+    // (~835ms) — walking it first guarantees the vanishing subtree is
+    // sampled while alive even if the walk itself is slow.
+    walkExit = await page.evaluate(`(${WALK_JS})(${JSON.stringify([...OUR_SECTIONS.map(({ key, sel }) => ({ key, sel }))].reverse())})`);
   } catch {
     walkExit = { els: [], roots: [], skipped: true };
   }
@@ -716,7 +739,7 @@ function deriveOurUnits(census) {
   }
 
   const hiddenAt = (rec) => !!rec && (rec.rest.opacity < 0.98 || (rec.rest.transform && rec.rest.transform !== "none") || (rec.rest.clipPath && rec.rest.clipPath !== "none" && rec.rest.clipPath !== "") || (rec.rest.scale && rec.rest.scale !== "none" && rec.rest.scale !== "1"));
-  const twinOf = (recs, el) => (el.grammarKey && recs.find((e) => e.grammarKey === el.grammarKey)) || recs.find((e) => e.section === el.section && e.role === el.role) || null;
+  const twinOf = (recs, el) => (el.grammarKey && recs.find((e) => e.grammarKey === el.grammarKey)) || recs.find((e) => e.section === el.section && e.role === el.role && e.occ === el.occ) || recs.find((e) => e.section === el.section && e.role === el.role) || null;
   const tyOf = (tr) => {
     if (!tr || !tr.rest.transform || tr.rest.transform === "none") return 0;
     const m = tr.rest.transform.match(/matrix\(([^)]+)\)/);
@@ -740,15 +763,11 @@ function deriveOurUnits(census) {
   const neverRevealed = [];
   // T-11c: the derivation iterates the SURVIVING elements (walk2) PLUS the
   // exit-flight elements (walkExit — the preloader, unmounted before walk1;
-  // deduped by section+role so a lingering twin never double-counts).
-  const seenKey = new Set();
-  const elKey = (e) => `${e.section}|${e.role}|${e.grammarKey ?? ""}`;
-  const allEls = [...walk2.els, ...((census.walkExit?.els ?? []))].filter((e) => {
-    const k = elKey(e);
-    if (seenKey.has(k)) return false;
-    seenKey.add(k);
-    return true;
-  });
+  // matched against the surviving walks by section+role+occurrence so a
+  // living twin is never double-counted).
+  const walk2Twin = (e) => (walk2.els ?? []).find((w) => w.section === e.section && w.role === e.role && w.occ === e.occ) || null;
+  const exitOnly = (census.walkExit?.els ?? []).filter((e) => !twinOf(walk1.els ?? [], e) && !twinOf(walkMid.els ?? [], e) && !walk2Twin(e));
+  const allEls = [...(walk2.els ?? []), ...exitOnly];
   for (const el of allEls) {
     const twins = [
       ["walk0", twinOf(walk0.els ?? [], el)],
@@ -769,7 +788,7 @@ function deriveOurUnits(census) {
     // flight is load-phase by construction (it fired between walk0 and walk1,
     // before any scroll); shownness ordering would invert an exit, so the
     // envelope is pinned walk0(rest)→walkExit(flown).
-    const exitFlight = !!t0 && !!tExit && !t1 && !tMid;
+    const exitFlight = !!t0 && !!tExit && !t1 && !tMid && !twinOf(walk2.els ?? [], el);
     const sorted = exitFlight
       ? [["walk0", t0], ["walkExit", tExit]]
       : [...present].sort((a, b) => shownness(a[1]) - shownness(b[1]));
@@ -987,11 +1006,11 @@ function buildLimitations(census) {
   L.push("Heron fromTo tweens were recorded with their FROM vars only (extract-heron.mjs wraps gsap.fromTo(targets, fromVars) and never sees toVars) — their duration/ease are unknown; such groups match on property+trigger and are flagged `partial`.");
   L.push("Heron tween→ScrollTrigger association is derived from recording-timestamp order (timeline marker owns subsequent tweens) — sound for scene structure but not per-tween ground truth.");
   L.push(`WAAPI: ${census.waapiCalls == null ? "instrument patch did not run" : census.waapiCalls + " Element.animate() calls"} — the house engine is CSS-transition/keyframe + IntersectionObserver driven; there is no JS tween registry to read params from.`);
-  L.push(`CSS scroll-driven animations (animation-timeline: view()/scroll()): ${census.cssom.viewTimeline} view()/ ${census.cssom.scrollTimeline} scroll() rules found in the CSSOM — none exist, so nothing on our side rides them.`);
+  L.push(`CSS scroll-driven animations (animation-timeline: view()/scroll()): ${census.cssom.viewTimeline} view()/ ${census.cssom.scrollTimeline} scroll() rules found in the CSSOM (the map scrub seats ride view() with a no-preference + @supports gate, T-11b2).`);
   L.push("Our durations/eases are read from computed styles on the SHOWN state (walkMid at the bottom dwell / walk2); distances come from a most-hidden→most-shown envelope across the four snapshot walks (pre-intro, armed, at-bottom, back-at-top) — ordering of observed states, no value invented.");
   L.push("Scrub-side motion equivalence is asserted on property+trigger only (scrub duration is scroll distance, not time — the numeric curves are scroll.mjs/scroll-curves.<bp>.json territory, T-10).");
   L.push("Elements armed-hidden but never shown in any snapshot/sample (neverRevealed) are held OUT of coverage — their arm/hide transition is not a tween we run; they are reported by name in ours.neverRevealed.");
-  L.push("T-11c bridges: CSS `scale`-property and transform-function values decompose per-axis into the Heron scaleX/scaleY/scale families (only axes that change file a family; uniform stays `scale`); matrices that do not translate file their per-axis scale. The preloader EXIT is observed via a mid-flight walkExit snapshot (~780ms into the 800ms wipe) — the overlay unmounts before walk1, so the journey snapshots alone can never see the exit end-state; elements present at walk0+walkExit and absent later are exit-flight (trigger=load, envelope pinned rest→flown).");
+  L.push("T-11c bridges: CSS `scale`-property and transform-function values decompose per-axis into the Heron scaleX/scaleY/scale families — non-uniform values file only the axes that change (`scale: 0 1` is scaleX), uniform-and-changing values file scale+scaleX+scaleY (all three are true of the same motion; only families the census speaks can match); matrices that do not translate file their per-axis scale. A zero rect is not absence: elements collapsed by the scale property (the hero lead masks' armed scale:0) stay tracked — only layout-absent subtrees are dropped. The preloader EXIT is observed via a mid-flight walkExit snapshot (~700ms into the 835ms wipe) — the overlay unmounts before walk1, so the journey snapshots alone can never see the exit end-state; elements present at walk0+walkExit and absent later are exit-flight (trigger=load, envelope pinned rest→flown).");
   if (census.errors.length) L.push(`page errors during collection: ${census.errors.length} (first: ${census.errors[0]})`);
   return L;
 }
