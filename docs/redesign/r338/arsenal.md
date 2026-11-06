@@ -108,3 +108,5 @@ T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measu
 T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
 T-10c | conformance/run.mjs @tolfix (--sections home-cta-wrap --dark, port 5310) + node failure-family census | cta light/dark measure + residual clustering
 T-10d2 | jq/node one-liners | failure-family aggregation from results.json + mapping bps-scoping edit
+T-10e | playwright + conformance/run.mjs (--url :5310, --dark) | cta 390 phone-belt re-seat re-measure (light+dark, 5 bps)
+T-10f | node + scripts/conformance/run.mjs (--sections home-cta-wrap --url :5310, light + --dark) | measure the 390 button-internals restructure + per-bp mapping bindings
