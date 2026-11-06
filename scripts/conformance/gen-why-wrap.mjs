@@ -15,9 +15,13 @@ const VW = { '1920': 1920, '1440': 1440, '1024': 1024, '768': 768, '390': 390 };
 const MAP = 'scripts/conformance/mapping/home-why-wrap.json';
 const CSS = 'frontend/src/styles/landing/why.css';
 const map = JSON.parse(fs.readFileSync(MAP, 'utf8'));
-/* idempotent: drop this generator's own previous entries before anything else */
-map.explicit = map.explicit.filter((e) => !String(e._note || '').startsWith('T-05i gen'));
-map.noCounterpart = map.noCounterpart.filter((e) => !String(e.reason || '').startsWith('T-05i gen'));
+/* idempotent: drop this generator's own previous entries before anything else
+ * (T-05k mass-bind/mass-catchall included — otherwise a re-run keeps the old
+ * wrapper-mass bindings alive as covered records and the families can never
+ * re-seat, e.g. the mk marker path seats) */
+map.explicit = map.explicit.filter((e) => !String(e._note || '').startsWith('T-05i gen') && !String(e._note || '').startsWith('T-05k gen'));
+map.noCounterpart = map.noCounterpart.filter((e) => !String(e.reason || '').startsWith('T-05i gen') && !String(e.reason || '').startsWith('T-05k gen'));
+map.plumbing = (map.plumbing || []).filter((e) => !String(e.reason || '').startsWith('T-05m gen')); // junk-glue kill pass is idempotent too
 
 const covered = new Set();
 const addCov = (h) => {
@@ -349,6 +353,7 @@ if (hmBind) {
         section: 'home-why-wrap',
         heron: { [bp]: p },
         ours: sel,
+        scope: 'page', // legacy nth-child selectors are section-rooted — run.mjs resolves them document-wide or never
         skip: ['tag', 'tc', 'geometry', 'type', 'color'],
         _note: `T-05i gen (hm-bind @${bp}): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound to a real unclaimed plain our element beyond the tag's heron demand — design groups skipped (T-05g/T-06c precedent), radius/opacity/border/interactive/transition measured`,
       });
@@ -537,6 +542,7 @@ if (massBind) {
       heron: paths, // per-bp grammar, bps-scoped: never bleeds via nearest-bp fallback
       bps: Object.keys(paths),
       ours: sel,
+      scope: 'page', // T-05m: legacy nth-child selectors are section-rooted; without page scope run.mjs's el.querySelector() never matches them and the binding stays a silent phantom (the persistent y/w/x-mirror junk mass)
       skip: ['geometry', 'color'],
       _note: 'T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element',
     });
@@ -546,6 +552,39 @@ if (massBind) {
 }
 
 map.noCounterpart = map.noCounterpart.concat(ncAdd, dupAdd);
+
+/* T-05m — junk-glue kill: after the mass-bind above, the depth-twin heuristic
+ * pairs that STILL fail geometry/color in the last measured results are
+ * plumbing-skipped at their exact per-bp spec paths (counted + reported,
+ * never silent). These are heron tween-wrapper records whose ordinal twin
+ * cannot be uniquely re-seated (path collisions / non-unique nth-child
+ * chains) — the glue is killed at the mapping level instead: geometry+color
+ * skipped with a written reason; tag/tc/type/border/interactive/transition
+ * stay measured on the paired element (T-05g/T-05k/T-06c precedent). */
+try {
+  const res = JSON.parse(fs.readFileSync('scripts/conformance/results.json', 'utf8'));
+  const junk = new Map(); // heronPath -> { bp: heronPath }
+  for (const f of res.failures || []) {
+    if (f.section !== 'home-why-wrap') continue;
+    if (!String(f.oursSelector || '').startsWith('#hm:')) continue; // heuristic glue only — real #ds/explicit seats stay fully measured
+    if (!['y', 'x', 'x-mirror', 'w', 'h', 'bg'].includes(f.kind)) continue;
+    const rec = junk.get(f.heronPath) ?? {};
+    rec[f.bp] = f.heronPath;
+    junk.set(f.heronPath, rec);
+  }
+  for (const bps of junk.values()) {
+    map.plumbing.push({
+      section: 'home-why-wrap',
+      heron: bps, // per-bp grammar — never bleeds via nearest-bp fallback
+      skip: ['geometry', 'color'],
+      reason: 'T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element',
+    });
+  }
+  console.log(`T-05m junk-glue kill: ${junk.size} spec paths plumbing-skipped (geometry+color)`);
+} catch (e) {
+  console.log('T-05m junk-glue pass skipped:', e.message);
+}
+
 fs.writeFileSync(MAP, JSON.stringify(map, null, 2) + '\n');
 
 /* ---- pinned caption-bar geometry vars (from the BOUND tag1t/tag1s records) ---- */

@@ -3054,6 +3054,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3077,6 +3078,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(1) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3100,82 +3102,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(1) > div:nth-child(3) > div:nth-child(3)",
-      "skip": [
-        "geometry",
-        "color"
-      ],
-      "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
-    },
-    {
-      "section": "home-why-wrap",
-      "heron": {
-        "1024": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
-        "1440": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
-        "1920": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]"
-      },
-      "bps": [
-        "1024",
-        "1440",
-        "1920"
-      ],
-      "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > svg:nth-child(1) > path:nth-child(1)",
-      "skip": [
-        "geometry",
-        "color"
-      ],
-      "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
-    },
-    {
-      "section": "home-why-wrap",
-      "heron": {
-        "1024": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
-        "1440": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
-        "1920": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]"
-      },
-      "bps": [
-        "1024",
-        "1440",
-        "1920"
-      ],
-      "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > svg:nth-child(1) > path:nth-child(2)",
-      "skip": [
-        "geometry",
-        "color"
-      ],
-      "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
-    },
-    {
-      "section": "home-why-wrap",
-      "heron": {
-        "1024": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
-        "1440": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
-        "1920": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]"
-      },
-      "bps": [
-        "1024",
-        "1440",
-        "1920"
-      ],
-      "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > svg:nth-child(1) > path:nth-child(1)",
-      "skip": [
-        "geometry",
-        "color"
-      ],
-      "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
-    },
-    {
-      "section": "home-why-wrap",
-      "heron": {
-        "1024": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
-        "1440": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
-        "1920": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]"
-      },
-      "bps": [
-        "1024",
-        "1440",
-        "1920"
-      ],
-      "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > svg:nth-child(1) > path:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3199,6 +3126,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3222,6 +3150,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(2) > path:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3245,6 +3174,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3268,6 +3198,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3291,6 +3222,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3314,6 +3246,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3337,6 +3270,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3360,6 +3294,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3383,6 +3318,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3406,6 +3342,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3425,6 +3362,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3448,6 +3386,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3471,6 +3410,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3494,6 +3434,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3517,6 +3458,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3540,6 +3482,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3563,6 +3506,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3582,6 +3526,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3605,6 +3550,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(1) > svg:nth-child(1) > g:nth-child(1) > g:nth-child(1) > defs:nth-child(1) > filter:nth-child(1) > femerge:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3628,6 +3574,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3651,6 +3598,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(3)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3674,6 +3622,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3697,6 +3646,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3720,6 +3670,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3743,6 +3694,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3766,6 +3718,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3789,6 +3742,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3812,6 +3766,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3835,6 +3790,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3858,6 +3814,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3881,6 +3838,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(6) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3904,6 +3862,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3927,6 +3886,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(7) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3950,6 +3910,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(8) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3973,6 +3934,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -3996,6 +3958,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4019,6 +3982,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4042,6 +4006,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(3) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4065,6 +4030,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(4) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4088,6 +4054,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(5) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4111,6 +4078,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(6) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4134,6 +4102,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(7) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4157,6 +4126,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(8) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4180,6 +4150,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(9) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4203,6 +4174,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(10) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4226,6 +4198,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(11) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4249,6 +4222,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(12) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4272,6 +4246,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(13) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4295,6 +4270,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(15) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4318,6 +4294,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4341,6 +4318,7 @@
         "1920"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(1) > svg:nth-child(1) > g:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4356,6 +4334,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(6)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4371,6 +4350,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4386,6 +4366,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(7)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4401,6 +4382,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(5)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4416,6 +4398,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4431,6 +4414,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4446,6 +4430,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(5) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4461,6 +4446,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(5) > div:nth-child(4)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4476,6 +4462,7 @@
         "1024"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(5) > div:nth-child(4) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4493,6 +4480,7 @@
         "768"
       ],
       "ours": "section.wy-section > div:nth-child(1) > div:nth-child(3) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4508,6 +4496,7 @@
         "768"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4525,6 +4514,7 @@
         "768"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -4540,6 +4530,7 @@
         "768"
       ],
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(5)",
+      "scope": "page",
       "skip": [
         "geometry",
         "color"
@@ -8805,6 +8796,736 @@
         "color"
       ],
       "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "768": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "1024": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "1440": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "1920": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1440": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[9] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[9] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "1024": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "1024": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "1024": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "768": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[4] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[11] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[10]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[3]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[3]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[7] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[1] > img[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "768": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "1024": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "1440": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+        "1920": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1440": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[9] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[9] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "1024": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "1024": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "1024": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "768": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[4] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[11] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[10]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "768": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[3]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "768": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[3]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[7] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1440": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]",
+        "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[2]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "390": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "768": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "1024": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "1440": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+        "1920": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+    },
+    {
+      "section": "home-why-wrap",
+      "heron": {
+        "1024": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[1] > img[1]"
+      },
+      "skip": [
+        "geometry",
+        "color"
+      ],
+      "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     }
   ]
 }

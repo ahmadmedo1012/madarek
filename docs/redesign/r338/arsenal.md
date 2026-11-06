@@ -121,3 +121,4 @@ T-03h | vite --port 5303 | dev server for the conformance instrument
 T-05l | playwright (ad-hoc probe scripts) | live-DOM computed-style probes mapping failing oursSelectors -> classes/data-specs per bp
 T-05l | node scripts/conformance/run.mjs --sections home-why-wrap --dark | light + dark measurement @5305
 - T-06m | python3 (json census over docs/redesign/r335/heron-spec/footer.*.json) | enumerate 284 unique spec paths, bound/unbound split, container-collision + aggregate-expectation replication to re-scope footer.json suppression
+T-05m | run.mjs --dark + gen-why-wrap.mjs (mass-bind re-seat, scope:page phantom fix, T-05m junk-glue plumbing kill) + vite:5305 | why 87.8→91.9 light, dark 89.7→92.8
