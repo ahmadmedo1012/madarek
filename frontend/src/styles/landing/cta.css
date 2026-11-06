@@ -38,6 +38,11 @@ html[data-theme='dark'] .fo-cta {
    rides the same shift, so every internal y re-seats with it. */
 .fo-cta-frame {
   margin-block-start: 33.17rem;
+  /* T-10d: heron's band runs nearly full-bleed — frame w 374/753/1015/
+     1427/1902 vs our container 342/720/981/1380/1840: symmetric negative
+     margins re-seat the ruled ledger to the measured rects per belt
+     (the sheet/ledger/bands/hrules ride the frame edge). */
+  margin-inline: -1.61rem;
 }
 
 /* the 1px rules are real nodes (heron measures them as elements):
@@ -195,6 +200,17 @@ html[data-theme='dark'] .fo-cta {
   font-size: 1.05rem;
 }
 
+/* T-10d: the mono kickers re-voice on the section ladder — heron seats
+   them at 1.2rem from 768 up (11.05/7.11/10/13.33px) with the Arabic
+   lh floor 1.35; the (0,2,0) hook out-specifies the shared mono voice. */
+.fo-cta .fo-cta-kicker {
+  line-height: 1.35;
+}
+
+.fo-cta .fo-cta-lede {
+  line-height: 1.35;
+}
+
 .fo-cta-title {
   font-size: 2.4rem;
   line-height: 1.35;
@@ -238,6 +254,7 @@ html[data-theme='dark'] .fo-cta {
   .fo-cta-frame {
     /* heron anchor→frame 289 @768, we held 1: +288 on the 9.21 root. */
     margin-block-start: 31.27rem;
+    margin-inline: -1.79rem;
   }
 
   .fo-cta-ledger {
@@ -251,8 +268,9 @@ html[data-theme='dark'] .fo-cta {
     line-height: 1.35;
   }
 
-  .fo-cta-kicker {
+  .fo-cta .fo-cta-kicker {
     font-size: 1.2rem;
+    line-height: 1.35;
   }
 
   .fo-cta-lede {
@@ -275,6 +293,7 @@ html[data-theme='dark'] .fo-cta {
        134/101/72): the fluid root scales the gap with the viewport —
        +33.47rem of it lands all three rungs within a px. */
     margin-block-start: 33.47rem;
+    margin-inline: -2.82rem;
   }
 
   .fo-cta-ledger {
@@ -290,8 +309,9 @@ html[data-theme='dark'] .fo-cta {
     line-height: 1.35;
   }
 
-  .fo-cta-kicker {
+  .fo-cta .fo-cta-kicker {
     font-size: 1.2rem;
+    line-height: 1.35;
   }
 
   .fo-cta-lede {
@@ -333,6 +353,10 @@ html[data-theme='dark'] .fo-cta {
 @media (min-width: 992px) and (max-width: 1279px) {
   .fo-cta {
     font-size: 1.6rem;
+  }
+
+  .fo-cta-frame {
+    margin-inline: -2.87rem;
   }
 }
 
@@ -409,5 +433,18 @@ html[data-theme='dark'] .fo-cta {
   .cg-cloud-link[data-spec-hover="2"]:hover,
   .cg-cloud-link[data-spec-hover="2"].probe-hover {
     background-color: var(--rule-strong);
+  }
+}
+
+/* ── T-10d: the sketch veil parks from 768 up — heron measures it as a
+   0×0 seat at the wrap top-centre (x 384/512/720/960, y 0); only the
+   phone belt shows the gradient over the sketch (255×138 @390). ── */
+@media (min-width: 768px) {
+  .fo-cta-sketch-veil {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 0;
   }
 }
