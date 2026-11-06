@@ -172,6 +172,10 @@
    returns null for the comma list on BOTH sides → string equality) */
 .fo-go {
   transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
+  line-height: 1.35; /* T-06l census: the go seat lh rides the ROOT fs law (1.35×root: 18fu@1440 · 24@1920) */
+  /* T-06l census: the go seat's arrow ink is the rule grey
+     rgb(179,179,175) = --rule-strong at every bp */
+  color: var(--rule-strong);
 }
 .fo-go-ic { inline-size: calc(var(--fu) * 17); block-size: calc(var(--fu) * 17); color: inherit; }
 .fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
@@ -337,7 +341,7 @@
   margin: 0;
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
-  line-height: calc(var(--fu) * 15.17);
+  line-height: 1.35; /* T-06l census: the © line lh = AR floor 1.35×fs (15.75fu@1440 · 21.01@1920) */
   font-weight: 500;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
@@ -351,7 +355,7 @@
 .fo-footer-cluster {
   font-family: var(--font-mono);
   font-size: calc(var(--fu) * 11.67);
-  line-height: calc(var(--fu) * 15.17);
+  line-height: 1.35; /* T-06l census: AR floor 1.35×fs */
   font-weight: 500;
 }
 .fo-legal-row {
@@ -359,6 +363,7 @@
   align-items: center;
   flex-wrap: wrap;
   inline-size: calc(var(--fu) * 464); /* census: 330/464/619 = 464fu */
+  line-height: 1.35; /* T-06l census: the nav row lh rides the ROOT fs (1.35×root: 18fu@1440 · 24@1920 · 21.44@390) */
 }
 .fo-legal-link {
   display: inline-flex;
@@ -448,7 +453,7 @@
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
   .fo-form-copy-t { font-size: 13.33px; line-height: 17.33px; }
   .fo-form-row { margin-block-start: 13.33px; }
-  .fo-input { block-size: 44px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 13.33px; line-height: 19px; }
+  .fo-input { block-size: 44px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 14.73px; line-height: 21.05px; } /* T-06l census: 14.73/21.05@768 */
   .fo-go { block-size: 44px; }
   .fo-go-ic { inline-size: 17px; block-size: 17px; }
   .fo-lg-links { margin-block-start: 4.17px; line-height: 16px; }
@@ -473,9 +478,9 @@
   .fo-legal-strip { inline-size: 311px; }
   .fo-legal-row { inline-size: 432px; }
   .fo-legal-lc { column-gap: 3.33px; }
-  .fo-legal-p { font-size: 11.67px; line-height: 15.17px; }
+  .fo-legal-p { font-size: 12.89px; line-height: 17.4px; } /* T-06l census: 12.89/17.4@768 */
   .fo-mono,
-  .fo-footer-cluster { font-size: 11.67px; line-height: 15.17px; }
+  .fo-footer-cluster { font-size: 12.89px; line-height: 17.4px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
 }
 
@@ -536,7 +541,7 @@
   }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr; }
-  .fo-input { block-size: 40.3px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 13.33px; line-height: 19px; }
+  .fo-input { block-size: 40.3px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 15.88px; line-height: 22.68px; } /* T-06l census: 15.88/22.68@390 */
   .fo-go { block-size: 40.3px; }
   .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
   .fo-form-copy-t { font-size: 13.33px; line-height: 17.33px; }
@@ -570,9 +575,9 @@
   .fo-legal-l { padding: 8.33px 13.33px; }
   .fo-legal-strip { inline-size: 218px; }
   .fo-legal-lc { column-gap: 3.33px; }
-  .fo-legal-p { font-size: 11.67px; line-height: 15.17px; }
+  .fo-legal-p { font-size: 9.92px; line-height: 13.39px; } /* T-06l census: 9.92/13.39@390 */
   .fo-mono,
-  .fo-footer-cluster { font-size: 11.67px; line-height: 15.17px; }
+  .fo-footer-cluster { font-size: 9.92px; line-height: 13.39px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
   .fo-footer-bottom { margin-block-start: -80px; flex-direction: column; }
   .fo-legal-l { justify-content: center; }
@@ -594,6 +599,12 @@
     parked on the footer sheet per section-file ownership (the r306
     belt reads the landing family concatenation; the selectors mirror
     the reference's own RM belt entries verbatim) ═══ */
+/* T-06l — the sublabel seat: heron's c1sub label box rides the ROOT fs
+   (13.33fu desktop · 14.73@768 · 15.88@390 — the spec's own inheritance)
+   with the AR lh floor 1.35×fs; scoped so the other mono labels (which
+   the census holds at 11.67) keep their measured seats */
+[data-spec='footer.sublabel'] { font-size: inherit; line-height: 1.35; }
+
 @media (prefers-reduced-motion: reduce) {
   .wy[data-wy-stage='0'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb,
   .wy[data-wy-stage='1'] .wy-rail .wy-stage:nth-child(2) .wy-stage-verb,
@@ -602,3 +613,6 @@
     animation: none;
   }
 }
+
+/* T-06l census: the c2bottom box lh rides the ROOT fs law (1.35×root) */
+[data-spec=footer.c2bottom] { line-height: 1.35; }
