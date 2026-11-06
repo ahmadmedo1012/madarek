@@ -114,7 +114,15 @@ function HeaderNav() {
     <nav className="fo-nav" aria-label="التنقل الرئيسي" data-spec="nav.row">
       {NAV_SEATS.map((seat, i) => {
         const current = !seat.anchor && seat.href === pathname;
-        const cls = current ? 'fo-nav-link is-current' : 'fo-nav-link';
+        /* r339 (T-10) — her seat register alternates button/a cells
+         * (seats 0+2 are her <button> mega-menu triggers, 1+3 her <a>
+         * links — the frozen chrome spec); the button-class seats carry
+         * the 1.35 button-register row (nav.css .is-btn-seat). */
+        const cls = [
+          'fo-nav-link',
+          i % 2 === 0 ? 'is-btn-seat' : '',
+          current ? 'is-current' : '',
+        ].filter(Boolean).join(' ');
         return seat.anchor ? (
           <a key={seat.href} href={seat.href} className={cls} data-spec={`nav.link.${i}`}>
             <RollLabel text={seat.label} />

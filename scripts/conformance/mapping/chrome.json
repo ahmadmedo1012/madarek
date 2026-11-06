@@ -64,9 +64,12 @@
    "bps": [
     "1920"
    ],
-   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask)",
+   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask) — her logo cluster is a div wrap; our brand seat is the <a> Link itself (the interactive twin — tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[1] > div[1]",
-   "ours": "nav.brand"
+   "ours": "nav.brand",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -74,8 +77,11 @@
    "bps": [
     "1920"
    ],
-   "note": "the logo mark svg (OUR logo stays — mission law)",
-   "ours": ".fo-brand-mark svg"
+   "note": "the logo mark svg (OUR logo stays — mission law) — her logo svg anchor carries the UA default anchor ink rgb(0,0,238) — the visual ink rides the svg fill, not the color property; our svg inherits the measured soft ink",
+   "ours": ".fo-brand-mark svg",
+   "skip": [
+    "color"
+   ]
   },
   {
    "section": "chrome",
@@ -93,9 +99,12 @@
    "bps": [
     "1920"
    ],
-   "note": "the nav row (her header-menu-inner)",
+   "note": "the nav row (her header-menu-inner) — her menu row is a div (header-menu-inner); ours is the semantic <nav> element (tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > div[1]",
-   "ours": "nav.row"
+   "ours": "nav.row",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -158,11 +167,12 @@
    "bps": [
     "1920"
    ],
-   "note": "our 5th Arabic seat has no her bar cell (her register is 4) — bound to her hidden 0×0 trigger, geometry unassertable",
+   "note": "our 5th Arabic seat has no her bar cell (her register is 4) — bound to her hidden 0×0 trigger, geometry unassertable — her counterpart is the hidden 0x0 trigger anchor carrying the UA default ink rgb(0,0,238) — nothing visual to match (geometry already skipped for the same reason)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > div[1] > a[1]",
    "ours": "nav.link.4",
    "skip": [
-    "geometry"
+    "geometry",
+    "color"
    ]
   },
   {
@@ -181,9 +191,12 @@
    "bps": [
     "1920"
    ],
-   "note": "the CTA's 1px boundary rule",
+   "note": "the CTA's 1px boundary rule — her CTA boundary is a div; ours is the span twin inside the <a> (tag differs, the 1px seat is asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
-   "ours": "nav.cta.rule"
+   "ours": "nav.cta.rule",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -191,9 +204,12 @@
    "bps": [
     "1920"
    ],
-   "note": "the CTA fill seat (her btn-fill)",
+   "note": "the CTA fill seat (her btn-fill) — her btn-fill wrap is a div; ours is the span twin inside the <a> (tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > a[2] > div[2]",
-   "ours": "nav.cta.main"
+   "ours": "nav.cta.main",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -201,8 +217,11 @@
    "bps": [
     "1920"
    ],
-   "note": "CTA label top row",
-   "ours": ".fo-actions-cta .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "CTA label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-actions-cta .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -210,8 +229,11 @@
    "bps": [
     "1920"
    ],
-   "note": "CTA label roll row",
-   "ours": ".fo-actions-cta .fo-roll-dup"
+   "note": "CTA label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-actions-cta .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -219,8 +241,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 0 label top row",
-   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 0 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -228,8 +253,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 0 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-dup"
+   "note": "seat 0 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -237,8 +265,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 1 label top row",
-   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 1 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -246,8 +277,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 1 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-dup"
+   "note": "seat 1 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -255,8 +289,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 2 label top row",
-   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 2 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -264,8 +301,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 2 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-dup"
+   "note": "seat 2 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -273,8 +313,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 3 label top row",
-   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 3 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -282,8 +325,11 @@
    "bps": [
     "1920"
    ],
-   "note": "seat 3 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-dup"
+   "note": "seat 3 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -339,9 +385,12 @@
    "bps": [
     "1440"
    ],
-   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask)",
+   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask) — her logo cluster is a div wrap; our brand seat is the <a> Link itself (the interactive twin — tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[1] > div[1]",
-   "ours": "nav.brand"
+   "ours": "nav.brand",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -349,8 +398,11 @@
    "bps": [
     "1440"
    ],
-   "note": "the logo mark svg (OUR logo stays — mission law)",
-   "ours": ".fo-brand-mark svg"
+   "note": "the logo mark svg (OUR logo stays — mission law) — her logo svg anchor carries the UA default anchor ink rgb(0,0,238) — the visual ink rides the svg fill, not the color property; our svg inherits the measured soft ink",
+   "ours": ".fo-brand-mark svg",
+   "skip": [
+    "color"
+   ]
   },
   {
    "section": "chrome",
@@ -368,9 +420,12 @@
    "bps": [
     "1440"
    ],
-   "note": "the nav row (her header-menu-inner)",
+   "note": "the nav row (her header-menu-inner) — her menu row is a div (header-menu-inner); ours is the semantic <nav> element (tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > div[1]",
-   "ours": "nav.row"
+   "ours": "nav.row",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -433,11 +488,12 @@
    "bps": [
     "1440"
    ],
-   "note": "our 5th Arabic seat has no her bar cell (her register is 4) — bound to her hidden 0×0 trigger, geometry unassertable",
+   "note": "our 5th Arabic seat has no her bar cell (her register is 4) — bound to her hidden 0×0 trigger, geometry unassertable — her counterpart is the hidden 0x0 trigger anchor carrying the UA default ink rgb(0,0,238) — nothing visual to match (geometry already skipped for the same reason)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > div[1] > a[1]",
    "ours": "nav.link.4",
    "skip": [
-    "geometry"
+    "geometry",
+    "color"
    ]
   },
   {
@@ -456,9 +512,12 @@
    "bps": [
     "1440"
    ],
-   "note": "the CTA's 1px boundary rule",
+   "note": "the CTA's 1px boundary rule — her CTA boundary is a div; ours is the span twin inside the <a> (tag differs, the 1px seat is asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
-   "ours": "nav.cta.rule"
+   "ours": "nav.cta.rule",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -466,9 +525,12 @@
    "bps": [
     "1440"
    ],
-   "note": "the CTA fill seat (her btn-fill)",
+   "note": "the CTA fill seat (her btn-fill) — her btn-fill wrap is a div; ours is the span twin inside the <a> (tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > a[2] > div[2]",
-   "ours": "nav.cta.main"
+   "ours": "nav.cta.main",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -476,8 +538,11 @@
    "bps": [
     "1440"
    ],
-   "note": "CTA label top row",
-   "ours": ".fo-actions-cta .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "CTA label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-actions-cta .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -485,8 +550,11 @@
    "bps": [
     "1440"
    ],
-   "note": "CTA label roll row",
-   "ours": ".fo-actions-cta .fo-roll-dup"
+   "note": "CTA label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-actions-cta .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -494,8 +562,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 0 label top row",
-   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 0 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -503,8 +574,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 0 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-dup"
+   "note": "seat 0 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -512,8 +586,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 1 label top row",
-   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 1 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -521,8 +598,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 1 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-dup"
+   "note": "seat 1 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -530,8 +610,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 2 label top row",
-   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 2 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -539,8 +622,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 2 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-dup"
+   "note": "seat 2 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -548,8 +634,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 3 label top row",
-   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 3 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -557,8 +646,11 @@
    "bps": [
     "1440"
    ],
-   "note": "seat 3 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-dup"
+   "note": "seat 3 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -614,9 +706,12 @@
    "bps": [
     "1024"
    ],
-   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask)",
+   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask) — her logo cluster is a div wrap; our brand seat is the <a> Link itself (the interactive twin — tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[1] > div[1]",
-   "ours": "nav.brand"
+   "ours": "nav.brand",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -624,8 +719,11 @@
    "bps": [
     "1024"
    ],
-   "note": "the logo mark svg (OUR logo stays — mission law)",
-   "ours": ".fo-brand-mark svg"
+   "note": "the logo mark svg (OUR logo stays — mission law) — her logo svg anchor carries the UA default anchor ink rgb(0,0,238) — the visual ink rides the svg fill, not the color property; our svg inherits the measured soft ink",
+   "ours": ".fo-brand-mark svg",
+   "skip": [
+    "color"
+   ]
   },
   {
    "section": "chrome",
@@ -643,9 +741,12 @@
    "bps": [
     "1024"
    ],
-   "note": "the nav row (her header-menu-inner)",
+   "note": "the nav row (her header-menu-inner) — her menu row is a div (header-menu-inner); ours is the semantic <nav> element (tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > div[1]",
-   "ours": "nav.row"
+   "ours": "nav.row",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -708,11 +809,12 @@
    "bps": [
     "1024"
    ],
-   "note": "our 5th Arabic seat has no her bar cell (her register is 4) — bound to her hidden 0×0 trigger, geometry unassertable",
+   "note": "our 5th Arabic seat has no her bar cell (her register is 4) — bound to her hidden 0×0 trigger, geometry unassertable — her counterpart is the hidden 0x0 trigger anchor carrying the UA default ink rgb(0,0,238) — nothing visual to match (geometry already skipped for the same reason)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > div[1] > a[1]",
    "ours": "nav.link.4",
    "skip": [
-    "geometry"
+    "geometry",
+    "color"
    ]
   },
   {
@@ -731,9 +833,12 @@
    "bps": [
     "1024"
    ],
-   "note": "the CTA's 1px boundary rule",
+   "note": "the CTA's 1px boundary rule — her CTA boundary is a div; ours is the span twin inside the <a> (tag differs, the 1px seat is asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > a[2] > div[1]",
-   "ours": "nav.cta.rule"
+   "ours": "nav.cta.rule",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -741,9 +846,12 @@
    "bps": [
     "1024"
    ],
-   "note": "the CTA fill seat (her btn-fill)",
+   "note": "the CTA fill seat (her btn-fill) — her btn-fill wrap is a div; ours is the span twin inside the <a> (tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[2] > a[2] > div[2]",
-   "ours": "nav.cta.main"
+   "ours": "nav.cta.main",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -751,8 +859,11 @@
    "bps": [
     "1024"
    ],
-   "note": "CTA label top row",
-   "ours": ".fo-actions-cta .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "CTA label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-actions-cta .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -760,8 +871,11 @@
    "bps": [
     "1024"
    ],
-   "note": "CTA label roll row",
-   "ours": ".fo-actions-cta .fo-roll-dup"
+   "note": "CTA label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-actions-cta .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -769,8 +883,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 0 label top row",
-   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 0 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -778,8 +895,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 0 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-dup"
+   "note": "seat 0 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(1) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -787,8 +907,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 1 label top row",
-   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 1 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -796,8 +919,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 1 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-dup"
+   "note": "seat 1 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(2) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -805,8 +931,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 2 label top row",
-   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 2 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -814,8 +943,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 2 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-dup"
+   "note": "seat 2 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(3) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -823,8 +955,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 3 label top row",
-   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-txt:not(.fo-roll-dup)"
+   "note": "seat 3 label top row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-txt:not(.fo-roll-dup)",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -832,8 +967,11 @@
    "bps": [
     "1024"
    ],
-   "note": "seat 3 label roll row",
-   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-dup"
+   "note": "seat 3 label roll row — her label twin is a div; ours is the roll span (tag differs, type/color/geometry asserted)",
+   "ours": ".fo-nav > a:nth-of-type(4) .fo-roll-dup",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -889,9 +1027,12 @@
    "bps": [
     "768"
    ],
-   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask)",
+   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask) — her logo cluster is a div wrap; our brand seat is the <a> Link itself (the interactive twin — tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[1] > div[1]",
-   "ours": "nav.brand"
+   "ours": "nav.brand",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -899,8 +1040,11 @@
    "bps": [
     "768"
    ],
-   "note": "the logo mark svg (OUR logo stays — mission law)",
-   "ours": ".fo-brand-mark svg"
+   "note": "the logo mark svg (OUR logo stays — mission law) — her logo svg anchor carries the UA default anchor ink rgb(0,0,238) — the visual ink rides the svg fill, not the color property; our svg inherits the measured soft ink",
+   "ours": ".fo-brand-mark svg",
+   "skip": [
+    "color"
+   ]
   },
   {
    "section": "chrome",
@@ -931,8 +1075,11 @@
    "bps": [
     "768"
    ],
-   "note": "the menu trigger label",
-   "ours": ".fo-burger-txt"
+   "note": "the menu trigger label — her menu label is a div; ours is the span twin inside the <button> (tag differs, type/color asserted)",
+   "ours": ".fo-burger-txt",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -1001,9 +1148,12 @@
    "bps": [
     "390"
    ],
-   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask)",
+   "note": "the logo cluster (her header-logo-inner, overflow-hidden roll mask) — her logo cluster is a div wrap; our brand seat is the <a> Link itself (the interactive twin — tag differs, box/type/color asserted)",
    "spec": "chrome > header[1] > div[1] > div[2] > div[1] > div[1]",
-   "ours": "nav.brand"
+   "ours": "nav.brand",
+   "skip": [
+    "tag"
+   ]
   },
   {
    "section": "chrome",
@@ -1011,8 +1161,11 @@
    "bps": [
     "390"
    ],
-   "note": "the logo mark svg (OUR logo stays — mission law)",
-   "ours": ".fo-brand-mark svg"
+   "note": "the logo mark svg (OUR logo stays — mission law) — her logo svg anchor carries the UA default anchor ink rgb(0,0,238) — the visual ink rides the svg fill, not the color property; our svg inherits the measured soft ink",
+   "ours": ".fo-brand-mark svg",
+   "skip": [
+    "color"
+   ]
   },
   {
    "section": "chrome",
@@ -1043,8 +1196,11 @@
    "bps": [
     "390"
    ],
-   "note": "the menu trigger label",
-   "ours": ".fo-burger-txt"
+   "note": "the menu trigger label — her menu label is a div; ours is the span twin inside the <button> (tag differs, type/color asserted)",
+   "ours": ".fo-burger-txt",
+   "skip": [
+    "tag"
+   ]
   }
  ],
  "noCounterpart": [

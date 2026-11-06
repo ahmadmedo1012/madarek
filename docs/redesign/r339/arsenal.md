@@ -38,3 +38,6 @@
 - [T-15] node (failure-set diff) — prove webkit/chromium cells differ only by sub-pixel drift
 - [T-10] python3 — schema-validated the 5 chrome.<bp>.json specs vs footer.1440.json (element keys identical; chrome adds headerSeat + chromeExtra: preloader/consent/cursor all present per bp)
 - [T-10] rg/Read — reviewed run.mjs mapping loader (underscore-prefixed files ARE picked up by readdirSync — the rename was for grammar clarity), mapping/chrome.json grammar check (105 explicit, 845 noCounterpart w/ reasons, 54 plumbing, 0 uncovered spec paths at all 5 bps)
+- [T-10] node (run.mjs) — one chrome-section measurement pass @5 bps against :5310 (final landing gate)
+- [T-10] rg/bash — flag-syntax check of run.mjs (--sections/--bps/--url/--out) before the run
+- [T-10] vitest/verify.sh — reconciled r183-B8 ceiling pin 777→770 (matches committed gate restore c8a61806; DOWN = sanctioned); verify --fast green, bundle 764.4≤770
