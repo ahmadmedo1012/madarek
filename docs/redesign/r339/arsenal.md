@@ -39,3 +39,7 @@
 - [T-1213] run.mjs (t02b hardened, staged at /tmp/t12h — origin/r339/t02b not yet on main) — all-nodes darkInk census + edge390 gutters: found 28 dark-ink fails (platform 10 @1:1, footer 18 @3.97) + hero/why 390 gutter fails; verified 0 after fixes.
 - [T-1213] playwright CDP (CSS.getMatchedStylesForNode + getAnimations) — root-caused the dark 1:1 CTA strip: Chromium latches a transition's after-change style at STALE custom-property values on theme flip (transition:all/color + var() re-point ⇒ color frozen at the light literal); fixed by excluding the color leg from the dark-arm transition (duration+easing preserved — aTransition asserts d/e only).
 - [T-1213] playwright probes (/home/z/t1213-*.mjs) — dark-ink node pinpointing (class/data-spec/ratio), hero/why 390 visible-content-union walkers mirroring the census, before/after geometry diffs.
+- [T-1213] run.mjs — dark sweep on remaining sections (intro,usecase,map,cta,why) after reviewing predecessor's staged cta/journey/roles dark-ink fixes
+- [T-1213] /home/z/t1213-auth-dark.mjs (playwright probe, run.mjs compositing law) — auth dark check login/register @1440+390: 224 text nodes, 0 fails
+- [T-1213] run.mjs (t02h, full matrix) — darkInk 9 sections × 5 bps: 193 fails before (cta 23, map 170) → 0/1289 checked; edge390 0; light A/B identical per-bp (stash/pop)
+- [T-1213] vitest re-pin (r183-B8) — reconciled the ceiling pin 777→770 DOWN after c8a61806 moved the gate law (stricter, 992d520d pattern); verify --fast GREEN, bundle 764.3/770
