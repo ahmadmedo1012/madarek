@@ -90,3 +90,4 @@ T-90 | playwright (repo node_modules, chromium-1200) | blind-panel screenshot ca
 T-24 | depcruise/madge-style import scan + knip | circular-dep fix AdminPages↔AdminGovernancePages + dead archive scripts
 T-13r | playwright (repo node_modules, chromium via /tmp/pw-browsers symlink fallback per ADDENDUM 3) | interact.mjs hover/focus-visible delta probing against vite :5313, 5 bps
 T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + channel-class census driving the fix plan
+T-05g | run.mjs census copy (uncapped /tmp splice variant) + python census | enumerate full 119 no-counterpart set + failure families
