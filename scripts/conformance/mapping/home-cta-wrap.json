@@ -249,18 +249,8 @@
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[1] > img[1]",
-      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[1] > img[1]",
-      "ours": "cta.sketch-art",
-      "skip": [
-        "tag",
-        "color"
-      ]
-    },
-    {
-      "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
-      "spec": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+      "heron": "home-cta-wrap > section[1] > div[1] > div[3] > div[1] > div[1] > div[2]",
+      "spec": "home-cta-wrap > section[1] > div[1] > div[3] > div[1] > div[1] > div[2]",
       "ours": "cta.sketch-veil"
     },
     {
@@ -321,111 +311,353 @@
   "plumbing": [
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "icon glyph svg — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "1920"
       ],
       "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "1920"
       ],
       "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2] > div[1] > svg[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "1440"
       ],
       "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2] > div[1] > svg[1] > path[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "1440"
       ],
       "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "icon glyph internals — our shared .btn renders one lucide glyph via the Icon wrapper"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+      "bps": [
+        "1920"
       ],
       "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "bps": [
+        "1920"
       ],
       "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+      "bps": [
+        "1920"
       ],
       "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "bps": [
+        "1920"
       ],
       "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
+      "bps": [
+        "1920"
       ],
       "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
-      "skip": [
-        "geometry",
-        "tag",
-        "type",
-        "color"
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "bps": [
+        "768"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
+      "bps": [
+        "768"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+      "bps": [
+        "390"
+      ],
+      "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+      "bps": [
+        "390"
       ],
       "reason": "reference sketch image mask/filter treatment (defs/mask/fecomponenttransfer) — our authored inline-SVG line-art carries the sketch band; no asset is copied"
     }
@@ -433,58 +665,747 @@
   "noCounterpart": [
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[4]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron full-width hairline twin above the sketch band — our measured rules ride the flank/band-sketch seats; duplicate rule twin, no separate our-side box"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[1]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[4]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron full-width hairline twin above the sketch band — our measured rules ride the flank/band-sketch seats; duplicate rule twin, no separate our-side box"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[4]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron full-width hairline twin above the sketch band — our measured rules ride the flank/band-sketch seats; duplicate rule twin, no separate our-side box"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[4]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron full-width hairline twin above the sketch band — our measured rules ride the flank/band-sketch seats; duplicate rule twin, no separate our-side box"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[4]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron full-width hairline twin above the sketch band — our measured rules ride the flank/band-sketch seats; duplicate rule twin, no separate our-side box"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron duplicate sketch wrapper twin captured by the page census — our section renders one sketch band (holder seat is explicitly bound)"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron duplicate sketch wrapper twin captured by the page census — our section renders one sketch band (holder seat is explicitly bound)"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron duplicate sketch wrapper twin captured by the page census — our section renders one sketch band (holder seat is explicitly bound)"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron duplicate sketch wrapper twin captured by the page census — our section renders one sketch band (holder seat is explicitly bound)"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[2] > div[2] > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
-      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn pattern renders one label + one glyph; pattern-consistency census owns the shared class"
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron duplicate sketch wrapper twin captured by the page census — our section renders one sketch band (holder seat is explicitly bound)"
     },
     {
       "section": "home-cta-wrap",
-      "heron": "home-cta-wrap > home-cta-wrap[8] > div[1] > section[1] > div[1] > div[3] > div[1] > div[2]",
-      "reason": "heron sketch loader/a11y node (0×0, hidden) — no visual counterpart by design"
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron masked raster sketch image — our authored inline-SVG line-art carries the sketch band (bound to the svg seat); the raster+mask pipeline is reference-only, nothing copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron masked raster sketch image — our authored inline-SVG line-art carries the sketch band (bound to the svg seat); the raster+mask pipeline is reference-only, nothing copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron masked raster sketch image — our authored inline-SVG line-art carries the sketch band (bound to the svg seat); the raster+mask pipeline is reference-only, nothing copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > img[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron masked raster sketch image — our authored inline-SVG line-art carries the sketch band (bound to the svg seat); the raster+mask pipeline is reference-only, nothing copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[3] > div[1] > div[1] > div[2] > img[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron masked raster sketch image — our authored inline-SVG line-art carries the sketch band (bound to the svg seat); the raster+mask pipeline is reference-only, nothing copied"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[2] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[2] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[2] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[1] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[2] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[1] > div[2] > div[2] > div[3] > a[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[2]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[2] > div[2]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[2] > div[2] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[2] > div[3] > a[1] > div[1] > div[3]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[2] > div[3] > a[1] > div[1] > div[3] > div[2]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > a[1] > div[1] > div[3] > div[2] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > a[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron pill internals (two-line label stack + dual chevron boxes) — our shared .btn renders one label + one glyph; pattern-consistency census owns the shared class (per-bp divergent wrapper, r338 per-bp grammar)"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "page wrapper twin of the section container itself — our-side walk root (heronPageKey div.cta-wrap), not a pairable child"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "page wrapper twin of the section container itself — our-side walk root (heronPageKey div.cta-wrap), not a pairable child"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "page wrapper twin of the section container itself — our-side walk root (heronPageKey div.cta-wrap), not a pairable child"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8]",
+      "bps": [
+        "768"
+      ],
+      "reason": "page wrapper twin of the section container itself — our-side walk root (heronPageKey div.cta-wrap), not a pairable child"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > home-cta-wrap[8]",
+      "bps": [
+        "390"
+      ],
+      "reason": "page wrapper twin of the section container itself — our-side walk root (heronPageKey div.cta-wrap), not a pairable child"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "bps": [
+        "1920"
+      ],
+      "reason": "heron sketch loader/a11y twin (hidden seat beside the sketch holder) — no visual counterpart by design"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "bps": [
+        "1440"
+      ],
+      "reason": "heron sketch loader/a11y twin (hidden seat beside the sketch holder) — no visual counterpart by design"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "bps": [
+        "1024"
+      ],
+      "reason": "heron sketch loader/a11y twin (hidden seat beside the sketch holder) — no visual counterpart by design"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "bps": [
+        "768"
+      ],
+      "reason": "heron sketch loader/a11y twin (hidden seat beside the sketch holder) — no visual counterpart by design"
+    },
+    {
+      "section": "home-cta-wrap",
+      "heron": "home-cta-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[2]",
+      "bps": [
+        "390"
+      ],
+      "reason": "heron sketch loader/a11y twin (hidden seat beside the sketch holder) — no visual counterpart by design"
     }
   ]
 }
