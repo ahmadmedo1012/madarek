@@ -10,3 +10,9 @@
 - [T-18] npx playwright install chromium — repo pw 1.65 browsers for the conformance runner (cache had only 1.60/1223)
 - [T-18] node scripts/conformance/run.mjs — scoped why+cta: 90.9% total, edge390 fails 0; clamp delta 0.1pt measured (89.0 off vs 89.1 on @1440); cta identical to cross-worktree baseline
 - [T-18] bash scripts/verify.sh --fast — FAST PASS (3051 tests), bundle 765.4 gz ≤ 770
+- [T-31] node static census — class tokens in landing sheets vs non-CSS src; template-minted names excluded (hro-deco-${i}, why.${ds}in)
+- [T-31] playwright t31-probe-dead.mjs — 9 routes × 25 candidate classes, 0 live matches → deletions sound
+- [T-31] rg tests — saved .fo-ticker-track (r306 RM belt pin) + fo-ticker-rtl whitelist; transient arms ind-*/r323d-* untouched
+- [T-31] python regex cuts + manual fixups — batch 2: −318 lines across 8 landing sheets; paired-state-allowlist entry retired with its rule (lint 117 XOR, PASS)
+- [T-31] bash verify.sh --fast ×2 — FAST PASS both batches (bundle 765.6 gz); stylelint errors 45→44, warnings 57→56, hex 36→34 (all DOWN)
+- [T-31] git push — r339/t31 09d4f7e8..da8e5445 (6 commits: 4 file-group + batch2 + allowlist amend); docs/redesign/r339/T-31-LIVENESS.md written
