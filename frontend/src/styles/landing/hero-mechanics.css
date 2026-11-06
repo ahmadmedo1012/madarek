@@ -584,13 +584,6 @@
     text-decoration-color: var(--rule-strong);
   }
 }
-
-.hro-alt:focus-visible {
-  outline: var(--state-focus-ring-width, 2px) solid var(--state-focus-ring-color, var(--accent));
-  outline-offset: var(--state-focus-ring-offset, 2px);
-  border-radius: 2px;
-}
-
 /* ══ [7] THE WORK STRIP — the six honest subjects: ONE static row
    ≥1200 (space-between, zero mask), a snap scroller below; riding the
    work-card rise (y 3.2rem · 1s power3.out). */

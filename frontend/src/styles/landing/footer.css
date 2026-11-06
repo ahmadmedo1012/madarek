@@ -147,22 +147,7 @@
   color: var(--text);
   transition: border-color 0.45s ease;
 }
-.fo-input::placeholder { color: var(--rule-strong); }
-/* r162/r172a §3: NO :focus-visible rules on this sheet — the universal
-   focus language in base.css owns the rings (the private sub-language
-   is deleted; the outline below was the last stray) */
-.fo-go {
-  inline-size: 4.8rem;
-  block-size: 4.8rem;
-  padding: 1rem;
-  border: 1px solid var(--rule-strong);
-  border-inline-start: 0;
-  background: transparent;
-  color: var(--rule-strong);
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
-}
-.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
+.fo-input::placeholder { color: var(--rule-strong); }.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
 .fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
 .fo-go-ic path {
   fill: none;
@@ -474,25 +459,4 @@
   .wy[data-wy-stage='3'] .wy-rail .wy-stage:nth-child(4) .wy-stage-verb {
     animation: none;
   }
-}
-
-/* ── T-13 interaction states — the recorded footer hover/focus-visible
-   deltas (heron ordinals 7–24 · 26–35: color+bd flip to the accent pair
-   on every seat; ordinals [5]/[6] record NO change and stay unbound).
-   .probe-hover is the conformance probe's hover-equivalent class — it
-   never occurs for real users; the :focus-visible twin is the same ink
-   shift plus the standard r162 ring (keyboard parity, WCAG). ── */
-.fo-footer a[data-spec-hover]:hover,
-.fo-footer a[data-spec-hover].probe-hover,
-.fo-footer button[data-spec-hover]:hover,
-.fo-footer button[data-spec-hover].probe-hover {
-  color: var(--accent-ink);
-  border-block-end-color: var(--accent);
-}
-
-.fo-footer a[data-spec-hover]:focus-visible,
-.fo-footer button[data-spec-hover]:focus-visible {
-  color: var(--accent-ink);
-  border-block-end-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-strong);
 }

@@ -366,31 +366,9 @@
 /* the wrap's ground: the spec's section box is transparent (the page
    ground shows through) */
 .rl-section.rl-section { background: transparent; }
-
-/* ── T-13 interaction states — the recorded hover/focus-visible deltas
-   for the accordion toggles (heron faq ordinals 5/6/7 · 20/21/22 · 35:
-   color+bd dim). .probe-hover is the conformance probe's
-   hover-equivalent class — it never occurs for real users; the
-   :focus-visible twin rides the same ink shift (r162 keyboard parity,
-   the universal motion.css ring still marks the seat). ── */
-.rl-row-icon:hover,
-.rl-row-icon.probe-hover {
-  color: var(--text);
-  border-block-end-color: var(--rule-strong);
-}
-
-.rl-row-icon:focus-visible {
-  color: var(--text);
-  border-block-end-color: var(--rule-strong);
-}
-
 /* T-13 residual: the open row's resting icon ink at ≥1500 already sits
    on the hover pair, so the delta needs its own channel — the dim. */
 .rl-row-icon:hover,
 .rl-row-icon.probe-hover {
   opacity: 0.72;
-}
-
-.rl-row-icon:focus-visible {
-  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent-strong);
 }
