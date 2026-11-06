@@ -428,6 +428,7 @@ describe('r306 hygiene — the sheet stays clean', () => {
       'wy-snap', // R313: the why-stage verb snap (the 74%-hold plateau — supersedes vs-tag-snap, which moved to campus.css with the status rows)
       'hro-fade-loop', // R331: the hero deco ledger cards' idle fade (the reference's own deco loop, 1.5s, ≥992 only) — collapsed by the hero RM belt
       'pr-item-fade', // r338 T-08: the platform rows' cross-fade marquee (heron's row pair, 14s, ≥992 only) — collapsed by the platform RM belt
+      'rl-rule-widen', // r339 T-11b1: the usecase row rules' once-only scroll-reveal WIDEN (width 0→100%, 800ms power2.out, fill both — the tween census' width family is reachable ONLY through a declared @keyframes; the transition envelope records no width). Not a loop: fires once on .in-view, collapsed by the roles RM belt (.rl-rule-w).
       // r335 W-chrome: 'sl-scan' retired with the R313 SheetLoader sheet
       // (dead .sl-* rules deleted; the preloader's own RM gates are JS-side).
     ]);
@@ -447,6 +448,8 @@ describe('r306 hygiene — the sheet stays clean', () => {
       '.wy[data-wy-stage=\'0\'] .wy-rail .wy-stage:nth-child(1) .wy-stage-verb', // R313: the wy-snap
       '.hro-deco', // R331: the hero deco fade-loop collapses to the static ledger card
       '.pr-row', // r338 T-08: pr-item-fade collapses to the first row (the pairmate stays hidden)
+      '.rl-rule-w', // r339 T-11b1: the row-rule widen collapses to the authored full-width rule
+      '.rl-rule-x', // r339 T-11b1: the frame-pair draw collapses to the authored unscaled hairlines
     ];
     for (const sel of RM_COLLAPSED) {
       expect(rmBelt, `RM belt must collapse ${sel}`).toContain(sel);

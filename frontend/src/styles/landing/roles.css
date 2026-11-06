@@ -408,6 +408,37 @@
   }
 }
 
+/* ── R339 T-11b1 — the frame pair's scroll-reveal DRAW ──────────────
+   The census' second usecase rule group: scaleX 0→1, 2 units on the
+   section frame (T-11A-TWEEN.md). Our counterpart: the wrap's own
+   top/bottom rules (.rl-rule-top/-bottom — the full-bleed hairlines)
+   draw open on the same once:true `.in-view` write, 800ms power2.out
+   (the page-wide rule clock). The scale rides the individual
+   `scale: 0 1→1 1` property on a TRANSITION (not a keyframe — a
+   `transform: scaleX()` keyframe would mis-file as a translateY
+   family in the tween census, and the r308 sheet keeps its keyframe
+   whitelist closed; `scale` is orthogonal, composable, and its own
+   census family). Seat class from lib/reveals.ts ONLY; RM: never
+   armed, never drawn. */
+.rl-rule-x {
+  opacity: 0;
+  scale: 0 1;
+  transition:
+    opacity 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    scale 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.rl-rule-x.in-view {
+  opacity: 1;
+  scale: 1 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal-armed .rl-rule-x {
+    opacity: 1;
+    scale: none;
+    transition: none;
+  }
+}
+
 /* the wrap's ground: the spec's section box is transparent (the page
    ground shows through) */
 .rl-section.rl-section { background: transparent; }

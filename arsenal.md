@@ -1,1 +1,5 @@
 - [T-11b1] node tween.mjs — baseline coverage @1440 with predecessor uncommitted work
+- [T-11b1] node tween.mjs — intro 0/2→2/2, usecase 2/4→3/4, footer 2/2 kept; @1440 46.9→56.3%, @390 →53.3%; scaleX=instrument-grammar residual
+- [T-11b1] node scripts/conformance/run.mjs — scoped no-regression footer+usecase+intro @390+1440: 92.5% total; footer 83.1/89.9 (vs committed 83.3/predecessor-converged 89.9), usecase 89.4/93.0, intro 97.2/97.8 (first baseline); artifacts in results/
+- [T-11b1] bash scripts/verify.sh --fast — FAST PASS after converting .rl-rule-x to a transition (r308 keyframe whitelist kept closed except the documented rl-rule-widen width entry); bundle 765.2gz ≤ 770
+- [T-11b1] vitest r306-landing-sheet — whitelisted rl-rule-widen (width family reachable ONLY via declared @keyframes) + RM-collapse entries for both rule seats

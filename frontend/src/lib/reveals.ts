@@ -98,6 +98,30 @@ const RISE_TY_SEL = '.fo-c1-sub, .fo-fstrip, .fo-footer-bottom';
 /** the rise family's stagger step — Heron's recorded 20ms ladder. */
 const RISE_STAGGER_MS = 20;
 
+/* ── R339 T-11b1 — the intro band's own beat (work-list #3: intro 0/2,
+   16×2 units). The census records the SAME rise shape at a different
+   clock there — 600ms power2.out, 4ms stagger (roles intro-partner /
+   intro / intro-partner-label) — so the band rides `.reveal-rise-h
+   --beat` (shared.css's 600ms modifier) with the module's 4ms ladder
+   on the same inline --rise-h-delay. The set: the ticker's label
+   trio + both arrows, the crawl cells (the five documented
+   universities + their seamless-loop twins), and the disclosure pair
+   — LEAF level only (no parent+child seats: nested rises compound). */
+const BEAT_SEL =
+  '.st-plabel, .st-plabel-rule, .st-plabel-toprule, .st-parrow, .st-crawl-cell, .st-desc-text, .st-desc-rule';
+/** the intro band's stagger step — Heron's recorded 4ms ladder. */
+const BEAT_STAGGER_MS = 4;
+
+/* ── R339 T-11b1 — the usecase rules (work-list #2: the width + scaleX
+   groups). Heron records width 0→auto on the accordion rows' rule
+   children (16 units) and a scaleX 0→1 draw on the frame pair (2
+   units). Our counterparts ride roles.css keyframe seats — the -w
+   widen on each row's bottom hairline, the -x draw on the section
+   frame's top/bottom rules — armed here, `.in-view` is the single
+   state write, once:true (same belt as everything above). */
+const RULE_W_SEL = '.rl-row-rule-b';
+const RULE_X_SEL = '.rl-rule-top, .rl-rule-bottom';
+
 export interface RevealsHandle {
   destroy(): void;
 }
@@ -140,15 +164,20 @@ export function initReveals(): RevealsHandle {
    * rides the house `.reveal-d-N` delay classes, assigned HERE (at
    * intersect time, within the entering batch — document order, capped
    * at d-5) so an element entering alone never waits on a group index.
-   * T-11b — rise-family elements take the Heron 20ms ladder instead
+   * T-11b — rise-family elements take the Heron ladder instead
    * (inline `--rise-h-delay`, consumed by the rise seat's transition
-   * shorthand; never the .reveal-d-N longhand, which would fight it). */
+   * shorthand; never the .reveal-d-N longhand, which would fight it);
+   * T-11b1 — the intro beat rides its own 4ms step (not the footer's
+   * 20ms) on the same custom property. */
   const revealBatch = (els: Element[]) => {
     els.forEach((el, i) => {
       if (el.classList.contains('reveal-rise-h')) {
+        const stepMs = el.classList.contains('reveal-rise-h--beat')
+          ? BEAT_STAGGER_MS
+          : RISE_STAGGER_MS;
         (el as HTMLElement).style.setProperty(
           '--rise-h-delay',
-          `${i * RISE_STAGGER_MS}ms`,
+          `${i * stepMs}ms`,
         );
       } else {
         const step = Math.min(i, 5);
@@ -205,10 +234,35 @@ export function initReveals(): RevealsHandle {
   });
   observe(pendingRises, OBSERVER_ROOT_MARGIN_ITEMS);
 
+  /* ── T-11b1 — the intro beat: the SAME rise seat at the band's own
+   * 600ms clock (--beat modifier, shared.css) + the 4ms ladder. */
+  const beats = toArray(document, BEAT_SEL);
+  const pendingBeats = beats.filter((el) => !isPassed(el));
+  beats.filter(isPassed).forEach(reveal);
+  pendingBeats.forEach((el) => {
+    arm(el, 'reveal-up');
+    arm(el, 'reveal-rise-h');
+    arm(el, 'reveal-rise-h--beat');
+  });
+  observe(pendingBeats, OBSERVER_ROOT_MARGIN_ITEMS);
+
+  /* ── T-11b1 — the usecase rules: the rows' bottom hairlines WIDEN
+   * (width 0→100%, roles.css .rl-rule-w), the frame pair DRAWS
+   * (scale 0 1→1 1, roles.css .rl-rule-x). Keyframe seats — `.in-view`
+   * fires them; no transition to stagger, so they ride the lines
+   * entry margin with the headings. */
+  const rules = [...toArray(document, RULE_W_SEL), ...toArray(document, RULE_X_SEL)];
+  const pendingRules = rules.filter((el) => !isPassed(el));
+  rules.filter(isPassed).forEach(reveal);
+  pendingRules.forEach((el) =>
+    arm(el, el.matches(RULE_X_SEL) ? 'rl-rule-x' : 'rl-rule-w'),
+  );
+  observe(pendingRules, OBSERVER_ROOT_MARGIN_LINES);
+
   /* ── T-11b1 — the pending pool + the settle belt ─────────────
    * Every armed-but-unrevealed element, rescued by scroll-quiet (see
    * the header block). The pool drains as the IO reveals. */
-  const pending: Element[] = [...pendingLines, ...pendingItems, ...pendingCards, ...pendingRises];
+  const pending: Element[] = [...pendingLines, ...pendingItems, ...pendingCards, ...pendingRises, ...pendingBeats, ...pendingRules];
   const SETTLE_QUIET_MS = 120;
   let settleTimer = 0;
   const settle = () => {
