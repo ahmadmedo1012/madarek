@@ -75,6 +75,22 @@ const MAPPING = readdirSync(join(__dirname, "mapping"))
   );
 const EXCEPTIONS = JSON.parse(readFileSync(join(__dirname, "exceptions.json"), "utf8"));
 const SECTIONS = Object.keys(MAPPING.ourSection);
+
+// r339 T-02 audit — skip-group grammar validation. The run() loop only
+// recognizes the five field groups below; an unknown name in a mapping's
+// skip array (platform.json carried "border"/"radius"/"bg" — dead letters,
+// silently ignored) means the author believes checks are skipped while the
+// instrument keeps measuring them. Fail loud at startup instead.
+const VALID_SKIP_GROUPS = new Set(["tag", "tc", "geometry", "type", "color"]);
+{
+  const bad = [];
+  for (const m of MAPPING.explicit) for (const g of m.skip ?? []) if (!VALID_SKIP_GROUPS.has(g)) bad.push(`explicit[${m.section}] skip:"${g}"`);
+  for (const p of MAPPING.plumbing) for (const g of p.skip ?? []) if (!VALID_SKIP_GROUPS.has(g)) bad.push(`plumbing[${p.section}] skip:"${g}"`);
+  if (bad.length) {
+    console.error(`unknown skip group(s) in mapping files (valid: tag, tc, geometry, type, color — radius/opacity/border/interactive/transition are deliberately unskippable):\n  ${[...new Set(bad)].join("\n  ")}`);
+    process.exit(2);
+  }
+}
 const BPS = [
   { name: "1920", width: 1920, height: 1080 },
   { name: "1440", width: 1440, height: 900 },
@@ -610,6 +626,23 @@ try {
             return (viaTrunc || viaFull);
           });
           if (!charEls.length) continue;
+          // r339 T-02 audit (T-06m prescription, never implemented): a REAL
+          // char/word scaffold is the container's own text split into boxes —
+          // every char box shares the line container's fontSize (±0.5px×scale).
+          // A set whose fs deviates is a depth-6 truncation-collision soup
+          // (measured in footer: fs 8.3–35.56, fw 400–700 inside one "set"),
+          // and the aggregate's expected values would be collision artifacts.
+          // Count the 4 aggregate checks as SKIPPED with this written reason
+          // (never silent, never in the denominator unreported) and leave the
+          // soup elements in normal unmatched accounting: excused only via a
+          // written noCounterpart reason, else an honest no-counterpart FAIL.
+          const containerFs = T.num(lineH.fs);
+          const scaffoldLike = charEls.every((e) => Math.abs(T.num(e.fs) - containerFs) <= 0.5 * scaleFactor);
+          if (!scaffoldLike) {
+            cell.skipped += 4; // the four typography fields of this aggregate
+            results.skippedReport.push({ section: key, bp: bp.name, heronPath: `${lineH.p} (ar-char-split aggregate)`, reason: "ar-char-split aggregate suppressed (r339 T-02 audit, T-06m prescription): char-set fontSize deviates > ±0.5px from the line container — depth-6 truncation-collision soup, not char scaffolding; aggregate expectations would be artifacts. Elements re-enter unmatched accounting (written reason or no-counterpart FAIL)." });
+            continue;
+          }
           const cfs = charEls.map((e) => T.num(e.fs)), clh = charEls.map((e) => T.num(e.lh));
           const cfw = charEls.map((e) => e.fw), ccol = charEls.map((e) => e.color);
           // our word boxes: the text-bearing descendants of OUR container
@@ -882,6 +915,28 @@ let gateVerdict = "report-only";
 if (GATE) {
   gateVerdict = ratchetValue == null ? `PASS(no-ratchet-yet,${rate}%)` : (rate >= ratchetValue ? "PASS" : "FAIL");
 }
+// r339 T-02 audit — the ratchet may only move on a FULL-matrix run. A
+// section-scoped or bp-scoped run's rate is not comparable to the committed
+// floor (a single strong section would raise the bar the full matrix cannot
+// meet; the floor must represent the whole surface it gates).
+const FULL_SCOPE = SECTIONS_WANTED.length === SECTIONS.length && BPS_WANTED.length === BPS.length;
+// r339 T-02 audit (gate-scope, same class as the ratchet refusal): a SCOPED
+// --gate run (verify.sh --sections …) must not compare a single section's
+// rate against the full-matrix ratchet — a strong section would "hold" a
+// floor the rest of the matrix may fail. Scoped gate runs stay green as
+// report-only with an explicit label; only a full matrix can hold the floor.
+if (GATE && !FULL_SCOPE) {
+  gateVerdict = `PASS(scoped-run:${SECTIONS_WANTED.length}/${SECTIONS.length} sections × ${BPS_WANTED.length}/${BPS.length} bps — report-only, cannot hold the full-matrix ratchet)`;
+  console.error(`--gate on a scoped run cannot hold the full-matrix ratchet (${SECTIONS_WANTED.length}/${SECTIONS.length} sections, ${BPS_WANTED.length}/${BPS.length} bps) — verdict is report-only; run the full matrix for a gate verdict`);
+}
+// r339 T-02 audit — the exception cap was a printed label only; enforce it
+// AFTER the scoped-run label so no scoping can mask a cap breach:
+// exceptions.json is "TRUE waivers only", hard cap <5% on ANY gated run.
+if (GATE && exRate >= 5) gateVerdict = `FAIL(exception-cap:${exRate}%≥5%)`;
+if (RATCHET_UPDATE && !FULL_SCOPE) {
+  console.error("--ratchet refused: run is section- or bp-scoped (" + SECTIONS_WANTED.length + "/" + SECTIONS.length + " sections, " + BPS_WANTED.length + "/" + BPS.length + " bps) — the ratchet may only be raised from a full-matrix run");
+  process.exit(2);
+}
 if (RATCHET_UPDATE && (ratchetValue == null || rate > ratchetValue)) {
   writeFileSync(RATCHET_FILE, JSON.stringify({ rate, total, pass: totalPass, fail: totalFail, updatedAt: new Date().toISOString() }, null, 2) + "\n");
   console.log(`ratchet ${ratchetValue == null ? "created" : `${ratchetValue}→${rate}`}`);
@@ -964,4 +1019,4 @@ if (DARK) {
 
 writeFileSync(OUT, JSON.stringify(results, null, 1));
 console.log("results → " + OUT);
-process.exit(GATE && gateVerdict === "FAIL" ? 1 : 0);
+process.exit(GATE && String(gateVerdict).startsWith("FAIL") ? 1 : 0);
