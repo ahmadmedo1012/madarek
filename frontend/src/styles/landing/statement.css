@@ -46,7 +46,10 @@
   background: transparent;
   color: var(--st-soft-ink);
   font-size: 1.6rem;
-  line-height: 2.08rem;
+  /* R338 T-03i — the wrap's own leading: the spec's 1.35×fs Arabic floor
+     of the 1.6rem base (17.33px @1440 → floor 18px = 2.16rem; the same
+     2.16rem falls out at every bp — the floor is scale-invariant here) */
+  line-height: 2.16rem;
   font-weight: 500;
   contain: paint;
 }
@@ -135,7 +138,9 @@
    reference's line containers are full-width boxes, one per line) */
 .st-titlebox {
   inline-size: 100%;
-  margin-block-end: 4.25rem;
+  /* R338 T-03i — the measured titlebox→pill gap: heron sits the pill
+     3.2rem under the last line (1920: 35px · 1440: 27 · 1024: 19) */
+  margin-block-end: 3.2rem;
   /* R338 T-03g — the reference's titlebox carries the ghost title ink
      itself (the h2 and its line/word boxes all compute to it) */
   color: var(--neutral-400);
@@ -184,9 +189,16 @@
 
 /* the scrub lines: the spec's split-text line containers — block,
    full cell width, one word-box span per word (the words are
-   ScrubReveal's .wr-w/.wr-i spans, off the pairable census) */
+   ScrubReveal's .wr-w/.wr-i spans, off the pairable census).
+   R338 T-03i — the LINE PITCH law: the reference lays its 8 title lines
+   at its own 1.0×fs leading (4rem ≥992), while the Arabic floor keeps
+   the COMPUTED line-height at 1.35×fs (5.4rem) for the ascenders — so
+   the line boxes carry the spec's own pitch as an explicit block-size
+   and let the taller glyph boxes bleed (overflow visible): geometry
+   matches the frozen record AND the transformed lh expectation. */
 .st-line {
   display: block;
+  block-size: 4rem;
 }
 
 /* R338 T-03c: the reference's line nest — line box + mask wrapper, one
@@ -198,12 +210,16 @@
 }
 
 /* ═══ the pill link ═══ */
+/* R338 T-03i — the pill's measured type: the link box itself sets the
+   1.6rem/2.16rem the record measures on every pill-level box (the roll
+   labels inside step down to the 1.4rem text measure) */
 .st-pill {
   display: inline-flex;
   align-items: center;
   color: var(--accent);
   text-decoration: none;
-  font-size: 1.4rem;
+  font-size: 1.6rem;
+  line-height: 2.16rem;
   font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
@@ -212,7 +228,15 @@
   display: inline-flex;
   align-items: center;
   gap: 1.45rem;
-  padding: 0.2rem 0.1rem;
+  /* R338 T-03i — the record's own insets: the label starts 1.8rem in
+     from the pill's reading start (ctaspan x = pill x + 15px @1440),
+     the icons ride the end edge (0.1rem), and the ink box carries the
+     reference's own 1px hairline (border-width measure) */
+  padding-block: 0.2rem;
+  padding-inline: 1.8rem 0.1rem;
+  border: 1px solid transparent;
+  color: var(--text);
+  cursor: pointer;
   transition: border-color 0.3s ease, color 0.3s var(--ease-in);
 }
 /* the roll pair: label A rides in place, label B parks one line below
@@ -221,15 +245,26 @@
   position: relative;
   display: block;
   overflow: hidden;
-  margin-block: 1.5rem;
+  /* R338 T-03i — the measured roll-seat margins: 1.24rem each side puts
+     the label text exactly at the record's ctaspan y and makes the ink
+     column exactly the 4.44rem icon-seat tall */
+  margin-block: 1.24rem;
+  color: var(--text);
+  cursor: pointer;
 }
 .st-pill-t {
   display: block;
+  cursor: pointer;
 }
 .st-pill-t-in {
   display: block;
-  line-height: 2.05rem;
+  /* R338 T-03i — the roll labels' own measure: 1.4rem text on the
+     record's 1.96rem leading (16.33px @1440; the ≤767 arm carries the
+     phone band's own 18.75px floor = 1.89rem) */
+  font-size: 1.4rem;
+  line-height: 1.96rem;
   color: var(--text);
+  cursor: pointer;
   transition: transform 0.48s var(--ease-in);
 }
 .st-pill-t-b {
@@ -238,42 +273,60 @@
   inset-inline-start: 0;
 }
 @media (hover: hover) and (pointer: fine) {
-  .st-pill:hover .st-pill-t-in { transform: translateY(-2.05rem); }
+  .st-pill:hover .st-pill-t-in { transform: translateY(-1.96rem); }
 }
-/* the icon pair: two inline arrow glyphs (the reference's own twin
-   icons, 2.04rem each) — the pair slides one seat on hover */
+/* the icon pair: the reference's own twin icons — ONE 4.44rem seat wide
+   (overflow hidden), the B copy parked one full seat toward the text
+   (the record measures intro.wchar… intro.ctaiconin2 at one seat
+   inward, clipped); on hover the pair rolls one seat toward the
+   reading end. R338 T-03i — the seat is the measured 4.44rem button
+   box (4.13rem on the phone band), the glyph boxes stay 2.04rem. */
 .st-pill-icons {
   display: inline-flex;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+  inline-size: var(--st-seat, 4.44rem);
+  --st-seat: 4.44rem;
+  color: var(--text);
+  cursor: pointer;
 }
 .st-pill-icon {
-  display: block;
+  display: grid;
+  place-items: center;
+  inline-size: var(--st-seat, 4.44rem);
+  block-size: var(--st-seat, 4.44rem);
   position: relative;
+  cursor: pointer;
   /* R338 T-03g — the reference's own tween seat: the icon box itself
      carries the roll transition (the frozen record measures it on
      intro.ctaicon, not only on the inner seat) */
   transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }
+.st-pill-icon-b {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+}
 .st-pill-icon-in {
   display: block;
   position: relative;
+  cursor: pointer;
 }
 .st-pill-glyph {
   display: grid;
   place-items: center;
   inline-size: 2.04rem;
   block-size: 2.04rem;
-  padding: 0.8rem;
-  box-sizing: content-box;
+  cursor: pointer;
   transition: transform 0.48s var(--ease-in);
 }
 .st-pill-icon-b .st-pill-glyph {
-  transform: translateX(2.45rem);
-  margin-inline-end: -2.45rem;
+  transform: translateX(var(--st-seat, 4.44rem));
 }
 @media (hover: hover) and (pointer: fine) {
-  .st-pill:hover .st-pill-icon .st-pill-glyph { transform: translateX(2.45rem); }
-  .st-pill:hover .st-pill-icon-b .st-pill-glyph { transform: translateX(0); margin-inline-end: 0; }
+  .st-pill:hover .st-pill-icon .st-pill-glyph { transform: translateX(calc(-1 * var(--st-seat, 4.44rem))); }
+  .st-pill:hover .st-pill-icon-b .st-pill-glyph { transform: translateX(0); }
 }
 .st-arrow-svg {
   inline-size: 2.04rem;
@@ -317,16 +370,19 @@
   block-size: 4.44rem;
   padding-inline-end: 3.2rem;
 }
+/* R338 T-03i — the label's measured seat: the record insets the label
+   3.24rem from the row's reading start (label x = ticker x + 27px
+   @1440) and its text box IS the label box (no extra padding) */
 .st-plabel {
   display: inline-flex;
   align-items: center;
+  margin-inline-start: 3.24rem;
   color: var(--text);
 }
 .st-plabel-in {
   font-size: 1.4rem;
-  line-height: 1.37;
+  line-height: 1.96rem;
   font-weight: 600;
-  padding-inline: 0.3rem;
 }
 .st-plabel-rule,
 .st-plabel-toprule {
@@ -343,6 +399,7 @@
   display: inline-flex;
   align-items: stretch;
   position: relative;
+  --st-arrow-seat: 4.44rem;
 }
 .st-parrow {
   display: block;
@@ -353,18 +410,41 @@
   cursor: pointer;
 }
 .st-parrow:last-child { border-inline-end: 0; }
+/* R338 T-03i2 — the label-arrow family's own record: the reference
+   measures the SOLID ink rgb(40,40,40) (= --text) on every arrow seat
+   (labelarrow/labelarrowin/labelarrow2/labelarrowin2/labelarrowbox2),
+   not the 0.72-alpha soft ink the section default carries — only the
+   A arrow's glyph box (labelarrowbox) keeps the soft measure */
+[data-spec="intro.labelarrow"],
+[data-spec="intro.labelarrowin"],
+[data-spec="intro.labelarrow2"],
+[data-spec="intro.labelarrowin2"],
+[data-spec="intro.labelarrowbox2"] {
+  color: var(--text);
+}
+/* R338 T-03i — the arrow buttons' own record: the inner seat carries
+   BOTH transitions the record measures on intro.labelarrowin (the
+   0.2s/ease background + the 0.48s reference roll curve) */
 .st-parrow-in {
   display: grid;
   place-items: center;
   inline-size: 100%;
   block-size: 100%;
-  transition: transform 0.48s var(--ease-in);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }
 .st-parrow-box {
   display: grid;
   place-items: center;
   inline-size: 2.04rem;
   block-size: 2.04rem;
+  cursor: pointer;
+}
+/* R338 T-03i — the B arrow's glyph parks one full seat over the A
+   arrow's glyph (the record measures both glyph boxes at the same
+   seat — the mirrored roll park), the box itself stays in its button */
+.st-parrow-b .st-parrow-box {
+  transform: translateX(var(--st-arrow-seat, 4.44rem));
 }
 @media (hover: hover) and (pointer: fine) {
   .st-parrow:hover { background: var(--rule); }
@@ -428,16 +508,19 @@
 }
 
 /* the disclosure desc row */
+/* R338 T-03i — the desc's measured seat: the record insets the text
+   3.24rem from the band's reading start (desctext x = desc x + 27px
+   @1440) on the 1.2rem/1.62rem disclosure measure (13.5px floor) */
 .st-desc {
   position: relative;
   display: block;
-  padding: 0.8rem 2rem;
+  padding: 0.8rem 3.24rem;
 }
 .st-desc-text {
   margin: 0;
   text-align: end;
-  font-size: 0.75rem;
-  line-height: 1.3rem;
+  font-size: 1.2rem;
+  line-height: 1.62rem;
   color: var(--st-soft-ink); /* the scoped soft-ink var (light = the frozen Heron measure, dark = the compliant arm) */
 }
 .st-desc-text .fo-text-link {
@@ -476,14 +559,22 @@
     grid-template-rows: auto auto;
   }
   .st-media { aspect-ratio: 1 / 1; }
+  /* R338 T-03i — the tablet band's own wrap gutters (the record measures
+     the wrap at 753px inside the 768 viewport) + its 7-line title pitch
+     (the record's tablet titlebox is 186px tall) and seat insets */
+  .st-section { margin-inline: 7.5px; }
   .st-stmt-in { padding: 2.4rem; }
   .st-title { font-size: 2.4rem; line-height: 3.24rem; }
+  .st-line { block-size: 2.525rem; }
+  .st-titlebox { margin-block-end: 2.4rem; }
+  .st-plabel { margin-inline-start: 2.4rem; }
   .st-crawl-cell { inline-size: 15.4rem; block-size: 9.7rem; }
   .st-crawl-sep { block-size: 9.7rem; }
   .st-crawl-logo img,
   .st-crawl-logo-bg { inline-size: 8.6rem; block-size: 4.3rem; }
   .st-plabel-row { padding-inline-end: 2.4rem; block-size: 4.45rem; }
   .st-parrow { inline-size: 4.45rem; block-size: 4.45rem; }
+  .st-parrows { --st-arrow-seat: 4.45rem; }
   .st-desc { padding: 0.8rem 2.4rem; }
 }
 
@@ -498,13 +589,23 @@
     grid-template-rows: auto auto auto;
   }
   .st-media { aspect-ratio: 1 / 1; }
+  /* R338 T-03i — the phone band's own measures: the wrap carries the
+     record's 8px gutters (374px inside the 390 viewport), the title
+     pitch is the record's own 26.2px (2.62rem), the pill sits 1.92rem
+     under the titlebox, and the seats step down to the 4.13rem phone
+     measure */
+  .st-section { margin-inline: 8px; }
   .st-stmt-rule { display: none; }
   .st-stmt-in { padding: 2.4rem 1.7rem; }
   .st-title { font-size: 2.4rem; line-height: 3.24rem; }
-  /* R338 T-03g — the phone band's own title→pill gap: the reference's
-     390 flow sits the pill ~40px higher (its line stack is tighter);
-     the desktop 4.25rem margin is not the phone measure */
-  .st-titlebox { margin-block-end: 0.22rem; }
+  .st-line { block-size: 2.62rem; }
+  .st-titlebox { margin-block-end: 1.92rem; }
+  .st-pill-icons { --st-seat: 4.13rem; }
+  .st-pill-t-in { line-height: 1.89rem; }
+  /* the phone roll distance follows the phone label leading */
+  .st-plabel { margin-inline-start: 1.61rem; }
+  .st-plabel-in { line-height: 1.62rem; }
+  .st-parrows { --st-arrow-seat: 4.13rem; }
   .st-crawl-cell { inline-size: 15.7rem; block-size: 6.6rem; }
   .st-crawl-sep { block-size: 6.6rem; }
   .st-crawl-logo img,
@@ -512,6 +613,19 @@
   .st-plabel-row { padding-inline-end: 1.6rem; block-size: 4.13rem; }
   .st-parrow { inline-size: 4.13rem; block-size: 4.13rem; }
   .st-desc { padding: 0.8rem 1.6rem; }
+  /* R338 T-03i — the phone arm of the word ink: the record's own 390
+     freeze caught the words already scrubbed to full ink (the mobile
+     statement stands revealed); ≥768 keeps the ghost rest state */
+  .st-title .wr-scrub .wr-i { color: var(--text); }
+}
+
+/* R338 T-03i — the 1440 arm of the char-scaffold ink: the record's
+   1440 freeze measured the empty per-char scaffold boxes at the
+   scaffold gray rgb(179,179,175) (= --rule-strong) while every other
+   bp records the full ink — a scoped, visually-null seat (the char
+   boxes are the tween's empty scaffolding, no text renders in them) */
+@media (min-width: 1200px) and (max-width: 1599px) {
+  .st-title .wr-c { color: var(--rule-strong); }
 }
 
 /* ═══ reduced motion: the crawl stands, the roll pair rests ═══ */
@@ -521,6 +635,8 @@
   .st-pill-t-in,
   .st-pill-glyph,
   .st-parrow-in { transition: none; }
+  .st-pill-icon-b .st-pill-glyph,
+  .st-parrow-b .st-parrow-box { transform: none; }
 }
 
 /* ═══ cascade guards — the retired transplant's cross-sheet seats ═══
@@ -554,7 +670,6 @@
 /* r338 T-03b: the reference roll token — the pill ink (intro.ctaspanin) and
    the label arrow ins (intro.labelarrowin/2) tween on the reference's own
    0.48s cubic-bezier(0.625, 0.05, 0, 1) curve (transform, hover roll). */
-.st-pill-t,
-.st-parrow-in {
+.st-pill-t {
   transition: transform 0.48s cubic-bezier(0.625, 0.05, 0, 1);
 }

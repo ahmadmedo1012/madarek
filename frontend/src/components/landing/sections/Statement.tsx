@@ -125,7 +125,10 @@ interface StatementProps {
 
 export function Statement({ sectionRef, titleRef }: StatementProps) {
   return (
-    <section id="statement" className="st-section" ref={sectionRef} aria-labelledby="statement-title" data-spec="intro.wrap">
+    /* R338 T-03i — the wrap carries the record's own DIV tag (the spec
+     * census records home-intro-wrap > div[1]; the section role moves to
+     * the band — the inner <section> below IS the record's section[1]) */
+    <div id="statement" className="st-section" ref={sectionRef as RefObject<HTMLDivElement>} aria-labelledby="statement-title" data-spec="intro.wrap">
       <section className="st-band" aria-hidden="false" data-spec="intro.section">
         <div className="st-grid" data-spec="intro.grid">
           {/* ── the media cell — the tonal image fills it edge to edge;
@@ -298,16 +301,16 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                 </div>
               </div>
               <div className="st-desc" data-spec="intro.desc">
-                <p className="st-desc-text" data-spec="intro.desctext">
+                <div className="st-desc-text" data-spec="intro.desctext">
                   توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
                   <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
-                </p>
+                </div>
                 <div className="st-desc-rule" aria-hidden="true" data-spec="intro.descrule" />
               </div>
             </div>
           </div>
         </div>
       </section>
-    </section>
+    </div>
   );
 }
