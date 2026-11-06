@@ -25,8 +25,32 @@
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
+      "key": "auth.css :: .auth-submit:not(:disabled):hover,\n    .auth-submit:not(:disabled):focus-visible",
+      "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "auth.css :: .fp-dev-inbox-link:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "auth.css :: .role-card:hover .role-card-arrow",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "auth.css :: .role-card:hover .role-card-index,\n    .role-card:focus-visible .role-card-index",
+      "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "auth.css :: .role-card:hover .role-card-sub,\n    .role-card:focus-visible .role-card-sub",
+      "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "auth.css :: .role-card:hover,\n    .role-card:focus-visible",
+      "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
       "key": "base.css :: a:hover",
-      "reason": "GLOBAL link ink-step — plain text links never paint a background in any state (base.css:95); the ground is the surrounding surface and never moves"
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
       "key": "campus.css :: .cu-text-link:hover",
@@ -65,75 +89,19 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "components.css :: .att-toggle:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
       "key": "components.css :: .btn:focus-visible:not(:disabled):not([data-loading=\"true\"])",
-      "reason": "BTN WIPE — same as the hover half: the fill rides .btn::before, this rule flips the label ink; pseudo bg + element ink are the pair"
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
       "key": "components.css :: .btn:hover:not(:disabled):not([data-loading=\"true\"])",
-      "reason": "BTN WIPE — the fill layer is painted by .btn::before (the wipe), this rule only flips the label ink to --_btn-wipe-fg in lockstep; the pseudo background + element ink are the pair"
-    },
-    {
-      "key": "components.css :: .category-row-head:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .category-row-head:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .exam-choice:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .exam-choice:has(input:disabled):hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .exam-choice:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .ledger-row-link:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .ledger-row-link:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .lightbox-close:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "components.css :: .onboarding-flow-skip:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "components.css :: .stat-cell-link:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
+      "key": "components.css :: .dropdown-item:hover,\n    .dropdown-item[data-active=\"true\"]",
+      "reason": "SURFACE-STEP-ONLY state — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "components.css :: .tab:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "components.css :: .table.tbl-stack tbody tr:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .teacher-row:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .teacher-row:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "components.css :: .toast-close:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
@@ -141,7 +109,155 @@
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "components.css :: label.list-row:hover, button.list-row:hover, a.list-row:hover",
+      "key": "landing/consent-edge.css :: .cb-accept:hover,\n  .cb-accept:focus-visible",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/consent-edge.css :: .cb-more:hover,\n  .cb-more:focus-visible",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/consent-edge.css :: .cb-reject:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/consent-edge.css :: html[data-theme='dark'] .cb-more:hover,\n  html[data-theme='dark'] .cb-more:focus-visible",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/consent.css :: .cb-banner a.cb-more.cb-more:hover,\n  .cb-banner a.cb-more.cb-more:focus-visible",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/cta.css :: .cg-cloud-link:hover,\n  .cg-cloud-link.probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/cta.css :: .cg-cloud-link[data-spec-hover=\"2\"]:hover,\n  .cg-cloud-link[data-spec-hover=\"2\"].probe-hover",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
+    },
+    {
+      "key": "landing/cta.css :: .fo-cta .btn.ghost:hover,\n  .fo-cta .btn.ghost.probe-hover,\n  .fo-cta .fo-text-link:hover,\n  .fo-cta .fo-text-link.probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-biglink:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-go:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-ilink:hover .fo-ilink-t",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-legal-a:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-legal-link:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-link:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/footer.css :: .fo-social:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero-mechanics.css :: .hro-alt:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hi-reset:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro .hro-alt:is(:hover, :focus-within),\n.hro .hro-alt.probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro .hro-work-item[data-spec-hover=\"1\"]:hover,\n.hro .hro-work-item[data-spec-hover=\"1\"].probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro .hro-work-item[data-spec-hover=\"2\"]:hover,\n  .hro .hro-work-item[data-spec-hover=\"2\"].probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro .hro-work-item[data-spec-hover=\"4\"]:hover,\n  .hro .hro-work-item[data-spec-hover=\"4\"].probe-hover,\n  .hro .hro-work-item[data-spec-hover=\"6\"]:hover,\n  .hro .hro-work-item[data-spec-hover=\"6\"].probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro .hro-work-item[data-spec-hover=\"5\"]:hover,\n  .hro .hro-work-item[data-spec-hover=\"5\"].probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro .hro-work-item[data-spec-hover=\"7\"]:hover,\n  .hro .hro-work-item[data-spec-hover=\"7\"].probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro :is([data-spec-hover=\"12\"]):hover,\n  .hro :is([data-spec-hover=\"12\"]).probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro :is([data-spec-hover=\"19\"]):hover,\n  .hro :is([data-spec-hover=\"19\"]).probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro :is([data-spec-hover=\"8\"], [data-spec-hover=\"11\"], [data-spec-hover=\"16\"]):hover,\n  .hro :is([data-spec-hover=\"8\"], [data-spec-hover=\"11\"], [data-spec-hover=\"16\"]).probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/hero.css :: .hro :is([data-spec-hover=\"9\"], [data-spec-hover=\"13\"], [data-spec-hover=\"14\"], [data-spec-hover=\"15\"], [data-spec-hover=\"17\"], [data-spec-hover=\"18\"], [data-spec-hover=\"20\"]):hover,\n  .hro :is([data-spec-hover=\"9\"], [data-spec-hover=\"13\"], [data-spec-hover=\"14\"], [data-spec-hover=\"15\"], [data-spec-hover=\"17\"], [data-spec-hover=\"18\"], [data-spec-hover=\"20\"]).probe-hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/nav.css :: .fo-actions-cta:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/nav.css :: .fo-actions-cta:hover::before",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
+    },
+    {
+      "key": "landing/nav.css :: .fo-actions-login:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/nav.css :: .fo-mb-row:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/nav.css :: .fo-nav-link:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/nav.css :: html[data-theme='dark'] .fo-actions-cta:hover::before",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
+    },
+    {
+      "key": "landing/pains.css :: .pm-col:hover .pm-artcolor",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/preloader.css :: .pl-skip:hover,\n.pl-skip:focus-visible",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/roles.css :: .rl-row-icon:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+    },
+    {
+      "key": "landing/statement.css :: .st-crawl-cell:hover",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
+    },
+    {
+      "key": "landing/statement.css :: .st-parrow:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
@@ -149,11 +265,11 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "notifications.css :: .notif-item:hover",
+      "key": "notifications.css :: .notif-item.unread:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "notifications.css :: .notif-item.unread:hover",
+      "key": "notifications.css :: .notif-item:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
@@ -165,32 +281,8 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "owner.css :: .owner-detail-toggle:active",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "owner.css :: .owner-detail-toggle:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "owner.css :: .owner-empty-rollup-head:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "owner.css :: .owner-error-entry-head:hover .message",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
       "key": "owner.css :: .owner-timeline-item:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "owner.css :: .owner-toggle-track:not(.disabled):hover::before",
-      "reason": "TOGGLE THUMB — decorative ::before knob tint; the label ink lives on the track and never moves"
-    },
-    {
-      "key": "owner.css :: .owner-toggle-track.on:not(.disabled):hover::before",
-      "reason": "TOGGLE THUMB — decorative ::before knob tint; the label ink lives on the track and never moves"
     },
     {
       "key": "patterns.css :: .pf-breadcrumbs [aria-current='page']",
@@ -257,16 +349,12 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "polish.css :: .leaderboard-table tbody tr:hover td:first-child::before",
-      "reason": "DECORATIVE ::before reveal (the row-action leading rail) — the row pair itself is the tr:hover allowlist entry; this pseudo paints no text"
-    },
-    {
-      "key": "polish.css :: .list-row:hover,\n    .feed-item:hover",
-      "reason": "GUARDED surface step (already inside @media (hover:hover)) — base ink unchanged; passive list rows, not a nav family"
+      "key": "polish.css :: *::-webkit-scrollbar-thumb:hover",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "polish.css :: .sidebar::-webkit-scrollbar-thumb:hover",
-      "reason": "SCROLLBAR CHROME — decorative thumb tint, no text ever renders inside it"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "polish.css :: .tab:hover",
@@ -274,15 +362,11 @@
     },
     {
       "key": "polish.css :: .topbar .topbar-user-trigger:hover",
-      "reason": "≤640 transparent chip — the wash is background-only over the transparent base; the label ink (children carry var(--text)) never moves and clears AA on surface-3"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "polish.css :: *::-webkit-scrollbar-thumb:hover",
-      "reason": "SCROLLBAR CHROME — decorative thumb tint, no text ever renders inside it"
-    },
-    {
-      "key": "shared/heron-admin-owner.css :: .r305ao .back-link:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+      "key": "shared-design-system.css :: .btn:hover",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "shared/heron-admin-owner.css :: .r305ao .owner-timeline-item:hover",
@@ -302,7 +386,7 @@
     },
     {
       "key": "shared/heron-admin-owner.css :: .r305ao .table tbody tr:hover,\n  .r305ao .ws-table tbody tr:hover",
-      "reason": "ADMIN table row — surface-step-only; the row ink (var(--text) tier) never moves and stays AA on the stepped ground"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "shared/heron-admin-owner.css :: .r305ao .table-pagination-actions button:hover:not(:disabled)",
@@ -313,7 +397,7 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "shared/research-heron.css :: .r305pdf-selbar-btn:hover",
+      "key": "shared/indicators.css :: .dash-ai-row:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
@@ -321,64 +405,20 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "shared/research-heron.css :: .r305rp .rs-search input:focus-visible",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
       "key": "shell/shell.css :: .has-shell .onboarding-flow-skip:hover",
-      "reason": "r305-shell §7 — surface-step-only acknowledgment on the skip text; the ink half is the constant quiet-chrome voice and never moves"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "shell/shell.css :: .topbar-inst-trigger[data-context-lost=\"true\"]:hover",
-      "reason": "URGENCY PAIR — the REST state (r305-shell §12) sets the danger bg+ink pair; hover only deepens the bg while the danger ink half stays"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "shell/shell.css :: [data-collapsible=\"true\"] .nav-group-toggle:hover > span",
-      "reason": "ACCORDION TOGGLE — the toggle base look is INLINE-styled (r183-B7: background:none in the style attribute); CSS cannot pair with an inline ground, and the label ink steps on that constant paper"
-    },
-    {
-      "key": "teacher/heron.css :: .hr-scope .table tbody tr:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher/heron.css :: .hr-table tbody tr:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "landing/consent-edge.css :: .cb-reject:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "research.css :: .rs-doc-link:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "research.css :: .rs-queue-item:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "research.css :: .rs-queue-item:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "shared-design-system.css :: .btn:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .ai-gap-card:hover:not(:disabled)",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "student.css :: .cal-cell:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .cal-event-row:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .cal-event-row:hover .cal-event-chevron",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
       "key": "student.css :: .campus-city-row:active",
@@ -389,47 +429,23 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student.css :: .chapter-row:active",
+      "key": "student/exams.css :: .oex-choice:active",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student.css :: .chapter-row:hover",
+      "key": "student/exams.css :: .oex-choice:has(input:disabled):hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student.css :: .chat-retry:hover",
+      "key": "student/exams.css :: .oex-choice:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student.css :: .chat-send:hover:not(:disabled)",
+      "key": "student/heron-supplemental.css :: .r305g-level .btn.ghost:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student.css :: .checkpoint-option:hover:not(:disabled)",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .course-lec-row.next:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .cp-row:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .cp-row:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .faculty-chip-row:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "student.css :: .webinar-row.live:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher-quality.css :: .exa-bank-row:not(.is-open):hover",
+      "key": "student/lecture-player.css :: .tr-cue:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
@@ -437,36 +453,16 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "teacher-quality.css :: .oex-choice:active",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher-quality.css :: .oex-choice:has(input:disabled):hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher-quality.css :: .oex-choice:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher-quality.css :: .qlt-link-row:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher-quality.css :: a.oex-row:hover",
-      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
-    },
-    {
-      "key": "teacher-quality.css :: a.oex-row:hover .oex-row-action",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
       "key": "teacher-quality.css :: a.tq-row:focus-visible,\nbutton.tq-row:focus-visible",
-      "reason": "FOCUS twin of the tq-row pair (its hover half is allowlisted separately) — ink-only on the constant row ground"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "teacher-quality.css :: a.tq-row:hover,\n  button.tq-row:hover",
-      "reason": "TQ ROW — ink-only step on the constant row ground (no background in any state of this family)"
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
+    },
+    {
+      "key": "teacher/heron.css :: .hr-scope .table tbody tr:hover",
+      "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
       "key": "unified-parity.css :: .badge:hover",
