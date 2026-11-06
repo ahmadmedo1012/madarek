@@ -1234,7 +1234,21 @@ for (const key of SECTIONS_WANTED) {
     results.sections[key][bpName] = { passRate: n ? Math.round((c.pass / n) * 1000) / 10 : 0, n, ...c };
   }
 }
-results.failures.sort((a, b) => b.delta - a.delta).splice(800);
+/* r339 T-02b — the delta-sorted splice(800) below was eating the new gates'
+ * FAIL rows: edge390 deltas (±2-15px) and darkInk rows (delta 0) sort to the
+ * tail and get spliced off whenever a bp produces >800 larger-delta layout
+ * rows — the counts stayed honest but the actionable row vanished from the
+ * work-list (bp-390 chunk: summary.edge390.fails=4, zero edge390 rows in
+ * failures[]). Never weaken a listing: cap the UNPROTECTED rows and keep
+ * every edge390 row (darkInk keeps its own dedicated worst-50 report +
+ * per-cell counts, so it is not protected here). */
+{
+  const isEdge390 = (f) => f.kind === "edge390";
+  const gateRows = results.failures.filter(isEdge390);
+  const rest = results.failures.filter((f) => !isEdge390(f));
+  rest.sort((a, b) => b.delta - a.delta).splice(Math.max(0, 800 - gateRows.length));
+  results.failures = gateRows.concat(rest);
+}
 /* r338 medic: the unmatched/excused listing must stay bounded too — the
  * intro run's excused-residue report hit 1417 entries (846KB file) and
  * reddened the size gate's 500KB per-file rule (rule 1). Same cap

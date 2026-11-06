@@ -42,3 +42,5 @@
 - [T-02b] rg — locate anchors in run.mjs before each edit round
 - [T-02b] curl — vite health check on :5302
 - [T-02b] git — commit+push cadence on r339/t02b
+- [T-02b] node (foreground chunk runs) — full matrix finished as 5 per-bp provenance chunks (1920/1440/1024/768/390, --dark); exposed + fixed the splice(800) report cap eating edge390/darkInk FAIL rows (re-run verified)
+- [T-02b] python3 (json merge) — honest full-matrix numbers by summing per-cell counts across chunks (93.0% light / 92.9% dark / cov 24.7%) into T-02B-HARDENING.md
