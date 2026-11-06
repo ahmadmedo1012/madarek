@@ -94,3 +94,6 @@ T-08c3 | node (results.json census + spec vr cross-match) | measured the 69 cros
 T-08c3 | scripts/conformance/run.mjs (read-only) | confirmed usedOurs single-pair law + plumbing skip grammar
 T-08c4 | node (mapping/plumbing twin-census script + results forensics) | derive marquee loop-copy twin paths from heron spec, extend skip:geometry plumbing, analyze failure families
 T-08c5 | node + playwright probe (repo node_modules, chromium via /tmp/pw-browsers symlink) + run.mjs --dark | rect-signature/role-voice crossover re-bind generator (73 explicit bindings), off-page park skips, 5-bp light+dark measurement
+T-05g | run.mjs census copy (uncapped /tmp splice variant) + python census | enumerate full 119 no-counterpart set + failure families
+T-05h | node + repo playwright (chromium-1200 via /tmp/pw-browsers fallback) | per-bp DOM walk replicating run.mjs WALK_JS to geometry-match spec records and generate per-recorded-path bindings
+T-05i | repo conformance (run.mjs --url 5305, gen-why-wrap.mjs) + vite + playwright/chromium | why per-bp family bindings, dup-twin excuses, caption-bar geometry vars
