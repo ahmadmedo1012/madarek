@@ -50,6 +50,10 @@ import { Footer } from '../components/landing/sections/Footer';
 // and the circle-star mark cell is removed (ONE mark per view).
 import { ConsentBanner } from '../components/landing/chrome/ConsentBanner';
 import { EdgeTab } from '../components/landing/chrome/EdgeTab';
+/* r339 T-18 (A6) — the scroll progress rule: the reference's measured
+ * splitting 1px pair at 50vh + the mono % readout. Scroll-driven CSS
+ * (zero JS ticks); reduced motion never mounts it. */
+import { ScrollRule } from '../components/landing/chrome/ScrollRule';
 import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
@@ -524,6 +528,12 @@ export default function LandingPage() {
           mounts as before. */}
       {introDone && <ConsentBanner />}
       <EdgeTab />
+
+      {/* r339 T-18 (A6) — the scroll progress rule (the splitting 1px
+          pair at 50vh + the mono % readout). Decorative chrome under
+          the nav (z45); reduced motion never mounts it (the component's
+          own matchMedia guard + the scroll-rule.css belt). */}
+      <ScrollRule />
 
       {/* R308 → R333 P-D — the custom pointer instrument, mounted LAST
           (fine pointers only; reduced motion and touch keep the native

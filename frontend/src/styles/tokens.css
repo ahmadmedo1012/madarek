@@ -337,6 +337,19 @@
     --motion-ease-decelerate:  var(--ease-out);
     --motion-ease-accelerate:  var(--ease-in);
     --motion-ease-emphasized:  var(--ease-soft);
+    /* r339 T-18 — the recorded band-exit curve (r335 _motion spec, the
+       .loading-progress-item / .loading-main slit exit: cubic-bezier
+       (1,0,0.44,1)). Seated in the CANONICAL tokens.css motion block
+       because the unified-parity --motion-ease-band seat does NOT
+       resolve on the landing sheet (r339 T-11c computed-:root finding:
+       the parity layer's :root block loses the cascade there) — this
+       is the landing-resolvable home for the same recorded curve. */
+    --motion-ease-band-exit:   cubic-bezier(1, 0, 0.44, 1);
+    /* r339 T-18 — the recorded preloader exit ground (the reference's
+       .loading-progress-item tint at exit: #b3b3af, the chrome
+       cell-grammar grey). Canonical seat so the landing sheet resolves
+       it (same reasoning as --motion-ease-band-exit above). */
+    --preloader-exit-ground:   #b3b3af;
 
     --motion-distance-small:   6px;
     --motion-distance-medium:  16px;

@@ -1028,8 +1028,8 @@
     --wy-ct-fs: 20px;
     --wy-ct-lh: 22px;
     --wy-ct-fw: 700;
-    --wy-ct-color: rgb(255, 255, 255);
-    --wy-ct-bg: rgba(0, 0, 0, 0);
+    --wy-ct-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption ink (generated seat, white over the captures in both themes) */;
+    --wy-ct-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption ground (generated seat, transparent) */;
     --wy-cs-odd-x: 925px;
     --wy-cs-even-x: 236px;
     --wy-cs-y: 51px;
@@ -1039,8 +1039,8 @@
     --wy-cs-fs: 13.33px;
     --wy-cs-lh: 17.33px;
     --wy-cs-fw: 400;
-    --wy-cs-color: rgb(255, 255, 255);
-    --wy-cs-bg: rgba(0, 0, 0, 0);
+    --wy-cs-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption sub ink (generated seat) */;
+    --wy-cs-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */;
   }
 @media (min-width: 1601px) {
   .wy-stage,
@@ -1054,8 +1054,8 @@
     --wy-ct-fs: 26.67px;
     --wy-ct-lh: 29.33px;
     --wy-ct-fw: 700;
-    --wy-ct-color: rgb(255, 255, 255);
-    --wy-ct-bg: rgba(0, 0, 0, 0);
+    --wy-ct-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption ink (generated seat, white over the captures in both themes) */;
+    --wy-ct-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption ground (generated seat, transparent) */;
     --wy-cs-odd-x: 1233px;
     --wy-cs-even-x: 316px;
     --wy-cs-y: -3px;
@@ -1065,8 +1065,8 @@
     --wy-cs-fs: 17.78px;
     --wy-cs-lh: 23.11px;
     --wy-cs-fw: 400;
-    --wy-cs-color: rgb(255, 255, 255);
-    --wy-cs-bg: rgba(0, 0, 0, 0);
+    --wy-cs-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption sub ink (generated seat) */;
+    --wy-cs-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */;
   }
 }
 @media (min-width: 992px) and (max-width: 1100px) {
@@ -1081,8 +1081,8 @@
     --wy-ct-fs: 14.22px;
     --wy-ct-lh: 15.64px;
     --wy-ct-fw: 700;
-    --wy-ct-color: rgb(255, 255, 255);
-    --wy-ct-bg: rgba(0, 0, 0, 0);
+    --wy-ct-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption ink (generated seat, white over the captures in both themes) */;
+    --wy-ct-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption ground (generated seat, transparent) */;
     --wy-cs-odd-x: 657px;
     --wy-cs-even-x: 168px;
     --wy-cs-y: 44px;
@@ -1092,8 +1092,8 @@
     --wy-cs-fs: 9.48px;
     --wy-cs-lh: 12.33px;
     --wy-cs-fw: 400;
-    --wy-cs-color: rgb(255, 255, 255);
-    --wy-cs-bg: rgba(0, 0, 0, 0);
+    --wy-cs-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption sub ink (generated seat) */;
+    --wy-cs-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */;
   }
 }
 @media (min-width: 600px) and (max-width: 991px) {
@@ -1108,8 +1108,8 @@
     --wy-ct-fs: 18.42px;
     --wy-ct-lh: 20.26px;
     --wy-ct-fw: 700;
-    --wy-ct-color: rgb(255, 255, 255);
-    --wy-ct-bg: rgba(0, 0, 0, 0);
+    --wy-ct-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption ink (generated seat, white over the captures in both themes) */;
+    --wy-ct-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption ground (generated seat, transparent) */;
     --wy-cs-odd-x: 412px;
     --wy-cs-even-x: 56px;
     --wy-cs-y: 1217px;
@@ -1119,8 +1119,8 @@
     --wy-cs-fs: 14.73px;
     --wy-cs-lh: 19.15px;
     --wy-cs-fw: 400;
-    --wy-cs-color: rgb(255, 255, 255);
-    --wy-cs-bg: rgba(0, 0, 0, 0);
+    --wy-cs-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption sub ink (generated seat) */;
+    --wy-cs-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */;
   }
 }
 @media (max-width: 599px) {
@@ -1135,8 +1135,8 @@
     --wy-ct-fs: 19.85px;
     --wy-ct-lh: 21.83px;
     --wy-ct-fw: 700;
-    --wy-ct-color: rgb(255, 255, 255);
-    --wy-ct-bg: rgba(0, 0, 0, 0);
+    --wy-ct-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption ink (generated seat, white over the captures in both themes) */;
+    --wy-ct-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption ground (generated seat, transparent) */;
     --wy-cs-odd-x: 36px;
     --wy-cs-even-x: 410px;
     --wy-cs-y: 754px;
@@ -1146,8 +1146,8 @@
     --wy-cs-fs: 15.88px;
     --wy-cs-lh: 20.64px;
     --wy-cs-fw: 400;
-    --wy-cs-color: rgb(255, 255, 255);
-    --wy-cs-bg: rgba(0, 0, 0, 0);
+    --wy-cs-color: rgb(255, 255, 255) /* color-gate: allow — T05I measured caption sub ink (generated seat) */;
+    --wy-cs-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */;
   }
 }
 .wy-capbar { position: fixed; inset: 0; z-index: 40; pointer-events: none; visibility: hidden; }
@@ -1173,6 +1173,17 @@
   white-space: nowrap; overflow: visible;
 }
 .wy-cap:nth-child(even) .wy-cap-s { inset-inline-start: var(--wy-cs-even-x); top: var(--wy-cs-even-y); }
+/* T-18 A1: the pinned captions must clear the fixed header (7..63px
+   on-scroll @1440) — the spec's y48 seat was measured under the
+   reference's own slimmer chrome; max() keeps the measured value
+   wherever the header is shorter (the ≤991 bands seat far lower and
+   are untouched by the clamp). */
+@media (min-width: 992px) {
+  .wy-capbar .wy-cap-t { top: max(var(--wy-ct-y), 72px); }
+  .wy-capbar .wy-cap:nth-child(even) .wy-cap-t { top: max(var(--wy-ct-even-y), 72px); }
+  .wy-capbar .wy-cap-s { top: max(var(--wy-cs-y), 75px); }
+  .wy-capbar .wy-cap:nth-child(even) .wy-cap-s { top: max(var(--wy-cs-even-y), 75px); }
+}
 /* T05I-CAP-END */
 
 /* ═══ T-05l — the measured tween-wrapper arms: per-bp wrapper line-height

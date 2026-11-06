@@ -614,11 +614,11 @@ const bandVars = (bp) => {
     `--wy-ct-odd-x: ${mirrorX(bp, t)}px`, `--wy-ct-even-x: ${mirrorX(bp, tE)}px`,
     `--wy-ct-y: ${Math.round(t.vr.y)}px`, `--wy-ct-even-y: ${Math.round(tE.vr.y)}px`, `--wy-ct-w: ${Math.round(t.vr.w)}px`, `--wy-ct-h: ${Math.round(t.vr.h)}px`,
     `--wy-ct-fs: ${f(t.fs, 20)}px`, `--wy-ct-lh: ${f(t.lh, (t.fs || 20) * 1.1)}px`, `--wy-ct-fw: ${f(t.fw, 500)}`,
-    `--wy-ct-color: ${t.color ?? '#141414'}`, `--wy-ct-bg: ${t.bg ?? 'transparent'}`,
+    `--wy-ct-color: ${t.color ?? '#141414'} /* color-gate: allow — T05I measured caption ink (generated seat, white over the captures in both themes) */`, `--wy-ct-bg: ${t.bg ?? 'transparent'} /* color-gate: allow — T05I measured caption ground (generated seat, transparent) */`,
     `--wy-cs-odd-x: ${mirrorX(bp, s)}px`, `--wy-cs-even-x: ${mirrorX(bp, sE)}px`,
     `--wy-cs-y: ${Math.round(s.vr.y)}px`, `--wy-cs-even-y: ${Math.round(sE.vr.y)}px`, `--wy-cs-w: ${Math.round(s.vr.w)}px`, `--wy-cs-h: ${Math.round(s.vr.h)}px`,
     `--wy-cs-fs: ${f(s.fs, 13.33)}px`, `--wy-cs-lh: ${f(s.lh, (s.fs || 13.33) * 1.35)}px`, `--wy-cs-fw: ${f(s.fw, 400)}`,
-    `--wy-cs-color: ${s.color ?? '#6c6c66'}`, `--wy-cs-bg: ${s.bg ?? 'transparent'}`,
+    `--wy-cs-color: ${s.color ?? '#6c6c66'} /* color-gate: allow — T05I measured caption sub ink (generated seat) */`, `--wy-cs-bg: ${s.bg ?? 'transparent'} /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */`,
   ];
   return `  .wy-stage,\n  .wy-capbar {\n    ${vars.join(';\n    ')};\n  }`;
 };

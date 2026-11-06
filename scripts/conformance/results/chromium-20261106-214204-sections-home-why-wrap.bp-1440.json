@@ -1,0 +1,5063 @@
+{
+ "generatedAt": "2026-11-06T21:41:53.015Z",
+ "engine": "chromium",
+ "url": "http://localhost:5320",
+ "specDir": "/home/z/wt-t18/docs/redesign/r335/heron-spec",
+ "summary": {
+  "total": 1155,
+  "pass": 1029,
+  "fail": 126,
+  "passRate": 89.1,
+  "exceptionUses": 2,
+  "exceptionRate": 0.2,
+  "exceptionCap": "<5%",
+  "exceptionRules": {
+   "ar-text-length-class": 2
+  },
+  "unmatchedFailures": 5,
+  "gate": "report-only",
+  "coverage": {
+   "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
+   "thresholds": {
+    "coverageFloor": "40% measured (FAIL(coverage), no escape)",
+    "offBookCap": "70% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)",
+    "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
+   },
+   "overall": {
+    "measured": 1155,
+    "offBookEst": 3080,
+    "coveragePct": 27.3,
+    "offBookPct": 72.7
+   },
+   "sections": {
+    "home-why-wrap": {
+     "measured": 1155,
+     "skipped": 1808,
+     "excused": 106,
+     "offBookEst": 3080,
+     "pairs": 209,
+     "heur": 16,
+     "coverage": 27.3,
+     "offBookPct": 72.7,
+     "heurPct": 7.7
+    }
+   },
+   "gateFailures": [
+    {
+     "gate": "coverage",
+     "section": "home-why-wrap",
+     "value": "27.3%",
+     "threshold": "< 40% measured (coverage floor — no escape; lift it with section work)"
+    },
+    {
+     "gate": "off-book",
+     "section": "home-why-wrap",
+     "value": "72.7%",
+     "threshold": "≥ 70% off-book (excused×12+skipped est.) — escape only via a written review in coverage-review.json"
+    }
+   ],
+   "reviewedEscapes": []
+  },
+  "unmatchedOmitted": 0,
+  "skippedOmitted": 271,
+  "totalSkipped": 1808,
+  "edge390": {
+   "fails": 0,
+   "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
+   "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
+  }
+ },
+ "sections": {
+  "home-why-wrap": {
+   "1440": {
+    "passRate": 89.1,
+    "n": 1155,
+    "pass": 1029,
+    "fail": 126,
+    "exceptions": 2,
+    "explicit": 179,
+    "dataSpec": 14,
+    "heuristic": 16,
+    "unmatched": 5,
+    "excused": 106,
+    "skipped": 1808,
+    "missing": null
+   }
+  }
+ },
+ "failures": [
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "sectionHeightVh",
+   "heronPath": "div.home-why-wrap",
+   "oursSelector": "section.wy-section",
+   "expected": 0.776,
+   "actual": 2.764,
+   "delta": 1988
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 631,
+   "actual": 2262,
+   "delta": 1631
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 510,
+   "actual": 2055,
+   "delta": 1545
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1373,
+   "actual": 0,
+   "delta": 1373
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 361,
+   "actual": 1425,
+   "delta": 1064
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 374,
+   "actual": 1413,
+   "delta": 1039
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 375,
+   "actual": 1411,
+   "delta": 1036.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 515,
+   "actual": 1406,
+   "delta": 891
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -315,
+   "actual": 505,
+   "delta": 820
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 510,
+   "actual": 1319,
+   "delta": 809
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 631,
+   "actual": 1146,
+   "delta": 515
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 503,
+   "actual": 992,
+   "delta": 489
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 512,
+   "actual": 998,
+   "delta": 486
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 510,
+   "actual": 993,
+   "delta": 483
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 4,
+   "actual": 464,
+   "delta": 460
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 4,
+   "actual": 464,
+   "delta": 460
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "bg",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgb(255, 255, 255)",
+   "actual": "rgb(199, 46, 0)",
+   "delta": 334.43
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 323,
+   "delta": 310
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 202,
+   "actual": 495,
+   "delta": 293
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#ds:why.notet",
+   "mode": "data-spec",
+   "expected": 140,
+   "actual": 411,
+   "delta": 271
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "bg",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgb(250, 54, 0)",
+   "actual": "rgba(0, 0, 0, 0)",
+   "delta": 255.77
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "bg",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgb(250, 54, 0)",
+   "actual": "rgba(0, 0, 0, 0)",
+   "delta": 255.77
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 361,
+   "actual": 111,
+   "delta": 250
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 212,
+   "delta": 212
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "bg",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(0, 0, 0, 0)",
+   "actual": "rgb(199, 46, 0)",
+   "delta": 204.25
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 199,
+   "delta": 186
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 180,
+   "delta": 180
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 291,
+   "actual": 135,
+   "delta": 156
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 375,
+   "actual": 521,
+   "delta": 146.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 133,
+   "delta": 133
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#ds:why.notet",
+   "mode": "data-spec",
+   "expected": 339,
+   "actual": 455,
+   "delta": 115.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "borderRadius",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 99,
+   "actual": 0,
+   "delta": 99
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "borderRadius",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 99,
+   "delta": 99
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 7,
+   "actual": 100,
+   "delta": 93.5
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 79,
+   "delta": 78
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 180,
+   "actual": 114,
+   "delta": 66
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#ds:why.head",
+   "mode": "data-spec",
+   "expected": 1427,
+   "actual": 1367,
+   "delta": 60
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#ds:why.hrule",
+   "mode": "data-spec",
+   "expected": 1427,
+   "actual": 1367,
+   "delta": 60
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.stage",
+   "mode": "data-spec",
+   "expected": 1427,
+   "actual": 1367,
+   "delta": 60
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#ds:why.track",
+   "mode": "data-spec",
+   "expected": 1427,
+   "actual": 1367,
+   "delta": 60
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#ds:why.rows",
+   "mode": "data-spec",
+   "expected": 1427,
+   "actual": 1367,
+   "delta": 60
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 375,
+   "actual": 328,
+   "delta": 47
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 375,
+   "actual": 328,
+   "delta": 47
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "transition",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "transition",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[6]",
+   "mode": "explicit",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "transition",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "transition",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > h2[1]",
+   "oursSelector": "#ds:why.title",
+   "mode": "data-spec",
+   "expected": 506,
+   "actual": 467,
+   "delta": 39
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:why.eyebrowt",
+   "mode": "data-spec",
+   "expected": 909,
+   "actual": 876,
+   "delta": 33
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:why.lede",
+   "mode": "data-spec",
+   "expected": 69,
+   "actual": 36,
+   "delta": 33
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#ds:why.ledet",
+   "mode": "data-spec",
+   "expected": 69,
+   "actual": 36,
+   "delta": 33
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#ds:why.notet",
+   "mode": "data-spec",
+   "expected": 226,
+   "actual": 206,
+   "delta": 20
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "tag",
+   "heronPath": "home-why-wrap > div[1] > section[1]",
+   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2]",
+   "mode": "explicit",
+   "expected": "section",
+   "actual": "div",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1]",
+   "oursSelector": "#ds:why.head",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:why.eyebrowt",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(65, 65, 64)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.side",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:why.rulev",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:why.lede",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#ds:why.ledet",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(65, 65, 64)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#ds:why.notet",
+   "mode": "data-spec",
+   "expected": "rgb(180, 180, 176)",
+   "actual": "rgb(112, 112, 106)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#ds:why.hrule",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2]",
+   "oursSelector": "#ds:why.stage",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:why.axis",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#ds:why.track",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#ds:why.rows",
+   "mode": "data-spec",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[3]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[3]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[2] > div[3]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "tag",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[2] > div[2]",
+   "mode": "explicit",
+   "expected": "img",
+   "actual": "div",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[3] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[6]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "tag",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[1]",
+   "mode": "explicit",
+   "expected": "img",
+   "actual": "div",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[5]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "tag",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > img[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > div[9] > div[3]",
+   "mode": "explicit",
+   "expected": "img",
+   "actual": "div",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "tag",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > img[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[3]",
+   "mode": "explicit",
+   "expected": "img",
+   "actual": "div",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[5]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "tag",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[11]",
+   "mode": "explicit",
+   "expected": "img",
+   "actual": "div",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[3]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[3] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[2]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[3]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[3]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[3]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[3] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[3] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[5]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[5] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[5]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[5] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[6]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[7] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[6]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[7] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[9] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[9] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[8]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[11] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[8]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[11] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[9]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[13] > div[1]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[9]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[4] > div[13] > div[1]",
+   "mode": "explicit",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "border",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > img[1]",
+   "oursSelector": "#hm:img.none",
+   "mode": "heuristic",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 0.25,
+   "actual": 1,
+   "delta": 0.75
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[4] > div[8]",
+   "mode": "explicit",
+   "expected": 0.284177,
+   "actual": 1,
+   "delta": 0.72
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 0.338344,
+   "actual": 1,
+   "delta": 0.66
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+   "oursSelector": "home-why-wrap > section[1] > div[3] > div[2] > div[3]",
+   "mode": "explicit",
+   "expected": 0.72,
+   "actual": 1,
+   "delta": 0.28
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 0.72,
+   "actual": 1,
+   "delta": 0.28
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[2] > div[1] > div[2]",
+   "oursSelector": "home-why-wrap > div[1] > div[4] > div[2] > div[2] > div[3] > div[1]",
+   "mode": "explicit",
+   "expected": 0.72,
+   "actual": 1,
+   "delta": 0.28
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "kind": "no-counterpart",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  }
+ ],
+ "unmatchedReport": [
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "census depth-6-truncation duplicate record of the same visual box as home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[1] (identical sr geometry; one counterpart owns it — T-05h alias audit)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "census depth-6-truncation duplicate record of the same visual box as home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2] (identical sr geometry; one counterpart owns it — T-05h alias audit)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "census depth-6-truncation duplicate record of the same visual box as home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1] (identical sr geometry; one counterpart owns it — T-05h alias audit)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "census depth-6-truncation duplicate record of the same visual box as home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2] (identical sr geometry; one counterpart owns it — T-05h alias audit)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "T-05i gen (dup@1920): duplicate spec record on one path — the tween-split twin of the box explicitly bound + measured; one our element pairs one record per path, the twin has no second DOM counterpart"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[3] > div[2] > div[3]",
+   "excused": true,
+   "reason": "T-05i gen (wrap#67): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]",
+   "excused": true,
+   "reason": "T-05i gen (wrap#68): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[2] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "census depth-6-truncation duplicate record of the same visual box as home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2] (identical sr geometry; one counterpart owns it — T-05h alias audit)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[4]",
+   "excused": true,
+   "reason": "T-05i gen (wrap#71): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[10]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[10] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[11]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[11] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[12]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[12] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[13]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[13] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[14]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[14] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[4] > div[1] > div[14] > div[1] > svg[1] > rect[2]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[15]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[15] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[2]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[3]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[4]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[5]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[6]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[7]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[8]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[9]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[10]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[11]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[12]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[13]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[14]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[15]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[15] > div[1] > svg[1] > g[1] > path[16]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[2]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron row-4 map-path/caption cluster cell — authored counterpart pending (T-05g residual); reasoned entry per dispatch"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[4] > div[2] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "census depth-6-truncation duplicate record of the same visual box as home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2] (identical sr geometry; one counterpart owns it — T-05h alias audit)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[3]",
+   "excused": true,
+   "reason": "T-05k gen (mass-catchall @1440): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal"
+  }
+ ],
+ "skippedReport": [
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[3] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[1] > svg[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > section[1] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[3] > div[3] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[3] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[1] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[2] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > div[2] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[2] > div[3] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[2] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[2] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > img[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[3] > div[1] > div[1] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[3] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > mask[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > mask[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > mask[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > mask[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > mask[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[3]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[1] > div[2] > div[1] > svg[1] > path[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > img[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[1] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[2] > div[2] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[2] > div[2] > div[2] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > mask[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > mask[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > mask[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > mask[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > mask[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[3]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[2] > div[2] > svg[1] > path[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[1] > img[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[1] > div[2] > div[1] > div[3] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[2] > div[1] > div[3] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > div[3] > div[2] > div[1] > svg[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > g[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > g[1] > g[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[3]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[4]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[4]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[4]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[5]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[5]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[5]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[6]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[7]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[7]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[7]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[7]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[7]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[8]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[9]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[9]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[9]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[9]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[9]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[10]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[10]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[10]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[10]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[10]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[11]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[12]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[13]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[13]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[13]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[13]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[13]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[14]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[14]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[14]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[14]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[14]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[15]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[15]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[15]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[15]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[15]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[16]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[16]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[16]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[16]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[2] > div[1] > svg[1] > g[1] > g[1] > path[16]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[1] > div[3] > div[2] > div[1] > svg[1] > defs[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > filter[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  },
+  {
+   "section": "home-why-wrap",
+   "bp": "1440",
+   "heronPath": "home-why-wrap > div[3] > div[2] > div[1] > svg[1] > defs[2] > clippath[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
+  }
+ ],
+ "darkInkReport": [],
+ "sectionEdges": {},
+ "provenance": {
+  "file": "chromium-20261106-214204-sections-home-why-wrap.bp-1440.json",
+  "scope": "sections-home-why-wrap.bp-1440",
+  "fullMatrix": false,
+  "sections": "1/10",
+  "bps": "1/5",
+  "engine": "chromium",
+  "dark": false,
+  "gate": false,
+  "url": "http://localhost:5320"
+ }
+}

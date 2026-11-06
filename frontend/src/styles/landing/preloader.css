@@ -62,7 +62,7 @@
   z-index: 0;
   pointer-events: none;
   clip-path: polygon(0% 0%, 100% 0%, 100% 50.056%, 0% 50.056%, 0% 49.944%, 100% 49.944%, 100% 100%, 0% 100%);
-  transition: clip-path var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1); /* easing-gate: allow — the recorded .loading-main slit curve (r335 _motion.1440) */
+  transition: clip-path var(--motion-duration-sheet-exit) var(--motion-ease-band-exit); /* r339 T-18 — the recorded .loading-main slit curve, seated as the canonical --motion-ease-band-exit token (resolves on the landing sheet) */
 }
 
 /* the band pair — the recorded .loading-progress-item top/bot seats:
@@ -76,8 +76,8 @@
                             the same material as the page it reveals */
   pointer-events: none;
   transition:
-    transform var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1), /* easing-gate: allow — the recorded .loading-progress-item exit curve (r335 _motion.1440) */
-    background-color var(--motion-duration-sheet-exit) cubic-bezier(1, 0, 0.44, 1); /* easing-gate: allow — same recorded curve */
+    transform var(--motion-duration-sheet-exit) var(--motion-ease-band-exit), /* r339 T-18 — the recorded .loading-progress-item exit curve, tokened */
+    background-color var(--motion-duration-sheet-exit) var(--motion-ease-band-exit); /* r339 T-18 — same recorded curve, tokened */
 }
 
 .pl-band--top {
@@ -102,12 +102,12 @@
    _motion.390: y −150.562/+263.891) + the recorded #b3b3af tint */
 .pl--exit .pl-band--top {
   transform: translateY(-387.5px);
-  background-color: #b3b3af; /* the recorded exit ground — the reference's own value, not a token */
+  background-color: var(--preloader-exit-ground); /* the recorded exit ground — tokened (canonical --preloader-exit-ground) */
 }
 
 .pl--exit .pl-band--bot {
   transform: translateY(310.5px);
-  background-color: #b3b3af; /* the recorded exit ground — the reference's own value, not a token */
+  background-color: var(--preloader-exit-ground); /* the recorded exit ground — tokened (canonical --preloader-exit-ground) */
 }
 
 @media (max-width: 991px) {
@@ -257,11 +257,12 @@
   }
 }
 
-/* r339 (T-11c) note — the raw cubic-bezier literals above: the
-   --motion-ease-band token (unified-parity.css @layer tokens) does NOT
-   resolve on the landing sheet (computed :root read: empty — the parity
-   layer's :root block loses the cascade there), so the r335 exit that
-   referenced it silently fell back to `all 0s ease` (an instant jump,
-   masked by the cap-timeout unmount). The recorded curve is pinned raw
-   with easing-gate provenance instead; --motion-duration-sheet-exit
-   DOES resolve (tokens.css canonical seat, 835ms). */
+/* r339 (T-18) resolution — the raw cubic-bezier literals are RETIRED:
+   the recorded exit curve now lives in the canonical tokens.css motion
+   block as --motion-ease-band-exit (cubic-bezier(1,0,0.44,1)) and the
+   recorded exit ground as --preloader-exit-ground (#b3b3af); both
+   resolve on the landing sheet (tokens.css canonical :root — verified
+   by computed-style read), closing the r339 T-11c finding that the
+   unified-parity --motion-ease-band seat silently fell back to
+   `all 0s ease` there. --motion-duration-sheet-exit (835ms) was
+   already canonical and untouched. */

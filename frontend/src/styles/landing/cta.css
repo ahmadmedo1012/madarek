@@ -416,11 +416,11 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
 
   .fo-cta-copy {
     margin-block-start: 9.07rem;
-    color: rgb(40, 40, 40);
+    color: var(--text); /* r339 T-18 gate: the measured rgb(40,40,40) IS the light --text ink (#282828) — token-native, and the seat now follows the theme flip instead of latching the light literal */
   }
 
   .fo-cta-title {
-    color: rgb(40, 40, 40);
+    color: var(--text); /* r339 T-18 gate — same measured-ink tokenization */
   }
 
   .fo-cta-lede-wrap {
@@ -667,6 +667,19 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
    deltas (heron ordinals 1/4/6/9: ≥769px bd/tr micro-drift on the
    resolve seats; ≤768 color+bd on every seat). .probe-hover is the
    conformance probe's hover-equivalent class — never real. ── */
+/* T-18 A5 — the resolve wash's HOVER seat: the frozen rest wash is the
+   reference's own #FA3600 (white label 3.76:1 — the documented AA
+   exception the canonical button system solved with its r318 seat);
+   hover deepens the wash to the canonical --accent-ink token (white
+   label 5.5:1 ≥ 4.5:1 WCAG AA). The recorded transitions are
+   untouched — the wash snaps, the 0.48s chevron slide carries the
+   motion. Light + dark both (the dark ember's ink is --warm-ink,
+   5.6:1, unaffected: only the ground deepens). */
+.fo-cta .btn.accent:hover .fo-cta-rbtn,
+.fo-cta .btn.accent.probe-hover .fo-cta-rbtn {
+  background: var(--accent-ink);
+}
+
 @media (min-width: 769px) {
   .fo-cta .btn.accent:hover,
   .fo-cta .btn.accent.probe-hover {

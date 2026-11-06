@@ -967,9 +967,9 @@
    Madarek's own construction — never pasted reference styling. Scoped
    vars carry the measured inks per the r338 wave-9 token ruling. ══ */
 .hro {
-  --hro-ink-72: rgba(40, 40, 40, 0.72); /* measured strip/lead ink */
-  --hro-flare: rgb(250, 54, 0);         /* measured secondary flare */
-  --hro-paper: rgb(255, 255, 255);      /* measured deco caption ink */
+  --hro-ink-72: color-mix(in srgb, var(--text) 72%, transparent); /* r339 T-18 gate: the measured strip/lead ink rgba(40,40,40,.72) is the light --text at 72% — token-native, byte-equal in light */
+  --hro-flare: var(--accent);           /* r339 T-18 gate: the measured secondary flare rgb(250,54,0) IS --accent */
+  --hro-paper: rgb(255, 255, 255); /* color-gate: allow — the measured deco caption ink (frozen white; every theme-flipping label token would darken it at night, and no stable-white token exists — documented with the same convention as the dark ink arm below) */
 }
 
 /* R338 T-11d dark arm (T-14b --rl-soft-ink pattern) — the strip ink's

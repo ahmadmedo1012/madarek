@@ -896,14 +896,8 @@
  *   0 login · 3 register · 1/2/5/7/4/6 work strip · 8/9 deco ·
  *   11–14 ± dmarks · 15–20 the graticule measures. */
 .hro {
-  /* color-gate: allow — measured heron hover ink rgb(250,54,0) (the
-     login twin's recorded after-color); ADDENDUM 9 scoped-var pattern,
-     T-25 owns the global token unification. */
-  --hro-seat-ink: rgb(250, 54, 0);
-  /* color-gate: allow — measured heron register-hover wash-off
-     (the primary's ghost after-state: fill → transparent, ink →
-     rgb(255,243,239)) */
-  --hro-seat-ghost: rgb(255, 243, 239);
+  --hro-seat-ink: rgb(250, 54, 0); /* color-gate: allow — measured heron hover ink (the login twin's recorded after-color); ADDENDUM 9 scoped-var pattern, T-25 owns the global token unification */
+  --hro-seat-ghost: rgb(255, 243, 239); /* color-gate: allow — measured heron register-hover wash-off (the primary's ghost after-state: fill → transparent, ink → rgb(255,243,239)) */
   --hro-seat-lift: translateY(-0.12rem);
 }
 

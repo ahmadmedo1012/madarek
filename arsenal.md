@@ -3,3 +3,10 @@
 - [T-11b1] node scripts/conformance/run.mjs — scoped no-regression footer+usecase+intro @390+1440: 92.5% total; footer 83.1/89.9 (vs committed 83.3/predecessor-converged 89.9), usecase 89.4/93.0, intro 97.2/97.8 (first baseline); artifacts in results/
 - [T-11b1] bash scripts/verify.sh --fast — FAST PASS after converting .rl-rule-x to a transition (r308 keyframe whitelist kept closed except the documented rl-rule-widen width entry); bundle 765.2gz ≤ 770
 - [T-11b1] vitest r306-landing-sheet — whitelisted rl-rule-widen (width family reachable ONLY via declared @keyframes) + RM-collapse entries for both rule seats
+- [T-18] node --check + comment census — verified prior session's uncommitted tree: caught gen-why-wrap.mjs SYNTAX ERROR (dropped backticks in the allow-comment edit) + 20 unterminated why.css comments that swallowed the whole generated caption block at parse time (gates' comment-strippers see the same swallow — passed while broken); both fixed to the generator's emitted form
+- [T-18] playwright (/home/z/t18-final/probe*.mjs) — A1–A6 evidence @1440+390: capbar@72/chrome present/minis at spec seats; 390 void gaps=0; [01]–[03] numerals in-viewport; consent dismiss+no CTA overlap; CTA hover 5.5:1; ScrollRule measured (y450 1px x7–1433, band-exit easing resolves, 0%→25% live, fades by 50%, RM unmount)
+- [T-18] z-ai vision — A1 75% screenshot sanity pass (fold-crossing = pinned-stage design)
+- [T-18] bash check-motion-tokens.sh + check-colors.sh --strict — owned surfaces PASS (87 allow lines); 2 out-of-scope findings listed for medic (patterns.css:104 marquee raw 36s+linear; journey.css:175 --jt-ink raw)
+- [T-18] npx playwright install chromium — repo pw 1.65 browsers for the conformance runner (cache had only 1.60/1223)
+- [T-18] node scripts/conformance/run.mjs — scoped why+cta: 90.9% total, edge390 fails 0; clamp delta 0.1pt measured (89.0 off vs 89.1 on @1440); cta identical to cross-worktree baseline
+- [T-18] bash scripts/verify.sh --fast — FAST PASS (3051 tests), bundle 765.4 gz ≤ 770
