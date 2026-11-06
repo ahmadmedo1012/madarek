@@ -1,0 +1,12 @@
+# CODEOWNERS — Madarek (r339/T-23)
+# https://docs.github.com/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# Every path defaults to the owner; add per-path reviewers below as the team grows.
+
+*                               @ahmadmedo1012
+
+# Path-based defaults (all → owner, kept explicit for future splits)
+/frontend/                      @ahmadmedo1012
+/backend/                       @ahmadmedo1012
+/apps/mobile/                   @ahmadmedo1012
+/scripts/                       @ahmadmedo1012
+/docs/                          @ahmadmedo1012
