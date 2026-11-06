@@ -31,7 +31,7 @@
   background: transparent;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
   font-size: calc(var(--fu) * 13.33); /* heron root fs = 100vw/108 (9.48/13.33/17.78) */
-  line-height: calc(var(--fu) * 17.33); /* heron root lh = 1.3×fs, preserved by the linear law */
+  line-height: calc(var(--fu) * 18); /* T-06n: the root lh law is 1.35×fs (spec exp 12.8@1024 · 18@1440 · 24@1920), not 1.3 — the whole inheriting tree rode 17.33 */
   font-weight: 500;
   letter-spacing: 0; /* Arabic joins — the transformed expectation (Heron -0.27px) */
 }
@@ -308,7 +308,7 @@
   font-family: var(--font-mono);
   /* T-06k census: the reg '+' seat fs 13.33@1440 · 17.78@1920 (13.33fu)
      with a 12.8px floor at 1024; lh = the AR floor 1.35×fs */
-  font-size: max(calc(var(--fu) * 13.33), 12.8px);
+  font-size: calc(var(--fu) * 13.33); /* T-06n: NO 12.8 floor — spec fs@1024 = 9.48; the floor broke fs+lh @1024 */
   line-height: 1.35;
   display: grid;
   place-items: center;
@@ -395,11 +395,15 @@
     row2 = the c2-top label|link rows (label|links one line each) ·
     row3 = c2-bottom 502×331 | the col3 rail 251×331 (vrule 1×331 +
     mark 207 + the 166×0 img twin) ═══ */
+@media (min-width: 768px) and (max-width: 991px) {
+  .fo-mark { opacity: 0; } /* T-06n: heron hides the mark seat @768 (spec opacity 0) */
+}
+
 @media (max-width: 991px) {
   .fo-footer {
     margin-inline: 7px; /* heron 768 root x7 w753 */
     font-size: 14.73px; /* heron 768 root fs (NOT the desktop line) */
-    line-height: 19.15px; /* 1.3×fs — the heron root lh law */
+    line-height: 19.89px; /* T-06n: 768 root lh = 1.35×fs (spec exp 19.89, was 19.15) */
   }
   .fo-grid { grid-template-columns: 377px 1fr; }
   /* T-06k — the heron 768 dumped-grid tree: row1 = c1top (377×189) |
@@ -492,7 +496,7 @@
   .fo-footer {
     margin-inline: 8px; /* heron 390 root x8 w374 */
     font-size: 15.88px; /* heron 390 root fs */
-    line-height: 20.64px; /* 1.3×fs — the heron root lh law */
+    line-height: 21.44px; /* T-06n: 390 root lh = 1.35×fs (spec exp 21.44, was 20.64) */
   }
   .fo-grid { grid-template-columns: 1fr; }
   .fo-col { display: block; grid-column: auto; grid-row: auto; }
@@ -596,7 +600,7 @@
 /* T-06m: dark-arm the go-ink — the scoped --rule-strong seat fails the dark
    WCAG floor 3.0 (3 cells); the proven dark text token passes on the same
    surface family. Light spec group untouched (spec is law in light). */
-[data-theme='dark'] .fo-go { color: var(--text-secondary); }
+[data-theme='dark'] .fo-go { color: var(--text); }
 
 /* ═══ reduced motion (r306/r308 family belt): this sheet carries the
     wy verb-snap protective collapses — the r313 contract's RM seats,
