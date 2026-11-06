@@ -28,6 +28,50 @@
  *     ratchet; after a green run with `--ratchet` the file updates to the
  *     new rate (monotonic — the number may never drop).
  *
+ * r339 T-02b (instrument hardening — the T-02 audit's risk-fix list; every
+ * change ADDS failure modes, none is ever removed):
+ *   · COVERAGE METRIC: per-section coverage = measured checks / (measured +
+ *     off-book estimate), where off-book estimate = suppressed (skipped)
+ *     checks + excused elements × 12 — GROUP_CHECKS sums to 12 checks per
+ *     fully-measured element, the T-02 audit's conversion. The estimate is
+ *     deliberately CONSERVATIVE: the 5 unskippable per-element checks
+ *     (radius/opacity/border/interactive/transition) are not added, so the
+ *     off-book share can only be understated, never inflated. Reported per
+ *     section beside passRate (summary + console).
+ *   · COVERAGE FLOOR GATE: a section below 40% measured coverage flips the
+ *     gate verdict to FAIL(coverage) — a pass-rate denominator that hides
+ *     more than it measures is a self-graded metric (hero measured 5.2%).
+ *   · OFF-BOOK CAP: a section at ≥70% off-book (excused+skipped est.) flips
+ *     the gate to FAIL(off-book) UNLESS the section carries a written review
+ *     (reason + owner task id) in scripts/conformance/coverage-review.json —
+ *     the documented escape hatch, never a silent one. Note the cap is
+ *     numerically subsumed by the 40% coverage floor (off-book ≥70% ⇔
+ *     coverage ≤30% <40%): the review file suppresses the off-book label,
+ *     it does NOT lift the coverage floor — only section work does.
+ *   · HEURISTIC-SHARE CAP: a section whose heuristic-paired share of pairs
+ *     reaches ≥50% fails FAIL(heuristic) — junk can pair arbitrarily and
+ *     pass; intro (0.8%) and usecase (0.8%) prove explicit binding is
+ *     achievable.
+ *   · These per-section gates fire on gated scoped runs too (the sections in
+ *     the run) — scoping cannot mask them, same law as the exception cap.
+ *   · RESULTS PROVENANCE: every run files its blob under
+ *     scripts/conformance/results/<engine>-<date>-<scope>.json (scope =
+ *     full | sections-X | bp-Y); `--ratchet` is refused unless the run is
+ *     full-scope AND the invocation writes a fresh full-matrix results.json
+ *     (the canonical path is force-written) — the floor always keeps a
+ *     reproducible backing blob, never last-writer-wins git archaeology.
+ *   · DARK ALL-NODES INK: `--dark` additionally walks EVERY text-bearing
+ *     node per section (not only spec-paired boxes) and asserts WCAG
+ *     contrast ≥ 4.5:1 of the effective ink vs the composited effective
+ *     (nearest opaque ancestor) background — darkInk FAIL rows (path,
+ *     ratio, colors) + worst-50 results.darkInkReport + summary counts.
+ *     Kept OUT of the dark pass/fail totals so the existing dark rate keeps
+ *     its meaning; the rows + report are the T-12 work-list.
+ *   · EDGE-390: in the 390 bp pass, each section's side gutters (section
+ *     content edge ↔ viewport edge) are asserted against the spec's recorded
+ *     390 section-root gutter (spec root x/w — Heron records an 8px gutter)
+ *     with ±2px tolerance — FAIL rows named edge390.
+ *
  * Usage:
  *   node scripts/conformance/run.mjs                            # 9 sections × 5 bps
  *   node scripts/conformance/run.mjs --sections home-hero-wrap,footer --bps 1440,390
@@ -41,7 +85,7 @@
  * Output: console matrix + scripts/conformance/results.json.
  */
 import { createRequire } from "node:module";
-import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import * as T from "./tolerances.mjs";
@@ -78,11 +122,49 @@ const MAPPING = readdirSync(join(__dirname, "mapping"))
 const EXCEPTIONS = JSON.parse(readFileSync(join(__dirname, "exceptions.json"), "utf8"));
 const SECTIONS = Object.keys(MAPPING.ourSection);
 
+// r339 T-02b — the off-book cap's review register (the documented escape
+// hatch). A section whose off-book share reaches the cap fails FAIL(off-book)
+// unless it carries an entry here with a WRITTEN reason and an OWNER task id;
+// anything else (missing file, unknown section, empty reason, owner not a
+// task id) is treated as absent — fail-closed. Note (see header): a review
+// suppresses the off-book label only; the 40% coverage floor has no escape —
+// lifting it is section work, not paperwork.
+const COVERAGE_REVIEW_FILE = join(__dirname, "coverage-review.json");
+const COVERAGE_REVIEW = {};
+{
+  let raw = null;
+  try { raw = JSON.parse(readFileSync(COVERAGE_REVIEW_FILE, "utf8")); } catch { raw = null; }
+  const bad = [];
+  for (const r of raw?.reviews ?? []) {
+    const okSection = typeof r.section === "string" && !!MAPPING.ourSection[r.section];
+    const okReason = typeof r.reason === "string" && r.reason.trim().length >= 20;
+    const okOwner = typeof r.owner === "string" && /^T-\d+[a-z0-9-]*$/i.test(r.owner.trim());
+    if (!okSection || !okReason || !okOwner) bad.push(`${String(r.section)}: entry needs a known section, a written reason (≥20 chars) and an owner task id (T-…) — treated as ABSENT`);
+    else COVERAGE_REVIEW[r.section] = { reason: r.reason.trim(), owner: r.owner.trim(), reviewedAt: r.reviewedAt ?? null };
+  }
+  if (bad.length) console.error(`coverage-review.json invalid entries (fail-closed — the cap applies as if unreviewed):
+  ${bad.join("\n  ")}`);
+}
+
+// r339 T-02b — honesty-gate thresholds (risk-based; see the audit's fix list).
+const COVERAGE_FLOOR = 40;   // % measured below which a section fails FAIL(coverage)
+const OFF_BOOK_CAP = 70;     // % off-book at/above which a section fails FAIL(off-book) unless reviewed
+const HEURISTIC_CAP = 50;    // % heuristic-paired share at/above which a section fails FAIL(heuristic)
+const DARK_INK_FLOOR = 4.5;  // WCAG AA contrast for EVERY text-bearing node in --dark
+const EDGE390_TOL = 2;       // px tolerance on the spec's recorded 390 side gutters
+
 // r339 T-02 audit — skip-group grammar validation. The run() loop only
 // recognizes the five field groups below; an unknown name in a mapping's
 // skip array (platform.json carried "border"/"radius"/"bg" — dead letters,
 // silently ignored) means the author believes checks are skipped while the
 // instrument keeps measuring them. Fail loud at startup instead.
+const GROUP_CHECKS = { tag: 1, tc: 1, geometry: 4, type: 4, color: 2 };
+// r339 T-02b — checks per fully-measured element (sum of the five field
+// groups = 12): the audit's excused-element → estimated-checks conversion
+// used by the coverage metric. Conservative by design: the 5 unskippable
+// per-element checks are NOT added, so the off-book estimate can only
+// understate, never inflate.
+const GROUP_CHECKS_SUM = Object.values(GROUP_CHECKS).reduce((a, b) => a + b, 0);
 const VALID_SKIP_GROUPS = new Set(["tag", "tc", "geometry", "type", "color"]);
 {
   const bad = [];
@@ -172,7 +254,6 @@ const expandBp = (rec, bpName) => {
   for (const k of ["heron", "spec", "container"]) r[k] = bpPath(rec[k], bpName);
   return r;
 };
-const GROUP_CHECKS = { tag: 1, tc: 1, geometry: 4, type: 4, color: 2 };
 
 // R338 T-14a — WCAG relative luminance/contrast for the dark internal-
 // consistency check (unflipped light-ink-on-dark-surface detection).
@@ -424,9 +505,13 @@ function isLineContainerPath(p) {
 
 // ── runner ───────────────────────────────────────────────────────────────────
 const browser = await (ENGINE === "webkit" ? webkit : chromium).launch({ headless: true });
-const results = { generatedAt: new Date().toISOString(), engine: ENGINE, url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [] };
+const results = { generatedAt: new Date().toISOString(), engine: ENGINE, url: URL, specDir: SPEC_DIR, summary: {}, sections: {}, failures: [], unmatchedReport: [], skippedReport: [], darkInkReport: [], sectionEdges: {} };
 let totalPass = 0, totalFail = 0, exceptionUses = 0;
 let darkPass = 0, darkFail = 0, darkContrast = 0, darkContrastSkipped = 0;
+// r339 T-02b — all-nodes dark ink counters (separate from darkPass/darkFail on
+// purpose: the existing dark rate keeps its meaning, the ink census is the
+// T-12 work-list) + 390 side-gutter fail count.
+let darkInkFail = 0, darkInkChecked = 0, darkInkSkipped = 0, edge390Fails = 0;
 const darkSettle = []; // T-14a2: per-bp post-flip settle evidence (stability frames)
 let darkTheme = null; // hoisted: the summary + dark matrix read it after the bp loop
 const exRules = {};
@@ -481,6 +566,53 @@ try {
         return { elements: out, rectVh: Math.round((el.getBoundingClientRect().height / window.innerHeight) * 1000) / 1000, explicitIdx };
       }, { key, sel, explicit, WALK: WALK_JS });
       ours[key] = data;
+    }
+
+    // 3.6) r339 T-02b — 390 side-margin gutters. Heron's 390 spec records an
+    // 8px section gutter via the section ROOT box (every <section>.390.json
+    // root: x=8 w=374 on the 390 viewport); the assertion (step 4) compares
+    // OUR section's content edge against that recorded gutter. The content
+    // edge is the bounding edge of the section's RENDERED content — union
+    // over visible (opacity>0, visibility!=hidden) descendants whose rect
+    // lies fully inside the viewport, so offstage/bleeding tween artifacts
+    // cannot collapse the gutter and a full-bleed root with an inset inner
+    // wrapper (map/cta pattern) measures its true visual gutter. The root's
+    // own content-box edge (rect+border+padding) is recorded alongside as a
+    // diagnostic and used as the fallback when nothing renders fully inside.
+    let edges390 = null;
+    if (bp.name === "390") {
+      edges390 = await page.evaluate((map) => {
+        const out = {};
+        for (const [key, sel] of Object.entries(map)) {
+          const el = document.querySelector(sel);
+          if (!el) { out[key] = { missing: sel }; continue; }
+          const vw = window.innerWidth;
+          const num = (v) => parseFloat(v) || 0;
+          const rr = el.getBoundingClientRect();
+          const cs = getComputedStyle(el);
+          const padEdge = {
+            l: Math.round((rr.left + num(cs.borderLeftWidth) + num(cs.paddingLeft)) * 10) / 10,
+            r: Math.round((vw - (rr.right - num(cs.borderRightWidth) - num(cs.paddingRight))) * 10) / 10,
+          };
+          let l = Infinity, r = -Infinity;
+          for (const d of el.querySelectorAll("*")) {
+            const b = d.getBoundingClientRect();
+            if (b.width <= 0 || b.height <= 0) continue;
+            if (b.left < -0.5 || b.right > vw + 0.5) continue; // fully-inside only
+            const st = getComputedStyle(d);
+            if (st.visibility === "hidden" || Number(st.opacity) <= 0) continue;
+            l = Math.min(l, b.left); r = Math.max(r, b.right);
+          }
+          const via = l === Infinity ? "root-content-box (nothing renders fully inside)" : "visible-content-union";
+          out[key] = {
+            rect: { x: Math.round(rr.left * 10) / 10, w: Math.round(rr.width * 10) / 10 },
+            padEdge,
+            contentEdge: l === Infinity ? { ...padEdge } : { l: Math.round(l * 10) / 10, r: Math.round((vw - r) * 10) / 10 },
+            via,
+          };
+        }
+        return out;
+      }, Object.fromEntries(SECTIONS_WANTED.map((k) => [k, MAPPING.ourSection[k]])));
     }
 
     // 3.5) R338 T-14a — dark path: flip the theme exactly the way the site
@@ -858,6 +990,36 @@ try {
           dcell.fail++; darkFail++;
           results.failures.push({ section: key, bp: bp.name, kind: "dark-no-flip", heronPath: MAPPING.ourSection[key], oursSelector: MAPPING.ourSection[key], mode: "dark", expected: "≥1 paired element color/bg flips light→dark (token-driven theme)", actual: "0 flips — section has no dark arm", delta: 0 });
         } else if (pairs.length) { dcell.pass++; darkPass++; }
+
+        // r339 T-02b — ALL-NODES dark ink audit (the T-12 measurement tool).
+        // The paired loop above only sees spec-paired boxes; this walk takes
+        // EVERY text-bearing node in the section (same census as the light
+        // walk: tc !== "none") and asserts WCAG contrast ≥ 4.5:1 of the
+        // effective ink vs the composited effective (nearest opaque ancestor)
+        // background. Uncountable seats (background-image ancestors,
+        // unparseable colors) and near-invisible text (opacity < 0.3, the
+        // paired check's law) are counted as skipped — never silently
+        // dropped. Counts are kept OUT of darkPass/darkFail so the existing
+        // dark rate keeps its meaning; the FAIL rows + worst-50
+        // darkInkReport are the actionable work-list.
+        {
+          let inkFail = 0, inkChecked = 0, inkSkipped = 0;
+          for (const el of dd.elements) {
+            if (el.tc === "none") continue;
+            const bgInfo = dd.bg?.[el.p];
+            if (!bgInfo || bgInfo.eimg || !(el.opacity >= 0.3)) { inkSkipped++; continue; }
+            const ratio = bgInfo.ebg == null ? null : contrastRatio(el.color, bgInfo.ebg, el.opacity);
+            if (ratio == null) { inkSkipped++; continue; }
+            inkChecked++; darkInkChecked++;
+            if (ratio < DARK_INK_FLOOR) {
+              inkFail++; darkInkFail++;
+              results.failures.push({ section: key, bp: bp.name, kind: "darkInk", heronPath: "(every text-bearing node — dark ink census)", oursSelector: el.p, mode: "dark", expected: `WCAG AA contrast ≥ ${DARK_INK_FLOOR}:1 (every text-bearing node, dark theme, vs composited effective background)`, actual: `${Math.round(ratio * 100) / 100}:1 — ${el.color}${el.opacity < 1 ? ` ×opacity ${el.opacity}` : ""} on ${bgInfo.ebg}`, delta: 0 });
+              results.darkInkReport.push({ section: key, bp: bp.name, path: el.p, tag: el.tag, ratio: Math.round(ratio * 100) / 100, color: el.color, bg: bgInfo.ebg, opacity: el.opacity, textClass: el.tc });
+            }
+          }
+          darkInkSkipped += inkSkipped;
+          dcell.darkInk = { fail: inkFail, checked: inkChecked, skipped: inkSkipped, floor: DARK_INK_FLOOR };
+        }
       }
 
       // page-level: section height vh + pin spans
@@ -880,6 +1042,37 @@ try {
             c.pass ? cell.pass++ : (cell.fail++, results.failures.push({ section: key, bp: bp.name, kind: c.kind, heronPath: `${MAPPING.heronPageKey[key]}#pin${i}`, oursSelector: MAPPING.ourSection[key], expected: JSON.stringify(c.expected), actual: JSON.stringify(c.actual), delta: Math.round(c.delta * 100) / 100 }));
           }
         }
+      }
+
+      // r339 T-02b — edge390: assert the section's side gutters (content edge
+      // ↔ viewport edge) against the spec's recorded 390 section-root gutter
+      // (spec root x/w — see the step-3.6 comment for the measurement). One
+      // check per side; FAIL rows are named edge390 and carry the delta and
+      // the measurement path. Like the pinSpan checks, passes/fails land in
+      // the normal cell denominators (adds failure modes, never removes).
+      if (bp.name === "390" && edges390?.[key] && !edges390[key].missing) {
+        let specRoot = spec.elements[0];
+        if (specRoot && specRoot.vr.w === 0 && specRoot.vr.h === 0) {
+          specRoot = spec.elements.find((e) => e.vr.w > 0 || e.vr.h > 0) ?? specRoot;
+        }
+        const specL = specRoot.vr.x;
+        const specR = bp.width - (specRoot.vr.x + specRoot.vr.w);
+        const e3 = edges390[key];
+        const rec = {
+          specLeft: specL, specRight: specR,
+          ourLeft: e3.contentEdge.l, ourRight: e3.contentEdge.r,
+          rootContentBox: e3.padEdge, rootRect: e3.rect, via: e3.via,
+          failLeft: false, failRight: false,
+        };
+        for (const [side, ourV, specV] of [["Left", e3.contentEdge.l, specL], ["Right", e3.contentEdge.r, specR]]) {
+          const delta = Math.round((ourV - specV) * 10) / 10;
+          if (Math.abs(delta) > EDGE390_TOL) {
+            rec[`fail${side}`] = true;
+            cell.fail++; edge390Fails++;
+            results.failures.push({ section: key, bp: bp.name, kind: "edge390", heronPath: `(${key} ${side.toLowerCase()} gutter — spec section root x/w @390)`, oursSelector: MAPPING.ourSection[key], mode: "page", expected: `${side.toLowerCase()} gutter ${specV}px (±${EDGE390_TOL}px)`, actual: `${ourV}px (Δ${delta > 0 ? "+" : ""}${delta}px; ${e3.via})`, delta });
+          } else cell.pass++;
+        }
+        results.sectionEdges[key] = rec;
       }
       totalPass += cell.pass; totalFail += cell.fail;
     }
@@ -948,18 +1141,69 @@ if (GATE && !FULL_SCOPE) {
   gateVerdict = `PASS(scoped-run:${SECTIONS_WANTED.length}/${SECTIONS.length} sections × ${BPS_WANTED.length}/${BPS.length} bps — report-only, cannot hold the full-matrix ratchet)`;
   console.error(`--gate on a scoped run cannot hold the full-matrix ratchet (${SECTIONS_WANTED.length}/${SECTIONS.length} sections, ${BPS_WANTED.length}/${BPS.length} bps) — verdict is report-only; run the full matrix for a gate verdict`);
 }
+
+// r339 T-02b — per-section coverage / off-book / heuristic-share aggregates
+// (the T-02 audit's formula, reused verbatim):
+//   offBookEst = suppressedChecks + excusedElements × GROUP_CHECKS_SUM(=12)
+//   coverage   = measured / (measured + offBookEst)
+//   offBookPct = 100 − coverage%  (same denominator, complementary share)
+//   heurPct    = heuristic pairs / (explicit + data-spec + heuristic pairs)
+// Aggregated over the requested bps' non-missing cells; sections with no
+// measurable cell (e.g. chrome — no frozen spec) stay out. Scroll/interact
+// extensions are not coverage-scored (separate assertion families with no
+// off-book). The estimate is conservative — see the GROUP_CHECKS_SUM note.
+const sectionAgg = {};
+for (const key of SECTIONS_WANTED) {
+  const cells = BPS_WANTED.map((b) => matrix[key]?.[b]).filter((c) => c && !c.missing);
+  if (!cells.length) continue;
+  const measured = cells.reduce((a, c) => a + c.pass + c.fail, 0);
+  const skipped = cells.reduce((a, c) => a + (c.skipped || 0), 0);
+  const excused = cells.reduce((a, c) => a + (c.excused || 0), 0);
+  const offBookEst = skipped + excused * GROUP_CHECKS_SUM;
+  const denom = measured + offBookEst;
+  const pairs = cells.reduce((a, c) => a + (c.explicit || 0) + (c.dataSpec || 0) + (c.heuristic || 0), 0);
+  const heur = cells.reduce((a, c) => a + (c.heuristic || 0), 0);
+  sectionAgg[key] = {
+    measured, skipped, excused, offBookEst, pairs, heur,
+    coverage: denom ? Math.round((measured / denom) * 1000) / 10 : 0,           // %
+    offBookPct: denom ? Math.round((offBookEst / denom) * 1000) / 10 : 0,       // %
+    heurPct: pairs ? Math.round((heur / pairs) * 1000) / 10 : null,             // %
+  };
+}
+// r339 T-02b — honesty gates (fire on any GATED run, scoped or full, for the
+// sections in the run — scoping cannot mask them, same law as the exception
+// cap). ADDITIVE failure modes; none of them can ever be tuned to pass.
+const gateFailures = [];
+const reviewedEscapes = [];
+for (const [key, a] of Object.entries(sectionAgg)) {
+  if (a.coverage < COVERAGE_FLOOR) gateFailures.push({ gate: "coverage", section: key, value: `${a.coverage}%`, threshold: `< ${COVERAGE_FLOOR}% measured (coverage floor — no escape; lift it with section work)` });
+  if (a.offBookPct >= OFF_BOOK_CAP) {
+    const review = COVERAGE_REVIEW[key];
+    if (review) reviewedEscapes.push({ section: key, offBookPct: a.offBookPct, owner: review.owner, reason: review.reason });
+    else gateFailures.push({ gate: "off-book", section: key, value: `${a.offBookPct}%`, threshold: `≥ ${OFF_BOOK_CAP}% off-book (excused×${GROUP_CHECKS_SUM}+skipped est.) — escape only via a written review in coverage-review.json` });
+  }
+  if (a.heurPct != null && a.heurPct >= HEURISTIC_CAP) gateFailures.push({ gate: "heuristic", section: key, value: `${a.heurPct}%`, threshold: `≥ ${HEURISTIC_CAP}% heuristic-paired — explicit data-spec binding is achievable (intro/usecase ≈0.8%)` });
+}
 // r339 T-02 audit — the exception cap was a printed label only; enforce it
 // AFTER the scoped-run label so no scoping can mask a cap breach:
 // exceptions.json is "TRUE waivers only", hard cap <5% on ANY gated run.
-if (GATE && exRate >= 5) gateVerdict = `FAIL(exception-cap:${exRate}%≥5%)`;
+// r339 T-02b — verdict assembly: every breach kind is listed (single-breach
+// labels keep their exact pre-T-02b format; nothing is ever masked).
+const failParts = [];
+if (GATE && exRate >= 5) failParts.push(`exception-cap:${exRate}%≥5%`);
+if (GATE && gateFailures.length) {
+  failParts.push(`${[...new Set(gateFailures.map((f) => f.gate))].join("+")}:${[...new Set(gateFailures.map((f) => f.section))].join(",")}`);
+  console.error(`gate breach(es) — r339 T-02b honesty gates:
+  ${gateFailures.map((f) => `${f.gate}: ${f.section} — ${f.value} ${f.threshold}`).join("\n  ")}`);
+}
+if (failParts.length) gateVerdict = `FAIL(${failParts.join("+")})`;
 if (RATCHET_UPDATE && !FULL_SCOPE) {
-  console.error("--ratchet refused: run is section- or bp-scoped (" + SECTIONS_WANTED.length + "/" + SECTIONS.length + " sections, " + BPS_WANTED.length + "/" + BPS.length + " bps) — the ratchet may only be raised from a full-matrix run");
+  console.error("--ratchet refused: run is section- or bp-scoped (" + SECTIONS_WANTED.length + "/" + SECTIONS.length + " sections, " + BPS_WANTED.length + "/" + BPS.length + " bps) — the ratchet may only be raised from a full-matrix run that writes a fresh full-matrix results.json in the same invocation");
   process.exit(2);
 }
-if (RATCHET_UPDATE && (ratchetValue == null || rate > ratchetValue)) {
-  writeFileSync(RATCHET_FILE, JSON.stringify({ rate, total, pass: totalPass, fail: totalFail, updatedAt: new Date().toISOString() }, null, 2) + "\n");
-  console.log(`ratchet ${ratchetValue == null ? "created" : `${ratchetValue}→${rate}`}`);
-}
+// (the ratchet.json write itself moved to the tail — it may only land AFTER
+// this invocation's full-matrix results blob is on disk: the floor always
+// keeps a reproducible backing blob, never last-writer-wins git archaeology.)
 
 results.summary = {
   total, pass: totalPass, fail: totalFail, passRate: rate,
@@ -967,6 +1211,20 @@ results.summary = {
   unmatchedFailures: results.failures.filter((f) => f.kind === "no-counterpart").length,
   gate: gateVerdict, ...(ratchetValue != null ? { ratchet: ratchetValue } : {}),
 };
+// r339 T-02b — coverage beside passRate (the audit's risk-fix #1) + the new
+// gates' full breach list + documented review escapes (never silent).
+{
+  const meas = Object.values(sectionAgg).reduce((a, s) => a + s.measured, 0);
+  const ob = Object.values(sectionAgg).reduce((a, s) => a + s.offBookEst, 0);
+  results.summary.coverage = {
+    formula: `coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × ${GROUP_CHECKS_SUM} (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.`,
+    thresholds: { coverageFloor: `${COVERAGE_FLOOR}% measured (FAIL(coverage), no escape)`, offBookCap: `${OFF_BOOK_CAP}% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)`, heuristicShareCap: `${HEURISTIC_CAP}% of pairs (FAIL(heuristic))` },
+    overall: { measured: meas, offBookEst: ob, coveragePct: meas + ob ? Math.round((meas / (meas + ob)) * 1000) / 10 : 0, offBookPct: meas + ob ? Math.round((ob / (meas + ob)) * 1000) / 10 : 0 },
+    sections: sectionAgg,
+    gateFailures,
+    reviewedEscapes,
+  };
+}
 for (const key of SECTIONS_WANTED) {
   results.sections[key] = {};
   for (const bpName of BPS_WANTED) {
@@ -993,8 +1251,16 @@ results.skippedReport.splice(400);
 results.summary.totalSkipped = totalSkipped;
 if (DARK) {
   const dTotal = darkPass + darkFail;
-  results.summary.dark = { pass: darkPass, fail: darkFail, passRate: dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0, contrastChecked: darkContrast, contrastSkippedReported: darkContrastSkipped, contrastFloor: 3, theme: darkTheme?.attr ?? null, settle: darkSettle, note: "spec is light-only: geometry/type re-asserted on the dark DOM; color group = token-flip census + contrast floor vs COMPOSITED effective background (rgba/oklch inks alpha-blended; uncountable pairs reported as skips)" };
+  // r339 T-02b — the all-nodes dark ink census lands in the summary + the
+  // worst-50 report (sorted by ratio); counts stay out of darkPass/darkFail.
+  results.darkInkReport.sort((a, b) => a.ratio - b.ratio);
+  results.summary.darkInkOmitted = Math.max(0, results.darkInkReport.length - 50);
+  results.darkInkReport.splice(50);
+  results.summary.dark = { pass: darkPass, fail: darkFail, passRate: dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0, contrastChecked: darkContrast, contrastSkippedReported: darkContrastSkipped, contrastFloor: 3, theme: darkTheme?.attr ?? null, settle: darkSettle, darkInk: { fail: darkInkFail, checked: darkInkChecked, skipped: darkInkSkipped, floor: DARK_INK_FLOOR, note: "r339 T-02b: EVERY text-bearing node (not only spec-paired) at WCAG AA ≥4.5:1 vs composited effective background; worst 50 in results.darkInkReport; counted separately from the paired-contrast totals" }, note: "spec is light-only: geometry/type re-asserted on the dark DOM; color group = token-flip census + contrast floor vs COMPOSITED effective background (rgba/oklch inks alpha-blended; uncountable pairs reported as skips)" };
 }
+// r339 T-02b — the 390 side-gutter assertion summary (per-section detail in
+// results.sectionEdges; FAIL rows are kind "edge390" in results.failures).
+results.summary.edge390 = { fails: edge390Fails, tolerance: `±${EDGE390_TOL}px vs the spec's recorded 390 section-root gutter`, note: "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w" };
 
 // console matrix
 const col = (s) => String(s).padEnd(9);
@@ -1011,10 +1277,23 @@ for (const key of SECTIONS_WANTED) {
     counts += col(`${c.pass}/${n}`);
   }
   const c0 = Object.values(matrix[key] || {})[0] || {};
-  console.log(line + col("") + ` e=${c0.explicit ?? 0} d=${c0.dataSpec ?? 0} h=${c0.heuristic ?? 0} u=${c0.unmatched ?? 0} x=${c0.excused ?? 0} s=${c0.skipped ?? 0}`);
+  const a0 = sectionAgg[key];
+  console.log(line + col("") + ` e=${c0.explicit ?? 0} d=${c0.dataSpec ?? 0} h=${c0.heuristic ?? 0} u=${c0.unmatched ?? 0} x=${c0.excused ?? 0} s=${c0.skipped ?? 0}` + (a0 ? `  cov=${a0.coverage}% heur=${a0.heurPct == null ? "—" : a0.heurPct + "%"}` : ""));
 }
 console.log("-".repeat(70));
 console.log(`TOTAL ${totalPass}/${total} = ${rate}%  ·  exceptions ${exceptionUses} (${exRate}%, cap 5%)  ·  no-counterpart FAILs ${results.summary.unmatchedFailures}  ·  failures listed: ${results.failures.length}  ·  skipped (counted) ${totalSkipped}`);
+// r339 T-02b — coverage table beside the pass-rate (risk-fix #1): a rate is
+// only readable next to the share of the surface it was measured on.
+console.log(`coverage = measured/(measured+off-book est.)  ·  floor ${COVERAGE_FLOOR}%  ·  off-book cap ${OFF_BOOK_CAP}% (escape: coverage-review.json)  ·  heuristic cap ${HEURISTIC_CAP}%`);
+for (const [key, a] of Object.entries(sectionAgg)) {
+  const flags = [
+    a.coverage < COVERAGE_FLOOR && "⚠coverage",
+    a.offBookPct >= OFF_BOOK_CAP && (COVERAGE_REVIEW[key] ? `off-book(reviewed:${COVERAGE_REVIEW[key].owner})` : "⚠off-book"),
+    a.heurPct != null && a.heurPct >= HEURISTIC_CAP && "⚠heuristic",
+  ].filter(Boolean);
+  console.log(`  ${key.padEnd(22)} cov ${String(a.coverage + "%").padStart(6)}  off-book ${String(a.offBookPct + "%").padStart(6)}  heur ${a.heurPct == null ? "   —" : String(a.heurPct + "%").padStart(6)}  (meas ${a.measured}, skip ${a.skipped}, exc ${a.excused}×${GROUP_CHECKS_SUM})${flags.length ? "  " + flags.join(" ") : ""}`);
+}
+console.log(`OVERALL coverage ${results.summary.coverage.overall.coveragePct}%  ·  off-book ${results.summary.coverage.overall.offBookPct}%  ·  edge390 fails ${edge390Fails}${edge390Fails ? " — " + Object.entries(results.sectionEdges).filter(([, r]) => r.failLeft || r.failRight).map(([k, r]) => `${k}(L${r.failLeft ? "✗" : "✓"}/R${r.failRight ? "✗" : "✓"})`).join(" ") : ""}`);
 const topKinds = {};
 for (const f of results.failures) topKinds[f.kind] = (topKinds[f.kind] || 0) + 1;
 console.log("top failure kinds:", Object.entries(topKinds).sort((a, b) => b[1] - a[1]).slice(0, 6).map(([k, v]) => `${k}:${v}`).join("  "));
@@ -1034,8 +1313,47 @@ if (DARK) {
   }
   const dTotal = darkPass + darkFail;
   console.log(`DARK TOTAL ${darkPass}/${dTotal} = ${dTotal ? Math.round((darkPass / dTotal) * 1000) / 10 : 0}%  ·  contrast checks ${darkContrast}  ·  reported-uncountable ${darkContrastSkipped}  ·  settle ${darkSettle.map((s) => `${s.bp}:${s.settled ? "ok" : "UNSTABLE(" + s.frames + "f)"}`).join(" ")}  ·  html[data-theme]=${darkTheme?.attr}`);
+  // r339 T-02b — all-nodes ink census line (worst offender per section).
+  const worst = {};
+  for (const r of results.darkInkReport) if (!worst[r.section] || r.ratio < worst[r.section].ratio) worst[r.section] = r;
+  console.log(`DARK INK (every text-bearing node, WCAG AA ≥ ${DARK_INK_FLOOR}:1)  fails ${darkInkFail} / checked ${darkInkChecked} / skipped ${darkInkSkipped}  ·  worst: ${Object.entries(worst).map(([k, r]) => `${k} ${r.ratio}:1`).join("  ") || "none"}  ·  worst-50 → results.darkInkReport`);
 }
 
 writeFileSync(OUT, JSON.stringify(results, null, 1));
 console.log("results → " + OUT);
+
+// r339 T-02b — RESULTS PROVENANCE (risk-fix #4/#5): every run files its blob
+// under scripts/conformance/results/<engine>-<date>-<scope>.json so the
+// ratchet (and every per-section number) always has a reproducible backing
+// blob committed — results.json alone is last-writer-wins. And --ratchet on a
+// full-scope run force-writes the CANONICAL results.json in the same
+// invocation (even when --out points elsewhere): the floor may never again be
+// raised without a fresh full-matrix blob landing with it.
+{
+  const scopeParts = [];
+  if (SECTIONS_WANTED.length !== SECTIONS.length) scopeParts.push("sections-" + SECTIONS_WANTED.join("+"));
+  if (BPS_WANTED.length !== BPS.length) scopeParts.push("bp-" + BPS_WANTED.join("+"));
+  const scopeName = scopeParts.length ? scopeParts.join(".") : "full";
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  const stamp = `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}-${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}`;
+  const provName = `${ENGINE}-${stamp}-${scopeName}.json`;
+  results.provenance = { file: provName, scope: scopeName, fullMatrix: FULL_SCOPE, sections: `${SECTIONS_WANTED.length}/${SECTIONS.length}`, bps: `${BPS_WANTED.length}/${BPS.length}`, engine: ENGINE, dark: DARK, gate: GATE, url: URL };
+  const blob = JSON.stringify(results, null, 1);
+  writeFileSync(OUT, blob); // re-write with the provenance block included
+  mkdirSync(join(__dirname, "results"), { recursive: true });
+  writeFileSync(join(__dirname, "results", provName), blob);
+  console.log(`provenance → scripts/conformance/results/${provName} (scope: ${scopeName})`);
+  if (RATCHET_UPDATE && OUT !== join(__dirname, "results.json")) {
+    writeFileSync(join(__dirname, "results.json"), blob);
+    console.log(`ratchet backing blob → scripts/conformance/results.json (fresh full-matrix results.json written in this invocation)`);
+  }
+}
+
+// ratchet floor update — AFTER all blobs are on disk (see the tail note above
+// the summary): a raise is always backed by a reproducible full-matrix blob.
+if (RATCHET_UPDATE && (ratchetValue == null || rate > ratchetValue)) {
+  writeFileSync(RATCHET_FILE, JSON.stringify({ rate, total, pass: totalPass, fail: totalFail, updatedAt: new Date().toISOString() }, null, 2) + "\n");
+  console.log(`ratchet ${ratchetValue == null ? "created" : `${ratchetValue}→${rate}`}`);
+}
 process.exit(GATE && String(gateVerdict).startsWith("FAIL") ? 1 : 0);
