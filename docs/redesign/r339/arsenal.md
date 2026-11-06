@@ -61,3 +61,7 @@
 - [T-1213] /home/z/t1213-auth-dark.mjs (playwright probe, run.mjs compositing law) — auth dark check login/register @1440+390: 224 text nodes, 0 fails
 - [T-1213] run.mjs (t02h, full matrix) — darkInk 9 sections × 5 bps: 193 fails before (cta 23, map 170) → 0/1289 checked; edge390 0; light A/B identical per-bp (stash/pop)
 - [T-1213] vitest re-pin (r183-B8) — reconciled the ceiling pin 777→770 DOWN after c8a61806 moved the gate law (stricter, 992d520d pattern); verify --fast GREEN, bundle 764.3/770
+- [T-11b2] node — dev server vite :5314 (worktree symlinked to main node_modules, same commit 58af8bfa)
+- [T-11b2] tween.mjs/playwright — baseline + per-item coverage re-measure @1440/@390
+- [T-11b2] ripgrep — locate map/platform/hero seats + test surface
+- [T-11b2] no gsap/frontend-design skill present — noted, CSS scroll-driven-animation route per brief

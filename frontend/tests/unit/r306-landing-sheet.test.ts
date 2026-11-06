@@ -428,6 +428,16 @@ describe('r306 hygiene — the sheet stays clean', () => {
       'wy-snap', // R313: the why-stage verb snap (the 74%-hold plateau — supersedes vs-tag-snap, which moved to campus.css with the status rows)
       'hro-fade-loop', // R331: the hero deco ledger cards' idle fade (the reference's own deco loop, 1.5s, ≥992 only) — collapsed by the hero RM belt
       'pr-item-fade', // r338 T-08: the platform rows' cross-fade marquee (heron's row pair, 14s, ≥992 only) — collapsed by the platform RM belt
+      // T-11b2 (r339): the two scroll-driven scrub entrances — Heron's
+      // home-map scrub scene + the platform-content-title flourish. NOT
+      // ambient loops: view()-timeline entrances (animation-timeline:
+      // view(), @supports-gated with the IO reveal-up fallback for
+      // non-supporting browsers). Their RM collapse is the
+      // prefers-reduced-motion: no-preference wrapper — under reduce the
+      // rules are absent and the reveal-up static sheet stands (the
+      // belt below still collapses every ambient instrument).
+      'jt-head-scrub', // r339 T-11b2: the chapters head's scrubbed entrance (journey.css)
+      'pr-title-scrub', // r339 T-11b2: the platform band's title flourish (platform.css)
       // r335 W-chrome: 'sl-scan' retired with the R313 SheetLoader sheet
       // (dead .sl-* rules deleted; the preloader's own RM gates are JS-side).
     ]);

@@ -1573,3 +1573,45 @@
     font-size: 24px;
   }
 }
+
+/* ══ T-11b2 — the map head's SCROLL-SCRUBBED entrance ════════════════
+ * Heron's home-map scrub scene (T-11A census: 88 opacity + 76
+ * translateY units scrubbed over the section, 800ms/power2.out when
+ * unscrubbed). The house-compatible scrub route is a CSS
+ * scroll-driven animation — a view() timeline over the head's
+ * entry→cover range (the recorded trigger window start 1465 → end
+ * 2352 on her own page is the position-relative twin; px pins would
+ * not survive our own 700dvh driver). From-states are Heron-recorded:
+ * opacity 0 · y 26.667 · the subtle scale settle. @supports-gated so
+ * browsers without view() keep the IO one-shot reveal-up seat (the
+ * existing 650ms path); the no-preference belt keeps reduced-motion
+ * visitors on the static sheet. The stage machine (data-stage /
+ * data-finding crossfades) is untouched — this seat scrubs ONLY the
+ * section head (Heron's map-content-title/label twins per the r335
+ * mapping). Zero WAAPI, zero JS — the engine stays CSS+IO+Lenis. */
+@keyframes jt-head-scrub {
+  from {
+    opacity: 0;
+    transform: translateY(26.667px); /* Heron's recorded y @1440 */
+    scale: 1.02;                     /* the recorded settle side */
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    scale: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .chapters-head .reveal-up {
+      animation: jt-head-scrub var(--t-cinema) var(--ease) both;
+      animation-timeline: view();
+      /* entry 0% → cover 40%: the head scrubs in as it crosses the
+         fold and settles before the pin engages — the reversible,
+         scroll-linked read Heron's scrub gives (scroll back up and
+         the head scrubs out again; the IO path alone cannot). */
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
