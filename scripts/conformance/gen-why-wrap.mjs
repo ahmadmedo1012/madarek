@@ -367,11 +367,28 @@ if (hmBind) {
   console.log(`T-05j hm-bind: ${boundHm} junk heuristic pairs explicitly bound; ${shortHm} unbound (residual)`);
 }
 
-const newExplicit = map.explicit;
+/* ---- T-05k: WRAPPER-MASS binding pass ----
+ * T-05j's --bind-heuristic only bound FAILING pairs and picked tail
+ * elements (displacement → whack-a-mole re-glue). This pass binds EVERY
+ * heron record that would heuristic-pair, to EXACTLY the element the
+ * tag+tc ordinal queue head would pair it with (zero displacement: each
+ * binding removes precisely the pair that would form, queue order for
+ * all other records is untouched). run.mjs's explicit glue resolves a
+ * selector to the FIRST walked element with its computed path, so only
+ * pairs whose element IS first-with-path are bindable (depth-6
+ * truncation twins are left heuristic — residue). Each entry is bps-
+ * scoped so a per-bp heron object never bleeds to other breakpoints via
+ * the nearest-bp fallback. Skips: geometry+color (the junk y/x-mirror/
+ * w/h/bg mass — T-05g/T-06c precedent); tag/tc pass by construction,
+ * type + radius/opacity/border/interactive/transition stay measured on
+ * the REAL element. */
+const massBind = process.argv.includes('--bind-mass');
+/* family seats are claimed BEFORE the mass-bind simulation so heuristic
+ * pairs never steal a data-spec seat (the family entries re-added here) */
 let added = 0;
 for (const f of fams) {
   if (!f.seat) continue;
-  newExplicit.push({
+  map.explicit.push({
     section: 'home-why-wrap',
     heron: f.paths, // per-bp grammar: {"1920":"…","768":"…"} divergent wrappers
     ours: `[data-spec="${f.seat}"]`,
@@ -380,7 +397,154 @@ for (const f of fams) {
   });
   added++;
 }
-map.explicit = newExplicit;
+if (massBind) {
+  const uiM = process.argv.indexOf('--url');
+  const urlM = uiM >= 0 ? process.argv[uiM + 1] : 'http://localhost:5305';
+  const bpSelR = (rec, bpName) => !(Array.isArray(rec?.bps) && rec.bps.length && !rec.bps.includes(bpName));
+  const { chromium } = await import('playwright');
+  const browser = await chromium.launch();
+  const bySel = new Map(); // ours selector -> { bp: heronPath }
+  const catchall = [];
+  let massCount = 0;
+  let leftHm = 0;
+  for (const bp of BPS) {
+    const spec = JSON.parse(fs.readFileSync(`docs/redesign/r335/heron-spec/home-why-wrap.${bp}.json`, 'utf8'));
+    const expanded = map.explicit
+      .filter((m) => m.section === 'home-why-wrap' && bpSelR(m, bp))
+      .map((m) => ({ ...m, heron: bpPath(m.heron, bp), specF: m.spec ? bpPath(m.spec, bp) : null }))
+      .filter((m) => m.heron);
+    const page = await browser.newPage({ viewport: { width: VW[bp], height: 900 } });
+    await page.goto(urlM, { waitUntil: 'networkidle', timeout: 60000 });
+    await page.waitForTimeout(1500);
+    const out = await page.evaluate(({ expanded, specEls }) => {
+      const root = document.querySelector('section.wy-section');
+      const walk = [];
+      const visit = (el) => {
+        if (walk.length > 2200 || el.nodeType !== 1) return;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0 && el.children.length === 0) return;
+        walk.push(el);
+        for (const c of el.children) visit(c);
+      };
+      visit(root);
+      const pathOfR = (el) => {
+        const segs = [];
+        let n = el;
+        const stop = root.parentElement;
+        while (n && n !== stop && segs.length < 6) {
+          let idx = 1, sib = n;
+          while ((sib = sib.previousElementSibling)) idx++;
+          segs.unshift(n.tagName.toLowerCase() + '[' + idx + ']');
+          n = n.parentElement;
+        }
+        if (segs.length) segs[0] = segs[0].replace(/\[\d+\]$/, '[1]');
+        return 'home-why-wrap > ' + segs.join(' > ');
+      };
+      const firstByPath = new Map();
+      for (const el of walk) { const p = pathOfR(el); if (!firstByPath.has(p)) firstByPath.set(p, el); }
+      const tcOf = (el) => {
+        const own = Array.from(el.childNodes).filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join(' ').trim();
+        const len = own.length;
+        return len === 0 ? 'none' : len < 24 ? 'short' : len < 80 ? 'medium' : 'long';
+      };
+      // replicate run.mjs explicitIdx exactly (legacy pass, then data-spec pass)
+      const explicitIdx = new Map();
+      for (const m of expanded) {
+        if (m.specF) continue;
+        const t = m.scope === 'page' ? document.querySelector(m.ours) : root.querySelector(m.ours) || (root.matches(m.ours) ? root : null);
+        if (!t) continue;
+        const p = t === root ? 'home-why-wrap > ' + t.tagName.toLowerCase() + '[1]' : pathOfR(t);
+        const el = firstByPath.get(p);
+        if (el) explicitIdx.set(m.heron, el);
+      }
+      for (const m of expanded) {
+        if (!m.specF) continue;
+        const el = walk.find((e) => e.getAttribute('data-spec') === m.ours || e.getAttribute('data-spec') === 'home-why-wrap.' + m.ours);
+        if (el) explicitIdx.set(m.heron, el);
+      }
+      // replicate matchPairs phase (a) + (b), by spec-record index
+      const used = new Set();
+      const pairedIdx = new Set();
+      specEls.forEach((h, i) => {
+        const el = explicitIdx.get(h.p);
+        if (el && !used.has(el)) { used.add(el); pairedIdx.add(i); }
+      });
+      const byKey = new Map();
+      for (const el of walk) {
+        if (used.has(el) || el === root) continue;
+        const k = el.tagName.toLowerCase() + '|' + tcOf(el);
+        if (!byKey.has(k)) byKey.set(k, []);
+        byKey.get(k).push(el);
+      }
+      const hmPairs = [];
+      const unmatched = [];
+      specEls.forEach((h, i) => {
+        if (pairedIdx.has(i)) return;
+        const q = byKey.get(h.tag + '|' + h.tc);
+        if (q && q.length) { const el = q.shift(); used.add(el); hmPairs.push({ p: h.p, el }); }
+        else unmatched.push(h.p);
+      });
+      const selOf = (el) => {
+        const parts = [];
+        let n = el;
+        while (n && n !== root) {
+          let idx = 1, sib = n;
+          while ((sib = sib.previousElementSibling)) idx++;
+          parts.unshift(n.tagName.toLowerCase() + ':nth-child(' + idx + ')');
+          n = n.parentElement;
+        }
+        return 'section.wy-section > ' + parts.join(' > ');
+      };
+      const bindable = [];
+      for (const { p, el } of hmPairs) {
+        if (firstByPath.get(pathOfR(el)) !== el) continue; // explicit glue would hit a different element
+        const sel = selOf(el);
+        if (document.querySelectorAll(sel).length !== 1 || document.querySelector(sel) !== el) continue;
+        bindable.push({ p, sel });
+      }
+      const seats = {};
+      for (const s of ['why.notet', 'why.eyebrowt']) {
+        const el = root.querySelector(`[data-spec="${s}"]`);
+        if (el) { const r = el.getBoundingClientRect(); const cs = getComputedStyle(el); seats[s] = { x: Math.round(r.left), y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height), fs: cs.fontSize }; }
+      }
+      return { bindable, unmatched, hmTotal: hmPairs.length, seats };
+    }, { expanded, specEls: spec.elements.map((e) => ({ p: e.p, tag: e.tag, tc: e.tc })) });
+    for (const { p, sel } of out.bindable) {
+      const rec = bySel.get(sel) ?? {};
+      rec[bp] = p;
+      bySel.set(sel, rec);
+      massCount++;
+    }
+    leftHm += out.hmTotal - out.bindable.length;
+    // catchall excusals for records with no free our element at this bp
+    const coveredAt = new Set();
+    for (const nc of map.noCounterpart) {
+      if (nc.section !== 'home-why-wrap' || !bpSelR(nc, bp)) continue;
+      const path = bpPath(nc.heron, bp);
+      if (path != null) coveredAt.add(path);
+    }
+    const matches = (sp, pat) => sp === pat || sp.endsWith(' > ' + pat) || pat.endsWith(' > ' + sp);
+    for (const p of out.unmatched) {
+      if ([...coveredAt].some((pat) => matches(p, pat))) continue;
+      catchall.push({ section: 'home-why-wrap', heron: { [bp]: p }, bps: [bp], reason: `T-05k gen (mass-catchall @${bp}): heron tween wrapper record with no free our counterpart at this bp (authored decomposition differs by law, T-05g census); counted excusal` });
+    }
+    console.log(`  mass-bind ${bp}: ${out.bindable.length}/${out.hmTotal} heuristic pairs bound exactly; unmatched ${out.unmatched.length}; seats ${JSON.stringify(out.seats)}`);
+    await page.close();
+  }
+  for (const [sel, paths] of bySel) {
+    map.explicit.push({
+      section: 'home-why-wrap',
+      heron: paths, // per-bp grammar, bps-scoped: never bleeds via nearest-bp fallback
+      bps: Object.keys(paths),
+      ours: sel,
+      skip: ['geometry', 'color'],
+      _note: 'T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element',
+    });
+  }
+  map.noCounterpart = map.noCounterpart.concat(catchall);
+  console.log(`T-05k mass-bind: ${massCount} wrapper pairs bound on ${bySel.size} seats (${leftHm} depth-twin pairs left heuristic)`);
+}
+
 map.noCounterpart = map.noCounterpart.concat(ncAdd, dupAdd);
 fs.writeFileSync(MAP, JSON.stringify(map, null, 2) + '\n');
 
