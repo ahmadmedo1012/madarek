@@ -120,3 +120,4 @@ T-03h | node scripts/conformance/run.mjs --sections home-intro-wrap --url | ligh
 T-03h | vite --port 5303 | dev server for the conformance instrument
 T-05l | playwright (ad-hoc probe scripts) | live-DOM computed-style probes mapping failing oursSelectors -> classes/data-specs per bp
 T-05l | node scripts/conformance/run.mjs --sections home-why-wrap --dark | light + dark measurement @5305
+- T-06m | python3 (json census over docs/redesign/r335/heron-spec/footer.*.json) | enumerate 284 unique spec paths, bound/unbound split, container-collision + aggregate-expectation replication to re-scope footer.json suppression

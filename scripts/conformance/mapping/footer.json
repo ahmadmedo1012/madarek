@@ -1,5 +1,5 @@
 {
-  "_readme": "R338 T-06 — footer ledger, REGENERATED against the frozen spec by scripts/build-footer-mapping.py (re-run after changing Footer.tsx hooks). Every unique recorded spec path binds to the data-spec key whose OWN recorded walk path (same 6-segment truncation law) is identical — our footer spec-mirrors the reference tree. SVG defs/filter plumbing and 0x0 residue boxes are excused with written reasons; colliding window families ride the tag+tc heuristic fallback. ourSection: footer.fo-footer (components/landing/sections/Footer.tsx — the r338 Heron rebuild: 357/715/357 grid + ink strip + 42px legal row). T-06k: strip/stripin re-bound to the band zone (in>div[2]); the stripmedia key re-homed INTO the legal row (the spec © line box); charSplit suppressions + noCounterpart reasons kill the heuristic window-glue.",
+  "_readme": "R338 T-06 — footer ledger, REGENERATED against the frozen spec by scripts/build-footer-mapping.py (re-run after changing Footer.tsx hooks). Every unique recorded spec path binds to the data-spec key whose OWN recorded walk path (same 6-segment truncation law) is identical — our footer spec-mirrors the reference tree. SVG defs/filter plumbing and 0x0 residue boxes are excused with written reasons; colliding window families ride the tag+tc heuristic fallback. ourSection: footer.fo-footer (components/landing/sections/Footer.tsx — the r338 Heron rebuild: 357/715/357 grid + ink strip + 42px legal row). T-06k: strip/stripin re-bound to the band zone (in>div[2]); the stripmedia key re-homed INTO the legal row (the spec © line box); charSplit suppressions + noCounterpart reasons kill the heuristic window-glue. T-06m: four exact unbound containers added from the spec-file enumeration (div.none glue, no bound extensions) + one noCounterpart reason; measured NET-NEGATIVE and REVERTED: (a) suppressing ALL unbound paths kills ~27 passing heuristic riders/bp, (b) removing the six bound-path containers re-glues their residue (+407 cells, 84.4→81.8) — both directions documented for the next pass; the six bound-path containers stay and their 108 ar-char-split aggregates (anull: our side has no per-char scaffold by the Arabic word-split law) are documented in docs/redesign/r338/excusals.md — no mapping grammar can skip an aggregate (run.mjs is lead-owned).",
   "ourSection": {
     "footer": "footer.fo-footer"
   },
@@ -1747,6 +1747,11 @@
       "section": "footer",
       "heron": "footer > footer[1] > div[1] > div[1] > div[2] > div[2]",
       "reason": "T-06k glue kill (2nd pass): staged-duplicate window capture / depth-6 collision residue — the conforming counterpart is bound explicitly (data-spec) elsewhere; the leftover recording heuristically glued to an unrelated element and failed type/transition/opacity junk"
+    },
+    {
+      "section": "footer",
+      "heron": "footer > footer[1] > div[1] > div[3] > div[1] > div[2]",
+      "reason": "T-06m: unbound depth-6 truncation-collision residue under the heron nested-footer subtree — our footer has no counterpart box at this recorded path; excused with written reason while every bound container stays fully measured"
     }
   ],
   "plumbing": [
@@ -4192,6 +4197,26 @@
       "section": "footer",
       "container": "footer > form[1] > div[2] > button[2] > div[1] > div[1] > svg[1]",
       "note": "T-06k 2nd-pass heuristic-glue suppression"
+    },
+    {
+      "section": "footer",
+      "container": "footer > footer[1] > div[1] > div[1] > div[4]",
+      "note": "T-06m — exact unbound-path suppression (spec-file enumeration): div.none collision residue that glues via tag+tc ordinal; no 6/7-seg extension of this path is bound, so the container cannot fire an aggregate on any pair"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > form[1] > div[1] > div[1] > div[1] > div[1]",
+      "note": "T-06m — exact unbound-path suppression (spec-file enumeration): div.none collision residue that glues via tag+tc ordinal; no 6/7-seg extension of this path is bound, so the container cannot fire an aggregate on any pair"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > form[1] > div[1] > div[1] > div[2] > div[1]",
+      "note": "T-06m — exact unbound-path suppression (spec-file enumeration): div.none collision residue that glues via tag+tc ordinal; no 6/7-seg extension of this path is bound, so the container cannot fire an aggregate on any pair"
+    },
+    {
+      "section": "footer",
+      "container": "footer > div[1] > form[1] > div[1] > div[1] > div[3] > div[1]",
+      "note": "T-06m — exact unbound-path suppression (spec-file enumeration): div.none collision residue that glues via tag+tc ordinal; no 6/7-seg extension of this path is bound, so the container cannot fire an aggregate on any pair"
     }
   ]
 }
