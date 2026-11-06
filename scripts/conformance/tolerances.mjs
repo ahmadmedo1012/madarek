@@ -66,8 +66,10 @@ export function parseEase(spec) {
   if (spec == null) return null;
   // CSS multi-ease lists ("ease, ease, ease") — one ease per transitioned
   // property: compare on the first component (identical lists are one ease).
+  // cubic-bezier(...) contains commas INSIDE parens — never split those (the
+  // regex below already picks the first cubic-bezier out of any mixed list).
   const raw = Array.isArray(spec) ? spec[0] : spec;
-  if (typeof raw === "string" && raw.includes(",")) return parseEase(raw.split(",")[0]);
+  if (typeof raw === "string" && raw.includes(",") && !raw.includes("(")) return parseEase(raw.split(",")[0]);
   const s = String(raw).trim().toLowerCase().replace(/\s+/g, "");
   const cb = s.match(/cubic-bezier\(([-\d.]+),([-\d.]+),([-\d.]+),([-\d.]+)\)/);
   if (cb) return [Number(cb[1]), Number(cb[2]), Number(cb[3]), Number(cb[4])];
