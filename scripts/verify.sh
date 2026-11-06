@@ -56,6 +56,16 @@ else
   fail "build/bundle"; tail -5 /tmp/verify-build.log
 fi
 
+# 3.5 CSS ratchet gate (R339 T-30 — stylelint errors + !important /
+#     raw-z-index / raw-hex counts vs the committed baseline; runs in
+#     BOTH modes, ~15s warm: npx-cached stylelint + a node counter)
+step "stylelint + CSS ratchet gate"
+if bash scripts/gates/stylelint-gate.sh > /tmp/verify-cssgate.log 2>&1; then
+  ok "css ratchet $(grep -oE 'importantDeclarations[^,}]*' /tmp/verify-cssgate.log | head -1 | tr -d '"')"
+else
+  fail "css ratchet"; tail -8 /tmp/verify-cssgate.log
+fi
+
 if [[ $FAST -eq 1 ]]; then
   step "--fast mode: stopping here"
   [[ $FAIL -eq 0 ]] && echo "verify.sh: FAST PASS" || echo "verify.sh: FAIL"

@@ -42,8 +42,8 @@ const readStyle = (f: string) => readFileSync(path.join(STYLES_DIR, f), 'utf-8')
 // remainder (chrome/shadows/role accents — tokens.css). The generated
 // sheet is concatenated FIRST so themeBlock() finds the theme blocks
 // where their values live.
-const tokensCss = readStyle('tokens.css');
-const tokensAll = readStyle('tokens.generated.css') + '\n' + tokensCss;
+const tokensCss = readStyle('tokens/tokens.css');
+const tokensAll = readStyle('tokens/tokens.generated.css') + '\n' + tokensCss;
 
 /** Extract a top-level `[data-theme="X"] { … }` block by brace match. */
 function themeBlock(theme: 'light' | 'dark'): string {

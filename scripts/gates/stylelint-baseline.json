@@ -1,0 +1,9 @@
+{
+  "_doc": "R339 T-30 stylelint/CSS ratchet baseline. Axes may only go DOWN. To re-baseline after a legitimate drop (or a reviewed, doc'd increase) run: bash scripts/gates/stylelint-gate.sh --update — and commit the change with the reason. rawGrepImportant is informational only (the R339 brief's grep number, comments included).",
+  "stylelintErrors": 45,
+  "stylelintWarnings": 57,
+  "importantDeclarations": 52,
+  "rawZIndex": 79,
+  "rawHex": 36,
+  "rawGrepImportant": 109
+}

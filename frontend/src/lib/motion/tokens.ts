@@ -60,7 +60,7 @@ const DURATION_VARS: Record<MotionDurationName, string> = {
 
 /**
  * Documented rung fallbacks — mirror the semantic block in
- * frontend/src/styles/tokens.css (micro..long alias the --t-* rungs,
+ * frontend/src/styles/tokens/tokens.css (micro..long alias the --t-* rungs,
  * page..skeleton are literal). Verified against tokens.css at authoring
  * time; if the CSS ladder is retuned, update this table in the same
  * commit (it only serves SSR/garbage paths — live DOM reads win).

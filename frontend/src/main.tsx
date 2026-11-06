@@ -37,8 +37,8 @@ import './styles/fonts.css';
 // R326 M0.4 — the shared token half (source: shared/design-tokens.json)
 // lands FIRST, inside the same @layer tokens; tokens.css's hand-written
 // seats compose on top and its reduced-motion kill wins by import order.
-import './styles/tokens.generated.css';
-import './styles/tokens.css';
+import './styles/tokens/tokens.generated.css';
+import './styles/tokens/tokens.css';
 import './styles/motion.css';
 import './styles/base.css';
 import './styles/components.css';

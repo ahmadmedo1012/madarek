@@ -48,7 +48,7 @@ const shell = strip(read('shell/chrome.css'));
 const shellRaw = read('shell/chrome.css');
 const shellLines = shell.split('\n');
 const rawShellLines = shellRaw.split('\n');
-const tokens = strip(read('tokens.css'));
+const tokens = strip(read('tokens/tokens.css'));
 
 // ── 1. the §R325.a trio migration ───────────────────────────────────
 describe('r325 shell CSS contract — the §R325.a trio migration (tokens.css)', () => {

@@ -6,7 +6,7 @@
  * set: neutrals · triads · semantic seats · spacing · radius · motion ·
  * the mobile type ladder). This script emits BOTH platform halves:
  *
- *   frontend/src/styles/tokens.generated.css
+ *   frontend/src/styles/tokens/tokens.generated.css
  *     — web CSS custom properties, wrapped in the SAME `@layer tokens`
  *       as tokens.css and imported BEFORE it (main.tsx): the hand-
  *       written seats in tokens.css compose on top, and its
@@ -37,7 +37,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const SRC = join(ROOT, 'shared', 'design-tokens.json');
-const OUT_CSS = join(ROOT, 'frontend', 'src', 'styles', 'tokens.generated.css');
+const OUT_CSS = join(ROOT, 'frontend', 'src', 'styles', 'tokens', 'tokens.generated.css');
 const OUT_TS = join(ROOT, 'apps', 'mobile', 'src', 'design', 'tokens.generated.ts');
 const BRAND_WEB = join(ROOT, 'frontend', 'src', 'brand');
 const BRAND_RN = join(ROOT, 'apps', 'mobile', 'src', 'brand');
@@ -320,7 +320,7 @@ function buildTs() {
 
 /* ── write / check ─────────────────────────────────────────────────── */
 const outputs = [
-  { path: OUT_CSS, content: buildCss(), label: 'frontend/src/styles/tokens.generated.css' },
+  { path: OUT_CSS, content: buildCss(), label: 'frontend/src/styles/tokens/tokens.generated.css' },
   { path: OUT_TS, content: buildTs(), label: 'apps/mobile/src/design/tokens.generated.ts' },
 ];
 
@@ -379,7 +379,7 @@ const triads = Object.keys(data.color.triad).length;
 console.log(
   `\n✔ tokens:${CHECK ? 'check' : 'build'} — PASS` +
     `\n  source:  shared/design-tokens.json (${triads} triads · ${seats} semantic seats · both themes)` +
-    `\n  web:     frontend/src/styles/tokens.generated.css` +
+    `\n  web:     frontend/src/styles/tokens/tokens.generated.css` +
     `\n  mobile:  apps/mobile/src/design/tokens.generated.ts` +
     `\n  brand:   mark/lockups/wordmark byte-identical web ↔ RN`,
 );
