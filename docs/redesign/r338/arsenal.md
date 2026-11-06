@@ -108,3 +108,5 @@ T-10b | run.mjs+playwright chromium | cta pass-2 ruled-ledger counterparts measu
 T-10b3 | run.mjs scoped (--sections/--url) + pw chromium-1200→1223 symlink fallback + python census-path repair | cta binding paths
 T-10c | conformance/run.mjs @tolfix (--sections home-cta-wrap --dark, port 5310) + node failure-family census | cta light/dark measure + residual clustering
 T-10d2 | jq/node one-liners | failure-family aggregation from results.json + mapping bps-scoping edit
+T-03g | conformance/run.mjs --url --dark + python results.json census | measured intro 5bp light+dark, bucketed 800-cap failure rows by seat/kind
+T-03g | vite dev server :5303 (worktree-local) | served the WIP for the instrument
