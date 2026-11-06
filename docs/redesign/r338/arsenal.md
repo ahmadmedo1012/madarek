@@ -115,3 +115,6 @@ T-03g | vite dev server :5303 (worktree-local) | served the WIP for the instrume
 T-06l | run.mjs conformance instrument (light + --dark), node results.json forensics | footer residual pass: charSplit-aggregate + heuristic-glue suppression, census type re-seats
 T-05j | repo conformance instrument (run.mjs --url) + gen-why-wrap.mjs --check/--bind-heuristic live probe | why seat-resolution logging, caption per-bp re-binding, junk heuristic-pair binding
 T-05k | playwright (repo node_modules, chromium-1200 via /tmp/pw-browsers) + run.mjs --sections/--url | baseline re-measure + mass-bind seat/pair probe
+T-03h | jq + python3 | failure-cluster forensics from results.json; data-driven noCounterpart mapping rows
+T-03h | node scripts/conformance/run.mjs --sections home-intro-wrap --url | light re-measure on port 5303
+T-03h | vite --port 5303 | dev server for the conformance instrument

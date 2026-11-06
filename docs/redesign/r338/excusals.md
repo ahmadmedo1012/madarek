@@ -176,3 +176,7 @@ T-06 | footer × webkit (all 5 bps) | ~/.cache/ms-playwright has chromium only �
 - **heron desktop resolve pill (`a[1]>div[1]>div[1]`, 1024/1440/1920)** — the hover-expanding pill wash has no authored counterpart yet (a rounded wash LARGER than the button, 144×36@1024 … 240×60@1920); the 390/768 spec has no such node. Stays no-counterpart with reason; authoring it is the next cta pass (visual design decision, not plumbing).
 - **dark @390 = 89.6%** (636/710) — 0.4 under the 90 floor; residual families are the same sketch-band 390-wrapper x-mirror/y spread as light (measured, not excused).
 - svg defs/mask/filter/fecomponenttransfer @390 converted to counted plumbing skips (4 entries, T-05g precedent); 65 per-bp button-internal noCounterpart excuses CONVERTED to real bindings over the restructured Vision.tsx tree.
+
+
+## T-03h (r338/t03h-intro) - intro walk-truncation residue, noCounterpart rows
+- 3 div.none-misglued window-head paths + 0 unmatched paths + 0 h2 tween-span window paths excused in scripts/conformance/mapping/home-intro-wrap.json: the frozen-spec walk truncates depth>6 paths into colliding 6-segment windows; the tag+ordinal heuristic then glues them to our unclassed plumbing divs or reports unmatched. No 1:1 counterpart exists by design (tween residue / window heads) - lead ADDENDUM 11 sanctions the mechanism. Regeneration note: build-intro-mapping.py must re-add these rows.
