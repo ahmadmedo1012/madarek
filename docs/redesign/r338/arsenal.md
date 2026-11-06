@@ -125,3 +125,4 @@ T-06n | scripts/conformance/run.mjs (--sections footer --url :5306, light + --da
 T-06n | npx vite --port 5306 + PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers fallback symlinks | dev seat for the instrument
 T-05m | run.mjs --dark + gen-why-wrap.mjs (mass-bind re-seat, scope:page phantom fix, T-05m junk-glue plumbing kill) + vite:5305 | why 87.8→91.9 light, dark 89.7→92.8
 T-03i2 | conformance/run.mjs --sections home-intro-wrap --url :5303 (own vite) --dark + PLAYWRIGHT_BROWSERS_PATH=/tmp/pw-browsers + node (mapping plumbing append) | light+dark re-measure 87.8→98.3 / 90.4→98.0
+T-13b | interact.mjs (--url vite:5313, --sections home-hero-wrap, 5 bps) + playwright chromium (/tmp/pw-browsers fallback) + node heron-spec census enumeration | hero interaction-state seats authored + measured per-bp (41% → 98.3%)
