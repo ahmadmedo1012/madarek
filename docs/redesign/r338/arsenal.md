@@ -93,3 +93,4 @@ T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + 
 T-08c3 | node (results.json census + spec vr cross-match) | measured the 69 crossover copy rects vs primary tree; vr-equality analysis
 T-08c3 | scripts/conformance/run.mjs (read-only) | confirmed usedOurs single-pair law + plumbing skip grammar
 T-08c4 | node (mapping/plumbing twin-census script + results forensics) | derive marquee loop-copy twin paths from heron spec, extend skip:geometry plumbing, analyze failure families
+T-08c5 | node + playwright probe (repo node_modules, chromium via /tmp/pw-browsers symlink) + run.mjs --dark | rect-signature/role-voice crossover re-bind generator (73 explicit bindings), off-page park skips, 5-bp light+dark measurement

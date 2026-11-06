@@ -557,3 +557,35 @@ html[data-theme='dark'] .pr-section {
   }
 }
 
+
+/* ── T-08c5 — crossover role voices on the clone seats ──────────────
+ * The heron wrapper-crossover records (duplicate marquee copies + the
+ * neighbouring bands the wrap census swallowed) carry the band's own
+ * interaction/tween voices: cursor-pointer inherited through the
+ * a-subtrees, the 0.48s loop voice on the band wrappers, the CTA's
+ * 0.3s dual-ease hover voice, the menu's 0.4s ease. The clone seats
+ * reproduce exactly those voices; every other clone descendant rests
+ * transition-less, like its recorded twin. */
+.pr-section .pr-clone * { transition: none; }
+.pr-section .pr-clone .pr-cta {
+  transition: color 0.3s ease, background-color 0.3s cubic-bezier(0.625, 0.05, 0, 1);
+  cursor: pointer; /* the a-subtree voice — inherited by the whole strip */
+}
+.pr-section .pr-clone .pr-head,
+.pr-section .pr-clone .pr-side {
+  transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1);
+}
+.pr-section .pr-clone .pr-menu { transition: opacity 0.4s ease; }
+
+/* ── T-08c5b — heron's ≤991 band voices (measured spec @390/768) ────
+ * The mobile row wrappers carry a 0.4s ease; the clone CTA strip
+ * children carry the 0.48s loop voice; the hover icon boxes the 0.3s
+ * dual-ease. Desktop voices stay as measured above. */
+@media (max-width: 991px) {
+  .pr-section .pr-row { transition: all 0.4s ease; }
+  .pr-section .pr-clone .pr-cta { transition: all 0.4s ease; }
+  .pr-section .pr-clone .pr-cta-row,
+  .pr-section .pr-clone .pr-cta-icons,
+  .pr-section .pr-clone .pr-cta-line { transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); }
+  .pr-section .pr-clone .pr-cta-icbox { transition: color 0.3s ease, background-color 0.3s cubic-bezier(0.625, 0.05, 0, 1); }
+}
