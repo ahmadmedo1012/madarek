@@ -20,8 +20,9 @@ MAIN="main"
 echo "branch-sweep: fetching $REMOTE …"
 git fetch "$REMOTE" --prune --tags --force >/dev/null 2>&1
 
-BRANCHES=$(git for-each-ref --format='%(refname:short)' "refs/remotes/$REMOTE/" \
-  | grep -v "^$REMOTE/HEAD$" | grep -v "^$REMOTE/$MAIN$" || true)
+BRANCHES=$(git for-each-ref --format='%(refname:short)|%(refname)' "refs/remotes/$REMOTE/" \
+  | grep -v "refs/remotes/$REMOTE/HEAD$" | grep -v "refs/remotes/$REMOTE/$MAIN$" \
+  | cut -d'|' -f1 || true)
 
 if [[ -z "$BRANCHES" ]]; then
   echo "branch-sweep: only $MAIN remains. Clean."
@@ -45,7 +46,7 @@ for ref in $BRANCHES; do
         echo "  ✗ tag create failed: $tag"; continue
       fi
     fi
-    if git push "$REMOTE" --delete "$ref" >/dev/null 2>&1; then
+    if git push "$REMOTE" --delete "refs/heads/$name" >/dev/null 2>&1; then
       echo "  deleted $name"
     else
       echo "  ✗ delete failed: $name (protected?)"
@@ -57,8 +58,9 @@ for ref in $BRANCHES; do
 done
 
 git worktree prune >/dev/null 2>&1
-REMAINING=$(git for-each-ref --format='%(refname:short)' "refs/remotes/$REMOTE/" \
-  | grep -v "^$REMOTE/HEAD$" | grep -v "^$REMOTE/$MAIN$" || true)
+REMAINING=$(git for-each-ref --format='%(refname:short)|%(refname)' "refs/remotes/$REMOTE/" \
+  | grep -v "refs/remotes/$REMOTE/HEAD$" | grep -v "refs/remotes/$REMOTE/$MAIN$" \
+  | cut -d'|' -f1 || true)
 echo ""
 if [[ -z "$REMAINING" ]]; then
   echo "branch-sweep: DONE — only $MAIN remains on $REMOTE."
