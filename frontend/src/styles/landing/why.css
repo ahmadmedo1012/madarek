@@ -1150,7 +1150,7 @@
     --wy-cs-bg: rgba(0, 0, 0, 0) /* color-gate: allow — T05I measured caption sub ground (generated seat, transparent) */;
   }
 }
-.wy-capbar { position: fixed; inset: 0; z-index: 40; pointer-events: none; visibility: hidden; }
+.wy-capbar { --lz-capbar: 40; /* landing-local ladder seat (rule 45 above it, chrome 50 above that) */ position: fixed; inset: 0; z-index: var(--lz-capbar); pointer-events: none; visibility: hidden; }
 .wy-capbar[data-wy-live="1"] { visibility: visible; }
 .wy-cap { position: absolute; inset: 0; visibility: hidden; }
 .wy-capbar[data-wy-stage="0"] .wy-cap:nth-child(1),

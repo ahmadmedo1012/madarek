@@ -26,9 +26,10 @@
  * force-hides the seats regardless. ═══ */
 
 .scr {
+  --lz-scroll-rule: 45; /* the rule's ladder seat: content < rule 45 < chrome 50 < nav 60 */
   position: fixed;
   inset: 0;
-  z-index: 45; /* above the content, under the nav's 60 */
+  z-index: var(--lz-scroll-rule); /* above the content, under the nav's 60 — landing-local ladder seat (nav 60/chrome 50/rule 45/capbar 40) */
   pointer-events: none;
 }
 
@@ -41,8 +42,8 @@
   opacity: 0; /* the no-timeline base: nothing without support */
   will-change: transform;
 }
-.scr-rule--top { inset-block-start: 50%; }
-.scr-rule--bot { inset-block-start: 50%; }
+.scr-rule--top { inset-block-start: 50%; animation: scr-split-top var(--motion-ease-band-exit) both; animation-timeline: scroll(); animation-range: 0% 50%; }
+.scr-rule--bot { inset-block-start: 50%; animation: scr-split-bot var(--motion-ease-band-exit) both; animation-timeline: scroll(); animation-range: 0% 50%; }
 
 /* the split — top rises, bottom sinks, both fade; scroll-driven, so
    there is no duration to tokenize (the timeline IS the clock) and
@@ -55,17 +56,6 @@
   from { transform: translateY(0); opacity: 1; }
   to   { transform: translateY(310.5px); opacity: 0; }
 }
-.scr-rule--top {
-  animation: scr-split-top var(--motion-ease-band-exit) both;
-  animation-timeline: scroll();
-  animation-range: 0% 50%;
-}
-.scr-rule--bot {
-  animation: scr-split-bot var(--motion-ease-band-exit) both;
-  animation-timeline: scroll();
-  animation-range: 0% 50%;
-}
-
 /* the % readout — the reference's mono instrument (the preloader
    counter's own family: --font-mono over --accent), 18px above the
    rule at the frame's inline-start edge; dir="ltr" is set on the
