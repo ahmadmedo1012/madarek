@@ -2,33 +2,36 @@
    Heron footer census (docs/redesign/r335/heron-spec/footer.*.json).
    The R313–R332 colophon (cell grid + FooterLens + giant wordmark +
    double legal row) is fully RETIRED — every rule below is new.
-   Measured @1440 (rem root 8.333px): footer 1427×711 = grid 355
-   (col1 357 · col2 715 · col3 357, hairline-ruled) + rule 1 + strip
-   314 + legal 42. Type: root 13.33/17.33 w500 · brand 26.67 w600 ·
-   mono labels 11.67/16.33 Geist Mono rgb(98,98,96) (≤767: 11.91
-   rgb(180,180,176)) · biglink copy 20/22 w700 · links 13.33/17.33
-   w500 · © row mono 11.67/15.17. Arabic = transformed expectations:
-   RTL mirror, letter-spacing 0, lh floor 1.35×fs. Colors: --rule-
-   strong IS the spec rgb(179,179,175), --accent IS rgb(250,54,0);
-   the 72% soft ink + the quiet mono greys ride the spec-exact
-   literals (color-gate allows — color-mix() renders as color() and
-   the conformance twin requires the literal), and flip to the site's
-   dark tokens under [data-theme="dark"]. T-06d: every solid ink now
-   rides the design tokens (--text IS #282828, --neutral-400 IS
-   rgb(180,180,176), --c-grey-ink IS rgb(98,98,96) — exact values); only
-   the 72% soft-ink alpha seats keep the spec literal + color-gate allow
-   (statement.css precedent — color-mix() serializes as color() and the
-   conformance twin compares the literal). */
+   T-06j FLUID SCALE (the architecture fix): the heron footer is
+   viewport-LINEAR scaled — heron root fs = 100vw/108 px (9.48/13.33/
+   17.78 @1024/1440/1920) and every rem seat rides it (brandname w
+   235/330/441 · col1 254/357/476 · mark 153/215/287 · input 28/40/53 ·
+   band 235/314/419 · root margin 5/7/9 — all = k×vw). Our fixed-rem
+   seats (root 8.333px) matched @1440 ONLY (~700 y/x-mirror/w cells).
+   The fix: --fu = calc(100vw / 1440) = 1px at the 1440 seat; every
+   desktop size below is calc(var(--fu) * <px@1440>) — identical at
+   1440, exactly vw-linear everywhere else (the measured law).
+   Mobile belts are FIXED px (heron 768 root fs 14.73, 390 15.88 —
+   NOT the desktop line): 768 = the dumped grid model (row1 377 |
+   subscribe · label|link rows · row3 502 | rail 251 · band 217 ·
+   legal 59 = root 753×968), 390 = the T-06i stack.
+   Arabic = transformed expectations: RTL mirror, letter-spacing 0,
+   lh floor 1.35×fs. Colors: --rule-strong IS the spec rgb(179,179,175),
+   --accent IS rgb(250,54,0); the 72% soft ink + quiet mono greys ride
+   the spec-exact literals (color-gate allows) and flip to the site's
+   dark tokens under [data-theme="dark"]. */
 
 .fo-footer {
+  /* T-06j: the fluid unit — 1px @1440, 100vw/1440 everywhere */
+  --fu: calc(100vw / 1440);
   display: block;
-  margin-inline: 0.84rem; /* the sheet frame's own inset (7px measured @1440) */
+  margin-inline: calc(var(--fu) * 7); /* the sheet frame's own inset (5/7/9 px @1024/1440/1920 — measured) */
   padding: 0;
   border-block-start: 1px solid var(--rule-strong);
   background: transparent;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
-  font-size: 1.6rem;
-  line-height: 2.08rem;
+  font-size: calc(var(--fu) * 13.33); /* heron root fs = 100vw/108 (9.48/13.33/17.78) */
+  line-height: calc(var(--fu) * 17.33); /* heron root lh = 1.3×fs, preserved by the linear law */
   font-weight: 500;
   letter-spacing: 0; /* Arabic joins — the transformed expectation (Heron -0.27px) */
 }
@@ -38,7 +41,8 @@
   flex-direction: column;
 }
 
-/* ── the rules (spec: 1px rgb(179,179,175) hairlines) ───────────────
+/* ── the rules (spec: 1px rgb(179,179,175) hairlines — 1px at every
+   bp, NOT fluid; the census holds them constant) ────────────────────
    T-06i: the heron c1rule/col3rule/legalbot seats PAINT a real
    background-color rgb(179,179,175) (bg-image-only left computed
    backgroundColor rgba(0,0,0,0) — 23 bg cells); the gradient stroke
@@ -55,9 +59,9 @@
 }
 .fo-rule-h { block-size: 1px; inline-size: 100%; }
 .fo-rule-v { inline-size: 1px; align-self: stretch; }
-.fo-rule-g { margin-block: 0.6rem; }
+.fo-rule-g { margin-block: calc(var(--fu) * 5); }
 
-/* ═══ the cell grid: col1 357 · col2 715 · col3 357 (25/50/25) ═══ */
+/* ═══ the cell grid: col1 25/50/25 → 254/357/476 @1024/1440/1920 ═══ */
 .fo-grid {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
@@ -66,34 +70,34 @@
 .fo-col { min-inline-size: 0; }
 
 /* ── col1: the brand lockup + small-link rows + the subscribe seat ── */
-.fo-c1-top { padding: 1.6rem 1.6rem 0; }
-.fo-rule-bleed { margin-inline: -1.6rem; }
+.fo-c1-top { padding: calc(var(--fu) * 13.33) calc(var(--fu) * 13.33) 0; }
+.fo-rule-bleed { margin-inline: calc(var(--fu) * -13.33); }
 .fo-brand-name {
-  font-size: 3.2rem;
-  line-height: 3.2rem;
+  font-size: calc(var(--fu) * 26.67); /* 18.96/26.67/35.56 — the census brandname law */
+  line-height: calc(var(--fu) * 26.67);
   font-weight: 600;
   color: var(--text);
 }
 .fo-brand-sub {
-  margin-block-start: 0.5rem;
-  font-size: 1.6rem;
-  line-height: 2.08rem;
+  margin-block-start: calc(var(--fu) * 4.17);
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink); color-mix() renders as color() in the twin */
 }
 .fo-brow {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 1.2rem;
-  margin-block-start: 0.7rem;
-  min-block-size: 3.24rem;
+  column-gap: calc(var(--fu) * 10);
+  margin-block-start: calc(var(--fu) * 5.83);
+  min-block-size: calc(var(--fu) * 27);
   align-items: center;
 }
 .fo-ilink {
   text-decoration: none;
   color: inherit;
-  font-size: 1.6rem;
-  line-height: 2.08rem;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
   transition: color 0.2s ease;
 }
@@ -103,56 +107,56 @@
 /* r188/r320 §D — the independence paragraph (VERBATIM the About
    page's own sentence) + the r320 contact-cell heading */
 .fo-footer-about {
-  margin: 1rem 0 0;
-  font-size: 1.4rem;
-  line-height: 1.96rem; /* ar lh floor ≥ 1.35×fs */
+  margin: calc(var(--fu) * 8.33) 0 0;
+  font-size: calc(var(--fu) * 11.67);
+  line-height: calc(var(--fu) * 16.33); /* ar lh floor ≥ 1.35×fs */
   font-weight: 500;
   color: var(--text-secondary);
 }
 .fo-contact-h {
-  margin: 0.6rem 0 0;
-  font-size: 1.6rem;
-  line-height: 2.16rem; /* ar lh floor ≥ 1.35×fs */
+  margin: calc(var(--fu) * 5) 0 0;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 18); /* ar lh floor ≥ 1.35×fs */
   font-weight: 600;
   color: var(--text);
 }
 
 /* T-06f: the spec-measured seat panel — the heron c1sub box paints
    rgb(179,179,175) (measured at every bp) */
-.fo-c1-sub { padding: 1.6rem; background: var(--rule-strong); }
+.fo-c1-sub { padding: calc(var(--fu) * 13.33); background: var(--rule-strong); }
 .fo-mono-label {
   font-family: var(--font-mono);
-  font-size: 1.4rem;
-  line-height: 1.96rem;
+  font-size: calc(var(--fu) * 11.67);
+  line-height: calc(var(--fu) * 16.33);
   font-weight: 500;
   color: var(--c-grey-ink); /* the quiet mono grey — --c-grey-ink IS the spec rgb(98,98,96) */
 }
 .fo-mono-label-t { color: inherit; }
 
-.fo-form { margin-block-start: 1.8rem; padding-block-start: 1.8rem; }
+.fo-form { margin-block-start: calc(var(--fu) * 15); padding-block-start: calc(var(--fu) * 15); }
 .fo-form-copy-t {
-  font-size: 1.6rem;
-  line-height: 2.08rem;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17.33);
   font-weight: 400;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
 .fo-form-row {
   display: flex;
-  margin-block-start: 1.6rem;
+  margin-block-start: calc(var(--fu) * 13.33);
   gap: 0;
 }
 .fo-input {
   flex: 1;
   min-inline-size: 0;
-  block-size: 4.8rem;
-  padding: 0.8rem 0.8rem 0.8rem 1.6rem;
+  block-size: calc(var(--fu) * 40); /* 28/40/53 — the census input law */
+  padding: calc(var(--fu) * 6.67) calc(var(--fu) * 6.67) calc(var(--fu) * 6.67) calc(var(--fu) * 13.33);
   border: 1px solid var(--rule-strong);
   border-start-end-radius: 0;
   border-end-end-radius: 0;
   background: transparent;
   font: inherit;
-  font-size: 1.6rem;
-  line-height: 2.28rem;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 19);
   color: var(--text);
   transition: border-color 0.45s ease;
 }
@@ -164,7 +168,7 @@
 .fo-go {
   transition: border-color 0.2s ease, background-color 0.4s ease, color 0.4s ease;
 }
-.fo-go-ic { inline-size: 2.04rem; block-size: 2.04rem; color: inherit; }
+.fo-go-ic { inline-size: calc(var(--fu) * 17); block-size: calc(var(--fu) * 17); color: inherit; }
 .fo-go-ic svg { inline-size: 100%; block-size: 100%; display: block; }
 .fo-go-ic path {
   fill: none;
@@ -181,14 +185,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
 }
-.fo-lgroup { padding: 1.6rem; min-inline-size: 0; }
-.fo-lg-links { margin-block-start: 0.5rem; }
+.fo-lgroup { padding: calc(var(--fu) * 13.33); min-inline-size: 0; }
+.fo-lg-links { margin-block-start: calc(var(--fu) * 4.17); }
 .fo-link {
   display: block;
-  padding: 0.5rem;
+  padding: calc(var(--fu) * 4.17);
   text-decoration: none;
-  font-size: 1.6rem;
-  line-height: 2.08rem;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17.33);
   font-weight: 500;
   color: var(--text); /* spec link ink — --text IS #282828 */
   transition: color 0.2s ease;
@@ -199,15 +203,15 @@
 .fo-link-accent .fo-link-t { color: var(--accent); }
 .fo-biglink {
   display: block;
-  margin-block-start: 0.6rem;
-  padding: 0.5rem;
+  margin-block-start: calc(var(--fu) * 5);
+  padding: calc(var(--fu) * 4.17);
   text-decoration: none;
   transition: color 0.4s ease;
   color: var(--text);
 }
 .fo-biglink-t {
-  font-size: 2.4rem;
-  line-height: 2.64rem;
+  font-size: calc(var(--fu) * 20);
+  line-height: calc(var(--fu) * 22);
   font-weight: 700;
   color: inherit;
 }
@@ -215,19 +219,19 @@
 .fo-socials {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  margin-block-start: 0.6rem;
+  margin-block-start: calc(var(--fu) * 5);
 }
 .fo-social {
   display: block;
-  padding: 0.5rem;
+  padding: calc(var(--fu) * 4.17);
   text-decoration: none;
   color: var(--text);
   transition: color 0.4s ease;
 }
 .fo-social-t1,
 .fo-social-t2 {
-  font-size: 1.6rem;
-  line-height: 2.04rem;
+  font-size: calc(var(--fu) * 13.33);
+  line-height: calc(var(--fu) * 17);
   font-weight: 500;
   color: inherit;
 }
@@ -239,7 +243,7 @@
   display: grid;
   place-items: center;
 }
-.fo-mark { inline-size: 25.8rem; block-size: 25.8rem; }
+.fo-mark { inline-size: calc(var(--fu) * 215); block-size: calc(var(--fu) * 215); } /* 153/215/287 — the census mark law */
 .fo-mark-svg {
   inline-size: 100%;
   block-size: 100%;
@@ -252,10 +256,10 @@
   stroke-width: 1.7;
   vector-effect: non-scaling-stroke;
 }
-.fo-mark-img { inline-size: 25.8rem; block-size: 0; }
+.fo-mark-img { inline-size: calc(var(--fu) * 215); block-size: 0; }
 
 /* ═══ the strip band: OUR ink render + the grayscale twin + chrome ═══ */
-.fo-fstrip { position: relative; block-size: 37.68rem; overflow: hidden; }
+.fo-fstrip { position: relative; block-size: calc(var(--fu) * 314); overflow: hidden; } /* 235/314/419 — the census band law */
 .fo-strip-in { position: absolute; inset: 0; }
 .fo-strip-media,
 .fo-strip-twin { position: absolute; inset: 0; }
@@ -272,28 +276,28 @@
    background IMAGE — backgroundColor stays transparent) + the 4 corner
    crosshairs as the fo-wordmark-reg '+' family (R321 §A6 source
    contract: CSS ::before content, never DOM text) */
-.fo-strip-chrome { position: absolute; inset: 1.2rem; }
+.fo-strip-chrome { position: absolute; inset: calc(var(--fu) * 10); }
 .fo-sc-edge { position: absolute; background-image: linear-gradient(var(--rule-strong), var(--rule-strong)); }
-.fo-sc-t { inset-inline: 2.04rem; block-size: 0.84rem; inset-block-start: 0; }
-.fo-sc-b { inset-inline: 2.04rem; block-size: 0.84rem; inset-block-end: 0; }
-.fo-sc-l { inset-block: 1.97rem; inline-size: 0.84rem; inset-inline-start: 0; }
-.fo-sc-r { inset-block: 1.97rem; inline-size: 0.84rem; inset-inline-end: 0; }
+.fo-sc-t { inset-inline: calc(var(--fu) * 17); block-size: calc(var(--fu) * 7); inset-block-start: 0; }
+.fo-sc-b { inset-inline: calc(var(--fu) * 17); block-size: calc(var(--fu) * 7); inset-block-end: 0; }
+.fo-sc-l { inset-block: calc(var(--fu) * 16.42); inline-size: calc(var(--fu) * 7); inset-inline-start: 0; }
+.fo-sc-r { inset-block: calc(var(--fu) * 16.42); inline-size: calc(var(--fu) * 7); inset-inline-end: 0; }
 .fo-wordmark-reg {
   position: absolute;
-  inline-size: 1.2rem;
-  block-size: 1.2rem;
+  inline-size: calc(var(--fu) * 10);
+  block-size: calc(var(--fu) * 10);
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 1.2rem;
+  font-size: calc(var(--fu) * 10);
   line-height: 1;
   display: grid;
   place-items: center;
 }
 .fo-wordmark-reg::before { content: '+'; }
-.fo-reg-tl { inset-block-start: -0.24rem; inset-inline-start: -0.24rem; }
-.fo-reg-tr { inset-block-start: -0.24rem; inset-inline-end: -0.24rem; }
-.fo-reg-bl { inset-block-end: -0.24rem; inset-inline-start: -0.24rem; }
-.fo-reg-br { inset-block-end: -0.24rem; inset-inline-end: -0.24rem; }
+.fo-reg-tl { inset-block-start: calc(var(--fu) * -2); inset-inline-start: calc(var(--fu) * -2); }
+.fo-reg-tr { inset-block-start: calc(var(--fu) * -2); inset-inline-end: calc(var(--fu) * -2); }
+.fo-reg-bl { inset-block-end: calc(var(--fu) * -2); inset-inline-start: calc(var(--fu) * -2); }
+.fo-reg-br { inset-block-end: calc(var(--fu) * -2); inset-inline-end: calc(var(--fu) * -2); }
 
 /* ═══ the © bar + the legal row (R321 §A2 — one ruled line) ═══ */
 .fo-footer-bottom {
@@ -302,13 +306,13 @@
   justify-content: space-between;
   gap: 0;
 }
-.fo-legal-l { display: flex; align-items: stretch; padding: 1.7rem 3.2rem 1.5rem 3.2rem; }
-.fo-legal-lc { display: flex; align-items: center; column-gap: 0.4rem; }
+.fo-legal-l { display: flex; align-items: stretch; padding: calc(var(--fu) * 14.17) calc(var(--fu) * 26.67) calc(var(--fu) * 12.5) calc(var(--fu) * 26.67); }
+.fo-legal-lc { display: flex; align-items: center; column-gap: calc(var(--fu) * 3.33); }
 .fo-legal-p {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: 1.4rem;
-  line-height: 1.82rem;
+  font-size: calc(var(--fu) * 11.67);
+  line-height: calc(var(--fu) * 15.17);
   font-weight: 500;
   color: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (72% ink) */
 }
@@ -321,8 +325,8 @@
 .fo-mono,
 .fo-footer-cluster {
   font-family: var(--font-mono);
-  font-size: 1.4rem;
-  line-height: 1.82rem;
+  font-size: calc(var(--fu) * 11.67);
+  line-height: calc(var(--fu) * 15.17);
   font-weight: 500;
 }
 .fo-legal-row {
@@ -333,13 +337,14 @@
 .fo-legal-link {
   display: inline-flex;
   align-items: center;
-  padding-inline: 1.2rem;
+  padding-inline: calc(var(--fu) * 10);
   text-decoration: none;
   color: inherit;
-  font-size: 1.4rem;
-  line-height: 1.82rem;
+  font-size: calc(var(--fu) * 11.67);
+  line-height: calc(var(--fu) * 15.17);
   font-weight: 500;
-  /* the 44px touch floor (the footer link ladder) */
+  /* the 44px touch floor (the footer link ladder) — a CONTRACT, not a
+     heron measure: stays fixed px at every bp */
   min-block-size: 44px;
   transition: color 0.3s ease;
 }
@@ -349,124 +354,188 @@
 /* the grid's own closing hairline (its 4th child, full-bleed) */
 .fo-grid-rule { grid-column: 1 / -1; }
 
-/* ═══ responsive (≤991): the stack — col2 unwraps (display:contents,
-    heron's 0×0 col2 cell at 390/768), col3's mark re-seats (207 @768) ═══ */
+/* ═══ 768 belt — the dumped heron grid model (T-06j), FIXED px:
+    root 753×968 (fs 14.73/lh 19.15) = grid 691 + band 217 + legal 59
+    + 1 hairline. row1 = col1 753-wide container: c1top 377×189 (brand
+    left) | the subscribe seat right (sublabel 853 · input 377×44) ·
+    row2 = the c2-top label|link rows (label|links one line each) ·
+    row3 = c2-bottom 502×331 | the col3 rail 251×331 (vrule 1×331 +
+    mark 207 + the 166×0 img twin) ═══ */
 @media (max-width: 991px) {
-  /* T-06f re-seat (heron 768 model): col1 377 stack · col2 label|link
-     rows · the col3 rail (w251) with its vertical rule (h331) + mark 207
-     + the 166-wide 0-height markimg twin seat */
-  .fo-grid { grid-template-columns: 37.7rem 1fr 25.1rem; }
-  /* T-06g2: col1/col3 are REAL grid boxes now (heron 768 rects: col1
-     377 · col3 251×331 — display:contents gave the instrument −pageY
-     y-artifacts: no box ⇒ rect 0,0); T-06i: col2 is a REAL box too
-     (its own data-spec seat had no rect under display:contents —
-     the −10861/−11886 y family) */
-  .fo-col {
-    display: block;
-    grid-column: 1;
-    grid-row: 1 / span 2;
+  .fo-footer {
+    margin-inline: 7px; /* heron 768 root x7 w753 */
+    font-size: 14.73px; /* heron 768 root fs (NOT the desktop line) */
+    line-height: 19.15px; /* 1.3×fs — the heron root lh law */
   }
-  .fo-col2 {
-    display: grid;
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    grid-template-rows: auto auto;
-  }
+  .fo-grid { grid-template-columns: 377px 1fr; }
+  /* col1 = the row-1 container (heron col1@768 = 753×189, full width) */
+  .fo-col { display: grid; grid-column: 1 / -1; grid-template-columns: 377px 1fr; }
+  .fo-c1-top { grid-column: 1; padding: 22px 22px 0; }
+  .fo-rule-bleed { margin-inline: -22px; }
+  .fo-c1-sub { grid-column: 2; padding: 22px; }
+  /* col2 unwraps (heron col2@768 = 0×0 window) — its rows place directly */
+  .fo-col2 { display: contents; }
   .fo-col2 > div:first-child { display: contents; }
-  .fo-c2-top { grid-column: 1; grid-row: 1; grid-template-columns: 1fr; }
-  .fo-c2-bottom { grid-column: 1; grid-row: 2; grid-template-columns: 1fr; }
-  .fo-lgroup { display: grid; grid-template-columns: auto 1fr; column-gap: 1rem; align-items: start; }
+  .fo-c2-top { grid-column: 1; grid-row: 2; grid-template-columns: 1fr; }
+  .fo-c2-bottom { grid-column: 1; grid-row: 3; grid-template-columns: 1fr; inline-size: 502px; }
+  /* the label|link row model (lglabel.1 101×26 | lglinks.1 at +106) */
+  .fo-lgroup { display: grid; grid-template-columns: auto 1fr; column-gap: 8.33px; align-items: start; padding: 0 22px; }
+  .fo-c2-bottom .fo-lgroup { display: block; padding: 0; }
+  /* the col3 rail: 251×331, vrule + mark 207 (x+21) + the 166×0 twin */
   .fo-col3 {
     display: grid;
-    grid-column: 3;
-    grid-row: 3 / span 2;
-    grid-template-columns: 0.1rem 24.84rem;
-    grid-template-rows: 24.84rem auto;
-    block-size: 33.1rem;
+    grid-column: 2;
+    grid-row: 3;
+    justify-self: end;
+    inline-size: 251px;
+    grid-template-columns: 1px 207px;
+    column-gap: 21px;
+    grid-template-rows: 207px auto;
+    block-size: 331px;
     align-items: start;
   }
   .fo-col3rule { grid-column: 1; grid-row: 1 / span 2; }
-  .fo-mark { grid-column: 2; grid-row: 1; }
-  /* T-06i: the −12.24rem negative-margin seat model is DELETED — heron
-     768 seats the img twin at 166×0 inside the rail (545,527,166,0) */
-  .fo-mark-img { grid-column: 2; grid-row: 2; inline-size: 19.92rem; block-size: 0; margin: 0; }
-  .fo-grid-rule { grid-row: 5; }
-  .fo-mark { inline-size: 24.84rem; block-size: 24.84rem; }
-  .fo-c2-bottom .fo-lgroup { display: block; }
-  .fo-fstrip { block-size: 21.7rem; }
-  .fo-strip-chrome { inset: 1.32rem; }
-  .fo-biglink { block-size: 4.8rem; font-size: 2.3rem; line-height: 2.4rem; }
-  .fo-social { block-size: 3rem; }
-  .fo-lg-links { line-height: 1.9rem; }
+  .fo-mark { grid-column: 2; grid-row: 1; inline-size: 207px; block-size: 207px; }
+  /* T-06i: heron 768 seats the img twin at 166×0 inside the rail */
+  .fo-mark-img { grid-column: 2; grid-row: 2; margin-inline-start: 21px; inline-size: 166px; block-size: 0; }
+  .fo-grid-rule { grid-column: 1 / -1; grid-row: 4; }
+  /* fixed text/padding seats (the desktop rules are fluid now) */
+  .fo-brand-name { font-size: 26.67px; line-height: 26.67px; }
+  .fo-brand-sub { margin-block-start: 4.17px; font-size: 13.33px; line-height: 17.33px; }
+  .fo-brow { column-gap: 10px; margin-block-start: 5.83px; min-block-size: 27px; }
+  .fo-ilink { font-size: 13.33px; line-height: 17.33px; }
+  .fo-footer-about { margin: 8.33px 0 0; font-size: 11.67px; line-height: 16.33px; }
+  .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
+  .fo-mono-label { font-size: 11.67px; line-height: 16.33px; }
+  .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
+  .fo-form-copy-t { font-size: 13.33px; line-height: 17.33px; }
+  .fo-form-row { margin-block-start: 13.33px; }
+  .fo-input { block-size: 44px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 13.33px; line-height: 19px; }
+  .fo-go { block-size: 44px; }
+  .fo-go-ic { inline-size: 17px; block-size: 17px; }
+  .fo-lg-links { margin-block-start: 4.17px; line-height: 16px; }
   .fo-lg-links a { padding-block: 0; }
+  .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
+  .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: 47px; }
+  .fo-biglink-t { font-size: 19.2px; line-height: 20px; }
+  .fo-socials { margin-block-start: 5px; }
+  .fo-social { padding: 4.17px; block-size: 25px; }
+  .fo-social-t1,
+  .fo-social-t2 { font-size: 13.33px; line-height: 17px; }
+  /* the chrome band: 217 tall, chrome inset 11 (sctop 694×7 @+19) */
+  .fo-fstrip { block-size: 217px; }
+  .fo-strip-chrome { inset: 11px; }
+  .fo-sc-t,
+  .fo-sc-b { inset-inline: 19px; block-size: 7px; }
+  .fo-sc-l,
+  .fo-sc-r { inset-block: 16.42px; inline-size: 7px; }
+  .fo-wordmark-reg { inline-size: 11px; block-size: 11px; font-size: 11px; }
+  /* the legal row: legall 355×59 | legalr 432×59 */
+  .fo-legal-l { padding: 14.17px 26.67px 12.5px; }
+  .fo-legal-lc { column-gap: 3.33px; }
+  .fo-legal-p { font-size: 11.67px; line-height: 15.17px; }
+  .fo-mono,
+  .fo-footer-cluster { font-size: 11.67px; line-height: 15.17px; }
+  .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
 }
 
-/* ═══ mobile (≤767): single column, the measured 390 stack — mark 119
-    centered · strip 137 · chrome inset 8 with 6px edges · 8×8 reg marks
-    · centered © · the legal nav row — mono grey = --neutral-400 (IS
-    the spec's own ≤767 rgb(180,180,176)) ═══ */
+/* ═══ mobile (≤767): single column, the measured 390 stack (T-06i) —
+    root 374×1265 fs 15.88 · mark 119 centred · the T-06i c1top brand
+    + rule re-seat · centered © · the legal nav row — mono grey =
+    --neutral-400 (IS the spec's own ≤767 rgb(180,180,176)) ═══ */
 @media (max-width: 767px) {
-  /* T-06f re-seat (heron 390 model): single-column stack — c1top is the
-     344×79 brand wordmark + rule only (the small-link doors live in the
-     col2 index below — same destinations, no loss), lglabel.1 is the
-     374×124 block, the mark + its 119×0 img twin are centred */
+  .fo-footer {
+    margin-inline: 8px; /* heron 390 root x8 w374 */
+    font-size: 15.88px; /* heron 390 root fs */
+    line-height: 20.64px; /* 1.3×fs — the heron root lh law */
+  }
   .fo-grid { grid-template-columns: 1fr; }
+  .fo-col { display: block; grid-column: auto; grid-row: auto; }
+  .fo-c1-top { grid-column: auto; padding: 20px 15px 19px; }
+  .fo-rule-bleed { margin-inline: -15px; }
+  .fo-c1-sub { grid-column: auto; padding: 16px; }
+  .fo-col2 { display: contents; }
+  .fo-col2 > div:first-child { display: contents; }
+  .fo-c2-top { grid-column: auto; grid-row: auto; }
+  .fo-c2-bottom { grid-column: auto; grid-row: auto; inline-size: auto; }
+  .fo-col3 {
+    display: grid;
+    place-items: center;
+    grid-column: auto;
+    grid-row: auto;
+    grid-template-columns: none;
+    grid-template-rows: none;
+    column-gap: 0;
+    block-size: auto;
+    inline-size: auto;
+    justify-self: stretch;
+  }
   .fo-col3rule,
   .fo-mark,
-  .fo-mark-img { grid-column: 1; grid-row: auto; }
-  .fo-mark { inline-size: 14.28rem; block-size: 14.28rem; }
+  .fo-mark-img { grid-column: auto; grid-row: auto; }
+  .fo-mark { inline-size: 119px; block-size: 119px; }
   .fo-mark-img { inline-size: 0; block-size: 0; margin: 0; }
+  .fo-grid-rule { grid-column: 1 / -1; grid-row: auto; }
   .fo-brow { display: none; }
-  .fo-brand-name { font-size: 7.9rem; line-height: 9.48rem; }
+  .fo-brand-name { font-size: 65.8px; line-height: 79px; }
   .fo-brand-sub { display: none; }
   /* T-06i: heron 390 c1top = 344×79 brand + rule ONLY (0,0,374,118) —
      the independence paragraph rides the ≥992 seats (DOM stays: the
      r188/r320 §D contract reads the source, not the 390 paint) */
   .fo-footer-about { display: none; }
-  .fo-c1-top { padding-block: 2.4rem 2.28rem; }
   /* heron 390 group1 = the 374×124 block (label 13 + 2-col link rows
      28) — the 124 floor sits on the GROUP, not the label */
-  .fo-c2-top .fo-lgroup:first-child { min-block-size: 14.88rem; }
-  .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; }
-  .fo-lgroup { display: block; }
+  .fo-lgroup { display: block; padding: 0; }
+  .fo-c2-top .fo-lgroup:first-child { min-block-size: 124px; }
+  .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; margin-block-start: 0; line-height: 15.4px; }
+  .fo-lg-links a { padding-block: 0; }
   .fo-mono-label {
-    font-size: 1.2rem;
-    line-height: 1.32rem;
+    font-size: 10px;
+    line-height: 11px;
     color: var(--neutral-400);
   }
   .fo-c2-top,
   .fo-c2-bottom { grid-template-columns: 1fr; }
-  .fo-input,
-  .fo-go { block-size: 4.84rem; }
-  .fo-fstrip { block-size: 9.6rem; }
-  .fo-strip-in { block-size: 5rem; }
+  .fo-input { block-size: 40.3px; padding: 6.67px 6.67px 6.67px 13.33px; font-size: 13.33px; line-height: 19px; }
+  .fo-go { block-size: 40.3px; }
+  .fo-form { margin-block-start: 15px; padding-block-start: 15px; }
+  .fo-form-copy-t { font-size: 13.33px; line-height: 17.33px; }
+  .fo-form-row { margin-block-start: 13.33px; }
+  .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
+  .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
+  .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: 38.3px; }
+  .fo-biglink-t { font-size: 18.3px; line-height: 19.2px; }
+  .fo-social { padding: 4.17px; block-size: 23.3px; }
+  .fo-social-t1,
+  .fo-social-t2 { font-size: 13.33px; line-height: 17px; }
+  .fo-socials { margin-block-start: 5px; row-gap: 15px; }
+  .fo-fstrip { block-size: 80px; }
+  .fo-strip-in { block-size: 41.6px; }
   .fo-strip-media,
-  .fo-strip-twin { inline-size: 21.8rem; block-size: 2.6rem; inset-inline: 0; margin-inline: auto; inset-block: 1.1rem auto; }
-  .fo-strip-chrome { inset: auto 0.8rem 10.4rem 0.8rem; block-size: 12.1rem; }
-  .fo-biglink { block-size: 4.6rem; font-size: 2.2rem; line-height: 2.3rem; }
-  .fo-social { block-size: 2.8rem; }
-  .fo-socials { row-gap: 1.8rem; }
-  .fo-lg-links { line-height: 1.85rem; }
-  .fo-lg-links a { padding-block: 0; }
-  .fo-footer-bottom { margin-block-start: -9.6rem; }
-  .fo-legal-l { padding: 0.6rem 1.6rem 0.4rem; }
-  .fo-legal-row { row-gap: 0; }
+  .fo-strip-twin { inline-size: 181.7px; block-size: 21.7px; inset-inline: 0; margin-inline: auto; inset-block: 9.2px auto; }
+  .fo-strip-chrome { inset: auto 6.67px 86.7px 6.67px; block-size: 100.8px; }
   .fo-sc-t,
-  .fo-sc-b { inset-inline: 1.44rem; block-size: 0.72rem; }
+  .fo-sc-b { inset-inline: 12px; block-size: 6px; }
   .fo-sc-l,
-  .fo-sc-r { inset-block: 1.44rem; inline-size: 0.72rem; }
-  .fo-wordmark-reg { inline-size: 0.96rem; block-size: 0.96rem; font-size: 0.96rem; }
+  .fo-sc-r { inset-block: 12px; inline-size: 6px; }
+  .fo-wordmark-reg { inline-size: 8px; block-size: 8px; font-size: 8px; }
   .fo-reg-tl,
-  .fo-reg-tr { inset-block-start: -0.12rem; }
+  .fo-reg-tr { inset-block-start: -1px; }
   .fo-reg-bl,
-  .fo-reg-br { inset-block-end: -0.12rem; }
+  .fo-reg-br { inset-block-end: -1px; }
   .fo-reg-tl,
-  .fo-reg-bl { inset-inline-start: -0.12rem; }
+  .fo-reg-bl { inset-inline-start: -1px; }
   .fo-reg-tr,
-  .fo-reg-br { inset-inline-end: -0.12rem; }
-  .fo-footer-bottom { flex-direction: column; }
-  .fo-legal-l { padding: 1rem 1.6rem; justify-content: center; }
-  .fo-legal-row { justify-content: space-between; }
+  .fo-reg-br { inset-inline-end: -1px; }
+  .fo-legal-l { padding: 8.33px 13.33px; }
+  .fo-legal-lc { column-gap: 3.33px; }
+  .fo-legal-p { font-size: 11.67px; line-height: 15.17px; }
+  .fo-mono,
+  .fo-footer-cluster { font-size: 11.67px; line-height: 15.17px; }
+  .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
+  .fo-footer-bottom { margin-block-start: -80px; flex-direction: column; }
+  .fo-legal-l { justify-content: center; }
+  .fo-legal-row { justify-content: space-between; row-gap: 0; }
 }
 
 /* ═══ dark theme: the 72% soft-ink literals above are the LIGHT
