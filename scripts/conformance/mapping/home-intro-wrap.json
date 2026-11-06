@@ -268,8 +268,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[1] > div[1]",
       "ours": "intro.linein.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -278,8 +277,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[2] > div[1]",
       "ours": "intro.linein.2",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -288,8 +286,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[3] > div[1]",
       "ours": "intro.linein.3",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -298,8 +295,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[4] > div[1]",
       "ours": "intro.linein.4",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -308,8 +304,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[5] > div[1]",
       "ours": "intro.linein.5",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -318,8 +313,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[6] > div[1]",
       "ours": "intro.linein.6",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -328,8 +322,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[7] > div[1]",
       "ours": "intro.linein.7",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -338,8 +331,7 @@
       "spec": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[8] > div[1]",
       "ours": "intro.linein.8",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -348,8 +340,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[1] > div[1]",
       "ours": "intro.linemask.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -358,8 +349,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[1] > div[1]",
       "ours": "intro.linemask.2",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -368,8 +358,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[1] > div[1]",
       "ours": "intro.linemask.3",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -378,8 +367,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[1] > div[1]",
       "ours": "intro.linemask.4",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -388,8 +376,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[1] > div[1]",
       "ours": "intro.linemask.5",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -398,8 +385,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[6] > div[1] > div[1]",
       "ours": "intro.linemask.6",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -408,8 +394,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[7] > div[1] > div[1]",
       "ours": "intro.linemask.7",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -418,8 +403,7 @@
       "spec": "home-intro-wrap > div[2] > div[1] > h2[1] > div[8] > div[1] > div[1]",
       "ours": "intro.linemask.8",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -429,8 +413,7 @@
       "ours": "intro.word.1",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -440,8 +423,7 @@
       "ours": "intro.word.2",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -451,8 +433,7 @@
       "ours": "intro.word.3",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -462,8 +443,7 @@
       "ours": "intro.word.4",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -473,8 +453,7 @@
       "ours": "intro.word.5",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -484,8 +463,7 @@
       "ours": "intro.word.6",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -495,8 +473,7 @@
       "ours": "intro.word.7",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -506,8 +483,7 @@
       "ours": "intro.word.8",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -517,8 +493,7 @@
       "ours": "intro.word.9",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -528,8 +503,7 @@
       "ours": "intro.word.10",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -539,8 +513,7 @@
       "ours": "intro.word.11",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -550,8 +523,7 @@
       "ours": "intro.word.12",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -561,8 +533,7 @@
       "ours": "intro.word.13",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -572,8 +543,7 @@
       "ours": "intro.word.14",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -583,8 +553,7 @@
       "ours": "intro.word.15",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -594,8 +563,7 @@
       "ours": "intro.word.16",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -605,8 +573,7 @@
       "ours": "intro.word.17",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -616,8 +583,7 @@
       "ours": "intro.word.18",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -627,8 +593,7 @@
       "ours": "intro.word.19",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -638,8 +603,7 @@
       "ours": "intro.word.20",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -649,8 +613,7 @@
       "ours": "intro.word.21",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -660,8 +623,7 @@
       "ours": "intro.word.22",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -671,8 +633,7 @@
       "ours": "intro.word.23",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -682,8 +643,7 @@
       "ours": "intro.word.24",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -693,8 +653,7 @@
       "ours": "intro.word.25",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -704,8 +663,7 @@
       "ours": "intro.word.26",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -715,8 +673,7 @@
       "ours": "intro.word.1",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -726,8 +683,7 @@
       "ours": "intro.word.2",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -737,8 +693,7 @@
       "ours": "intro.word.3",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -748,8 +703,7 @@
       "ours": "intro.word.4",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -759,8 +713,7 @@
       "ours": "intro.word.5",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -770,8 +723,7 @@
       "ours": "intro.word.6",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -781,8 +733,7 @@
       "ours": "intro.word.7",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -792,8 +743,7 @@
       "ours": "intro.word.8",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -803,8 +753,7 @@
       "ours": "intro.word.9",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -814,8 +763,7 @@
       "ours": "intro.word.10",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -825,8 +773,7 @@
       "ours": "intro.word.11",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -836,8 +783,7 @@
       "ours": "intro.word.12",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -847,8 +793,7 @@
       "ours": "intro.word.13",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -858,8 +803,7 @@
       "ours": "intro.word.14",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -869,8 +813,7 @@
       "ours": "intro.word.15",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -880,8 +823,7 @@
       "ours": "intro.word.16",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -891,8 +833,7 @@
       "ours": "intro.word.17",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -902,8 +843,7 @@
       "ours": "intro.word.18",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -913,8 +853,7 @@
       "ours": "intro.word.19",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -924,8 +863,7 @@
       "ours": "intro.word.20",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -935,8 +873,7 @@
       "ours": "intro.word.21",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -946,8 +883,7 @@
       "ours": "intro.word.22",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -957,8 +893,7 @@
       "ours": "intro.word.23",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -968,8 +903,7 @@
       "ours": "intro.word.24",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -979,8 +913,7 @@
       "ours": "intro.word.25",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -990,8 +923,7 @@
       "ours": "intro.word.26",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1001,8 +933,7 @@
       "ours": "intro.word.23",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1012,8 +943,7 @@
       "ours": "intro.word.24",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1023,8 +953,7 @@
       "ours": "intro.word.25",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1034,8 +963,7 @@
       "ours": "intro.word.26",
       "skip": [
         "tag",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1046,8 +974,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1058,8 +985,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1070,8 +996,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1082,8 +1007,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1094,8 +1018,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1106,8 +1029,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1118,8 +1040,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1130,8 +1051,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1142,8 +1062,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1154,8 +1073,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1166,8 +1084,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1178,8 +1095,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1190,8 +1106,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1202,8 +1117,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1214,8 +1128,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1226,8 +1139,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1238,8 +1150,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1250,8 +1161,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1262,8 +1172,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1274,8 +1183,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1286,8 +1194,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1298,8 +1205,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1310,8 +1216,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1322,8 +1227,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1334,8 +1238,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1346,8 +1249,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1358,8 +1260,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1370,8 +1271,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1382,8 +1282,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1394,8 +1293,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1406,8 +1304,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1418,8 +1315,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1430,8 +1326,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1442,8 +1337,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1454,8 +1348,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1466,8 +1359,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1478,8 +1370,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1490,8 +1381,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1502,8 +1392,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1514,8 +1403,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1526,8 +1414,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1538,8 +1425,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1550,8 +1436,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1562,8 +1447,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1574,8 +1458,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1586,8 +1469,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1598,8 +1480,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1610,8 +1491,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1622,8 +1502,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1634,8 +1513,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1646,8 +1524,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1658,8 +1535,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1670,8 +1546,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1682,8 +1557,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1694,8 +1568,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1706,8 +1579,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1718,8 +1590,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1730,8 +1601,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1742,8 +1612,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1754,8 +1623,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1766,8 +1634,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1778,8 +1645,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1790,8 +1656,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1802,8 +1667,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1814,8 +1678,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1826,8 +1689,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1838,8 +1700,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1850,8 +1711,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1862,8 +1722,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1874,8 +1733,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1886,8 +1744,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1898,8 +1755,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1910,8 +1766,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1922,8 +1777,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1934,8 +1788,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1946,8 +1799,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1958,8 +1810,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1970,8 +1821,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1982,8 +1832,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -1994,8 +1843,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2006,8 +1854,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2018,8 +1865,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2030,8 +1876,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2042,8 +1887,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2054,8 +1898,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2066,8 +1909,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2078,8 +1920,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2090,8 +1931,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2102,8 +1942,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2114,8 +1953,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2126,8 +1964,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2138,8 +1975,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2150,8 +1986,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2162,8 +1997,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2174,8 +2008,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2186,8 +2019,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2198,8 +2030,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2210,8 +2041,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2222,8 +2052,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2234,8 +2063,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2246,8 +2074,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2258,8 +2085,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2270,8 +2096,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2282,8 +2107,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2294,8 +2118,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2306,8 +2129,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2318,8 +2140,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2330,8 +2151,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2342,8 +2162,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2354,8 +2173,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2366,8 +2184,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2378,8 +2195,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2390,8 +2206,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2402,8 +2217,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2414,8 +2228,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2426,8 +2239,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2438,8 +2250,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2450,8 +2261,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2462,8 +2272,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2474,8 +2283,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2486,8 +2294,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2498,8 +2305,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2510,8 +2316,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2522,8 +2327,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2534,8 +2338,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2546,8 +2349,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2558,8 +2360,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2570,8 +2371,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2582,8 +2382,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2594,8 +2393,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2606,8 +2404,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2618,8 +2415,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2630,8 +2426,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2642,8 +2437,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2654,8 +2448,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2666,8 +2459,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2678,8 +2470,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2690,8 +2481,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2702,8 +2492,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2714,8 +2503,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2726,8 +2514,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2738,8 +2525,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2750,8 +2536,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2762,8 +2547,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2774,8 +2558,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2786,8 +2569,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2798,8 +2580,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2810,8 +2591,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2822,8 +2602,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2834,8 +2613,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2846,8 +2624,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2858,8 +2635,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2870,8 +2646,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2882,8 +2657,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2894,8 +2668,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2906,8 +2679,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2918,8 +2690,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2930,8 +2701,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2942,8 +2712,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2954,8 +2723,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2966,8 +2734,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2978,8 +2745,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -2990,8 +2756,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3002,8 +2767,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3014,8 +2778,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3026,8 +2789,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3038,8 +2800,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3050,8 +2811,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3062,8 +2822,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3074,8 +2833,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3086,8 +2844,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3098,8 +2855,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3110,8 +2866,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3122,8 +2877,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3134,8 +2888,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3146,8 +2899,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3158,8 +2910,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3170,8 +2921,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3182,8 +2932,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3194,8 +2943,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3206,8 +2954,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3218,8 +2965,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3230,8 +2976,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3242,8 +2987,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3254,8 +2998,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3266,8 +3009,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3278,8 +3020,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3290,8 +3031,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3302,8 +3042,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3314,8 +3053,7 @@
       "skip": [
         "tag",
         "tc",
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3324,8 +3062,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3334,8 +3071,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3344,8 +3080,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3354,8 +3089,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[4]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3364,8 +3098,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[5]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3374,8 +3107,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[6]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3384,8 +3116,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[7]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3394,8 +3125,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[8]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {
@@ -3404,8 +3134,7 @@
       "spec": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[9]",
       "ours": "intro.cell.1",
       "skip": [
-        "geometry",
-        "x-mirror"
+        "geometry"
       ]
     },
     {

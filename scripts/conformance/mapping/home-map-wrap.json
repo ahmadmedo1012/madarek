@@ -1937,8 +1937,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > section[1] > div[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-3 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -1946,8 +1945,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > section[1] > div[1] > div[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-4 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -1955,8 +1953,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -1964,8 +1961,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[13]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -1973,8 +1969,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[5]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -1982,8 +1977,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -1991,8 +1985,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2000,8 +1993,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-6 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -2009,8 +2001,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-6 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -2018,8 +2009,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > path[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2027,8 +2017,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-6 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -2036,8 +2025,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > g[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2045,8 +2033,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[3]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2054,8 +2041,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > g[3]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2063,8 +2049,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[4] > div[1] > svg[1] > g[2] > g[3] > g[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2072,8 +2057,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[6]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2081,8 +2065,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[4] > div[1] > svg[1] > g[6] > g[3] > g[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2090,8 +2073,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[2] > g[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2099,8 +2081,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2108,8 +2089,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[6] > g[3]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2117,8 +2097,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[12]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2126,8 +2105,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[6]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2135,8 +2113,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[7]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2144,8 +2121,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[8] > div[1] > div[4] > div[1] > svg[1] > g[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2153,8 +2129,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > g[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2162,8 +2137,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[4] > div[1] > svg[1] > g[4] > g[4] > g[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2171,8 +2145,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[4] > div[1] > svg[1] > g[4] > g[5]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2180,8 +2153,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[8]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2189,8 +2161,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-6 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -2198,8 +2169,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[11]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2207,8 +2177,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[5]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2216,8 +2185,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[4]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2225,8 +2193,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[3] > div[3] > div[1] > div[1] > svg[1] > line[3]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2234,8 +2201,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[9]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2243,8 +2209,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[2] > path[10]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2252,8 +2217,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[2] > div[3] > div[1] > div[1] > svg[1] > line[3]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2261,8 +2225,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-6 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -2270,8 +2233,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[7] > div[1] > svg[1] > path[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2279,8 +2241,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[7] > div[1] > svg[1] > path[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2288,8 +2249,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[8] > div[1] > svg[1] > path[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2297,8 +2257,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[8] > div[1] > svg[1] > path[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2306,8 +2265,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[5] > div[1] > svg[1] > path[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2315,8 +2273,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[5] > div[1] > svg[1] > path[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2324,8 +2281,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > section[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-2 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     },
@@ -2333,8 +2289,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[6] > div[1] > svg[1] > path[1]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2342,8 +2297,7 @@
       "section": "home-map-wrap",
       "heron": "home-map-wrap > div[1] > div[1] > div[6] > div[1] > svg[1] > path[2]",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron station-card/demo-row band (wrap div[2]/div[3]/div[8], authored-SVG internals) starved at measurement scroll (y<0/y≫viewport in heron's tall driver); R315 retired the demo rows — plumbing/artwork internals, not a measured design box"
     },
@@ -2351,8 +2305,7 @@
       "section": "home-map-wrap",
       "heron": "div.home-map-wrap",
       "skip": [
-        "geometry",
-        "transition"
+        "geometry"
       ],
       "reason": "heron sticky-window sibling station (depth-0 under the map driver) starved at measurement scroll; our window is the div[1] twin (.jt-window/.jt-map-col explicit) — per-step siblings have no 1:1 seat in the R315 walkthrough"
     }
