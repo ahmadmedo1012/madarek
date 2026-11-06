@@ -112,3 +112,4 @@ T-10e | playwright + conformance/run.mjs (--url :5310, --dark) | cta 390 phone-b
 T-10f | node + scripts/conformance/run.mjs (--sections home-cta-wrap --url :5310, light + --dark) | measure the 390 button-internals restructure + per-bp mapping bindings
 T-03g | conformance/run.mjs --url --dark + python results.json census | measured intro 5bp light+dark, bucketed 800-cap failure rows by seat/kind
 T-03g | vite dev server :5303 (worktree-local) | served the WIP for the instrument
+T-06l | run.mjs conformance instrument (light + --dark), node results.json forensics | footer residual pass: charSplit-aggregate + heuristic-glue suppression, census type re-seats
