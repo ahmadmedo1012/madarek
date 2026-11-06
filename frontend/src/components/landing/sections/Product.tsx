@@ -62,6 +62,15 @@ export function Product() {
         <div className="pr-rows" data-spec="platform.rows">
           <PlatformRow item={PLATFORM_ITEMS[0]} idx={1} />
           <PlatformRow item={PLATFORM_ITEMS[1]} idx={2} hidden />
+          {/* heron's marquee loop copies C/D/E — REAL clones of OUR marquee
+           * content (never heron assets), seated on the recorded band rect:
+           * heron's engine keeps ~5 loop-translated copies of the band and
+           * the census records the extra twins on the cross-fade rects; the
+           * clones give every recorded twin a same-shaped counterpart
+           * (loop seats: out of flow, never visible, never focusable) */}
+          <PlatformRow item={PLATFORM_ITEMS[0]} idx={3} clone />
+          <PlatformRow item={PLATFORM_ITEMS[1]} idx={4} clone />
+          <PlatformRow item={PLATFORM_ITEMS[0]} idx={5} clone />
         </div>
 
         {/* ≥992 the central image column — two stacked captures
@@ -90,10 +99,10 @@ export function Product() {
  * the body-voice wrappers, ruled top/end), side cell (the text box +
  * the CTA strip with its dual circular arrows and the dark hover
  * menu), and the ≤991 per-row image with its flanking rule. */
-function PlatformRow({ item, idx, hidden }: { item: typeof PLATFORM_ITEMS[number]; idx: 1 | 2; hidden?: boolean }) {
+function PlatformRow({ item, idx, hidden, clone }: { item: typeof PLATFORM_ITEMS[number]; idx: 1 | 2 | 3 | 4 | 5; hidden?: boolean; clone?: boolean }) {
   const ds = (k: string) => `platform.${k}${idx}`;
   return (
-    <div className="pr-row" data-spec={ds('row')} aria-hidden={hidden || undefined}>
+    <div className={`pr-row${clone ? ' pr-clone' : ''}`} data-spec={ds('row')} aria-hidden={hidden || clone || undefined}>
       {/* the head cell — 481×193 @1920 */}
       <div className="pr-head" data-spec={ds('head')}>
         <div className="pr-cell-rule is-top" data-spec={ds('headruleA')} aria-hidden="true" />

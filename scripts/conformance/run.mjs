@@ -110,6 +110,33 @@ const NO_COUNTERPART = MAPPING.noCounterpart; // [{section, heron, reason}]
 // results.skippedReport with its written reason. Real boxes keep every
 // non-declared assertion.
 const PLUMBING = MAPPING.plumbing;
+
+// R338 lead (wave-27): per-bp heron paths. A mapping record's heron-side
+// path field (heron | spec | container) may be an object keyed by bp name
+// ({"390":"…","768":"…","default":"…"}) and/or the record may carry
+// bps:["768","390"] so bindings can follow heron's divergent wrappers per
+// breakpoint. Expand per bp: object → the bp's own path, else default,
+// else the numerically nearest recorded bp; bps-scoped records drop
+// outside their declared bps. String records pass through untouched.
+const bpPath = (v, bpName) => {
+  if (v && typeof v === "object" && !Array.isArray(v)) {
+    if (bpName && v[bpName] != null) return v[bpName];
+    if (v.default != null) return v.default;
+    const nums = Object.keys(v).filter((k) => /^\d+$/.test(k)).map(Number).sort((a, b) => a - b);
+    if (!nums.length || !bpName) return null;
+    const w = Number(bpName);
+    const near = nums.reduce((a, b) => (Math.abs(b - w) < Math.abs(a - w) ? b : a));
+    return v[String(near)] ?? null;
+  }
+  return v;
+};
+const bpSel = (rec, bpName) => !(Array.isArray(rec?.bps) && rec.bps.length && !rec.bps.includes(bpName));
+const expandBp = (rec, bpName) => {
+  if (!bpSel(rec, bpName)) return null;
+  const r = { ...rec };
+  for (const k of ["heron", "spec", "container"]) r[k] = bpPath(rec[k], bpName);
+  return r;
+};
 const GROUP_CHECKS = { tag: 1, tc: 1, geometry: 4, type: 4, color: 2 };
 
 // R338 T-14a — WCAG relative luminance/contrast for the dark internal-
@@ -274,14 +301,17 @@ async function SCROLL_WALK_JS(sectionSelectors) {
 function specPathMatches(specPath, pattern) {
   return specPath === pattern || specPath.endsWith(" > " + pattern) || pattern.endsWith(" > " + specPath);
 }
-function findNoCounterpartReason(section, specPath) {
+function findNoCounterpartReason(section, specPath, bpName) {
   for (const nc of NO_COUNTERPART) {
-    if (nc.section === section && specPathMatches(specPath, nc.heron)) return nc.reason;
+    if (!bpSel(nc, bpName)) continue;
+    const path = bpPath(nc.heron, bpName);
+    if (path != null && nc.section === section && specPathMatches(specPath, path)) return nc.reason;
   }
   return null;
 }
 
-function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = []) {
+function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = [], bpNow = null) {
+  const BP_NOW = bpNow; // threaded to findNoCounterpartReason for per-bp paths
   // R337 ar-char-split: spec scaffold boxes (the tween's per-character
   // divs under the h2 line containers) never enter heuristic pairing —
   // the per-container aggregate owns them; letting them pair by ordinal
@@ -345,7 +375,7 @@ function matchPairs(heronEls, ourEls, explicitIdx, section, charSplitRules = [])
   const unmatched = [];
   for (const h of heronEls) {
     if (pairs.some((p) => p.h === h)) continue;
-    unmatched.push({ h, reason: findNoCounterpartReason(section, h.p) });
+    unmatched.push({ h, reason: findNoCounterpartReason(section, h.p, BP_NOW) });
   }
   return { pairs, heuristic, explicit: pairs.length - heuristic, unmatched, wordSet };
 }
@@ -389,7 +419,7 @@ try {
     const ours = {};
     for (const key of SECTIONS_WANTED) {
       const sel = MAPPING.ourSection[key];
-      const explicit = MAPPING.explicit.filter((m) => m.section === key);
+      const explicit = MAPPING.explicit.filter((m) => m.section === key).map((m) => expandBp(m, bp.name)).filter(Boolean);
       const data = await page.evaluate(({ key, sel, explicit, WALK }) => {
         const { makeWalk, pathOf } = new Function("return (" + WALK + ")")()();
         const el = document.querySelector(sel);
@@ -527,11 +557,11 @@ try {
       if (!spec || spec.missing) { cell.missing = "no-heron-spec"; continue; }
       if (o.missing) { cell.missing = `no-our-container:${o.missing}`; continue; }
 
-      const charSplitRules = MAPPING.charSplit.filter((c) => c.section === key);
+      const charSplitRules = MAPPING.charSplit.filter((c) => c.section === key).map((c) => expandBp(c, bp.name)).filter(Boolean);
       // R338 T-14a — resolve skip field-groups per pair: per-binding
       // explicit[].skip ∪ section plumbing rules (spec-path exact/suffix,
       // same grammar as noCounterpart). Counted + reported, never silent.
-      const plumbingRules = PLUMBING.filter((p) => p.section === key);
+      const plumbingRules = PLUMBING.filter((p) => p.section === key).map((p) => expandBp(p, bp.name)).filter(Boolean);
       const skipsFor = (specPath, bindingSkip) => {
         const s = new Set(bindingSkip ?? []);
         let reason = s.size ? "binding-level skip (mapping explicit[].skip)" : null;
@@ -542,7 +572,7 @@ try {
         }
         return { s, reason };
       };
-      const { pairs, heuristic, explicit, unmatched, wordSet } = matchPairs(spec.elements, o.elements, o.explicitIdx, key, charSplitRules);
+      const { pairs, heuristic, explicit, unmatched, wordSet } = matchPairs(spec.elements, o.elements, o.explicitIdx, key, charSplitRules, bp.name);
       cell.heuristic = heuristic;
       cell.explicit = pairs.filter((p) => p.mode === "explicit").length;
       cell.dataSpec = pairs.filter((p) => p.mode === "data-spec").length;
