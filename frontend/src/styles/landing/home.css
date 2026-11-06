@@ -66,19 +66,9 @@
  * statement seat to the 44px display rung (the reference sizes the
  * intro statement a rung under its section H2s — this IS that H2
  * scale for our band), keeping lh 1.1 headroom for the scrub spans. */
-.st-body-col .st-title {
-  /* token-anchored statement rungs (--fs-h2 40px / --fs-h1 46.7px @1440) */
-  font-size: clamp(var(--fs-h2), 3.05vw, var(--fs-h1));
-}
 
 /* The partner strip — the label row tightens to the mono register
  * (the desc stays the honest disclosure at its own rung). */
-.st-partner-label {
-  letter-spacing: 0.14em;
-}
-.st-partner .fo-ticker-item {
-  font-size: var(--fs-sm);
-}
 
 /* ═══ [3] PAINS — R337 A-problem: the ruled ledger owns its sheet now
    (styles/landing/pains.css, the frozen-spec rebuild). The old

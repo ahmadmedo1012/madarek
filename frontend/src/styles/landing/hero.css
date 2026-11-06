@@ -396,10 +396,6 @@
 }
 
 
-.bp-hotspot-num {
-  color: var(--text-muted);
-  font-size: var(--fs-xs);
-}
 
 .bp-hotspot[aria-pressed='true'] {
   background: var(--accent-soft);
