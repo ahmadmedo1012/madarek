@@ -36,3 +36,5 @@
 - [T-15] curl — 200-check the vite dev server before webkit cells
 - [T-15] rg — verify prior patch state + locate --bps/--engine flags in run.mjs
 - [T-15] node (failure-set diff) — prove webkit/chromium cells differ only by sub-pixel drift
+- [T-10] python3 — schema-validated the 5 chrome.<bp>.json specs vs footer.1440.json (element keys identical; chrome adds headerSeat + chromeExtra: preloader/consent/cursor all present per bp)
+- [T-10] rg/Read — reviewed run.mjs mapping loader (underscore-prefixed files ARE picked up by readdirSync — the rename was for grammar clarity), mapping/chrome.json grammar check (105 explicit, 845 noCounterpart w/ reasons, 54 plumbing, 0 uncovered spec paths at all 5 bps)

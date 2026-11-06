@@ -67,6 +67,22 @@
    * empty paper over scrolled content stays clickable; the cells below
    * re-enable the pointer. */
   pointer-events: none;
+  /* r339 (T-10) — the measured chrome type root: her page root is
+   * 13.33px/17.33px @1440 (15.88/20.64 @390, 12.8-root @1024) — exactly
+   * 1.6rem/2.16rem on the shared fluid root at every recorded bp; the
+   * 2.16rem row is the Arabic metric floor (1.35 × the 1.6rem size). */
+  font-size: 1.6rem;        /* 13.33px @1440 — the measured chrome root size */
+  line-height: 2.16rem;     /* 18px @1440 — the Arabic floor over her 17.33px row */
+  /* r339 (T-10) — the measured chrome ink: every her bar container
+   * carries rgba(40,40,40,.72); the literal (not color-mix — the
+   * conformance twin reads the computed string) per the --rl-soft-ink
+   * precedent (roles.css). */
+  --nv-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%), the roles.css/statement.css precedent */
+  color: var(--nv-soft-ink);
+}
+
+html[data-theme='dark'] .fo-header {
+  --nv-soft-ink: rgb(226, 226, 222); /* color-gate: allow — the dark-arm soft ink (the statement.css dark twin; light arm stays byte-identical to the frozen measure) */
 }
 
 /* on-scroll — the >1×bar state marker, exactly the reference's class
@@ -86,12 +102,58 @@
   align-items: stretch;
   gap: 0;
   min-block-size: 56px;
-  /* the reference's measured seat padding: logo at x=33 = 26px inside
-   * the frame edge; the far end rides the frame edge itself. */
-  padding-inline: 26px; /* spacing-gate: allow — the measured reference seat (33px − 7px inset), not a ladder rung */
-  padding-inline-end: 0;
   max-inline-size: none;
   transition: transform 0.4s ease; /* the reference: .header-inner{transition:transform .4s} */
+}
+
+/* ── r339 (T-10) — the chrome bar row, her container seat: the frozen
+ * chrome.<bp>.json tree is header > div[1] (the transform seat ≡
+ * .fo-header-inner) > div[2] (the w-layout-blockcontainer bar row ≡
+ * .fo-header-bar) with the measured 1px bottom rule as a REAL div[1]
+ * (line line-horizital bot ≡ .fo-header-rule, y=bar-bottom−1px). The
+ * logo inset moved OFF the inner seat onto the brand zone — her
+ * div[2] > div[1] carries pad [10,0,10,26.67] itself (measured). */
+.fo-header-bar {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.fo-header-rule {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 1px;
+  background: var(--grid-line);
+  pointer-events: none;
+}
+
+/* her header-logo (div[2] > div[1]): the flex-grow 705px logo cell —
+ * it absorbs the bar's leftover width (her 4-seat register leaves
+ * 705; our 5 Arabic seats leave less — the zone is the REMAINDER, its
+ * geometry is plumbing-skipped in mapping/chrome.json, the logo
+ * cluster inside it is bound). */
+.fo-brand-zone {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  padding-block: 10px;      /* her measured logo-cell padding */
+  padding-inline-start: 26.67px; /* spacing-gate: allow — the measured logo seat inset (her 2.22rem), not a ladder rung */
+}
+
+.fo-brand-zone .fo-brand {
+  flex: 0 1 auto;
+}
+
+/* her header-menu-wrap (div[2] > div[2]): the menu + CTA cluster at
+ * the far end — ours also carries the theme + login cells inside the
+ * actions sibling; the wrap is the bound menu zone. */
+.fo-nav-wrap {
+  display: flex;
+  align-items: stretch;
 }
 
 /* ── the nav reveal (r335 · W-chrome) — the recorded header entrance:
@@ -125,7 +187,8 @@
 /* the interactive cells — the reference re-enables the pointer per
  * cell (logo/nav/cta); ordered AFTER the on-hide kill so the lifted
  * bar's cells stay dead (equal specificity, cascade order decides). */
-.fo-header-inner > :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
+.fo-header-bar > :is(.fo-brand-zone, .fo-nav-wrap, .fo-header-actions, .fo-burger),
+.fo-header-bar > :is(.fo-brand-zone, .fo-nav-wrap, .fo-header-actions, .fo-burger) :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
   pointer-events: auto;
 }
 
@@ -139,7 +202,7 @@
   gap: var(--sp-2-5);
   min-block-size: 44px;
   text-decoration: none;
-  color: var(--text);
+  color: var(--nv-soft-ink); /* r339 (T-10) — her measured logo-cluster ink */
 }
 
 /* the compact logotype beside the mark (the reference wordmark is
@@ -191,9 +254,13 @@
   min-block-size: 44px;
   block-size: 100%;
   font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
+  /* r339 (T-10) — the measured label register: her txt-14 mono labels
+   * are 11.67px/16.33px on the 13.33px page root; on the shared fluid
+   * root that is 1.4rem/1.96rem (the --fs-mono-md seat). */
+  font-size: 1.4rem;      /* 11.67px @1440 — the measured nav-label size */
+  line-height: 1.96rem;   /* 16.33px @1440 — the measured label row */
+  font-weight: 500;       /* the measured label weight */
+  color: var(--nv-soft-ink); /* r339 (T-10) — her measured label ink */
   text-decoration: none;
   background: none;
   border: 0;
@@ -320,11 +387,35 @@
   padding-inline: var(--sp-2);
   font-family: var(--font-mono);
   font-size: max(13px, var(--fs-mono-md));
+  line-height: 1.96rem;    /* r339 (T-10) — the measured CTA label row (16.33px @1440) */
   font-weight: var(--fw-medium);
   color: var(--accent-ink);
   text-decoration: none;
   overflow: clip;
   transition: color 0.4s var(--ease);
+}
+
+/* ── r339 (T-10) — the CTA's measured internal seats: her a2 carries
+ * a REAL 1px line-vertical boundary (≡ .fo-cta-rule) + the btn-fill
+ * wrap (≡ .fo-cta-main, the roll's mask seat). */
+.fo-cta-rule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--grid-line);
+  pointer-events: none;
+}
+
+.fo-cta-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1-5);
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: clip;
 }
 
 .fo-actions-cta::before {
@@ -542,8 +633,14 @@
 
   .fo-header-inner {
     min-block-size: 5rem;
-    padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure, not a rung */
-    padding-inline-end: 0;
+  }
+
+  /* r339 (T-10) — the measured mobile logo inset: her 390 tree puts
+   * the 23×26 mark at x=20 on the 8px-inset bar (12px inside the
+   * seat) and the menu cell flush to the far edge. */
+  .fo-brand-zone {
+    padding-block: 0;
+    padding-inline-start: 1.44rem; /* 12px @390 — the measured mark inset */
   }
 }
 

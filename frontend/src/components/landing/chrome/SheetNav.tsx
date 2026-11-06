@@ -111,7 +111,7 @@ function RollLabel({ text }: { text: string }) {
 function HeaderNav() {
   const { pathname } = useLocation();
   return (
-    <nav className="fo-nav" aria-label="التنقل الرئيسي">
+    <nav className="fo-nav" aria-label="التنقل الرئيسي" data-spec="nav.row">
       {NAV_SEATS.map((seat, i) => {
         const current = !seat.anchor && seat.href === pathname;
         const cls = current ? 'fo-nav-link is-current' : 'fo-nav-link';
@@ -335,46 +335,73 @@ export function SheetNav() {
 
   return (
     <header className="fo-header" ref={headerRef} data-spec="nav.bar">
+      {/* r339 (T-10) — the chrome grammar mirrors the frozen Heron spec
+          tree (docs/redesign/r335/heron-spec/chrome.<bp>.json): the
+          transform SEAT (.fo-header-inner ≡ her container div[1] — the
+          on-hide -101% lift + transform .4s ease live here, exactly the
+          reference's own seat) wraps the BAR ROW (.fo-header-bar ≡ her
+          inner div[2]) which carries the measured 1px bottom rule as a
+          REAL element (.fo-header-rule ≡ her rule div[1] — the border on
+          .fo-header stays: the r306 sheet contract pins it; the rule div
+          rides the same pixel, same ink). */}
       <div className="fo-header-inner">
-        {/* the brand cell — mark + «مدارك» wordmark (the guest-landing
-            e2e reads the wordmark; the display voice seats it). */}
-        <Link to="/" className="fo-brand" aria-label={BRAND_LABEL}>
-          <Logo variant="mark" size={26} className="fo-brand-mark" />
-          <span className="fo-brand-name">مدارك</span>
-        </Link>
+        <div className="fo-header-bar">
+          <div className="fo-header-rule" data-spec="nav.rule" aria-hidden="true" />
 
-        <HeaderNav />
+          {/* the brand zone — her left cluster (the flex-grow logo seat):
+              mark + «مدارك» wordmark (the guest-landing e2e reads the
+              wordmark; the display voice seats it). The mark span carries
+              the measured 32×36 logo seat; our 26px mark centers in it. */}
+          <div className="fo-brand-zone" data-spec="nav.zone.brand">
+            <Link to="/" className="fo-brand" aria-label={BRAND_LABEL} data-spec="nav.brand">
+              <span className="fo-brand-mark" data-spec="nav.brand.mark">
+                <Logo variant="mark" size={26} />
+              </span>
+              <span className="fo-brand-name" data-spec="nav.brand.name">مدارك</span>
+            </Link>
+          </div>
 
-        <div className="fo-header-actions">
-          <ThemeToggle />
-          <Link to="/auth" className="fo-actions-login">{LOGIN}</Link>
-          <Link to="/auth/register" className="fo-actions-cta" data-spec="nav.cta">
-            <RollLabel text={START_NOW} />
-            <Icon icon={ArrowLeft} size={14} className="fo-actions-cta-arrow" aria-hidden />
-          </Link>
+          <div className="fo-nav-wrap" data-spec="nav.zone.menu">
+            <HeaderNav />
+          </div>
+
+          <div className="fo-header-actions" data-spec="nav.zone.actions">
+            <ThemeToggle />
+            <Link to="/auth" className="fo-actions-login">{LOGIN}</Link>
+            {/* the CTA cell — her anatomy: the 1px boundary rule + the
+                content wrap, both real elements for the measured seats. */}
+            <Link to="/auth/register" className="fo-actions-cta" data-spec="nav.cta">
+              <span className="fo-cta-rule" aria-hidden="true" data-spec="nav.cta.rule" />
+              <span className="fo-cta-main" data-spec="nav.cta.main">
+                <RollLabel text={START_NOW} />
+                <Icon icon={ArrowLeft} size={14} className="fo-actions-cta-arrow" aria-hidden />
+              </span>
+            </Link>
+          </div>
+
+          {/* ≤991 — [«القائمة» + the reference's three-line instrument].
+              The visible label rides the BUTTON (the reference's own
+              anatomy: text + the 3-line icon at the inline-end); the outer
+              pair of lines collapses to scale(0) on active (nav.css) —
+              the single centre hair is the reference's close affordance. */}
+          <button
+            type="button"
+            className="fo-burger"
+            ref={burgerRef}
+            data-spec="nav.menu.btn"
+            aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
+            aria-expanded={menuOpen}
+            aria-controls="fo-mobile-menu"
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            <span className="fo-burger-txt" data-spec="nav.menu.label">القائمة</span>
+            <span className="fo-burger-ic" aria-hidden="true" data-spec="nav.menu.icon">
+              <i className="fo-burger-line" data-spec="nav.menu.line.0" />
+              <i className="fo-burger-line" data-spec="nav.menu.line.1" />
+              <i className="fo-burger-line" data-spec="nav.menu.line.2" />
+            </span>
+          </button>
         </div>
-
-        {/* ≤991 — [«القائمة» + the reference's three-line instrument].
-            The visible label rides the BUTTON (the reference's own
-            anatomy: text + the 3-line icon at the inline-end); the outer
-            pair of lines collapses to scale(0) on active (nav.css) —
-            the single centre hair is the reference's close affordance. */}
-        <button
-          type="button"
-          className="fo-burger"
-          ref={burgerRef}
-          aria-label={menuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
-          aria-expanded={menuOpen}
-          aria-controls="fo-mobile-menu"
-          onClick={() => setMenuOpen((v) => !v)}
-        >
-          <span className="fo-burger-txt">القائمة</span>
-          <span className="fo-burger-ic" aria-hidden="true">
-            <i className="fo-burger-line" />
-            <i className="fo-burger-line" />
-            <i className="fo-burger-line" />
-          </span>
-        </button>
       </div>
 
       {menuMounted && (
