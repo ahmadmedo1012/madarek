@@ -64,7 +64,13 @@ export const EASE_TABLE = {
  *  "linear" | [x1,y1,x2,y2] | null. */
 export function parseEase(spec) {
   if (spec == null) return null;
-  const s = String(spec).trim().toLowerCase().replace(/\s+/g, "");
+  // CSS multi-ease lists ("ease, ease, ease") — one ease per transitioned
+  // property: compare on the first component (identical lists are one ease).
+  // cubic-bezier(...) contains commas INSIDE parens — never split those (the
+  // regex below already picks the first cubic-bezier out of any mixed list).
+  const raw = Array.isArray(spec) ? spec[0] : spec;
+  if (typeof raw === "string" && raw.includes(",") && !raw.includes("(")) return parseEase(raw.split(",")[0]);
+  const s = String(raw).trim().toLowerCase().replace(/\s+/g, "");
   const cb = s.match(/cubic-bezier\(([-\d.]+),([-\d.]+),([-\d.]+),([-\d.]+)\)/);
   if (cb) return [Number(cb[1]), Number(cb[2]), Number(cb[3]), Number(cb[4])];
   if (s === "linear") return "linear";
@@ -232,7 +238,7 @@ export function aTransition(h, o) {
   if (he && oe) {
     if (he === "linear" || oe === "linear") easeOk = he === oe;
     else { easeDist = curveDistance(he, oe); easeOk = easeDist < 0.05; }
-  } else if (!he && !oe) easeOk = String(h.transition.e) === String(o.transition.e);
+  } else if (!he && !oe) easeOk = String(h.transition.e) === String(o.transition ? o.transition.e : "none");
   return {
     ...R("transition", durOk && easeOk, `${hd}s/${h.transition.e}`, `${od}s/${o.transition ? o.transition.e : "none"}`),
     delta: Math.abs(hd - od) * 100 + (easeDist ?? (easeOk ? 0 : 1)),
