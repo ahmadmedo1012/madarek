@@ -108,3 +108,7 @@
 - [T-50] npm scripts (tsc/jest/expo lint/tokens:check/contract-check) — mobile gates per batch, all green
 - [T-50] jest @testing-library/react-native — BidiText contract net (6 cases)
 - [T-50] git — 3 commits on r339/t50 + push
+- [T-31] ripgrep — selector/import/test-pin scans across frontend/src/styles + tests
+- [T-31] node — css-counts.mjs ratchet + coverage harness runner
+- [T-31] playwright — DOM selector liveness probe via scripts/gates/css-coverage.mjs (reused, port 5321)
+- [T-31] skills loaded: none of /home/z/my-project/skills document a ponytail-audit method (checked dir listing — no such skill)
