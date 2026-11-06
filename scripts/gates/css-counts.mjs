@@ -23,7 +23,7 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname, join, relative } from 'node:path';
+import { basename, dirname, join, relative } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'frontend', 'src', 'styles');
 const SANCTIONED_HEX = new Set([
@@ -52,7 +52,9 @@ let rawZIndex = 0;
 let rawHex = 0;
 for (const f of files) {
   const src = strip(readFileSync(f, 'utf8'));
-  const rel = relative(ROOT, f);
+  // BASENAME match — the sanctioned raw-value homes keep their sanction
+  // wherever the folder moves seat them (tokens/ etc., T-30/T-31).
+  const rel = basename(relative(ROOT, f));
   importantDeclarations += (src.match(/!important\b/g) || []).length;
   if (!SANCTIONED_Z.has(rel)) rawZIndex += (src.match(/z-index\s*:\s*-?\d+/g) || []).length;
   if (!SANCTIONED_HEX.has(rel)) rawHex += (src.match(/#[0-9a-fA-F]{3,8}\b/g) || []).length;

@@ -63,7 +63,7 @@ function collectVars(src: string, prefix = ''): Map<string, string> {
   return vars;
 }
 
-const tokenSrc = strip(readFileSync(path.join(STYLES, 'tokens.css'), 'utf8'));
+const tokenSrc = strip(readFileSync(path.join(STYLES, 'tokens', 'tokens.css'), 'utf8'));
 const paritySrc = strip(readFileSync(path.join(STYLES, 'unified-parity.css'), 'utf8'));
 const TOKENS = new Map([...collectVars(paritySrc), ...collectVars(tokenSrc)]);
 

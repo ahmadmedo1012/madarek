@@ -38,7 +38,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
 const PATHS = {
-  canonical: join(ROOT, 'frontend/src/styles/tokens.css'),
+  canonical: join(ROOT, 'frontend/src/styles/tokens/tokens.css'),
   parity: join(ROOT, 'frontend/src/styles/unified-parity.css'),
   shared: join(ROOT, 'frontend/src/styles/shared-design-system.css'),
 };
@@ -49,7 +49,7 @@ const read = (p) => readFileSync(p, 'utf8');
  * order. buildThemeMap merges by tier + file order exactly like the
  * live cascade, so CHECKS rows resolve wherever the seat lives. */
 const canonicalCss = () =>
-  read(join(ROOT, 'frontend/src/styles/tokens.generated.css')) + '\n' + read(PATHS.canonical);
+  read(join(ROOT, 'frontend/src/styles/tokens/tokens.generated.css')) + '\n' + read(PATHS.canonical);
 const lineCount = (s) => s.split('\n').length;
 
 /* ── CSS parsing (comments stripped, blocks walked, @media tracked) ── */

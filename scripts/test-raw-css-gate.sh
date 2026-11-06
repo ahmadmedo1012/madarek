@@ -246,12 +246,12 @@ out="$(bash "$GATE" --strict --styles-dir "$WORK/styles" --src-dir "$WORK/nonexi
 if [ "$code" -eq 4 ]; then passed=$((passed+1)); printf '  ✓ missing src dir → exit 4 (fail closed)\n';
 else failed=$((failed+1)); fail_names+=('missing src dir'); printf '  ✗ missing src dir → exit 4, got %s\n' "$code"; fi
 
-fresh; rm "$WORK/styles/tokens.css"
+fresh; rm "$WORK/styles/tokens/tokens.css"
 out="$(bash "$GATE" --strict --styles-dir "$WORK/styles" --src-dir "$WORK/src" 2>&1)"; code=$?
 if [ "$code" -eq 4 ]; then passed=$((passed+1)); printf '  ✓ missing tokens.css → exit 4 (fail closed)\n';
 else failed=$((failed+1)); fail_names+=('missing tokens'); printf '  ✗ missing tokens.css → exit 4, got %s\n' "$code"; fi
 
-fresh; cat >"$WORK/styles/tokens.css" <<'TOK'
+fresh; cat >"$WORK/styles/tokens/tokens.css" <<'TOK'
 :root { --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; }
 TOK
 out="$(bash "$GATE" --strict --styles-dir "$WORK/styles" --src-dir "$WORK/src" 2>&1)"; code=$?

@@ -70,7 +70,7 @@ describe('self-hosted fonts (perf fix: render-blocking Google Fonts)', () => {
   it('fonts.css is imported before tokens.css in main.tsx', () => {
     const main = read('src/main.tsx');
     const fonts = main.indexOf("import './styles/fonts.css'");
-    const tokens = main.indexOf("import './styles/tokens.css'");
+    const tokens = main.indexOf("import './styles/tokens/tokens.css'");
     expect(fonts).toBeGreaterThanOrEqual(0);
     expect(tokens).toBeGreaterThanOrEqual(0);
     expect(fonts).toBeLessThan(tokens);

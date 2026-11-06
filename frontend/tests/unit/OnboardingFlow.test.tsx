@@ -225,7 +225,7 @@ describe('R320 cycle-3 — the onboarding tour veil (Heron menu scrim)', () => {
     'utf-8',
   );
   const TOKENS_CSS = readFileSync(
-    path.resolve(__dirname, '../../src/styles/tokens.css'),
+    path.resolve(__dirname, '../../src/styles/tokens/tokens.css'),
     'utf-8',
   );
 

@@ -444,7 +444,7 @@ def load_ladder():
     # --sp-Nx legacy aliases. Load BOTH (generated first — same import
     # order as main.tsx) so the engine still reads live truth wherever
     # a rung is defined, and keep failing closed when neither parses.
-    sources = [STYLES / 'tokens.generated.css', STYLES / 'tokens.css']
+    sources = [STYLES / 'tokens' / 'tokens.generated.css', STYLES / 'tokens' / 'tokens.css']
     ladder = {}
     for tokens in sources:
         if not tokens.is_file():

@@ -270,7 +270,7 @@ describe('r162 R2 — the landing warms the AuthPage chunk (PROD, idle)', () => 
 /* ── r197 §1 tombstone — the --ln-* Orbit Ink family is RETIRED ──── */
 
 describe('r197 — the landing scene family is retired from tokens.css', () => {
-  const tokens = read('src/styles/tokens.css');
+  const tokens = read('src/styles/tokens/tokens.css');
   const live = stripComments(tokens);
 
   it('no --ln-* definitions remain (family deleted r197; BLUEPRINT §8 rebuilds the landing in stage 2)', () => {
