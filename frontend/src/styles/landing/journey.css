@@ -1420,9 +1420,6 @@
     transition: none;
   }
 
-  .wy-stack {
-    gap: var(--sp-4);
-  }
 
   .jt-plan .bp-drawable {
     transition: none;

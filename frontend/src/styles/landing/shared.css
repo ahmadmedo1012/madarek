@@ -20,9 +20,6 @@
      57.22rem — the square shrinks to its cell, ~40.9rem); the stack
      is the ≤767 phone form alone. The side gutters step 12xl→4xl on
      the belt (the 15rem isolation pads are the desktop's own). */
-  .st-body-col {
-    padding: var(--space-4xl) var(--space-4xl) var(--space-3xl);
-  }
 
   .st-grid {
     grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
@@ -171,9 +168,6 @@
 
   /* the why stack (the 2×2 capture grid) folds on mobile — the rail
      carries the section; the reference's mobile why = state list */
-  .wy-stack {
-    display: none;
-  }
 
   /* the CTA closing strip folds (the reference's mobile CTA = slab +
      title + button) */
