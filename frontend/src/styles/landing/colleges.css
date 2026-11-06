@@ -14,25 +14,37 @@
 }
 
 .cg-strip-label {
-  color: var(--text-faint);
-  font-size: var(--fs-xxs);
+  color: var(--cta-ink);
+  /* T-10c: heron's registry voice = 0.875× the body root on every bp
+     (15.56/11.67/8.3/12.89/13.89) — 1.4rem of our html root hits each
+     rung exactly. */
+  font-size: 1.4rem;
   letter-spacing: 0.04em;
 }
 
 .cg-strip-text {
   margin: 0;
-  font-size: var(--fs-sm);
-  line-height: 1.7;
-  color: var(--text-secondary);
+  font-size: 1.4rem;
+  color: var(--cta-ink);
+  line-height: 1.35;
+}
+
+/* heron's registry rows speak lh 1.4 ≥768 (21.78/16.33/11.61/18.05);
+   at 390 heron reads 1.1 and the Arabic floor carries it (1.35×13.89
+   = 18.75) — inherited from the section voice. */
+@media (min-width: 768px) {
+  .cg-strip-text {
+    line-height: 1.4;
+  }
 }
 
 .cg-strip-text strong {
-  color: var(--text);
+  color: inherit;
 }
 
 .cg-strip-text .fo-mono {
-  color: var(--accent-ink);
-  font-size: var(--fs-xs);
+  color: var(--cta-ink);
+  font-size: inherit;
 }
 
 .cg-strip-links {
@@ -40,11 +52,12 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--sp-4);
+  font-size: 1.4rem;
 }
 
 .fo-text-link {
   color: var(--accent-ink);
-  font-size: var(--fs-sm);
+  font-size: 1.4rem;
   font-weight: 600;
   text-decoration: none;
   border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
