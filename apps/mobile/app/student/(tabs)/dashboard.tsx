@@ -26,7 +26,7 @@ import { usePalette } from "@/design/theme";
 import { AppStatusBar } from "@/design/statusbar";
 import { sp } from "@/design/tokens";
 import { Screen, SectionBar } from "@/components/ui/screen";
-import { T } from "@/components/ui/text";
+import { BidiText, T } from "@/components/ui/text";
 import { LedgerRow, RowList } from "@/components/ui/data";
 import { Badge, Card } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
@@ -158,9 +158,12 @@ export default function StudentDashboard() {
                   <T variant="bodyLg" weight="bold" numberOfLines={1}>
                     {step.title}
                   </T>
-                  <T variant="sm" color="secondary" numberOfLines={1}>
+                  {/* BidiText — agenda sublines mix times/rooms/Latin
+                      course vocabulary; boundary Latin runs must stay put
+                      (review-2 P0-1 · T-50). */}
+                  <BidiText variant="sm" color="secondary" numberOfLines={1}>
                     {step.subline}
-                  </T>
+                  </BidiText>
                 </View>
                 {step.kind === "lecture" && (step.progressPct ?? 0) > 0 ? (
                   <RingProgress

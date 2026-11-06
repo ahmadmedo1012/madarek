@@ -13,7 +13,7 @@ import { studentApi } from "@/api/student";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
 import { sp } from "@/design/tokens";
-import { T } from "@/components/ui/text";
+import { BidiText, T } from "@/components/ui/text";
 import { SectionBar } from "@/components/ui/screen";
 import { Badge, Card } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
@@ -144,9 +144,9 @@ export default function ResultsScreen() {
               <Card key={c.offeringId} style={{ gap: sp[8] }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                   <View style={{ flex: 1, gap: 2 }}>
-                    <T variant="bodyLg" weight="bold" numberOfLines={1}>
+                    <BidiText variant="bodyLg" weight="bold" numberOfLines={1}>
                       {c.courseName}
-                    </T>
+                    </BidiText>
                     <T variant="xs" color="muted">
                       {`الفصل ${c.term}`}
                     </T>
