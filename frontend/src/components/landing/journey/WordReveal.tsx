@@ -141,7 +141,7 @@ export function ScrubReveal({ text, className, lines, renderLine, wordSpec, char
             {/* the reference's per-char tween scaffold, mirrored as empty
                 boxes (the joining law: Arabic text never splits mid-word) */}
             {Array.from({ length: charCounts?.[gi] ?? 0 }, (_, m) => (
-              <span key={`wr-c-${m}`} aria-hidden="true" data-spec={charSpec?.(gi, m)} />
+              <span key={`wr-c-${m}`} className="wr-c" aria-hidden="true" data-spec={charSpec?.(gi, m)} />
             ))}
           </span>
           {gi < words.length - 1 ? SPACE : null}
