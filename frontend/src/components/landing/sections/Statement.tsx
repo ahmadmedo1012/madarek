@@ -163,7 +163,7 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
               titlebox stretches to the full padded width — the spec's
               own line containers are full-width boxes. */}
           <div className="st-stmt" data-spec="intro.stmt">
-            <div className="st-stmt-rule" aria-hidden="true" data-spec="intro.stmtrule" />
+            <div className="lp-hairline lp-hairline--v" aria-hidden="true" data-spec="intro.stmtrule" />
             <div className="st-stmt-in" data-spec="intro.stmtin">
               <div className="st-titlebox" data-spec="intro.titlebox">
                 <h2 id="statement-title" className="st-title" ref={titleRef} data-spec="intro.h2">
@@ -241,14 +241,14 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
               universities crawl, and the disclosure desc closed by the
               band's bottom rule. */}
           <div className="st-ticker" data-spec="intro.ticker">
-            <div className="st-ticker-rule" aria-hidden="true" data-spec="intro.tickerrule" />
+            <div className="lp-hairline lp-hairline--v" aria-hidden="true" data-spec="intro.tickerrule" />
             <div className="st-ticker-in" data-spec="intro.tickerin">
               <div className="st-plabel-row" data-spec="intro.labelrow">
                 <div className="st-plabel" data-spec="intro.label">
                   <div className="fo-mono st-plabel-in" dir="ltr" data-spec="intro.labeltext">CAMPUS</div>
                 </div>
-                <div className="st-plabel-rule" aria-hidden="true" data-spec="intro.labelrule" />
-                <div className="st-plabel-toprule" aria-hidden="true" data-spec="intro.labeltoprule" />
+                <div className="st-plabel-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.labelrule" />
+                <div className="st-plabel-toprule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.labeltoprule" />
                 <div className="st-parrows" data-spec="intro.labelarrows">
                   <div className="st-parrow" data-spec="intro.labelarrow">
                     <div className="st-parrow-in" data-spec="intro.labelarrowin">
@@ -305,7 +305,7 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                   توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
                   <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
                 </div>
-                <div className="st-desc-rule" aria-hidden="true" data-spec="intro.descrule" />
+                <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />
               </div>
             </div>
           </div>

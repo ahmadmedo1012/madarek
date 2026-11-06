@@ -117,13 +117,6 @@
   position: relative;
   min-inline-size: 0;
 }
-.st-stmt-rule {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: 1px;
-  background: var(--rule-strong);
-}
 .st-stmt-in {
   display: flex;
   flex-direction: column;
@@ -344,13 +337,6 @@
 .st-ticker {
   position: relative;
 }
-.st-ticker-rule {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: 0;
-  inline-size: 1px;
-  background: var(--rule-strong);
-}
 .st-ticker-in {
   display: grid;
   grid-template-rows: auto auto auto;
@@ -384,14 +370,8 @@
   line-height: 1.96rem;
   font-weight: 600;
 }
-.st-plabel-rule,
-.st-plabel-toprule {
-  position: absolute;
-  inset-inline: 0;
-  block-size: 1px;
-  background: var(--rule-strong);
-  pointer-events: none;
-}
+/* T-14 (r339) — the rules' geometry/ink ride the shared hairline
+   pattern (lp-hairline--h); only the per-seat insets stay here. */
 .st-plabel-rule { inset-block-end: 0; }
 .st-plabel-toprule { inset-block-start: 0; }
 .st-parrows {
@@ -526,14 +506,8 @@
 .st-desc-text .fo-text-link {
   color: inherit;
 }
-.st-desc-rule {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-start: 0;
-  block-size: 1px;
-  background: var(--rule-strong);
-  pointer-events: none;
-}
+/* T-14 (r339) — geometry/ink via lp-hairline--h; seat inset only. */
+.st-desc-rule { inset-block-start: 0; }
 
 /* ═══ desktop height law (≥992): the band = 86.7rem — the cols row
    67.7 + the ticker 19.1; the media cell spans both rows. The wrap
