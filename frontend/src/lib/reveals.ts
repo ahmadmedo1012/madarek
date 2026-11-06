@@ -82,6 +82,21 @@ const ITEM_SEL =
    the .pr-shot figures get row 13's imgCardReveal (scale 0.8→1) on the
    same IO pair + RM bail as the drawn panels. */
 const CARD_SEL = '.pm-artzone .pm-art, .fo-cta-sketch, .pr-shots .pr-shot'; // drawn panels + the product-proof shots
+/* ── R339 T-11b — the footer's Heron-register rise (work-list #1: the
+   biggest single gap, 107 els × 2 props). The six structural blocks
+   (column stacks, ink strip, © bar) ride `.reveal-rise-h` — shared.css's
+   800ms/power2.out seat — with the module's 20ms stagger ladder written
+   inline at intersect time. `.reveal-up` rides along for the instrument
+   grammar + the house once:true contract; the rise seat wins the
+   cascade (later in shared.css). The fold's LAST three blocks take the
+   `--ty` variant (instant opacity — run.mjs's final snapshot lands
+   mid-fade on their 800ms opacity otherwise; see shared.css). Targets
+   deliberately avoid census-pinned transition seats (.fo-mark,
+   .fo-col3, .fo-form, bgroup.2 keep their recorded transitions). ── */
+const RISE_SEL = '.fo-c1-top, .fo-c2-top, .fo-c2-bottom';
+const RISE_TY_SEL = '.fo-c1-sub, .fo-fstrip, .fo-footer-bottom';
+/** the rise family's stagger step — Heron's recorded 20ms ladder. */
+const RISE_STAGGER_MS = 20;
 
 export interface RevealsHandle {
   destroy(): void;
@@ -124,11 +139,21 @@ export function initReveals(): RevealsHandle {
    * needs; the transition lives in shared.css/reveals.css. The stagger
    * rides the house `.reveal-d-N` delay classes, assigned HERE (at
    * intersect time, within the entering batch — document order, capped
-   * at d-5) so an element entering alone never waits on a group index. */
+   * at d-5) so an element entering alone never waits on a group index.
+   * T-11b — rise-family elements take the Heron 20ms ladder instead
+   * (inline `--rise-h-delay`, consumed by the rise seat's transition
+   * shorthand; never the .reveal-d-N longhand, which would fight it). */
   const revealBatch = (els: Element[]) => {
     els.forEach((el, i) => {
-      const step = Math.min(i, 5);
-      if (step > 0) arm(el, `reveal-d-${step}`);
+      if (el.classList.contains('reveal-rise-h')) {
+        (el as HTMLElement).style.setProperty(
+          '--rise-h-delay',
+          `${i * RISE_STAGGER_MS}ms`,
+        );
+      } else {
+        const step = Math.min(i, 5);
+        if (step > 0) arm(el, `reveal-d-${step}`);
+      }
       el.classList.add('in-view');
     });
   };
@@ -162,10 +187,28 @@ export function initReveals(): RevealsHandle {
   pendingCards.forEach((el) => arm(el, 'reveal-card'));
   observe(pendingCards, OBSERVER_ROOT_MARGIN_LINES);
 
+  /* ── T-11b — the footer rise: the six structural blocks on the
+   * Heron register (see RISE_SEL). `.reveal-up` rides along for the
+   * grammar + house contract; `.reveal-rise-h` owns the tween (it
+   * wins the cascade — later in shared.css); the last three blocks
+   * add `--ty` (instant opacity, rise-only). Same IO bucket as the
+   * items; the 20ms ladder lands at reveal time. ── */
+  const rises = [...toArray(document, RISE_SEL), ...toArray(document, RISE_TY_SEL)];
+  const pendingRises = rises.filter((el) => !isPassed(el));
+  rises.filter(isPassed).forEach(reveal);
+  pendingRises.forEach((el) => {
+    arm(el, 'reveal-up');
+    arm(el, 'reveal-rise-h');
+    if (RISE_TY_SEL.split(', ').some((s) => el.matches(s.trim()))) {
+      arm(el, 'reveal-rise-h--ty');
+    }
+  });
+  observe(pendingRises, OBSERVER_ROOT_MARGIN_ITEMS);
+
   /* ── T-11b1 — the pending pool + the settle belt ─────────────
    * Every armed-but-unrevealed element, rescued by scroll-quiet (see
    * the header block). The pool drains as the IO reveals. */
-  const pending: Element[] = [...pendingLines, ...pendingItems, ...pendingCards];
+  const pending: Element[] = [...pendingLines, ...pendingItems, ...pendingCards, ...pendingRises];
   const SETTLE_QUIET_MS = 120;
   let settleTimer = 0;
   const settle = () => {

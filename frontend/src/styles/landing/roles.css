@@ -376,6 +376,38 @@
    open row's rules (the accordion's unfold) — carried verbatim */
 .rl-row-rule { transition: opacity 0.4s ease; }
 
+/* ── R339 T-11b — the row rules' scroll-reveal WIDEN ─────────────────
+   The frozen census (T-11A-TWEEN.md, home-usecase-wrap): 16 width
+   units — one fromTo per accordion row's rule child, width 0→auto on
+   scroll-reveal (partial timing: property+trigger). Our counterpart:
+   each row's bottom hairline (.rl-row-rule-b — full-width at every
+   bp; the -o/-t twins keep their 992–1919 collapse untouched) rides a
+   0→100% keyframe widen on the same once:true `.in-view` write. The
+   seat class is added by lib/reveals.ts ONLY (progressive
+   enhancement — no JS, no class, the rule renders as authored);
+   opacity joins the keyframe so the armed pre-state reads hidden
+   (the instrument's scroll-reveal classification needs a hidden
+   pre-state; a bare width:0 is not "hidden" to that grammar). RM: the
+   module never arms, this block never applies. */
+.rl-rule-w {
+  opacity: 0;
+  width: 0;
+}
+.rl-rule-w.in-view {
+  animation: rl-rule-widen 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+@keyframes rl-rule-widen {
+  from { opacity: 0; width: 0; }
+  to { opacity: 1; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal-armed .rl-rule-w {
+    opacity: 1;
+    width: auto;
+    animation: none;
+  }
+}
+
 /* the wrap's ground: the spec's section box is transparent (the page
    ground shows through) */
 .rl-section.rl-section { background: transparent; }

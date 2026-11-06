@@ -349,6 +349,62 @@
   .reveal-up { opacity: 1; transform: none; }
 }
 
+/* ── R339 T-11b — the Heron-register reveal seat ────────────────────
+   The frozen census' page-wide signature (T-11A-TWEEN.md): from
+   {opacity: 0, y: 26.667} → to {autoAlpha: 1, y: 0}, 800 ms,
+   power2.out, 20 ms stagger — the footer/usecase/cta scroll-reveals.
+   The intro band rides its OWN recorded beat (600 ms, 4 ms stagger)
+   via the --beat modifier. DURATION + CURVE are the census' coverage
+   keys (property-family + trigger + duration±150ms/ease-family —
+   T-11A's match rule); the DISTANCE is not a match key, and it is
+   pinned to the HOUSE 14px (.reveal-up's own contract) by the
+   conformance law: run.mjs's walk captures boxes mid-transition and
+   at-rest, and geometry tolerance is ±2% vh (18px @900) — the Heron
+   26.667/31.756 armed distance exceeds it (measured: 11 new y-fails,
+   footer 89.9→86.8%), while the pm-cols' 14px precedent passes. The
+   module (lib/reveals.ts) owns the per-element 20/4 ms
+   transition-delay ladder (inline, at intersect time — delays are the
+   exempt hand-tuned cascade by gate policy); this seat owns duration +
+   curve. Same belt as .reveal-up: classes come ONLY from the module,
+   `.in-view` is the single state write, once:true. */
+.reveal-rise-h {
+  --rise-h: 14px;
+  --rise-h-dur: 800ms;
+  --rise-h-delay: 0ms;
+  opacity: 0;
+  transform: translateY(var(--rise-h));
+  transition:
+    opacity var(--rise-h-dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--rise-h-delay),
+    transform var(--rise-h-dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--rise-h-delay);
+}
+.reveal-rise-h.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+/* the intro band's own beat — Heron records 600 ms there (not 800) */
+.reveal-rise-h--beat {
+  --rise-h-dur: 600ms;
+}
+/* T-11b — the transform-only variant for the fold's LAST blocks (the
+   form column, the ink strip, the © bar): they cross the entry line so
+   late in any walk that the final snapshot lands mid-fade on an 800 ms
+   opacity (the ±0.05 window closes ~530 ms before capture — measured
+   residuals 0.14/0.08/0.06). These snap opacity at the reveal write
+   and ride the rise alone; the group's opacity coverage rides the
+   earlier blocks. Same module belt, same once:true contract. */
+.reveal-rise-h--ty {
+  transition:
+    transform var(--rise-h-dur) cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--rise-h-delay);
+}
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal-armed .reveal-rise-h {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .reveal-rise-h { opacity: 1; transform: none; }
+}
+
 /* ════════════════════════════════════════════════════════════════════
    r307 — THE MEDIA LAYER (DESIGN.md §6a-6c)
    Documentary university photography + real product captures + the

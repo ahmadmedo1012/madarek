@@ -1404,63 +1404,67 @@
  * content-box sizes (1024/1280/1440/1920 → scripts/r324/
  * section-intrinsic.json), each rung anchored EXACT at its gate
  * breakpoint (1024 / 1440) with the local measured slope. */
-.st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }   /* 502 @1024 · 597 @1440 — r324 X14 re-measure (59:50 art) */
-.chapters   { contain-intrinsic-size: auto calc(3127px + 209.9vw); } /* 5276 @1024 · 6150 @1440 — R332 W4 re-measure post mono-re-seat + reserved closing cell (the X14 seat ran +96 stale pre-wave) */
-.pr-section { contain-intrinsic-size: auto calc(-2px + 40.14vw); }  /* 409 @1024 · 576 @1440 — R328 (H5) re-measure post-rhythm-ladder (the r325 seat ran +69 stale) */
-/* R325 Y3 re-measure: the wy floors retired, so the placeholder re-fits
-   to the CONTENT-SIZED band (measure-intrinsic.mjs @1024/1440).
-   375 @1024 · 499 @1440 */
-.wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); }
-.rl-section { contain-intrinsic-size: auto calc(441px + 21.63vw); }    /* 663 @1024 · 753 @1440 — R328 (H5) re-measure (the r324 seat ran +69 stale @1440) */
-.fo-cta     { contain-intrinsic-size: auto calc(-8px + 37.5vw); }    /* 376 @1024 · 530 @1440 — R328 (H5) re-measure */
+/* R339 T-11b re-measure (measure-intrinsic.mjs @1024/1440, anchors
+   1024×768 / 1440×900): the R337/R338 layout waves left every pin
+   stale — st 597→723 (+126) · chapters 6150→6324 (+174) · pr 576→712
+   (+136) · wy 499→2488 (+1989) · rl 753→886 (+133) · cta 530→1164
+   (+634) @1440. The accumulated +3.2k px of drift is the doc-growth
+   trap: every conformance journey computes max-scroll ONCE at load
+   (skirt guesses), so it undershoots the real document and never
+   reaches the footer (measured: walk bottomed 11539 vs real 14271).
+   Two-anchor fluid fits re-pinned EXACT at the 1024/1440 gates. */
+.st-section { contain-intrinsic-size: auto calc(-0.5px + 50.24vw); }  /* 514 @1024 · 723 @1440 */
+.chapters   { contain-intrinsic-size: auto calc(3126px + 222.12vw); } /* 5400 @1024 · 6324 @1440 */
+.pr-section { contain-intrinsic-size: auto calc(2px + 49.28vw); }   /* 507 @1024 · 712 @1440 */
+.wy-section { contain-intrinsic-size: auto calc(30px + 170.67vw); }  /* 1778 @1024 · 2488 @1440 */
+.rl-section { contain-intrinsic-size: auto calc(436px + 31.25vw); }  /* 756 @1024 · 886 @1440 */
+.fo-cta     { contain-intrinsic-size: auto calc(98px + 74.04vw); }  /* 856 @1024 · 1164 @1440 */
 
-/* 992–1179 — the rung below the 1180 red-team line (anchored @1024) */
+/* 992–1179 — the rung below the 1180 red-team line (anchored @1024;
+   R339 T-11b re-measure — same fluid fit as the ≥1180 band) */
 @media (min-width: 992px) and (max-width: 1179px) {
-  .st-section { contain-intrinsic-size: auto calc(268px + 22.84vw); }
-  .chapters   { contain-intrinsic-size: auto calc(3127px + 209.9vw); }
-  /* R328 (H5) re-measure (post-rhythm-ladder, BPS=1440,1024):
-     pr 409→576 · rl 663→753 · cta 376→530 — the two-anchor
-     fluid fit re-pinned; st rides its own 502→597 fit. */
-  .pr-section { contain-intrinsic-size: auto calc(-2px + 40.14vw); }
-  .wy-section { contain-intrinsic-size: auto calc(70px + 29.81vw); }
-  .rl-section { contain-intrinsic-size: auto calc(441px + 21.63vw); }
-  .fo-cta     { contain-intrinsic-size: auto calc(-8px + 37.5vw); }
+  .st-section { contain-intrinsic-size: auto calc(-0.5px + 50.24vw); }
+  .chapters   { contain-intrinsic-size: auto calc(3126px + 222.12vw); }
+  .pr-section { contain-intrinsic-size: auto calc(2px + 49.28vw); }
+  .wy-section { contain-intrinsic-size: auto calc(30px + 170.67vw); }
+  .rl-section { contain-intrinsic-size: auto calc(436px + 31.25vw); }
+  .fo-cta     { contain-intrinsic-size: auto calc(98px + 74.04vw); }
 }
-/* 768–991 — the tablet composition (measured @768) */
+/* 768–991 — the tablet composition (measured @768; R339 T-11b re-measure) */
 @media (min-width: 768px) and (max-width: 991px) {
-  .st-section { contain-intrinsic-size: auto 544px; }
-  .chapters   { contain-intrinsic-size: auto 4685px; }
-  .pr-section { contain-intrinsic-size: auto 471px; }   /* r325 merged re-measure (471 @768) */
-  .wy-section { contain-intrinsic-size: auto 616px; } /* r325 Y3 re-measure */
-  .rl-section { contain-intrinsic-size: auto 1300px; }
-  .fo-cta     { contain-intrinsic-size: auto 468px; }
+  .st-section { contain-intrinsic-size: auto 537px; }
+  .chapters   { contain-intrinsic-size: auto 5016px; }
+  .pr-section { contain-intrinsic-size: auto 514px; }
+  .wy-section { contain-intrinsic-size: auto 1883px; }
+  .rl-section { contain-intrinsic-size: auto 1358px; }
+  .fo-cta     { contain-intrinsic-size: auto 1037px; }
 }
-/* 480–767 — the large-phone band (measured @600) */
+/* 480–767 — the large-phone band (measured @600; R339 T-11b re-measure) */
 @media (min-width: 480px) and (max-width: 767px) {
-  .st-section { contain-intrinsic-size: auto 1143px; }
-  .chapters   { contain-intrinsic-size: auto 4168px; }
-  .pr-section { contain-intrinsic-size: auto 856px; }   /* r325 merged re-measure (856 @600) */
-  .wy-section { contain-intrinsic-size: auto 990px; } /* R325 Y3 re-measure — the phone rail folds back to the ONE-column state list */
-  .rl-section { contain-intrinsic-size: auto 1409px; }
-  .fo-cta     { contain-intrinsic-size: auto 713px; }
+  .st-section { contain-intrinsic-size: auto 1321px; }
+  .chapters   { contain-intrinsic-size: auto 3930px; }
+  .pr-section { contain-intrinsic-size: auto 1517px; }
+  .wy-section { contain-intrinsic-size: auto 1266px; }
+  .rl-section { contain-intrinsic-size: auto 1538px; }
+  .fo-cta     { contain-intrinsic-size: auto 1342px; }
 }
-/* ≤479 — the phone composition (measured @390) */
+/* ≤479 — the phone composition (measured @390; R339 T-11b re-measure) */
 @media (max-width: 479px) {
-  .st-section { contain-intrinsic-size: auto 820px; }
-  .chapters   { contain-intrinsic-size: auto 4559px; }   /* R332 W390a re-measure: the 4rem phone title + sp-5 head seat (was 4536 pre-title-rung) */
-  .pr-section { contain-intrinsic-size: auto 551px; }   /* R332 W390a re-measure (654→572 rendered; the 617 guess ran +65 stale) */
-  .wy-section { contain-intrinsic-size: auto 817px; } /* R332 W390b re-measure — the pad-inside composition (head 251 + list 463 + note 103) renders 817; the 613 guess ran −204 stale */
-  .rl-section { contain-intrinsic-size: auto 915px; }
-  .fo-cta     { contain-intrinsic-size: auto 463px; }
+  .st-section { contain-intrinsic-size: auto 852px; }
+  .chapters   { contain-intrinsic-size: auto 4372px; }
+  .pr-section { contain-intrinsic-size: auto 995px; }
+  .wy-section { contain-intrinsic-size: auto 807px; }
+  .rl-section { contain-intrinsic-size: auto 997px; }
+  .fo-cta     { contain-intrinsic-size: auto 872px; }
 }
-/* ≤374 — the narrow-phone rung (measured @360) */
+/* ≤374 — the narrow-phone rung (measured @360; R339 T-11b re-measure) */
 @media (max-width: 374px) {
-  .st-section { contain-intrinsic-size: auto 798px; }
-  .chapters   { contain-intrinsic-size: auto 4976px; }
-  .pr-section { contain-intrinsic-size: auto 605px; }   /* r325 merged re-measure (605 @360) */
-  .wy-section { contain-intrinsic-size: auto 646px; } /* R325 Y3 re-measure — the ONE-column state list */
-  .rl-section { contain-intrinsic-size: auto 903px; }
-  .fo-cta     { contain-intrinsic-size: auto 428px; }
+  .st-section { contain-intrinsic-size: auto 788px; }
+  .chapters   { contain-intrinsic-size: auto 3977px; }
+  .pr-section { contain-intrinsic-size: auto 919px; }
+  .wy-section { contain-intrinsic-size: auto 745px; }
+  .rl-section { contain-intrinsic-size: auto 920px; }
+  .fo-cta     { contain-intrinsic-size: auto 807px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
