@@ -156,13 +156,52 @@ html[data-theme='dark'] .fo-cta {
    rail/side cells collapse to gutters, the rules stay. ── */
 .fo-cta-ledger {
   display: grid;
-  grid-template-rows: 9.6rem auto 21.6rem;
+  /* T-10d2: heron's phone rungs — 60/302/138 on the 9.92 root
+     (band-top 6.05rem · title band 30.44rem · sketch 13.91rem). */
+  grid-template-rows: 6.05rem 30.44rem 13.91rem;
 }
 
 .fo-cta-band {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 5.9fr) minmax(0, 1fr);
+  /* T-10d2: heron seats 60-wide rail/side cells at 390 (mid 254)
+     on the 9.92 root = 6.05rem gutters. */
+  grid-template-columns: 6.05rem minmax(0, 1fr) 6.05rem;
   position: relative;
+}
+
+/* T-10d2: heron collapses the title band's rail/side cells at 390 —
+   the resolve runs full-bleed (374) while the rails park as 0×0 seats
+   at the wrap top-centre (x-mirror 195, y 0), the same parking
+   pattern the sketch veil uses from 768 up. PHONE ONLY: from 768 up
+   the rails are live measured cells (kick-wrap x-mirror 345 @768). */
+@media (max-width: 767px) {
+  .fo-cta-band-title {
+    /* the parked rails leave the flow — one full-bleed track takes
+       the resolve (374) directly. */
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fo-cta-band-title > .fo-cta-rail,
+  .fo-cta-band-title > .fo-cta-side {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+  }
+
+  /* T-10d2: heron parks the sketch CONTENT at 390 — the cell keeps its
+     255×138 seat (the gradient veil paints it) while frame/holder/art
+     measure 0×0 at the wrap top-centre, the veil's own ≥768 pattern. */
+  .fo-cta-sketch-frame {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    inline-size: 0;
+    block-size: 0;
+    overflow: hidden;
+  }
 }
 
 .fo-cta-cell {
@@ -259,6 +298,27 @@ html[data-theme='dark'] .fo-cta {
 
   .fo-cta-ledger {
     grid-template-rows: 9.6rem 27.6rem 21.6rem;
+    /* T-10d2: heron's tablet ledger is a centered 753 column
+       (81.85rem on the 9.2 root) inside the 777 full-bleed sheet. */
+    inline-size: 81.85rem;
+    margin-inline: auto;
+  }
+
+  /* heron splits the tablet bands on the desktop ratios —
+     sketch-mid 378 / side 189 / rail 186 of the 753 ledger. */
+  .fo-cta-band {
+    grid-template-columns: minmax(0, 24.7%) minmax(0, 50.2%) minmax(0, 25.1%);
+  }
+
+  .fo-cta-copy {
+    /* heron's title box: 276×88 @768 — the narrow column wraps the
+       resolve to two lines; the floor holds the measured 9.56rem. */
+    inline-size: 30rem;
+    min-block-size: 9.56rem;
+  }
+
+  .fo-cta-lede-wrap {
+    inline-size: 36.3rem;
   }
 
   .fo-cta-title {

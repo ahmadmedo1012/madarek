@@ -108,3 +108,4 @@ T-24 | depcruise/madge-style import scan + knip | circular-dep fix AdminPages↔
 T-13r | playwright (repo node_modules, chromium via /tmp/pw-browsers symlink fallback per ADDENDUM 3) | interact.mjs hover/focus-visible delta probing against vite :5313, 5 bps
 T-13r | node census scripts (heron-spec hovers JSON) | per-section/bp ordinal + channel-class census driving the fix plan
 T-10c | conformance/run.mjs @tolfix (--sections home-cta-wrap --dark, port 5310) + node failure-family census | cta light/dark measure + residual clustering
+T-10d2 | jq/node one-liners | failure-family aggregation from results.json + mapping bps-scoping edit

@@ -53,7 +53,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[1]",
-      "ours": "cta.top-rail-kick-wrap"
+      "ours": "cta.top-rail-kick-wrap",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -74,7 +80,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[3] > div[1]",
-      "ours": "cta.top-mid-kick-wrap"
+      "ours": "cta.top-mid-kick-wrap",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -92,6 +104,12 @@
       "ours": "cta.top-mid-rule",
       "skip": [
         "color"
+      ],
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
       ]
     },
     {
@@ -104,7 +122,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[1] > div[4] > div[1]",
-      "ours": "cta.top-side-kick-wrap"
+      "ours": "cta.top-side-kick-wrap",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -122,6 +146,12 @@
       "ours": "cta.top-side-rule",
       "skip": [
         "color"
+      ],
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
       ]
     },
     {
@@ -140,7 +170,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[1] > div[1]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[1] > div[1]",
-      "ours": "cta.title-rail-kick-wrap"
+      "ours": "cta.title-rail-kick-wrap",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -161,7 +197,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
-      "ours": "cta.title-box"
+      "ours": "cta.title-box",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -173,7 +215,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[2]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[2]",
-      "ours": "cta.lede-wrap"
+      "ours": "cta.lede-wrap",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -185,7 +233,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[3]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[3]",
-      "ours": "cta.actions"
+      "ours": "cta.actions",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -200,6 +254,12 @@
       "ours": "cta.flank-rule",
       "skip": [
         "color"
+      ],
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
       ]
     },
     {
@@ -215,6 +275,12 @@
       "ours": "cta.title-side-rule",
       "skip": [
         "color"
+      ],
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
       ]
     },
     {
@@ -233,7 +299,13 @@
       "section": "home-cta-wrap",
       "heron": "home-cta-wrap > div[1] > section[1] > div[1] > div[3] > div[1] > div[1]",
       "spec": "home-cta-wrap > div[1] > section[1] > div[1] > div[3] > div[1] > div[1]",
-      "ours": "cta.sketch-wrap"
+      "ours": "cta.sketch-wrap",
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
+      ]
     },
     {
       "section": "home-cta-wrap",
@@ -266,6 +338,12 @@
       "ours": "cta.sketch-mid-rule",
       "skip": [
         "color"
+      ],
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
       ]
     },
     {
@@ -281,6 +359,12 @@
       "ours": "cta.sketch-side-rule",
       "skip": [
         "color"
+      ],
+      "bps": [
+        "768",
+        "1024",
+        "1440",
+        "1920"
       ]
     },
     {
