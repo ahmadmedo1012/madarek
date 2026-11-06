@@ -36,3 +36,8 @@
 - [T-15] curl — 200-check the vite dev server before webkit cells
 - [T-15] rg — verify prior patch state + locate --bps/--engine flags in run.mjs
 - [T-15] node (failure-set diff) — prove webkit/chromium cells differ only by sub-pixel drift
+- [T-11a] node scripts/conformance/tween.mjs — the deliverable: Heron tween census vs our live animation inventory, per-section coverage %, ranked T-11b work-list (runs e2e @1440+@390, --gate ratchet)
+- [T-11a] rg — locate house engine surfaces (reveals.ts, useReveal.ts, Parallax.tsx, __mdrkLenis/__mdrkReveals seats) and verify grammar selectors
+- [T-11a] node -e (Playwright probes) — reproduce the CTA/jt-window reveal-deadlock outside the instrument; verify 2 s bottom-dwell timing
+- [T-11a] python3/node JSON dumps — debug walk0/walk1/walkMid/walk2 envelopes, neverRevealed flags, coverage rows
+- [T-11a] npx vite --port 5311 — dev server for the tween instrument

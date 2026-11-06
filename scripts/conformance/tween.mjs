@@ -393,7 +393,9 @@ const WALK_JS = String.raw`
  }
 `;
 
-/** Scroll sampling — the scroll.mjs pattern (Lenis seat + settle + read). */
+/** Scroll sampling — the scroll.mjs pattern (Lenis seat + settle + read).
+ * Split into a DOWN pass and an UP pass so the node side can snapshot the
+ * page AT THE BOTTOM DWELL (walkMid) between them. */
 const SAMPLE_JS = String.raw`
 async (steps) => {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -431,18 +433,66 @@ async (steps) => {
     };
   });
   const series = [];
+  // scroll.mjs discipline: Lenis fights a native scrollTop jump for a few
+  // hundred ms, and the reveal belt needs a real rest before the IO fires —
+  // 140ms flings were measured to ARM elements without REVEALING them.
   const run = async (fractions, phase) => {
     for (const f of fractions) {
       seat(Math.round(max * f));
-      await sleep(140);
+      await sleep(300);
       series.push({ y: Math.round(window.scrollY), phase, t: track() });
     }
   };
   await run(Array.from({ length: steps }, (_, i) => i / (steps - 1)), "down");   // down
-  await run(Array.from({ length: 5 }, (_, i) => 1 - (i + 1) / 6), "up");          // back up (scrub/revert probe)
+  seat(max);
+  await sleep(2000);                                                             // bottom dwell (measured: CTA 650ms reveal + arm settles ~1.6s)
+  return { vh: window.innerHeight, scrollHeight: document.documentElement.scrollHeight, series, atBottom: track() };
+}
+`;
+/** the reverse pass (scrub/revert probe) — runs AFTER the walkMid snapshot. */
+const UP_JS = String.raw`
+async () => {
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const seat = (y) => {
+    const L = window.__mdrkLenis;
+    if (L && typeof L.scrollTo === "function") L.scrollTo(y, { immediate: true, force: true });
+    else window.scrollTo(0, y);
+  };
+  const grammar = "[data-reveal],[data-reveal-variant],.reveal-up,.reveal-card,[data-mask-word],[data-mask-word-inner],[data-mask-reveal],.parallax,.section-accent,.hro-line,.hro-actions,.hro-work-card,.is-fired";
+  const keyed = [];
+  const gcount = {};
+  document.querySelectorAll(grammar).forEach((el) => {
+    const first = String(el.getAttribute("class") || "").split(/\s+/).filter(Boolean)[0] || "";
+    const base = el.tagName.toLowerCase() + "." + first;
+    gcount[base] = (gcount[base] || 0) + 1;
+    keyed.push({ el, key: base + "#" + gcount[base] });
+  });
+  const track = () => keyed.map(({ el, key }) => {
+    const cs = getComputedStyle(el);
+    let ty = 0;
+    if (cs.transform && cs.transform !== "none") {
+      const m = cs.transform.match(/matrix\(([^)]+)\)/);
+      if (m) ty = Math.round(parseFloat(m[1].split(",")[5]) * 10) / 10;
+    }
+    return {
+      key,
+      revealed: el.getAttribute("data-revealed") === "true" || el.classList.contains("in-view") || el.classList.contains("is-fired"),
+      opacity: Math.round(parseFloat(cs.opacity) * 1000) / 1000,
+      ty,
+      sc: cs.scale !== "none" && cs.scale !== "" ? Math.round(parseFloat(cs.scale) * 100) / 100 : 1,
+      clip: cs.clipPath !== "none" && cs.clipPath !== "",
+    };
+  });
+  const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const series = [];
+  for (let i = 1; i <= 6; i++) {
+    seat(Math.round(max * (1 - i / 7)));
+    await sleep(300);
+    series.push({ y: Math.round(window.scrollY), phase: "up", t: track() });
+  }
   seat(0);
   await sleep(300);
-  return { vh: window.innerHeight, scrollHeight: document.documentElement.scrollHeight, series };
+  return { series, atTop: track() };
 }
 `;
 
@@ -559,19 +609,26 @@ async function collectOurs(url, bp) {
   await page.waitForTimeout(2600);
 
   const walk1 = await page.evaluate(`(${WALK_JS})(${JSON.stringify(OUR_SECTIONS.map(({ key, sel }) => ({ key, sel })))})`);
-  const sampling = await page.evaluate(`(${SAMPLE_JS})(28)`);
+  const down = await page.evaluate(`(${SAMPLE_JS})(28)`);
+  // walkMid — AT THE BOTTOM DWELL: every below-the-fold reveal is
+  // simultaneously SHOWN here (the useReveal engine toggles `in-view` OFF
+  // when an element leaves the viewport, so the later at-top walk would
+  // read re-hidden elements and invert the from→to deltas).
+  const walkMid = await page.evaluate(`(${WALK_JS})(${JSON.stringify(OUR_SECTIONS.map(({ key, sel }) => ({ key, sel })))})`);
+  const up = await page.evaluate(`(${UP_JS})()`);
+  const sampling = { ...down, series: [...down.series, ...up.series] };
   const walk2 = await page.evaluate(`(${WALK_JS})(${JSON.stringify(OUR_SECTIONS.map(({ key, sel }) => ({ key, sel })))})`);
   const cssom = await page.evaluate(`(${CSSOM_JS})()`);
   const waapi = await page.evaluate("window.__tweenWaapi ? window.__tweenWaapi.length : -1");
   const waapiCalls = waapi === -1 ? null : waapi;
   const waapiSample = await page.evaluate("window.__tweenWaapi ? window.__tweenWaapi.slice(0, 5) : []");
   await browser.close();
-  return { walk0, walk1, walk2, sampling, cssom, waapiCalls, waapiSample, errors };
+  return { walk0, walk1, walkMid, walk2, sampling, cssom, waapiCalls, waapiSample, errors };
 }
 
 /** tracked-element states → our tween units (node-side derivation). */
 function deriveOurUnits(census) {
-  const { walk0, walk1, walk2, sampling, cssom } = census;
+  const { walk0, walk1, walkMid, walk2, sampling, cssom } = census;
   const steps = sampling.series ?? [];
 
   // per-key series from the sampler (keys join the walk records by exact
@@ -605,59 +662,80 @@ function deriveOurUnits(census) {
 
   const hiddenAt = (rec) => !!rec && (rec.rest.opacity < 0.98 || (rec.rest.transform && rec.rest.transform !== "none") || (rec.rest.clipPath && rec.rest.clipPath !== "none" && rec.rest.clipPath !== "") || (rec.rest.scale && rec.rest.scale !== "none" && rec.rest.scale !== "1"));
   const twinOf = (recs, el) => (el.grammarKey && recs.find((e) => e.grammarKey === el.grammarKey)) || recs.find((e) => e.section === el.section && e.role === el.role) || null;
+  const tyOf = (tr) => {
+    if (!tr || !tr.rest.transform || tr.rest.transform === "none") return 0;
+    const m = tr.rest.transform.match(/matrix\(([^)]+)\)/);
+    return m ? parseFloat(m[1].split(",")[5]) : null;
+  };
+  // shownness — how "revealed" a snapshot record's rest state is. Used to
+  // order the four snapshots (walk0 pre-intro, walk1 armed, walkMid at the
+  // bottom dwell where every reveal is SHOWN, walk2 back at top) into a
+  // from(most hidden)→to(most shown) envelope. This is ordering of OBSERVED
+  // states only — no value is invented; it exists because the useReveal
+  // engine toggles `in-view` OFF on exit, so walk2 alone would read the
+  // re-hidden state and invert the delta (measured: cta title op 1→0).
+  const shownness = (rec) => {
+    if (!rec) return -Infinity;
+    const ty = tyOf(rec) ?? 0;
+    return rec.rest.opacity * 2 - Math.min(Math.abs(ty), 60) / 60 - (rec.rest.clipPath && rec.rest.clipPath !== "none" ? 0.5 : 0) - (rec.rest.scale && rec.rest.scale !== "none" && rec.rest.scale !== "1" ? 0.3 : 0);
+  };
 
   const units = [];
   const unaccounted = [];
   const neverRevealed = [];
   for (const el of walk2.els) {
-    const t1 = twinOf(walk1.els ?? [], el);
+    const twins = [
+      ["walk0", twinOf(walk0.els ?? [], el)],
+      ["walk1", twinOf(walk1.els ?? [], el)],
+      ["walkMid", twinOf(walkMid.els ?? [], el)],
+      ["walk2", el],
+    ];
+    const present = twins.filter(([, r]) => r);
+    if (!present.length) continue;
+    const sorted = [...present].sort((a, b) => shownness(a[1]) - shownness(b[1]));
+    const fromRec = sorted[0], toRec = sorted[sorted.length - 1];
     const t0 = twinOf(walk0.els ?? [], el);
+    const t1 = twinOf(walk1.els ?? [], el);
+    const tMid = twinOf(walkMid.els ?? [], el);
     const info = el.grammarKey ? infoByKey.get(el.grammarKey) : null;
 
-    // params from the ACTIVATED computed state
-    const anim = el.animName !== "none";
+    // params from the SHOWN state (the activated side is where the engine
+    // exposes transition/animation params; prefer walkMid, then walk2).
+    const paramSrc = (toRec[0] === "walkMid" || toRec[0] === "walk2" ? toRec[1] : (tMid ?? el));
+    const anim = paramSrc.animName !== "none";
     let duration = null, ease = null, easeFam = null, delays = [];
     if (anim) {
-      duration = toMs(el.animDur);
-      ease = el.animEase;
-      easeFam = computedEaseFamily(el.animEase);
-      delays = delayLadder(el.animDelay);
-    } else if (el.transProps && el.transProps !== "none") {
-      duration = toMs(el.transDur);
-      ease = el.transEase;
-      easeFam = computedEaseFamily(el.transEase);
-      delays = delayLadder(el.transDelay);
+      duration = toMs(paramSrc.animDur);
+      ease = paramSrc.animEase;
+      easeFam = computedEaseFamily(paramSrc.animEase);
+      delays = delayLadder(paramSrc.animDelay);
+    } else if (paramSrc.transProps && paramSrc.transProps !== "none") {
+      duration = toMs(paramSrc.transDur);
+      ease = paramSrc.transEase;
+      easeFam = computedEaseFamily(paramSrc.transEase);
+      delays = delayLadder(paramSrc.transDelay);
     }
-    const ambient = anim && /infinite/.test(String(el.animIter));
+    const ambient = anim && /infinite/.test(String(paramSrc.animIter));
 
     // property families + distances — priority: declared @keyframes, then
-    // computed deltas. The FROM side is the most-hidden observed rest
-    // (walk1 = armed/hidden post-intro; walk0 = pre-intro entrance states).
+    // the computed hidden→shown envelope across the four snapshots.
     const props = [];
-    const kf = anim && cssom.keyframes[el.animName] ? cssom.keyframes[el.animName] : null;
+    const kf = anim && cssom.keyframes[paramSrc.animName] ? cssom.keyframes[paramSrc.animName] : null;
     if (kf) {
       for (const [prop, stops] of Object.entries(kf.props)) {
         const fam = prop === "transform" ? "translateY" : prop; // house keyframes are translateY-only (reveal-rise/mask-word-rise)
-        props.push({ family: fam, from: Object.values(stops)[0], to: Object.values(stops)[Object.keys(stops).length - 1], source: `@keyframes ${el.animName}` });
+        props.push({ family: fam, from: Object.values(stops)[0], to: Object.values(stops)[Object.keys(stops).length - 1], source: `@keyframes ${paramSrc.animName}` });
       }
     } else {
-      const tyOf = (tr) => {
-        if (!tr || !tr.rest.transform || tr.rest.transform === "none") return 0;
-        const m = tr.rest.transform.match(/matrix\(([^)]+)\)/);
-        return m ? parseFloat(m[1].split(",")[5]) : null;
-      };
-      for (const [twin, label] of [[t1, "rest→activated"], [t0, "intro rest→activated"]]) {
-        if (!twin) continue;
-        const r = twin.rest, n2 = el.rest;
-        if (Math.abs(r.opacity - n2.opacity) > 0.02) props.push({ family: "opacity", from: r.opacity, to: n2.opacity, source: `computed ${label}` });
-        if (r.transform !== n2.transform) {
-          const tyR = tyOf(twin), tyN = tyOf(el);
-          if (tyR != null && tyN != null && Math.abs(tyR - tyN) > 0.5) props.push({ family: "translateY", from: `${Math.round(tyR * 10) / 10}px`, to: `${Math.round(tyN * 10) / 10}px`, source: `computed ${label}` });
-        }
-        if (r.scale !== n2.scale && !(r.scale === "none" && n2.scale === "none")) props.push({ family: "scale", from: r.scale, to: n2.scale, source: `computed ${label}` });
-        if (r.clipPath && r.clipPath !== "none" && r.clipPath !== "" && r.clipPath !== n2.clipPath) props.push({ family: "clip-path", from: r.clipPath, to: n2.clipPath, source: `computed ${label}` });
-        if (props.length) break; // first twin that yields a delta wins
+      const r = fromRec[1].rest, n2 = toRec[1].rest;
+      const label = `${fromRec[0]}→${toRec[0]}`;
+      if (Math.abs(r.opacity - n2.opacity) > 0.02) props.push({ family: "opacity", from: r.opacity, to: n2.opacity, source: `computed ${label}` });
+      if (r.transform !== n2.transform) {
+        const tyR = tyOf(fromRec[1]), tyN = tyOf(toRec[1]);
+        if (tyR != null && tyN != null && Math.abs(tyR - tyN) > 0.5) props.push({ family: "translateY", from: `${Math.round(tyR * 10) / 10}px`, to: `${Math.round(tyN * 10) / 10}px`, source: `computed ${label}` });
       }
+      if (r.scale !== n2.scale && !(r.scale === "none" && n2.scale === "none")) props.push({ family: "scale", from: r.scale, to: n2.scale, source: `computed ${label}` });
+      if (r.clipPath && r.clipPath !== "none" && r.clipPath !== "" && r.clipPath !== n2.clipPath) props.push({ family: "clip-path", from: r.clipPath, to: n2.clipPath, source: `computed ${label}` });
       // scrub-varying elements: the property comes from the sampled range
       if (info && info.scrub) {
         if (info.tyRange[1] - info.tyRange[0] > 0.5 && !props.some((p) => p.family === "translateY")) props.push({ family: "translateY", from: `${info.tyRange[0]}px`, to: `${info.tyRange[1]}px`, source: "scroll-sample range" });
@@ -667,9 +745,8 @@ function deriveOurUnits(census) {
 
     // trigger classification (observed, not assumed):
     //   ambient — infinite loop; scrub — values keep varying with scroll;
-    //   load — hidden at walk0, final by walk1 (entrance fired pre-scroll);
-    //   scroll-reveal — hidden at walk1 (armed), activation observed during
-    //   the sampling pass (or still pending — flagged neverRevealed);
+    //   load — hidden at walk0, shown by walk1 (entrance fired pre-scroll);
+    //   scroll-reveal — hidden at walk1 (armed), shown at walkMid;
     //   state — no hidden pre-state ever observed (hover/state transitions).
     let trigger;
     if (ambient) trigger = "ambient";
@@ -684,7 +761,12 @@ function deriveOurUnits(census) {
       unaccounted.push({ section: el.section, role: el.role, trigger, why: trigger === "state" ? "no hidden pre-state observed (hover/state transition or static decoration)" : "no property delta and no keyframes" });
       continue;
     }
-    const never = trigger === "scroll-reveal" && !el.revealed && !(info && info.everFlipped);
+    // neverRevealed — the element was armed-hidden but NEVER showed its
+    // activated state in any snapshot or sample (flung past / dead-zone /
+    // arting artifact). Its "unit" would be a mis-read arm/hide transition,
+    // NOT an animation we run — held out of coverage, reported by name.
+    const shownSomewhere = !hiddenAt(tMid) || !hiddenAt(toRec[1]) || (toRec[0] !== "walk1" && !hiddenAt(toRec[1]));
+    const never = trigger === "scroll-reveal" && !shownSomewhere && !el.revealed && !(info && info.everFlipped);
     if (never) neverRevealed.push({ section: el.section, role: el.role, grammarKey: el.grammarKey });
     for (const p of props) {
       units.push({
@@ -723,6 +805,7 @@ function coverage(heron, ours) {
   };
   for (const u of ours.units) {
     if (u.trigger === "ambient") continue; // ours-only decoration, reported not matched
+    if (u.neverRevealed) continue;         // armed-but-never-shown: not an animation we run
     fold(u);
   }
   for (const g of ourByGroup.values()) {
@@ -749,7 +832,10 @@ function coverage(heron, ours) {
       // duration is scroll distance on both sides, waived by construction)
       if (g.trigger === "scrub") { covered = true; matched = candGroup; how = "scrub:property+trigger"; }
       else {
-        const durOk = g.duration == null || candGroup.duration == null || Math.abs(candGroup.duration - g.duration) <= 150;
+        // tolerance: duration ±150ms OR same ease family. Heron-null
+        // duration (fromTo FROM-side-only recording) passes on the partial
+        // rule; OUR-null timing must NOT — an unreadable param is not a match.
+        const durOk = g.duration == null || (candGroup.duration != null && Math.abs(candGroup.duration - g.duration) <= 150);
         const easeOk = g.easeFam == null || candGroup.easeFam == null || g.easeFam === candGroup.easeFam;
         if (durOk || easeOk) {
           covered = true; matched = candGroup;
@@ -803,8 +889,9 @@ function buildLimitations(census) {
   L.push("Heron tween→ScrollTrigger association is derived from recording-timestamp order (timeline marker owns subsequent tweens) — sound for scene structure but not per-tween ground truth.");
   L.push(`WAAPI: ${census.waapiCalls == null ? "instrument patch did not run" : census.waapiCalls + " Element.animate() calls"} — the house engine is CSS-transition/keyframe + IntersectionObserver driven; there is no JS tween registry to read params from.`);
   L.push(`CSS scroll-driven animations (animation-timeline: view()/scroll()): ${census.cssom.viewTimeline} view()/ ${census.cssom.scrollTimeline} scroll() rules found in the CSSOM — none exist, so nothing on our side rides them.`);
-  L.push("Our durations/eases are read from computed styles on the ACTIVATED element (the only state where the engine exposes them); distances come from rest-vs-activated computed values or @keyframes from/to text.");
+  L.push("Our durations/eases are read from computed styles on the SHOWN state (walkMid at the bottom dwell / walk2); distances come from a most-hidden→most-shown envelope across the four snapshot walks (pre-intro, armed, at-bottom, back-at-top) — ordering of observed states, no value invented.");
   L.push("Scrub-side motion equivalence is asserted on property+trigger only (scrub duration is scroll distance, not time — the numeric curves are scroll.mjs/scroll-curves.<bp>.json territory, T-10).");
+  L.push("Elements armed-hidden but never shown in any snapshot/sample (neverRevealed) are held OUT of coverage — their arm/hide transition is not a tween we run; they are reported by name in ours.neverRevealed.");
   if (census.errors.length) L.push(`page errors during collection: ${census.errors.length} (first: ${census.errors[0]})`);
   return L;
 }
@@ -888,6 +975,7 @@ const report = {
     scrubTracks: ours.scrubTracks,
     trackedGrammarElements: ours.trackedGrammar,
     walk0: { skipped: !!census.walk0.skipped, elements: census.walk0.els?.length ?? 0 },
+    walkMidElements: census.walkMid.els?.length ?? 0,
     waapiCalls: census.waapiCalls,
     waapiSample: census.waapiSample,
     cssom: {
