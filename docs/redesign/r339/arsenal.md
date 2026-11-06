@@ -65,3 +65,8 @@
 - [T-11b2] tween.mjs/playwright — baseline + per-item coverage re-measure @1440/@390
 - [T-11b2] ripgrep — locate map/platform/hero seats + test surface
 - [T-11b2] no gsap/frontend-design skill present — noted, CSS scroll-driven-animation route per brief
+- [T-11b2] node+playwright probes — map head geometry @1440 (h2 doc-top 3382/h 95; entry=8.7% of the recorded «top 50%→bottom-=270 bottom» window; seat traversal caps 26.4%) + scrub liveness seats (op 0→0.90→1.0 reversible)
+- [T-11b2] python/ripgrep on _motion.1440.json — CORRECTED the map scrub attribution: the «top bottom→top top» trigger (1465→2352) owns ZERO tweens; the real scene is «top 50%→bottom-=270 bottom» (1908→7495) whose first segment is the head pair (set autoAlpha 0/yPercent 100 → 0.8s p2.out/20ms) → from-states re-pinned to translateY(100%)
+- [T-11b2] tween.mjs — coverage re-measure @1440/@390: map 0/2→2/2, platform 2/4→4/4, hero 2/6→4/6, overall 28.1→46.9%@1440 / 43.3→63.3%@390; scaleX/scaleY groups unreachable (PROP_FAMILY keeps CSS `scale` ≠ GSAP scaleX/scaleY; keyframes transform→translateY hard-map) — documented residual, conformance read-only
+- [T-11b2] run.mjs scoped 3-section A/B (stash-checkout baseline @58af8bfa) — 91.2%→91.2% (7426 vs 7421 of 8141, 0 new failure kinds; ±5 = stage-machine svg-opacity transients, run-to-run noise band)
+- [T-11b2] verify.sh --fast — GREEN (3051 vitest incl. the r306 whitelist re-pin; bundle 764.4/770)
