@@ -181,8 +181,8 @@ function Marker({ y, ds }: { y: string; ds: string }) {
     <div className="wy-mk" data-spec={`why.${ds}`} style={{ insetBlockStart: y }}>
       <div className="wy-mk-in" data-spec={`why.${ds}in`}>
         <svg className="wy-mk-svg" data-spec={`why.${ds}svg`} viewBox="0 0 10 10" aria-hidden="true">
-          <path className="wy-mk-path" d="M10 5 H0" />
-          <path className="wy-mk-path" d="M5 0 V10" />
+          <path className="wy-mk-path" data-spec={`why.${ds}p1`} d="M10 5 H0" />
+          <path className="wy-mk-path" data-spec={`why.${ds}p2`} d="M5 0 V10" />
         </svg>
       </div>
     </div>

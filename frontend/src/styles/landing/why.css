@@ -996,7 +996,7 @@
     --wy-ct-w: 167px;
     --wy-ct-h: 22px;
     --wy-ct-fs: 20px;
-    --wy-ct-lh: 27px;                  /* heron 27 @1440 = 1.35×fs */
+    --wy-ct-lh: 22px;
     --wy-ct-fw: 700;
     --wy-ct-color: rgb(255, 255, 255);
     --wy-ct-bg: rgba(0, 0, 0, 0);
@@ -1021,7 +1021,7 @@
     --wy-ct-w: 222px;
     --wy-ct-h: 29px;
     --wy-ct-fs: 26.67px;
-    --wy-ct-lh: 36px;                  /* heron 36 @1920 = 1.35×fs */
+    --wy-ct-lh: 29.33px;
     --wy-ct-fw: 700;
     --wy-ct-color: rgb(255, 255, 255);
     --wy-ct-bg: rgba(0, 0, 0, 0);
@@ -1099,7 +1099,7 @@
     --wy-ct-w: 98px;
     --wy-ct-h: 22px;
     --wy-ct-fs: 19.85px;
-    --wy-ct-lh: 26.8px;                /* heron 26.8 @390 = 1.35×fs */
+    --wy-ct-lh: 21.83px;
     --wy-ct-fw: 700;
     --wy-ct-color: rgb(255, 255, 255);
     --wy-ct-bg: rgba(0, 0, 0, 0);
