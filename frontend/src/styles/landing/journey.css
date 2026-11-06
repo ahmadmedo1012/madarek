@@ -1573,3 +1573,55 @@
     font-size: 24px;
   }
 }
+
+/* ══ T-11b2 — the map head's SCROLL-SCRUBBED entrance ════════════════
+ * Heron's home-map scrub scene (T-11A census: 88 opacity + 76
+ * translateY units scrubbed over the section, 800ms/power2.out when
+ * unscrubbed). The recorded scene (_motion.1440.json, the scrub
+ * timeline at «top 50% → bottom-=270 bottom», 1908→7495 recorded px):
+ * the head pair rides the timeline's FIRST segment — set
+ * autoAlpha 0 / yPercent 100 → to autoAlpha 1 / yPercent 0, 0.8s
+ * power2.out, 20ms stagger — so the recorded from-states are opacity 0
+ * + a FULL element-height rise (yPercent 100, NOT the page-wide
+ * y 26.667 reveal signature). The house-compatible scrub route is a
+ * CSS scroll-driven animation — a view() timeline over the head's own
+ * entry→cover traversal (px pins would not survive our 700dvh driver).
+ * Measured @1440×900: our head seat (bottom-aligned copy, h2 doc-top
+ * 3382, h 95) enters the fold at scroll 2482 = 8.7% into the recorded
+ * window; cover 40% settles it at 2880 = 15.8% — the closest on-screen
+ * read of Heron's head segment (~first 30%; our seat's own traversal
+ * physically caps at 26.4%, and a full-cover scrub would hold the
+ * title near-invisible through the pin). @supports-gated so browsers
+ * without view() keep the IO one-shot reveal-up seat (the existing
+ * 650ms path); the no-preference belt keeps reduced-motion visitors on
+ * the static sheet. The stage machine (data-stage / data-finding
+ * crossfades — the census's set()-only scale 1.1 map-art states, held
+ * out of the coverage denominator) is untouched: this seat scrubs ONLY
+ * the section head (Heron's map-content-title/label twins per the r335
+ * mapping). Zero WAAPI, zero JS — the engine stays CSS+IO+Lenis. */
+@keyframes jt-head-scrub {
+  from {
+    opacity: 0;
+    transform: translateY(100%); /* Heron's recorded yPercent 100 — a full element-height rise */
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .chapters-head .reveal-up {
+      animation: jt-head-scrub var(--t-cinema) var(--ease) both;
+      animation-timeline: view();
+      /* entry 0% → cover 40%: the head scrubs in as it crosses the
+         fold and settles by mid-screen — the reversible, scroll-linked
+         read Heron's scrub gives (scroll back up and the head scrubs
+         out again; the IO path alone cannot). Range math: the comment
+         at the keyframes — 15.8% of the recorded window, the closest
+         on-screen slice our head seat's traversal allows. */
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}

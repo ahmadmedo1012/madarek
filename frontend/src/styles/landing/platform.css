@@ -618,3 +618,46 @@ html[data-theme='dark'] .pr-section .pr-cta {
   .pr-section .pr-clone .pr-cta-line { transition: all 0.48s cubic-bezier(0.625, 0.05, 0, 1); }
   .pr-section .pr-clone .pr-cta-icbox { transition: color 0.3s ease, background-color 0.3s cubic-bezier(0.625, 0.05, 0, 1); }
 }
+
+/* ══ T-11b2 — the band's scrubbed title flourish ═════════════════════
+ * Heron's home-platform scrub pair (T-11A census: platform-content-
+ * title, opacity + translateY FROM-side, 1 unit each — the small
+ * pinned/scrubbed flourish beside the marquee; recorded window
+ * «top bottom → bottom top» on the row-group wrap, 7765→9362 recorded
+ * px — the wrap's FULL cover traversal, from-states opacity 0 ·
+ * y 26.667). Same view() route as the map head (T-11b2's
+ * jt-head-scrub): the FIRST row's title wrap (#pr-title — the
+ * section's labelled head) scrubs in over its entry→cover window.
+ * DELIBERATE seat deviation, documented: Heron's span is the wrap's
+ * full traversal (the title keeps scrubbing until the wrap's tail
+ * exits the fold); ours is the brief's «small flourish» — entry 0% →
+ * cover 30% so the title settles by a third of the viewport instead
+ * of crawling at half-opacity through the whole band (the rows' own
+ * IO reveals own the band's reading rhythm). The remaining rows/wraps
+ * keep the IO reveal-up seat
+ * (the scroll-reveal groups' own coverage); the marquee cross-fade
+ * (pr-item-fade) is untouched. @supports-gated fallback + the
+ * no-preference RM belt — identical contract to the map seat. */
+@keyframes pr-title-scrub {
+  from {
+    opacity: 0;
+    transform: translateY(26.667px); /* Heron's recorded y @1440 */
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .pr-rows > .pr-row:first-child .pr-title-wrap {
+      animation: pr-title-scrub var(--t-cinema) var(--ease) both;
+      animation-timeline: view();
+      /* entry 0% → cover 30%: a short reversible flourish as the
+         band's head crosses the fold (the 27px title's cover window
+         is viewport-dominated — 30% reads as a settle, not a crawl) */
+      animation-range: entry 0% cover 30%;
+    }
+  }
+}

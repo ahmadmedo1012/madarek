@@ -510,6 +510,13 @@
 .hro-lmask {
   display: block;
   overflow: hidden;
+  /* T-11b2 — Heron's hero load scales ride the MASK boxes (scaleX
+     0→1 on the title lines, scaleX+scaleY 0→1 on the lead lines —
+     fromTo, timing unrecorded → the page signature 0.8s power2.out,
+     the same --hro-line-dur/--hro-p2-out register the inner rise
+     uses). The mask transition animates the class flip below; the
+     inner .hro-line rise is untouched. */
+  transition: scale var(--hro-line-dur) var(--hro-p2-out);
 }
 
 .hro-line {
@@ -522,9 +529,23 @@
 }
 
 .landing.intro-done .hro-line {
-  transform: translateY(0);
+  /* T-11b2 — `none`, not translateY(0): the rest state must compute
+     transform:none so the entrance reads as ENDED (a held
+     translateY(0) keeps a live matrix on the seat forever). */
+  transform: none;
   transition: transform var(--hro-line-dur) var(--hro-p2-out);
 }
+
+/* T-11b2 — the mask scale ladder mirrors the line stagger exactly
+   (the wipe and the rise fire as one beat per line) */
+.landing.intro-draw .hro-title .hro-lmask { scale: 0 1; }
+.landing.intro-draw .hro-lead .hro-lmask { scale: 0 0; }
+
+.landing.intro-done .hro-title .hro-lmask:nth-child(1) { transition-delay: 0.05s; }
+.landing.intro-done .hro-title .hro-lmask:nth-child(2) { transition-delay: 0.07s; }
+.landing.intro-done .hro-title .hro-lmask:nth-child(3) { transition-delay: 0.09s; }
+.landing.intro-done .hro-lead .hro-lmask:nth-child(1) { transition-delay: 0.16s; }
+.landing.intro-done .hro-lead .hro-lmask:nth-child(2) { transition-delay: 0.18s; }
 
 /* the stagger — 0.02s per line, the title first (t₀ + 0.05: the loader
    slit needs one frame before the first line lifts) */
@@ -582,7 +603,7 @@
 
 .landing.intro-done .hro-actions {
   opacity: 1;
-  transform: translateY(0);
+  transform: none; /* T-11b2 — rest computes none: the entrance ends */
   transition:
     opacity var(--hro-rise-dur) var(--hro-p3-out) 0.3s,
     transform var(--hro-rise-dur) var(--hro-p3-out) 0.3s;
@@ -658,7 +679,7 @@
 
 .landing.intro-done .hro-work {
   opacity: 1;
-  transform: translateY(0);
+  transform: none; /* T-11b2 — rest computes none: the entrance ends */
   transition:
     opacity var(--hro-rise-dur) var(--hro-p3-out) 1.05s,
     transform var(--hro-rise-dur) var(--hro-p3-out) 1.05s;
