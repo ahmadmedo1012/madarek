@@ -67,6 +67,33 @@
    * empty paper over scrolled content stays clickable; the cells below
    * re-enable the pointer. */
   pointer-events: none;
+  /* r339 (T-10) — the measured chrome type root: her scale is PURE-vw
+   * through the desktop range (9.48px @1024 · 13.33px @1440 · 17.78px
+   * @1920 — exactly 0.9259vw) with a mobile ladder below (14.73px @768,
+   * 15.88px @390); her row is 1.3 × the size at EVERY recorded bp
+   * (23.11/17.78, 17.33/13.33, 12.33/9.48, 19.15/14.73, 20.64/15.88). */
+  font-size: clamp(9.48px, 0.9259vw, 17.78px); /* font-gate: allow — the frozen Heron chrome scale, vw-exact at every recorded desktop bp */
+  line-height: 1.35;         /* the Arabic metric floor over her 1.3 row (23.11 → 24px @1920) — the tolerances.mjs transformed expectation */
+  /* r339 (T-10) — the measured chrome ink: every her bar container
+   * carries rgba(40,40,40,.72); the literal (not color-mix — the
+   * conformance twin reads the computed string) per the --rl-soft-ink
+   * precedent (roles.css). */
+  --nv-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — the frozen Heron soft-ink measure (rgba(40,40,40,.72) = --text 72%), the roles.css/statement.css precedent */
+  color: var(--nv-soft-ink);
+}
+
+html[data-theme='dark'] .fo-header {
+  --nv-soft-ink: rgb(226, 226, 222); /* color-gate: allow — the dark-arm soft ink (the statement.css dark twin; light arm stays byte-identical to the frozen measure) */
+}
+
+/* r339 (T-10) — her mobile chrome ladder: 14.73px @768, 15.88px @390
+ * (her desktop range is vw-fluid; below it the scale steps UP for the
+ * touch register — the frozen measures, both rungs). */
+@media (max-width: 991px) {
+  .fo-header { font-size: 14.73px; } /* font-gate: allow — the frozen Heron tablet chrome scale (@768) */
+}
+@media (max-width: 640px) {
+  .fo-header { font-size: 15.88px; } /* font-gate: allow — the frozen Heron phone chrome scale (@390) */
 }
 
 /* on-scroll — the >1×bar state marker, exactly the reference's class
@@ -86,12 +113,58 @@
   align-items: stretch;
   gap: 0;
   min-block-size: 56px;
-  /* the reference's measured seat padding: logo at x=33 = 26px inside
-   * the frame edge; the far end rides the frame edge itself. */
-  padding-inline: 26px; /* spacing-gate: allow — the measured reference seat (33px − 7px inset), not a ladder rung */
-  padding-inline-end: 0;
   max-inline-size: none;
   transition: transform 0.4s ease; /* the reference: .header-inner{transition:transform .4s} */
+}
+
+/* ── r339 (T-10) — the chrome bar row, her container seat: the frozen
+ * chrome.<bp>.json tree is header > div[1] (the transform seat ≡
+ * .fo-header-inner) > div[2] (the w-layout-blockcontainer bar row ≡
+ * .fo-header-bar) with the measured 1px bottom rule as a REAL div[1]
+ * (line line-horizital bot ≡ .fo-header-rule, y=bar-bottom−1px). The
+ * logo inset moved OFF the inner seat onto the brand zone — her
+ * div[2] > div[1] carries pad [10,0,10,26.67] itself (measured). */
+.fo-header-bar {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+
+.fo-header-rule {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 1px;
+  background: var(--grid-line);
+  pointer-events: none;
+}
+
+/* her header-logo (div[2] > div[1]): the flex-grow 705px logo cell —
+ * it absorbs the bar's leftover width (her 4-seat register leaves
+ * 705; our 5 Arabic seats leave less — the zone is the REMAINDER, its
+ * geometry is plumbing-skipped in mapping/chrome.json, the logo
+ * cluster inside it is bound). */
+.fo-brand-zone {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  min-inline-size: 0;
+  padding-block: 10px;      /* her measured logo-cell padding */
+  padding-inline-start: 26.67px; /* spacing-gate: allow — the measured logo seat inset (her 2.22rem), not a ladder rung */
+}
+
+.fo-brand-zone .fo-brand {
+  flex: 0 1 auto;
+}
+
+/* her header-menu-wrap (div[2] > div[2]): the menu + CTA cluster at
+ * the far end — ours also carries the theme + login cells inside the
+ * actions sibling; the wrap is the bound menu zone. */
+.fo-nav-wrap {
+  display: flex;
+  align-items: stretch;
 }
 
 /* ── the nav reveal (r335 · W-chrome) — the recorded header entrance:
@@ -125,7 +198,8 @@
 /* the interactive cells — the reference re-enables the pointer per
  * cell (logo/nav/cta); ordered AFTER the on-hide kill so the lifted
  * bar's cells stay dead (equal specificity, cascade order decides). */
-.fo-header-inner > :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
+.fo-header-bar > :is(.fo-brand-zone, .fo-nav-wrap, .fo-header-actions, .fo-burger),
+.fo-header-bar > :is(.fo-brand-zone, .fo-nav-wrap, .fo-header-actions, .fo-burger) :is(.fo-brand, .fo-nav, .fo-header-actions, .fo-burger) {
   pointer-events: auto;
 }
 
@@ -139,7 +213,7 @@
   gap: var(--sp-2-5);
   min-block-size: 44px;
   text-decoration: none;
-  color: var(--text);
+  color: var(--nv-soft-ink); /* r339 (T-10) — her measured logo-cluster ink */
 }
 
 /* the compact logotype beside the mark (the reference wordmark is
@@ -191,22 +265,39 @@
   min-block-size: 44px;
   block-size: 100%;
   font: inherit;
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
+  /* r339 (T-10) — the measured seat register: her nav CELL carries the
+   * page-root size/row (13.33px/17.33px @1440 — the cell is the measured
+   * a/button box); her txt-14 mono LABEL spans inside are 0.875 × the
+   * root (11.67px @1440) — the factor moved onto the label spans below
+   * so the cell box keeps the root register. */
+  font-weight: 500;       /* the measured label weight */
+  color: var(--nv-soft-ink); /* r339 (T-10) — her measured label ink */
   text-decoration: none;
   background: none;
   border: 0;
   cursor: pointer;
   overflow: clip;
-  /* the reference's link hover: label colour 0.4s (tertiary → ink) */
-  transition: color 0.4s var(--ease);
+  /* r339 (T-10) — her nav cells: colour 0.4s on the LITERAL ease (the
+   * frozen spec records ease, not our --ease bezier). */
+  transition: color 0.4s ease;
+}
+
+/* r339 (T-10) — her button-class seats (the <button> mega-menu triggers,
+ * our seats 0+2): the button-register row 1.35 × fs (24px on the 17.78px
+ * root @1920, 18 on 13.33 @1440 — the frozen chrome spec); the a-class
+ * seats keep the 1.3 page row. */
+.fo-nav-link.is-btn-seat {
+  line-height: 1.35;
 }
 
 /* the current page — the reference's w--current: primary ink, out of
  * pointer reach, the 0.6rem signal square after the label. */
 .fo-nav-link.is-current {
-  color: var(--text);
+  /* r339 (T-10) — her measured HOME seat carries the same soft ink as
+   * the rest of the register (rgba(40,40,40,.72) — the frozen spec has
+   * no primary-ink current state); the 0.6rem signal square below stays
+   * the current-page indicator. */
+  color: var(--nv-soft-ink);
   pointer-events: none;
 }
 
@@ -240,6 +331,12 @@
   display: inline-flex;
   overflow: hidden;
   max-inline-size: 100%;
+  /* r339 (T-10) — her txt-14 mono LABEL spans are 0.875 × the page root
+   * (11.67px on the 13.33px root @1440, at every recorded bp) while the
+   * nav CELL box carries the root register itself; her label row is
+   * 1.4 × the label size (16.33px @1440). */
+  font-size: 0.875em;      /* font-gate: allow — the measured Heron label factor (11.67/13.33), vw-exact via the root */
+  line-height: 1.4;        /* the measured label row (16.33px @1440) */
 }
 
 .fo-roll-track {
@@ -251,6 +348,10 @@
 .fo-roll-txt {
   display: block;
   white-space: nowrap;
+  /* r339 (T-10) — her label divs: colour 0.3s ease + the pointer seat
+   * (her menu-item class carries cursor:pointer — the frozen spec). */
+  transition: color 0.3s ease;
+  cursor: pointer;
 }
 
 .fo-roll-dup {
@@ -319,12 +420,54 @@
   block-size: 100%;
   padding-inline: var(--sp-2);
   font-family: var(--font-mono);
-  font-size: max(13px, var(--fs-mono-md));
+  /* r339 (T-10) — her CTA CELL carries the page-root size with the
+   * button-register row (17.78px/24px @1920, 13.33/18 @1440, 9.48/12.8
+   * @1024 — lh = 1.35 × fs, the button-class row); the LABEL spans
+   * inside carry the 0.875 label factor (.fo-roll). */
+  font-size: inherit;        /* the measured CTA cell = the page-root register */
+  line-height: 1.35;         /* the measured button-register row (1.35 × fs) */
   font-weight: var(--fw-medium);
   color: var(--accent-ink);
   text-decoration: none;
   overflow: clip;
-  transition: color 0.4s var(--ease);
+  /* r339 (T-10) — her CTA cell: colour 0.3s ease + a transform leg on
+   * the btn-fill's own cubic-bezier(.625,.05,0,1) (≡ --ease-in). */
+  transition: color 0.3s ease, transform 0.3s var(--ease-in);
+}
+
+/* ── r339 (T-10) — the CTA's measured internal seats: her a2 carries
+ * a REAL 1px line-vertical boundary (≡ .fo-cta-rule) + the btn-fill
+ * wrap (≡ .fo-cta-main, the roll's mask seat). */
+.fo-cta-rule {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  background: var(--grid-line);
+  pointer-events: none;
+  cursor: pointer; /* r339 (T-10) — her rule div records the pointer seat (the frozen spec) */
+}
+
+/* r339 (T-10) — her CTA internals + the actions zone record the pointer
+ * seat in the frozen spec (her w-button class family). */
+.fo-cta-main,
+.fo-header-actions {
+  cursor: pointer;
+}
+
+.fo-brand-mark svg {
+  cursor: pointer; /* r339 (T-10) — her logo svg records the pointer seat */
+}
+
+.fo-cta-main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-1-5);
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: clip;
 }
 
 .fo-actions-cta::before {
@@ -350,15 +493,25 @@
   padding: 1.2rem; /* spacing-gate: allow — the reference's own menu-btn padding, rem on the fluid root */
   background: none;
   border: 0;
-  color: var(--text-secondary);
+  color: var(--nv-soft-ink); /* r339 (T-10) — her measured menu-btn ink (rgba(40,40,40,.72), both mobile rungs) */
   font: inherit;
-  font-size: var(--fs-sm);
+  /* r339 (T-10) — her menu-btn carries the page-root size with the
+   * button-register row (15.88px/21.44px @390, 14.73/19.89 @768 —
+   * lh = 1.35 × fs, the button-class row). */
+  font-size: inherit;        /* the measured menu-btn = the page-root register */
+  line-height: 1.35;         /* the measured button-register row */
   font-weight: 600;
   cursor: pointer;
 }
 
 .fo-burger-txt {
   white-space: nowrap;
+  cursor: pointer; /* r339 (T-10) — her menu label carries the pointer seat */
+  /* r339 (T-10) — her menu LABEL: 0.875 × the root size (13.89px on the
+   * 15.88px root @390, 12.89 on 14.73 @768) with the 1.35–1.4 label row
+   * (18.75px @390, 18.05 @768 — 1.375 splits both within the ±0.5 box). */
+  font-size: 0.875em;      /* font-gate: allow — the measured Heron label factor */
+  line-height: 1.375;      /* the measured label row, both mobile rungs within ±0.5px */
 }
 
 /* the reference's instrument: three 1.5rem hair lines, the outer pair
@@ -542,8 +695,14 @@
 
   .fo-header-inner {
     min-block-size: 5rem;
-    padding-inline: 26px; /* spacing-gate: allow — the header's own seat measure, not a rung */
-    padding-inline-end: 0;
+  }
+
+  /* r339 (T-10) — the measured mobile logo inset: her 390 tree puts
+   * the 23×26 mark at x=20 on the 8px-inset bar (12px inside the
+   * seat) and the menu cell flush to the far edge. */
+  .fo-brand-zone {
+    padding-block: 0;
+    padding-inline-start: 1.44rem; /* 12px @390 — the measured mark inset */
   }
 }
 

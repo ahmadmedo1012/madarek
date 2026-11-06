@@ -44,3 +44,8 @@
 - [T-02b] git — commit+push cadence on r339/t02b
 - [T-02b] node (foreground chunk runs) — full matrix finished as 5 per-bp provenance chunks (1920/1440/1024/768/390, --dark); exposed + fixed the splice(800) report cap eating edge390/darkInk FAIL rows (re-run verified)
 - [T-02b] python3 (json merge) — honest full-matrix numbers by summing per-cell counts across chunks (93.0% light / 92.9% dark / cov 24.7%) into T-02B-HARDENING.md
+- [T-10] python3 — schema-validated the 5 chrome.<bp>.json specs vs footer.1440.json (element keys identical; chrome adds headerSeat + chromeExtra: preloader/consent/cursor all present per bp)
+- [T-10] rg/Read — reviewed run.mjs mapping loader (underscore-prefixed files ARE picked up by readdirSync — the rename was for grammar clarity), mapping/chrome.json grammar check (105 explicit, 845 noCounterpart w/ reasons, 54 plumbing, 0 uncovered spec paths at all 5 bps)
+- [T-10] node (run.mjs) — one chrome-section measurement pass @5 bps against :5310 (final landing gate)
+- [T-10] rg/bash — flag-syntax check of run.mjs (--sections/--bps/--url/--out) before the run
+- [T-10] vitest/verify.sh — reconciled r183-B8 ceiling pin 777→770 (matches committed gate restore c8a61806; DOWN = sanctioned); verify --fast green, bundle 764.4≤770
