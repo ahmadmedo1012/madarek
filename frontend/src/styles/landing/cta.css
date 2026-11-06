@@ -678,6 +678,15 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
 .fo-cta .btn.accent:hover .fo-cta-rbtn,
 .fo-cta .btn.accent.probe-hover .fo-cta-rbtn {
   background: var(--accent-ink);
+  /* paired-state (r319 lint): the ink rides its inherited seat in
+     light — hover deepens ONLY the ground; the dark arm below re-pins
+     the frozen-flip ember ink so the pair holds in both themes. */
+  color: inherit;
+}
+html[data-theme='dark'] .fo-cta .btn.accent:hover .fo-cta-rbtn,
+html[data-theme='dark'] .fo-cta .btn.accent.probe-hover .fo-cta-rbtn {
+  background: var(--accent-ink); /* same ground — paired with the ember ink */
+  color: var(--warm-ink);
 }
 
 @media (min-width: 769px) {

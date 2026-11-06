@@ -150,6 +150,10 @@ WHOLESALE = {
     # component-imported, section-scoped, reduced-motion-bounded.
     'frontend/src/styles/landing/hero-mechanics.css',
     'frontend/src/styles/landing/nav.css',
+    # R339 T-14 — the landing pattern library (lp-* canonical seats; params
+    # are the measured law of the conformant sections). Same contract as the
+    # per-section sheets: section-scoped, reduced-motion-bounded.
+    'frontend/src/styles/landing/patterns.css',
     # r127-F1: the parity-export pair — token-definition foundations
     # (see the header note). Unwired from the app; value-gated by
     # scripts/verify-parity-export.mjs instead.

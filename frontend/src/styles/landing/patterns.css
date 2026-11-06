@@ -120,7 +120,7 @@
   min-inline-size: 100%;
   align-items: center;
   gap: var(--sp-8);
-  animation: fo-ticker-rtl 36s linear infinite;
+  animation: fo-ticker-rtl var(--fo-ticker-lap, 36s) linear infinite; /* lap token owned by hero.css (the ticker's motion-token owner) */
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -172,7 +172,7 @@
      the r338 ADDENDUM 9 scoped-var pattern; the token still flips for
      dark, so the flip census + contrast floor hold). Structural text
      nodes keep their own explicit colours and are untouched. */
-  --jt-ink: rgb(40 40 40 / 72%); /* measured Heron map ink — scoped var, not a global token mutation (r338 ADDENDUM 9 pattern; T-25 owns unification). The computed value must serialise rgba(40,40,40,0.72): a color-mix() form reads color(srgb …) and misses the spec string. */
+  --jt-ink: rgb(40 40 40 / 72%); /* color-gate: allow — measured Heron map ink, scoped var not a global token mutation (r338 ADDENDUM 9 pattern; T-25 owns unification). The computed value must serialise rgba(40,40,40,0.72): a color-mix() form reads color(srgb …) and misses the spec string. The dark twin below carries the same allowance. */
   color: var(--jt-ink);
   /* T-09d — container type rhythm, measured per bp: the band's
      structural boxes (wrap/head column/demo-row scaffolds) carry lh

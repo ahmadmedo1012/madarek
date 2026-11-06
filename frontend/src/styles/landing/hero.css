@@ -847,13 +847,14 @@
 }
 
 .fo-ticker-track {
+  --fo-ticker-lap: 36s; /* the crawl's lap duration (owner seat: hero.css holds the ticker's motion tokens; patterns.css lp-marquee reads it) */
   display: flex;
   flex: 0 0 auto;
   min-inline-size: 100%;
   align-items: center;
   gap: var(--sp-8);
   padding-block: var(--sp-2-5);
-  animation: fo-ticker-rtl 36s linear infinite;
+  animation: fo-ticker-rtl var(--fo-ticker-lap) linear infinite;
 }
 
 .fo-ticker-item {
