@@ -743,7 +743,10 @@
   }
 
   .wy-eyebrow {
-    padding-block-start: 4.73rem;       /* y47 */
+    /* L1-a — 0: strata's ≤767 .wy-head already seats heron's title-wrap
+       pad (47.63px, strata.css ≤767 block — L1-b's sheet); the old
+       4.73rem seat stacked on it (text y95 vs the spec's y48). */
+    padding-block-start: 0;
     padding-inline-start: 0;
   }
 
