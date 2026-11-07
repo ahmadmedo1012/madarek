@@ -715,6 +715,13 @@
   .hro-work {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    /* R341 H1-c edge gutters — the snap rest edge sits a measured 32px
+       (--sp-7) inside the SCROLLPORT so a settled whole item keeps a
+       ≥20px viewport gutter at rest (judge: mobile [01] hugged the
+       right edge). The padding used to sit on the track — a
+       non-scroller, a dead letter — so mandatory snap pulled item 1
+       flush to the edge (elementFromPoint-era probe: rest r≈7px). */
+    scroll-padding-inline: var(--sp-7);
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -728,7 +735,6 @@
     min-inline-size: max-content;
     justify-content: flex-start;
     padding-inline: 1.8rem;
-    scroll-padding-inline: 1.8rem;
   }
 
   .hro-work-item {

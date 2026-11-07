@@ -1,0 +1,3784 @@
+{
+ "generatedAt": "2026-11-07T17:01:32.973Z",
+ "engine": "chromium",
+ "url": "http://localhost:5311",
+ "specDir": "/home/z/wt/h1c/docs/redesign/r335/heron-spec",
+ "summary": {
+  "total": 4261,
+  "pass": 4116,
+  "fail": 145,
+  "passRate": 96.6,
+  "exceptionUses": 3,
+  "exceptionRate": 0.1,
+  "exceptionCap": "<5%",
+  "exceptionRules": {
+   "ar-text-length-class": 3
+  },
+  "unmatchedFailures": 0,
+  "gate": "report-only",
+  "coverage": {
+   "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
+   "thresholds": {
+    "coverageFloor": "40% measured (FAIL(coverage), no escape)",
+    "offBookCap": "70% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)",
+    "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
+   },
+   "overall": {
+    "measured": 4261,
+    "offBookEst": 3702,
+    "coveragePct": 53.5,
+    "offBookPct": 46.5
+   },
+   "sections": {
+    "home-hero-wrap": {
+     "measured": 4261,
+     "skipped": 462,
+     "excused": 270,
+     "offBookEst": 3702,
+     "pairs": 335,
+     "heur": 56,
+     "coverage": 53.5,
+     "offBookPct": 46.5,
+     "heurPct": 16.7
+    }
+   },
+   "gateFailures": [],
+   "reviewedEscapes": []
+  },
+  "unmatchedOmitted": 0,
+  "skippedOmitted": 0,
+  "totalSkipped": 462,
+  "edge390": {
+   "fails": 0,
+   "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
+   "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
+  }
+ },
+ "sections": {
+  "home-hero-wrap": {
+   "390": {
+    "passRate": 93.9,
+    "n": 1158,
+    "pass": 1087,
+    "fail": 71,
+    "exceptions": 1,
+    "explicit": 71,
+    "dataSpec": 0,
+    "heuristic": 25,
+    "unmatched": 0,
+    "excused": 108,
+    "skipped": 201,
+    "missing": null
+   },
+   "1440": {
+    "passRate": 97.6,
+    "n": 3103,
+    "pass": 3029,
+    "fail": 74,
+    "exceptions": 2,
+    "explicit": 208,
+    "dataSpec": 0,
+    "heuristic": 31,
+    "unmatched": 0,
+    "excused": 162,
+    "skipped": 261,
+    "missing": null
+   }
+  }
+ },
+ "failures": [
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 1440,
+   "delta": 1427
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4]",
+   "mode": "explicit",
+   "expected": -8,
+   "actual": 800,
+   "delta": 808
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19]",
+   "mode": "explicit",
+   "expected": -8,
+   "actual": 800,
+   "delta": 808
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 862,
+   "actual": 75,
+   "delta": 787
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 800,
+   "actual": 91,
+   "delta": 709
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 28,
+   "actual": 659,
+   "delta": 631.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 773,
+   "actual": 186,
+   "delta": 587
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 773,
+   "actual": 190,
+   "delta": 583
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 13,
+   "actual": 520,
+   "delta": 507
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 863,
+   "actual": 424,
+   "delta": 439
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 437,
+   "actual": 0,
+   "delta": 437
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[1] > div[1] > div[9] > div[3]",
+   "mode": "explicit",
+   "expected": 92,
+   "actual": 507,
+   "delta": 415
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 863,
+   "actual": 469,
+   "delta": 394
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 863,
+   "actual": 482,
+   "delta": 381
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19] > path[1]",
+   "mode": "explicit",
+   "expected": 487,
+   "actual": 863,
+   "delta": 376
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19]",
+   "mode": "explicit",
+   "expected": 487,
+   "actual": 862,
+   "delta": 375
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4] > path[1]",
+   "mode": "explicit",
+   "expected": 497,
+   "actual": 863,
+   "delta": 366
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4]",
+   "mode": "explicit",
+   "expected": 497,
+   "actual": 862,
+   "delta": 365
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 863,
+   "actual": 498,
+   "delta": 365
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[1] > div[1] > div[10] > div[3]",
+   "mode": "explicit",
+   "expected": 370,
+   "actual": 24,
+   "delta": 346.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 984,
+   "actual": 658,
+   "delta": 326
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 16,
+   "actual": 338,
+   "delta": 322
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[29] > path[1]",
+   "mode": "explicit",
+   "expected": 678,
+   "actual": 984,
+   "delta": 306
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
+   "mode": "explicit",
+   "expected": 110,
+   "actual": 372,
+   "delta": 262
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
+   "mode": "explicit",
+   "expected": 272,
+   "actual": 534,
+   "delta": 262
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
+   "mode": "explicit",
+   "expected": 418,
+   "actual": 680,
+   "delta": 262
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 355,
+   "actual": 94,
+   "delta": 261
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": -8,
+   "actual": 244,
+   "delta": 252
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4]",
+   "mode": "explicit",
+   "expected": 203,
+   "actual": 437,
+   "delta": 234
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 244,
+   "actual": 460,
+   "delta": 216
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 431,
+   "actual": 640,
+   "delta": 209.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 134,
+   "actual": 342,
+   "delta": 208
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 203,
+   "actual": 1,
+   "delta": 202.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 800,
+   "actual": 613,
+   "delta": 187
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 432,
+   "actual": 256,
+   "delta": 176
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19]",
+   "mode": "explicit",
+   "expected": 203,
+   "actual": 28,
+   "delta": 175
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
+   "mode": "explicit",
+   "expected": 47,
+   "actual": 214,
+   "delta": 167
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[1] > h1[1]",
+   "mode": "explicit",
+   "expected": 479,
+   "actual": 314,
+   "delta": 165
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4] > path[1]",
+   "mode": "explicit",
+   "expected": 186,
+   "actual": 28,
+   "delta": 158.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4]",
+   "mode": "explicit",
+   "expected": 186,
+   "actual": 28,
+   "delta": 158
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 834,
+   "actual": 677,
+   "delta": 156.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19]",
+   "mode": "explicit",
+   "expected": 277,
+   "actual": 431,
+   "delta": 154
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19] > path[1]",
+   "mode": "explicit",
+   "expected": 277,
+   "actual": 431,
+   "delta": 153.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 606,
+   "actual": 466,
+   "delta": 140
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[28] > path[1]",
+   "mode": "explicit",
+   "expected": 695,
+   "actual": 834,
+   "delta": 139
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[1] > h1[1]",
+   "mode": "explicit",
+   "expected": 773,
+   "actual": 636,
+   "delta": 137
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 862,
+   "actual": 732,
+   "delta": 130
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
+   "mode": "explicit",
+   "expected": 193,
+   "actual": 68,
+   "delta": 125
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 117,
+   "delta": 117
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 112,
+   "actual": 0,
+   "delta": 112
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 16,
+   "actual": 122,
+   "delta": 106
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[1] > h1[1]",
+   "mode": "explicit",
+   "expected": 93,
+   "actual": 189,
+   "delta": 96
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 335,
+   "actual": 243,
+   "delta": 92
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[1] > div[1] > div[10] > div[3]",
+   "mode": "explicit",
+   "expected": 162,
+   "actual": 73,
+   "delta": 89
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 431,
+   "actual": 518,
+   "delta": 87.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 716,
+   "delta": 85
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[1] > div[1] > div[9] > div[3]",
+   "mode": "explicit",
+   "expected": 162,
+   "actual": 84,
+   "delta": 78
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[1] > div[1] > div[9] > div[3]",
+   "mode": "explicit",
+   "expected": 540,
+   "actual": 464,
+   "delta": 76
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 668,
+   "actual": 597,
+   "delta": 71
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "sectionHeightVh",
+   "heronPath": "div.home-hero-wrap",
+   "oursSelector": "section.fo-hero",
+   "expected": 0.985,
+   "actual": 1.055,
+   "delta": 70
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > a[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[2]",
+   "mode": "explicit",
+   "expected": 725,
+   "actual": 661,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 737,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 737,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 737,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 737,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 737,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
+   "mode": "explicit",
+   "expected": 801,
+   "actual": 737,
+   "delta": 64
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 767,
+   "actual": 705,
+   "delta": 62
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > a[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[2]",
+   "mode": "explicit",
+   "expected": 753,
+   "actual": 692,
+   "delta": 61
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 10,
+   "actual": 71,
+   "delta": 61
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "sectionHeightVh",
+   "heronPath": "div.home-hero-wrap",
+   "oursSelector": "section.fo-hero",
+   "expected": 0.981,
+   "actual": 1.038,
+   "delta": 57
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 65,
+   "delta": 56
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 28,
+   "actual": 71,
+   "delta": 43
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "transition",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "0.4s/ease",
+   "actual": "0s/none",
+   "delta": 41
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[1] > h1[1]",
+   "mode": "explicit",
+   "expected": 95,
+   "actual": 129,
+   "delta": 34
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 16,
+   "actual": 48,
+   "delta": 32
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > a[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[2]",
+   "mode": "explicit",
+   "expected": 374,
+   "actual": 342,
+   "delta": 32
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 9,
+   "actual": 38,
+   "delta": 29
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > div[1] > div[1] > a[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[1]",
+   "mode": "explicit",
+   "expected": 19,
+   "actual": 48,
+   "delta": 29
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[28] > path[1]",
+   "mode": "explicit",
+   "expected": 835,
+   "actual": 863,
+   "delta": 28
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[29] > path[1]",
+   "mode": "explicit",
+   "expected": 835,
+   "actual": 863,
+   "delta": 28
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 10,
+   "actual": 38,
+   "delta": 28
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 25,
+   "delta": 25
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 10,
+   "actual": 33,
+   "delta": 23
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "y",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[1] > div[1] > div[10] > div[3]",
+   "mode": "explicit",
+   "expected": 530,
+   "actual": 508,
+   "delta": 22
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "h",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 103,
+   "actual": 83,
+   "delta": 20
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[4]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 16,
+   "delta": 16
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[13] > svg[19]",
+   "mode": "explicit",
+   "expected": 0,
+   "actual": 16,
+   "delta": 16
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 167,
+   "actual": 155,
+   "delta": 11.5
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "w",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 11,
+   "actual": 0,
+   "delta": 11
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[1] > h1[1]",
+   "mode": "explicit",
+   "expected": 8,
+   "actual": 0,
+   "delta": 8
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 8,
+   "actual": 0,
+   "delta": 8
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "x-mirror",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > a[2]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[2] > a[2]",
+   "mode": "explicit",
+   "expected": 8,
+   "actual": 0,
+   "delta": 8
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 21.44,
+   "actual": 27.79,
+   "delta": 6.35
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": 18,
+   "actual": 23.33,
+   "delta": 5.33
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 21.44,
+   "actual": 26.2,
+   "delta": 4.76
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 21.44,
+   "actual": 26.2,
+   "delta": 4.76
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 21.44,
+   "actual": 26.2,
+   "delta": 4.76
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 21.44,
+   "actual": 26.2,
+   "delta": 4.76
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": 18,
+   "actual": 22,
+   "delta": 4
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 18,
+   "actual": 22,
+   "delta": 4
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 18,
+   "actual": 22,
+   "delta": 4
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 18,
+   "actual": 22,
+   "delta": 4
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "lineHeight",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": 18,
+   "actual": 22,
+   "delta": 4
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "tc",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": "long",
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": "rgb(40, 40, 40)",
+   "actual": "rgb(65, 65, 64)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "interactive",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[12] > div[90]",
+   "mode": "explicit",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+   "oursSelector": "#hm:span.short",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "tc",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": "long",
+   "actual": "none",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > div[1] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[2] > div[2] > div[1]",
+   "mode": "explicit",
+   "expected": "rgb(40, 40, 40)",
+   "actual": "rgb(65, 65, 64)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[1]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[2]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[3]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[4]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[5]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[2] > div[3] > div[2] > div[1]",
+   "oursSelector": "home-hero-wrap > section[1] > div[3] > div[1] > div[6]",
+   "mode": "explicit",
+   "expected": "rgba(40, 40, 40, 0.72)",
+   "actual": "color(srgb 0.156863 0.156863 0.156863 / 0.72)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": "rgb(250, 54, 0)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 0,
+   "actual": 1,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": "rgb(250, 54, 0)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "interactive",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": "rgb(250, 54, 0)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "interactive",
+   "heronPath": "home-hero-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "oursSelector": "#hm:path.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "color",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > svg[1]",
+   "oursSelector": "#hm:svg.none",
+   "mode": "heuristic",
+   "expected": "rgb(179, 179, 175)",
+   "actual": "rgb(40, 40, 40)",
+   "delta": 1
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0.64,
+   "delta": 0.36
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "kind": "opacity",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": 1,
+   "actual": 0.64,
+   "delta": 0.36
+  }
+ ],
+ "unmatchedReport": [
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[5] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > img[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[4]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[4]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[3] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[3] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[3] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[3] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[3] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[4]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[4] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[4] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[4] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[4] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[4] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[5]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[5] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[5] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[5] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[5] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[3] > div[1] > div[5] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > img[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[4]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[2] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[2] > div[4]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[2] > a[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[2] > a[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[2] > a[2] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > a[2] > div[2] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[2] > div[4] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[4] > div[3] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[1] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[4] > div[3] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[1] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[2] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[2] > div[4] > div[3] > div[1] > div[2] > div[3]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[4] > div[3] > div[1] > div[2] > div[3] > div[2]",
+   "excused": true,
+   "reason": "heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill"
+  }
+ ],
+ "skippedReport": [
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > span[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > span[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > span[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > span[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): drafting grid hairline - census path is duplicated in the spec (truncated tree); the first occurrence holds the H1-a binding, the twin occurrence is excused here - reseat via per-occurrence hooks in the H1-d sweep — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "1440",
+   "heronPath": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[2] > div[3] > div[1] > h1[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[5]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[4]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > section[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > section[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  },
+  {
+   "section": "home-hero-wrap",
+   "bp": "390",
+   "heronPath": "home-hero-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "plumbing-skip (mirrors documented no-counterpart excuse): heron layout wrapper/annotation (census-truncated path) with no one-to-one node in our DOM - our frame is .hro-art/.bp-stage/.hro-content; the ink img full-bleed deviation is the documented R332 W1 kill — heuristic tag|tc pairing currently binds these to our authored ink-SVG/CSS-seat internals; measured groups skipped (counted) until explicit wrapper rebind"
+  }
+ ],
+ "darkInkReport": [],
+ "sectionEdges": {
+  "home-hero-wrap": {
+   "specLeft": 8,
+   "specRight": 8,
+   "ourLeft": 7,
+   "ourRight": 6,
+   "rootContentBox": {
+    "l": 0,
+    "r": 0
+   },
+   "rootRect": {
+    "x": 0,
+    "w": 390
+   },
+   "via": "visible-content-union",
+   "failLeft": false,
+   "failRight": false
+  }
+ },
+ "provenance": {
+  "file": "chromium-20261107-170157-sections-home-hero-wrap.bp-1440+390.json",
+  "scope": "sections-home-hero-wrap.bp-1440+390",
+  "fullMatrix": false,
+  "sections": "1/10",
+  "bps": "2/5",
+  "engine": "chromium",
+  "dark": false,
+  "gate": false,
+  "url": "http://localhost:5311"
+ }
+}
