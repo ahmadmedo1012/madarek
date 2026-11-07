@@ -48,7 +48,7 @@ import {
 
 /* ── Create / edit form ───────────────────────────────────────── */
 
-export function ChapterFormModal({
+function ChapterFormModal({
   lecture,
   existing,
   onClose,

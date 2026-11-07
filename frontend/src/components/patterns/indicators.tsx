@@ -120,7 +120,7 @@ export function attendanceMark(status: string): AttendanceMark {
   return 'absent';
 }
 
-export const GRADE_BAND_LABELS: readonly string[] = [
+const GRADE_BAND_LABELS: readonly string[] = [
   '<50', '50–59', '60–69', '70–79', '80–89', '90+',
 ];
 

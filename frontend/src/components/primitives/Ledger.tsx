@@ -22,7 +22,6 @@ import type { CSSProperties, ReactNode } from 'react';
  *     ChartFrame's canvases).
  *   · ProgressRing — the momentum ring (role="progressbar", SVG
  *     stroke-dasharray; the value is REAL data, never decoration).
- *   · WeekRow — the day-anchored week ledger row.
  *
  * Contracts:
  *   - Tokens only: every visual value is consumed from tokens.css
@@ -317,25 +316,3 @@ export function LedgerRow({ lead, leadLabel, title, subtitle, tail, to }: Ledger
   return <div className="ledger-row">{body}</div>;
 }
 
-/* ─── WeekRow ────────────────────────────────────────────────────── */
-export function WeekRow({
-  day,
-  date,
-  children,
-}: {
-  /** Day name (bold, sans). */
-  day: ReactNode;
-  /** Mono date detail under the day. */
-  date?: ReactNode;
-  children: ReactNode;
-}) {
-  return (
-    <div className="week-row">
-      <span className="week-day">
-        <b>{day}</b>
-        {date}
-      </span>
-      <span className="week-what">{children}</span>
-    </div>
-  );
-}

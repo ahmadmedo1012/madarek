@@ -54,7 +54,7 @@ const DEFAULT_GAP = 4;
 const DEFAULT_PADDING = 8;
 const DEFAULT_MIN_HEIGHT = 140;
 
-export function computeAnchoredPosition(
+function computeAnchoredPosition(
   anchor: HTMLElement,
   panel: HTMLElement | null,
   placement: AnchorPlacement,

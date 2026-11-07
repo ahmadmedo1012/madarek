@@ -1,9 +1,9 @@
 {
-  "_comment": "T-22 Track B ratchet baseline — measured analyzer output. Counts may only improve; when a count drops, re-pin it here in the SAME commit (scripts/deadcode/check.sh --update). Pinned tools: knip@5.88.1, jscpd@5.4.2, dependency-cruiser@18.7.2 (+ typescript@5.7.2 for depcruise); jscpd minTokens=70.",
+  "_comment": "T-22 Track B ratchet baseline — measured analyzer output. Counts may only improve; when a count drops, re-pin it here in the SAME commit (scripts/deadcode/check.sh --update). Pinned tools: knip@5.88.1, jscpd@5.4.2, dependency-cruiser@18.7.2 (+ typescript@5.7.2 for depcruise); jscpd minTokens=70.\n  R341/Y3 drop reasons: unusedFiles 65→63 (CountUp.tsx deleted — zero importers, landing does not seat it, r168b test asserts its ABSENCE; -1 more was already true on main since last pin); unusedExports 85→49 (Y1 leftovers cut: WeekRow component+barrel re-export, overlays barrel value re-exports Toast/ToastStack/Lightbox kept as type-only re-exports, chartTheme fadingGridColor+3 plugins un-exported (used in-file), introGate LOADER_TAIL_MS/LOADER_ACCEL_MAX un-exported, Chapter/CheckpointFormModal un-exported (in-file use), plus mark.ts MARK_POINT_CENTRE/MARK_STROKE_FAVICON deleted, anchoredPosition.computeAnchoredPosition / indicators.GRADE_BAND_LABELS / useReveal / illustrations.SCENE_REGISTRY un-exported; sheetConductor.dist deleted). SKIPPED as unsafe: GuestLenisMount (r313-lenis test pins the export), AttendanceTicks (patterns contract, AppShell comment reference), ROLE_SHOWCASES (landing Roles seat data), Popover/Lightbox components (contract-pinned per overlays/index.ts header), testimonials.config.ts (intentional tombstone), unusedExportedTypes (page/test-fixture types, D-wave territory).",
   "knip": {
-    "unusedFiles": 65,
-    "unusedExports": 85,
-    "unusedExportedTypes": 230,
+    "unusedFiles": 63,
+    "unusedExports": 49,
+    "unusedExportedTypes": 229,
     "unusedDependencies": 0,
     "unusedDevDependencies": 1,
     "unlisted": 0,

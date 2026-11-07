@@ -67,7 +67,7 @@ export type { SceneComponent };
  * — the <Illustration> wrapper falls back to its empty-state placeholder
  * for those.
  */
-export const SCENE_REGISTRY: Record<IllustrationName, SceneComponent | null> = {
+const SCENE_REGISTRY: Record<IllustrationName, SceneComponent | null> = {
   'milestone-section': SceneMilestoneSection as SceneComponent,
   'onboarding-frame-2': SceneOnboardingFrame2 as SceneComponent,
   'onboarding-frame-3': SceneOnboardingFrame3 as SceneComponent,

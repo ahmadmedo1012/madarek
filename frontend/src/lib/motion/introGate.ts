@@ -183,14 +183,14 @@ export const LOADER_GATE_PCT = 60;
  * (the reference's measured cold-run 100%; exit window 6366→7201). */
 export const LOADER_DONE_MS = 5649;
 /** The natural plateau→100 tail (3840→5649ms on the fallback curve). */
-export const LOADER_TAIL_MS = 1809;
+const LOADER_TAIL_MS = 1809;
 /** How much faster than the natural tail rate the released tail may
  * run. R314 cycle-2 (V14): 1.0 — the reference's own warm-cache reload
  * keeps ~83% of the cold tail duration (100%@4680 vs 5649); the R313
  * 1.5× cap compressed instant resolves to ~60% of that, erasing the
  * crawl beat. At 1.0 an instant resolve still finishes ~20% early
  * (100% ≈ 4.5–4.8s) — the measured warm behaviour. */
-export const LOADER_ACCEL_MAX = 1.0;
+const LOADER_ACCEL_MAX = 1.0;
 /** The asset gate's hard timeout — a stalled asset can never trap the
  * visitor; the release lands at the authored plateau's end so the
  * fallback 100% at LOADER_DONE_MS is exactly the slowest run. */
