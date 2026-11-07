@@ -5,7 +5,7 @@ import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen, SectionBar } from "@/components/ui";
+import { Screen, PageHeader, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Sheet } from "@/components/ui/surfaces";
@@ -72,14 +72,7 @@ export default function OwnerInstitutions() {
     <Screen scroll>
       <StackHeader title="المؤسسات" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
-          <T variant="h2" weight="bold">
-            المؤسسات
-          </T>
-          <T variant="body" color="muted">
-            إدارة المؤسسات التعليمية على المنصّة
-          </T>
-        </View>
+        <PageHeader title="المؤسسات" kicker="إدارة المؤسسات التعليمية على المنصّة" />
 
         <Button
           label="مؤسسة جديدة"

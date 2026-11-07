@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import Bot from "lucide-react-native/icons/bot";
 import Sparkles from "lucide-react-native/icons/sparkles";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen, SectionBar } from "@/components/ui";
+import { Screen, PageHeader, SectionBar } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
 import { RowList, LedgerRow, StatLine } from "@/components/ui/data";
@@ -66,14 +66,7 @@ export default function OwnerAi() {
         }
       />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
-          <T variant="h2" weight="bold">
-            مركز الذكاء الاصطناعيّ
-          </T>
-          <T variant="body" color="muted">
-            مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ
-          </T>
-        </View>
+        <PageHeader title="مركز الذكاء الاصطناعيّ" kicker="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ" />
 
         {metrics.isLoading ? (
           <SkeletonList rows={4} rowHeight={48} />

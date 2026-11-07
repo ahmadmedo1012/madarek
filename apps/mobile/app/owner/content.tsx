@@ -4,7 +4,7 @@ import ArrowRight from "lucide-react-native/icons/arrow-right";
 import Info from "lucide-react-native/icons/info";
 import Palette from "lucide-react-native/icons/palette";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen, SectionBar } from "@/components/ui";
+import { Screen, PageHeader, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { BrandMark } from "@/components/ui/brand";
@@ -35,14 +35,7 @@ export default function OwnerContent() {
     <Screen scroll>
       <StackHeader title="المحتوى والعلامة التجاريّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
-          <T variant="h2" weight="bold">
-            المحتوى والعلامة التجاريّة
-          </T>
-          <T variant="body" color="muted">
-            الهويّة البصريّة وأصول العلامة
-          </T>
-        </View>
+        <PageHeader title="المحتوى والعلامة التجاريّة" kicker="الهويّة البصريّة وأصول العلامة" />
 
         <Card>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>

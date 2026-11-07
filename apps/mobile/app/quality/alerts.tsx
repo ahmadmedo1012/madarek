@@ -3,7 +3,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
-import { Screen } from "@/components/ui";
+import { Screen, PageHeader } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
@@ -55,9 +55,10 @@ function AlertsBoard({ onInbox }: { onInbox: () => void }) {
     <Screen scroll>
       <StackHeader title="تنبيهات الجودة" kicker="قطاع ضمان الجودة" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <T variant="body" color="muted">
-          أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة.
-        </T>
+        <PageHeader
+          title="تنبيهات الجودة"
+          kicker="أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريًا من بيانات المنصّة."
+        />
 
         <Segmented
           options={[

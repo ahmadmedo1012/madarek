@@ -3,7 +3,7 @@ import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen } from "@/components/ui";
+import { Screen, PageHeader } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Badge, Sheet } from "@/components/ui/surfaces";
 import { RowList, LedgerRow } from "@/components/ui/data";
@@ -87,14 +87,7 @@ export default function OwnerFeedback() {
     <Screen scroll>
       <StackHeader title="صندوق التغذية الراجعة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
-          <T variant="h2" weight="bold">
-            صندوق التغذية الراجعة
-          </T>
-          <T variant="body" color="muted">
-            كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل.
-          </T>
-        </View>
+        <PageHeader title="صندوق التغذية الراجعة" kicker="كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل." />
 
         <Segmented
           options={STATUS_FILTERS}
