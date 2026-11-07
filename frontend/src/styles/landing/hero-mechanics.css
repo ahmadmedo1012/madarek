@@ -120,6 +120,24 @@
   max-block-size: 100%;
 }
 
+/* R341 H1-c · L2-a (panel-1 finding #1) — pointer-events discipline at
+   tablet/phone widths: the decorative art seats (.hro-art band + the
+   .bp-svg drawing) never take the pointer ≤768px, so the funnel's CTAs
+   can never be intercepted by the art stack (elementFromPoint-probed at
+   390/768: the primary CTA + the login alt own every interior point).
+   pointer-events is inherited — the interaction stations that MUST keep
+   the pointer re-enable it themselves (.hi-marker / .bp-hotspot carry
+   explicit `pointer-events: auto`, hero.css), and the drag instrument's
+   own gate is (hover:hover) and (min-width:992px) (HeroInspect.tsx) —
+   above this belt, untouched. Desktop (≥769) keeps the stage's own
+   pointer grammar (the r305 cursor crosshair + drag-to-inspect). */
+@media (max-width: 768px) {
+  .hro .hro-art,
+  .hro .hro-art .bp-svg {
+    pointer-events: none;
+  }
+}
+
 /* the line-art weight rides the vector gear (R330: the ink carries the
    section — non-scaling strokes stay crisp at every art scale). */
 .hro-art .bp-svg .bp-hair,
@@ -697,6 +715,13 @@
   .hro-work {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
+    /* R341 H1-c edge gutters — the snap rest edge sits a measured 32px
+       (--sp-7) inside the SCROLLPORT so a settled whole item keeps a
+       ≥20px viewport gutter at rest (judge: mobile [01] hugged the
+       right edge). The padding used to sit on the track — a
+       non-scroller, a dead letter — so mandatory snap pulled item 1
+       flush to the edge (elementFromPoint-era probe: rest r≈7px). */
+    scroll-padding-inline: var(--sp-7);
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
@@ -710,7 +735,6 @@
     min-inline-size: max-content;
     justify-content: flex-start;
     padding-inline: 1.8rem;
-    scroll-padding-inline: 1.8rem;
   }
 
   .hro-work-item {
