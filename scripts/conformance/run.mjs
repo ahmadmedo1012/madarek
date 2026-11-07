@@ -746,7 +746,17 @@ try {
       cell.explicit = pairs.filter((p) => p.mode === "explicit").length;
       cell.dataSpec = pairs.filter((p) => p.mode === "data-spec").length;
       cell.unmatched = unmatched.filter((u) => !u.reason).length;
-      cell.excused = unmatched.filter((u) => !!u.reason).length;
+      // r341 W9-MAP — EXCUSED SINGLE COUNT. The r337 ar-char-split commit
+      // added the final `cell.excused +=` below on top of this r336
+      // assignment without removing it, so every reason-carrying
+      // unmatched element counted TWICE (measured on home-map-wrap:
+      // cell.excused 334 vs 167 actual unmatchedReport rows) — the
+      // off-book estimate inflated to 24 checks/element, violating the
+      // instrument's own charter ("the off-book share can only be
+      // understated, never inflated"). The final tally below (after the
+      // scaffold/wordset pulls + their own cell.excused++ increments)
+      // is the single honest count; this early assignment is dead.
+      cell.excused = 0;
 
       // R337 ar-char-split — TRANSFORMED expectations, two-segment law.
       // The extractor truncates spec ancestor paths at depth 6, so a
