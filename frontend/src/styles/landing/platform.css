@@ -132,6 +132,13 @@ html[data-theme='dark'] .pr-section .pr-cta {
 .pr-section .pr-title {
   margin: 0;
   white-space: nowrap; /* heron's title is a one-line 392×36 box (measured) */
+  /* L2-b (r341, h2 rung belt — type-gate note): the frozen spec's
+     platform section carries NO h2; its section titles are 26.67px
+     w600 DIVs @1440, and our h2 seats mirror that measured voice
+     (26.67 @1440 · 22.1 @768 · 19.85 @390 — the bands below). The
+     --fs-* ladder has NO rung at 26.67 (it skips an h4 step between
+     --fs-h3 33.33 and --fs-body 13.33), so the measured rem steps
+     stay: measured-value seats, documented per the L2-b brief. */
   font-size: 3.2rem;   /* 35.56 @1920 · 26.67 @1440 — measured h4 twin */
   line-height: 1;      /* 35.56/35.56 — measured */
   font-weight: 600;

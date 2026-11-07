@@ -223,6 +223,7 @@
   src: url('/fonts/alexandria-600-normal-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @font-face {
   font-family: 'Alexandria';
   font-style: normal;
@@ -230,4 +231,21 @@
   font-display: swap;
   src: url('/fonts/alexandria-700-normal-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── L2-b (r341, panel-1 finding 2) — the ROOT family belt ─────────
+   Measured: 76 elements (html + head + every script/style/meta/link/
+   title child — the whole head half of the tree, at BOTH 1440 and
+   390) computed font-family "Times New Roman": the UA default serif.
+   Root cause: the family chain was declared on `body` only (base.css)
+   — `html` itself matched no font-family rule, so the UA initial
+   value surfaced at the root and inherited into everything above
+   body (a DOM-walking judge reads that as a serif fallback bug; the
+   <title> string is real chrome paint in some UAs). The fix seats the
+   chain on the ROOT: html now carries the same --font-sans stack
+   (unlayered — fonts.css imports first and owns this belt; body keeps
+   its identical base.css declaration). Zero computed delta inside
+   body; the serif default can no longer surface anywhere. */
+html {
+  font-family: var(--font-sans);
 }
