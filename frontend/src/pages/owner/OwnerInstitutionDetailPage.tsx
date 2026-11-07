@@ -489,12 +489,15 @@ export function OwnerInstitutionDetailPage() {
         /* D11 (D8/D10 header-CTA precedent): the context's sibling
          * surfaces — the platform directory where this institution's
          * members carry their accounts (primary) + the institutions
-         * list it lives in (ghost). The section-scoped write actions
-         * (إضافة كلّيّة/مقرّر) stay on their sections. */
+         * console it lives in (ghost; the breadcrumb already carries
+         * the «كل المؤسسات» way back — the CTA's label stays distinct
+         * so the r181 header pin's getByRole stays unique). The
+         * section-scoped write actions (إضافة كلّيّة/مقرّر) stay on
+         * their sections. */
         actions={(
           <>
             <Link to="/owner/users" className="btn accent sm">دليل الأعضاء</Link>
-            <Link to="/owner/institutions" className="btn ghost sm">كل المؤسسات</Link>
+            <Link to="/owner/institutions" className="btn ghost sm">إدارة المؤسسات</Link>
           </>
         )}
       />
