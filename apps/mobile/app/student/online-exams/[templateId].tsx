@@ -16,7 +16,8 @@ import { examsApi, type ReviewPayload, type StartExamPayload, type SubmitExamRes
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
-import { sp, radius, touchFloor } from "@/design/tokens";
+import { sp, radius, touchFloor, type } from "@/design/tokens";
+import { fonts } from "@/design/fonts";
 import { T } from "@/components/ui/text";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui/screen";
@@ -219,7 +220,7 @@ export const ExamCountdown = memo(function ExamCountdown({
   }));
 
   return (
-    <View style={{ alignItems: "flex-end", gap: 2 }}>
+    <View style={{ alignItems: "flex-end", gap: sp[2] }}>
       <AnimatedTextInput
         testID={testID}
         editable={false}
@@ -227,7 +228,9 @@ export const ExamCountdown = memo(function ExamCountdown({
         defaultValue={fmtClock(initialSeconds)}
         animatedProps={animatedProps}
         accessibilityLabel={`الوقت المتبقي ${fmtClock(initialSeconds)}`}
-        style={[{ fontSize: 15, lineHeight: 24, fontWeight: "700" }, timeStyle]}
+        // M8 — the clock rides the bodyLg rung from the app tokens (raw
+        // 15/24/700 → type.bodyLg + the bold family), not ad-hoc numbers.
+        style={[{ fontSize: type.bodyLg, lineHeight: 24, fontFamily: fonts.bodyBold }, timeStyle]}
       />
       <Clock size={12} color={p.textMuted} />
     </View>
@@ -865,7 +868,7 @@ export default function ExamTakerScreen() {
                 accessibilityLabel={flaggedQids.has(current.id) ? "إزالة علامة المراجعة" : "وضع علامة المراجعة على هذا السؤال"}
                 onPress={() => toggleFlag(current.id)}
                 style={{
-                  minHeight: 44,
+                  minHeight: touchFloor,
                   flexDirection: "row",
                   alignItems: "center",
                   gap: sp[6],
@@ -952,7 +955,10 @@ export default function ExamTakerScreen() {
                   borderColor: p.rule,
                   backgroundColor: p.bg,
                   color: p.text,
-                  fontSize: 15,
+                  // M8 — the answer field rides the bodyLg rung (15/24)
+                  // from the app tokens.
+                  fontSize: type.bodyLg,
+                  lineHeight: 24,
                   textAlign: "right",
                   padding: sp[12],
                 }}

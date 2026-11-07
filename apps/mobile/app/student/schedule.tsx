@@ -23,7 +23,7 @@ import { learningApi } from "@/api/learning";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { useNow } from "@/hooks/useNow";
 import { usePalette } from "@/design/theme";
-import { sp } from "@/design/tokens";
+import { sp, touchFloor } from "@/design/tokens";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Screen } from "@/components/ui/screen";
 import { StackHeader } from "@/components/shell/AppTopBar";
@@ -285,20 +285,28 @@ function DayChip({
       accessibilityState={{ selected }}
       onPress={() => onSelect(id)}
       style={{
-        minHeight: 44,
+        minHeight: touchFloor,
         justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: sp[12],
-        borderWidth: 1,
-        borderColor: selected ? p.accent : p.border,
-        backgroundColor: selected ? p.accentSoft : p.surface,
+        // M8 — filters speak the Segmented language, not the accent: the
+        // selected day is an INK slab (primary/primaryFg), unselected days
+        // sit on transparent ground inside a hairline rule frame. Orange
+        // stays reserved for the live chip (the screen's one signal).
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: p.rule,
+        backgroundColor: selected ? p.primary : "transparent",
         gap: 0,
       }}
     >
-      <T variant="sm" weight={selected || isToday ? "bold" : "medium"} color={selected ? "accentInk" : "text"}>
+      <T
+        variant="sm"
+        weight={selected || isToday ? "bold" : "medium"}
+        color={selected ? "onPrimary" : isToday ? "text" : "muted"}
+      >
         {label}
       </T>
-      <T variant="xs" color="faint">
+      <T variant="xs" color={selected ? "onPrimary" : "faint"}>
         {isToday ? `اليوم · ${latn(count)}` : latn(count)}
       </T>
     </Pressable>
@@ -318,7 +326,9 @@ function DaySectionHeader({ dow, todayDow }: { dow: number; todayDow: number }) 
         borderBottomColor: p.rule,
       }}
     >
-      <T variant="sm" weight="bold" color={dow === todayDow ? "accentInk" : "muted"}>
+      {/* M8 — today is INKED (the web's TODAY chip rides text-secondary,
+          not the accent); the accent stays on the live chip only. */}
+      <T variant="sm" weight="bold" color={dow === todayDow ? "text" : "muted"}>
         {`${AR_DAYS[dow] ?? ""}${dow === todayDow ? " · اليوم" : ""}`}
       </T>
     </View>
@@ -349,7 +359,7 @@ const SlotRow = makeRow<DaySlot, { status: SlotStatus | null }>(({ item: s, stat
         backgroundColor: pressed ? p.surfaceHover : "transparent",
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: p.rule,
-        gap: 2,
+        gap: sp[2],
       })}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
@@ -359,25 +369,26 @@ const SlotRow = makeRow<DaySlot, { status: SlotStatus | null }>(({ item: s, stat
             {`${s.courseCode} — ${s.courseName}`}
           </T>
         </View>
-        {/* ONE accent: live = accent fill, next = accentSoft, done = grey. */}
+        {/* M8 — the M1 chip tiers: live is the ONE primary (accent fill,
+            accentFg ink); next/done collapse to the muted secondary
+            (hairline rule frame, transparent ground, muted medium ink). */}
         {meta && status ? (
           <View
             accessibilityLabel={meta.label}
             style={{
+              alignSelf: "flex-start",
               paddingHorizontal: sp[8],
               minHeight: 24,
               justifyContent: "center",
-              backgroundColor:
-                status === "live" ? p.accent : status === "next" ? p.accentSoft : p.surfaceHover,
+              borderWidth: status === "live" ? 0 : StyleSheet.hairlineWidth,
+              borderColor: p.rule,
+              backgroundColor: status === "live" ? p.accent : "transparent",
             }}
           >
             <T
               variant="xs"
-              weight="bold"
-              style={{
-                color:
-                  status === "live" ? p.accentFg : status === "next" ? p.accentInk : p.textMuted,
-              }}
+              weight={status === "live" ? "bold" : "medium"}
+              style={{ color: status === "live" ? p.accentFg : p.textMuted }}
             >
               {meta.label}
             </T>

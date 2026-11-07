@@ -103,7 +103,7 @@ export default function ResultsScreen() {
                   >
                     <CountUp value={headline.avgGradePct} formatter={pctFace} />
                   </RingProgress>
-                  <View style={{ alignItems: "center", gap: 2 }}>
+                  <View style={{ alignItems: "center", gap: sp[2] }}>
                     <T variant="h4" weight="bold">
                       المتوسط العام
                     </T>
@@ -113,9 +113,9 @@ export default function ResultsScreen() {
                   </View>
                   <Button
                     label="مشاركة الملخص"
-                    kind="ghost"
+                    kind="accent"
                     small
-                    icon={<ShareIcon size={16} color={p.text} />}
+                    icon={<ShareIcon size={16} color={p.accentFg} />}
                     onPress={() => void onShare()}
                   />
                   {shareError ? (
@@ -143,7 +143,7 @@ export default function ResultsScreen() {
             {courses.map((c) => (
               <Card key={c.offeringId} style={{ gap: sp[8] }}>
                 <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
-                  <View style={{ flex: 1, gap: 2 }}>
+                  <View style={{ flex: 1, gap: sp[2] }}>
                     <BidiText variant="bodyLg" weight="bold" numberOfLines={1}>
                       {c.courseName}
                     </BidiText>
@@ -157,7 +157,7 @@ export default function ResultsScreen() {
                   <T variant="h2" weight="bold" style={{ color: gradeInk(c.gradePct) }}>
                     {c.gradePct === null ? "—" : pct(c.gradePct)}
                   </T>
-                  <View style={{ flex: 1, gap: 4 }}>
+                  <View style={{ flex: 1, gap: sp[4] }}>
                     <ProgressBar
                       ratio={(c.gradePct ?? 0) / 100}
                       accent
