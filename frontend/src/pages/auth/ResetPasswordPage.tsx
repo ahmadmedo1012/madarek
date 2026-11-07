@@ -152,13 +152,27 @@ export default function ResetPasswordPage() {
                 <p className="auth-form-sub">{INVALID_TOKEN_BODY}</p>
               </div>
               <div className="fp-invalid" role="alert">
+                {/* R341/D1 — the sheet's ruled-row numeral (the same
+                    [01] mono index every auth cell carries — the
+                    terminal panel is the sheet's single content row). */}
+                <span className="auth-cell-index" dir="ltr" aria-hidden="true">[01]</span>
                 <Icon icon={AlertCircle} size={14} />
                 <span>{INVALID_TOKEN_TITLE} — اطلب رابطًا جديدًا.</span>
               </div>
-              <Link to="/auth/forgot-password" className="auth-submit fp-new-link">
+              {/* R341/D1: .auth-primary-link names the state's primary
+                  door for the hover contract (the fill-wipe already
+                  flips background + color on hover — r329: every
+                  actionable seat answers the pointer). */}
+              <Link to="/auth/forgot-password" className="auth-submit fp-new-link auth-primary-link">
                 اطلب رابطًا جديدًا
                 <Icon icon={ArrowLeft} size={14} />
               </Link>
+              {/* the honest second door: the dead link never unlocks a
+                  session — back to the login sheet is the other way
+                  forward. */}
+              <p className="auth-register-prompt">
+                <Link to="/auth" className="auth-register-link">العودة إلى تسجيل الدخول</Link>
+              </p>
             </>
           ) : (
             <>

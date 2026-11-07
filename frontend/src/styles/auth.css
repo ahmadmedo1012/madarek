@@ -41,7 +41,7 @@
    · .auth-input (transparent + 1px hairline + radius 0 + the 16px
      iOS floor) — community/curriculum/authoring inputs borrow it;
    · .auth-error / .auth-field-error / .auth-select-skeleton /
-     .auth-row / .auth-row-2 (OwnerInstitutionsPage) — same grammar;
+     .auth-row-2 (OwnerInstitutionsPage) — same grammar;
    · .auth-frame / .auth-mark / .auth-grain / .auth-sheet-label
      (c3-W6 — the K-I grammar goes site-wide on the guest sheets):
      GuestSheetChrome (components/layout) mounts the frame + marks +
@@ -491,11 +491,10 @@
     }
   }
 
-  /* Legacy two-column row (also consumed by the curriculum authoring
-   *  panels — keep the contract). */
-  .auth-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
-  @media (max-width: 480px) { .auth-row { grid-template-columns: 1fr; } }
-
+  /* Legacy two-column rows (also consumed by the curriculum authoring
+   *  panels — keep the contract). R341/D1 coverage probe: .auth-row
+   *  itself is zero-seat repo-wide (rg ts+tsx) — deleted; .auth-row-2
+   *  stays seated by OwnerInstitutionsPage. */
   .auth-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-4); }
   @media (max-width: 480px) { .auth-row-2 { grid-template-columns: 1fr; } }
 
@@ -990,6 +989,22 @@
   }
   @media (hover: hover) and (pointer: fine) {
     .auth-register-prompt a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
+  }
+
+  /* R341/D1 — the hover-alive door seat (r329: no unguarded hovers):
+     the prompt link answers on TWO channels (color + underline sweep,
+     the fill-wipe's sibling) with focus-visible parity; scoped to the
+     prompt variant so .auth-submit (fp-new-link) keeps its border. */
+  .auth-register-link.auth-primary-link {
+    border-block-end: 1px solid transparent;
+  }
+  .auth-register-link.auth-primary-link:hover,
+  .auth-register-link.auth-primary-link:focus-visible {
+    /* paired-state (r319 E9): background rides explicitly — a state
+       rule never sets color XOR background (the B1 ghost). */
+    background: transparent;
+    color: var(--accent-strong);
+    border-block-end-color: var(--accent);
   }
 
   /* ══ 5b · THE CONSENT LINE (R320 §D · c2-LEGAL) — the policy-consent

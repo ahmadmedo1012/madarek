@@ -429,6 +429,11 @@ export default function RegisterPage() {
             ) : (
               <>
                 <div className="auth-form-header">
+                  {/* R341/D1 — the sheet identity eyebrow (the same
+                      .auth-meta voice every auth sheet carries: login
+                      «بوابة المنصّة», forgot «استعادة الحساب») — the
+                      chooser step kept the sheet grammar incomplete. */}
+                  <span className="auth-meta">(إنشاء حساب)</span>
                   <h1 className="auth-form-title" tabIndex={-1} ref={stepHeadingRef}>من أنت؟</h1>
                   <p className="auth-form-sub">
                     اختر نوع الحساب لإنشاء وصولك إلى منصّة مدارك.
@@ -446,7 +451,10 @@ export default function RegisterPage() {
                     <span className="role-card-index" dir="ltr" aria-hidden="true">[01]</span>
                     <span className="role-card-body">
                       <span className="role-card-title">طالب</span>
-                      <span className="role-card-sub">مقيَّد في إحدى كليّات الجامعة</span>
+                      {/* R341/D1: the sub rides the card's short CTA
+                          register (the ruled row's own mono index + role
+                          title carry the full accessible name). */}
+                      <span className="role-card-sub">مقيَّد في كلّية جامعية</span>
                     </span>
                     <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
                   </button>
@@ -455,7 +463,7 @@ export default function RegisterPage() {
                     <span className="role-card-index" dir="ltr" aria-hidden="true">[02]</span>
                     <span className="role-card-body">
                       <span className="role-card-title">عضو هيئة تدريس</span>
-                      <span className="role-card-sub">أستاذ في إحدى الأقسام الأكاديمية</span>
+                      <span className="role-card-sub">أستاذ قسم</span>
                     </span>
                     <span className="role-card-arrow"><Icon icon={ArrowLeft} size={16} /></span>
                   </button>
@@ -468,6 +476,16 @@ export default function RegisterPage() {
                     متاحة للتسجيل الذاتيّ. تواصل مع المسجل العام في جامعتك للحصول على الوصول.
                   </span>
                 </div>
+
+                {/* R341/D1 — the returning-visitor door at the chooser
+                    itself (login's own prompt voice, mounted one step
+                    earlier): .auth-primary-link is the hover-alive CTA
+                    contract the sheet owes every actionable seat (r329:
+                    no unguarded hovers) — color + underline sweep, the
+                    same two channels the fill-wipe submit flips. */}
+                <p className="auth-register-prompt">
+                  لديك حساب بالفعل؟ <Link to="/auth" className="auth-register-link auth-primary-link">سجّل الدخول</Link>
+                </p>
               </>
             )}
           </div>
