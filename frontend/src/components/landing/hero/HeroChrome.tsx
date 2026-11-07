@@ -161,7 +161,7 @@ export function HeroChrome() {
                 'd' in k ? (
                   <path
                     key={k.cls}
-                    className={k.cls}
+                    className={`hro-ch ${k.cls}`}
                     data-k={k.k}
                     data-act={k.act ? 'a' : undefined}
                     style={{ '--ch-ink': k.ink, ...(k.ink390 ? { '--ch-ink390': k.ink390 } : {}), ...(k.tr ? { '--ch-tr': k.tr } : {}) } as React.CSSProperties}
@@ -170,7 +170,7 @@ export function HeroChrome() {
                 ) : (
                   <circle
                     key={k.cls}
-                    className={k.cls}
+                    className={`hro-ch ${k.cls}`}
                     data-act={k.act ? 'a' : undefined}
                     style={{ '--ch-ink': k.ink, ...(k.ink390 ? { '--ch-ink390': k.ink390 } : {}), ...(k.tr ? { '--ch-tr': k.tr } : {}) } as React.CSSProperties}
                     cx={k.cx}
