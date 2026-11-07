@@ -199,7 +199,12 @@ describe('R311 cursor ownership — the real router + landing in one tree', () =
     expect(mod.default).toBeInstanceOf(Function);
     expect(mod.RoutedCursorManager).toBeInstanceOf(Function);
     const src = mod.RoutedCursorManager.toString();
-    expect(src).toMatch(/pathname\s*===\s*['"]\/["']/);
+    /* R341 Y2 re-key: the root-path suspension check was single-sourced
+     * to ROUTES.root (lib/routes.ts — value '/'). Both forms pin the
+     * same contract: the cursor suspends exactly on the root path. The
+     * [A-Za-z0-9_$.]* prefix allows vite's SSR import rewriting
+     * (__vite_ssr_import_N__.ROUTES.root) in the toString() view. */
+    expect(src).toMatch(/pathname\s*===\s*(?:['"]\/["']|[A-Za-z0-9_$.]*ROUTES\.root)/);
     expect(App).toBeInstanceOf(Function);
   });
 });

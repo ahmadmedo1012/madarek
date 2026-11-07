@@ -41,14 +41,21 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 
 const APP_SOURCE = read('src/App.tsx');
 
-/** Every `<Route path="…" element={<Component …` row in the real table. */
-const ROUTE_RE = /<Route\s+path="([^"]+)"\s+element=\{<(\w+)/g;
+/** Every `<Route path=… element={<Component …` row in the real table —
+ * R341 Y2 re-key: paths were single-sourced to ROUTES.* refs
+ * (lib/routes.ts); both forms resolve to the same value set. */
+const ROUTES_CONST_SOURCE = read('src/lib/routes.ts');
+const ROUTE_CONSTS = new Map(
+  [...ROUTES_CONST_SOURCE.matchAll(/^\s{2}(\w+):\s*'([^']+)'/gm)].map((m) => [m[1]!, m[2]!]),
+);
+const ROUTE_RE = /<Route\s+path=(?:"([^"]+)"|\{ROUTES\.(\w+)\})\s+element=\{<(\w+)/g;
 interface RouteRow { path: string; element: string; }
 const ROUTES: RouteRow[] = [];
 for (const m of APP_SOURCE.matchAll(ROUTE_RE)) {
   // matchAll groups are typed string|undefined under
-  // noUncheckedIndexedAccess; the regex guarantees both groups.
-  ROUTES.push({ path: m[1]!, element: m[2]! });
+  // noUncheckedIndexedAccess; the regex guarantees the groups.
+  const path = m[1] !== undefined ? m[1] : ROUTE_CONSTS.get(m[2]!)!;
+  ROUTES.push({ path, element: m[3]! });
 }
 
 /* Elements that never render a page of their own — the title settles at

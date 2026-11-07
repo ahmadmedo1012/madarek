@@ -33,16 +33,39 @@ const read = (p: string) => readFileSync(path.join(root, p), 'utf8');
 const NAV_SOURCE = read('src/lib/nav.ts');
 const APP_SOURCE = read('src/App.tsx');
 
-/** Every sidebar destination: `to: '/student/dashboard'` etc. */
-const NAV_DESTINATIONS = [...NAV_SOURCE.matchAll(/to:\s*'([^']+)'/g)].map((m) => m[1]!);
+/* R341 Y2 re-key: nav destinations were single-sourced from string
+ * literals to `ROUTES.<name>` references (src/lib/routes.ts — the
+ * values are byte-identical). The extraction resolves the constant so
+ * the SAME contract is pinned: every sidebar destination must match a
+ * real <Route> row. If routes.ts moves again, the tripwire below
+ * catches a vacuous regex, exactly as before. */
+const ROUTES_SOURCE = read('src/lib/routes.ts');
+const ROUTE_CONSTS = new Map(
+  [...ROUTES_SOURCE.matchAll(/^\s{2}(\w+):\s*'([^']+)'/gm)].map((m) => [m[1]!, m[2]!]),
+);
 
-/** Every declared route row in the real table. */
-const ROUTE_PATHS = [...APP_SOURCE.matchAll(/<Route\s+path="([^"]+)"/g)].map((m) => m[1]!);
+/** Every sidebar destination: `to: ROUTES.studentDashboard` (resolved)
+ * plus any remaining literal `to: '/…'` forms. */
+const NAV_DESTINATIONS = [
+  ...NAV_SOURCE.matchAll(/to:\s*(?:ROUTES\.(\w+)|'([^']+)')/g),
+].map((m) => (m[1] ? ROUTE_CONSTS.get(m[1]) : m[2])).filter((v): v is string => !!v);
 
-/** `<Route path="…" element={<Navigate to="…"` rows (alias/redirects). */
+/** Every declared route row in the real table — literal `path="…"` and
+ * the Y2 single-sourced `path={ROUTES.…}` forms, resolved to values. */
+const ROUTE_PATHS = [
+  ...APP_SOURCE.matchAll(/<Route\s+path=(?:"([^"]+)"|\{ROUTES\.(\w+)\})/g),
+].map((m) => (m[1] ? m[1] : ROUTE_CONSTS.get(m[2]!) ?? '')).filter(Boolean);
+
+/** `<Route path=… element={<Navigate to=…` rows (alias/redirects) —
+ * both literal and ROUTES-constant forms, resolved to values. */
+const resolveRouteRef = (literal: string | undefined, constName: string | undefined) =>
+  literal !== undefined ? literal : (constName !== undefined ? ROUTE_CONSTS.get(constName) : undefined);
 const REDIRECT_ROWS = [...APP_SOURCE.matchAll(
-  /<Route\s+path="([^"]+)"\s+element=\{<Navigate\s+to="([^"]+)"/g,
-)].map((m) => ({ from: m[1]!, to: m[2]! }));
+  /<Route\s+path=(?:"([^"]+)"|\{ROUTES\.(\w+)\})\s+element=\{<Navigate\s+to=(?:"([^"]+)"|\{ROUTES\.(\w+)\})/g,
+)].map((m) => ({
+  from: resolveRouteRef(m[1], m[2]) ?? '',
+  to: resolveRouteRef(m[3], m[4]) ?? '',
+})).filter((r) => r.from && r.to);
 
 describe('nav ↔ routes consistency (r141 gate)', () => {
   it('the extractions found the real tables (guards the regexes themselves)', () => {
@@ -53,6 +76,10 @@ describe('nav ↔ routes consistency (r141 gate)', () => {
     expect(NAV_DESTINATIONS.length).toBeGreaterThanOrEqual(70);
     expect(new Set(NAV_DESTINATIONS).size).toBeGreaterThanOrEqual(60);
     expect(ROUTE_PATHS.length).toBeGreaterThanOrEqual(90);
+    // routes.ts tripwire (the Y2 re-key): the constant table itself must
+    // be found — a vacuous ROUTE_CONSTS map would silently shrink the
+    // destination set to the remaining literals.
+    expect(ROUTE_CONSTS.size).toBeGreaterThanOrEqual(90);
   });
 
   it('every nav destination has a matching <Route> row', () => {

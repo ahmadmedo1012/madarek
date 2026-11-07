@@ -52,8 +52,16 @@ import { useUiStore } from '../../src/stores/ui.store';
 /* ── static App.tsx route table (nav-routes-consistency convention) ── */
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const APP_SOURCE = readFileSync(path.join(root, 'src', 'App.tsx'), 'utf8');
+/* R341 Y2 re-key: route paths were single-sourced to ROUTES.* refs
+ * (lib/routes.ts); resolve both forms so the set stays the REAL table. */
+const ROUTES_SOURCE = readFileSync(path.join(root, 'src', 'lib', 'routes.ts'), 'utf8');
+const ROUTE_CONSTS = new Map(
+  [...ROUTES_SOURCE.matchAll(/^\s{2}(\w+):\s*'([^']+)'/gm)].map((m) => [m[1]!, m[2]!]),
+);
 const ROUTE_PATHS = new Set(
-  [...APP_SOURCE.matchAll(/<Route\s+path="([^"]+)"/g)].map((m) => m[1]!),
+  [...APP_SOURCE.matchAll(/<Route\s+path=(?:"([^"]+)"|\{ROUTES\.(\w+)\})/g)]
+    .map((m) => (m[1] ? m[1] : ROUTE_CONSTS.get(m[2]!)))
+    .filter((v): v is string => !!v),
 );
 
 const ROLES = Object.keys(NAV_BY_ROLE) as AppRole[];
