@@ -100,14 +100,12 @@
   /* ══ 3 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
 
   /* the narrative display ladder for the public sheet's own two
-     headings (R322 §4.c): the h1 rides the D2 rung (--fs-h2: 40
-     @1440 · 47.6 @390) and the section bars the card-title D3 rung
-     (--fs-h3) — the same register the lg document sheet used, on
-     ladder-visible names (the --fs-d* aliases and the app-density
-     --fs-app-* pair carry digits, which the conformance ladder
-     harvest cannot name; their VALUES live here through the
-     digit-free rungs). */
-  .ab .pf-page-title { font-size: var(--fs-h2); }
+     headings (R322 §4.c): the h1 rides the D2 rung (--fs-d2: 40
+     @1440 · 31.74 @390 — the type-census H1 seat, ≤32px @390) and
+     the section bars the card-title D3 register (--fs-h3, the same
+     33.3 @1440 value st resolves) — the lg document sheet's exact
+     hierarchy on ladder-clean names. */
+  .ab .pf-page-title { font-size: var(--fs-d2); }
 
   .ab-bar {
     margin: 0;
