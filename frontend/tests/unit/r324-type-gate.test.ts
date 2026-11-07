@@ -149,7 +149,7 @@ function resolveFw(expr: string, depth = 0): number | null {
 /** The classed heading seats (mirrors scripts/r324/type-probe.mjs's
  *  HEADING_SEATS — the census's subject, pinned here at the CSS level). */
 const HEADING_SEATS = [
-  'pf-page-title', 'page-title', 'lg-title', 'lg-bar', 'lg-faq-q', 'cu-title',
+  'pf-page-title', 'page-title', 'lg-title', 'lg-bar', 'hp-faq-q', 'cu-title',
   'nf-title', 'auth-form-title', 'card-title', 'vision-h2', 'vision-hero-title',
   'r319s-bar-title', 'lecture-meta-title', 'r321x-cover-title', 'oex-result-title',
   'hr-section-head', 'pf-section-title', 'college-city-name', 'college-hero-name',

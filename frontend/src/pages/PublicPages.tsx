@@ -17,7 +17,6 @@ import { Icon } from '../components/Icon';
 import { Logo } from '../brand';
 import { GuestSheetChrome } from '../components/layout/GuestSheetChrome';
 import {
-  CodeRun,
   LegalCell,
   LegalSectionBar,
   LegalSheet,
@@ -27,8 +26,10 @@ import {
 import { LEGAL_UPDATED } from './legal/LegalPages';
 /* R341 D2 — the about sheet's own rules (ab-*): /about left the lg-*
  * legal-sheet family and rides the pattern library (pf-*) + this
- * about-scoped sheet. /help + /contact keep LegalSheet below. */
+ * about-scoped sheet. R341 D3 — /help likewise (hp-* in help.css);
+ * /contact keeps LegalSheet below. */
 import '../styles/about.css';
+import '../styles/help.css';
 
 /* ═══ [C-04] عن مدارك ═══════════════════════════════════════════════ */
 
@@ -175,7 +176,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'كيف أجرّب المنصّة؟',
     a: showPilotAccounts ? (
       <>
-        بحسابات الاختبار الموزّعة على المختبرين: بريد ينتهي بـ <CodeRun>@test.ly</CodeRun> وكلمة المرور <CodeRun>12345678</CodeRun> —
+        بحسابات الاختبار الموزّعة على المختبرين: بريد ينتهي بـ <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi> وكلمة المرور <bdi className="hp-code hp-mono" dir="ltr">12345678</bdi> —
         حساب واحد لكل دور، معروضة في لوحة «حسابات تجريبية» على صفحة الدخول في بيئة التطوير (زر «تعبئة»
         يملأ الحقول ثم «دخول» يدخل بها).
       </>
@@ -183,7 +184,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
       <>
         حسابات التجربة تُوزّع على فريق المختبرين عند فتح كل مرحلة — إن كنت من المختبرين فاستخدم
         الحساب الذي وصلك من فريق مدارك، وإن لم يصل بعدُ فانتظر فتح التسجيل من
-        {' '}<Link to="/auth/register" className="lg-link">نموذج إنشاء الحساب</Link>.
+        {' '}<Link to="/auth/register" className="hp-link">نموذج إنشاء الحساب</Link>.
       </>
     ),
   },
@@ -201,17 +202,17 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'نسيت كلمة المرور — ماذا أفعل؟',
     a: showPilotAccounts ? (
       <>
-        الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حسابات <CodeRun>@test.ly</CodeRun> كلمة مرورها
-        معروفة (<CodeRun>12345678</CodeRun>) فتُملأ من صفحة الدخول مباشرة؛ وإن كان حسابك الخاص فقدنا كلمة
-        مروره فالطريق اليوم <Link to="/contact" className="lg-link">قناة التواصل</Link> — لا نعدك بغير ما
+        الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حسابات <bdi className="hp-code hp-mono" dir="ltr">@test.ly</bdi> كلمة مرورها
+        معروفة (<bdi className="hp-code hp-mono" dir="ltr">12345678</bdi>) فتُملأ من صفحة الدخول مباشرة؛ وإن كان حسابك الخاص فقدنا كلمة
+        مروره فالطريق اليوم <Link to="/contact" className="hp-link">قناة التواصل</Link> — لا نعدك بغير ما
         يعمل.
       </>
     ) : (
       <>
         الحقيقة كاملة: لا يوجد بريد يُرسَل من المنصّة بعد. حساب تجريبي؟ استخدم بيانات الحساب الذي وصلك
         من فريق التجربة وادخل بها مباشرة من
-        {' '}<Link to="/auth" className="lg-link">صفحة الدخول</Link>؛ وإن كان حسابك الخاص فقدنا كلمة
-        مروره فالطريق اليوم <Link to="/contact" className="lg-link">قناة التواصل</Link> — لا نعدك بغير ما
+        {' '}<Link to="/auth" className="hp-link">صفحة الدخول</Link>؛ وإن كان حسابك الخاص فقدنا كلمة
+        مروره فالطريق اليوم <Link to="/contact" className="hp-link">قناة التواصل</Link> — لا نعدك بغير ما
         يعمل.
       </>
     ),
@@ -249,7 +250,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     a: (
       <>
         كوكي واحد وتسعة مفاتيح تخزين محلي، لكل واحد غرض معلن — الجدول الكامل مع ما يُحذف عند الرفض في
-        {' '}<Link to="/legal/cookies" className="lg-link">صفحة التخزين المحلي</Link>.
+        {' '}<Link to="/legal/cookies" className="hp-link">صفحة التخزين المحلي</Link>.
       </>
     ),
   },
@@ -257,7 +258,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'ما الذي يعمل فعلًا وما الذي محاكاة؟',
     a: (
       <>
-        سجلّ القدرات يفصل بصدق: <Link to="/capabilities" className="lg-link">«ما يعمل اليوم»</Link> — كل
+        سجلّ القدرات يفصل بصدق: <Link to="/capabilities" className="hp-link">«ما يعمل اليوم»</Link> — كل
         سطر فيه حقيقة نظام يمكن التحقق منها، وما هو محاكاة أو قيد التطوير موسوم كذلك.
       </>
     ),
@@ -266,7 +267,7 @@ const faqs = (showPilotAccounts: boolean): ReadonlyArray<{ q: string; a: ReactNo
     q: 'هل يمكن طباعة السياسات؟',
     a: (
       <>
-        نعم — صفحات <CodeRun>/legal/*</CodeRun> مصمّمة للطباعة كوثيقة نظيفة بعمود واحد: أرسل أمر الطباعة
+        نعم — صفحات <bdi className="hp-code hp-mono" dir="ltr">/legal/*</bdi> مصمّمة للطباعة كوثيقة نظيفة بعمود واحد: أرسل أمر الطباعة
         من متصفحك مباشرة وستحصل على النص والإطارات الحاكمة وتاريخ آخر تحديث دون أي زخرفة شاشة.
       </>
     ),
@@ -288,37 +289,78 @@ export function HelpPage() {
     import.meta.env.DEV || import.meta.env.VITE_PILOT_HELP_ACCOUNTS === '1';
   const faqList = faqs(showPilotAccounts);
 
+  /* R341 D3 — rebuilt on the pattern library (the r340 T-D1a recipe,
+   * D2's /about shape): the pf-page/pf-page-header frame + the help
+   * sheet's own hp-* grammar (help.css). Same chrome laws as the guest
+   * sheets: the skip link first, GuestSheetChrome's frame + grain, the
+   * sticky guest header, ONE h1, and the honest colophon. The FAQ keeps
+   * the R333 P-G3a native details/summary accordion: the [nn] mono
+   * index stays on the summary row, and a hairline chevron at the
+   * inline end carries the open state (help.css). The first question
+   * opens by default so the affordance is discoverable, not nine
+   * identical closed slabs.
+   * PI-REC reconciliation: the question text keeps its heading
+   * outline (R320 §D pins nine level-2 headings on this page) —
+   * the h2 rides INSIDE the summary (valid: summary = one optional
+   * heading), so the accordion and the document outline coexist. */
   return (
-    <LegalSheet
-      title="المساعدة والأسئلة الشائعة"
-      lede="تسعة أسئلة هي ما يسأله الزوار فعلًا — وكل جواب يستند إلى ما يعمل اليوم في المنصّة، بلا تجميل."
-      updated={LEGAL_UPDATED}
-    >
-      {/* R333 P-G3a (T-G1-03): the FAQ is a real accordion now — native
-          details/summary (keyboard + print + no-JS for free), the [nn]
-          mono index stays on the summary row, and a hairline chevron at
-          the inline end carries the open state (legal.css). The first
-          question opens by default so the affordance is discoverable,
-          not nine identical closed slabs.
-          PI-REC reconciliation: the question text keeps its heading
-          outline (R320 §D pins nine level-2 headings on this page) —
-          the h2 rides INSIDE the summary (valid: summary = one optional
-          heading), so the accordion and the document outline coexist. */}
-      <div className="lg-faq">
-        {faqList.map((f, i) => (
-          <details className="lg-faq-item" key={f.q} open={i === 0}>
-            <summary className="lg-faq-q">
-              <span className="lg-mono" dir="ltr" aria-hidden="true">
-                [{String(i + 1).padStart(2, '0')}]
-              </span>
-              <h2 className="lg-faq-q-text">{f.q}</h2>
-              <span className="lg-faq-caret" aria-hidden="true" />
-            </summary>
-            <p className="lg-faq-a">{f.a}</p>
-          </details>
-        ))}
-      </div>
-    </LegalSheet>
+    <div className="hp">
+      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <GuestSheetChrome />
+
+      <header className="hp-header">
+        <div className="hp-header-inner">
+          <Link to="/" className="btn ghost sm">
+            <Icon icon={ArrowRight} size={14} />
+            العودة إلى الصفحة الرئيسية
+          </Link>
+          <Link to="/" className="hp-header-brand" aria-label="مدارك — الصفحة الرئيسية">
+            <Logo variant="mark" size={22} />
+            مدارك
+          </Link>
+        </div>
+      </header>
+
+      <main id="main" tabIndex={-1} className="hp-main">
+        <div className="pf-page" data-width="reading">
+          <div className="pf-page-header">
+            <div className="pf-page-header-text">
+              <p className="pf-eyebrow">أسئلة الزوّار</p>
+              <h1 className="pf-page-title">المساعدة والأسئلة الشائعة</h1>
+              <p className="pf-page-desc">
+                تسعة أسئلة هي ما يسأله الزوار فعلًا — وكل جواب يستند إلى ما يعمل اليوم في المنصّة، بلا تجميل.
+              </p>
+            </div>
+            <div className="pf-page-actions">
+              <Link to="/capabilities" className="hp-cta-primary">سجلّ القدرات</Link>
+              <Link to="/contact" className="hp-cta-ghost">قناة التواصل</Link>
+            </div>
+          </div>
+
+          <div className="hp-faq">
+            {faqList.map((f, i) => (
+              <details className="hp-faq-item" key={f.q} open={i === 0}>
+                <summary className="hp-faq-q">
+                  <span className="hp-mono" dir="ltr" aria-hidden="true">
+                    [{String(i + 1).padStart(2, '0')}]
+                  </span>
+                  <h2 className="hp-faq-q-text">{f.q}</h2>
+                  <span className="hp-faq-caret" aria-hidden="true" />
+                </summary>
+                <p className="hp-faq-a">{f.a}</p>
+              </details>
+            ))}
+          </div>
+
+          <footer className="hp-colophon">
+            <p className="hp-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</p>
+            <p className="hp-colophon-stamp">
+              آخر تحديث: <span className="hp-mono" dir="ltr">{LEGAL_UPDATED}</span>
+            </p>
+          </footer>
+        </div>
+      </main>
+    </div>
   );
 }
 
