@@ -1,7 +1,8 @@
 {
-  "rate": 93.6,
-  "total": 41713,
-  "pass": 39031,
-  "fail": 2682,
-  "updatedAt": "2026-11-06T06:35:58.210860Z"
+  "rate": 91.8,
+  "total": 47734,
+  "pass": 43840,
+  "fail": 3894,
+  "updatedAt": "2026-11-07T03:20:00.000000Z",
+  "_provenance": "r340 T-R1 honesty re-pin: 93.6 was pinned under the pre-T-02b instrument (no coverage metric, no scroll/interact rows). The hardened instrument's full-matrix rate (--gate --scroll --interact, chromium, 2026-11-07, results.json + results/chromium-*-full.json) is 91.8. Monotonicity note: the ratchet law 'never drop' protects against masking REGRESSIONS; this drop is an instrument-definition correction (the denominator grew), documented here and in docs/redesign/r340/REPORT.md. Future work climbs from 91.8."
 }
