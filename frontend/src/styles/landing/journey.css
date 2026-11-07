@@ -62,55 +62,35 @@
 }
 
 .chapters-title {
-  /* R332 W4c — the run-002 re-pair. Heron's home-map band DOES carry a
-     display voice: TWO .heading.h1 lines («Right there with you» /
-     «For the whole design») measured 46.6667px @1440 across all 51
-     twin steps — the typeLadder's own h1 rung (5.6rem/700/lh 1). The
-     W4 13.33px mono seat rode run-001, whose first-6 heading slice
-     missed those lines; run-002 catches them (heron live now leads
-     the band with the intel block). The title returns to the measured
-     display rung: 46.67px @1440, Alexandria 700 — Heron's pairing is
-     BT Grotesk h1 + txt-16 labels, ours is --font-display +
-     --font-mono. Arabic copy keeps natural metrics: no tracking, no
-     transform (the site law — see .wr-w below). ≤991 keeps the W4
-     mono re-seat VERBATIM: 1.6rem/500/1.3 = 15.88px @390, the seat
-     the ≤399 foot rung (227px pad) is calibrated against and the
-     twin's «390 title ≤16.6px» probe bound. */
+  /* L2-b (r341, panel-1 finding 2 — the h2 rung belt): the frozen
+     spec binding (mapping/home-map-wrap.json — .chapters-title ↔
+     home-map-wrap > div[1] > div[2] > div[1] > div[2] > div[2] >
+     h2[1]) measures the reference's own h2 at 40px @1440 / 31.76 @390
+     / 53.33 @1920 — exactly the --fs-d2 clamp rung (40 / 31.74 floor /
+     53.33 cap). The pre-freeze R332 W4c pairing rode the r324 live
+     slice's .heading.h1 DIV lines (46.67 @1440 — a different element,
+     still rendered as divs on our side too); the h2 SEAT now sits on
+     the ONE h2 rung the spec's h2 measurements define. Weight follows
+     the same binding: the spec h2 reads 600 (--fw-semibold, the §R324
+     weight law — display weights 400–600), not the h1 voice's 700.
+     The retired ≤991/768–991 band overrides (4rem/4.8rem — the r324
+     39.69/44.2 readings) are subsumed: the clamp self-scales and
+     LANDS ON the spec at 390 (31.74 vs 31.76) and 1920 (53.33 exact). */
   font-family: var(--font-display);
-  font-size: 5.6rem; /* 46.67px @1440 — Heron's measured .heading.h1 twin */
-  font-weight: 700;
+  font-size: var(--fs-d2); /* 40 @1440 · 31.74 @390 — the spec h2 rung */
+  font-weight: var(--fw-semibold);
   line-height: 1;
   text-wrap: balance;
   color: var(--text);
 }
 
-@media (max-width: 991px) {
-  /* R332 W390a — the display voice rides the phone too: heron's own @390
-   * max heading is `.heading.h1.tb-h2.mb-h1` = 39.6947px (the 4rem rung
-   * on the 2.5445vw root — run-003 like-for-like). The W4-era 1.6rem
-   * mono re-seat rode run-001's heading slice that missed the h-rung
-   * lines; the rung retires (not patched). The ≤399 foot rung (227px
-   * pad) is height-keyed, not type-keyed — the +59px title composes
-   * through the ≤767 .chapters-head seat below. */
-  .chapters-title {
-    font-size: 4rem; /* 39.69px @390 — heron's measured mb-h1 twin */
-  }
-}
-
-/* R333 P-F3 (matrix-768 journey fs FAIL 44.20 vs 36.83, Δ20%): the
- * ≤991 4rem seat reads 36.83px @768 — heron's tablet band carries the
- * 4.8rem tb rung there (44.2px on the 1.199vw root). ONE tablet seat
- * between the 5.6rem ≥992 base and the 4rem phone seat: @768 lands
- * 44.20 like-for-like, @1024 keeps 5.6rem (33.19 both, matrix-1024
- * clean) and @390 keeps 4rem (39.69 both, matrix-390 clean) — heron's
- * own ladder steps down again below 768, so the phone seat must NOT
- * ride the tablet rung. Same specificity, later document order → wins
- * the 768–991 belt only. */
-@media (min-width: 768px) and (max-width: 991px) {
-  .chapters-title {
-    font-size: 4.8rem; /* 44.20px @768 — heron's measured tb rung twin */
-  }
-}
+/* L2-b: the R332 W390a/R333 P-F3 ≤991 and 768–991 font-size band
+ * seats (4rem / 4.8rem — 39.69 @390 / 44.20 @768, the r324-era
+ * .heading.h1 readings) are RETIRED by the h2 rung belt above: the
+ * --fs-d2 clamp self-scales (31.74 @390 — the spec h2's own 31.76;
+ * 36.86 @768, closer to the spec's 29.47 than the retired 44.20).
+ * The ≤399 foot rung (227px pad) is height-keyed, not type-keyed;
+ * the .chapters-head spacing belts below are untouched. */
 
 @media (max-width: 767px) {
   /* R332 W390a — the head seat: the bigger title's air comes out of
@@ -967,11 +947,14 @@
    (w500 · lh 1.3), not a display seat; ours now rides the same rung
    (the h2 the twin's heading median reads lands 13.33px @1440 /
    15.88px @390). The 39.84rem push-down keeps Heron's measured h2
-   offset (map.md) — the seat, not the size, is the reference's. */
+   offset (map.md) — the seat, not the size, is the reference's.
+   L2-b (r341): the raw 1.6rem literal is belted onto its rung token —
+   --fs-body = max(13px, 1.6rem) computes the identical 13.33 @1440 /
+   15.88 @390; one h2 seat, one token. */
 .jt-close-title {
   margin: 39.84rem 0 0; /* spacing-gate: allow — Heron's own measured h2 offset (map.md), rem on the shared fluid root */
   font-family: var(--font-mono);
-  font-size: 1.6rem;
+  font-size: var(--fs-body);
   font-weight: 500;
   line-height: 1.3;
   text-wrap: balance;

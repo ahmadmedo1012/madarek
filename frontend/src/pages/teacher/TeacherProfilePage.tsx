@@ -31,7 +31,6 @@ import {
 } from '../../hooks/useResources';
 import { countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
-import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
 
 const RANK_LABEL: Record<string, string> = {

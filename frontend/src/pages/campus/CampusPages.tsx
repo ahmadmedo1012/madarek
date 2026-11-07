@@ -14,13 +14,14 @@ import { RevealCssClass } from '../../hooks/useReveal';
  * marks + grain film) — the /auth pages' drawing-sheet grammar on this
  * chrome-less guest surface. */
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
-// campus.css — R313 (WP-A1): the /campus guest sub-page. The landing's
-// documentary media rail (الحياة الجامعية) + the video facades (مشاهد
-// جامعية) moved here VERBATIM — every Commons licence, author credit
-// and honesty caption moved WITH its media (the r307 media contract).
-// The sheet grammar is the landing's own (paper, hairlines, mono
-// indices) carried by campus.css so the landing chunk never loads.
-import '../../styles/campus.css';
+import '../../styles/campus-media.css'; // r341 D9 flat-paper law: the 3 gradient devices stay page-scoped
+// patterns.css §10 (r341/D9) — the guest sub-page sheet (ex
+// campus.css, deleted): the landing's documentary media rail (الحياة
+// الجامعية) + the video facades (مشاهد جامعية) live here VERBATIM —
+// every Commons licence, author credit and honesty caption moved WITH
+// its media (the r307 media contract). The sheet grammar is the
+// landing's own (paper, hairlines, mono indices); patterns.css rides
+// the global chunk, so the landing sheet never loads here.
 
 /**
  * /campus — «الحياة الجامعية» (R313 · WP-A1).
@@ -58,19 +59,26 @@ export function CampusLifePage() {
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="cu-main">
+      <main id="main" tabIndex={-1} className="cu-main pf-page">
         {/* ── الحياة الجامعية — the documentary photography rail. The
             section keeps the landing's old #campus-life anchor: deep
             links from the pre-R313 sheet resolve here now. ── */}
         <section id="campus-life" aria-labelledby="cu-photos-title">
-          <div className="cu-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[01]</span> الحياة الجامعية</span>
+          <div className="cu-head pf-page-header-text">
+            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[01]</span> الحياة الجامعية</span>
             <RevealCssClass as="h1" className="cu-title" delay={1} id="cu-photos-title">
               من داخل الجامعات الليبية
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
               صور حقيقية لحرم جامعات ليبية عامة، بتراخيص مفتوحة من ويكيميديا كومنز —
               توثيقٌ للحياة الجامعية، لا زخرفة: كل إطار يحمل اسم جامعته ونسب مصوّره.
+            </RevealCssClass>
+            {/* D9: the honest in-page nav pair on the library's actions row
+                (the D7c measured seat) — the page's two acts + the sister
+                sub-page, reachable without scrolling to the rail's end. */}
+            <RevealCssClass as="div" className="pf-page-actions" delay={3}>
+              <a href="#videos" className="btn accent">مشاهد جامعية</a>
+              <Link to="/capabilities" className="btn ghost">ما يعمل اليوم</Link>
             </RevealCssClass>
           </div>
 
@@ -102,8 +110,8 @@ export function CampusLifePage() {
         {/* ── مشاهد جامعية — the official-channel documentaries (the
             landing's old #videos anchor resolves here). ── */}
         <section id="videos" aria-labelledby="cu-videos-title">
-          <div className="cu-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> مشاهد جامعية</span>
+          <div className="cu-head pf-page-header-text">
+            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[02]</span> مشاهد جامعية</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cu-videos-title">
               الحياة الجامعية <em>بالفيديو</em>
             </RevealCssClass>

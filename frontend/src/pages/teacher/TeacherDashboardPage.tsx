@@ -12,7 +12,6 @@ import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton } from '../../compo
 import {
   PageFrame, PageHeader, SectionHeader, RowList, RowItem, StatLine, TodayList, FilterBar,
 } from '../../components/patterns';
-import '../../styles/teacher-quality.css'; // 4C family sheet: the .tq-num tabular metric voice
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 hr- primitives + §A tqd- deltas (mounted via .hr-scope)
 /* R332 W11 — the dashboard grammar bridge (styles/landing/inner.css §W11):
  * the [nn] section-index chips (.w11-idx) this page mounts in its

@@ -142,7 +142,14 @@
   margin: 0;
   inline-size: 100%;
   font-family: var(--font-display);
-  font-size: 4rem;
+  /* L2-b (r341, h2 rung belt): the frozen spec's intro h2 measures
+     33.33px @1440 / 23.82px @390 — our seat matches BOTH (the ≤991/≤767
+     bands below hold the measured 2.4rem phone step, which has NO
+     --fs-* rung — the raw rem stays the measured seat). The ≥992
+     literal is belted onto its rung token: --fs-h3 = 4rem computes
+     the identical 33.33 @1440; the intro h2 is the spec's ONE
+     off-d2 h2 measurement and keeps its own rung. */
+  font-size: var(--fs-h3);
   /* R338 T-03g — the Arabic line-height floor: the conformance twin
      transforms the reference's lh expectation to max(heronLh, 1.35×fs)
      for Arabic text (the joining script needs the taller leading); the

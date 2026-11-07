@@ -1,23 +1,33 @@
 {
- "generatedAt": "2026-11-07T11:27:22.424Z",
- "url": "http://localhost:5344",
- "dark": true,
+ "generatedAt": "2026-11-07T14:00:28.561Z",
+ "url": "http://localhost:5351",
+ "dark": false,
  "routes": {
-  "/app": {
-   "1440:dark": {
-    "score": 99.2,
+  "/campus": {
+   "1440:light": {
+    "score": 99,
     "axes": {
      "typeRungs": {
-      "score": 97.61904761904762,
+      "score": 95.65217391304348,
       "distinctTiers": true,
       "fails": [
        {
-        "fs": 28,
+        "fs": 46.6667,
         "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "تطبيق مدارك — التنزيل وا"
+        "text": "من داخل الجامعات الليبية"
+       },
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "الحياة الجامعية بالفيديو"
+       },
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بالفيديو"
        }
       ],
-      "total": 42,
+      "total": 69,
       "resolvedRungs": [
        66.6667,
        60,
@@ -47,7 +57,7 @@
      },
      "spacing": {
       "score": 100,
-      "total": 14
+      "total": 2
      },
      "pattern": {
       "score": 100,
@@ -58,7 +68,7 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 97.61904761904762,
+      "score": 98.55072463768117,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى",
@@ -67,7 +77,7 @@
         "bg": "rgb(250, 54, 0)"
        }
       ],
-      "total": 42
+      "total": 69
      },
      "edge390": {
       "score": 100,
@@ -78,18 +88,34 @@
      "hover": {
       "score": 100,
       "channels": 2,
-      "label": "تنزيل APK"
+      "label": "مشاهد جامعية"
      }
     }
    },
-   "390:dark": {
-    "score": 99.6,
+   "390:light": {
+    "score": 99,
     "axes": {
      "typeRungs": {
-      "score": 100,
+      "score": 95.65217391304348,
       "distinctTiers": true,
-      "fails": [],
-      "total": 42,
+      "fails": [
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "من داخل الجامعات الليبية"
+       },
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "الحياة الجامعية بالفيديو"
+       },
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بالفيديو"
+       }
+      ],
+      "total": 69,
       "resolvedRungs": [
        79.3893,
        71.4504,
@@ -119,7 +145,7 @@
      },
      "spacing": {
       "score": 100,
-      "total": 14
+      "total": 2
      },
      "pattern": {
       "score": 100,
@@ -130,7 +156,7 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 97.61904761904762,
+      "score": 98.55072463768117,
       "fails": [
        {
         "text": "تخطَّ إلى المحتوى",
@@ -139,7 +165,7 @@
         "bg": "rgb(250, 54, 0)"
        }
       ],
-      "total": 42
+      "total": 69
      },
      "edge390": {
       "score": 100,
@@ -150,7 +176,205 @@
      "hover": {
       "score": 100,
       "channels": 2,
-      "label": "تنزيل APK"
+      "label": "مشاهد جامعية"
+     }
+    }
+   }
+  },
+  "/capabilities": {
+   "1440:light": {
+    "score": 98.1,
+    "axes": {
+     "typeRungs": {
+      "score": 90.74074074074075,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "قدرات موثَّقة، لا ادّعاء"
+       },
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "موثَّقة"
+       },
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "نحو تعليمٍ يعرف كلَّ طال"
+       },
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "يعرف كلَّ طالب"
+       },
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "25 كلية في 3 أحرام"
+       }
+      ],
+      "total": 54,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.14814814814815,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 54
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "الحياة الجامعية"
+     }
+    }
+   },
+   "390:light": {
+    "score": 98.1,
+    "axes": {
+     "typeRungs": {
+      "score": 90.74074074074075,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "قدرات موثَّقة، لا ادّعاء"
+       },
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "موثَّقة"
+       },
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "نحو تعليمٍ يعرف كلَّ طال"
+       },
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "يعرف كلَّ طالب"
+       },
+       {
+        "fs": 31.74,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "25 كلية في 3 أحرام"
+       }
+      ],
+      "total": 54,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 2
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.14814814814815,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 54
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "الحياة الجامعية"
      }
     }
    }

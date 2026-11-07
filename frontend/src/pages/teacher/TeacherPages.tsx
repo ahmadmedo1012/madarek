@@ -50,7 +50,6 @@ import { ASSIGNMENT_KIND_LABEL, MATERIAL_TYPE_LABEL, gradeBand, GRADE_BANDS } fr
 import { validatePdfFile, pdfUploadErrorMessage } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
-import '../../styles/teacher-quality.css'; // R304: the family sheet (tpg- section lives here)
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 hr- primitives + §A tqd- deltas (mounted via .hr-scope)
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
