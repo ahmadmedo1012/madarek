@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-11-07T13:15:20.567Z",
+ "generatedAt": "2026-11-07T14:00:28.561Z",
  "url": "http://localhost:5351",
- "dark": true,
+ "dark": false,
  "routes": {
   "/campus": {
-   "1440:dark": {
+   "1440:light": {
     "score": 99,
     "axes": {
      "typeRungs": {
@@ -92,7 +92,7 @@
      }
     }
    },
-   "390:dark": {
+   "390:light": {
     "score": 99,
     "axes": {
      "typeRungs": {
@@ -182,7 +182,7 @@
    }
   },
   "/capabilities": {
-   "1440:dark": {
+   "1440:light": {
     "score": 98.1,
     "axes": {
      "typeRungs": {
@@ -280,7 +280,7 @@
      }
     }
    },
-   "390:dark": {
+   "390:light": {
     "score": 98.1,
     "axes": {
      "typeRungs": {
