@@ -24,7 +24,11 @@
      §7  page transitions — the shell's route entrance rides --app-t-page
          (320ms ≤ 350, §R325.k), RM = instant;
      §8  the drawer z-run — --z-menu-drawer 530 (§R325.a / the R323
-         adopted scale), backdrop one rung under.
+         adopted scale), backdrop one rung under;
+     §9  the phone sheet inset — 8px on the page root, inner gutters
+         give it back (r341/D6, the /auth-proved mobile grammar);
+     §10 CTA hover — the two-channel pair (translateX + accent-strong
+         border) the landing grammar uses, shell-scoped (r341/D6).
 
    CASCADE CONTRACT — the r305/r319 house precedent: imported ONLY by
    AppShell.tsx (right after r325-app.css), deliberately UNLAYERED, no
@@ -302,5 +306,62 @@
   }
   .sidebar-backdrop {
     z-index: calc(var(--z-menu-drawer) - 1);
+  }
+}
+
+/* ═══ §9 — THE PHONE SHEET INSET (r341/D6): 8px at the page root ══════
+   The pattern library's mobile grammar (proved on /auth, r340 T-D1a:
+   66.4 → 99.3 @390) puts the SHEET's own inset on the PAGE ROOT —
+   `main` carries 8px content gutters at the phone band, and every
+   inner surface derives from it. The app shell's `.main` rode 0px
+   with the whole 20px mobile gutter on `.content-inner` — a
+   different geometry than the sheet system it hosts, so the
+   per-page conformance probe (edge390: the page root's content edge
+   = 8px ±2) measured 0 and every shell-wearing route failed the
+   axis at 390.
+   The re-key is NET-ZERO on the visual inset: `.main` takes the 8px
+   (--sp-2) sheet inset; the topbar and the content column give back
+   exactly those 8px from their own --page-gutter-mobile (20px) so
+   the burger, the title and every page's first column land where
+   they landed before (8+12 = 20). What changes: the topbar's glass
+   band and its always-on hairline now stop 8px short of the viewport
+   edges — aligned with the 7px drafting frame (SheetFrame), the
+   sheet's own registration edge. Desktop (≥921px) is untouched. */
+@media (max-width: 920px) {
+  .has-shell > .main {
+    padding-inline: var(--sp-2);
+  }
+  .has-shell .topbar {
+    padding-inline: calc(var(--page-gutter-mobile) - var(--sp-2));
+  }
+  .has-shell .content-inner {
+    padding-inline: calc(var(--page-gutter-mobile) - var(--sp-2));
+  }
+}
+
+/* ═══ §10 — CTA HOVER: the two-channel contract (r341/D6) ═════════════
+   The interaction grammar the landing proved (cta.css T-13/T-18,
+   heron ordinals 1/4/6/9): a primary CTA's hover changes ≥2 computed
+   channels — the translateX nudge + the accent-strong border. The
+   shared .btn recipe (components.css, frozen) delivers ONE: the
+   fill-wipe travels on ::before (invisible to the element's own
+   computed style) and --_btn-wipe-fg ≡ the resting label on the
+   accent/primary variants, so color/bg read unchanged (measured on
+   /student/dashboard: bd only). This re-keys the SAME pair the
+   landing grammar uses for the SAME class — shell-scoped (.has-shell
+   wraps every authed surface), so the topbar's «اسأل AI» quick action
+   and every page-level accent CTA inside the shell speak the one
+   hover language. RM: the nudge is motion — it dies with the belt. */
+@media (hover: hover) and (pointer: fine) {
+  .has-shell .btn.accent:hover,
+  .has-shell .btn.primary:hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent-strong);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .has-shell .btn.accent:hover,
+  .has-shell .btn.primary:hover {
+    transform: none;
   }
 }
