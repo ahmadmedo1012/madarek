@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Trophy, Star, Medal, Activity, Crown,
   Target, Headset,
-  Bell, AlertTriangle, BookOpen, Download,
+  Bell, AlertTriangle, BookOpen, Download, CalendarDays,
   CheckCircle2, Check, Heart, GraduationCap,
   Building2, Microscope,
   Hourglass, ArrowLeft, X,
@@ -26,7 +26,7 @@ import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '
 import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
-import { PageFrame, PageHeader as PatternPageHeader, SectionHeader, RowList, RowItem, StatLine } from '../../components/patterns';
+import { PageFrame, PageHeader as PatternPageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
 /* R319 (c3-S2) — the §B2 kit: the mono-indexed section title bar, the
  * BarCount meta, the mono status chip, the hatched empty cell + the
  * today week strip (the pages-B sweep's shared barrel for this file's
@@ -529,9 +529,13 @@ export function AlertsPage() {
             {unreadCount > 0 ? (
               <>
                 <Badge color="brand">{arUnit(unreadCount, 'إشعار غير مقروء', 'إشعاران غير مقروءان', 'إشعارات غير مقروءة')}</Badge>
+                {/* R341 (D7c): the sweep is the page's ONE primary action —
+                    the accent slab (the pages.mjs hover axis needs a
+                    measured primary CTA; behaviour, icon and the
+                    variables-gating pending freeze are unchanged). */}
                 <button
                   type="button"
-                  className="btn ghost sm"
+                  className="btn accent sm"
                   onClick={() => markAllRead.mutate()}
                   disabled={markAllRead.isPending}
                 >
@@ -790,6 +794,23 @@ export function SchedulePage() {
         meta={totalSlots > 0
           ? countAr(totalSlots, ['حصة واحدة أسبوعياً', 'حصتان أسبوعياً', 'حصص أسبوعياً', 'حصة أسبوعياً'])
           : undefined}
+        /* R341 (D7c): the header carries the page's CTA pair — the
+            accent primary (the pages.mjs hover axis' measured primary;
+            the shared .btn.accent wipe owns the ≥2-channel hover) and
+            the quiet secondary. Honest navigation only: the same week
+            on the month grid, and the offerings the slots come from. */
+        actions={(
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link to="/student/calendar" className="btn accent sm">
+              <Icon icon={CalendarDays} size={13} />
+              تقويم الشهر
+            </Link>
+            <Link to="/student/courses" className="btn ghost sm">
+              <Icon icon={BookOpen} size={13} />
+              مقرّراتي
+            </Link>
+          </div>
+        )}
       />
 
       {/* R319 (c3-S2): the week strip — the page's genuine today/week
@@ -872,8 +893,10 @@ export function ResultsPage() {
             the mirror holds the stat line's own boxes + the chart
             card's frame (the r172b loading-closure contract).
             r305-c: the mirror lives INSIDE the summary deep band — the
-            pending → resolved swap keeps the band's footprint. */}
-        <div className="r305s-band r305s-band--deep results-summary">
+            pending → resolved swap keeps the band's footprint.
+            R341 (D7c): layout on utilities — the local band rules were
+            promoted to the shared .r305s-band--deep seat. */}
+        <div className="r305s-band r305s-band--deep results-summary flex-col gap-3">
           <p className="r305s-eyebrow">ملخّص الدرجات</p>
           <div className="pf-statline" aria-busy="true">
             {[0, 1, 2].map((i) => (
@@ -934,6 +957,22 @@ export function ResultsPage() {
         meta={d.headline.courseCount > 0
           ? <>{countAr(d.headline.courseCount, ['مقرّر واحد مُقيَّم', 'مقرّران مُقيَّمان', 'مقرّرات مُقيَّمة', 'مقرّراً مُقيَّماً'])} هذا الفصل</>
           : undefined}
+        /* R341 (D7c): the page's CTA pair — honest navigation to the
+            assessments that produce these grades (the accent primary
+            carries the measured hover; the ghost secondary stays
+            quiet). Same family as the schedule header's pair. */
+        actions={(
+          <div className="flex items-center gap-2 flex-wrap">
+            <Link to="/student/online-exams" className="btn accent sm">
+              <Icon icon={Activity} size={13} />
+              الاختبارات
+            </Link>
+            <Link to="/student/courses" className="btn ghost sm">
+              <Icon icon={BookOpen} size={13} />
+              مقرّراتي
+            </Link>
+          </div>
+        )}
       />
 
       {/* r299 (final C): the three headline KPI cards ride ONE StatLine —
@@ -943,8 +982,11 @@ export function ResultsPage() {
           r305-c (Heron): the strip is the page's ONE deep band — the
           theme-reactive inversion earns the hierarchy; the sheet
           re-derives every inner ink toward the band's own fg pole so
-          the canonical tones stay AA in both themes. */}
-      <div className="r305s-band r305s-band--deep results-summary">
+          the canonical tones stay AA in both themes.
+          R341 (D7c): the ink pole now rides the SHARED band class
+          (heron.css §3); this seat keeps the test-pinned
+          .results-summary hook with the layout on utilities. */}
+      <div className="r305s-band r305s-band--deep results-summary flex-col gap-3">
         <p className="r305s-eyebrow">ملخّص الدرجات</p>
         <StatLine
         items={[
@@ -1042,13 +1084,21 @@ export function ResultsPage() {
           R304 (6-d): the block rides the pattern row grammar (SectionHeader
           + RowList/RowItem) — the same day-section anatomy the schedule
           page carries; the graded feed below keeps its AlertRow tones. */}
-      <SectionHeader
+      <SectionBar
+        index="01"
         title="تسليمات بانتظار التقييم"
-        description={
-          pendingSubs.length === 0
-            ? 'لا شيء بانتظار تقييم الأستاذ حالياً'
-            : countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])
-        }
+        /* R341 (D7c) reconciliation — tests are law: the honest empty
+            state keeps its pinned sentence (ResultsPage-timeline ×2)
+            as the bar's meta; the counted meta (the numeral axis seat)
+            rides the non-empty branch only. */
+        meta={pendingSubs.length === 0
+          ? 'لا شيء بانتظار تقييم الأستاذ حالياً'
+          : (
+            <BarCount
+              n={pendingSubs.length}
+              srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])}
+            />
+          )}
       />
       {pendingSubs.length === 0 ? (
         <p className="text-sm text-muted" style={{ margin: 0 }}>

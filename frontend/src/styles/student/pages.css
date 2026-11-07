@@ -277,6 +277,11 @@
   }
   .r319s-weekcell--today {
     background: var(--text);
+    /* R341 (D7c): the cell's OWN color flips to the paper pole so the
+       sr-only «اليوم» label (the only direct child without its own ink
+       rule) inherits an ink that measures against the ink fill instead
+       of vanishing into it (1:1 — the ink-island probe's catch). */
+    color: var(--bg);
   }
   .r319s-weekcell--today .r319s-weekcell-name {
     color: var(--bg);

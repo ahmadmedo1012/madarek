@@ -111,6 +111,29 @@
     color: var(--neutral-0);
     border-color: transparent;
   }
+  /* R341 (D7c) — the band's INK POLE, promoted from the results page's
+     local .results-summary recipe (heron-schedule.css §4, deleted) to
+     the shared foundation: every deep band re-derives the tokens the
+     pattern children resolve (--text + the -ink tones toward the
+     band's own fg pole) so canonical StatLine/badge tones stay AA on
+     the inverted ground in BOTH themes (patterns.css is unlayered —
+     a layered color override on .pf-* would be dead CSS; custom
+     properties feed the winning rules via inheritance instead, the
+     r305 cascade law). The 72/67 muted strengths are the P2.6
+     re-tune (≥4.58:1 on both poles, engine math in
+     audits/evidence/r325/ink-app/README.md). */
+  .r305s-band--deep {
+    --text: var(--neutral-0);
+    --text-muted: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
+    --text-faint: color-mix(in srgb, var(--neutral-0) 67%, var(--neutral-900));
+    --success-ink: color-mix(in srgb, var(--success) 62%, var(--neutral-0));
+    --warning-ink: color-mix(in srgb, var(--warning) 62%, var(--neutral-0));
+    --danger-ink: color-mix(in srgb, var(--danger) 62%, var(--neutral-0));
+    --accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-0));
+  }
+  /* KPI values inside a deep band ride the mono metric register (the
+     r197 mono contract — numerals are the technical voice). */
+  .r305s-band--deep .pf-stat-value { font-family: var(--font-mono); }
   /* P2.6 — the eyebrow rode the raw --neutral-500 rung, which is tuned
      for the PAGE ground. On the inverted pole it washes out: 1.87:1 on
      the dark theme's paper band (2.85:1 on the light theme's ink band —
@@ -254,7 +277,8 @@
 
   /* Reduced-motion belt: this sheet introduces no animation of its
      own — hover/focus are the shared system's grammar (color/border
-     steps only). Nothing to disable; kept as the explicit contract. */
+     steps only; the CTA nudge lives in the shell's chrome.css §10
+     with its own RM twin); kept as the explicit contract. */
   @media (prefers-reduced-motion: reduce) {
     .r305s-eyebrow::before,
     .r305s-rule-labeled::before,
