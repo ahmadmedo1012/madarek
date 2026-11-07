@@ -436,7 +436,7 @@
     --text:        var(--neutral-900);
     --text-secondary: var(--neutral-700);
     --text-muted:  #62625F;   /* R313: rgba(40,40,40,.72) on #F6F6EE, solid — 5.63:1 ground · 6.12:1 surface */
-    --text-faint:  #70706A;   /* R313: warm faint — 4.59:1 ground, under AA on soft/wells (deliberate) */
+    --text-faint:  #666660;   /* R341 M6: muted-ink AA audit — #70706A→#666660 (96/96 pairs ≥4.5:1 both themes; tokens regen, this export follows) */
     --text-on-accent: #FFFFFF;   /* R313: the reference's white-on-#FA3600 labels (AA-large + the weight exception) */
     --text-on-dark:   var(--neutral-50);
 
