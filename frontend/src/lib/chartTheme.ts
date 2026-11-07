@@ -380,7 +380,7 @@ type FadingGridColor = (ctx: ScriptableScaleContext) => string | CanvasGradient;
  * theme remounts for free. Tick labels intentionally keep full alpha —
  * see the deviations note in the file docblock.
  */
-export function fadingGridColor(scaleId: 'x' | 'y', base: string): FadingGridColor {
+function fadingGridColor(scaleId: 'x' | 'y', base: string): FadingGridColor {
   const fade: FadingGridColor = (ctx) => {
     const area = ctx.chart.chartArea;
     const parsed = parseColor(base);
@@ -807,7 +807,7 @@ export const valueLabels = {
  * doughnut) keeps tooltips fully disabled. Also owns the hide-on-destroy
  * cleanup for the shared tooltip element.
  */
-export const madarekTooltipPlugin: Plugin = {
+const madarekTooltipPlugin: Plugin = {
   id: 'madarekTooltip',
   beforeInit(chart) {
     const options = chart.config.options;
@@ -835,7 +835,7 @@ export const madarekTooltipPlugin: Plugin = {
  * explicit custom color is respected and left untouched (use the
  * exported fadingGridColor() helper to fade a custom base color).
  */
-export const madarekFadingAxisPlugin: Plugin = {
+const madarekFadingAxisPlugin: Plugin = {
   id: 'madarekFadingAxis',
   beforeInit(chart) {
     const options = chart.config.options;
@@ -864,7 +864,7 @@ export const madarekFadingAxisPlugin: Plugin = {
  * and rebuilds the gradient every draw, so resizes and theme remounts
  * re-resolve the accent automatically.
  */
-export const madarekGradientFillPlugin: Plugin = {
+const madarekGradientFillPlugin: Plugin = {
   id: 'madarekGradientFill',
   defaults: { enabled: false },
   /* R313 (WP-D · charts): no chart gradients — opted-in line datasets

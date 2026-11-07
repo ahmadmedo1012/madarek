@@ -36,7 +36,7 @@ export type { ButtonVariant, ButtonSize } from './Form';
 export { PageHeader } from './PageHeader';
 /* R189 «سجلّ مدارك» — the ledger product language (see Ledger.tsx). */
 export {
-  StatStrip, Sparkline, ProgressRing, LedgerPanel, LedgerRow, WeekRow,
+  StatStrip, Sparkline, ProgressRing, LedgerPanel, LedgerRow,
 } from './Ledger';
 export type {
   StatTone, StatCellData, SparkTone, ZoneTone, LedgerRowProps,

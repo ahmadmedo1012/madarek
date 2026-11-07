@@ -37,7 +37,6 @@ export type { ModalProps } from './Modal';
 export { Sheet } from './Sheet';
 export type { SheetProps, SheetSide } from './Sheet';
 
-export { Toast, ToastStack } from './Toast';
 export type { ToastProps, ToastVariant } from './Toast';
 
 export { Popover } from './Popover';
@@ -49,7 +48,6 @@ export type { DropdownProps, DropdownItemProps } from './Dropdown';
 export { Tooltip } from './Tooltip';
 export type { TooltipProps } from './Tooltip';
 
-export { Lightbox } from './Lightbox';
 export type { LightboxProps } from './Lightbox';
 
 export { CommandPalette } from './CommandPalette';

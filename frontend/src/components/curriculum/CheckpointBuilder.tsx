@@ -77,7 +77,7 @@ function optionsRootError(errors: FieldErrors<CheckpointFormValues>): string | u
   return undefined;
 }
 
-export function CheckpointFormModal({
+function CheckpointFormModal({
   lecture,
   existing,
   onClose,
