@@ -568,7 +568,15 @@
      pitch is the record's own 26.2px (2.62rem), the pill sits 1.92rem
      under the titlebox, and the seats step down to the 4.13rem phone
      measure */
-  .st-section { margin-inline: 8px; }  .st-stmt-in { padding: 2.4rem 1.7rem; }
+  /* L1-b (R341 · T-16 #2) — the wrap keeps the record's 8px gutters and
+     grows, never shrinks, past them on notched phones (safe-area aware;
+     env() is 0 in the harness, so the 390 geometry is the record's own). */
+  .st-section {
+    margin-inline: max(8px, env(safe-area-inset-left, 0px))
+      max(8px, env(safe-area-inset-right, 0px));
+  }
+
+  .st-stmt-in { padding: 2.4rem 1.7rem; }
   .st-title { font-size: 2.4rem; line-height: 3.24rem; }
   .st-line { block-size: 2.62rem; }
   .st-titlebox { margin-block-end: 1.92rem; }

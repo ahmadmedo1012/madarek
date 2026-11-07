@@ -761,6 +761,19 @@
 }
 
 @media (max-width: 767px) {
+  /* L1-b (R341 · T-16 #2) — the phone illustration's own mat: the 390
+     record seats the ink at x24 w342 (24px viewport gutters — frame
+     x16 w358, img x24 w342); our full-bleed stage ran the drawing out
+     to the sheet frame's 8px edge (~0 margin, the panel's "hero
+     illustration butts against the edges"). Padding-only: the stage
+     box, its 8/5 aspect and every pinned y below are untouched; the
+     mat rides max() so notched phones clear the safe area (env() is 0
+     in the harness — conformance geometry unchanged). */
+  .hro .hro-stage {
+    padding-inline: max(16px, env(safe-area-inset-left, 0px))
+      max(16px, env(safe-area-inset-right, 0px));
+  }
+
   .hi-card {
     display: none; /* the overlay presentation yields to the flow */
   }
