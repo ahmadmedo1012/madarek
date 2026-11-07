@@ -567,14 +567,12 @@
   .fo-sc-l,
   .fo-sc-r { inset-block: 12px; inline-size: 6px; }
   .fo-wordmark-reg { inline-size: 8px; block-size: 8px; font-size: 15.88px; line-height: 1.35; }
-  .fo-legal-l { padding: 8.33px 13.33px; }
   /* r340 T-P1x (hClip fix): the 768 belt's fixed seats (legal-l 355 /
      legal-row 432) LEAKED into ≤767 — the 432px row clipped the last
      links past the sheet's inline-end edge at 390 (measured l −50).
      Heron's own 390 record: div[1] x8 w374, div[2] (the row) x8 w374 —
      both fill the 374px sheet; the links WRAP. Auto seats + wrap. */
-  .fo-legal-l { inline-size: auto; }
-  .fo-legal-row { inline-size: auto; }
+  .fo-legal-l { padding: 8.33px 13.33px; inline-size: auto; justify-content: center; }
   .fo-legal-strip { inline-size: 218px; }
   .fo-legal-lc { column-gap: 3.33px; }
   .fo-legal-p { font-size: 9.92px; line-height: 13.39px; } /* T-06l census: 9.92/13.39@390 */
@@ -582,8 +580,7 @@
   .fo-footer-cluster { font-size: 9.92px; line-height: 13.39px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
   .fo-footer-bottom { margin-block-start: -80px; flex-direction: column; }
-  .fo-legal-l { justify-content: center; }
-  .fo-legal-row { justify-content: space-between; row-gap: 0; }
+  .fo-legal-row { inline-size: auto; justify-content: space-between; row-gap: 0; }
 }
 
 /* ═══ dark theme: the 72% soft-ink literals above are the LIGHT
