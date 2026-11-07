@@ -667,7 +667,13 @@
 }
 
 .hro-work-item .fo-mono {
-  color: var(--text-faint);
+  /* L1-e (R341 · T-16 #2) — the index-numeral rung: Heron's measured
+     Geistmono register (chrome.<bp>.json 11.67 @1440 · 13.89 @390 =
+     --fs-mono-md). The (0,2,0) belt keeps the footer's own ≤767 ©
+     census (9.92px) from leaking onto the strip — the [01]–[06] index
+     stays ≥11px with AA ink at 390 (the panel's unreadable strip). */
+  font-size: var(--fs-mono-md);
+  color: var(--text-muted); /* AA ≥4.5:1 on the paper ground (faint was 4.5–4.6 borderline) */
   letter-spacing: 0.12em; /* the LATIN mono chips only — Arabic keeps zero tracking */
 }
 
