@@ -321,10 +321,11 @@ describe('r306 — the honest ledger is a hairline table', () => {
   it('the capability matrix reads as ruled rows — no inverted slab, no window device', () => {
     /* R313 override (WP-A1 · D7): the capability matrix moved OFF the
      * landing onto /capabilities (the 9-section re-composition); the
-     * hairline-table contract is unchanged and now pinned against
-     * campus.css (the sub-pages' sheet). The landing's problem cards
-     * (.pm-*) carry the same ruled-row grammar. */
-    const campusCss = stripComments(read('src/styles/campus.css'));
+     * hairline-table contract is unchanged. R341/D9 re-key: the
+     * sub-pages' sheet moved VERBATIM from the deleted campus.css into
+     * patterns.css §10 (the lv- family rides its unlayered tail) — the
+     * pin reads the live home, contract byte-identical. */
+    const campusCss = stripComments(read('src/styles/patterns.css'));
     expect(campusCss).toMatch(/\.lv-list\s*\{[^}]*border:\s*1px solid var\(--rule\)/);
     expect(campusCss).toMatch(/\.lv-row\s*\{[^}]*border-block-end:\s*1px solid var\(--rule\)/);
     expect(live).not.toContain('.lv-window');

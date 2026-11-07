@@ -10,13 +10,11 @@ import { RevealCssClass } from '../../hooks/useReveal';
 /* c3-W6 (K-I extension): the guest sheet chrome — same grammar as
  * /auth + /campus (fixed frame + corner marks + grain film). */
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
-// campus.css — R313 (WP-A1): the /capabilities guest sub-page shares
-// the sub-pages' sheet (the landing grammar carried by campus.css): the
-// honest capability matrix (ما يعمل اليوم) + the status pairs (إلى أين)
-// moved here VERBATIM from the landing when D7 recomposed the sheet to
-// Heron's 9 sections; the colleges registry links to /colleges (the
-// real registry page).
-import '../../styles/campus.css';
+// patterns.css §10 (r341/D9) — the guest sub-page sheet (ex
+// campus.css, deleted): the honest capability matrix (ما يعمل اليوم) +
+// the status pairs (إلى أين) moved here VERBATIM from the landing when
+// D7 recomposed the sheet to Heron's 9 sections; the colleges registry
+// links to /colleges (the real registry page).
 
 /** /capabilities — «السجلّ» (R313 · WP-A1).
  *
@@ -53,16 +51,23 @@ export function CapabilitiesPage() {
         </div>
       </header>
 
-      <main id="main" tabIndex={-1} className="cu-main">
+      <main id="main" tabIndex={-1} className="cu-main pf-page">
         {/* ── ما يعمل اليوم — the capability matrix ── */}
         <section aria-labelledby="cap-live-title">
-          <div className="cu-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[01]</span> ما يعمل اليوم</span>
+          <div className="cu-head pf-page-header-text">
+            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[01]</span> ما يعمل اليوم</span>
             <RevealCssClass as="h1" className="cu-title" delay={1} id="cap-live-title">
               قدرات <em>موثَّقة</em>، لا ادّعاءات
             </RevealCssClass>
             <RevealCssClass as="p" className="cu-lede" delay={2}>
               كل رقم يُحسب من حالة الميزات في النظام — يتغيّر مع التحديثات، لا مع الحملات.
+            </RevealCssClass>
+            {/* D9: the honest CTA pair at the page head (the D7c measured
+                seat) — the sister sub-page + the real registry page; the
+                registry section below keeps the data + the disclosure. */}
+            <RevealCssClass as="div" className="pf-page-actions" delay={3}>
+              <Link to="/campus" className="btn accent" aria-label="الحياة الجامعية — الصور والفيديو">الحياة الجامعية</Link>
+              <Link to="/colleges" className="btn ghost">بوابة الكليات</Link>
             </RevealCssClass>
           </div>
 
@@ -80,8 +85,8 @@ export function CapabilitiesPage() {
 
         {/* ── إلى أين — the honest status pairs ── */}
         <section aria-labelledby="cap-vision-title">
-          <div className="cu-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[02]</span> إلى أين</span>
+          <div className="cu-head pf-page-header-text">
+            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[02]</span> إلى أين</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-vision-title">
               نحو تعليمٍ <em>يعرف كلَّ طالب</em>
             </RevealCssClass>
@@ -107,8 +112,8 @@ export function CapabilitiesPage() {
 
         {/* ── الجامعة التجريبية — the registry summary ── */}
         <section aria-labelledby="cap-colleges-title">
-          <div className="cu-head">
-            <span className="fo-label"><span className="fo-mono" dir="ltr">[03]</span> الجامعة التجريبية</span>
+          <div className="cu-head pf-page-header-text">
+            <span className="fo-eyebrow"><span className="fo-mono" dir="ltr">[03]</span> الجامعة التجريبية</span>
             <RevealCssClass as="h2" className="cu-title" delay={1} id="cap-colleges-title">
               {formatInt(colleges.length)} كلية في {formatInt(campusCount)} أحرام
             </RevealCssClass>
@@ -135,10 +140,9 @@ export function CapabilitiesPage() {
                 <dd className="fo-meta-v">بيانات اصطناعية بالكامل للعرض</dd>
               </div>
             </dl>
-            <div className="cu-registry-row">
-              <Link to="/colleges" className="btn ghost">تصفح الكليات التجريبية</Link>
-              <Link to="/campus" className="cu-text-link">الحياة الجامعية — الصور والفيديو</Link>
-            </div>
+            {/* D9: the registry actions moved UP to the page head (the
+                pf-page-actions pair above) — this block keeps the data
+                registry + the demo-data disclosure. */}
           </RevealCssClass>
 
           <p className="cu-foot">

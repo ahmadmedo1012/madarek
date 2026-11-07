@@ -53,12 +53,8 @@
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "campus.css :: .cu-text-link:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
-    },
-    {
-      "key": "campus.css :: .vc-direct:hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+      "key": "patterns.css :: .vc-direct:hover",
+      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip (r341/D9: moved verbatim from the deleted campus.css; the .cu-text-link entry retired with its rule)"
     },
     {
       "key": "colleges.css :: .gallery-chip:hover",

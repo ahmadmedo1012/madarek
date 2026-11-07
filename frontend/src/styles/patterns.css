@@ -3036,3 +3036,802 @@ a.pf-row-link {
       transition: none;
     }
   }
+
+/* ═══ 10 · THE GUEST SUB-PAGE SHEETS (r341 D9) — consolidated from the
+   DELETED styles/campus.css (815 lines, R313 · WP-A1) ══════════════
+   Scope: pages/campus/CampusPages.tsx (/campus) + pages/capabilities/
+   CapabilityPages.tsx (/capabilities) — the two chrome-less guest
+   sub-pages (GuestReveal, window-scrolled). The D7b exams precedent:
+   rules moved with their @layer homes intact — campus.css was fully
+   UNLAYERED, so this tail stays unlayered (unlayered beats every
+   @layer rule regardless of import position — cascade-neutral), class
+   names unchanged (the r306 .lv-list/.lv-row hairline pins re-key to
+   this file; the r321 .inkm-sketch-mark belt holds — patterns.css was
+   already in its sweep list), tokens only, no !important.
+
+   D9's measured re-seats (pages.mjs, floor 90, all cells l+d):
+   · the sheet measure: .cu-main COMPOSES .pf-page (the library's
+     frame — flex column, the 1080 default measure); the header bar
+     re-registers to the same 1080 (was 1160);
+   · edge390: the phone band takes the sheet's own 8px inset
+     (--sp-2, the auth-center precedent r340 T-D1a) — the 24px
+     desktop gutters stay ≥640;
+   · hover: these pages carry NO shell, so the shared .btn fill-wipe
+     (components.css, frozen — ONE computed channel: bd) had no
+     2-channel companion here; the cta.css T-13 micro-drift (the
+     translateX nudge + accent-strong border, D6's shell §10 grammar)
+     rides scoped to .cu .btn.accent/.primary/.ghost, RM-belted;
+   · the drafting label re-keys fo-label → fo-eyebrow (identical
+     recipe; the name now says what the voice is — pages.mjs's
+     eyebrow axis reads [class*='eyebrow']);
+   · the /capabilities registry links compose .pf-page-actions with
+     the honest CTA pair (.btn.accent primary + .btn ghost secondary,
+     the D7c measured seat) — .cu-text-link and .cu-registry-row die
+     (zero seats), as does .cu-header-index (never rendered). */
+
+.cu {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: clip;
+  font-family: var(--font-sans);
+}
+
+/* ── the thin chrome bar — sticky, hairline, the back funnel ─────── */
+.cu-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 60;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(10px);
+  border-block-end: 1px solid var(--grid-line);
+}
+
+.cu-header-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  min-block-size: 56px;
+  max-inline-size: 1080px; /* D9: re-registered to the pf-page measure */
+  margin-inline: auto;
+  padding-inline: var(--sp-6);
+  flex-wrap: wrap; /* c3-W6: at ≤420 the r176f label-wrap flip + the fixed
+     .btn height CLIPPED the back link's second line inside the pill
+     (overflow: hidden) — the ROW wraps instead and every label keeps
+     its full one-line measure. */
+}
+
+/* c3-W6: the back link never shrinks below its label's natural width —
+   shrinking is what pushed the label to wrap inside a fixed-height box. */
+.cu-header-inner .btn { flex-shrink: 0; }
+
+@media (max-width: 420px) {
+  /* override the r176f ≤420 wrap flip INSIDE this bar only: the row has
+     room to wrap, the pill does not (fixed .btn block-size). */
+  .cu-header-inner .btn { white-space: nowrap; }
+  .cu-header-inner {
+    padding-inline: var(--sp-4);
+    row-gap: var(--sp-1-5);
+  }
+}
+
+.cu-header-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-2-5);
+  min-block-size: 44px;
+  text-decoration: none;
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* ── the page measure — composes .pf-page (the library frame); this
+   rule carries only the sub-page's own padding/rhythm voice ──────── */
+.cu-main {
+  padding-inline: var(--sp-6);
+  padding-block: var(--sp-10) var(--sp-14);
+  gap: var(--sp-12);
+  /* c3-W6 (K-I): the grain film (.auth-grain via GuestSheetChrome) is a
+     fixed z-0 layer — the flowing sheet rides z 1 above it, the same
+     seat the auth page's content blocks hold. */
+  position: relative;
+  z-index: 1;
+}
+
+.cu-head {
+  display: grid;
+  gap: var(--sp-3);
+  max-inline-size: 64ch;
+}
+
+.cu-title {
+  margin: 0;
+  font-family: var(--font-display);
+  /* r324 P3 (X9) — the ONE display ladder (d1 @ weight 600). */
+  font-size: var(--fs-d1);
+  font-weight: var(--fw-semibold);
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+
+.cu-title em {
+  font-style: normal;
+  color: var(--accent-ink);
+}
+
+.cu-lede {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.cu-foot {
+  border-block-start: 1px solid var(--rule-strong);
+  padding-block-start: var(--sp-4);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  color: var(--text-muted);
+  max-inline-size: 78ch;
+}
+
+/* ── the landing's drafting-label voices (identical token recipes;
+   D9: fo-label re-keyed to fo-eyebrow — the name now matches the
+   voice every other sheet calls an eyebrow) ──────────────────────── */
+.fo-mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.fo-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2-5);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.fo-eyebrow::before {
+  content: '';
+  inline-size: var(--sp-5);
+  block-size: 1px;
+  background: var(--rule-strong);
+}
+
+.fo-eyebrow .fo-mono {
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+/* the title-block metadata rows (the registry block on /capabilities) */
+.fo-meta-row {
+  display: grid;
+  grid-template-columns: minmax(96px, auto) 1fr;
+  align-items: baseline;
+  gap: var(--sp-4);
+  padding: var(--sp-2-5) var(--sp-4);
+  border-block-end: 1px solid var(--rule);
+}
+
+.fo-meta-row:last-child {
+  border-block-end: 0;
+}
+
+.fo-meta-k {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.fo-meta-v {
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+.fo-meta-v .fo-mono {
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
+}
+
+.cu-meta {
+  display: grid;
+  gap: 0;
+  align-content: start;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
+  overflow: clip;
+}
+
+/* ═══ mf — MediaFrame: the documentary photo figure (moved verbatim;
+   flat frame, hairline border, the caption bar carries the Arabic name
+   + institution + the mono credit row: author · license deed) ══════ */
+.mf {
+  display: grid;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.mf-photo {
+  display: block;
+  overflow: clip;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  position: relative;
+}
+
+.mf-photo img {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+}
+
+/* R333 P-G3a (T-G1-04) — the aspect LOCK. The band and the mosaic are
+   composed collages: every box gets an intentional ratio and the photo
+   covers it, so no variant depends on its source's intrinsic shape and
+   no surface-colored dead area can open under a portrait frame. */
+.cu-band .mf-photo,
+.um-mosaic .mf-photo {
+  aspect-ratio: 4 / 3;
+}
+
+.cu-band .mf--hero-lead .mf-photo { aspect-ratio: 16 / 9; }
+.cu-band .mf--hero-tall .mf-photo { aspect-ratio: 3 / 4; }
+.um-mosaic .mf--large .mf-photo { aspect-ratio: 16 / 9; }
+
+.cu-band .mf-photo img,
+.um-mosaic .mf-photo img {
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.mf-caption {
+  display: grid;
+  gap: var(--sp-0-5);
+  padding-inline: var(--sp-0-5);
+}
+
+.mf-caption-name {
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.mf-caption-institution {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.mf-caption-credit {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+.mf-caption-credit a {
+  color: var(--accent-ink);
+  text-decoration: none;
+  border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* ── the photo band (the landing's hero media band, recomposed) ──── */
+.cu-band {
+  display: grid;
+  grid-template-columns: minmax(0, 46fr) minmax(0, 30fr) minmax(0, 24fr);
+  gap: var(--sp-4);
+  align-items: end;
+}
+
+/* ═══ um — الحياة الجامعية: the documentary rail (moved verbatim) ═══ */
+.um-rail {
+  display: grid;
+  gap: var(--sp-4);
+}
+
+.um-mosaic {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+
+.um-mosaic .mf--large {
+  grid-column: 1 / 3;
+}
+
+/* ═══ vc — VideoCard: the click-to-load facade (moved verbatim) ══════
+   The frame is a flat 16:9 box; the poster composes drafting marks over
+   hairlines (pure CSS); the actions row carries the play control + the
+   direct channel link. Zero third-party bytes until the visitor asks. */
+.vc {
+  display: grid;
+  gap: var(--sp-2);
+  min-inline-size: 0;
+}
+
+.vc-frame {
+  position: relative;
+  overflow: clip;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  /* the 16:9 box reserves exact space whether facade or iframe */
+  aspect-ratio: 16 / 9;
+}
+
+.vc-poster {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(
+      to inline-end,
+      transparent 0 calc(25% - 1px),
+      var(--grid-line) calc(25% - 1px) 25%
+    ),
+    color-mix(in srgb, var(--surface) 88%, var(--bg));
+}
+
+.vc-poster-mark {
+  color: var(--accent-ink);
+  font-size: var(--fs-h2);
+}
+
+/* R321 §A6 — the [▶] glyph renders from attr(): out of innerText. */
+.vc-poster-mark::before { content: attr(data-code); }
+
+.vc-poster-lines {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: var(--sp-6);
+  border-block-start: 1px solid var(--grid-line);
+}
+
+.vc-body {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  padding: var(--sp-5) var(--sp-6) var(--sp-16) var(--sp-6);
+  display: grid;
+  align-content: start;
+  gap: var(--sp-1-5);
+  text-align: start;
+}
+
+.vc-kind {
+  font-size: var(--fs-xxs);
+  color: var(--accent-ink);
+}
+
+.vc-title {
+  font-family: var(--font-display);
+  font-size: var(--fs-body-lg);
+  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the weight law */
+  line-height: var(--type-display-line-height);
+  color: var(--text);
+}
+
+.vc-meta {
+  display: flex;
+  gap: var(--sp-3);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+.vc-actions {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline: 0;
+  padding: var(--sp-4) var(--sp-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-4);
+  background: linear-gradient(to block-start, var(--surface) 70%, transparent);
+}
+
+.vc-play {
+  min-block-size: 44px;
+}
+
+.vc-direct {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vc-direct:hover {
+    color: var(--accent-ink);
+  }
+}
+
+.vc-iframe {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  border: 0;
+}
+
+.vc-close {
+  position: absolute;
+  inset-block-start: var(--sp-2);
+  inset-inline-start: var(--sp-2);
+  z-index: 2;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.vc-caption {
+  display: grid;
+  gap: var(--sp-0-5);
+  padding-inline: var(--sp-0-5);
+}
+
+.vc-caption-kind {
+  font-size: var(--fs-xxs);
+  color: var(--text-faint);
+}
+
+.vc-caption-title {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+}
+
+/* ── vd — the videos block on /campus (moved verbatim) ──────────── */
+.vd-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: var(--sp-5);
+  /* R333 P-G3a (T-G1-04): stretch (not start) — the two facade cards
+     share one row height, the secondary frame absorbs the difference. */
+  align-items: stretch;
+}
+
+.vd-grid .vc--secondary {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+
+.vd-grid .vc--secondary .vc-frame {
+  aspect-ratio: auto;
+  block-size: 100%;
+  min-block-size: 0;
+}
+
+/* ═══ lv — the capability matrix: a hairline TABLE (moved verbatim) ══
+   A ruled matrix, numbered rows, checks, the bracketed count in the
+   footer line — the r306 honest-ledger pins read THIS block. */
+.lv-list {
+  display: grid;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: clip;
+}
+
+.lv-row {
+  display: grid;
+  grid-template-columns: minmax(48px, auto) 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-block-end: 1px solid var(--rule);
+}
+
+.lv-row:last-child {
+  border-block-end: 0;
+}
+
+.lv-num {
+  color: var(--text-faint);
+  line-height: 1;
+}
+
+.lv-text {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.lv-check {
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--sp-6);
+  block-size: var(--sp-6);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+}
+
+.lv-foot {
+  margin-block-start: var(--sp-3);
+  color: var(--text-faint);
+  font-size: var(--fs-xxs);
+}
+
+/* ═══ vs — the honest status pairs (moved verbatim + the snap) ═══════
+   live / simulated / in-development, mono-tagged. The tag snaps with
+   the reference's hold-plateau shape (0%→74% held, then resolves). */
+.vs-status {
+  display: grid;
+  border: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--surface) 45%, transparent);
+  overflow: clip;
+}
+
+.vs-status li {
+  display: grid;
+  grid-template-columns: minmax(140px, 220px) 1fr auto;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
+  border-block-end: 1px solid var(--rule);
+}
+
+.vs-status li:last-child {
+  border-block-end: 0;
+}
+
+.vs-status-k {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1-5);
+  font-size: var(--fs-body);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.vs-status-v {
+  font-size: var(--fs-body);
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.vs-status-tag {
+  padding: var(--sp-0-5) var(--sp-2);
+  border: 1px solid var(--border-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.vs-status-tag.is-live {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--accent-ink);
+}
+
+.vs-status li.is-live .vs-status-k {
+  color: var(--accent-ink);
+}
+
+.vs-status.in-view .vs-status-tag {
+  animation: vs-tag-snap var(--t-cinema) var(--ease) both;
+}
+
+@keyframes vs-tag-snap {
+  0%,
+  74% {
+    opacity: 0.45;
+    scale: 0.85;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+/* ═══ inkm — the ink-mask photo reveal (moved verbatim) ═══════════════
+   The mosaic frames resolve out of their drawing: the sketch layer
+   (grid + registration marks + coordinates) sits over the PHOTOGRAPH
+   only — captions and licences stay visible at all times. */
+.inkm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.inkm-defs {
+  position: absolute;
+  inline-size: 0;
+  block-size: 0;
+  overflow: hidden;
+}
+
+.inkm-sketch {
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: var(--bg);
+}
+
+.inkm-sketch-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to left, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.55;
+}
+
+.inkm-sketch-mark {
+  position: absolute;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1;
+}
+/* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
+   note in patterns.css §1 owns the reasoning). */
+.inkm-sketch-mark::before { content: '+'; }
+
+.inkm-sketch-mark-tl { inset-block-start: 6px; inset-inline-start: 8px; }
+.inkm-sketch-mark-tr { inset-block-start: 6px; inset-inline-end: 8px; }
+.inkm-sketch-bl { inset-block-end: 6px; inset-inline-start: 8px; }
+.inkm-sketch-br { inset-block-end: 6px; inset-inline-end: 8px; }
+
+.inkm-sketch-coord {
+  position: absolute;
+  inset-block-end: 8px;
+  inset-inline-start: 10px;
+  color: var(--text-muted);
+  font-size: var(--fs-xxs);
+  letter-spacing: 0.05em;
+}
+
+/* ── the registry link block on /capabilities (the actions row now
+   composes .pf-page-actions + the honest .btn pair) ──────────────── */
+.cu-registry {
+  display: grid;
+  gap: var(--sp-5);
+  justify-items: start;
+}
+
+/* ═══ Hover washes — guarded to real pointers (the r283 convention) ═══
+   D9: the guest sub-pages' 2-channel CTA seat — the shared .btn wipe
+   carries ONE computed channel (bd); the cta.css T-13 micro-drift
+   (translateX nudge + accent-strong border) adds the second, scoped
+   to this sheet (no shell here to carry D6's §10). */
+@media (hover: hover) and (pointer: fine) {
+  .cu .btn.accent:is(:hover, :focus-within),
+  .cu .btn.accent.probe-hover,
+  .cu .btn.primary:is(:hover, :focus-within),
+  .cu .btn.primary.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent-strong);
+  }
+
+  .cu .btn.ghost:is(:hover, :focus-within),
+  .cu .btn.ghost.probe-hover {
+    transform: translateX(-0.1875rem);
+    border-block-end-color: var(--accent);
+  }
+}
+
+/* ═══ Responsive re-composition (never a naive scale-down) ═════════ */
+@media (max-width: 1024px) {
+  .cu-band {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .cu-band .mf--hero-lead {
+    grid-column: 1 / -1;
+  }
+
+  .um-mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .um-mosaic .mf--large {
+    grid-column: 1 / -1;
+  }
+
+  .vd-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .inkm-sketch {
+    filter: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .cu-main {
+    padding-block: var(--sp-8) var(--sp-10);
+    padding-inline: var(--sp-2); /* D9 edge390: the sheet's own 8px
+       phone inset (the auth-center precedent, r340 T-D1a) */
+    gap: var(--sp-10);
+  }
+
+  /* c3-W6 (clip probe @390): the 16:9 facade box cannot hold the
+     absolute .vc-body composition — on phones the facade recomposes
+     the way the photo family (mf) already composes: the 16:9
+     reservation moves to the POSTER ground, and the TITLE + ACTIONS
+     flow as caption rows UNDER it inside the same ruled frame. */
+  .vc-frame {
+    aspect-ratio: auto; /* was 16 / 9 — `none` is not a valid value; auto
+       retires the reservation (it moved to the poster below) */
+  }
+  .vc-poster {
+    position: relative; /* was absolute inset 0 — it IS the 16:9 box now */
+    inset: auto;
+    aspect-ratio: 16 / 9;
+  }
+  .vc-body {
+    position: static;
+    padding: var(--sp-3) var(--sp-1) 0;
+  }
+  .vc-actions {
+    position: static;
+    padding: var(--sp-3) var(--sp-1) 0;
+    background: none; /* the desktop gradient wash is a poster floor */
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .vc-poster-lines {
+    inset-inline: var(--sp-4);
+  }
+
+  .cu-band,
+  .um-mosaic {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cu-band .mf--hero-lead,
+  .um-mosaic .mf--large {
+    grid-column: auto;
+  }
+
+  .lv-row,
+  .vs-status li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--sp-2);
+  }
+
+  .lv-check,
+  .vs-status-tag {
+    justify-self: start;
+  }
+}
+
+/* ═══ Dark theme — the complementary sheet (one block) ═════════════ */
+[data-theme="dark"] .cu {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ═══ Reduced motion: the complete static page ═════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .vs-status.in-view .vs-status-tag {
+    animation: none;
+  }
+
+  .inkm {
+    display: none;
+  }
+
+  /* the micro-drift nudge collapses statelessly (no :hover arm inside
+     a non-hover-guard media — the hover-guard lint's law) */
+  .cu .btn.accent,
+  .cu .btn.primary,
+  .cu .btn.ghost {
+    transform: none;
+  }
+}
+
+/* ── the deep-link anchors (the landing's pre-R313 section ids resolve
+   here now): clear the thin chrome bar + breathing room. ── */
+#campus-life,
+#videos {
+  scroll-margin-block-start: calc(56px + var(--sp-4)); /* spacing-gate: allow — the 56px chrome bar's own height (.cu-header-inner min-block-size), not a spacing rung */
+}

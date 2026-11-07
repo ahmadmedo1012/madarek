@@ -88,7 +88,9 @@ describe('R321 §A6 — decorative marks never carry DOM text (the innerText lea
       'landing/shared.css',
       'landing/platform.css',
       'landing/strata.css',
-      'campus.css',
+      /* R341/D9: campus.css is DELETED — its .inkm-sketch-mark family
+       * moved verbatim to patterns.css §10 (already first in this list),
+       * so the ::before glyph pin still has its home. */
       'shell/sheet-frame.css',
     ]
       .map((f) => readFileSync(path.join(SRC, 'styles', f), 'utf8'))
