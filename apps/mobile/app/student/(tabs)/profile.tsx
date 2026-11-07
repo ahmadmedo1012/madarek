@@ -5,11 +5,11 @@
  * academic facts (GET /me/profile merged session-first), then the
  * preferences seat — appearance, numerals («الأرقام: ١٢٣ / 123»),
  * haptics («ردود اللمس»), app lock (biometric), notifications — plus
- * «الإبلاغ عن مشكلة» (the /report sheet route) and logout behind a
- * destructive ConfirmSheet with haptics.notify('warning'). The menu hub
- * (RowList) keeps every student surface one tap away.
+ * logout behind a destructive ConfirmSheet with haptics.notify('warning').
+ * R341 M4 — the 28-row menu wall is grouped by concern: one ledger
+ * (RowList), muted group headers, every row keeps its 48px target.
  */
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -61,7 +61,6 @@ import { Button } from "@/components/ui/pressables";
 import { Segmented } from "@/components/ui/fields";
 import { EmptyState, ErrorState, SkeletonList } from "@/components/ui/states";
 import { ConfirmSheet } from "@/components/ui/sheet";
-import { PressableScale } from "@/motion";
 import { haptics } from "@/haptics";
 import { initials, NUMERALS_OPTIONS, useNumerals } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
@@ -70,35 +69,74 @@ import { authenticate, biometricAvailable, getBiometricLockEnabled, setBiometric
 import { ScrollBody } from "@/features/student/components";
 import { countAr } from "@/features/student/more";
 
-/** The hub — every student surface one tap away (route list = web paths). */
-const MENU: { icon: LucideIcon; label: string; to: string }[] = [
-  { icon: Grid3x3, label: "مصفوفة الإتقان", to: "/student/matrix" },
-  { icon: CalendarClock, label: "الجدول الأسبوعي", to: "/student/schedule" },
-  { icon: CalendarDays, label: "التقويم", to: "/student/calendar" },
-  { icon: ClipboardCheck, label: "النتائج", to: "/student/results" },
-  { icon: FileText, label: "موادي التعليمية", to: "/student/materials" },
-  { icon: ClipboardList, label: "التكاليف", to: "/student/assignments" },
-  { icon: ScrollText, label: "بحوثي", to: "/student/research" },
-  { icon: Library, label: "المكتبة", to: "/student/library" },
-  { icon: Dumbbell, label: "التدريب الذاتي", to: "/training" },
-  { icon: Trophy, label: "الإنجازات", to: "/achievements" },
-  { icon: Medal, label: "نقاطي وأوسمتي", to: "/student/gamification" },
-  { icon: Gauge, label: "مهاراتي", to: "/student/skills" },
-  { icon: Users, label: "المجتمع", to: "/community" },
-  { icon: MessageSquare, label: "المنشورات", to: "/student/social" },
-  { icon: Globe, label: "دورات MOOC", to: "/student/mooc" },
-  { icon: Briefcase, label: "الوظائف", to: "/student/jobs" },
-  { icon: Radio, label: "الحصص المباشرة", to: "/student/live" },
-  { icon: Presentation, label: "الندوات", to: "/student/webinars" },
-  { icon: FlaskConical, label: "المعامل الافتراضية", to: "/student/labs" },
-  { icon: ScanLine, label: "واقع افتراضي", to: "/student/ar" },
-  { icon: BookOpen, label: "دليل المقررات", to: "/student/catalog" },
-  { icon: Landmark, label: "عن الجامعة", to: "/student/university" },
-  { icon: Map, label: "خريطة الكليات", to: "/student/map" },
-  { icon: CreditCard, label: "الشؤون المالية", to: "/student/payment" },
-  { icon: Mail, label: "الرسائل", to: "/student/messages" },
-  { icon: CircleHelp, label: "دليل الاستخدام", to: "/help" },
-  { icon: Settings, label: "الإعدادات", to: "/settings" },
+/** The hub — every student surface one tap away (route list = web paths),
+ *  R341 M4: the wall of 28 flat rows is grouped by concern; routes and
+ *  labels are byte-identical to the flat list, only the grouping is new. */
+const MENU_GROUPS: { title: string; items: { icon: LucideIcon; label: string; to: string }[] }[] = [
+  {
+    title: "الدراسة والجدول",
+    items: [
+      { icon: Grid3x3, label: "مصفوفة الإتقان", to: "/student/matrix" },
+      { icon: CalendarClock, label: "الجدول الأسبوعي", to: "/student/schedule" },
+      { icon: CalendarDays, label: "التقويم", to: "/student/calendar" },
+      { icon: FileText, label: "موادي التعليمية", to: "/student/materials" },
+      { icon: ClipboardList, label: "التكاليف", to: "/student/assignments" },
+      { icon: BookOpen, label: "دليل المقررات", to: "/student/catalog" },
+    ],
+  },
+  {
+    title: "النتائج والتقدّم",
+    items: [
+      { icon: ClipboardCheck, label: "النتائج", to: "/student/results" },
+      { icon: ScrollText, label: "بحوثي", to: "/student/research" },
+      { icon: Gauge, label: "مهاراتي", to: "/student/skills" },
+      { icon: Medal, label: "نقاطي وأوسمتي", to: "/student/gamification" },
+      { icon: Trophy, label: "الإنجازات", to: "/achievements" },
+    ],
+  },
+  {
+    title: "التعلّم الموسّع",
+    items: [
+      { icon: Dumbbell, label: "التدريب الذاتي", to: "/training" },
+      { icon: Globe, label: "دورات MOOC", to: "/student/mooc" },
+      { icon: Presentation, label: "الندوات", to: "/student/webinars" },
+      { icon: FlaskConical, label: "المعامل الافتراضية", to: "/student/labs" },
+      { icon: ScanLine, label: "واقع افتراضي", to: "/student/ar" },
+    ],
+  },
+  {
+    title: "المجتمع والتواصل",
+    items: [
+      { icon: Users, label: "المجتمع", to: "/community" },
+      { icon: MessageSquare, label: "المنشورات", to: "/student/social" },
+      { icon: Radio, label: "الحصص المباشرة", to: "/student/live" },
+      { icon: Mail, label: "الرسائل", to: "/student/messages" },
+    ],
+  },
+  {
+    title: "المسار والمال",
+    items: [
+      { icon: Briefcase, label: "الوظائف", to: "/student/jobs" },
+      { icon: CreditCard, label: "الشؤون المالية", to: "/student/payment" },
+    ],
+  },
+  {
+    title: "الجامعة",
+    items: [
+      { icon: Library, label: "المكتبة", to: "/student/library" },
+      { icon: Landmark, label: "عن الجامعة", to: "/student/university" },
+      { icon: Map, label: "خريطة الكليات", to: "/student/map" },
+    ],
+  },
+  {
+    title: "الدعم والإعدادات",
+    items: [
+      { icon: CircleHelp, label: "دليل الاستخدام", to: "/help" },
+      { icon: Settings, label: "الإعدادات", to: "/settings" },
+      // The old standalone «الإبلاغ عن مشكلة» card, seated with its concern.
+      { icon: Flag, label: "الإبلاغ عن مشكلة", to: "/report" },
+    ],
+  },
 ];
 
 const THEME_OPTIONS: { id: ThemePreference; label: string }[] = [
@@ -348,25 +386,40 @@ export default function StudentProfile() {
           </Card>
         ) : null}
 
-        {/* الإبلاغ عن مشكلة — يفتح ورقة الإبلاغ (مسار /report) */}
-        <Card>
-          <PressableScale
-            accessibilityRole="button"
-            accessibilityLabel="الإبلاغ عن مشكلة"
-            onPress={() => {
-              haptics.selection();
-              router.push("/report" as never);
-            }}
-            style={{ flexDirection: "row", alignItems: "center", gap: sp[10], minHeight: 44 }}
-          >
-            <Flag size={20} color={p.textMuted} />
-            <T variant="body" weight="medium" style={{ flex: 1 }}>
-              الإبلاغ عن مشكلة
-            </T>
-          </PressableScale>
-        </Card>
+        {/* الأقسام — the menu hub, grouped by concern (R341 M4): one ledger,
+            muted group headers, hairline rhythm between groups. */}
+        <SectionBar index={3} title="الأقسام" />
+        <RowList>
+          {MENU_GROUPS.map((group, gi) => (
+            <Fragment key={group.title}>
+              <MenuGroupHeader title={group.title} />
+              {group.items.map((m, i) => (
+                <LedgerRow
+                  key={m.to}
+                  last={gi === MENU_GROUPS.length - 1 && i === group.items.length - 1}
+                  onPress={() => {
+                    // kept from the old standalone report card
+                    if (m.to === "/report") haptics.selection();
+                    router.push(m.to as never);
+                  }}
+                  accessibilityLabel={m.label}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
+                    <m.icon size={20} color={p.textMuted} />
+                    <T variant="body" weight="medium" style={{ flex: 1 }}>
+                      {m.label}
+                    </T>
+                  </View>
+                </LedgerRow>
+              ))}
+            </Fragment>
+          ))}
+        </RowList>
+        <T variant="xs" color="faint">
+          جميع خدمات الطالب متاحة من هنا — تعمل بعضها في وضع الطيار وتُوسَم بذلك داخل صفحاتها.
+        </T>
 
-        {/* الجلسة */}
+        {/* الجلسة — last concern on the screen, mirroring settings. */}
         <Button
           label="تسجيل الخروج"
           kind="danger"
@@ -375,29 +428,6 @@ export default function StudentProfile() {
             setConfirmLogout(true);
           }}
         />
-
-        {/* الأقسام — the menu hub */}
-        <SectionBar index={3} title="الأقسام" />
-        <RowList>
-          {MENU.map((m, i) => (
-            <LedgerRow
-              key={m.to}
-              last={i === MENU.length - 1}
-              onPress={() => router.push(m.to as never)}
-              accessibilityLabel={m.label}
-            >
-              <View style={{ flexDirection: "row", alignItems: "center", gap: sp[10] }}>
-                <m.icon size={20} color={p.textMuted} />
-                <T variant="body" weight="medium" style={{ flex: 1 }}>
-                  {m.label}
-                </T>
-              </View>
-            </LedgerRow>
-          ))}
-        </RowList>
-        <T variant="xs" color="faint">
-          جميع خدمات الطالب متاحة من هنا — تعمل بعضها في وضع الطيار وتُوسَم بذلك داخل صفحاتها.
-        </T>
 
         <ConfirmSheet
           open={confirmLogout}
@@ -417,5 +447,21 @@ export default function StudentProfile() {
         />
       </ScrollBody>
     </Screen>
+  );
+}
+
+/** M4 group header — the muted band inside the ledger: xs muted semibold,
+ *  non-interactive, tokens only (sp ladder). The rows on both sides keep
+ *  the 48px ledger rhythm (≥44px targets); hairlines come from the rows. */
+function MenuGroupHeader({ title }: { title: string }) {
+  return (
+    <View
+      accessibilityRole="header"
+      style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[4] }}
+    >
+      <T variant="xs" color="muted" weight="semibold">
+        {title}
+      </T>
+    </View>
   );
 }

@@ -2,10 +2,11 @@
  * (tabs)/profile — الملف الأكاديمي. Web parity: TeacherProfilePage
  * (identity + verified badge + rank + workload + bio/office/website +
  * the four-field self edit) + the mobile menu hub (RowList) into every
- * teacher surface.
+ * teacher surface. R341 M4 — the flat 17-row hub is grouped by concern
+ * (muted in-ledger headers), same discipline as the student profile.
  */
 import { humanizeError } from "@/lib/errors";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { View } from "react-native";
 import { router } from "expo-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -56,25 +57,50 @@ type TeacherProfileWire = {
   [k: string]: unknown;
 };
 
-const MENU: { label: string; to: string }[] = [
-  { label: "جدولي", to: "/teacher/schedule" },
-  { label: "طلابي", to: "/teacher/students" },
-  { label: "الحضور", to: "/teacher/attendance" },
-  { label: "الدرجات", to: "/teacher/grades" },
-  { label: "المواد", to: "/teacher/materials" },
-  { label: "التكاليف", to: "/teacher/assignments" },
-  { label: "بنك الأسئلة والاختبارات", to: "/teacher/exams" },
-  { label: "بناء المنهج", to: "/teacher/curriculum" },
-  { label: "مراجعة البحوث", to: "/teacher/research-review" },
-  { label: "حصص مباشرة", to: "/teacher/live" },
-  { label: "المعامل", to: "/teacher/labs" },
-  { label: "التحليلات", to: "/teacher/intelligence" },
-  { label: "الرسائل", to: "/teacher/messages" },
-  { label: "المساعد", to: "/teacher/ai" },
-  { label: "الإشعارات", to: "/teacher/alerts" },
-  // R331 A-App-Shell — the report loop entry (replaces the removed floating FAB).
-  { label: "الإبلاغ عن مشكلة", to: "/report" },
-  { label: "الإعدادات", to: "/settings" },
+const MENU_GROUPS: { title: string; items: { label: string; to: string }[] }[] = [
+  {
+    title: "التدريس اليومي",
+    items: [
+      { label: "جدولي", to: "/teacher/schedule" },
+      { label: "طلابي", to: "/teacher/students" },
+      { label: "الحضور", to: "/teacher/attendance" },
+      { label: "الدرجات", to: "/teacher/grades" },
+    ],
+  },
+  {
+    title: "المحتوى والتقييم",
+    items: [
+      { label: "المواد", to: "/teacher/materials" },
+      { label: "التكاليف", to: "/teacher/assignments" },
+      { label: "بنك الأسئلة والاختبارات", to: "/teacher/exams" },
+      { label: "بناء المنهج", to: "/teacher/curriculum" },
+    ],
+  },
+  {
+    title: "البحث والتحليل",
+    items: [
+      { label: "مراجعة البحوث", to: "/teacher/research-review" },
+      { label: "التحليلات", to: "/teacher/intelligence" },
+    ],
+  },
+  {
+    title: "التفاعل والتواصل",
+    items: [
+      { label: "حصص مباشرة", to: "/teacher/live" },
+      { label: "المعامل", to: "/teacher/labs" },
+      { label: "المساعد", to: "/teacher/ai" },
+      { label: "الرسائل", to: "/teacher/messages" },
+      { label: "الإشعارات", to: "/teacher/alerts" },
+    ],
+  },
+  {
+    title: "الدعم",
+    items: [
+      // R331 A-App-Shell — the report loop entry (replaces the removed floating FAB).
+      { label: "الإبلاغ عن مشكلة", to: "/report" },
+      { label: "الإعدادات", to: "/settings" },
+    ],
+  },
 ];
 
 export default function TeacherProfile() {
@@ -264,20 +290,26 @@ export default function TeacherProfile() {
             </Card>
           )}
 
-          {/* Menu hub — every teacher surface one tap away. */}
+          {/* Menu hub — every teacher surface one tap away, grouped by
+              concern (R341 M4): one ledger, muted group headers. */}
           <SectionBar index={3} title="الأقسام" />
           <RowList>
-            {MENU.map((m, i) => (
-              <LedgerRow
-                key={m.to}
-                last={i === MENU.length - 1}
-                onPress={() => router.push(m.to as never)}
-                accessibilityLabel={m.label}
-              >
-                <T variant="body" weight="medium">
-                  {m.label}
-                </T>
-              </LedgerRow>
+            {MENU_GROUPS.map((group, gi) => (
+              <Fragment key={group.title}>
+                <MenuGroupHeader title={group.title} />
+                {group.items.map((m, i) => (
+                  <LedgerRow
+                    key={m.to}
+                    last={gi === MENU_GROUPS.length - 1 && i === group.items.length - 1}
+                    onPress={() => router.push(m.to as never)}
+                    accessibilityLabel={m.label}
+                  >
+                    <T variant="body" weight="medium">
+                      {m.label}
+                    </T>
+                  </LedgerRow>
+                ))}
+              </Fragment>
             ))}
           </RowList>
         </>
@@ -322,5 +354,21 @@ export default function TeacherProfile() {
         <Button label="حفظ" loading={save.isPending} onPress={() => save.mutate()} />
       </Sheet>
     </Screen>
+  );
+}
+
+/** M4 group header — the muted band inside the ledger: xs muted semibold,
+ *  non-interactive, tokens only (sp ladder). The rows on both sides keep
+ *  the 48px ledger rhythm (≥44px targets); hairlines come from the rows. */
+function MenuGroupHeader({ title }: { title: string }) {
+  return (
+    <View
+      accessibilityRole="header"
+      style={{ paddingHorizontal: sp[16], paddingTop: sp[12], paddingBottom: sp[4] }}
+    >
+      <T variant="xs" color="muted" weight="semibold">
+        {title}
+      </T>
+    </View>
   );
 }
