@@ -1,5 +1,6 @@
 /**
- * /student/(tabs)/courses — مقرّراتي (R334 Round-2 recompose):
+ * /student/(tabs)/courses — مقرّراتي (R334 Round-2 recompose;
+ * R341 M7 web-language parity):
  * DataList on FlashList v2 (the #1 list anti-pattern — ScrollView+map —
  * retired), a list/grid segmented toggle (haptics.selection), a
  * RingProgress per course card, a FilterSheet (فصل / قسم / تقدّم —
@@ -112,9 +113,14 @@ const CourseListCard = makeRow<EnrollmentRow, { index: number }>(({ item, index 
               </T>
             ) : null}
           </View>
+          {/* R341 M7 — the per-course progress rides NEUTRAL ink (the
+              web CourseBar ruling): the one-accent discipline keeps
+              orange for the screen's single CTA, never one ring per
+              card. */}
           <RingProgress
             size={44}
             thickness={4}
+            color={p.primary}
             progress={clampedPct(item.progressPct) / 100}
             accessibilityLabel={`تقدّم مقرّر ${c.name}: ${pct(item.progressPct)}`}
           >
@@ -123,8 +129,9 @@ const CourseListCard = makeRow<EnrollmentRow, { index: number }>(({ item, index 
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           {/* One number, one verb: the ring carries the value, the hint
-              carries the action (B4 re-review rule kept). */}
-          <T variant="xs" color="accentInk" weight="bold">
+              carries the action (B4 re-review rule kept) — quiet ink,
+              the web row's «تابع/ابدأ» ghost register. */}
+          <T variant="xs" color="secondary" weight="bold">
             {courseProgressHint(item.progressPct)}
           </T>
           <View style={{ flex: 1 }} />
@@ -164,6 +171,7 @@ const CourseGridCard = makeRow<EnrollmentRow, { index: number }>(({ item, index 
           <RingProgress
             size={40}
             thickness={4}
+            color={p.primary}
             progress={clampedPct(item.progressPct) / 100}
             accessibilityLabel={`تقدّم مقرّر ${c.name}: ${pct(item.progressPct)}`}
           >
@@ -304,6 +312,7 @@ export default function StudentCourses() {
   const filtered = useMemo(() => applyCourseFilters(rows, filters), [rows, filters]);
   const filteredEmpty = rows.length > 0 && filtered.length === 0;
   const activeCount = activeCourseFilterCount(filters);
+  const enrolledLabel = countAr(rows.length, ["مقرّر مسجَّل واحد", "مقرّران مسجَّلان", "مقرّرات مسجَّلة", "مقرّراً مسجَّلاً"]);
 
   const setDraftAction = (action: CourseFilterAction) => {
     haptics.selection();
@@ -394,10 +403,22 @@ export default function StudentCourses() {
     <Screen scroll={false} padded={false}>
       <AppTopBar alertsPath="/student/alerts" />
       <View style={{ paddingHorizontal: sp[20], gap: sp[12] }}>
-        <SectionBar index={1} title="مقرّراتي الدراسية" action={<ViewToggle view={view} onChange={setView} />} />
+        {/* R341 M7 — the section bar carries the honest enrolled count
+            as its quiet mono meta (the web BarCount seat), view toggle
+            stays the trailing control. */}
+        <SectionBar
+          index={1}
+          title="مقرّراتي الدراسية"
+          action={
+            <View style={{ flexDirection: "row", alignItems: "center", gap: sp[12] }}>
+              <BarCount n={rows.length} a11y={enrolledLabel} />
+              <ViewToggle view={view} onChange={setView} />
+            </View>
+          }
+        />
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
           <T variant="sm" color="muted" style={{ flex: 1 }}>
-            {countAr(rows.length, ["مقرّر مسجَّل واحد", "مقرّران مسجَّلان", "مقرّرات مسجَّلة", "مقرّراً مسجَّلاً"])}
+            {enrolledLabel}
             {activeCount > 0 ? ` · ${latn(filtered.length)} بعد التصفية` : ""}
           </T>
           <Pressable
@@ -481,6 +502,17 @@ export default function StudentCourses() {
         </FilterSheet>
       ) : null}
     </Screen>
+  );
+}
+
+/** R341 M7 — the section bar's quiet mono meta (web BarCount grammar):
+ *  the honest row count as padded Latin digits in the faint mono voice —
+ *  data riding the [01] bar, never a second accent. */
+function BarCount({ n, a11y }: { n: number; a11y: string }) {
+  return (
+    <T variant="monoSm" color="faint" accessibilityLabel={a11y}>
+      {latn(n).padStart(2, "0")}
+    </T>
   );
 }
 
