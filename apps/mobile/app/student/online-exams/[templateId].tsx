@@ -16,11 +16,11 @@ import { examsApi, type ReviewPayload, type StartExamPayload, type SubmitExamRes
 import { ApiError } from "@/api/client";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
 import { usePalette, useStatusTones } from "@/design/theme";
-import { sp } from "@/design/tokens";
+import { sp, radius, touchFloor } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui/screen";
-import { Badge, Card, Hairline } from "@/components/ui/surfaces";
+import { Card, Hairline } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/pressables";
 import { ProgressBar } from "@/components/ui/data";
 import { AppSheet, ConfirmSheet } from "@/components/ui/sheet";
@@ -828,6 +828,7 @@ export default function ExamTakerScreen() {
             gap: sp[8],
             marginHorizontal: sp[20],
             marginTop: sp[8],
+            minHeight: touchFloor,
             paddingHorizontal: sp[12],
             paddingVertical: sp[6],
             borderWidth: StyleSheet.hairlineWidth,
@@ -966,31 +967,38 @@ export default function ExamTakerScreen() {
                 saved: savedQids.has(current.id),
               });
               if (!chip) return null;
+              // M1 — the save chip is the SECONDARY tier: hairline frame,
+              // muted ink. Only «تعذّر الحفظ» keeps its rose alert ink —
+              // a failed save is an error to act on, not a status color.
+              const failed = chip === "failed";
               const icon =
                 chip === "failed" ? (
                   <AlertTriangle size={12} color={tones.rose.ink} />
                 ) : chip === "saving" ? (
                   <Clock size={12} color={p.textMuted} />
                 ) : chip === "queued" ? (
-                  <Hourglass size={12} color={tones.yellow.ink} />
+                  <Hourglass size={12} color={p.textMuted} />
                 ) : (
-                  <CheckCircle2 size={12} color={tones.mint.ink} />
+                  <CheckCircle2 size={12} color={p.textMuted} />
                 );
               return (
-                <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
+                <View
+                  style={{
+                    alignSelf: "flex-start",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: sp[6],
+                    borderWidth: StyleSheet.hairlineWidth,
+                    borderColor: failed ? tones.rose.ink : p.rule,
+                    paddingHorizontal: sp[8],
+                    paddingVertical: sp[2],
+                  }}
+                >
                   {icon}
                   <T
-                    variant="xs"
-                    style={{
-                      color:
-                        chip === "failed"
-                          ? tones.rose.deep
-                          : chip === "queued"
-                            ? tones.yellow.deep
-                            : chip === "saved"
-                              ? tones.mint.deep
-                              : p.textMuted,
-                    }}
+                    variant="sm"
+                    weight="medium"
+                    style={{ color: failed ? tones.rose.deep : p.textMuted }}
                   >
                     {chip === "failed"
                       ? (answers[current.id]?.answerText ?? "").length > TEXT_MAX
@@ -1131,8 +1139,8 @@ export default function ExamTakerScreen() {
                     setNavPick(cell.index);
                   }}
                   style={{
-                    width: 44,
-                    height: 44,
+                    width: touchFloor,
+                    height: touchFloor,
                     alignItems: "center",
                     justifyContent: "center",
                     borderWidth: 1,
@@ -1151,7 +1159,7 @@ export default function ExamTakerScreen() {
                         start: 4,
                         width: 7,
                         height: 7,
-                        borderRadius: 4,
+                        borderRadius: radius.full,
                         backgroundColor: p.accent,
                       }}
                     />
@@ -1260,9 +1268,38 @@ function NavLegend({
           justifyContent: "center",
         }}
       >
-        {flag ? <View style={{ width: 5, height: 5, borderRadius: 3, backgroundColor: p.accent }} /> : null}
+        {flag ? <View style={{ width: 5, height: 5, borderRadius: radius.full, backgroundColor: p.accent }} /> : null}
       </View>
       <T variant="xs" color="muted">
+        {label}
+      </T>
+    </View>
+  );
+}
+
+/**
+ * MutedChip — M1's SECONDARY chip tier on the exams screens: hairline
+ * rule frame, transparent ground, muted medium ink. Every non-actionable
+ * status (pending grading / graded / pass-fail verdicts) renders here so
+ * the ONE primary tier (the accent act-now chip on the list) stays
+ * unmatched — the verdict story is carried by the score numeral, the
+ * EmptyState title, and the labels, not by chip color.
+ */
+function MutedChip({ label }: { label: string }) {
+  const p = usePalette();
+  return (
+    <View
+      accessibilityRole="text"
+      accessibilityLabel={label}
+      style={{
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: p.rule,
+        paddingHorizontal: sp[8],
+        paddingVertical: sp[2],
+        alignSelf: "flex-start",
+      }}
+    >
+      <T variant="sm" weight="medium" style={{ color: p.textMuted }}>
         {label}
       </T>
     </View>
@@ -1317,11 +1354,11 @@ function ResultBody({
           ) : null}
           <View style={{ flexDirection: "row", gap: sp[8] }}>
             {awaitingManual ? (
-              <Badge label="بانتظار التصحيح اليدوي" tone="yellow" />
+              <MutedChip label="بانتظار التصحيح اليدوي" />
             ) : result.passed === null ? (
-              <Badge label="مُصحَّح" tone="mint" />
+              <MutedChip label="مُصحَّح" />
             ) : (
-              <Badge label={result.passed ? "ناجح" : "لم يجتز"} tone={result.passed ? "mint" : "rose"} />
+              <MutedChip label={result.passed ? "ناجح" : "لم يجتز"} />
             )}
           </View>
           <T variant="sm" color="muted" align="center">
@@ -1378,7 +1415,6 @@ function ReviewQuestion({ q, index }: { q: ReviewPayload["questions"][number]; i
   const keyChoice =
     typeof q.correctAnswer === "number" && q.choices ? q.choices[q.correctAnswer] ?? null : null;
   const answered = myChoice !== null || (q.myAnswerText ?? "").trim() !== "";
-  const verdictTone = q.isCorrect === true ? "mint" : q.isCorrect === false ? "rose" : "grey";
   const verdictLabel = q.isCorrect === true ? "صحيحة" : q.isCorrect === false ? "خاطئة" : "بتقييم الأستاذ";
   return (
     <Card style={{ gap: sp[6] }}>
@@ -1391,7 +1427,7 @@ function ReviewQuestion({ q, index }: { q: ReviewPayload["questions"][number]; i
             {q.prompt}
           </T>
         </View>
-        <Badge label={verdictLabel} tone={verdictTone} />
+        <MutedChip label={verdictLabel} />
       </View>
       <T variant="xs" color="muted">
         {`${latn(q.awardedPoints ?? 0)} / ${latn(q.points)} درجة`}

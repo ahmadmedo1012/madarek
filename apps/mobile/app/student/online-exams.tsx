@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useQuery } from "@tanstack/react-query";
@@ -14,7 +14,6 @@ import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { Screen } from "@/components/ui/screen";
-import { Badge } from "@/components/ui/surfaces";
 import { Segmented } from "@/components/ui/fields";
 import { DataList, LedgerRow, makeRow } from "@/components/ui/data";
 import { EmptyState } from "@/components/ui/states";
@@ -87,22 +86,36 @@ export function examStatusChip(exam: ExamTemplateRow, now = Date.now()): {
 
 /* ── the row ──────────────────────────────────────────────────────────── */
 
+/**
+ * M1 — the exams chip hierarchy, two measured tiers:
+ *   · PRIMARY (the one loud chip): tone "accent" = act-now — accentSoft
+ *     ground, full accent hairline-weight frame, bold accent ink.
+ *   · SECONDARY (muted): every other status (upcoming / graded / missed /
+ *     pending / retake) — transparent ground, hairline rule frame, muted
+ *     medium ink. The label carries the semantics; the row stays quiet so
+ *     the accent is the only chip that can shout.
+ */
 function StatusChip({ tone, label }: { tone: ExamStatusTone; label: string }) {
   const p = usePalette();
-  if (tone !== "accent") return <Badge label={label} tone={tone} />;
+  const primary = tone === "accent";
   return (
     <View
       accessibilityRole="text"
       accessibilityLabel={label}
       style={{
-        borderWidth: 1,
-        borderColor: p.accentInk,
-        backgroundColor: p.accentSoft,
-        paddingHorizontal: 8,
-        paddingVertical: 2,
+        borderWidth: primary ? 1 : StyleSheet.hairlineWidth,
+        borderColor: primary ? p.accentInk : p.rule,
+        backgroundColor: primary ? p.accentSoft : "transparent",
+        paddingHorizontal: sp[8],
+        paddingVertical: primary ? sp[4] : sp[2],
+        alignSelf: "flex-start",
       }}
     >
-      <T variant="xs" weight="bold" style={{ color: p.accentInk }}>
+      <T
+        variant="sm"
+        weight={primary ? "bold" : "medium"}
+        style={{ color: primary ? p.accentInk : p.textMuted }}
+      >
         {label}
       </T>
     </View>
@@ -141,7 +154,7 @@ function ExamRowInner({ item: exam, last, now }: ExamRowProps) {
       accessibilityLabel={`${exam.title} — ${KIND_LABEL[exam.kind] ?? "اختبار"} — ${status.label}`}
     >
       <View style={{ flexDirection: "row", alignItems: "flex-start", gap: sp[8] }}>
-        <View style={{ flex: 1, gap: 2 }}>
+        <View style={{ flex: 1, gap: sp[2] }}>
           <T variant="bodyLg" weight="bold">
             {exam.title}
           </T>
@@ -175,7 +188,7 @@ function MetaBit({ icon, text }: { icon: "clock" | "check" | "cal"; text: string
   const p = usePalette();
   const color = p.textMuted;
   return (
-    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+    <View style={{ flexDirection: "row", alignItems: "center", gap: sp[4] }}>
       {icon === "clock" ? <Clock size={12} color={color} /> : null}
       {icon === "check" ? <ClipboardCheck size={12} color={color} /> : null}
       {icon === "cal" ? <CalendarClock size={12} color={color} /> : null}

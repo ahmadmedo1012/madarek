@@ -508,7 +508,7 @@ export function Segmented({
             onPress={() => onSelect(o.id)}
             style={{
               flex: 1,
-              minHeight: 44,
+              minHeight: touchFloor,
               alignItems: "center",
               justifyContent: "center",
               backgroundColor: active ? p.primary : "transparent",
