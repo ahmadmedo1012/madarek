@@ -4,7 +4,7 @@ One page: what is live, what is archived, and where the program state lives. If 
 
 ## The program (one paragraph)
 
-Madarek's landing frontend is being conformed, section by section, to the Heron reference (heronaiapp.com) under the **R338 conformance program**: frozen per-breakpoint reference specs (`docs/redesign/r335/heron-spec/` — 5 breakpoints × sections + footer + `_page`/`_motion`, extracted by `scripts/spec/extract-heron.mjs`) are diffed against our live DOM by `scripts/conformance/run.mjs` (light + `--dark`; section bindings in `scripts/conformance/mapping/*.json`). Every section must reach **≥90% on all 5 breakpoints + dark theme**; the full-matrix floor is ratcheted (53.7, never lowered) and the JS bundle ceiling is 777 KB gz. Impossible cells may only be excused with a written justification in `docs/redesign/r338/excusals.md`. Per-section numbers and the open task queue live in **`docs/redesign/r338/QUEUE.md`** (round handoffs: `docs/redesign/r338/HANDOFF.md`). The binding law for every agent is `AGENTS.md`.
+Madarek's landing frontend is being conformed, section by section, to the Heron reference (heronaiapp.com) under the **R341 conformance program** (rounds r338–r340 closed; the standing law carries forward): frozen per-breakpoint reference specs (`docs/redesign/r335/heron-spec/` — 5 breakpoints × sections + footer + `_page`/`_motion`, extracted by `scripts/spec/extract-heron.mjs`) are diffed against our live DOM by `scripts/conformance/run.mjs` (light + `--dark`; section bindings in `scripts/conformance/mapping/*.json`; inner pages gate via `conformance/pages.mjs`, panel findings via `conformance/panel.mjs`). Every section must reach **≥90% on all 5 breakpoints + dark theme**; the full-matrix floor is ratcheted (91.8 — the r340 honesty re-pin from 93.6 under the hardened instrument; never lowered) and the JS bundle ceiling is 770 KB gz. Impossible cells may only be excused with a written justification in `docs/redesign/r338/excusals.md` (the standing ledger). Per-section numbers and the open task queue live in **`docs/redesign/r341/QUEUE.md`** (round handoffs: `docs/redesign/r341/HANDOFF.md`). The binding law for every agent is `AGENTS.md`.
 
 ## Where the live docs live
 
@@ -12,9 +12,10 @@ Madarek's landing frontend is being conformed, section by section, to the Heron 
 |---|---|
 | `AGENTS.md` | binding agent rules (repo root) |
 | `scripts/README.md` | how to run every script (conformance instrument, gates, spec extraction) |
-| `docs/redesign/r338/` | live round: `QUEUE.md` (task queue), `HANDOFF.md` (lead), `excusals.md`, `arsenal.md`, `BRIEF.md` |
+| `docs/redesign/r341/` | **live round**: `QUEUE.md` (task queue), `HANDOFF.md` (queen wave log), `OWNERSHIP.md` (binding per-wave ownership), `tasks/` (task briefs), `arsenal.md` |
+| `docs/redesign/r338/`, `r339/`, `r340/` | closed rounds, still on disk under `docs/redesign/` (archive move pending — `r338/excusals.md` is the standing excusal ledger; `r339/T-10-CHROME.md` etc. are referenced from `scripts/conformance/mapping/*.json` reasons, so re-point those before moving) |
 | `docs/redesign/r335/heron-spec/` | **FROZEN Heron specs** — read by `scripts/conformance/{run,scroll,interact}.mjs` + written by `scripts/spec/extract-heron.mjs`; path is load-bearing — do not move |
-| `docs/redesign/r337/OWNERSHIP.md` | section→file ownership binding (referenced by `AGENTS.md` and task briefs) |
+| `docs/redesign/r337/OWNERSHIP.md` | kept live: the r337/r338-era section→file seat table (historical; the per-wave binding is the current round's `OWNERSHIP.md`) |
 | `docs/redesign/r331/` | kept live: `heron-program.json` is the spec-of-record for `scripts/twin/` (`scripts/twin/config.json`) |
 | `docs/redesign/r320/` | kept live: `rename-keep.json` is the rename ledger read by the r320 gate (`scripts/r320/rules-runtime.mjs`) |
 | `docs/redesign/assets/` | kept live: r305/r306 reference evidence, linked from the two spec docs below |
@@ -25,6 +26,7 @@ Madarek's landing frontend is being conformed, section by section, to the Heron 
 Closed rounds and superseded evidence live in **`docs/archive/redesign/`** (moved in T-21, branch `r338/t21-docs`):
 
 - `r308, r310, r311, r313, r323, r332, r333` — closed round evidence (r313's `OVERRIDE-LEDGER.md` remains linked from `AGENTS.md` at its archive path).
+- `r338, r339, r340` — closed but **not yet moved**: they remain under `docs/redesign/` (see the live-docs table); r334/r336 never existed as directories.
 - `handoff/` — r304/r305-era section handoffs and QA audits.
 - `r335/` — round docs only (`HANDOFF.md`, `OWNERSHIP.md`, `REPORT.md`, `arsenal.md`); `heron-spec/` stayed live (see above).
 - `r337/` — `HANDOFF.md` + `SECTION-BRIEF.md`; `OWNERSHIP.md` stayed live (see above).

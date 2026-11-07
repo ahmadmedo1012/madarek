@@ -13,19 +13,20 @@ docs/modules/) are Arabic; generated references (docs/*-REFERENCE.md) are Englis
 | `frontend/` | `@madarek/frontend` — React 18 + Vite SPA: `src/App.tsx` shell, `src/pages/` (incl. `LandingPage.tsx`), `src/components/landing/sections/*.tsx` (landing seats), `src/styles/` (token + layer + feature CSS), `stores/` (zustand), `tests/` (vitest + Playwright e2e/audit/r305) |
 | `backend/` | Express + TS + Prisma workspace: `src/app.ts`, `src/http/routes/*.ts` (API), `src/modules/*`, `src/lib/` (permissions, governance, storage), `prisma/schema.prisma` + `migrations/` + `seed.ts` |
 | `apps/mobile/` | Expo ~58 (React Native) app with its own lockfile — see `apps/mobile/README.md` |
-| `scripts/` | `verify.sh` (the ONE gate set) + gates: `check-bundle-size.mjs`, `check-{icons,colors,raw-css,motion-tokens,csp-hash}.sh`, `tokens/build.mjs`, `verify-parity-export.mjs`, `spec/extract-heron.mjs`, round dirs (`r314…r324`), `gates/` |
-| `scripts/conformance/` | visual conformance instrument: `run.mjs`, `scroll.mjs`, `interact.mjs`, `mapping/*.json` (section→DOM binding), `ratchet.json` (monotonic floor), `results.json` |
+| `scripts/` | `verify.sh` (the ONE gate set) + gates: `check-bundle-size.mjs`, `check-{icons,colors,raw-css,motion-tokens,csp-hash}.sh`, `tokens/build.mjs`, `verify-parity-export.mjs`, `spec/extract-heron.mjs`, round dirs (`r314…r333`, history), `gates/` (stylelint ratchet + css-counts/coverage), `deadcode/` (knip/jscpd ratchet) |
+| `scripts/conformance/` | visual conformance instrument: `run.mjs`, `pages.mjs` (per-page ≥90 gate), `panel.mjs` (blind panel judging), `scroll.mjs`, `interact.mjs`, `tween.mjs`, `mapping/*.json` (section→DOM binding), `ratchet.json` (monotonic floor — 91.8), `results.json` |
 | `shared/` | `design-tokens.json` (source of generated tokens), `brand/`, `testAccounts.ts` |
 | `specs/` | SpeckKit feature specs (001–012); live status is `docs/SPECS-REFERENCE.md`, **not** `specs/*/spec.md` |
 | `tools/` | `boot-pg.sh` (local postgres), `daemon.js` |
-| `docs/` | Arabic platform docs 01–16 + `modules/` + `architecture/` + `redesign/` (round history r305…r338; `redesign/r335/heron-spec/*.json` = frozen reference; `redesign/r338/` = current program: BRIEF/HANDOFF/QUEUE/excusals/arsenal) |
-| `.github/workflows/` | `ci.yml` (full gate matrix), `size-gate.yml`, `mobile.yml`, `deploy-smoke.yml`, `keep-warm.yml`, `build-ios-sidestore.yml`, `mobile-builds-ledger.yml` — runners pinned to `ubuntu-24.04` |
+| `docs/` | Arabic platform docs 01–16 + `modules/` + `architecture/` + `redesign/` (round history r305…r341; `redesign/r335/heron-spec/*.json` = frozen reference; `redesign/r341/` = current program: QUEUE/HANDOFF/OWNERSHIP/tasks/arsenal; r338–r340 = closed rounds still on disk — r333/r335/r337 docs already under `docs/archive/redesign/`) |
+| `.github/workflows/` | `ci.yml` (full gate matrix), `size-gate.yml`, `mobile.yml`, `deploy-smoke.yml`, `keep-warm.yml`, `build-ios-sidestore.yml`, `mobile-builds-ledger.yml`, `deadcode.yml` — runners pinned to `ubuntu-24.04` |
 
 Sources of truth (don't guess, read): endpoints → `backend/src/app.ts` + `http/routes/`
 (full table: `docs/API-REFERENCE.md`); models → `backend/prisma/schema.prisma`
 (`docs/DATABASE-REFERENCE.md`); env vars → `backend/src/env.ts` (`docs/06-configuration.md`);
 design tokens → `frontend/src/styles/tokens.css` (wins over `DESIGN.md`) +
-`shared/design-tokens.json`; commands → the three `package.json` files; deploy →
+`shared/design-tokens.json`; route strings → `frontend/src/lib/routes.ts` (the
+r341/Y2 single source); commands → the three `package.json` files; deploy →
 `render.yaml` + `.github/workflows/ci.yml`.
 
 ## 2. Commands
@@ -39,7 +40,7 @@ npm run dev:web                # frontend vite on :5173, /api proxied → :4000
 npm run dev:full               # scripts/r319/dev-full.mjs (both + local pg)
 npm run lint                   # eslint frontend/src backend/src — 0 errors required
 npm run typecheck              # tsc both sides + tests — needs no database
-npm test                       # vitest both sides, no DB (≈3051 tests on main — measure yours)
+npm test                       # vitest both sides, no DB — measure your count from the current tree
 # single test file / case:
 cd frontend && TZ=UTC npx vitest run src/lib/foo.test.ts [-t "case name"]
 cd backend && npx vitest run src/modules/bar.test.ts
@@ -52,7 +53,7 @@ Verification — the ONE local gate set (run before every push):
 
 ```bash
 bash scripts/verify.sh                       # full set = what CI runs (~8 min)
-bash scripts/verify.sh --fast                # tsc + vitest + bundle gate (~4 min)
+bash scripts/verify.sh --fast                # tsc + vitest + bundle + stylelint/CSS-ratchet gate (~4 min)
 bash scripts/verify.sh --sections home-why-wrap   # scope conformance by section keys
 bash scripts/verify.sh --specs r305-shell-heron   # scope e2e by spec file stem
 ```
@@ -82,7 +83,8 @@ e2e, ios-webkit, design-gates, conform-gate, surface-drift; plus `size-gate.yml`
 these local gates — all runners pinned `ubuntu-24.04`:
 
 - **Bundle** — `scripts/check-bundle-size.mjs`, gz, `dist/assets/*.js` ONLY (CSS is not in
-  the gate): **total ≤ 777 KB HARD** (r337 documented raise), entry ≤ 92, pdf ≤ 110. It
+  the gate): **total ≤ 770 KB HARD** (R339 restored r337's 777 — 13 KB slack invited
+  bloat; measured 764.1 at the re-pin), entry ≤ 92, pdf ≤ 110. It
   sums ALL js chunks **including async chunks** — lazy-splitting only moves weight; the
   honest lever is real code cuts (e.g. the axios→native-fetch diet, −17.9 KB).
 - **Conformance ratchet** — `scripts/conformance/ratchet.json` is monotonic: `--gate`
@@ -101,11 +103,11 @@ these local gates — all runners pinned `ubuntu-24.04`:
 - Test counts and conformance numbers are measured from the current tree — never copied
   from a previous round.
 
-## 4. Ownership (r338 program)
+## 4. Ownership (current wave)
 
-Binding: `docs/redesign/r337/OWNERSHIP.md` + `scripts/conformance/mapping/*.json`.
-Own ONLY the files your task names; everything else is a merge block. The seats moved in
-P2-0 — the R338 rulings below supersede stale r337 rows:
+Binding: `docs/redesign/r341/OWNERSHIP.md` + `scripts/conformance/mapping/*.json`.
+Own ONLY the files your task names; everything else is a merge block. Historical seat
+map (the R338 rulings; each wave's OWNERSHIP.md supersedes it per-task):
 
 | section key | component(s) | CSS sheet(s) |
 |---|---|---|
@@ -125,7 +127,8 @@ dedicated owner; `apps/mobile/**` + mobile workflows belong to the mobile track;
 `scripts/conformance/run.mjs` is the **lead-controlled shared instrument** — section
 agents never edit it; `.github/workflows`, ceilings and baselines are lead-only.
 Cross-dependency: problem's copy-driven line-counts live in platform-owned `Live.tsx`.
-Current round state (section scores, landings, rulings): `docs/redesign/r338/HANDOFF.md`.
+Current round state (wave log, merges, rulings): `docs/redesign/r341/HANDOFF.md` + task
+briefs in `docs/redesign/r341/tasks/`.
 
 ## 5. Adding a section / page / mobile screen
 
@@ -133,7 +136,7 @@ Current round state (section scores, landings, rulings): `docs/redesign/r338/HAN
   `frontend/src/styles/landing/x.css` (component imports its own sheet — see
   `LandingPage.tsx` header note); add the seat + import in `pages/LandingPage.tsx`; add
   `scripts/conformance/mapping/<key>.json` (ourSection/seat ids must match the DOM);
-  measure with `run.mjs`; total bundle must stay ≤777 KB.
+  measure with `run.mjs`; total bundle must stay ≤770 KB.
 - **App page**: `frontend/src/pages/X.tsx` + route in `App.tsx` — mind entry-chunk weight
   (`App.tsx`, `GlobalSearch` are eager; prefer lazy routes); light+dark themes, RTL and
   a11y are contract, and `check-csp-hash.sh` must stay green.
@@ -164,7 +167,7 @@ Current round state (section scores, landings, rulings): `docs/redesign/r338/HAN
 
 ## 7. Never-do list
 
-- Never raise a ceiling (777 / 92 / 110), re-pin the Heron spec baseline
+- Never raise a ceiling (770 / 92 / 110), re-pin the Heron spec baseline
   (`scripts/spec/extract-heron.mjs`), weaken an assertion or test, lower the ratchet, or
   add `continue-on-error`.
 - Never paste Heron (heronaiapp.com) source, text, images or fonts — reproduce MEASURED
@@ -183,12 +186,13 @@ Current round state (section scores, landings, rulings): `docs/redesign/r338/HAN
 - Never write into `node_modules` (worktree installs are hardlink copies — re-copy from
   the main clone if broken).
 
-## 8. Environment notes (r338 sandbox fleet)
+## 8. Environment notes (sandbox fleet)
 
 - 2 CPUs, ~7 GB disk: no parallel builds inside a task; ≤4 concurrent agents.
-- One worktree per task (`/home/z/wt/<task-id>`, branch `r338/<task-id>`), commit AND
-  push after every completed sub-step (agents die without warning); never force-push;
-  continue a dead agent's branch instead of redoing landed work.
+- One worktree per task (`/home/z/wt/<task-id>`, branch `wip/<task-id>` — the r341 law;
+  older rounds used `rNNN/<task-id>`), commit AND push after every completed sub-step
+  (agents die without warning); never force-push; continue a dead agent's branch
+  instead of redoing landed work.
 - Dev servers: each task runs its OWN vite on port 53NN (t04 → 5304) with
   `--strictPort` and points the instrument at it via `run.mjs --url`; never a
   shared/global server; `pkill -f 'vite.*53NN'` when done. `flock` is broken on this box.
