@@ -1,6 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Trophy, Star, Medal, Activity, Crown,
   Target, Headset,
@@ -16,14 +14,14 @@ import { ErrorState, EmptyState, Skeleton, ChartSkeleton, TableSkeleton, CardSke
 import { ChartFrame } from '../../components/charts';
 import { Icon } from '../../components/Icon';
 import { EmojiIcon } from '../../components/EmojiIcon';
-import { useMyAchievements, useLeaderboard, useMySkills, usePosts, useCreatePost, useReactToPost, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useCurrentInstitutionSlug, useStudentDashboard, useTrainingMe, submissionStatusAr, type Post, type StudentMaterial } from '../../hooks/useResources';
+import { useMyAchievements, useLeaderboard, useMySkills, useStudentResults, useMyEnrollments, useNotificationsFeed, useMarkNotifRead, useMarkAllNotifsRead, notifDeepLink, useArExperiences, useStudentMaterials, useFaculties, useCurrentInstitutionSlug, useStudentDashboard, useTrainingMe, submissionStatusAr, type StudentMaterial } from '../../hooks/useResources';
 import { materialHref } from '../../lib/materialHref';
+import { usePostsFeed } from '../../components/community/usePostsFeed';
 import { UNIVERSITY_FACTS } from '../../data/university.facts';
 import { formatNum, formatPct1 } from '../../utils/numbers';
 import { useAuthStore, type InstitutionSummary } from '../../stores/auth.store';
 import { cartesianOptions, chartAnimation, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { arUnit, countAr, timeAgoAr, WEEKDAY_NAMES_AR, formatDateTimeAr } from '../../lib/format';
-import { api, unwrap } from '../../lib/api';
 import { TIER_LABEL, TIER_COLOR } from '../../lib/gamification';
 import { gradeBand, type GradeBandKey } from '../../lib/courseMeta';
 import { PageFrame, PageHeader as PatternPageHeader, RowList, RowItem, StatLine } from '../../components/patterns';
@@ -1290,172 +1288,21 @@ export function ArVrPage() {
 }
 
 /* ─── Social ───────────────────────────────────────────── */
-/* "الأكثر تداولاً" — derived from the loaded feed, never hardcoded:
-   the top hashtags by frequency across the fetched posts (usePosts
-   loads the latest 20). The card is hidden entirely while loading, on
-   error, or when no loaded post carries a hashtag — an honest absence
-   beats a fabricated trend (audit 0-f P1). */
-function topHashtags(posts: Post[] | undefined, limit = 5): Array<{ tag: string; count: number }> {
-  if (!posts?.length) return [];
-  const counts = new Map<string, number>();
-  for (const p of posts) {
-    for (const t of p.hashtags ?? []) counts.set(t, (counts.get(t) ?? 0) + 1);
-  }
-  return [...counts.entries()]
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'ar'))
-    .slice(0, limit);
-}
+/* The trending derivation + the whole feed state machine live in
+   usePostsFeed (shared with the /community PostsFeedPanel). */
 
 export function SocialPage() {
-  const posts = usePosts();
-  const createPost = useCreatePost();
-  const reactToPost = useReactToPost();
-  const qc = useQueryClient();
-  const user = useAuthStore((s) => s.user);
-  /* 5-C5 (A12 P3-3): the composer draft survives reload AND SPA
-   * navigation — sessionStorage keyed by user (a shared lab machine
-   * keeps students' drafts separate), cleared on successful publish.
-   * A draft is content, not state: losing it on a stray refresh was
-   * the audit's cheapest "this platform cares" miss. */
-  const draftKey = `mdrk:social-draft:${user?.id ?? 'me'}`;
-  const [draft, setDraft] = useState<string>(() => {
-    try {
-      return sessionStorage.getItem(draftKey) ?? '';
-    } catch {
-      return ''; // private-mode browsers: the draft stays session-local
-    }
-  });
-  useEffect(() => {
-    try {
-      if (draft) sessionStorage.setItem(draftKey, draft);
-      else sessionStorage.removeItem(draftKey);
-    } catch {
-      /* best-effort persistence only */
-    }
-  }, [draft, draftKey]);
-  const [reactedIds, setReactedIds] = useState<Set<string>>(new Set());
-  /* 5-C5 (5-B1 hand-off): the real un-like. DELETE /posts/:id/react is
-   * own-reaction-only by construction (the compound key pins the
-   * caller), so the pressed heart is now a working toggle instead of
-   * the aria-disabled state-only control it was while the route was
-   * missing. The set below carries THIS session's optimistic
-   * un-presses on top of the server truth. */
-  const [unreactedIds, setUnreactedIds] = useState<Set<string>>(new Set());
-  /* 18-G's viewerReacted (18-F2 consumption): the server's own-reaction
-     truth seeds the hearts — the session-local set above now only rides
-     this session's optimistic toggles on TOP of it (a reload used to
-     un-like the UI while the server reaction persisted). */
-  const serverReactedIds = useMemo(
-    () => new Set((posts.data ?? []).filter((p) => p.viewerReacted).map((p) => p.id)),
-    [posts.data],
-  );
-  const hasReacted = (id: string) =>
-    (serverReactedIds.has(id) || reactedIds.has(id)) && !unreactedIds.has(id);
-  /* Reaction-count snapshot at click time. When a like/un-like succeeds,
-     the ['posts'] invalidation delivers a server count that ALREADY includes
-     the change — max(server, snapshot ± 1) keeps the optimistic delta
-     during flight without double-counting after the refetch (audit
-     0-f P2 double-count risk). */
-  const [reactionBase, setReactionBase] = useState<Record<string, number>>({});
-  /* transient per-post feedback: burst = the scale-pop on the reacted
-     counter, fail = the rollback note with retry */
-  const [burstId, setBurstId] = useState<string | null>(null);
-  const [failedLike, setFailedLike] = useState<{ id: string; mode: 'like' | 'unlike' } | null>(null);
-  const burstTimer = useRef<number | undefined>(undefined);
-  const failTimer = useRef<number | undefined>(undefined);
-  useEffect(() => () => {
-    window.clearTimeout(burstTimer.current);
-    window.clearTimeout(failTimer.current);
-  }, []);
-  /* Server truth arrival (the invalidation's refetch lands) clears the
-     session-local toggles — the pressed states and counts then read
-     straight from the payload, so a stale optimistic delta can never
-     outlive its own refetch (and an un-pressed heart that the server
-     still counts re-syncs to the truth). */
-  useEffect(() => {
-    setReactedIds(new Set());
-    setUnreactedIds(new Set());
-    setReactionBase({});
-  }, [posts.data]);
+  /* The feed's state machine — draft persistence, the optimistic
+   * like/un-like ledger, the reaction snapshots, the trending
+   * derivation — is the SAME machine /community's PostsFeedPanel
+   * renders (usePostsFeed, one shared draft per user, one ledger per
+   * session). This sheet owns only the r319 pattern presentation. */
+  const {
+    user, posts, createPost, draft, setDraft, submit, publish,
+    hasReacted, reactedIds, unreactedIds, reactionBase, burstId, failedLike,
+    onLike, onUnlike, likeInFlight, trending,
+  } = usePostsFeed();
 
-  const publish = () => {
-    if (!draft.trim() || createPost.isPending) return;
-    // Extract simple #hashtags from the body for proper persistence.
-    const tags = (draft.match(/#[\u0600-\u06FF\w_]+/g) ?? []).map((t) => t.slice(1));
-    createPost.mutate(
-      { body: draft.trim(), hashtags: tags },
-      { onSuccess: () => setDraft('') },
-    );
-  };
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    publish();
-  };
-
-  const onLike = (id: string, serverCount: number) => {
-    if (hasReacted(id)) return;
-    setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
-    setReactedIds((prev) => new Set([...prev, id]));
-    // a pending un-like of the same post is superseded by this click
-    setUnreactedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    // reaction burst — fires on interaction only, never idle
-    setBurstId(id);
-    window.clearTimeout(burstTimer.current);
-    burstTimer.current = window.setTimeout(() => setBurstId(null), 700);
-    reactToPost.mutate(
-      { postId: id, kind: 'like' },
-      {
-        onError: () => {
-          // optimistic rollback — the heart and the +1 come back off
-          setReactedIds((prev) => {
-            const next = new Set(prev);
-            next.delete(id);
-            return next;
-          });
-          setFailedLike({ id, mode: 'like' });
-          window.clearTimeout(failTimer.current);
-          failTimer.current = window.setTimeout(() => setFailedLike(null), 5000);
-        },
-      },
-    );
-  };
-
-  /* Un-like — 5-B1's DELETE route wired to the pressed heart (the
-     aria-disabled state-only control it used to be). Own-reaction-only
-     by construction server-side; optimistic un-press + −1 with
-     rollback, and the server's viewerReacted flips on the refetch. */
-  const removeLike = useMutation({
-    mutationFn: (postId: string) =>
-      unwrap<{ ok: boolean }>(api.delete(`/posts/${postId}/react`, { data: { kind: 'like' } })),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
-  });
-  const onUnlike = (id: string, serverCount: number) => {
-    if (!hasReacted(id)) return;
-    setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
-    setUnreactedIds((prev) => new Set([...prev, id]));
-    removeLike.mutate(id, {
-      onError: () => {
-        setUnreactedIds((prev) => {
-          const next = new Set(prev);
-          next.delete(id);
-          return next;
-        });
-        setFailedLike({ id, mode: 'unlike' });
-        window.clearTimeout(failTimer.current);
-        failTimer.current = window.setTimeout(() => setFailedLike(null), 5000);
-      },
-    });
-  };
-
-  const trending = topHashtags(posts.data);
-  const likeInFlight = (id: string) =>
-    (reactToPost.isPending && reactToPost.variables?.postId === id)
-    || (removeLike.isPending && removeLike.variables === id);
 
   return (
     <div className="r319s-page">
