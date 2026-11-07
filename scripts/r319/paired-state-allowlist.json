@@ -137,8 +137,8 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "landing/cta.css :: .fo-cta .btn.ghost:hover,\n  .fo-cta .btn.ghost.probe-hover,\n  .fo-cta .fo-text-link:hover,\n  .fo-cta .fo-text-link.probe-hover",
-      "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
+      "key": "landing/cta.css :: .fo-cta .btn.ghost:is(:hover, :focus-within),\n  .fo-cta .btn.ghost.probe-hover,\n  .fo-cta .fo-text-link:is(:hover, :focus-within),\n  .fo-cta .fo-text-link.probe-hover",
+      "reason": "INK-ONLY hover/focus — no background is declared in any state of this selector: the ground is the inherited surface and the .btn wipe layer (never this rule's background), so the pair cannot half-flip (L1-d: the seat grew its :focus-within keyboard-parity arm, same ink-only voice)"
     },
     {
       "key": "landing/footer.css :: .fo-biglink:hover",
