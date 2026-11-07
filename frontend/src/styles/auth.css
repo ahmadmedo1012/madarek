@@ -148,6 +148,13 @@
   @media (max-width: 920px) {
     .auth-center { padding: var(--sp-5) var(--page-gutter-mobile) var(--sp-9); }
   }
+  /* r340 T-D1a (pages.mjs edge390): the sheet's own mobile inset —
+   * the landing's measured 390 gutter law (x8, the frame's own inset),
+   * scoped to the auth pages only (the app shell keeps its own gutter
+   * system; --sp-2 = the 8px ladder rung). */
+  @media (max-width: 767px) {
+    .auth-center { padding-inline: var(--sp-2); }
+  }
 
   .auth-bottom {
     padding: var(--sp-5) var(--page-gutter);
@@ -266,31 +273,9 @@
 
   /* ══ 3 · THE TITLE BLOCK — sheet label + display heading ════════ */
 
-  /* The mono micro-label row (R315 · K-I): [MDRK-AUTH] · SHEET 01/01 —
-     the drawing sheet's identity line. Latin/technical chrome: the
-     RUN is dir=ltr + uppercase Geist-mono in the markup, aria-hidden
-     (pure decoration, the landing's .sheet-coord precedent); the row
-     itself rides the page's RTL flow so the ::before tick seats at
-     the inline-start edge, mirroring the landing's .fo-label. */
-  .auth-sheet-label {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--sp-2-5);
-    padding-block-start: var(--sp-4);
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
-    text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-faint);
-  }
-  .auth-sheet-label::before {
-    content: '';
-    inline-size: var(--sp-5);
-    block-size: 1px;
-    background: var(--rule-strong);
-  }
+  /* r340 T-D1a — the .auth-sheet-label register (R315 · K-I) is
+     retired: zero markup seats across every auth surface (verified:
+     rg auth-sheet-label frontend/src/pages frontend/src/components → 0).
 
   /* Quiet metadata eyebrow over the form title (imm-5). 13px label
      floor, muted ink, zero tracking. */
@@ -1413,34 +1398,9 @@
     block-size: auto;
   }
 
-  /* r313: the visible code marker — the reference's mono micro-label
-     (Geist Mono, uppercase, LTR, Latin). Arabic keeps the sans ladder
-     everywhere else on the page; this one run is the instrument
-     voice. The AT carrier stays the sr-only span in NotFoundPage.tsx. */
-  .nf-eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    line-height: var(--lh-snug);
-    letter-spacing: 0.08em; /* Latin mono micro-label — the instrument track */
-    text-transform: uppercase;
-    color: var(--accent-ink);
-    margin-block-start: var(--sp-1);
-  }
-
-  /* r313: the coordinate line — the reference's edge coordinate
-     labels (mono, faint, LTR). Decorative. */
-  .nf-coords {
-    font-family: var(--font-mono);
-    font-size: var(--fs-xxs);
-    font-weight: var(--fw-medium);
-    line-height: var(--lh-snug);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    font-variant-numeric: tabular-nums;
-    color: var(--text-faint);
-    margin-block-start: var(--sp-1);
-  }
+  /* r340 T-D1a — .nf-eyebrow/.nf-coords retired (zero markup seats;
+     the r320 settings test asserts their ABSENCE in the DOM — the
+     styles were equally dead). */
 
   .nf-title {
     font-family: var(--font-display);

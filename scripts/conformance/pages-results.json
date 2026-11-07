@@ -1,0 +1,163 @@
+{
+ "generatedAt": "2026-11-07T02:53:06.725Z",
+ "url": "http://localhost:5322/",
+ "dark": true,
+ "routes": {
+  "/auth": {
+   "1440:dark": {
+    "score": 99.8,
+    "axes": {
+     "typeRungs": {
+      "score": 98.64864864864865,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 46.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "مرحبا بعودتك"
+       }
+      ],
+      "total": 74,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 4
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 74
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تسجيل الدخول"
+     }
+    }
+   },
+   "390:dark": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 95.94594594594594,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 31.7557,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "مرحبا بعودتك"
+       },
+       {
+        "fs": 16.4733,
+        "ff": "\"IBM Plex Sans Arabic\", Tajawal, system-",
+        "text": "البريد الإلكتروني أو رقم"
+       },
+       {
+        "fs": 16.4733,
+        "ff": "\"IBM Plex Sans Arabic\", Tajawal, system-",
+        "text": "كلمة المرور"
+       }
+      ],
+      "total": 74,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 4
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 100,
+      "fails": [],
+      "total": 74
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تسجيل الدخول"
+     }
+    }
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}
