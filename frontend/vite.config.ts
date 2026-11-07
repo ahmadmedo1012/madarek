@@ -84,6 +84,15 @@ export default defineConfig({
           react: ['react', 'react-dom', 'react-router-dom'],
           query: ['@tanstack/react-query'],
           charts: ['chart.js', 'react-chartjs-2'],
+          // R341 bundle trim: lucide-react's ~30 shared icons each split
+          // into a per-icon chunk (rollup's granular splitting for shared
+          // leaf modules), duplicating the 183-char ISC license banner +
+          // per-chunk bootstrap overhead ~30×. One vendor chunk carries
+          // the license once. Module graph is one-way (app → icons → the
+          // internal createElement helper), so the static-list TDZ risk
+          // documented above does not apply — verified by the r305 E2E
+          // suite after the change.
+          lucide: ['lucide-react'],
           // NOTE: the v4 cinematic kit (gsap/@gsap/react/lenis/three/@react-three/fiber)
           // was listed here without ever being added to frontend/package.json —
           // Rollup treats manualChunks entries as entry modules, so their mere
