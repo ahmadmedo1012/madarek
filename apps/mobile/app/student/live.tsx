@@ -39,6 +39,13 @@ function joinHint(s: LiveSession): string {
  * live/upcoming/ended sections with the honest status chips, the
  * 10-minutes-early join window hint, attendance-recorded join that
  * opens the Jitsi room in an external browser (disclosed).
+ *
+ * R341 M2 — CTA hierarchy: ONE primary tier per actionable row — the
+ * join («انضمام», charcoal slab, full 48px ≥ 44 floor, terminal row
+ * position); everything else is secondary: recording = hairline ghost
+ * (small, 44 floor), join-window hints = muted ink (the accent hue no
+ * longer rides non-action text — before, N orange accentInk lines
+ * out-shouted the CTA they pointed at).
  */
 export default function LiveScreen() {
   const scope = useInstitutionScope();
@@ -155,7 +162,7 @@ function SessionSection({
                   {dateTime(s.scheduledAt)}
                 </T>
                 {s.status === "LIVE" || s.status === "SCHEDULED" ? (
-                  <T variant="xs" color="accentInk">
+                  <T variant="xs" color="muted">
                     {joinHint(s)}
                   </T>
                 ) : null}
@@ -164,11 +171,10 @@ function SessionSection({
                     <Button
                       label={joinPending === s.id ? "جارٍ الانضمام…" : "انضمام"}
                       kind="primary"
-                      small
                       loading={joinPending === s.id}
                       disabled={!s.joinUrl}
                       onPress={() => onJoin(s.id)}
-                      icon={<MonitorPlay size={14} color={p.accentFg} />}
+                      icon={<MonitorPlay size={16} color={p.primaryFg} />}
                       accessibilityLabel={`انضمام إلى ${s.title}`}
                     />
                   ) : null}
