@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import { Bar, Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS, CategoryScale, LinearScale, BarElement,
@@ -181,6 +182,20 @@ export function OwnerEducationPage() {
         title="النظرة التعليميّة"
         description="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'النظرة التعليميّة' }]}
+        /* R341 D11: the [08] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). */
+        index="08"
+        /* D11 (D8/D10 header-CTA precedent): the overview's sibling
+         * surfaces — the accounts directory behind the teacher
+         * workload buckets (primary) + the institutions whose
+         * faculties the course counts aggregate (ghost).
+         * Navigation-only; the page is read-only. */
+        actions={(
+          <>
+            <Link to="/owner/users" className="btn accent sm">المستخدمون</Link>
+            <Link to="/owner/institutions" className="btn ghost sm">المؤسسات</Link>
+          </>
+        )}
       />
 
       {/* r299: the trend notes died — each one restated its own label
