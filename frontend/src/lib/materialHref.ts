@@ -40,6 +40,8 @@
  * Pure: no React, no routing — the caller decides Link vs <a>.
  */
 
+import { ROUTES } from './routes';
+
 /** A material row subset: everything the helper needs. */
 export interface MaterialHrefInput {
   url: string;
@@ -70,7 +72,10 @@ const PAPER_NS_SEGMENT = '/files/papers/';
 const MATERIAL_NS_SEGMENT = '/files/materials/';
 
 /** The route the viewer hangs off (App.tsx: /document/:filename). */
-const DOCUMENT_ROUTE = '/document';
+/* R341 · Y2: the /document viewer path's canonical home is lib/routes.ts —
+ * the local alias stays (callers keep its name) but now points at the one
+ * constant instead of carrying a private copy of the literal. */
+const DOCUMENT_ROUTE = ROUTES.document;
 
 /** Extract the last path segment of a URL, or null when empty. */
 function lastPathSegment(pathname: string): string | null {

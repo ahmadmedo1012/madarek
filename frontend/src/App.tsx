@@ -2,6 +2,7 @@ import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation, useN
 import { QueryClientProvider } from '@tanstack/react-query';
 import { lazy, Suspense, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { ROUTES } from './lib/routes';
 import { queryClient } from './lib/queryClient';
 import { AppShell, ProtectedRoute } from './components/layout/AppShell';
 import { GuestReveal } from './components/motion';
@@ -313,7 +314,7 @@ function CollegesLayout() {
       <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
       <main id="main" tabIndex={-1} className="content-inner">
         <div style={{ marginBlockEnd: 'var(--sp-6)' }}>
-          <Link to="/" className="btn ghost sm">
+          <Link to={ROUTES.root} className="btn ghost sm">
             <Icon icon={ArrowRight} size={14} />
             العودة إلى الصفحة الرئيسية
           </Link>
@@ -377,30 +378,30 @@ export function AppRoutes() {
         {/* r157 (6A4-11): guest surfaces — authed users bounce to
             their role home after hydration (GuestRoute). */}
         <Route element={<GuestRoute />}>
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/auth/register" element={<RegisterPage />} />
+          <Route path={ROUTES.auth} element={<AuthPage />} />
+          <Route path={ROUTES.authRegister} element={<RegisterPage />} />
           {/* R320 §D (PAGES-GAP §5): the forgot-password flow — both
               guest sheets live INSIDE the GuestRoute block. */}
           <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/auth/reset-password" element={<ResetPasswordPage />} />
         </Route>
         {/* /auth is the canonical login route; /login is a legacy alias. */}
-        <Route path="/login" element={<Navigate to="/auth" replace />} />
+        <Route path={ROUTES.login} element={<Navigate to={ROUTES.auth} replace />} />
         {/* R332 W10a — the three stale typed URLs (supervisor §W10: dead
             links → 404 today) get real seats instead: /register mounts at
             /auth/register (the alias rides the canonical page), the
             universities surface IS the public colleges gallery, and the
             feature-claims ledger «ما يعمل اليوم» is the /capabilities
             route. Decisions: docs/redesign/r332/qa/w10a-routes.md. */}
-        <Route path="/register" element={<Navigate to="/auth/register" replace />} />
-        <Route path="/universities" element={<Navigate to="/colleges" replace />} />
-        <Route path="/features" element={<Navigate to="/capabilities" replace />} />
+        <Route path="/register" element={<Navigate to={ROUTES.authRegister} replace />} />
+        <Route path="/universities" element={<Navigate to={ROUTES.colleges} replace />} />
+        <Route path="/features" element={<Navigate to={ROUTES.capabilities} replace />} />
         {/* R323 §A1 — brand specimen sheet (dev + review evidence). */}
         <Route path="/__brand" element={<BrandPage />} />
         {/* R323 §A5 — the component-system specimen sheet + the
             contrast-gate's sweep target (scripts/r323/contrast-gate.mjs). */}
         <Route path="/__design" element={<DesignPage />} />
-        <Route path="/" element={<HomeRedirect />} />
+        <Route path={ROUTES.root} element={<HomeRedirect />} />
 
         {/* Labs preview — role-permissive mount (A6 P1, wave 22-a;
             restored r155c). /student/labs used to sit inside the
@@ -423,46 +424,46 @@ export function AppRoutes() {
             access). */}
         <Route element={<ProtectedRoute allow={['STUDENT', 'TEACHER']} />}>
           <Route element={<AppShell />}>
-            <Route path="/student/labs" element={<LabsPage />} />
+            <Route path={ROUTES.studentLabs} element={<LabsPage />} />
           </Route>
         </Route>
 
         {/* Student */}
         <Route element={<ProtectedRoute allow={['STUDENT']} />}>
           <Route element={<AppShell />}>
-            <Route path="/student/dashboard" element={<StudentDashboardPage />} />
-            <Route path="/student/calendar" element={<StudentCalendarPage />} />
-            <Route path="/student/courses" element={<StudentCoursesPage />} />
+            <Route path={ROUTES.studentDashboard} element={<StudentDashboardPage />} />
+            <Route path={ROUTES.studentCalendar} element={<StudentCalendarPage />} />
+            <Route path={ROUTES.studentCourses} element={<StudentCoursesPage />} />
             {/* r180-F4: the institution catalogue — the discovery surface the
                 enrolled-courses page deliberately is not. */}
-            <Route path="/student/catalog" element={<CatalogPage />} />
-            <Route path="/student/schedule" element={<SchedulePage />} />
-            <Route path="/student/results" element={<ResultsPage />} />
-            <Route path="/student/library" element={<LibraryPage />} />
-            <Route path="/student/mooc" element={<MoocPage />} />
-            <Route path="/student/jobs" element={<JobsPage />} />
-            <Route path="/student/ai" element={<AiAssistantPage />} />
-            <Route path="/student/gamification" element={<GamificationPage />} />
-            <Route path="/student/skills" element={<SkillsPage />} />
-            <Route path="/student/alerts" element={<AlertsPage />} />
+            <Route path={ROUTES.studentCatalog} element={<CatalogPage />} />
+            <Route path={ROUTES.studentSchedule} element={<SchedulePage />} />
+            <Route path={ROUTES.studentResults} element={<ResultsPage />} />
+            <Route path={ROUTES.studentLibrary} element={<LibraryPage />} />
+            <Route path={ROUTES.studentMooc} element={<MoocPage />} />
+            <Route path={ROUTES.studentJobs} element={<JobsPage />} />
+            <Route path={ROUTES.studentAi} element={<AiAssistantPage />} />
+            <Route path={ROUTES.studentGamification} element={<GamificationPage />} />
+            <Route path={ROUTES.studentSkills} element={<SkillsPage />} />
+            <Route path={ROUTES.studentAlerts} element={<AlertsPage />} />
             {/* r171a: the student messages inbox — mirrors /teacher/messages
                 (same shared inbox, role-specific compose recipients). The
                 DM notification deep link (me.routes.ts) now points here. */}
-            <Route path="/student/messages" element={<StudentMessagesPage />} />
-            <Route path="/student/ar" element={<ArVrPage />} />
-            <Route path="/student/social" element={<SocialPage />} />
-            <Route path="/student/downloads" element={<DownloadsPage />} />
-            <Route path="/student/university" element={<UniversityInfoPage />} />
-            <Route path="/student/live" element={<LivePage />} />
-            <Route path="/student/payment" element={<PaymentPage />} />
-            <Route path="/student/map" element={<CampusMapPage />} />
+            <Route path={ROUTES.studentMessages} element={<StudentMessagesPage />} />
+            <Route path={ROUTES.studentAr} element={<ArVrPage />} />
+            <Route path={ROUTES.studentSocial} element={<SocialPage />} />
+            <Route path={ROUTES.studentDownloads} element={<DownloadsPage />} />
+            <Route path={ROUTES.studentUniversity} element={<UniversityInfoPage />} />
+            <Route path={ROUTES.studentLive} element={<LivePage />} />
+            <Route path={ROUTES.studentPayment} element={<PaymentPage />} />
+            <Route path={ROUTES.studentMap} element={<CampusMapPage />} />
             <Route path="/student/courses/:offeringId" element={<CourseDetailPage />} />
             <Route path="/student/lectures/:lectureId" element={<LecturePlayerPage />} />
-            <Route path="/student/matrix" element={<MatrixPage />} />
-            <Route path="/student/research" element={<StudentResearchPage />} />
-            <Route path="/student/profile" element={<ProfilePage />} />
-            <Route path="/student/webinars" element={<WebinarsPage />} />
-            <Route path="/student/exams" element={<Navigate to="/student/online-exams" replace />} />
+            <Route path={ROUTES.studentMatrix} element={<MatrixPage />} />
+            <Route path={ROUTES.studentResearch} element={<StudentResearchPage />} />
+            <Route path={ROUTES.studentProfile} element={<ProfilePage />} />
+            <Route path={ROUTES.studentWebinars} element={<WebinarsPage />} />
+            <Route path="/student/exams" element={<Navigate to={ROUTES.studentOnlineExams} replace />} />
             {/* r281 (BLUEPRINT §7, 1B's deferred coordinator rows): the
                 top-level community/training/achievements/colleges routes
                 pre-date the nav re-org; stale deep links and old shares of
@@ -470,65 +471,65 @@ export function AppRoutes() {
                 404. Redirect rows only — the targets own the real routes
                 (student-guarded block for training/achievements/community;
                 the public CollegesLayout for colleges). */}
-            <Route path="/student/training" element={<Navigate to="/training" replace />} />
+            <Route path="/student/training" element={<Navigate to={ROUTES.training} replace />} />
             <Route path="/student/training/:slug" element={<ParamRedirect build={(p) => `/training/${p.slug}`} />} />
             <Route path="/student/training/:slug/lesson/:lessonId" element={<ParamRedirect build={(p) => `/training/${p.slug}/lesson/${p.lessonId}`} />} />
-            <Route path="/student/achievements" element={<Navigate to="/achievements" replace />} />
-            <Route path="/student/community" element={<Navigate to="/community" replace />} />
-            <Route path="/student/colleges" element={<Navigate to="/colleges" replace />} />
-            <Route path="/training" element={<TrainingCatalogPage />} />
+            <Route path="/student/achievements" element={<Navigate to={ROUTES.achievements} replace />} />
+            <Route path="/student/community" element={<Navigate to={ROUTES.community} replace />} />
+            <Route path="/student/colleges" element={<Navigate to={ROUTES.colleges} replace />} />
+            <Route path={ROUTES.training} element={<TrainingCatalogPage />} />
             <Route path="/training/:slug" element={<TrainingTrackPage />} />
             <Route path="/training/:slug/lesson/:lessonId" element={<TrainingLessonPage />} />
-            <Route path="/achievements" element={<AchievementsPage />} />
-            <Route path="/student/online-exams" element={<OnlineExamsPage />} />
+            <Route path={ROUTES.achievements} element={<AchievementsPage />} />
+            <Route path={ROUTES.studentOnlineExams} element={<OnlineExamsPage />} />
             <Route path="/student/online-exams/:id" element={<ExamTakerPage />} />
-            <Route path="/community" element={<CommunityPage />} />
+            <Route path={ROUTES.community} element={<CommunityPage />} />
           </Route>
         </Route>
 
         {/* Teacher */}
         <Route element={<ProtectedRoute allow={['TEACHER']} />}>
           <Route element={<AppShell />}>
-            <Route path="/teacher/dashboard" element={<TeacherDashboardPage />} />
-            <Route path="/teacher/schedule" element={<TeacherSchedulePage />} />
-            <Route path="/teacher/attendance" element={<AttendancePage />} />
-            <Route path="/teacher/grades" element={<GradesPage />} />
-            <Route path="/teacher/materials" element={<MaterialsPage />} />
-            <Route path="/teacher/research" element={<ResearchPage />} />
-            <Route path="/teacher/students" element={<StudentsListPage />} />
-            <Route path="/teacher/performance" element={<PerformancePage />} />
-            <Route path="/teacher/assignments" element={<AssignmentsPage />} />
-            <Route path="/teacher/exams" element={<ExamAuthoringPage />} />
+            <Route path={ROUTES.teacherDashboard} element={<TeacherDashboardPage />} />
+            <Route path={ROUTES.teacherSchedule} element={<TeacherSchedulePage />} />
+            <Route path={ROUTES.teacherAttendance} element={<AttendancePage />} />
+            <Route path={ROUTES.teacherGrades} element={<GradesPage />} />
+            <Route path={ROUTES.teacherMaterials} element={<MaterialsPage />} />
+            <Route path={ROUTES.teacherResearch} element={<ResearchPage />} />
+            <Route path={ROUTES.teacherStudents} element={<StudentsListPage />} />
+            <Route path={ROUTES.teacherPerformance} element={<PerformancePage />} />
+            <Route path={ROUTES.teacherAssignments} element={<AssignmentsPage />} />
+            <Route path={ROUTES.teacherExams} element={<ExamAuthoringPage />} />
             <Route path="/teacher/exams/:templateId" element={<ExamTemplateDetailPage />} />
-            <Route path="/teacher/messages" element={<MessagesPage />} />
-            <Route path="/teacher/ai" element={<AiAssistantPage />} />
-            <Route path="/teacher/library" element={<LibraryPage />} />
-            <Route path="/teacher/alerts" element={<AlertsPage />} />
-            <Route path="/teacher/intelligence" element={<TeacherIntelligencePage />} />
+            <Route path={ROUTES.teacherMessages} element={<MessagesPage />} />
+            <Route path={ROUTES.teacherAi} element={<AiAssistantPage />} />
+            <Route path={ROUTES.teacherLibrary} element={<LibraryPage />} />
+            <Route path={ROUTES.teacherAlerts} element={<AlertsPage />} />
+            <Route path={ROUTES.teacherIntelligence} element={<TeacherIntelligencePage />} />
             <Route path="/teacher/intelligence/:offeringId" element={<TeacherOfferingDetailPage />} />
-            <Route path="/teacher/profile" element={<TeacherProfilePage />} />
-            <Route path="/teacher/live" element={<TeacherLivePage />} />
-            <Route path="/teacher/labs" element={<TeacherLabsPage />} />
-            <Route path="/teacher/community" element={<CommunityPage />} />
+            <Route path={ROUTES.teacherProfile} element={<TeacherProfilePage />} />
+            <Route path={ROUTES.teacherLive} element={<TeacherLivePage />} />
+            <Route path={ROUTES.teacherLabs} element={<TeacherLabsPage />} />
+            <Route path={ROUTES.teacherCommunity} element={<CommunityPage />} />
           </Route>
         </Route>
 
         {/* Admin */}
         <Route element={<ProtectedRoute allow={['ADMIN']} />}>
           <Route element={<AppShell />}>
-            <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
-            <Route path="/admin/students" element={<AdminStudentsPage />} />
-            <Route path="/admin/teachers" element={<AdminTeachersPage />} />
+            <Route path={ROUTES.adminDashboard} element={<AdminDashboardPage />} />
+            <Route path={ROUTES.adminStudents} element={<AdminStudentsPage />} />
+            <Route path={ROUTES.adminTeachers} element={<AdminTeachersPage />} />
             <Route path="/admin/permissions/:id" element={<AdminPermissionsPage />} />
-            <Route path="/admin/sync" element={<AdminSyncPage />} />
-            <Route path="/admin/community" element={<CommunityPage />} />
-            <Route path="/admin/faculties" element={<AdminFacultiesPage />} />
-            <Route path="/admin/courses" element={<AdminCoursesPage />} />
+            <Route path={ROUTES.adminSync} element={<AdminSyncPage />} />
+            <Route path={ROUTES.adminCommunity} element={<CommunityPage />} />
+            <Route path={ROUTES.adminFaculties} element={<AdminFacultiesPage />} />
+            <Route path={ROUTES.adminCourses} element={<AdminCoursesPage />} />
             <Route path="/admin/analysis" element={<AdminAnalysisPage />} />
-            <Route path="/admin/digital" element={<AdminDigitalPage />} />
-            <Route path="/admin/reports" element={<AdminReportsPage />} />
-            <Route path="/admin/settings" element={<AdminSettingsPage />} />
-            <Route path="/admin/alerts" element={<AlertsPage />} />
+            <Route path={ROUTES.adminDigital} element={<AdminDigitalPage />} />
+            <Route path={ROUTES.adminReports} element={<AdminReportsPage />} />
+            <Route path={ROUTES.adminSettings} element={<AdminSettingsPage />} />
+            <Route path={ROUTES.adminAlerts} element={<AlertsPage />} />
           </Route>
         </Route>
 
@@ -543,53 +544,53 @@ export function AppRoutes() {
             يمثّل حقيقة الدور الافتراضية — الارتداد إلى لوحة المسجل العام. */}
         <Route element={<ProtectedRoute allow={['QUALITY']} />}>
           <Route element={<AppShell />}>
-            <Route path="/quality/dashboard" element={<QualityDashboardPage />} />
-            <Route path="/quality/courses" element={<QualityCoursesPage />} />
-            <Route path="/quality/professors" element={<QualityProfessorsPage />} />
-            <Route path="/quality/engagement" element={<QualityEngagementPage />} />
-            <Route path="/quality/reports" element={<QualityReportsPage />} />
-            <Route path="/quality/curriculum" element={<QualityCurriculumPage />} />
+            <Route path={ROUTES.qualityDashboard} element={<QualityDashboardPage />} />
+            <Route path={ROUTES.qualityCourses} element={<QualityCoursesPage />} />
+            <Route path={ROUTES.qualityProfessors} element={<QualityProfessorsPage />} />
+            <Route path={ROUTES.qualityEngagement} element={<QualityEngagementPage />} />
+            <Route path={ROUTES.qualityReports} element={<QualityReportsPage />} />
+            <Route path={ROUTES.qualityCurriculum} element={<QualityCurriculumPage />} />
             {/* r165d (D2): the QUALITY personal notifications inbox — the
                 shared AlertsPage (MorePages) the bell needs. Mirrors the
                 /student/alerts · /teacher/alerts · /admin/alerts mounts
                 exactly (same page component, same lazy const, inside the
                 role shell). The operational /quality/alerts board below
                 stays untouched — the sidebar keeps its own link to it. */}
-            <Route path="/quality/notifications" element={<AlertsPage />} />
-            <Route path="/quality/alerts" element={<QualityAlertsPage />} />
-            <Route path="/quality/exam-moderation" element={<ExamModerationPage />} />
-            <Route path="/quality/community" element={<CommunityPage />} />
+            <Route path={ROUTES.qualityNotifications} element={<AlertsPage />} />
+            <Route path={ROUTES.qualityAlerts} element={<QualityAlertsPage />} />
+            <Route path={ROUTES.qualityExamModeration} element={<ExamModerationPage />} />
+            <Route path={ROUTES.qualityCommunity} element={<CommunityPage />} />
           </Route>
         </Route>
 
         {/* Owner */}
         <Route element={<ProtectedRoute allow={['OWNER']} />}>
           <Route element={<AppShell />}>
-            <Route path="/owner/dashboard" element={<OwnerDashboardPage />} />
-            <Route path="/owner/users" element={<OwnerUsersPage />} />
+            <Route path={ROUTES.ownerDashboard} element={<OwnerDashboardPage />} />
+            <Route path={ROUTES.ownerUsers} element={<OwnerUsersPage />} />
             {/* r178: institution console (see the lazy import above). */}
-            <Route path="/owner/institutions" element={<OwnerInstitutionsPage />} />
+            <Route path={ROUTES.ownerInstitutions} element={<OwnerInstitutionsPage />} />
             {/* r181 (phase-8 owner setup): ONE institution's academic
                 setup context — faculties → departments → courses →
                 offerings, every write explicitly bound to the selected
                 institution (see OwnerInstitutionDetailPage). */}
             <Route path="/owner/institutions/:slug" element={<OwnerInstitutionDetailPage />} />
-            <Route path="/owner/activity" element={<OwnerActivityPage />} />
-            <Route path="/owner/content" element={<OwnerContentPage />} />
-            <Route path="/owner/system" element={<OwnerSystemPage />} />
-            <Route path="/owner/education" element={<OwnerEducationPage />} />
-            <Route path="/owner/realtime" element={<OwnerRealtimePage />} />
-            <Route path="/owner/ai" element={<OwnerAiPage />} />
+            <Route path={ROUTES.ownerActivity} element={<OwnerActivityPage />} />
+            <Route path={ROUTES.ownerContent} element={<OwnerContentPage />} />
+            <Route path={ROUTES.ownerSystem} element={<OwnerSystemPage />} />
+            <Route path={ROUTES.ownerEducation} element={<OwnerEducationPage />} />
+            <Route path={ROUTES.ownerRealtime} element={<OwnerRealtimePage />} />
+            <Route path={ROUTES.ownerAi} element={<OwnerAiPage />} />
             {/* r165d (D2): the OWNER personal notifications inbox — the
                 shared AlertsPage (MorePages) the bell needs. Mirrors the
                 /student/alerts · /teacher/alerts · /admin/alerts mounts
                 exactly. The operational /owner/alerts board below stays
                 untouched — the sidebar keeps its own link to it. */}
-            <Route path="/owner/notifications" element={<AlertsPage />} />
-            <Route path="/owner/alerts" element={<OwnerAlertsPage />} />
-            <Route path="/owner/governance" element={<OwnerGovernancePage />} />
+            <Route path={ROUTES.ownerNotifications} element={<AlertsPage />} />
+            <Route path={ROUTES.ownerAlerts} element={<OwnerAlertsPage />} />
+            <Route path={ROUTES.ownerGovernance} element={<OwnerGovernancePage />} />
             {/* r323 B3.6 — the pilot feedback loop's inbox. */}
-            <Route path="/owner/feedback" element={<FeedbackInboxPage />} />
+            <Route path={ROUTES.ownerFeedback} element={<FeedbackInboxPage />} />
           </Route>
         </Route>
 
@@ -600,7 +601,7 @@ export function AppRoutes() {
             the authed routers). 761eaf4 had silently pushed these under a
             bare <ProtectedRoute/> and bounced every guest to /auth. */}
         <Route element={<CollegesLayout />}>
-          <Route path="/colleges" element={<CollegesIndexPage />} />
+          <Route path={ROUTES.colleges} element={<CollegesIndexPage />} />
           <Route path="/colleges/leaderboard" element={<CollegesLeaderboardPage />} />
           <Route path="/colleges/:id" element={<CollegeDetailPage />} />
         </Route>
@@ -619,7 +620,7 @@ export function AppRoutes() {
           )}
         />
         <Route
-          path="/capabilities"
+          path={ROUTES.capabilities}
           element={(
             <GuestReveal>
               <CapabilitiesPage />
@@ -717,13 +718,13 @@ export function AppRoutes() {
         {/* Vision (any authenticated role) */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AppShell />}>
-            <Route path="/vision" element={<VisionGalleryPage />} />
+            <Route path={ROUTES.vision} element={<VisionGalleryPage />} />
             {/* R320 cycle-3 (P2-1): any-authed account settings — the
                 shared door every role's nav carries (nav.ts). */}
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path={ROUTES.settings} element={<SettingsPage />} />
             <Route path="/vision/:slug" element={<VisionDetailPage />} />
             <Route path="/document/:filename" element={<DocumentViewerPage />} />
-            <Route path="/competitions" element={<CompetitionsIndexPage />} />
+            <Route path={ROUTES.competitions} element={<CompetitionsIndexPage />} />
             <Route path="/competitions/:id" element={<CompetitionDetailPage />} />
           </Route>
         </Route>
@@ -795,7 +796,7 @@ function ScrollResetOnPush() {
  * test (tests/motion/r311-cursor-ownership.test.tsx). */
 export function RoutedCursorManager() {
   const { pathname } = useLocation();
-  return <CursorManager suspended={pathname === '/'} />;
+  return <CursorManager suspended={pathname === ROUTES.root} />;
 }
 
 /* ──────────────────────────────────────────────────────────────────
@@ -852,10 +853,10 @@ function isGuestWindowSurface(pathname: string, hasUser: boolean): boolean {
      bounce to the role home, '/colleges*' renders inside AppShell. */
   if (
     hasUser &&
-    (pathname === '/' ||
-      pathname === '/auth' ||
-      pathname === '/auth/register' ||
-      pathname === '/login' ||
+    (pathname === ROUTES.root ||
+      pathname === ROUTES.auth ||
+      pathname === ROUTES.authRegister ||
+      pathname === ROUTES.login ||
       pathname.startsWith('/colleges'))
   ) {
     return false;
