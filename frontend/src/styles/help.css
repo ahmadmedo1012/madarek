@@ -102,7 +102,31 @@
      the type-census H1 seat, ≤32px @390, ≤3 lines — the D2 finding). */
   .hp .pf-page-title { font-size: var(--fs-d2); }
 
-  /* ══ 3 · THE FAQ ACCORDION — nine native details/summary ════════ */
+  /* ══ 3 · THE VOICES — mono, code, link (help-scoped) ═════════════ */
+
+  .hp-mono {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hp-code {
+    color: var(--accent-ink);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.02em;
+  }
+
+  /* quiet in-document links (hairline underline, accent ink) */
+  .hp-link {
+    color: var(--accent-ink);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding-block-end: var(--sp-0-5);
+  }
+
+  /* ══ 4 · THE FAQ ACCORDION — nine native details/summary ════════ */
 
   /* the hairline slab: radius 0, 1px rule, the paper wash — the sheet's
      one list container (the [nn] numerals + the h2 questions inside
@@ -187,30 +211,6 @@
 
   @media (max-width: 640px) {
     .hp-faq-a { padding-inline-start: var(--sp-5); }
-  }
-
-  /* ══ 4 · THE VOICES — mono, code, link (help-scoped) ═════════════ */
-
-  .hp-mono {
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .hp-code {
-    color: var(--accent-ink);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.02em;
-  }
-
-  /* quiet in-document links (hairline underline, accent ink) */
-  .hp-link {
-    color: var(--accent-ink);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
-    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    padding-block-end: var(--sp-0-5);
   }
 
   /* ══ 4b · THE CTA PAIR — the sheet's own actions (the pages.mjs
