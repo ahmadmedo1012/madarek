@@ -3,31 +3,26 @@
  *
  * A magnifier over a quiet dotted field; the lens holds a single dash
  — nothing found. The handle drops straight down and every mark is
- * centred, so the piece reads identically in RTL and LTR.
+ centred, so the piece reads identically in RTL and LTR.
  *
  * Family: r313 two-tone — ink + paper + signal (--accent is unused
  * here; the halo rides the paper step --neutral-100). No text.
  * RTL: direction-neutral by design (no mirroring).
  */
+import { dotted, ILL_PAPER, ILL_STROKE, IllSvg, NEUTRAL_100 } from './shell';
+
 export default function EmptySearch() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* the halo — the paper step, one rung off the ground */}
-      <circle cx="100" cy="100" r="64" fill="var(--neutral-100)" />
+      <circle cx="100" cy="100" r="64" fill={NEUTRAL_100} />
       {/* the lens */}
       <circle
         cx="100"
         cy="92"
         r="30"
-        fill="var(--ill-paper)"
-        stroke="var(--ill-stroke)"
+        fill={ILL_PAPER}
+        stroke={ILL_STROKE}
         strokeWidth="2"
       />
       {/* the empty answer: one quiet dash */}
@@ -36,7 +31,7 @@ export default function EmptySearch() {
         y1="92"
         x2="110"
         y2="92"
-        stroke="var(--ill-stroke)"
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeOpacity="0.45"
@@ -47,7 +42,7 @@ export default function EmptySearch() {
         y1="126"
         x2="100"
         y2="144"
-        stroke="var(--ill-stroke)"
+        stroke={ILL_STROKE}
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -57,12 +52,8 @@ export default function EmptySearch() {
         y1="160"
         x2="136"
         y2="160"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.35"
+        {...dotted(ILL_STROKE, '0.35')}
       />
-    </svg>
+    </IllSvg>
   );
 }

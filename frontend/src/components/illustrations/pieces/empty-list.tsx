@@ -10,32 +10,34 @@
  * every corner is square (the Heron drafting grammar). No text.
  * RTL: centred composition — direction-neutral by design.
  */
+import {
+  ACCENT,
+  dotted,
+  ILL_PAPER,
+  ILL_STROKE,
+  IllSvg,
+  NEUTRAL_100,
+} from './shell';
+
 export default function EmptyList() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* the tab (drawn first so the sheet edge overlaps its base) */}
-      <rect x="90" y="26" width="20" height="16" fill="var(--accent)" />
+      <rect x="90" y="26" width="20" height="16" fill={ACCENT} />
       {/* the sheet */}
       <rect
         x="52"
         y="38"
         width="96"
         height="124"
-        fill="var(--ill-paper)"
-        stroke="var(--ill-stroke)"
+        fill={ILL_PAPER}
+        stroke={ILL_STROKE}
         strokeWidth="2"
       />
       {/* ghost rows (tint pills, all centred) */}
-      <rect x="76" y="58" width="48" height="10" fill="var(--neutral-100)" />
-      <rect x="64" y="80" width="72" height="10" fill="var(--neutral-100)" />
-      <rect x="76" y="102" width="48" height="10" fill="var(--neutral-100)" />
+      <rect x="76" y="58" width="48" height="10" fill={NEUTRAL_100} />
+      <rect x="64" y="80" width="72" height="10" fill={NEUTRAL_100} />
+      <rect x="76" y="102" width="48" height="10" fill={NEUTRAL_100} />
       {/* the dotted slot where the first entry lands */}
       <rect
         x="60"
@@ -43,12 +45,8 @@ export default function EmptyList() {
         width="80"
         height="18"
         fill="none"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.55"
+        {...dotted(ILL_STROKE, '0.55')}
       />
-    </svg>
+    </IllSvg>
   );
 }

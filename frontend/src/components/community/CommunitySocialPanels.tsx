@@ -18,8 +18,6 @@
  * the .post / .social / .trend families (student.css — eager via
  * main.tsx). No new stylesheet rules; tokens only.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -33,15 +31,14 @@ import { ErrorState, EmptyState, Skeleton } from '../primitives/States';
 import { Modal } from '../overlays';
 import { Icon } from '../Icon';
 import {
-  usePosts, useCreatePost, useReactToPost,
   useStudyRooms, useCreateStudyRoom, useJoinStudyRoom, useLeaveStudyRoom,
-  type Post, type StudyRoomRow,
+  type StudyRoomRow,
 } from '../../hooks/useResources';
 import { useAuthStore } from '../../stores/auth.store';
 import { useDiscardGuard } from '../curriculum/AuthoringModal';
 import { formatDate, formatNum } from '../../utils/numbers';
 import { arUnit, timeAgoAr } from '../../lib/format';
-import { api, unwrap } from '../../lib/api';
+import { usePostsFeed } from './usePostsFeed';
 
 /* ─────────────────────────── Study rooms ────────────────────────── */
 
@@ -223,161 +220,21 @@ export function CreateStudyRoomModal({ onClose }: { onClose: () => void }) {
 }
 
 /* ─────────────────────── Posts feed (tab) ───────────────────────── */
-
-/* "الأكثر تداولاً" — derived from the loaded feed, never hardcoded:
-   the top hashtags by frequency across the fetched posts (usePosts
-   loads the latest 20). The card hides entirely while loading, on
-   error, or when no loaded post carries a hashtag (the SocialPage
-   contract — honest absence over fabricated trends). */
-function topHashtags(posts: Post[] | undefined, limit = 5): Array<{ tag: string; count: number }> {
-  if (!posts?.length) return [];
-  const counts = new Map<string, number>();
-  for (const p of posts) {
-    for (const t of p.hashtags ?? []) counts.set(t, (counts.get(t) ?? 0) + 1);
-  }
-  return [...counts.entries()]
-    .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'ar'))
-    .slice(0, limit);
-}
+/* The trending derivation + the whole feed state machine live in
+   usePostsFeed (shared with SocialPage — see that module's header). */
 
 /** The «المنشورات» tab body — the community posts feed (the SocialPage
  *  feed port: composer + post cards + trending rail). Role-agnostic:
  *  every role on /community surfaces gets the same feed the students'
- *  /student/social renders, from the same hooks. */
+ *  /student/social renders, from the same hooks. The feed's state
+ *  machine itself is shared with SocialPage via usePostsFeed (see its
+ *  header) — this sheet owns only the presentation. */
 export function PostsFeedPanel() {
-  const posts = usePosts();
-  const createPost = useCreatePost();
-  const reactToPost = useReactToPost();
-  const qc = useQueryClient();
-  const user = useAuthStore((s) => s.user);
-  /* Composer draft persistence (the SocialPage contract): sessionStorage
-   * keyed by user — a draft is content, losing it on a stray refresh or
-   * a tab switch would be the same "this platform cares" miss on this
-   * surface. The KEY is identical to SocialPage's, so a user active on
-   * both surfaces keeps ONE draft, never two diverging copies. */
-  const draftKey = `mdrk:social-draft:${user?.id ?? 'me'}`;
-  const [draft, setDraft] = useState<string>(() => {
-    try {
-      return sessionStorage.getItem(draftKey) ?? '';
-    } catch {
-      return ''; // private-mode browsers: the draft stays session-local
-    }
-  });
-  useEffect(() => {
-    try {
-      if (draft) sessionStorage.setItem(draftKey, draft);
-      else sessionStorage.removeItem(draftKey);
-    } catch {
-      /* best-effort persistence only */
-    }
-  }, [draft, draftKey]);
-
-  const [reactedIds, setReactedIds] = useState<Set<string>>(new Set());
-  /* The real un-like. DELETE /posts/:id/react is own-reaction-only by
-   * construction, so the pressed heart is a working toggle (the
-   * SocialPage logic). The set below carries THIS session's optimistic
-   * un-presses on top of the server truth. */
-  const [unreactedIds, setUnreactedIds] = useState<Set<string>>(new Set());
-  /* viewerReacted seeds the hearts — the session-local sets only ride
-   * this session's optimistic toggles ON TOP of it. */
-  const serverReactedIds = useMemo(
-    () => new Set((posts.data ?? []).filter((p) => p.viewerReacted).map((p) => p.id)),
-    [posts.data],
-  );
-  const hasReacted = (id: string) =>
-    (serverReactedIds.has(id) || reactedIds.has(id)) && !unreactedIds.has(id);
-  /* Reaction-count snapshot at click time: max(server, snapshot ± 1)
-   * keeps the optimistic delta during flight without double-counting
-   * after the invalidation's refetch lands. */
-  const [reactionBase, setReactionBase] = useState<Record<string, number>>({});
-  const [burstId, setBurstId] = useState<string | null>(null);
-  const [failedLike, setFailedLike] = useState<{ id: string; mode: 'like' | 'unlike' } | null>(null);
-  const burstTimer = useRef<number | undefined>(undefined);
-  const failTimer = useRef<number | undefined>(undefined);
-  useEffect(() => () => {
-    window.clearTimeout(burstTimer.current);
-    window.clearTimeout(failTimer.current);
-  }, []);
-  /* Server truth arrival clears the session-local toggles — pressed
-   * states and counts then read straight from the payload. */
-  useEffect(() => {
-    setReactedIds(new Set());
-    setUnreactedIds(new Set());
-    setReactionBase({});
-  }, [posts.data]);
-
-  const publish = () => {
-    if (!draft.trim() || createPost.isPending) return;
-    // Extract simple #hashtags from the body for proper persistence.
-    const tags = (draft.match(/#[\u0600-\u06FF\w_]+/g) ?? []).map((t) => t.slice(1));
-    createPost.mutate(
-      { body: draft.trim(), hashtags: tags },
-      { onSuccess: () => setDraft('') },
-    );
-  };
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    publish();
-  };
-
-  const onLike = (id: string, serverCount: number) => {
-    if (hasReacted(id)) return;
-    setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
-    setReactedIds((prev) => new Set([...prev, id]));
-    setUnreactedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(id);
-      return next;
-    });
-    setBurstId(id);
-    window.clearTimeout(burstTimer.current);
-    burstTimer.current = window.setTimeout(() => setBurstId(null), 700);
-    reactToPost.mutate(
-      { postId: id, kind: 'like' },
-      {
-        onError: () => {
-          setReactedIds((prev) => {
-            const next = new Set(prev);
-            next.delete(id);
-            return next;
-          });
-          setFailedLike({ id, mode: 'like' });
-          window.clearTimeout(failTimer.current);
-          failTimer.current = window.setTimeout(() => setFailedLike(null), 5000);
-        },
-      },
-    );
-  };
-
-  /* Un-like — the SocialPage inline DELETE mutation, verbatim. */
-  const removeLike = useMutation({
-    mutationFn: (postId: string) =>
-      unwrap<{ ok: boolean }>(api.delete(`/posts/${postId}/react`, { data: { kind: 'like' } })),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['posts'] }),
-  });
-  const onUnlike = (id: string, serverCount: number) => {
-    if (!hasReacted(id)) return;
-    setReactionBase((prev) => ({ ...prev, [id]: serverCount }));
-    setUnreactedIds((prev) => new Set([...prev, id]));
-    removeLike.mutate(id, {
-      onError: () => {
-        setUnreactedIds((prev) => {
-          const next = new Set(prev);
-          next.delete(id);
-          return next;
-        });
-        setFailedLike({ id, mode: 'unlike' });
-        window.clearTimeout(failTimer.current);
-        failTimer.current = window.setTimeout(() => setFailedLike(null), 5000);
-      },
-    });
-  };
-
-  const trending = topHashtags(posts.data);
-  const likeInFlight = (id: string) =>
-    (reactToPost.isPending && reactToPost.variables?.postId === id)
-    || (removeLike.isPending && removeLike.variables === id);
+  const {
+    user, posts, createPost, draft, setDraft, submit, publish,
+    hasReacted, reactedIds, unreactedIds, reactionBase, burstId, failedLike,
+    onLike, onUnlike, likeInFlight, trending,
+  } = usePostsFeed();
 
   return (
     <div className="grid-2-1">

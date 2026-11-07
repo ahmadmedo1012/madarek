@@ -21,7 +21,7 @@ import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
 import { useCompactRosterBand } from '../admin/AdminPages'; // R341 deadcode reconciliation — one definition (see the Professor Evaluation note)
-import { useReducedMotion } from '../../components/motion';
+import { CountIn } from '../../components/motion/CountIn';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { formatRelativeArShort, WEEKDAY_NAMES_AR, countAr } from '../../lib/format';
@@ -297,63 +297,9 @@ const useQualityAlerts = () => {
  * (Replicated from the wave 4-a DashboardPage helper — promote both
  * copies into a shared hooks module in a lib-owning wave.)
  */
-function motionTokenMs(token: string): number {
-  if (typeof document === 'undefined') return 0;
-  const raw = getComputedStyle(document.documentElement).getPropertyValue(token).trim();
-  if (!raw.endsWith('ms')) return 0;
-  const ms = parseFloat(raw);
-  return Number.isFinite(ms) ? ms : 0;
-}
+/* CountIn + motionTokenMs live in the motion kit now (the r341/A-Medic
+ * promotion of this file's byte-copy twin — see components/motion/CountIn). */
 
-/**
- * CountIn — the in-app data edition of the count-up reveal (first paint
- * only: mounts on the settled value and counts toward it; later value
- * changes render instantly; instant under prefers-reduced-motion).
- * Replicated from wave 4-a's DashboardPage per the wave 5-c mission —
- * extracting a shared hook would mean touching DashboardPage, which is
- * outside this wave's file scope. Same contract, same easing.
- */
-function CountIn({ value, suffix = '' }: { value: number; suffix?: string }) {
-  const reducedMotion = useReducedMotion();
-  const [display, setDisplay] = useState(value);
-  const settled = useRef(false);
-
-  useEffect(() => {
-    if (settled.current || reducedMotion || !Number.isFinite(value)) {
-      setDisplay(value);
-      if (!reducedMotion) settled.current = true;
-      return;
-    }
-    // Mirrors --motion-duration-stat (700ms); 0 only when the token is
-    // unreadable, in which case the division below settles on frame one.
-    const duration = motionTokenMs('--motion-duration-stat') || 700;
-    let raf = 0;
-    let start = 0;
-    const tick = (t: number) => {
-      if (!start) start = t;
-      const p = Math.min((t - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - p, 4); // exponential ease-out
-      setDisplay(value * eased);
-      if (p < 1) raf = requestAnimationFrame(tick);
-      else settled.current = true;
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [value, reducedMotion]);
-
-  // Fractional values (e.g. 4.2/5) keep one decimal, integers none —
-  // the settled render matches the raw API value exactly.
-  const decimals = Number.isInteger(value) ? 0 : 1;
-  return (
-    <>
-      {formatNum(display, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })}
-      {suffix}
-    </>
-  );
-}
 
 /* ════════════════════════════════════════════════════════════════
    R190 (D4): the StatStrip's own shape-matched skeleton — the

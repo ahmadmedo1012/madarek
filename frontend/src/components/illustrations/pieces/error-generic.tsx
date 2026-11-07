@@ -9,24 +9,19 @@
  * needed. Square ports. No text. RTL: mirror-symmetric —
  * direction-neutral.
  */
+import { ACCENT, dotted, ILL_PAPER, ILL_STROKE, IllSvg } from './shell';
+
 export default function ErrorGeneric() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* the two ports */}
       <rect
         x="36"
         y="88"
         width="28"
         height="24"
-        fill="var(--ill-paper)"
-        stroke="var(--ill-stroke)"
+        fill={ILL_PAPER}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       <rect
@@ -34,8 +29,8 @@ export default function ErrorGeneric() {
         y="88"
         width="28"
         height="24"
-        fill="var(--ill-paper)"
-        stroke="var(--ill-stroke)"
+        fill={ILL_PAPER}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       {/* the flow line, snapped */}
@@ -44,7 +39,7 @@ export default function ErrorGeneric() {
         y1="100"
         x2="86"
         y2="100"
-        stroke="var(--ill-stroke)"
+        stroke={ILL_STROKE}
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -53,7 +48,7 @@ export default function ErrorGeneric() {
         y1="100"
         x2="132"
         y2="100"
-        stroke="var(--ill-stroke)"
+        stroke={ILL_STROKE}
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -63,28 +58,20 @@ export default function ErrorGeneric() {
         y1="112"
         x2="84"
         y2="112"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.35"
+        {...dotted(ILL_STROKE, '0.35')}
       />
       <line
         x1="116"
         y1="112"
         x2="132"
         y2="112"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.35"
+        {...dotted(ILL_STROKE, '0.35')}
       />
       {/* the break, lit */}
       <path
         d="M 100 89 Q 100 100 111 100 Q 100 100 100 111 Q 100 100 89 100 Q 100 100 100 89 Z"
-        fill="var(--accent)"
+        fill={ACCENT}
       />
-    </svg>
+    </IllSvg>
   );
 }

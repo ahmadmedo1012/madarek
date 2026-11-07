@@ -10,24 +10,26 @@
  * grammar. No text. RTL: the row reads as a shelf in either
  * direction — no mirroring needed.
  */
+import {
+  ACCENT,
+  dotted,
+  ILL_PAPER,
+  ILL_STROKE,
+  IllSvg,
+  NEUTRAL_100,
+} from './shell';
+
 export default function EmptyLibrary() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* spine 1 — paper step */}
       <rect
         x="50"
         y="76"
         width="22"
         height="64"
-        fill="var(--neutral-100)"
-        stroke="var(--ill-stroke)"
+        fill={NEUTRAL_100}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       {/* spine 2 — paper, with a signal binding dot */}
@@ -36,11 +38,11 @@ export default function EmptyLibrary() {
         y="66"
         width="22"
         height="74"
-        fill="var(--ill-paper)"
-        stroke="var(--ill-stroke)"
+        fill={ILL_PAPER}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
-      <circle cx="87" cy="80" r="2.5" fill="var(--accent)" />
+      <circle cx="87" cy="80" r="2.5" fill={ACCENT} />
       {/* the empty slot — dotted outline */}
       <rect
         x="102"
@@ -48,11 +50,7 @@ export default function EmptyLibrary() {
         width="22"
         height="68"
         fill="none"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.5"
+        {...dotted(ILL_STROKE, '0.5')}
       />
       {/* spine 3 — signal */}
       <rect
@@ -60,8 +58,8 @@ export default function EmptyLibrary() {
         y="80"
         width="22"
         height="60"
-        fill="var(--accent)"
-        stroke="var(--ill-stroke)"
+        fill={ACCENT}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       {/* the shelf */}
@@ -70,10 +68,10 @@ export default function EmptyLibrary() {
         y1="144"
         x2="156"
         y2="144"
-        stroke="var(--ill-stroke)"
+        stroke={ILL_STROKE}
         strokeWidth="2"
         strokeLinecap="round"
       />
-    </svg>
+    </IllSvg>
   );
 }
