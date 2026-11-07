@@ -267,10 +267,16 @@ describe('R305 schedule — day sections + the honest week load', () => {
     expect(container.querySelectorAll('.pf-rowlist .pf-row')).toHaveLength(2);
   });
 
-  it('stylesheet: the ledger rules exist (between days + kicker hairline in each header)', () => {
+  it("stylesheet: the between-days ledger rule exists (the in-header hairline is SectionBar's own)", () => {
+    /* R341 (D7c) re-key: the `.schedule-day .pf-section-header::after`
+     * kicker rule was DEAD CSS since the r319 SectionBar swap (settled
+     * days render .r319s-bar; the skeleton path renders no
+     * .schedule-day wrapper — no DOM ever matched) and is deleted. The
+     * in-header hairline now provably rides the shared bar's own rule. */
     const sheet = read('src/styles/student/heron-schedule.css');
     expect(sheet).toMatch(/\.schedule-day \+ \.schedule-day\s*\{[^}]*border-block-start:\s*1px solid var\(--surface-divider\)/);
-    expect(sheet).toMatch(/\.schedule-day \.pf-section-header::after\s*\{[^}]*background:\s*var\(--surface-divider\)/);
+    const bars = read('src/styles/student/pages.css');
+    expect(bars).toMatch(/\.r319s-bar-rule\s*\{[^}]*background:\s*var\(--surface-divider\)/);
   });
 });
 
@@ -323,14 +329,20 @@ describe('R305 results — the summary strip is the ONE deep band', () => {
   });
 
   it('stylesheet: the band re-derives the PATTERN inks via scoped tokens (cascade-proof)', () => {
-    const sheet = read('src/styles/student/heron-schedule.css');
-    /* patterns.css (the StatLine owner) is UNLAYERED — unlayered author
-     * styles beat @layer pages at any specificity, so a color override
-     * on .pf-stat-* here would be dead CSS. The band therefore re-derives
-     * the TOKENS the pattern rules resolve (--text + the four -ink tones
-     * toward --neutral-0, the theme-flipping band fg pole) — inheritance
-     * feeds the winning rules instead of fighting them. */
-    const band = sheet.match(/\.results-summary\s*\{[^}]*\}/);
+    /* R341 (D7c) re-key: the ink pole was promoted from the results
+     * page's local .results-summary rule (heron-schedule.css §4,
+     * deleted) to the SHARED foundation band — .r305s-band--deep in
+     * heron.css §3 — so every deep band inherits the same AA
+     * re-derivation. The declarations are verbatim; only the rule's
+     * home moved (the DOM seat .results-summary.r305s-band--deep is
+     * unchanged — see the DOM pins above). patterns.css (the StatLine
+     * owner) stays UNLAYERED — unlayered author styles beat @layer
+     * pages at any specificity, so a color override on .pf-stat-*
+     * anywhere in a layer would be dead CSS; the band re-derives the
+     * TOKENS the pattern rules resolve — inheritance feeds the winning
+     * rules instead of fighting them. */
+    const sheet = read('src/styles/student/heron.css');
+    const band = sheet.match(/\.r305s-band--deep\s*\{[^}]*--text: var\(--neutral-0\)[^}]*\}/);
     expect(band).not.toBeNull();
     expect(band![0]).toContain('--text: var(--neutral-0)');
     /* P2.6 — the muted/faint strengths re-tuned 62/55 → 72/67: the old
@@ -345,8 +357,10 @@ describe('R305 results — the summary strip is the ONE deep band', () => {
     expect(band![0]).toContain('--danger-ink: color-mix(in srgb, var(--danger) 62%, var(--neutral-0))');
     expect(band![0]).toContain('--accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-0))');
     // No layered color override on the pattern's own classes — that is
-    // the exact shape the cascade silently kills.
-    expect(sheet).not.toMatch(/\.results-summary \.pf-stat[^{]*\{[^}]*color:/);
+    // the exact shape the cascade silently kills (both homes).
+    for (const home of ['src/styles/student/heron.css', 'src/styles/student/heron-schedule.css']) {
+      expect(read(home)).not.toMatch(/\.(?:results-summary|r305s-band--deep) \.pf-stat[^{]*\{[^}]*color:/);
+    }
   });
 });
 

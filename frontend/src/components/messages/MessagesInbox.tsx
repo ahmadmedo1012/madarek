@@ -278,7 +278,12 @@ export function MessagesInbox({
         title={title}
         subtitle={subtitle}
         actions={(
-          <button type="button" className="btn primary" onClick={() => setCompose({ preset: null })}>
+          /* R341 (D7c): the compose action is the surface's ONE primary
+             CTA — the accent slab register (same fill family as
+             .btn.primary; the accent seat is the one the sheet's
+             measured-hover contract reads). Behaviour + label + icon
+             unchanged; byte-shared by the teacher inbox. */
+          <button type="button" className="btn accent" onClick={() => setCompose({ preset: null })}>
             <Icon icon={Send} size={14} /> رسالة جديدة
           </button>
         )}
