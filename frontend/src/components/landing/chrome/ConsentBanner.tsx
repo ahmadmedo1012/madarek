@@ -1,35 +1,50 @@
 /**
- * ConsentBanner — R314 (V11) → R328 (H1) → R332 (W8) — the landing's
- * local-storage consent gate.
+ * ConsentBanner — R314 (V11) → R328 (H1) → R332 (W8) → R341 (L1-c) —
+ * the landing's local-storage consent gate.
  *
  * An ORIGINAL component in the reference's measured chrome grammar —
- * now THE HAIRLINE CORNER CELL (R332 W8): a small drafting cell seated
- * in the sheet grid's corner (inside the 7px frame hairline), ≤320px
- * wide, ONE 1px var(--rule) hairline box — the R328 four-rule drafting
- * frame is retired (the spans are gone; the cell carries itself) —
- * radius 0, NO shadow, paper ground, 12–13px type pinned in px at
- * every viewport. Brand accent lives ONLY on the accept action. The
- * cell's own sheet is styles/landing/consent.css (imported below;
- * it overrides r314-chrome.css on SPECIFICITY — that sheet, which owns
- * the fixed mirrored seat (bottom/left 7px · z 240) and the entrance,
- * is untouched). Accept stays the REAL primary — ink slab + paper
- * label, ≥4.5:1 both themes (R318 §A9); Reject ink-labelled with the
- * owner-mandated 44px touch floor on phones. Madarek's OWN honest
- * sentence — never the reference's copy, logo, or awards.
+ * now THE TAIL BAND (R341 L1-c): the R328/R332 FIXED corner cell is
+ * retired. The blind panel's T-16 #3 finding — "toast permanently
+ * glued over the footer/CTA band" — was inherent to the fixed seat:
+ * at the page end the cell sat ON the footer's legal row (whose
+ * fixed-height 42fu band paints its wrapped links BELOW the footer's
+ * own border box — measured: 72px @1024 · 57px @768 · 49px @1440),
+ * and the R332 yield watcher hid the cell exactly when it mattered
+ * (the conformance pass was a visibility:hidden artifact, not
+ * geometry). The honest fix is the brief's FIRST pattern, verbatim:
+ * a DISMISSIBLE BANNER WITH LAYOUT OFFSET — the band is IN FLOW at
+ * the sheet's tail (mounted after the footer, R314 B10's site), full
+ * frame width, so the page reserves its space BY GEOMETRY. It can
+ * never overlay the footer, the primary CTA, or ANY content at ANY
+ * scroll seat or width; accepting collapses ONLY its own reserved
+ * box (nothing is below it — zero shift for anything on screen), and
+ * it appears inside its pre-reserved seat via opacity/transform only
+ * (zero CLS on entrance). ONE 1px var(--rule) hairline box (consent.css
+ * owns the border — untouched), radius 0, NO shadow, paper ground,
+ * 12–13px type pinned in px at every viewport. Brand accent lives ONLY
+ * on the accept action. Accept stays the REAL primary — ink slab +
+ * paper label, ≥4.5:1 both themes (R318 §A9); Reject ink-labelled with
+ * the owner-mandated 44px touch floor on phones. Keyboard-dismissable:
+ * both actions are native buttons — Tab reaches them, Enter/Space
+ * fires them (the site focus ring is base.css's). The region is
+ * aria-live="polite" (announced on entrance; role="region" + label
+ * kept). Madarek's OWN honest sentence — never the reference's copy,
+ * logo, or awards.
  *
- * THE CONDITIONAL YIELD (R332 W8): the never-hide end-reserve keeps
- * the RESTING seat honest, but transient frames slide footer/CTA links
- * behind the fixed cell. While the unanswered cell would intersect any
- * visible link/button, the watcher below stamps `data-cb-yield` and
- * the cell RECEDES (consent.css → visibility:hidden — the fixed box
- * stays measured: zero layout shift, zero CLS) and returns 600ms after
- * the corner clears (hysteresis, no flicker). Focus inside the cell
- * when it yields falls to <body> — a transient scroll-driven state,
- * documented at the watcher.
+ * THE TAIL SEAM (the one measured dependency the flow seat inherits):
+ * the footer's overflowing legal-row paint lands in the space below
+ * the footer's border box — exactly where the band's flow seat begins.
+ * The measurer below walks the footer's subtree once per resize
+ * (rAF-throttled; + one mount pass + one 900ms settle pass for the
+ * reveal transforms) and stamps `--cb-tail-seam` = the paint's real
+ * depth + a 12px gap, floored at 20px — the band's margin-block-start
+ * (consent-edge.css). CSS fallbacks carry the measured worst wraps
+ * when JS is off (24px ≤767 · 80px ≥768). The R332 yield watcher,
+ * its hysteresis and its visibility artifact are DELETED with the
+ * fixed seat that needed them.
  *
- * The R323 phone compact bar (brief label + expand toggle) is RETIRED:
- * the card carries the full honest sentence at every width, so the
- * toggle, the brief/full pair, and their state are deleted.
+ * The R323 phone compact bar (brief label + expand toggle) is RETIRED
+ * (R328): the band carries the full honest sentence at every width.
  *
  * This is a REAL gate, not decoration:
  *  · «موافق»  → localStorage `madarek.consent = "accepted"` (+ a JSON
@@ -43,10 +58,13 @@
  *    for consoles, tests, and future surfaces (JSDoc below).
  *
  * Landing-only by mount site (LandingPage, after the footer — R314 B10):
- * auth pages never see it. Entrance is deferred behind the loader
- * (`.landing.intro-draw` hides it; `.landing.intro-done` plays the
- * 200ms clip-up ~600ms after the sheet reveal starts); reduced motion
- * collapses the rise to a plain opacity fade.
+ * auth pages never see it. The band rides the sheet's TAIL — the
+ * colophon zone where the footer's own «التخزين المحلي» policy link
+ * lives — so the gate is discovered exactly where the storage note
+ * belongs, never floating over the working page. Entrance is deferred
+ * behind the loader (`.landing.intro-draw` hides it; `.landing.intro-done`
+ * plays the 200ms clip-up ~600ms after the sheet reveal starts);
+ * reduced motion collapses the rise to a plain opacity fade.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -197,17 +215,18 @@ export function ConsentBanner() {
     typeof window === 'undefined' ? null : readDecision(),
   );
 
-  /* Y6 (R325) — the gate is the BASE layer of the bottom stack: it owns
-   * the viewport's bottom corner seat (r314-chrome.css) and registers
-   * its MEASURED height with lib/bottomStack.ts, so the toast stack
-   * and the FAB lift above its real box instead of covering it.
-   * Answering the gate renders null → the callback ref fires with null
-   * → the layer deregisters and the layers above ease back down
-   * (200ms). R328 (H1): the sheet itself also pads its foot by the
-   * pile's height while the gate is unanswered (the never-hide
-   * reserve — see r314-chrome.css), so the footer's last row can
-   * never sit behind the card. The same node also carries the W8
-   * yield watcher (rootRef below), hence the one combined ref. */
+  /* Y6 (R325) — the gate is the BASE layer of the bottom stack: it
+   * registers its MEASURED height with lib/bottomStack.ts, so the
+   * toast stack and the FAB lift above its real box instead of
+   * covering it (the r325 spec pins: the gate's own offset '0px' +
+   * the stack offset ≥ the gate's height — both ride this
+   * registration). In flow at the sheet tail the lift guards the one
+   * seat where the band and a fixed toast CAN share the screen: the
+   * scrolled-to-the-end frame. Answering the gate renders null → the
+   * callback ref fires with null → the layer deregisters and the
+   * layers above ease back down (200ms). The same node also carries
+   * the L1-c tail-seam measurer (rootRef below), hence the one
+   * combined ref. */
   const bannerRef = useBottomStackLayer('consent');
   const rootRef = useRef<HTMLDivElement | null>(null);
   const setRoot = useCallback(
@@ -218,102 +237,71 @@ export function ConsentBanner() {
     [bannerRef],
   );
 
-  /* ── R332 (W8) — THE CONDITIONAL YIELD watcher ──────────────────
-   * While the unanswered cell would intersect any VISIBLE link/button
-   * outside itself, it recedes: `data-cb-yield` → consent.css
-   * visibility:hidden. The fixed box keeps its geometry while hidden,
-   * so the bottom-stack measurement and the page never shift (zero
-   * CLS); the cell returns 600ms after the corner clears — hysteresis,
-   * so a boundary-straddling frame cannot flicker.
+  /* ── R341 (L1-c) — THE TAIL-SEAM measurer ───────────────────────
+   * The band is IN FLOW directly after the footer, but the footer's
+   * legal row paints BELOW its own border box (the .fo-footer-bottom
+   * census band carries a fixed 42fu height while its wrapped links
+   * overflow it — measured 72px of paint below the footer @1024, 57px
+   * @768, 49px @1440, none @390). Paint order would seat that ink on
+   * the band's first rows — the in-flow twin of the overlay the
+   * fixed cell committed. The measurer walks the footer's subtree
+   * (the mount site's previousElementSibling — no selector coupling),
+   * finds the deepest VISIBLE paint, and stamps the band's
+   * margin-block-start (`--cb-tail-seam`, consent-edge.css) at that
+   * depth + a 12px gap, floored at 20px. CSS fallbacks carry the
+   * measured worst wraps for the JS-off path.
    *
-   * Cost discipline: rAF-throttled on scroll/resize + one mount pass;
-   * each pass is ONE querySelectorAll + rect/style reads with an early
-   * break on the first covered element (≤1ms on the probed page).
-   * Pre-reveal content (opacity 0 until its reveal fires) and the
-   * pre-entrance cell itself count as CLEAR — neither can cover or be
-   * covered while invisible. Focus inside the cell when it yields
-   * falls to <body>: inherent to a scroll-driven transient state (the
-   * cell is gone, so its tab stops are gone with it) — the next pass
-   * that clears the corner returns the cell and its focus targets. */
+   * Cost discipline: rAF-throttled on resize + one mount pass + one
+   * 900ms settle pass (the reveal transforms translate content DOWN
+   * pre-fire, so an early measure only ever over-estimates the seam —
+   * the safe direction); each pass is one subtree walk of the footer
+   * (~200 rect reads, ≤1ms). No scroll listener — a static band's
+   * seam depends on layout, not on the viewport. */
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
     const node = rootRef.current;
     if (!node) return undefined;
 
-    const INTERACTIVE =
-      'a[href], button, [role="button"], input, select, textarea, summary, [tabindex]:not([tabindex="-1"])';
-    const RETURN_DELAY_MS = 600;
+    const MIN_SEAM_PX = 20; /* the resting seam — the sheet's own rhythm */
+    const GAP_PX = 12;      /* breathing under the footer's last paint row */
+    const SETTLE_MS = 900;  /* post-reveal geometry (transforms settle) */
+    const SETTLE2_MS = 2500; /* the late pass — font swap / reveal-queue
+                                drift (measured live: the deepest paint row
+                                moved ~7px after the first settle pass) */
 
     let raf = 0;
-    let releaseAt = 0;
 
-    const evaluate = () => {
+    const measure = () => {
       raf = 0;
-      let covered = false;
-      const box = node.getBoundingClientRect();
-      /* the pre-entrance cell (opacity 0) covers nothing visually */
-      if (
-        box.width > 0 &&
-        box.height > 0 &&
-        getComputedStyle(node).opacity !== '0'
-      ) {
-        const others = document.querySelectorAll(INTERACTIVE);
-        for (const el of others) {
-          if (node.contains(el)) continue;
-          const cs = getComputedStyle(el);
-          if (
-            cs.visibility === 'hidden' ||
-            cs.display === 'none' ||
-            cs.opacity === '0' /* pre-reveal = clear */
-          ) {
-            continue;
-          }
-          const r = el.getBoundingClientRect();
-          if (r.width === 0 && r.height === 0) continue;
-          if (
-            r.right > box.left &&
-            r.left < box.right &&
-            r.bottom > box.top &&
-            r.top < box.bottom
-          ) {
-            covered = true;
-            break;
-          }
-        }
+      const footer = node.previousElementSibling;
+      if (!(footer instanceof HTMLElement)) return;
+      const footBottom = footer.getBoundingClientRect().bottom;
+      let paintBelow = 0;
+      for (const el of footer.querySelectorAll('*')) {
+        if (!(el instanceof HTMLElement || el instanceof SVGElement)) continue;
+        const cs = getComputedStyle(el);
+        if (cs.display === 'none' || cs.visibility === 'hidden') continue;
+        const r = el.getBoundingClientRect();
+        if (r.width === 0 && r.height === 0) continue;
+        if (r.bottom - footBottom > paintBelow) paintBelow = r.bottom - footBottom;
       }
-      if (covered) {
-        window.clearTimeout(releaseAt);
-        releaseAt = 0;
-        node.setAttribute('data-cb-yield', '');
-      } else if (
-        node.hasAttribute('data-cb-yield') &&
-        releaseAt === 0
-      ) {
-        /* hysteresis: return only 600ms after the corner cleared */
-        releaseAt = window.setTimeout(() => {
-          releaseAt = 0;
-          node.removeAttribute('data-cb-yield');
-        }, RETURN_DELAY_MS);
-      }
+      const seam = Math.max(MIN_SEAM_PX, Math.ceil(paintBelow + GAP_PX));
+      node.style.setProperty('--cb-tail-seam', `${seam}px`);
     };
 
     const schedule = () => {
-      if (!raf) raf = window.requestAnimationFrame(evaluate);
+      if (!raf) raf = window.requestAnimationFrame(measure);
     };
 
     schedule(); /* the one mount pass */
-    /* capture: the landing's scrollers (incl. any inner panes) report
-     * through the window's capture phase — scroll does not bubble. */
-    window.addEventListener('scroll', schedule, {
-      passive: true,
-      capture: true,
-    });
+    const settle = window.setTimeout(schedule, SETTLE_MS);
+    const settle2 = window.setTimeout(schedule, SETTLE2_MS);
     window.addEventListener('resize', schedule);
     return () => {
-      window.removeEventListener('scroll', schedule, { capture: true });
       window.removeEventListener('resize', schedule);
       if (raf) window.cancelAnimationFrame(raf);
-      if (releaseAt) window.clearTimeout(releaseAt);
+      window.clearTimeout(settle);
+      window.clearTimeout(settle2);
     };
   }, []);
 
@@ -360,21 +348,24 @@ export function ConsentBanner() {
   if (decision !== null) return null;
 
   return (
-    /* role="region" + label: announced as a landmark, not a modal —
-     * the visitor's flow is never hijacked, keyboard or pointer. The
-     * R332 W8 cell: ONE 1px var(--rule) hairline box (the four
-     * .cb-rule spans retired — consent.css draws the single border). */
+    /* role="region" + label + aria-live="polite": announced as a
+     * landmark and politely spoken when it enters — never a modal; the
+     * visitor's flow is never hijacked, keyboard or pointer. The R341
+     * L1-c tail band: ONE 1px var(--rule) hairline box (consent.css
+     * draws the border), IN FLOW at the sheet's tail — the layout
+     * offset IS its own box. */
     <div
       ref={setRoot}
       className="cb-banner"
       data-spec="consent.banner"
       role="region"
+      aria-live="polite"
       aria-label="الموافقة على التخزين المحلي"
     >
-      {/* R328 (H1): the card carries the FULL honest sentence at every
+      {/* R328 (H1): the band carries the FULL honest sentence at every
           width (the R323 brief/expand pair retired with the compact
           bar). R320 §D (c2-LEGAL) keeps the learn-more target on
-          /legal/cookies — the honest substance of what this card
+          /legal/cookies — the honest substance of what this band
           stores lives in the policy sheet's own ledger table. */}
       <p className="cb-text">
         يستخدم هذا الموقع التخزين المحلي.
@@ -384,7 +375,9 @@ export function ConsentBanner() {
       {/* R318 §A9 (R315 K-C geometry kept): the measured seats —
           «موافق» the real primary (ink slab + paper label,
           r314-chrome.css — both themes ≥4.5:1), «أرفض» ink-labelled;
-          the pair anchors the card's width edge to edge. */}
+          the pair groups at the inline end on wide frames and anchors
+          the band's width edge to edge on phones (consent-edge.css).
+          Both are native buttons — Tab + Enter/Space dismiss. */}
       <div className="cb-actions">
         <button type="button" className="cb-accept" onClick={() => answer('accepted')}>
           موافق

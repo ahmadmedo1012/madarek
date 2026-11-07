@@ -5,17 +5,21 @@
    geometry, carrying Madarek's OWN honest content (never the
    reference's text, logo, or awards):
 
-   · cb — ConsentBanner (V11 → R315 K-C → R318 §A9): the local-storage
-     consent gate, fixed bottom-LEFT on desktop (the MIRRORED seat of
-     the reference's measured bottom-right; paper ground, four separate
-     1px ink rules like a drafting frame, the ONE hard-offset shadow
-     the reference ships; ONE line + «اعرف أكثر»; Accept the REAL
-     primary — INK slab + paper label, ≥4.5:1 both themes; Reject
-     ink-labelled), full-width bottom panel ≤479px with 44px touch
-     targets. Real functionality: «موافق»/«أرفض» persist
-     `madarek.consent` (+ JSON record with timestamp under
-     `madarek.consent.record`); reject removes the gated UI-pref keys;
-     window.MadarekConsent exposes the live state. See
+   · cb — ConsentBanner (V11 → R315 K-C → R318 §A9 → R341 L1-c): the
+     local-storage consent gate — now the TAIL BAND: IN FLOW at the
+     sheet's tail after the footer (the brief's layout-offset pattern —
+     the page reserves its space by geometry, so the band can never
+     overlay the footer, the primary CTA, or any content at any seat;
+     paper ground, ONE 1px var(--rule) hairline box drawn by
+     consent.css, radius 0, NO shadow; ONE line + «اعرف أكثر»; Accept
+     the REAL primary — INK slab + paper label, ≥4.5:1 both themes;
+     Reject ink-labelled), the pair grouped at the inline end on wide
+     frames, anchored edge to edge on phones with 44px touch targets.
+     Keyboard-dismissable (native buttons); aria-live="polite" region.
+     Real functionality: «موافق»/«أرفض» persist `madarek.consent`
+     (+ JSON record with timestamp under `madarek.consent.record`);
+     reject removes the gated UI-pref keys; window.MadarekConsent
+     exposes the live state. See
      components/landing/chrome/ConsentBanner.tsx.
 
    · et — EdgeTab (V12): the right-edge vertical tab (paper ground,
@@ -38,52 +42,81 @@
    100008/900 are mapped onto it, intent preserved):
      content/header ≤100  <  et-tab 55*  <  sheet-frame 50*
      (*et sits above the frame's right hairline, below the 60 masthead)
-     et-tab 55 < header 60 < skip-link 100 < cb-banner 240
-     < pointer canvas 250/251 < exit sweep 280 < loader 300
-   — the banner rides BELOW the pointer instrument (the custom cursor
-   must stay visible over it — the reference's banner never eats the
-   cursor), below the loader (it never competes with the entrance),
-   and ABOVE every content surface.
+     et-tab 55 < header 60 < skip-link 100 < pointer canvas 250/251
+     < exit sweep 280 < loader 300
+   — R341 (L1-c): the consent band LEFT the ladder — it is IN FLOW at
+   the sheet's tail (position: static), so it holds no z seat. It
+   rides below every fixed surface by document order, and nothing can
+   scroll under it because nothing scrolls past it: the band's flow
+   box IS the reserved space — the T-16 #3 "toast glued over the
+   footer/CTA band" finding dies by geometry, not by hiding.
    ═════════════════════════════════════════════════════════════════════ */
 
 /* ═══════════════════════════════════════════════════════════════════
-   §1 — cb · the consent card (V11 → R328 H1)
+   §1 — cb · the consent band (V11 → R328 H1 → R332 W8 → R341 L1-c)
    ═══════════════════════════════════════════════════════════════════ */
 
-/* R328 (H1) — THE CORNER CARD. The R314–R323 one-line bottom band
-   (601px desktop / full-width phone bar) retires: it seated flush to
-   the viewport corner (left:0 — outside the sheet grid), ran under
-   the hero's indicator strip, and crowded the toast/FAB pile. The
-   gate is now a small drafting card SEATED IN THE SHEET GRID'S
-   CORNER — inside the 7px frame hairline, ≤360px wide on pointer
-   viewports, the phone grid's own content column on touch. Two rows
-   (the honest sentence, then the measured action pair), four
-   hairline rules like a drafting frame, radius 0, NO SHADOW (the
-   R328 «بلا ظلال» canon retires the R313 measured drop — the rules
-   carry the card on both sheets). Paper ground = --bg. */
+/* R341 (L1-c) — THE TAIL BAND. The R328–R332 fixed corner cell
+   (bottom/left 7px · z 240 · ≤320px) retires: at the page end it sat
+   ON the footer's overflowing legal row, and the R332 yield watcher
+   hid it there — a visibility:hidden conformance pass, not geometry
+   (the blind panel's T-16 #3). The gate is now the brief's FIRST
+   pattern, verbatim: a DISMISSIBLE BANNER WITH LAYOUT OFFSET — IN
+   FLOW at the sheet's tail (mounted after the footer, R314 B10's
+   site), spanning the frame's content width (the footer's own inline
+   margins mirrored), so the page reserves its space BY GEOMETRY. It
+   can never overlay the footer, the primary CTA, or ANY content at
+   ANY scroll seat or width; accepting collapses ONLY its own box
+   (nothing sits below it), and the entrance plays opacity/transform
+   INSIDE the pre-reserved seat (zero CLS). ONE 1px var(--rule)
+   hairline box (consent.css owns the border — untouched), radius 0,
+   NO shadow, paper ground. The band's one measured dependency — the
+   TAIL SEAM below the footer's border box (the legal row's wrapped
+   paint) — is measured by the component (--cb-tail-seam) with CSS
+   fallbacks for the JS-off path. */
 .cb-banner {
-  position: fixed;
-  /* Y6 (R325) holds: the card is the BASE layer of the bottom stack —
-     it owns the corner seat (the manager writes its inline
-     --app-bottom-stack: 0px) and registers its MEASURED height so
-     toasts + the FAB stack above its real box. */
-  inset-block-end: 7px;           /* inside the sheet frame's hairline — the grid corner */
-  left: 7px;                      /* physical — the mirrored RTL corner seat */
-  z-index: 240;                   /* the ladder mapped in the header */
-  /* ≤360px at every width; on phones this IS the grid's content
-     column (100vw − 2×25px = the frame inset + the cell gutter,
-     measured @390). */
-  inline-size: min(360px, calc(100vw - 50px)); /* spacing-gate: allow — the measured grid gutters (7px frame + 1.8rem cell), not a rung */
-  display: grid;
-  row-gap: var(--sp-1-5);
-  padding-block: var(--sp-2);
-  padding-inline: var(--sp-3);
+  /* Y6 (R325) holds: the band still registers its MEASURED height
+     with lib/bottomStack.ts (the r325 spec's toasts-above-the-gate
+     pins ride that registration), but it no longer owns a fixed
+     viewport corner — the manager writes its inline
+     --app-bottom-stack: 0px and the layers above lift over its real
+     box in the one frame they can share: the scrolled-to-the-end
+     sheet tail. */
+  --fu: calc(100vw / 1440);        /* the footer's own fluid unit, mirrored */
+  display: flex;
+  flex-wrap: wrap;                 /* one row on wide frames; the phone belt
+                                      below stacks the pair under the sentence */
+  align-items: center;
+  justify-content: space-between;
+  column-gap: var(--sp-4);
+  row-gap: var(--sp-2);
+  /* the footer's own frame inset, mirrored per band (measured chrome):
+     calc(100vw/1440 × 7) = 5/7/9px @1024/1440/1920. */
+  margin-inline: calc(var(--fu) * 7); /* spacing-gate: allow — the sheet frame's measured inset, not a rung */
+  /* THE TAIL SEAM: the measurer in ConsentBanner.tsx stamps the exact
+     depth of the footer's overflowing legal-row paint + 12px. The var
+     fallback carries the MEASURED worst wrap for the JS-off path
+     (72px paint @1024 + 12px gap = 84px ≥768; ≤767 the row fits the
+     footer's box — the belt below seats the 24px resting seam). */
+  margin-block-start: var(--cb-tail-seam, 84px); /* spacing-gate: allow — measured footer paint, not a rung */
+  margin-block-end: 7px;           /* spacing-gate: allow — keeps the band inside the frame's bottom hairline at the doc end */
+  padding-block: var(--sp-3);
+  padding-inline: var(--sp-4);
   background: var(--bg);
   /* Entrance: invisible until the loader's exit starts (the .landing
      root flips intro-draw → intro-done at the reveal), then a 200ms
-     clip-up ~600ms after the sheet reveal (--t-fast today; the
-     brief's 240ms rung lands with T's motion-ladder re-seat). */
+     clip-up ~600ms after the sheet reveal — INSIDE the pre-reserved
+     flow seat (opacity/transform only: zero CLS, zero shift). */
   opacity: 0;
+}
+
+/* (0,2,0) — ties consent.css's corner-cell inline-size pin and WINS
+   on source order (this sheet injects after it: LandingPage's css
+   import at line 67 follows the ConsentBanner component import, so
+   consent.css lands earlier). The 320px corner-cell ceiling retires
+   with the seat: the band spans its flow seat. */
+.cb-banner.cb-banner {
+  inline-size: auto;
 }
 
 .landing.intro-done .cb-banner {
@@ -101,27 +134,24 @@
   }
 }
 
-/* R328 (H1) — THE NEVER-HIDE RESERVE: while the gate is unanswered
-   the sheet pads its foot by the bottom pile's measured height (the
-   manager writes --app-bottom-stack on :root), so the footer's last
-   row — and nothing else — can never sit behind the card. Answering
-   unmounts the gate → the var drops → the reserve snaps away
-   (padding never transitions: the motion gate bans layout-property
-   animation). */
-body:has(.cb-banner) .landing {
-  padding-block-end: calc(var(--app-bottom-stack, 0px) + 14px); /* spacing-gate: allow — the card's 7px seat + 7px seam, measured chrome */
-}
+/* R341 (L1-c) — the R328 NEVER-HIDE RESERVE is RETIRED: the band is
+   IN FLOW, so its own box is the reserve — the sheet needs no foot
+   padding while the gate is unanswered, and accepting collapses only
+   the band's own seat. (The bottom-stack manager's :root total —
+   which lifts toasts/FABs over the gate — is the lib's own
+   bookkeeping, untouched.) */
 
 /* The four separate 1px ink rules are DELETED (r335 W-chrome): the
  * R332 W8 rebuild removed the .cb-rule spans from the JSX and consent.css
  * draws the ONE 1px var(--rule) hairline box — these rules rendered
  * nothing since then. */
 
-/* The ONE honest sentence — wraps to at most two short rows inside
-   the card (13.33px @1440 --fs-body, muted ink; the R315 K-C single
-   line retires with the one-line band). */
+/* The ONE honest sentence — grows at the inline start of the band's
+   row (wraps to at most two short rows at every width; 13.33px @1440
+   --fs-body → pinned 13px by consent.css, muted ink). */
 .cb-text {
   margin: 0;                      /* reset the UA <p> margins */
+  flex: 1 1 16rem;                /* lets the action pair wrap on narrow frames */
   font-size: var(--fs-body);
   line-height: var(--lh-snug);
   color: var(--text-muted);
@@ -161,12 +191,14 @@ body:has(.cb-banner) .landing {
   }
 }
 
-/* The actions row — the measured pair anchors the card's width edge
-   to edge («موافق» at the reading start, «أرفض» at the end). */
+/* The actions row — the measured pair GROUPS at the band's inline
+   end on wide frames (the sentence holds the reading start); the
+   phone belt below re-anchors the pair edge to edge — the R315 K-C
+   measured phone seat kept verbatim. */
 .cb-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: var(--sp-2);
 }
 
@@ -274,13 +306,24 @@ body:has(.cb-banner) .landing {
   }
 }
 
-/* ── R328 (H1) — the phone belt: the SAME corner card, with the
-   owner-mandated 44px touch floors on both actions (the measured
-   28px seats ride a pointer context; the a11y floor is not a design
-   value). The card keeps its grid-column width; the sentence wraps
-   honestly. The R323 compact-bar block (brief/full swap, expand
-   toggle, ellipsis truncation) is retired with the band it served. */
+/* ── R328 (H1) → R341 (L1-c) — the phone belt: the SAME tail band,
+   stacked (the sentence, then the pair anchored edge to edge — the
+   R315 K-C measured phone seat), with the owner-mandated 44px touch
+   floors on both actions (the measured 28px seats ride a pointer
+   context; the a11y floor is not a design value). The R323 compact
+   bar (brief/full swap, expand toggle, ellipsis truncation) stays
+   retired. */
 @media only screen and (max-width: 767px) {
+  .cb-banner {
+    margin-inline: 8px;             /* the footer's own ≤767 frame inset, mirrored */
+    margin-block-start: var(--cb-tail-seam, 24px); /* spacing-gate: allow — the resting seam (the legal row fits the footer's box ≤767) */
+  }
+
+  .cb-actions {
+    flex: 1 1 100%;                 /* the pair takes its own row, edge to edge */
+    justify-content: space-between;
+  }
+
   .cb-accept,
   .cb-reject {
     flex: 0 0 auto;
@@ -288,6 +331,15 @@ body:has(.cb-banner) .landing {
                                        minimum, not a design value */
     inline-size: auto;
     padding-inline: var(--sp-4);
+  }
+}
+
+/* ── R341 (L1-c) — the tablet belt (768–991): the footer's own frame
+   inset is the flat 7px here (its ≤991 census block); the seam's
+   JS-off floor stays the ≥768 measured worst (84px). ───────────── */
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+  .cb-banner {
+    margin-inline: 7px;             /* the footer's 768–991 frame inset, mirrored */
   }
 }
 
