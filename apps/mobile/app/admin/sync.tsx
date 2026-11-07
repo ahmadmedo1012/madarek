@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import RefreshCw from "lucide-react-native/icons/refresh-cw";
-import { Screen } from "@/components/ui";
+import { Screen, PageHeader } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
@@ -79,9 +79,7 @@ export default function AdminSync() {
     <Screen scroll>
       <StackHeader title="المزامنة مع البيانات الرسمية" kicker="لوحة المسجل العام" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <T variant="body" color="muted">
-          استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة.
-        </T>
+        <PageHeader title="المزامنة مع البيانات الرسمية" kicker="استيراد بيانات المؤسّسة من المصدر المنسَّق للحفاظ على معلومات الجامعة محدّثة. يمكنك تشغيل المزامنة يدوياً عند الحاجة." />
         <T variant="sm" color="muted">
           وضع محدود — قيد التوسعة.
         </T>

@@ -8,10 +8,17 @@
  *
  * Attendee honesty: the live API has no live-attendee feed — rows show
  * the offering's enrolled count («طلاب المقرّر N»), never a live number.
+ *
+ * R341 M10 — one-primary discipline (M2 flagged this screen): «بدء البث»
+ * is the ONE primary per actionable row — charcoal slab, full 48px floor,
+ * primaryFg-bound icon (mirrors the student live join slab). END and
+ * CANCEL demote to hairline ghosts (each already confirm-gated), and the
+ * screen keeps exactly one orange signal: the «جلسة جديدة» create CTA.
  */
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Play from "lucide-react-native/icons/play";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { liveApi } from "@/api/live";
 import { useInstitutionScope } from "@/hooks/useInstitutionScope";
@@ -197,6 +204,7 @@ export default function TeacherLive() {
     onCancel?: () => void;
   }) => {
     const enrolled = enrolledByOffering.get(session.offeringId);
+    const p = usePalette();
     return (
       <LedgerRow accessibilityLabel={`جلسة ${session.title}`}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
@@ -213,10 +221,18 @@ export default function TeacherLive() {
           <StatusBadge status={session.status} map={LIVE_STATUS_MAP} />
         </View>
         {onStart || onEnd || onCancel ? (
-          <View style={{ flexDirection: "row", gap: sp[6] }}>
-            {onStart ? <Button label="بدء البث" kind="accent" small onPress={onStart} /> : null}
-            {onEnd ? <Button label="إنهاء البث" kind="primary" small onPress={onEnd} /> : null}
+          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
             {onCancel ? <Button label="إلغاء الجلسة" kind="ghost" small onPress={onCancel} /> : null}
+            {onEnd ? <Button label="إنهاء البث" kind="ghost" small onPress={onEnd} /> : null}
+            {onStart ? (
+              <Button
+                label="بدء البث"
+                kind="primary"
+                icon={<Play size={16} color={p.primaryFg} />}
+                accessibilityLabel={`بدء بث ${session.title}`}
+                onPress={onStart}
+              />
+            ) : null}
           </View>
         ) : null}
       </LedgerRow>

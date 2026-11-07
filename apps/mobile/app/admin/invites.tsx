@@ -4,7 +4,7 @@ import { humanizeError } from "@/lib/errors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Plus from "lucide-react-native/icons/plus";
 import Trash2 from "lucide-react-native/icons/trash";
-import { Screen } from "@/components/ui";
+import { Screen, PageHeader } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
@@ -116,9 +116,7 @@ const [maxUses, setMaxUses] = useState("1");
     <Screen scroll>
       <StackHeader title="دعوات التسجيل" kicker="لوحة المسجل العام" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <T variant="body" color="muted">
-          أكواد انضمام للطلاب والأساتذة، بنطاق واحد على الأكثر وصلاحية محدّدة.
-        </T>
+        <PageHeader title="دعوات التسجيل" kicker="أكواد انضمام للطلاب والأساتذة، بنطاق واحد على الأكثر وصلاحية محدّدة." />
 
         <Button
           label="دعوة جديدة"

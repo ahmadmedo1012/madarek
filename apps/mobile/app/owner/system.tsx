@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient, type UseMutationResult } from "@
 import HardDrive from "lucide-react-native/icons/hard-drive";
 import Settings from "lucide-react-native/icons/settings";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen, SectionBar } from "@/components/ui";
+import { Screen, PageHeader, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";
 import { Button } from "@/components/ui/pressables";
 import { Badge, ConfirmDialog, Sheet } from "@/components/ui/surfaces";
@@ -119,14 +119,7 @@ export default function OwnerSystem() {
     <Screen scroll>
       <StackHeader title="النظام والتشغيل" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
-          <T variant="h2" weight="bold">
-            النظام والتشغيل
-          </T>
-          <T variant="body" color="muted">
-            إدارة البنية التحتية وحالة الخدمات وإعدادات المنصّة
-          </T>
-        </View>
+        <PageHeader title="النظام والتشغيل" kicker="إدارة البنية التحتية وحالة الخدمات وإعدادات المنصّة" />
 
         {/* [01] حالة الخدمة */}
         <View>

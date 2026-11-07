@@ -2,7 +2,7 @@ import { useState } from "react";
 import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen } from "@/components/ui";
+import { Screen, PageHeader } from "@/components/ui";
 import { T } from "@/components/ui/text";
 import { Sheet } from "@/components/ui/surfaces";
 import { DataList, LedgerRow, makeRow, usePagedList } from "@/components/ui/data";
@@ -81,15 +81,7 @@ export default function OwnerActivity() {
     <Screen scroll={false} padded={false}>
       <StackHeader title="سجلّ النشاط والمراقبة" kicker="لوحة المالك" />
       <View style={{ paddingHorizontal: sp[20], gap: sp[16], paddingTop: sp[16] }}>
-        <View>
-          <T variant="h2" weight="bold">
-            سجلّ النشاط والمراقبة
-          </T>
-          <T variant="body" color="muted">
-            جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق
-          </T>
-        </View>
-
+        <PageHeader title="سجلّ النشاط والمراقبة" kicker="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق" />
       </View>
       <View style={{ flex: 1 }}>
         <DataList

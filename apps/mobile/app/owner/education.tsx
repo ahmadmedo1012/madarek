@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import { StackHeader } from "@/components/shell/AppTopBar";
-import { Screen, SectionBar } from "@/components/ui";
+import { Screen, PageHeader, SectionBar } from "@/components/ui";
 import { T, MonoLabel } from "@/components/ui/text";
 import { RowList, LedgerRow, StatLine, ProgressBar } from "@/components/ui/data";
 import { SkeletonList, ErrorState } from "@/components/ui/states";
@@ -45,14 +45,7 @@ export default function OwnerEducation() {
     <Screen scroll>
       <StackHeader title="النظرة التعليميّة" kicker="لوحة المالك" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View>
-          <T variant="h2" weight="bold">
-            النظرة التعليميّة
-          </T>
-          <T variant="body" color="muted">
-            إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب
-          </T>
-        </View>
+        <PageHeader title="النظرة التعليميّة" kicker="إحصائيات حيّة عن المقرّرات وأعضاء هيئة التدريس والطلاب" />
 
         {edu.isLoading ? (
           <SkeletonList rows={5} rowHeight={48} />

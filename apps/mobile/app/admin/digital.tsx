@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import Server from "lucide-react-native/icons/server";
-import { Screen , SectionBar } from "@/components/ui";
+import { Screen, PageHeader, SectionBar } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";
 import { Badge } from "@/components/ui/surfaces";
@@ -66,9 +66,7 @@ export default function AdminDigital() {
     <Screen scroll>
       <StackHeader title="التحوّل الرقميّ" kicker="لوحة المسجل العام" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <T variant="body" color="muted">
-          مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة.
-        </T>
+        <PageHeader title="التحوّل الرقميّ" kicker="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة." />
 
         {metrics.isLoading ? (
           <SkeletonList rows={5} />

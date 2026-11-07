@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { humanizeError } from "@/lib/errors";
 import { useQuery } from "@tanstack/react-query";
 import Star from "lucide-react-native/icons/star";
-import { Screen } from "@/components/ui";
+import { Screen, PageHeader } from "@/components/ui";
 import { StackHeader } from "@/components/shell/AppTopBar";
 import { T } from "@/components/ui/text";
 import { Badge, SimulatedBadge } from "@/components/ui/surfaces";
@@ -38,14 +38,11 @@ export default function QualityProfessors() {
     <Screen scroll>
       <StackHeader title="تقييم الأساتذة" kicker="قطاع ضمان الجودة" />
       <View style={{ gap: 16, paddingTop: 16 }}>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-          <View style={{ flex: 1 }}>
-            <T variant="body" color="muted">
-              رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.
-            </T>
-          </View>
-          <Badge label="قراءة فقط" tone="grey" />
-        </View>
+        <PageHeader
+          title="تقييم الأساتذة"
+          kicker="رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة."
+          right={<Badge label="قراءة فقط" tone="grey" />}
+        />
 
         {rows.some((t) => t.satisfactionEstimated || t.responseHoursEstimated) ? (
           <T variant="xs" color="faint">
