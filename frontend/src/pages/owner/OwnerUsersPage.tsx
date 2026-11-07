@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Users, ChevronLeft, ChevronRight, X, AlertCircle } from 'lucide-react';
 /* r252 (Phase B): the directory composes the shell patterns — StatLine
  * facts, FilterBar (search + role pills), and the table becomes dense
@@ -301,6 +302,20 @@ export function OwnerUsersPage() {
           title="إدارة المستخدمين"
           description="عرض جميع حسابات المنصّة والبحث فيها وإدارتها"
           breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المستخدمون' }]}
+          /* R341 D11: the [03] nav-order gutter numeral (OWNER_NAV
+           * register — the D10 quality precedent). */
+          index="03"
+          /* D11 (D8/D10 header-CTA precedent): the directory's two
+           * sibling surfaces — every role/status change lands in the
+           * activity log (primary) and the governance metrics track
+           * them (ghost). Navigation-only, no write affordance is
+           * invented: role changes stay inline per row. */
+          actions={(
+            <>
+              <Link to="/owner/activity" className="btn accent sm">سجلّ النشاط</Link>
+              <Link to="/owner/governance" className="btn ghost sm">الحوكمة</Link>
+            </>
+          )}
         />
 
         {/* Metrics — real values only: '…' while loading, '—' on error
