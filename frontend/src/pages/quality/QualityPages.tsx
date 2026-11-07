@@ -20,6 +20,7 @@ import { StatStrip } from '../../components/primitives/Ledger';
 import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
+import { useCompactRosterBand } from '../admin/AdminPages'; // R341 deadcode reconciliation — one definition (see the Professor Evaluation note)
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
@@ -945,22 +946,13 @@ export function QualityCoursesPage() {
  * jsdom's matchMedia stub returns matches:false, so unit tests keep
  * exercising the desktop path (same contract as GlobalSearch's band
  * hook).
+ * R341 deadcode reconciliation: this was a byte-copy of AdminPages'
+ * `useCompactRosterBand` (the D10 rebuild duplicated the hook instead
+ * of importing it — knip saw AdminPages' export go unused AND jscpd
+ * counted the copy). The r183-B5 pin mandates the export lives in
+ * AdminPages.tsx; the quality professor roster imports it — same
+ * hook, same ≤1024px band contract, one definition.
  */
-function useCompactRosterBand(): boolean {
-  const [compact, setCompact] = useState(
-    () => typeof window !== 'undefined'
-      && typeof window.matchMedia === 'function'
-      && window.matchMedia('(max-width: 1024px)').matches,
-  );
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const mq = window.matchMedia('(max-width: 1024px)');
-    const onChange = () => setCompact(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
-  return compact;
-}
 
 export function QualityProfessorsPage() {
   // r183-B5 (A8 wave-A P2-2 recurrence): the standard roster search (the
