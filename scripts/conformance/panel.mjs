@@ -2,7 +2,7 @@
  * panel.mjs — R340 T-P1x conformance extension: THE BLIND PANEL'S
  * FINDINGS AS NUMBERS.
  *
- * The R339 panel (docs/redesign/r339/T-16-PANEL.md, 53/84) found
+ * The R339 panel (docs/archive/redesign/r339/T-16-PANEL.md, 53/84) found
  * regressions the matrix could not see — the instrument did not measure
  * what a human sees. This module turns each finding into a numeric
  * check that cannot regress silently:
