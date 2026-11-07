@@ -21,6 +21,20 @@
   margin-inline: auto;
   padding-inline: 0;
   padding-block: 0;
+  /* W9 (r341) — the measured heron soft-ink wash: the frozen spec seats
+     the strip's default voice at rgba(40,40,40,0.72) (the div[1] census
+     record — every inheriting wrapper carries it). Light keeps the
+     literal (a color-mix() form serialises color(srgb…) and misses the
+     spec string); the dark arm re-points at the flipping house token
+     (the platform --pr-ink-72 / footer precedent). */
+  --wy-soft-ink: rgba(40, 40, 40, 0.72); /* color-gate: allow — measured heron why soft ink (r338 ADDENDUM 9 pattern; T-25 owns unification) */
+  --wy-note-ink: rgb(180, 180, 176); /* color-gate: allow — measured heron muted note ink */
+  color: var(--wy-soft-ink);
+}
+
+[data-theme="dark"] .wy-section {
+  --wy-soft-ink: color-mix(in srgb, var(--text) 72%, transparent);
+  --wy-note-ink: var(--text-muted);
 }
 
 /* ── the ruled editorial head — heron @1440: 0,0 1427×269 two-column:
@@ -47,7 +61,7 @@
   font-weight: 500;
   line-height: 1.4;                    /* 16.33px @1440 */
   letter-spacing: 0;                   /* Arabic joins forbid tracking */
-  color: var(--text-secondary);
+  color: var(--wy-soft-ink);           /* W9: the measured 0.72 wash (spec eyebrow ink) */
 }
 
 .wy-h2w {
@@ -97,11 +111,26 @@
   font-size: var(--fs-body);           /* 13.33px @1440 — Heron txt-16 */
   font-weight: 500;
   line-height: 1.35;                   /* …Arabic ascenders law */
-  color: var(--text-secondary);
+  color: var(--wy-soft-ink);           /* W9: the measured 0.72 wash (spec lede ink) */
 }
 
-.wy-note {
-  margin-block-start: 4.44rem;
+/* W9 (r341) — the measured lede box heights (spec: 69px @1440 · 92px
+   @1920 — heron's own 3/4-line seats; the 992–1100 band already sits
+   within tolerance). Measured px, not rem: the band roots differ. */
+@media (min-width: 1101px) { .wy-lede-t { min-block-size: 69px; } }
+@media (min-width: 1601px) { .wy-lede-t { min-block-size: 92px; } }
+
+/* W9 (r341) — the measured note seat (spec: 140×16 @1440 y226 ·
+   180×22 @1920 y301 · 100×12 @1024 y161 — inline-start aligned in
+   the lede column, 24/31/17px under the lede's own box). */
+@media (min-width: 1101px) {
+  .wy-note { margin-block-start: 24px; inline-size: 140px; }
+}
+@media (min-width: 1601px) {
+  .wy-note { margin-block-start: 31px; inline-size: 180px; }
+}
+@media (min-width: 992px) and (max-width: 1100px) {
+  .wy-note { margin-block-start: 17px; inline-size: 100px; }
 }
 
 .wy-note-t {
@@ -109,7 +138,7 @@
   font-size: var(--fs-mono-md);
   font-weight: 500;
   line-height: 1.4;
-  color: var(--text-faint);            /* rgb(180,180,176) */
+  color: var(--wy-note-ink);           /* W9: the measured muted note ink rgb(180,180,176) */
 }
 
 /* the full-width hairline under the head — 1427x1 at y=269 */
@@ -724,18 +753,29 @@
    four 374×481 rows sit side-by-side — the 350px image square with
    overlaid minis + the caption stacked beneath, per deck card). ═══ */
 @media (max-width: 767px) {
-  /* r339 T-13 — the phone sheet seat: the shared ≤767 sheet-frame
-     margin (shared.css, 7px — imported AFTER this file, so it won the
-     equal-specificity tie) + this section's 100% inline-size
-     overflowed the RTL box 7px past the edge — the content read
-     x1/r15 gutters (root x-7) vs heron's 8/8 (spec
-     home-why-wrap.390.json div[1] = x8 w374). Zero margin (the
-     element-tagged seat out-ranks the shared list) + the existing
-     0.81rem padding seats the content box at x8 w374 — heron's own
-     390 root; the head/stage/track rows all ride it. */
+  /* r339 T-13 + W9 (r341) — the phone sheet seat: the shared ≤767
+     sheet-frame margin (shared.css, 7px) used to push the 100%
+     inline-size section 7px past the edge; the measured heron 390 root
+     is x8 w374 (spec div[1] vr) — a full 8px margin seat on the ROOT
+     (not padding: the spec's own children sit at sr.x 0, so the
+     padding form read x-mirror 0 vs the spec's 8 on every in-section
+     seat). The content union stays x8..x382 — the edge390 gutter
+     keeps passing. */
   section.wy-section {
-    margin-inline: 0;
+    margin-inline: 8px;
+    padding-inline: 0;
+    inline-size: auto;                  /* W9: the root box IS x8 w374 (margin, not padding+overflow) */
   }
+
+  /* W9 (r341) — the measured 390 stack: heron's own head seats the
+     title at y75 and the side at y158 with NO internal air (the
+     eyebrow 18.75 + 8 gap + title 64 + 8 gap + 3 ≈ 158). The strata
+     rhythm seats (title mb 20 · lede mb 16 · note pad 20/24 + mt 12)
+     are the ≥768 grammar — retired on this band by the section-scoped
+     seat (the ≤767 margin precedent out-ranks the shared list). */
+  section.wy-section .wy-title { margin-block-end: 0; }
+  section.wy-section .wy-lede { margin-block-end: 0; line-height: 1.35; } /* strata's ≤479 1.5 rung retires on the 390 band (the ar-floor 21.44 seat) */
+  section.wy-section .wy-note { margin-block-start: 0; padding-block: 0; }
 
   .wy-head {
     grid-template-columns: minmax(0, 1fr);
@@ -745,17 +785,32 @@
   .wy-eyebrow {
     /* L1-a — 0: strata's ≤767 .wy-head already seats heron's title-wrap
        pad (47.63px, strata.css ≤767 block — L1-b's sheet); the old
-       4.73rem seat stacked on it (text y95 vs the spec's y48). */
+       4.73rem seat stacked on it (text y95 vs the spec's y48).
+       W9 (r341) — the measured eyebrow lane seat: x16 w342 (spec
+       div[1]…div[1] = 16,48,342,15; the tween wrapper and the text
+       record share the rect). */
     padding-block-start: 0;
     padding-inline-start: 0;
+    margin-inline-start: 16px;
+    inline-size: 342px;
   }
 
-  .wy-eyebrow-t { line-height: 1; }     /* the 15px seat */
+  .wy-eyebrow-t {
+    line-height: 1.35;                  /* W9: the ar-floor rung 18.75 = 1.35×13.89 (spec lh 15.28 floors at 1.35×fs) */
+  }
 
   .wy-h2w {
-    margin-block-start: 1.31rem;
-    margin-inline-start: 0;
-    inline-size: 34.47rem;              /* 342px */
+    /* W9 (r341) — the measured 390 title seat: x16 w342 y75 h64
+       (spec …div[1] > div[2] = 16,75,342,64 — the 8px gap rides the
+       eyebrow's own 18.75 box: 48+18.75+8 ≈ 75). */
+    margin-block-start: 8px;
+    margin-inline-start: 16px;
+    inline-size: 342px;
+    min-block-size: 64px;
+  }
+
+  .wy-title {
+    min-block-size: 64px;               /* W9: the measured two-line box (spec h2 h64) */
   }
 
   .wy-side {
@@ -770,8 +825,20 @@
     grid-column: 1;
     grid-row: 3;
     align-self: auto;
-    margin-block-start: 1.91rem;        /* h2 bottom 139 → side y158 */
+    margin-block-start: 3px;            /* W9: row3 top 154.75 + 3 → the measured side y158 */
     padding-inline: 0;
+  }
+
+  /* W9 (r341) — the measured 390 lede seat: x16 w342 h103 (spec
+     …div[1] > div[2] > div[2] = 16,158,342,103 — heron's own 5-line
+     box; the ar-floor lh 1.35×15.88 = 21.44). */
+  .wy-lede {
+    margin-inline-start: 16px;
+    inline-size: 342px;
+  }
+  .wy-lede-t {
+    line-height: 1.35;
+    min-block-size: 103px;
   }
 
   .wy-stage {
