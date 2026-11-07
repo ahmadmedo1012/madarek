@@ -28,6 +28,7 @@ export default function Error403Page() {
       title="هذه الصفحة خارج نطاق صلاحياتك"
       lead="وصلت إلى صفحة لا يفتحها دورك في مدارك. ربّما تغيّر الرابط أو أن الصفحة مخصّصة لدور آخر."
       illustration="forbidden"
+      kicker="غير مصرّح"
       note="لوحة دورك هي نقطة البداية الصحيحة لكل ما يخصّك."
     >
       <Link to={home} className="btn lg">

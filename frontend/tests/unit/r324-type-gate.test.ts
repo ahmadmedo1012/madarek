@@ -167,8 +167,11 @@ const HEADING_SEATS = [
   'momentum-title', 'lecture-panel-title', 'lib-cover-title',
 ];
 
-/** H1 seats (the ≤ 3 lines @390 contract). */
-const H1_SEATS = ['pf-page-title', 'page-title', 'lg-title', 'cu-title', 'nf-title', 'auth-form-title'];
+/** H1 seats (the ≤ 3 lines @390 contract). R341 D5 re-key: the legal
+ * sheets left .lg-title for the pattern library's .pf-page-title seat
+ * (legal.css `.lg .pf-page-title` — the about D2 precedent); lg-title
+ * has zero live rules and zero markup seats. */
+const H1_SEATS = ['pf-page-title', 'page-title', 'cu-title', 'nf-title', 'auth-form-title'];
 
 /** Numerals inside gauges — the ONE weight-law exception (§R324).
  *  Everything else at 700 fails the gate. */

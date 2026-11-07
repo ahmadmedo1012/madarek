@@ -1,0 +1,41 @@
+/* ════════════════════════════════════════════════════════════════════
+   مدارك — THE ROUTED ERROR SHEETS' SEAT ADDITIONS (R341 · task D5)
+   /404 · /403 · /500 · /maintenance (+ the catch-all *)
+   ════════════════════════════════════════════════════════════════════
+   The .nf-* scene family (shell/frame/marks/scene/illustration/title/
+   sub/actions) lives in patterns.css §7 and is NOT touched here. This
+   thin sheet owns only what the frozen family does not:
+
+   · the edge390 mobile inset — the pages.mjs law proved on /auth in
+     r340 T-D1a: --sp-2 = the 8px content gutter at 390 (the base
+     .nf-shell rides --page-gutter-mobile, 20px);
+   · the primary way-home's hover channels — the pages.mjs hover
+     contract (≥2 measured computed channels): the .btn wipe already
+     swaps color+border; this seat adds the background wipe ground +
+     the 1px lift, tokens only, the B1 color+background PAIR together.
+
+   Discipline: theme TOKENS only · :hover inside @media (hover:hover)
+   · logical properties · radius untouched (the .btn system owns it).
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* the sheet's own mobile inset — .nf-sheet is the page-TSX companion
+     class (main.nf-shell.nf-sheet), (0,2,0) over the base padding. */
+  @media (max-width: 420px) {
+    .nf-shell.nf-sheet {
+      padding-inline: var(--sp-2);
+    }
+  }
+
+  /* the primary way-home: the wipe ground + the lift (two more
+     measured channels on top of the .btn wipe's border swap). */
+  @media (hover: hover) and (pointer: fine) {
+    .nf-actions .btn.primary:hover {
+      background: var(--_btn-wipe);
+      color: var(--_btn-wipe-fg);
+      border-color: var(--_btn-wipe);
+      transform: translateY(-1px);
+    }
+  }
+}
