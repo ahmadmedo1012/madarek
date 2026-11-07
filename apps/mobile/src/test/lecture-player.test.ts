@@ -20,6 +20,7 @@ import {
   activeCueAt,
   clampSeek,
   doubleTapSeekDelta,
+  filterCues,
   playerClock,
   remainingClock,
   resolveReportTotal,
@@ -115,6 +116,37 @@ describe("activeCueAt", () => {
     expect(activeCueAt(cues, 7)).toBeNull();
     expect(activeCueAt([], 1)).toBeNull();
     expect(activeCueAt(cues, 100)).toBeNull();
+  });
+});
+
+/* ── filterCues — M5: transcript search over the FULL cue list ─────── */
+
+describe("filterCues (M5 — the 200-cue data cap is gone)", () => {
+  // a 90-minute lecture's honest shape: ~1000 cues, the match past cue 200
+  const many: VttCue[] = Array.from({ length: 1000 }, (_, i) => ({
+    start: i * 4,
+    end: i * 4 + 4,
+    text: i === 450 ? "قاعدة البيانات العلائقية" : `سطر النص ${i}`,
+  }));
+
+  test("empty/blank query keeps every cue — the old .slice(0, 200) kept 200", () => {
+    expect(filterCues(many, "")).toHaveLength(1000);
+    expect(filterCues(many, "   ")).toHaveLength(1000);
+  });
+
+  test("search reaches beyond the old 200-cue cut (the before→after witness)", () => {
+    const hits = filterCues(many, "قاعدة البيانات");
+    expect(hits).toHaveLength(1);
+    expect(hits[0].start).toBe(450 * 4);
+  });
+
+  test("no match → empty (the panel's EmptyState takes over)", () => {
+    expect(filterCues(many, "لا وجود لمثله")).toEqual([]);
+  });
+
+  test("empty list stays empty; trim is applied before matching", () => {
+    expect(filterCues([], "ابحث")).toEqual([]);
+    expect(filterCues(many.slice(0, 1), "  سطر  ")).toHaveLength(1);
   });
 });
 

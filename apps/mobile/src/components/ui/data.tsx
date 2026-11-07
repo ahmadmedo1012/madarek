@@ -299,6 +299,22 @@ export interface DataListProps<T> {
   /** Heron is Arabic-first: content direction defaults to RTL. */
   rtl?: boolean;
 
+  /* ── FlatList view windowing (M5) ────────────────────────────────── */
+  /**
+   * View-window tuning for the WEB FlatList fallback. Native FlashList
+   * v2 recycles views and takes no window knobs, so this only shapes the
+   * fallback — but both engines keep the FULL data and mount a bounded
+   * window of rows (the M5 witness in data.test.tsx: 10 of 1000 rows).
+   * Values mirror FlatListProps (initialNumToRender defaults to 10,
+   * windowSize to 21 when omitted).
+   */
+  windowing?: {
+    initialNumToRender?: number;
+    maxToRenderPerBatch?: number;
+    windowSize?: number;
+    updateCellsBatchingPeriod?: number;
+  };
+
   /* ── FlashList passthroughs ────────────────────────────────────────── */
   ListHeaderComponent?: FlashListProps<T>["ListHeaderComponent"];
   ItemSeparatorComponent?: FlashListProps<T>["ItemSeparatorComponent"];
@@ -361,6 +377,7 @@ export function DataList<T>(props: DataListProps<T>) {
     stickyHeaderOffset,
     contentPadding,
     rtl = true,
+    windowing,
     ListHeaderComponent,
     ItemSeparatorComponent,
     style,
@@ -446,6 +463,10 @@ export function DataList<T>(props: DataListProps<T>) {
         renderItem={(info) => renderItem({ item: info.item, index: info.index, target: "Cell" })}
         keyExtractor={keyExtractor}
         extraData={extraData}
+        initialNumToRender={windowing?.initialNumToRender}
+        maxToRenderPerBatch={windowing?.maxToRenderPerBatch}
+        windowSize={windowing?.windowSize}
+        updateCellsBatchingPeriod={windowing?.updateCellsBatchingPeriod}
         refreshControl={refreshControl}
         onEndReached={hasNextPage === false ? undefined : onEndReached}
         onEndReachedThreshold={onEndReachedThreshold}

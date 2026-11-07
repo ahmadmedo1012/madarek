@@ -149,6 +149,19 @@ export function activeCueAt(cues: readonly VttCue[], t: number): VttCue | null {
 }
 
 /**
+ * Transcript search over the FULL cue list (M5). The pre-M5 shape capped
+ * the data at 200 cues (`.slice(0, 200)` — a data cut, not virtualization:
+ * a 90-minute lecture carries ~1000+ cues and every match past cue 200
+ * was invisible). Virtualization belongs to the VIEW layer (DataList →
+ * FlashList v2 on native, FlatList windowing on web); the data stays whole.
+ */
+export function filterCues(cues: readonly VttCue[], query: string): readonly VttCue[] {
+  const q = query.trim();
+  if (q === "") return cues;
+  return cues.filter((c) => c.text.includes(q));
+}
+
+/**
  * Mount-on-first-open gate for the AppSheet family. WHY: @gorhom/bottom-
  * sheet pulls react-native-gesture-handler v3, whose import-time native
  * install cannot boot under jest — mounting the sheet only once the user
@@ -558,11 +571,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
   });
   const [cueQuery, setCueQuery] = useState("");
   const cues = transcript.data ?? NO_CUES;
-  const filteredCues = useMemo(() => {
-    const q = cueQuery.trim();
-    const list = q === "" ? cues : cues.filter((c) => c.text.includes(q));
-    return list.slice(0, 200);
-  }, [cues, cueQuery]);
+  const filteredCues = useMemo(() => filterCues(cues, cueQuery), [cues, cueQuery]);
 
   /* ── Siblings (prev/next) + offering materials ───────────────────── */
   const siblings = useQuery({
@@ -867,8 +876,12 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   onChange={setCueQuery}
                   placeholder="ابحث في النص المكتوب…"
                 />
-                {/* Virtualized cue list (nested, height-capped) — the old
-                    .map could mount 200 rows at once (audit §3). */}
+                {/* M5 — virtualized cue list (nested, height-capped):
+                    FULL data in, windowed views out. The old shape mounted
+                    200 rows via .map (audit §3); the FlatList fallback now
+                    mounts only the initial window (see data.test.tsx
+                    "windowing" — 10 of 1000 rows) and native FlashList v2
+                    recycles. */}
                 <DataList
                   data={filteredCues}
                   renderItem={({ item }) => (
@@ -887,6 +900,7 @@ function LectureBody({ lecture, scope }: { lecture: Lecture; scope: string | nul
                   keyExtractor={(c, i) => `${c.start}-${i}`}
                   style={{ height: 360 }}
                   contentPadding={{ bottom: 4 }}
+                  windowing={{ initialNumToRender: 8, maxToRenderPerBatch: 8, windowSize: 9 }}
                   scrollProps={{ nestedScrollEnabled: true, showsVerticalScrollIndicator: true }}
                   emptyTitle="لا نتائج مطابقة في هذا النص."
                   emptyMessage="جرّب كلمة أخرى."
