@@ -4533,6 +4533,38 @@
         "768"
       ],
       "reason": "drafting grid hairline - per-div counterpart built + bound at 1440/390 (R341 H1-a); this bp's grid geometry not yet matched - H1-d sweep"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
+    },
+    {
+      "section": "home-hero-wrap",
+      "heron": "home-hero-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+      "bps": [
+        "390"
+      ],
+      "reason": "vector chrome pin/pulse seat - Heron collapses this node to a 0x0 box at 390 (off-stage); our HeroChrome seat mirrors it 0x0, but the census walk drops 0x0 leaves, so the pair is unmeasurable at this bp - parity by construction (R341 H1-b)"
     }
   ],
   "plumbing": [

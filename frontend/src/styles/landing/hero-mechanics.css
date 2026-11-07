@@ -1220,8 +1220,14 @@ section.fo-hero .hro-alt {
   height: var(--ch-h, auto);
   opacity: var(--ch-op, 1);
   background-color: var(--ch-bg, transparent);
-  color: var(--ch-ink, inherit);
+  color: var(--ch-col, inherit);
+  transition: var(--ch-tr, none);
 }
+/* the glyph kids carry their own measured ink (and the <=991 arm can
+   re-ink them); the inline --ch-ink/--ch-ink390 win over the seat colour
+   the same way the seat boxes win over the wrapper seat */
+.hro .hro-chrome path.hro-ch,
+.hro .hro-chrome circle.hro-ch { color: var(--ch-ink, inherit); }
 /* the measured interactive flag (Heron's accent arrow seats sit inside
    real links); the pointer mirrors it without a tab stop (aria-hidden) */
 .hro .hro-chrome .hro-ch[data-act] { cursor: pointer; }
@@ -1251,5 +1257,8 @@ section.fo-hero .hro-alt {
     height: var(--ch-h390, var(--ch-h, auto));
     opacity: var(--ch-op390, var(--ch-op, 1));
     background-color: var(--ch-bg390, var(--ch-bg, transparent));
+    color: var(--ch-col390, var(--ch-col, inherit));
   }
+  .hro .hro-chrome path.hro-ch,
+  .hro .hro-chrome circle.hro-ch { color: var(--ch-ink390, var(--ch-ink, inherit)); }
 }
