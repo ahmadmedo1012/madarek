@@ -14,6 +14,7 @@ import { RevealCssClass } from '../../hooks/useReveal';
  * marks + grain film) — the /auth pages' drawing-sheet grammar on this
  * chrome-less guest surface. */
 import { GuestSheetChrome } from '../../components/layout/GuestSheetChrome';
+import '../../styles/campus-media.css'; // r341 D9 flat-paper law: the 3 gradient devices stay page-scoped
 // patterns.css §10 (r341/D9) — the guest sub-page sheet (ex
 // campus.css, deleted): the landing's documentary media rail (الحياة
 // الجامعية) + the video facades (مشاهد جامعية) live here VERBATIM —

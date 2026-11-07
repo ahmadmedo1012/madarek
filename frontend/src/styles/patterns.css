@@ -3356,19 +3356,6 @@ a.pf-row-link {
   aspect-ratio: 16 / 9;
 }
 
-.vc-poster {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background:
-    repeating-linear-gradient(
-      to inline-end,
-      transparent 0 calc(25% - 1px),
-      var(--grid-line) calc(25% - 1px) 25%
-    ),
-    color-mix(in srgb, var(--surface) 88%, var(--bg));
-}
 
 .vc-poster-mark {
   color: var(--accent-ink);
@@ -3416,17 +3403,6 @@ a.pf-row-link {
   color: var(--text-muted);
 }
 
-.vc-actions {
-  position: absolute;
-  inset-block-end: 0;
-  inset-inline: 0;
-  padding: var(--sp-4) var(--sp-6);
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--sp-4);
-  background: linear-gradient(to block-start, var(--surface) 70%, transparent);
-}
 
 .vc-play {
   min-block-size: 44px;
@@ -3652,15 +3628,6 @@ a.pf-row-link {
   background: var(--bg);
 }
 
-.inkm-sketch-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(to left, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.55;
-}
 
 .inkm-sketch-mark {
   position: absolute;
@@ -3762,21 +3729,9 @@ a.pf-row-link {
     aspect-ratio: auto; /* was 16 / 9 — `none` is not a valid value; auto
        retires the reservation (it moved to the poster below) */
   }
-  .vc-poster {
-    position: relative; /* was absolute inset 0 — it IS the 16:9 box now */
-    inset: auto;
-    aspect-ratio: 16 / 9;
-  }
   .vc-body {
     position: static;
     padding: var(--sp-3) var(--sp-1) 0;
-  }
-  .vc-actions {
-    position: static;
-    padding: var(--sp-3) var(--sp-1) 0;
-    background: none; /* the desktop gradient wash is a poster floor */
-    flex-direction: column;
-    align-items: stretch;
   }
   .vc-poster-lines {
     inset-inline: var(--sp-4);
