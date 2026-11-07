@@ -429,6 +429,25 @@ export function OwnerDashboardPage() {
         title="لوحة التحكم الرئيسية"
         description="نظرة شاملة وإحصائيات حيّة عن المنصة"
         meta={formatDate(new Date(), { weekday: 'long', day: 'numeric', month: 'long' })}
+        /* D11 (D8/D10 header-CTA precedent): the console's two live
+         * surfaces ride the header action slot — the realtime monitor
+         * (primary) + the operational alerts board. The quick-actions
+         * card [04] keeps the full set; this pair is the phone-band's
+         * honest affordance (the topbar «اسأل AI» hides ≤920 since D6,
+         * so without it the first viewport at 390 carries no primary
+         * action at all). */
+        actions={(
+          <>
+            <Link to="/owner/realtime" className="btn primary sm">
+              <Icon icon={Radio} size={13} />
+              المراقبة الحيّة
+            </Link>
+            <Link to="/owner/alerts" className="btn ghost sm">
+              <Icon icon={AlertTriangle} size={13} />
+              التنبيهات
+            </Link>
+          </>
+        )}
       />
 
       {/* Live Status — never claims "normal" unless the alerts query

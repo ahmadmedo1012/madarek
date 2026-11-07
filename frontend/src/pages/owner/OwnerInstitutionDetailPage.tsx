@@ -458,6 +458,12 @@ export function OwnerInstitutionDetailPage() {
     <div className="page r305ao">
       <PatternsPageHeader
         title={institution.name}
+        /* R341 D11: the [04] nav-order gutter numeral (the institutions
+         * register's own index — this is its detail surface) + the
+         * sector eyebrow (the surface family this page belongs to).
+         * D10 quality precedent. */
+        index="04"
+        eyebrow="المؤسسات"
         description={
           /* r299: the Latin nameEn is bidi-isolated like the list
               page renders it (a bare RTL-embedded Latin run can
@@ -480,6 +486,20 @@ export function OwnerInstitutionDetailPage() {
             </span>
           </span>
         }
+        /* D11 (D8/D10 header-CTA precedent): the context's sibling
+         * surfaces — the platform directory where this institution's
+         * members carry their accounts (primary) + the institutions
+         * console it lives in (ghost; the breadcrumb already carries
+         * the «كل المؤسسات» way back — the CTA's label stays distinct
+         * so the r181 header pin's getByRole stays unique). The
+         * section-scoped write actions (إضافة كلّيّة/مقرّر) stay on
+         * their sections. */
+        actions={(
+          <>
+            <Link to="/owner/users" className="btn accent sm">دليل الأعضاء</Link>
+            <Link to="/owner/institutions" className="btn ghost sm">إدارة المؤسسات</Link>
+          </>
+        )}
       />
 
       {suspended && (

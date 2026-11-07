@@ -146,6 +146,20 @@ export function OwnerAlertsPage() {
         title="التنبيهات التشغيليّة"
         description="إدارة ومراقبة التنبيهات والحوادث التشغيليّة — مباشرة من سجلّ المنصّة."
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'التنبيهات التشغيليّة' }]}
+        /* R341 D11: the [11] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). */
+        index="11"
+        /* D11 (D8/D10 header-CTA precedent): the board's sibling
+         * surfaces — the live monitor the service readouts ride
+         * (primary) + the system console the sync/storage health
+         * lives in (ghost). The in-card resolve actions stay on
+         * their alert rows. */
+        actions={(
+          <>
+            <Link to="/owner/realtime" className="btn accent sm">المراقبة الحيّة</Link>
+            <Link to="/owner/system" className="btn ghost sm">النظام والتشغيل</Link>
+          </>
+        )}
       />
 
       {/* R190 (D4): the typographic stat strip — was the grid-3 icon

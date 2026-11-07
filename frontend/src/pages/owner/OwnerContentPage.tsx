@@ -112,6 +112,10 @@ export function OwnerContentPage() {
         title="المحتوى والعلامة التجاريّة"
         description="إدارة الإعلانات، أعلام الميزات، والهويّة البصريّة للمنصّة"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المحتوى والعلامة التجاريّة' }]}
+        /* R341 D11: the [06] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). The page's body cards
+         * already carry their own primary links both bands. */
+        index="06"
       />
 
       <div className="grid-2">

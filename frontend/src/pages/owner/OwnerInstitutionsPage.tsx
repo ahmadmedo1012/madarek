@@ -575,6 +575,11 @@ export function OwnerInstitutionsPage() {
         title="المؤسسات"
         description="إدارة المؤسسات التعليمية على المنصّة"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المؤسسات' }]}
+        /* R341 D11: the [04] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). The page's primary
+         * action (the create form's submit) is already the first
+         * in-viewport CTA at both bands. */
+        index="04"
       />
 
       <CreateInstitutionCard

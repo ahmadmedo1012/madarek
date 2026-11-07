@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import { Bot, Sparkles } from 'lucide-react';
 import { Bar, Line } from 'react-chartjs-2';
 import { useMemo } from 'react';
@@ -113,16 +114,31 @@ export function OwnerAiPage() {
         title="مركز الذكاء الاصطناعيّ"
         description="مراقبة استخدام وأداء خدمات الذكاء الاصطناعيّ"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'مركز الذكاء الاصطناعيّ' }]}
+        /* R341 D11: the [09] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). */
+        index="09"
         /* The r160 honesty contract on the monitoring side too: the
             badge names the real model when one answers, and says
-            «محليّ» — not an LLM name — when the local composer does. */
-        actions={aiConfig.data ? (
-          /* r299: brand, not gold — R197 reserves gold for achievements;
-             this badge names the provider (a fact, not a reward). */
-          <Badge color="brand" icon={Sparkles}>
-            {isRealLlm && aiConfig.data?.model ? <bdi>{aiConfig.data.model}</bdi> : 'محليّ'}
-          </Badge>
-        ) : undefined}
+            «محليّ» — not an LLM name — when the local composer does.
+            D11 (D8/D10 header-CTA precedent): the service's sibling
+            surfaces ride beside it — the system console where the
+            AI daily-limit setting + feature flags live (primary) and
+            the realtime board that counts AI requests/minute (ghost).
+            Navigation-only; monitoring writes nothing. */
+        actions={(
+          <>
+            <Link to="/owner/system" className="btn accent sm">النظام والتشغيل</Link>
+            <Link to="/owner/realtime" className="btn ghost sm">المراقبة الحيّة</Link>
+            {aiConfig.data && (
+              /* r299: brand, not gold — R197 reserves gold for
+                 achievements; this badge names the provider (a fact,
+                 not a reward). */
+              <Badge color="brand" icon={Sparkles}>
+                {isRealLlm && aiConfig.data?.model ? <bdi>{aiConfig.data.model}</bdi> : 'محليّ'}
+              </Badge>
+            )}
+          </>
+        )}
       />
 
       {aiMetrics.isPending ? (

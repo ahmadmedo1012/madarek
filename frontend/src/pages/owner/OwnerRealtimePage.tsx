@@ -1,4 +1,5 @@
 import { RefreshCw } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { StatStrip } from '../../components/primitives/Ledger';
 import { ErrorState } from '../../components/primitives/States';
 /* R304: the live board opens with the patterns PageHeader —
@@ -71,6 +72,20 @@ export function OwnerRealtimePage() {
         title="المراقبة الحيّة"
         description="مراقبة العمليّات الحيّة للمنصّة في الوقت الفعليّ"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'المراقبة الحيّة' }]}
+        /* R341 D11: the [02] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). */
+        index="02"
+        /* D11 (D8/D10 header-CTA precedent): the board's sibling
+         * surfaces — the operational alerts board the live band
+         * counts (primary) + the system console the services readout
+         * lives in (ghost). Navigation-only; the band's own retry
+         * stays in-band. */
+        actions={(
+          <>
+            <Link to="/owner/alerts" className="btn accent sm">التنبيهات التشغيليّة</Link>
+            <Link to="/owner/system" className="btn ghost sm">النظام والتشغيل</Link>
+          </>
+        )}
       />
 
       {realtime.isPending ? (

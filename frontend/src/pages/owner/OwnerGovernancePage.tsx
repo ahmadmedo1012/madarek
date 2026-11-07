@@ -1,5 +1,6 @@
 import { Line, Doughnut } from 'react-chartjs-2';
 import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -158,6 +159,19 @@ export function OwnerGovernancePage() {
         title="الحوكمة المتقدّمة"
         description="تتبّع الصلاحيات والنموّ وتحليل تسجيلات الدخول"
         breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'الحوكمة المتقدّمة' }]}
+        /* R341 D11: the [13] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). */
+        index="13"
+        /* D11 (D8/D10 header-CTA precedent): the metrics' sibling
+         * surfaces — the audit feed the permission/role counts derive
+         * from (primary) + the accounts directory the growth reads
+         * (ghost). Navigation-only; the page is read-only. */
+        actions={(
+          <>
+            <Link to="/owner/activity" className="btn accent sm">سجلّ النشاط</Link>
+            <Link to="/owner/users" className="btn ghost sm">المستخدمون</Link>
+          </>
+        )}
       />
 
       {/* Governance metrics — each area owns its pending/error state, so a

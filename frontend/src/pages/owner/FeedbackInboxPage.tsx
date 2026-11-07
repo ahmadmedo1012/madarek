@@ -7,6 +7,7 @@
  * dismissed (terminal — the backend owns the transition verdict).
  */
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Inbox, MessageSquarePlus, RefreshCw, Smartphone } from 'lucide-react';
 import { Card } from '../../components/primitives';
 /* The patterns PageHeader — breadcrumbs brow + meta, the owner pages' seat. */
@@ -183,10 +184,19 @@ export default function FeedbackInboxPage() {
         title="صندوق التغذية الراجعة"
         description="كل «أبلغ عن مشكلة / اقتراح» وصل من مستخدمي المنصّة — مع سياقه الكامل."
         eyebrow="المنصّة · التشغيل"
+        /* R341 D11: the [12] nav-order gutter numeral (OWNER_NAV
+         * register — the D10 quality precedent). */
+        index="12"
         actions={
-          <button type="button" className="btn ghost sm" onClick={() => void inbox.refetch()}>
-            <Icon icon={RefreshCw} size={13} /> تحديث
-          </button>
+          <>
+            {/* D11 (D8/D10 header-CTA precedent): the audit feed that
+             * records every status move this inbox makes (primary)
+             * rides beside the refresh (ghost). */}
+            <Link to="/owner/activity" className="btn accent sm">سجلّ النشاط</Link>
+            <button type="button" className="btn ghost sm" onClick={() => void inbox.refetch()}>
+              <Icon icon={RefreshCw} size={13} /> تحديث
+            </button>
+          </>
         }
       />
 

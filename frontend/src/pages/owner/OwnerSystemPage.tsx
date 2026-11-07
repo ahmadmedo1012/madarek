@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AlertTriangle, RefreshCw, Settings, CheckCircle2, ChevronDown, HardDrive } from 'lucide-react';
 import { Card, Badge, AlertRow } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -199,6 +200,10 @@ export function OwnerSystemPage() {
       <header className="page-header">
         <div className="page-title-block">
           <h1 className="page-title">
+            {/* R341 D11: the [07] nav-order gutter numeral (OWNER_NAV
+                register — the D10 quality precedent; aria-hidden like
+                every page-index seat). */}
+            <span className="page-index" aria-hidden="true" dir="ltr">[07]</span>
             النظام والتشغيل
             {sysData && sysData.alerts.openCount > 0 && (
               <span className="owner-badge-counter">
@@ -208,21 +213,25 @@ export function OwnerSystemPage() {
           </h1>
           <p className="page-subtitle">إدارة البنية التحتية وحالة الخدمات</p>
         </div>
-        {/* r327 Y7 — the ONE manual refresh. The console refreshes on a
-            single bounded cadence (useOwnerSystem: 30s while the tab is
-            visible, never in the background); this button covers the
-            «أحتاجها الآن» moment (بعد نشرٍ أو إصلاح). Anatomy = the
-            owner-family refresh idiom (FeedbackInbox/Activity: ghost sm
-            + RefreshCw 12). */}
-        <button
-          type="button"
-          className="btn ghost sm"
-          onClick={() => void sys.refetch()}
-          disabled={sys.isFetching}
-        >
-          <Icon icon={RefreshCw} size={12} />
-          {sys.isFetching ? 'جارٍ التحديث…' : 'تحديث'}
-        </button>
+        {/* D11 (D8/D10 header-CTA precedent): the console's sibling
+            board — the operational alerts the health KPI counts
+            (primary) rides beside r327 Y7's ONE manual refresh (ghost
+            sm + RefreshCw 12 — the owner-family idiom; the console
+            refreshes on a single bounded cadence, useOwnerSystem 30s
+            while visible, and this button covers the «أحتاجها الآن»
+            moment after a deploy or a fix). */}
+        <div className="row">
+          <Link to="/owner/alerts" className="btn accent sm">التنبيهات التشغيليّة</Link>
+          <button
+            type="button"
+            className="btn ghost sm"
+            onClick={() => void sys.refetch()}
+            disabled={sys.isFetching}
+          >
+            <Icon icon={RefreshCw} size={12} />
+            {sys.isFetching ? 'جارٍ التحديث…' : 'تحديث'}
+          </button>
+        </div>
       </header>
 
       {/* Real metrics — service health derives from the live query state */}
