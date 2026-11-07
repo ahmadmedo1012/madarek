@@ -2257,9 +2257,11 @@ interface GradeTarget {
  * dedicated queue endpoint ships the assignment's title/maxScore (and
  * course code) as real fields, so the old feed-path hacks — the
  * "s-" prefix strip and the «سلّم / سلّم/ت» title strip the maxScore
- * lookup needed — are gone: the queue row IS the target. Exported for
- * the unit suite. */
-export function queueToPending(rows: PendingSubmissionRow[]): GradeTarget[] {
+ * lookup needed — are gone: the queue row IS the target.
+ * R341 deadcode: the export keyword is retired — the unit seat that
+ * once imported it is gone (knip: unusedExport); the function stays
+ * (TeacherPages' own queue consumes it above). */
+function queueToPending(rows: PendingSubmissionRow[]): GradeTarget[] {
   return rows.map((r) => ({
     submissionId: r.id,
     studentName: `${r.student.firstName} ${r.student.lastName}`,
