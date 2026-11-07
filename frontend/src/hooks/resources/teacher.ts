@@ -360,7 +360,7 @@ export interface UploadMaterialFileInput {
   onUploadProgress?: (pct: number) => void;
 }
 
-export const MATERIAL_UPLOAD_TIMEOUT_MS = 120_000;
+const MATERIAL_UPLOAD_TIMEOUT_MS = 120_000;
 
 export function useUploadMaterialFile() {
   const qc = useQueryClient();

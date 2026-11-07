@@ -12,13 +12,13 @@ import { z } from 'zod';
 import type { Lecture, LecturePatchInput, LectureWriteInput } from '../../hooks/useResources';
 
 /** Media URL rule mirrors CURRICULUM_MEDIA_URL_PATTERN on the server. */
-export const LECTURE_MEDIA_URL_PATTERN = /^https:\/\/|^\/api\/v1\/files\/papers\//;
+const LECTURE_MEDIA_URL_PATTERN = /^https:\/\/|^\/api\/v1\/files\/papers\//;
 
 /** Upper bound for durationSec / startSec / endSec / triggerSec: one day. */
-export const MAX_MEDIA_SEC = 86_400;
+const MAX_MEDIA_SEC = 86_400;
 
 /** Lecture ordinal bounds (chapters/checkpoints get auto ordinals). */
-export const MAX_ORDINAL = 500;
+const MAX_ORDINAL = 500;
 
 /** Checkpoint options bounds — model + zod .min(2).max(6). */
 export const MIN_CHECKPOINT_OPTIONS = 2;

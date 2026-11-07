@@ -6,7 +6,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
  *  `action:theme`) — resolved against the CURRENT role's action list
  *  at render time, so a stored id from another role simply never
  *  resolves and never renders. */
-export const PALETTE_RECENTS_CAP = 4;
+const PALETTE_RECENTS_CAP = 4;
 
 interface UiState {
   /** Mobile drawer open state — full overlay on small screens. */

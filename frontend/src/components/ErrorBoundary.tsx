@@ -28,7 +28,7 @@ import { Icon } from './Icon';
  * module», Firefox «Importing a module script failed», Safari «error
  * loading dynamically imported module». Exported for App.tsx's
  * retrying lazy loader (5-C3, A9 P2-3). */
-export function isChunkLoadError(error: unknown): boolean {
+function isChunkLoadError(error: unknown): boolean {
   const msg = (error as { message?: unknown } | null | undefined)?.message;
   if (typeof msg !== 'string') return false;
   const m = msg.toLowerCase();

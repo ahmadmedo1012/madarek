@@ -11,8 +11,8 @@ export interface ConsoleEntry {
   text: string;
 }
 
-export const CONSOLE_RING_MAX = 20;
-export const CONSOLE_TEXT_MAX = 500;
+const CONSOLE_RING_MAX = 20;
+const CONSOLE_TEXT_MAX = 500;
 
 export function pushConsoleEntry(ring: ConsoleEntry[], raw: unknown, now: number = Date.now()): ConsoleEntry[] {
   const text =

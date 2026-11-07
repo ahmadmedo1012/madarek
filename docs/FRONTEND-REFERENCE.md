@@ -152,7 +152,6 @@ interface ThemeState {
 | `PageTransition` | Route transition animation wrapper |
 | `Reveal` | Scroll-triggered reveal (IntersectionObserver) — the platform primitive |
 | `Skeleton` | Loading skeleton primitives |
-| `Parallax` | Subtle scroll parallax (≤8px) |
 | `SectionAccent` | Section-level decorative accent |
 | `useReducedMotion` | `prefers-reduced-motion` hook (single source for chart option memoization) |
 | `useSectionAccent` | Hook for section accent color |
@@ -187,7 +186,6 @@ Unified platform: every overlay registers in `lib/overlayStack` (topmost layer o
 | `EmojiIcon` | Data-driven emoji→Lucide bridge (API `iconEmoji` strings only — never chrome) |
 | `CollegesPopover` | College selection popover (homepage) |
 | `CountUp` | Animated KPI counter |
-| `LibyaFlag` | Libya flag SVG |
 | `curriculum/*` | Curriculum authoring panel + chapter/lecture/checkpoint builders (dirty-state discard guards) |
 | `charts/ChartFrame` | Themed chart frame + sr-only data table |
 | `owner/ConfirmDialog`, `owner/ToggleSwitch` | Owner-console controls |

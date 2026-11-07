@@ -29,7 +29,7 @@ export function consoleTapeEntries(): ConsoleEntry[] {
   return ring;
 }
 
-export function consoleTapePush(args: unknown[]): void {
+function consoleTapePush(args: unknown[]): void {
   ring = pushConsoleEntry(ring, toText(args));
 }
 

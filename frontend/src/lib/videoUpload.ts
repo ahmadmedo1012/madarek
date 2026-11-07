@@ -28,7 +28,7 @@ export const VIDEO_TOTAL_MAX_BYTES = 4 * 1024 * 1024 * 1024;
 const VIDEO_EXT = ['.mp4', '.webm', '.m4v', '.ogv', '.ogg'] as const;
 
 /** The exact Arabic refusal surfaces the server sends for a wrong type. */
-export function isVideoFile(file: File): boolean {
+function isVideoFile(file: File): boolean {
   const lower = file.name.toLowerCase();
   return VIDEO_EXT.some((ext) => lower.endsWith(ext));
 }

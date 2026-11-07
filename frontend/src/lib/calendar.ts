@@ -18,7 +18,7 @@
 
 /** Audience timezone for calendar-day display labels (Libya) — mirrors
  *  backend/src/lib/dates.ts AUDIENCE_TZ. */
-export const AUDIENCE_TZ = 'Africa/Tripoli';
+const AUDIENCE_TZ = 'Africa/Tripoli';
 
 const tripoliKeyFormatter = new Intl.DateTimeFormat('en-CA', {
   timeZone: AUDIENCE_TZ,

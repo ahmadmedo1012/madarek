@@ -21,14 +21,14 @@ import { formatPct } from '../../lib/format';
 
 export type ScanTier = 'ok' | 'warn' | 'bad';
 
-export function plagiarismTier(pct?: number | null): ScanTier {
+function plagiarismTier(pct?: number | null): ScanTier {
   if (pct == null) return 'ok';
   if (pct < 15) return 'ok';
   if (pct < 25) return 'warn';
   return 'bad';
 }
 
-export function aiTier(pct?: number | null): ScanTier {
+function aiTier(pct?: number | null): ScanTier {
   if (pct == null) return 'ok';
   if (pct < 25) return 'ok';
   if (pct < 40) return 'warn';

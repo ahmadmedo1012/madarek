@@ -37,12 +37,6 @@
 // uniqueness constraint).
 // ═══════════════════════════════════════════════════════════════════
 
-import type { LucideIcon } from 'lucide-react';
-import {
-  Laptop, Cog, FlaskConical, Stethoscope, BookOpen, Briefcase, GraduationCap,
-  Scale, Pill, Smile, Microscope, Dumbbell, HeartPulse, Leaf, Scroll,
-  Hospital, Mountain, Fuel, Sprout, Languages, Palette,
-} from 'lucide-react';
 
 export type CollegeIdentityProfile = {
   /** Stable college slug; `<facultyKey>-<campusKey>` per the scheme above. */
@@ -252,19 +246,3 @@ export function getCollegeIdentityByRecord(
   return BY_RECORD.get(`${name}|${city}`) ?? null;
 }
 
-/**
- * Icon-name → lucide-react component registry. Keys are the exact
- * `lucide-react` EXPORT names (PascalCase) — the same form
- * `scripts/validate-college-identity.ts` verifies against the package's
- * exports. Returns null for unknown names so callers can apply their
- * own fallback.
- */
-const COLLEGE_ICONS: Record<string, LucideIcon> = {
-  Laptop, Cog, FlaskConical, Stethoscope, BookOpen, Briefcase, GraduationCap,
-  Scale, Pill, Smile, Microscope, Dumbbell, HeartPulse, Leaf, Scroll,
-  Hospital, Mountain, Fuel, Sprout, Languages, Palette,
-};
-
-export function collegeIcon(name: string): LucideIcon | null {
-  return COLLEGE_ICONS[name] ?? null;
-}

@@ -24,7 +24,7 @@ import { create } from 'zustand';
 export type OnboardingFrame = 0 | 1 | 2 | 3;
 
 /** Last frame index of the generic → role-keyed sequence. */
-export const ONBOARDING_LAST_FRAME = 3;
+const ONBOARDING_LAST_FRAME = 3;
 
 interface OnboardingState {
   /** True while the flow modal is mounted (auto-started or replayed). */

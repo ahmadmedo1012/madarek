@@ -39,7 +39,7 @@ export function toWestern(str: string | number): string {
 const NF_CACHE = new Map<string, Intl.NumberFormat>();
 
 /** Cached NumberFormat — shared by formatNum and CountUp's per-frame path. */
-export function getCachedNumberFormat(options: Intl.NumberFormatOptions = {}): Intl.NumberFormat {
+function getCachedNumberFormat(options: Intl.NumberFormatOptions = {}): Intl.NumberFormat {
   const key = JSON.stringify(options);
   let fmt = NF_CACHE.get(key);
   if (!fmt) {

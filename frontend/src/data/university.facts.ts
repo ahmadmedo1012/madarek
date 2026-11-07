@@ -28,16 +28,3 @@ export const UNIVERSITY_FACTS = {
   ],
 } as const;
 
-/** Fictional campus labels from the canonical registry — «مناطق أخرى»
- * style buckets do not exist in the r188 catalogue, but the filter
- * keeps the same guard shape (future-proof against re-introduced
- * bucket rows). Registry order (حرم المعرفة، حرم الابتكار، حرم البيان). */
-import { colleges } from './colleges.config';
-
-export const CAMPUS_CITIES: readonly string[] = Array.from(
-  new Set(
-    colleges
-      .map((c) => c.cityAr)
-      .filter((city): city is string => Boolean(city) && city !== 'مناطق أخرى'),
-  ),
-);

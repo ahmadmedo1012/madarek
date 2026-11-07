@@ -7,14 +7,11 @@
 #
 # Permitted (allowlisted):
 #   - frontend/src/components/EmojiIcon.tsx        (the primitive itself)
-#   - frontend/src/components/LibyaFlag.tsx        (national symbol)
 #   - frontend/src/components/Icon.tsx             (Lucide wrapper)
 #   - frontend/src/components/Illustration.tsx     (scene wrapper)
-#   - frontend/src/components/StarMark.tsx         (r188: the brand
-#     symbol primitive — khatam star; the LibyaFlag category)
 #   - frontend/src/brand/                          (r323: the ONE brand
 #     system — mark.ts/lockups.ts/Logo.tsx render the mark itself; the
-#     same bespoke brand-symbology category as StarMark/LibyaFlag)
+#     same bespoke brand-symbology category)
 #   - frontend/src/pages/BrandPage.tsx             (r323: the /__brand
 #     spec sheet — its raw <svg> is the 32-grid CONSTRUCTION DRAWING,
 #     brand symbology again, not UI iconography)
@@ -78,7 +75,7 @@ violations=0
 # ticks, mastery cells, streak ticks): the glyphs ARE the data mark, the
 # same class as Ledger's chart marks. UI icons elsewhere still go through
 # <Icon icon={...} />.
-ALLOWED='frontend/src/components/(EmojiIcon|LibyaFlag|Icon|Illustration|StarMark)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/components/patterns/indicators\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/|frontend/src/brand/|frontend/src/pages/BrandPage\.tsx'
+ALLOWED='frontend/src/components/(EmojiIcon|Icon|Illustration)\.tsx|frontend/src/components/landing/|frontend/src/components/illustrations/|frontend/src/components/primitives/Ledger\.tsx|frontend/src/components/patterns/indicators\.tsx|frontend/src/lib/illustrations/|frontend/src/styles/|frontend/public/|frontend/tests/|frontend/src/brand/|frontend/src/pages/BrandPage\.tsx'
 
 # 1. Emoji presentation in source code outside allowlist.
 #    Emoji ranges (BMP + supplementary):
