@@ -55,6 +55,7 @@ import { Icon } from '../../Icon';
 import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
 import { HeroGrid } from './HeroGrid';
+import { HeroChrome } from './HeroChrome';
 import { HeroInspect } from '../cursor/HeroInspect';
 import { useIsNarrowLayout } from '../../../hooks/useIsNarrowLayout';
 import '../../../styles/landing/hero-mechanics.css';
@@ -266,6 +267,12 @@ export function Hero() {
           (the reference's ~95 grid divs, measured seats; appended LAST so
           no existing census ordinal shifts). ══ */}
       <HeroGrid />
+
+      {/* ══ [6] THE VECTOR CHROME — R341 H1-b: the per-node chrome layer
+          (the reference's plus-marks/marquee icons/social arrows/pin
+          dots, measured seats; appended after the grid so no existing
+          census ordinal shifts). ══ */}
+      <HeroChrome />
     </section>
   );
 }
