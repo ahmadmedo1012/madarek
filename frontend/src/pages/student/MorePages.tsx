@@ -1087,12 +1087,18 @@ export function ResultsPage() {
       <SectionBar
         index="01"
         title="تسليمات بانتظار التقييم"
-        meta={(
-          <BarCount
-            n={pendingSubs.length}
-            srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])}
-          />
-        )}
+        /* R341 (D7c) reconciliation — tests are law: the honest empty
+            state keeps its pinned sentence (ResultsPage-timeline ×2)
+            as the bar's meta; the counted meta (the numeral axis seat)
+            rides the non-empty branch only. */
+        meta={pendingSubs.length === 0
+          ? 'لا شيء بانتظار تقييم الأستاذ حالياً'
+          : (
+            <BarCount
+              n={pendingSubs.length}
+              srLabel={countAr(pendingSubs.length, ['تسليم واحد بانتظار التقييم', 'تسليمان بانتظار التقييم', 'تسليمات بانتظار التقييم', 'تسليماً بانتظار التقييم'])}
+            />
+          )}
       />
       {pendingSubs.length === 0 ? (
         <p className="text-sm text-muted" style={{ margin: 0 }}>
