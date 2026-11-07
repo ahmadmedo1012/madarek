@@ -236,10 +236,14 @@ export function Footer({ year }: { year: number }) {
                     <div className="fo-lg-links" data-spec={`footer.lglinks.${gi + 1}`}>
                       {gi === 2 && (
                         <>
-                          <Link to="/auth/register" className="fo-link">
+                          {/* L2-e (R341): fo-link-account — the funnel pair's
+                              affordance + hit-slop seat (cta.css owns the
+                              phone-belt underline grammar; the class adds no
+                              box of its own). */}
+                          <Link to="/auth/register" className="fo-link fo-link-account">
                             <div className="fo-link-t">إنشاء حساب</div>
                           </Link>
-                          <Link to="/auth" className="fo-link">
+                          <Link to="/auth" className="fo-link fo-link-account">
                             <div className="fo-link-t">{LOGIN}</div>
                           </Link>
                         </>
