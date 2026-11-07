@@ -54,6 +54,7 @@ import { EdgeTab } from '../components/landing/chrome/EdgeTab';
  * splitting 1px pair at 50vh + the mono % readout. Scroll-driven CSS
  * (zero JS ticks); reduced motion never mounts it. */
 import { ScrollRule } from '../components/landing/chrome/ScrollRule';
+import { BootLog } from '../components/landing/chrome/BootLog';
 import { shouldPlayIntro, introEnvironment } from '../lib/motion/introGate';
 import { useSheetScroll } from '../lib/motion/useSheetScroll';
 import { clamp } from '../lib/motion/sheetConductor';
@@ -534,6 +535,12 @@ export default function LandingPage() {
           the nav (z45); reduced motion never mounts it (the component's
           own matchMedia guard + the scroll-rule.css belt). */}
       <ScrollRule />
+
+      {/* R340 T-P1x — the boot-log strip (the fill rail + the mono
+          counter + the stage word) at the frame's inline-end edge: the
+          scroll-tied status twin of the rule's % readout. Same laws:
+          decorative chrome (z45), reduced motion never mounts it. */}
+      <BootLog />
 
       {/* R308 → R333 P-D — the custom pointer instrument, mounted LAST
           (fine pointers only; reduced motion and touch keep the native

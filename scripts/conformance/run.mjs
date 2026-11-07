@@ -91,6 +91,7 @@ import { fileURLToPath } from "node:url";
 import * as T from "./tolerances.mjs";
 import { feel as scrollFeel, assert as scrollCurves } from "./scroll.mjs";
 import { interact as interactStates, patterns as patternCheck } from "./interact.mjs";
+import { panel as panelChecks } from "./panel.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = join(__dirname, "..", "..");
@@ -190,6 +191,7 @@ const BPS_WANTED = arg("bps", null)?.split(",").map((b) => b.trim()) ?? BPS.map(
 const GATE = process.argv.includes("--gate");
 const WITH_SCROLL = process.argv.includes("--scroll");
 const WITH_INTERACT = process.argv.includes("--interact");
+const WITH_PANEL = process.argv.includes("--panel");
 const RATCHET_UPDATE = process.argv.includes("--ratchet");
 const RATCHET_FILE = join(__dirname, "ratchet.json");
 const OUT = arg("out", join(__dirname, "results.json"));
@@ -1112,6 +1114,28 @@ if (WITH_INTERACT) {
   }
 }
 
+// ── R340 T-P1x — the panel checks (the blind panel's findings as numbers).
+// Runs with --panel and on every --gate run (verify.sh full mode), on the
+// panel bps (390/768/1440 ∩ requested). GATE LAW (the r339 T-02b coverage-
+// floor precedent): panel rows are kept OUT of totalPass/totalFail so the
+// ratchet keeps its meaning — any panel failure instead flips the verdict
+// to FAIL(panel). Progress cannot be faked by adding passing rows;
+// regressions cannot hide inside a healthy rate.
+if (WITH_PANEL || GATE) {
+  try {
+    const pan = await panelChecks(URL, BPS_WANTED, SECTIONS_WANTED, MAPPING.ourSection, ENGINE);
+    results.panel = { pass: pan.pass, fail: pan.fail, deadVoid: pan.deadVoid, hClip: pan.hClip, cookie: pan.cookie, progress: pan.progress, skipped: pan.skipped };
+    for (const f of pan.failures) results.failures.push({ section: f.section, bp: f.bp, kind: f.kind, heronPath: "(panel)", oursSelector: "-", mode: "panel", expected: f.expected, actual: f.actual, delta: 0 });
+    console.log(`panel checks — deadVoid/hClip/cookie/scrollProgress: ${pan.pass} pass / ${pan.fail} fail${pan.skipped.length ? ` (skipped: ${pan.skipped.join("; ")})` : ""}`);
+    for (const [k, v] of Object.entries(pan.deadVoid)) console.log(`  deadVoid ${k}: worst ${v.worstGapPx}px / limit ${v.limitPx}px`);
+    for (const [k, v] of Object.entries(pan.hClip)) if (v.found) console.log(`  hClip ${k}: found ${v.found} (excluded ${v.excluded})`);
+    for (const [k, v] of Object.entries(pan.progress)) console.log(`  progress ${k}: ${v.rendered}/${v.registered} rendered [${(v.seats || []).join(", ")}]`);
+  } catch (e) {
+    results.panelError = String(e);
+    console.error(`panel checks ERROR: ${e}`);
+  }
+}
+
 // ── summary + report ─────────────────────────────────────────────────────────
 const total = totalPass + totalFail;
 const rate = total ? Math.round((totalPass / total) * 1000) / 10 : 0;
@@ -1191,6 +1215,14 @@ for (const [key, a] of Object.entries(sectionAgg)) {
 // labels keep their exact pre-T-02b format; nothing is ever masked).
 const failParts = [];
 if (GATE && exRate >= 5) failParts.push(`exception-cap:${exRate}%≥5%`);
+// r340 T-P1x — the panel axis: same law as the coverage floor (an
+// additive failure mode that scoping cannot mask). A panel failure
+// flips the verdict to FAIL(panel) WITHOUT touching the rate/ratchet.
+if (GATE && results.panel && results.panel.fail > 0) {
+  failParts.push(`panel:${[...new Set(results.failures.filter((f) => f.mode === "panel").map((f) => f.kind))].join("+")}`);
+  console.error(`gate breach(es) — r340 T-P1x panel checks:
+  ${results.failures.filter((f) => f.mode === "panel").map((f) => `${f.kind}: ${f.section}@${f.bp} — ${f.actual}`).join("\n  ")}`);
+}
 if (GATE && gateFailures.length) {
   failParts.push(`${[...new Set(gateFailures.map((f) => f.gate))].join("+")}:${[...new Set(gateFailures.map((f) => f.section))].join(",")}`);
   console.error(`gate breach(es) — r339 T-02b honesty gates:

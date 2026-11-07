@@ -75,6 +75,31 @@
   white-space: nowrap;
 }
 
+/* ═══ R340 T-P1x — the tick rail: one tick per stage (9), stacked
+ * above the % readout at the frame's inline-start edge. Discrete
+ * data-passed flips (background + block-size) driven by the same
+ * rAF driver as the readout — no durations, no keyframes; the rail
+ * fills in the sheet's own reading direction (RTL flex order). ═══ */
+.scr-ticks {
+  position: absolute;
+  inset-inline-start: 33px;
+  inset-block-end: calc(50% + 36px);
+  display: flex;
+  gap: 3px;
+  margin: 0;
+  padding: 0;
+}
+.scr-tick {
+  display: block;
+  inline-size: 1px;
+  block-size: 4px;
+  background: var(--text-faint);
+}
+.scr-tick[data-passed] {
+  background: var(--accent);
+  block-size: 6px;
+}
+
 /* RM belt — the component already refuses to mount under
    prefers-reduced-motion; this hides the seats even if a future
    mount path forgets the guard */
