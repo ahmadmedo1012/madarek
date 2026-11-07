@@ -1187,3 +1187,69 @@ section.fo-hero .hro-alt {
 /* the a[2] datum seat's dark arm — the frozen spec's full-ink channel
    under the dark boot (H1-a's measured dark parity). */
 :root[data-theme="dark"] .hro .hro-grid .hro-gl-g89 { color: var(--grid-ink); }
+
+/* ── R341 H1-b · the per-node vector-chrome layer (HeroChrome) — the
+   reference's plus-marks / marquee icons / social arrows / pin dots as
+   ~103 real per-node seats (div + svg + path/circle children), measured
+   from the frozen spec (home-hero-wrap.1440/390.json) and mirrored
+   sr-exact into our RTL frame. Geometry/opacity/colour ride per-element
+   CSS custom properties set inline by HeroChrome.tsx (the single
+   measured data table); this sheet holds only the layer laws. The glyph
+   geometry inside each icon svg is Madarek's own line art (stroked
+   arrows and crosses, filled pin squares/dots) authored to the measured
+   boxes — never Heron's asset. The wrapper is visibility:hidden with
+   visible children so the edge-390 gutter census — which unions every
+   visible descendant — sees only the chrome, never the layer box. ── */
+.hro .hro-chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  visibility: hidden;
+  color: var(--grid-ink-72);
+  font-size: 13.33px; /* type-gate: allow — the frozen spec's measured hero-chrome rung (same census as the grid layer) */
+  line-height: 18px; /* type-gate: allow — the Arabic floor seat (1.35 × 13.33), same census */
+  font-weight: 500;
+  z-index: var(--z-hero-grid);
+}
+.hro .hro-chrome .hro-ch {
+  position: absolute;
+  visibility: visible;
+  left: var(--ch-l, auto);
+  top: var(--ch-t, auto);
+  width: var(--ch-w, auto);
+  height: var(--ch-h, auto);
+  opacity: var(--ch-op, 1);
+  background-color: var(--ch-bg, transparent);
+  color: var(--ch-ink, inherit);
+}
+/* the measured interactive flag (Heron's accent arrow seats sit inside
+   real links); the pointer mirrors it without a tab stop (aria-hidden) */
+.hro .hro-chrome .hro-ch[data-act] { cursor: pointer; }
+/* our own glyph art: stroked line/diagonal arrows and stroke crosses,
+   filled pin squares and dots */
+.hro .hro-chrome svg.hro-ch { overflow: visible; }
+.hro .hro-chrome path.hro-ch { fill: none; stroke: currentColor; stroke-width: 1; }
+.hro .hro-chrome path.hro-ch[data-k='sq'] { fill: currentColor; stroke: none; }
+.hro .hro-chrome circle.hro-ch { fill: currentColor; }
+/* wide-band rows (the off-stage marquee run and the sets Heron repacks
+   below the band): rendered >=1440 only — still excused at 768/1024. */
+.hro .hro-chrome .hro-ch[data-wide] { display: none; }
+@media (min-width: 1440px) {
+  .hro .hro-chrome .hro-ch[data-wide] { display: block; }
+}
+/* the <=991 seat — rows with a measured 390 box re-seat onto it (the
+   phone census), incl. the fs/lh rung seat. */
+@media (max-width: 991px) {
+  .hro .hro-chrome {
+    font-size: 15.88px; /* type-gate: allow — the <=991 measured rung (the 390 census) */
+    line-height: 21.44px; /* type-gate: allow — the Arabic floor seat, same census */
+  }
+  .hro .hro-chrome .hro-ch {
+    left: var(--ch-l390, var(--ch-l, auto));
+    top: var(--ch-t390, var(--ch-t, auto));
+    width: var(--ch-w390, var(--ch-w, auto));
+    height: var(--ch-h390, var(--ch-h, auto));
+    opacity: var(--ch-op390, var(--ch-op, 1));
+    background-color: var(--ch-bg390, var(--ch-bg, transparent));
+  }
+}
