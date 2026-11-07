@@ -24,11 +24,14 @@ import { Building2, Home, LogIn } from 'lucide-react';
 import { Icon } from '../components/Icon';
 import { Illustration } from '../components/illustrations/Illustration';
 import { usePageTitle } from '../hooks/usePageTitle';
+/* R341 D5 — the error sheets' own thin seat sheet (errors.css): the
+ * edge390 mobile inset + the primary way-home's hover channels. */
+import '../styles/errors.css';
 
 export default function NotFoundPage() {
   usePageTitle('الصفحة غير موجودة');
   return (
-    <main className="nf-shell">
+    <main className="nf-shell nf-sheet">
       {/* r313: the page frame — the landing's full-page drafting frame
           (fixed 1px #B3B3AF at the 7px inset + 10×10 mono corner plus
           marks, the .sheet-frame grammar). Everything decorative is
@@ -56,9 +59,11 @@ export default function NotFoundPage() {
 
         {/* r324 X10 — the mono `ERR [404]` eyebrow and the
             `[0,0] · ROUTE NOT MAPPED · MADAREK` coordinates line are
-            RETIRED: coordinates/revision tags are not content. The
-            sr-only «خطأ 404.» carrier stays; the title carries the
-            meaning. */}
+            RETIRED: coordinates/revision tags are not content. R341 D5
+            — the pattern library's quiet kicker seat carries the
+            sheet's own tab-title word (no code chrome). The sr-only
+            «خطأ 404.» carrier stays; the title carries the meaning. */}
+        <p className="pf-eyebrow">الصفحة غير موجودة</p>
         <span className="sr-only">خطأ 404.</span>
 
         <h1 className="nf-title">هذه الصفحة تغيّبت عن الحضور</h1>

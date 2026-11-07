@@ -1,34 +1,28 @@
 /* ════════════════════════════════════════════════════════════════════
-   مدارك — THE PUBLIC DOCUMENT SHEETS (R320 §D · c2-LEGAL)
+   مدارك — THE PUBLIC DOCUMENT SHEETS (R320 §D · R341 task D5)
    /legal/privacy · terms · cookies · accessibility · security · data
-   + /about · /help · /contact
+   + /about · /help · /contact · /app (shared shell consumers)
    ════════════════════════════════════════════════════════════════════
-   The nine public pages share ONE document shell (pages/legal/
-   LegalSheet.tsx): the /capabilities chrome-less guest grammar —
-   GuestSheetChrome's fixed 7px frame + grain film (auth.css's
-   .auth-frame/.auth-mark/.auth-grain borrow) — wrapped around a POLICY
-   DOCUMENT instead of a marketing sheet:
-
-   · the 72ch DOCUMENT MEASURE (max-inline-size: 72ch + gutter) — a
-     readable one-column document, not a 1160px marketing grid;
-   · numbered [nn] SECTION BARS (.lg-bar) — the §B2 student SectionBar
-     register re-expressed in the public sheet's OWN lg-* classes: the
-     public chunk never imports the student kit, so the two families
-     can never share a cascade;
-   · HAIRLINE CELLS (.lg-cell) — radius 0, 1px rules, no shadows (the
-     r313 ladder);
-   · the STORAGE LEDGER table (.lg-table) — mono dir=ltr keys in their
-     own column, hairline rows, the reject-purge column;
-   · the FAQ cells (.lg-faq / .lg-faq-q / .lg-faq-a);
-   · the honest COLOPHON (.lg-colophon) — the platform's own identity
-     line + the آخر تحديث stamp (print-visible).
+   R341 D5 — rebuilt on the PATTERN LIBRARY (the r340 T-D1a recipe, the
+   D2 about precedent): pf-page[data-width=reading] carries the measure,
+   pf-page-header/pf-eyebrow/pf-page-desc the title block, pf-page-
+   actions + the lg-cta pair the actions. This sheet keeps only what the
+   library does not own — the sticky guest header, the [nn] section
+   bars, the hairline cells, the storage-ledger table, the FAQ cells,
+   the colophon, and the /app distribution cells (.lg-qr/.lg-p-actions/
+   .lg-p-note — AppDownloadPage seats until task D4). The lg-* prose
+   helpers (.lg-p/.lg-mono/.lg-link/…) stay: /help · /contact · /app
+   seat them from this module's exports; their D-tasks re-key them.
+   Deleted with this rebuild (grep-proven zero seats): .lg-header-code,
+   .lg-head/.lg-title/.lg-lede (the pf-page-header owns the block now),
+   .lg-p-statement (orphaned by D2's about rebuild).
 
    Discipline (the fleet gates): theme TOKENS ONLY — the dark pair is
-   automatic, there is NO html[data-theme] block in this file · every
-   :hover inside @media (hover: hover) · interactive states set the
-   color+background PAIR together · spacing on the --sp-* ladder ·
-   radius 0 everywhere · @media print collapses to ONE clean column
-   (chrome + grain + frame hidden, the policy text + the stamp kept).
+   automatic, there is NO html[data-theme] color block in this file ·
+   every :hover inside @media (hover: hover) and always the
+   color+background PAIR · spacing on the --sp-* ladder · radius 0
+   (var(--r-sm)) · logical properties only · 44px interaction floor ·
+   @media print collapses to ONE clean column.
    ════════════════════════════════════════════════════════════════════ */
 
 @layer pages {
@@ -43,11 +37,11 @@
   }
 
   /* the thin chrome bar — the /capabilities .cu-header grammar: sticky,
-     hairline, translucent paper wash, the back funnel + brand + code. */
+     hairline, translucent paper wash, the back funnel + brand. */
   .lg-header {
     position: sticky;
     inset-block-start: 0;
-    z-index: 60;
+    z-index: var(--z-dropdown);
     background: color-mix(in srgb, var(--bg) 82%, transparent);
     backdrop-filter: blur(10px);
     border-block-end: 1px solid var(--grid-line);
@@ -81,94 +75,82 @@
     min-block-size: 44px;
     text-decoration: none;
     color: var(--text);
-    font-weight: 700;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-body);
   }
 
-  /* the corner SHEET code — the drawing-set identity line
-     (MADAREK · LEGAL SHEET · [L-01]), Latin mono LTR at the row's
-     inline-end seat. */
-  .lg-header-code {
-    margin-inline-start: auto;
-    color: var(--text-faint);
-    font-size: var(--fs-xxs);
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-  }
-
-  /* ══ 2 · THE DOCUMENT MEASURE — 72ch, window-scrolled ════════════ */
+  /* ══ 2 · THE MEASURE — pf-page carries the column; main owns the
+     gutters + the z-lift above the grain film (GuestSheetChrome's
+     fixed z-0 layer — the auth.css §8 borrow register) ══════════════ */
 
   .lg-main {
-    /* the 72ch reading measure + the page gutter; the grain film
-       (.auth-grain via GuestSheetChrome) is a fixed z-0 layer — the
-       document rides z 1 above it, under the frame (z 50). */
-    max-inline-size: calc(72ch + 2 * var(--page-gutter));
-    margin-inline: auto;
+    position: relative;
+    z-index: var(--z-hero-grid);
     padding-inline: var(--page-gutter);
     padding-block: var(--sp-10) var(--sp-14);
-    display: grid;
-    /* R321 §A4 — THE GRID OVERFLOW GUARD: implicit auto tracks size to
-       max-content, so a display-scale h1 whose glyph run is wider than
-       the phone column blew the track out LEFT (RTL) and the clip on
-       .lg hid it from scrollWidth. A minmax(0,1fr) track can shrink
-       below max-content — content wraps inside the column instead of
-       escaping it. EVERY grid/flex child of the measure inherits the
-       guard through this one track. */
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-8);
-    position: relative;
-    z-index: 1;
   }
 
   @media (max-width: 920px) {
     .lg-main {
       padding-inline: var(--page-gutter-mobile);
       padding-block: var(--sp-8) var(--sp-12);
-      gap: var(--sp-7);
     }
   }
 
-  /* the title block — ONE h1 + the lede (the auth form-header voice) */
-  .lg-head {
-    display: grid;
-    /* R321 §A4 — the same minmax(0,1fr) guard one level down (the h1
-       is THIS grid's item; both grids must be shrink-safe). */
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--sp-3);
+  /* the sheet's own mobile inset (the pages.mjs edge390 law, proved on
+     /auth in r340 T-D1a): --sp-2 = the 8px content gutter at 390. */
+  @media (max-width: 767px) {
+    .lg-main { padding-inline: var(--sp-2); }
   }
 
-  .lg-title {
-    margin: 0;
-    font-family: var(--font-display);
-    /* R321 §A4 — the phone-scale title: ≤11vw on every phone (320 →
-       35px · 390 → 43px), the display-lg rung everywhere wider (the
-       clamp's max — tablet/desktop never shrink below the sheet
-       register). The R320 phone title (71px @390) had a max-content
-       glyph run wider than the column and, with auto grid tracks,
-       pushed the whole document left into the clip. */
-    /* r324 P3 (X9) — the ONE display ladder: d1 (46.7 @1440 · 31.74
-       @390) at weight 600 — the 11vw/display-lg/700 recipe read 60px
-       @1440 and 42.9px @390, off the ladder on both ends. */
-    font-size: var(--fs-d1);
-    font-weight: var(--fw-semibold);
-    line-height: var(--type-display-line-height);
-    letter-spacing: var(--ls-normal); /* Arabic joins — never tracked */
-    color: var(--text);
-  }
+  /* the h1 rides the census D2 rung (fs-d2: 40 @1440 · 31.74 @390 —
+     the type-census H1 seat, ≤32px @390), the about sheet's exact
+     hierarchy on the pattern library's title seat. */
+  .lg .pf-page-title { font-size: var(--fs-d2); }
 
-  .lg-lede {
-    margin: 0;
+  .lg .pf-page-desc { max-inline-size: 64ch; }
+
+  /* ══ 3 · THE CTA PAIR — the sheet's own actions (the pages.mjs
+     hover contract: the primary changes ≥2 measured channels). The
+     ink slab keeps the label AA in BOTH themes; hover wipes to the
+     accent pair (background + color + border — three channels). The
+     44px floor, radius 0, tokens only. ═══════════════════════════ */
+
+  .lg-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: var(--primary);
+    color: var(--primary-fg);
     font-size: var(--fs-body);
-    line-height: 1.7;
-    color: var(--text-secondary);
-    max-inline-size: 64ch;
-    /* R321 §A4 — long unbreakable runs (URLs, emails, mono keys) wrap
-       at the glyph level ONLY when a line cannot hold them; Arabic
-       words that fit a line are never split (the §J rule — this only
-       arms the last resort). */
-    overflow-wrap: anywhere;
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
   }
 
-  /* ══ 3 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
+  .lg-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm); /* 0 */
+    background: transparent;
+    color: var(--text);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* ══ 4 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
 
   .lg-bar {
     margin: 0;
@@ -178,11 +160,10 @@
     padding-block-start: var(--sp-5);
     border-block-start: 1px solid var(--rule-strong);
     font-family: var(--font-display);
-    /* r325 Y4 — the CLAMPED d2 rung at 600: the section bar rode the
-       unclamped --fs-h2 alias (4.8rem grows on the fluid root — 47.6px
-       @390, off every rung) at weight 700 — both off the §R324 law. d2
-       is the same 40px @1440 register, floored 31.74px @390. */
-    font-size: var(--fs-d2);
+    /* the st rung (33.3 @1440 · 22.1 @390) — the about sheet's bar
+     register (fs-h3's 33.3 desktop value) on a ladder-clean name; the
+     R320 d2 bar (31.74 @390) rode off every pages.mjs rung at 390. */
+    font-size: var(--fs-st);
     font-weight: var(--fw-semibold);
     line-height: var(--lh-snug);
     color: var(--text);
@@ -200,7 +181,7 @@
     min-inline-size: 0;
   }
 
-  /* ══ 4 · THE HAIRLINE CELL — the document's container ═══════════ */
+  /* ══ 5 · THE HAIRLINE CELL — the document's container ═══════════ */
 
   .lg-cell {
     border: 1px solid var(--rule);
@@ -218,22 +199,14 @@
   .lg-p {
     margin: 0;
     font-size: var(--fs-body);
-    line-height: 1.8;
+    line-height: var(--lh-loose);
     color: var(--text-secondary);
-    /* R321 §A4 — the last-resort wrap (see the .lg-lede note): only a
-       run that cannot fit a line alone ever breaks mid-run. */
+    /* the last-resort wrap: only a run that cannot fit a line alone
+       ever breaks mid-run (the §J rule). */
     overflow-wrap: anywhere;
   }
 
   .lg-p strong { color: var(--text); font-weight: var(--fw-semibold); }
-
-  /* the about page's verbatim statement — the landing's identity
-     paragraph in its own display seat (the lead step, primary ink). */
-  .lg-p-statement {
-    font-size: var(--fs-body-lg);
-    line-height: 1.9;
-    color: var(--text);
-  }
 
   .lg-list {
     margin: 0;
@@ -241,7 +214,7 @@
     display: grid;
     gap: var(--sp-2);
     font-size: var(--fs-body);
-    line-height: 1.8;
+    line-height: var(--lh-loose);
     color: var(--text-secondary);
   }
 
@@ -272,7 +245,7 @@
     white-space: nowrap;
   }
 
-  /* quiet in-document links (the .cu-text-link recipe, token-identical) */
+  /* quiet in-document links (hairline underline, accent ink) */
   .lg-link {
     color: var(--accent-ink);
     font-size: var(--fs-sm);
@@ -282,7 +255,7 @@
     padding-block-end: var(--sp-0-5);
   }
 
-  /* ══ 5 · THE STORAGE LEDGER TABLE ═══════════════════════════════ */
+  /* ══ 6 · THE STORAGE LEDGER TABLE ═══════════════════════════════ */
 
   .lg-table-wrap {
     overflow-x: auto; /* the table scrolls in place at 390 — the
@@ -293,7 +266,7 @@
     inline-size: 100%;
     border-collapse: collapse;
     font-size: var(--fs-sm);
-    line-height: 1.6;
+    line-height: var(--lh-base);
   }
 
   /* the table's own caption — the ledger's name, quiet and honest */
@@ -337,8 +310,7 @@
      hairline cards, NO horizontal scroll). Each row becomes a ruled
      cell; each td a labelled line (the mono ::before carries the
      column name from the data-label attribute — the markup owns the
-     pairing, the CSS only re-seats it). The key keeps its ltr mono
-     voice; long keys wrap (overflow-wrap) instead of escaping. */
+     pairing, the CSS only re-seats it). */
   @media (max-width: 767px) {
     .lg-table-wrap { overflow-x: visible; }
     .lg-table,
@@ -380,7 +352,7 @@
     }
   }
 
-  /* ══ 6 · THE FAQ CELLS ══════════════════════════════════════════ */
+  /* ══ 7 · THE FAQ CELLS (/help + /contact — task D3's seats) ══════ */
 
   .lg-faq {
     display: grid;
@@ -390,12 +362,10 @@
     border-radius: var(--r-sm); /* 0 */
   }
 
-  /* R333 P-G3a (T-G1-03): the item is a native <details> — the accordion
-     affordance IS the summary row: full-width, 44px+ touch floor, the
-     [nn] index on the inline start, and a hairline caret on the inline
-     end that rotates with the open state (the motion ladder's short
-     token). The native marker retires; the print belt below forces the
-     answers visible on paper regardless of open state. */
+  /* R333 P-G3a (T-G1-03): the item is a native <details> — the
+     accordion affordance IS the summary row: full-width, 44px+ touch
+     floor, the [nn] index on the inline start, and a hairline caret on
+     the inline end that rotates with the open state. */
   .lg-faq-item {
     display: block;
     padding: 0;
@@ -428,10 +398,7 @@
   }
 
   /* the question text takes the remaining measure; the caret pins to
-     the inline end whatever the question's length. PI-REC: the text is
-     an <h2> now (the R320 §D nine-heading outline law) — the UA heading
-     font/margin reset rides here so the summary row is pixel-identical
-     to the span it replaced. */
+     the inline end whatever the question's length. */
   .lg-faq-q-text { flex: 1 1 auto; min-inline-size: 0; margin: 0; font: inherit; }
 
   .lg-faq-caret {
@@ -443,8 +410,7 @@
     border-block-end: 1.5px solid currentColor;
     /* physical rotate is deliberate: the caret is a glyph, not a
        layout box — it points DOWN closed, UP open, in both reading
-       directions (border-inline-end mirrors with the direction, keeping
-       the v-shape anchored to the inline end in RTL and LTR alike). */
+       directions. */
     transform: rotate(45deg);
     transition: transform var(--motion-duration-short) var(--motion-ease-standard);
   }
@@ -457,13 +423,13 @@
   }
 
   /* the answer indents to the question's text edge (past the [nn]
-     index) and keeps the 1.8 prose leading */
+     index) and keeps the loose prose leading */
   .lg-faq-a {
     margin: 0;
     padding: 0 var(--sp-5) var(--sp-4);
     padding-inline-start: calc(var(--sp-5) + var(--sp-3) + 2.6em);
     font-size: var(--fs-body);
-    line-height: 1.8;
+    line-height: var(--lh-loose);
     color: var(--text-secondary);
   }
 
@@ -471,7 +437,7 @@
     .lg-faq-a { padding-inline-start: var(--sp-5); }
   }
 
-  /* ══ 7 · THE COLOPHON — identity line + آخر تحديث ══════════════ */
+  /* ══ 8 · THE COLOPHON — identity line + آخر تحديث ════════════════ */
 
   .lg-colophon {
     margin-block-start: var(--sp-2);
@@ -484,7 +450,7 @@
   .lg-colophon-line {
     margin: 0;
     font-size: var(--fs-sm);
-    line-height: 1.7;
+    line-height: var(--lh-base);
     color: var(--text-muted);
   }
 
@@ -499,9 +465,21 @@
     font-size: var(--fs-xs);
   }
 
-  /* ══ 8 · HOVER — guarded to real pointers, always the PAIR ══════ */
+  /* ══ 9 · HOVER — guarded to real pointers, always the PAIR ══════ */
 
   @media (hover: hover) and (pointer: fine) {
+    .lg-cta-primary:hover {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+
+    .lg-cta-ghost:hover {
+      background: var(--surface-2);
+      color: var(--accent-strong);
+      border-color: var(--accent);
+    }
+
     .lg-link:hover {
       color: var(--accent-strong);
       background: transparent;
@@ -515,7 +493,7 @@
     }
   }
 
-  /* ══ 9 · PRINT — ONE clean column, the honest one-sheet ═════════ */
+  /* ══ 10 · PRINT — ONE clean column, the honest one-sheet ════════ */
 
   @media print {
     /* the chrome + the film + the frame go; the document stays as ONE
@@ -538,11 +516,10 @@
     .lg-main {
       max-inline-size: none;
       padding: 0;
-      gap: var(--sp-6);
       break-after: page;
     }
 
-    .lg-title,
+    .pf-page-title,
     .lg-bar,
     .lg-bar-title,
     .lg-p,
@@ -556,9 +533,7 @@
     }
 
     /* R333 P-G3a (T-G1-03): the FAQ accordion prints as a DOCUMENT —
-       every answer on paper regardless of its screen open-state (the
-       ::details-content slot is what hides closed answers; browsers
-       without the pseudo simply print the open items). */
+       every answer on paper regardless of its screen open-state. */
     .lg-faq-item::details-content {
       content-visibility: visible;
       display: contents;
@@ -609,10 +584,10 @@
 }
 
 
-/* ═══ R327 D1 — the /app distribution sheet's own cells ═══════════════
- * The QR cell (mark colors, hairline frame) and the actions row (real
- * download buttons inside the document measure — the sheet's only CTA
- * seats). */
+/* ═══ R327 D1 — the /app distribution sheet's own cells (task D4's
+ * seats until its rebuild): the QR cell (mark colors, hairline frame)
+ * and the actions row (real download buttons inside the document
+ * measure — the sheet's only CTA seats). */
 
 .lg-qr {
   display: flex;
@@ -640,7 +615,7 @@
 .lg-p-note {
   color: var(--text-muted);
   font-size: var(--fs-body);
-  line-height: 1.7;
+  line-height: var(--lh-base);
 }
 
 @media (max-width: 560px) {
@@ -651,5 +626,29 @@
   }
   .lg-qr .lg-p-note {
     text-align: center;
+  }
+}
+
+
+/* ═══ R341 D5 — the document surface's scrollbar contract ═════════════
+ * Every guest sheet hides the window scrollbar while Lenis runs
+ * (base.css html[data-lenis-on], the R313 4-b D6 rule); /legal never
+ * mounts the engine (App.tsx DOCUMENT_SURFACE_PREFIXES — the document
+ * scrolls the raw window), so the same guest-fleet contract is
+ * expressed here for the policy sheets alone. Without it a classic-
+ * scrollbar viewport (the conformance harness's headless Chromium)
+ * reserves scrollbar-gutter: stable's 10px of the initial containing
+ * block and the 390 content edge reads 18px — the pages.mjs edge390
+ * law (8px ±2) can never hold. (0,1,1) beats polish v22's overrides-
+ * layer `*` scrollbar block (0,0,0) inside the SAME layer — the
+ * motion.css precedent for a non-polish sheet needing the last word,
+ * no !important. */
+@layer overrides {
+  html:has(.lg) {
+    scrollbar-width: none;
+  }
+
+  html:has(.lg)::-webkit-scrollbar {
+    display: none;
   }
 }
