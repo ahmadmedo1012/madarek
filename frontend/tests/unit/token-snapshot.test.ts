@@ -167,7 +167,7 @@ const STYLESHEET_FILES = [
   'layout.css',
   'notifications.css',
   'owner.css',
-  'auth.css',
+  'patterns.css',
   'pdf.css',
 ] as const;
 

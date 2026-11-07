@@ -31,8 +31,10 @@ import './styles/layers.css';
 // their shared chunk. (G final sweep: the landing's colleges popover
 // is retired — r198's constellation replaced the never-rendered
 // <CollegesPopover /> and its colleges-popover.css sheet is deleted.)
-// auth.css/student.css stay global
-// (documented cross-page borrows, worklog 8-b).
+// student.css stays global (documented cross-page borrows,
+// worklog 8-b). auth.css is DELETED (R341/D1b) — its guest-door
+// grammar moved verbatim into patterns.css' GUEST DOOR SHEETS
+// section at this same import position.
 import './styles/fonts.css';
 // R326 M0.4 — the shared token half (source: shared/design-tokens.json)
 // lands FIRST, inside the same @layer tokens; tokens.css's hand-written
@@ -47,7 +49,6 @@ import './styles/layout.css';
 // classes are pf-prefixed, so the placement after layout.css is
 // collision-free. CONTRACT.md is the normative doc.
 import './styles/patterns.css';
-import './styles/auth.css';
 import './styles/notifications.css';
 import './styles/student.css';
 import './styles/polish.css';

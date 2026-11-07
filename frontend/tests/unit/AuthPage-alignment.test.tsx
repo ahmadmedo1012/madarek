@@ -106,7 +106,7 @@ describe('AuthPage — journey alignment (imm-5)', () => {
       container.querySelector('[class*="glow"], [class*="scene"], [class*="ambient"]'),
     ).toBeNull();
 
-    const css = read('src/styles/auth.css');
+    const css = read('src/styles/patterns.css');
     // The ambient pseudo is RETIRED (flat paper — the reference has no
     // wash anywhere; depth is hairlines only).
     expect(css).not.toContain('.auth-center::after');
