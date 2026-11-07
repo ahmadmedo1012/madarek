@@ -2033,6 +2033,23 @@ a.pf-row-link {
     margin-block-end: var(--sp-4);
   }
 
+  /* ── 2 · The act-now verb — the list's ONE discrete accent CTA ────
+     r341 D7b retry: the act-now row (a live IN_PROGRESS attempt, else
+     the first open exam — the mobile M2/M8 grammar: "the accent is
+     reserved for THE actionable state") seats its trailing verb on the
+     .btn.accent register, the dashboard focus-CTA precedent. Every
+     other startable row keeps the quiet accent-ink text verb
+     (.oex-row-action, teacher-quality.css §5), so the one-accent
+     discipline holds however many exams are open. Seating only — the
+     slab's visuals are the components.css .btn.accent + .btn.sm system;
+     this adds the family craft floor, the verb's tighter icon gap and
+     the no-squeeze column the text verb already had. */
+  .r321x-page .oex-row-cta {
+    min-block-size: 44px; /* craft floor — the row link clears it many times over */
+    gap: var(--sp-1);
+    flex-shrink: 0;
+  }
+
   /* ── 3 · B1b — the TAKER paper (the live attempt board) ───────────
      The question cells sit directly on the page paper (the old Card
      walls are gone — hairline grammar, radius 0, no shadows): one

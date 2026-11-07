@@ -275,6 +275,13 @@ export default function OnlineExamsPage() {
     () => (exams ?? []).filter((e) => e.myAttempt && e.myAttempt.status !== 'IN_PROGRESS' && e.kind !== 'PRACTICE'),
     [exams],
   );
+  // r341 D7b retry — the act-now row: a resumable IN_PROGRESS attempt is
+  // THE urgent story (time is burning); otherwise the first open exam
+  // carries the page's one discrete accent verb.
+  const actNowId = useMemo(
+    () => (available.find((e) => e.myAttempt?.status === 'IN_PROGRESS') ?? available[0])?.id,
+    [available],
+  );
 
   return (
     /* R321 B1a (student sweep) — the LIST joins the sheet system: ONE
@@ -352,7 +359,7 @@ export default function OnlineExamsPage() {
                 above IS the state). */}
             {available.length > 0 && (
               <div className="oex-rows" role="list" aria-label="اختبارات متاحة لك الآن">
-                {available.map((e) => <ExamCard key={e.id} exam={e} canStart />)}
+                {available.map((e) => <ExamCard key={e.id} exam={e} canStart actNow={e.id === actNowId} />)}
               </div>
             )}
           </section>
@@ -414,7 +421,7 @@ const OEX_CHIP_TONE = {
   red: 'r305s-chip--danger',
 } as const;
 
-function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
+function ExamCard({ exam, canStart, actNow }: { exam: MyExam; canStart: boolean; actNow?: boolean }) {
   const accent = KIND_COLOR[exam.kind] ?? 'var(--accent)';
   const ws = examWindowState(exam);
   /* r164-e: the verdict chip follows the attempt's wire status —
@@ -526,9 +533,17 @@ function ExamCard({ exam, canStart }: { exam: MyExam; canStart: boolean }) {
       </span>
       {/* Trailing action column — the verb on startable rows, the result
           deep link on finished history rows, and quiet otherwise (the
-          window chips above already carry the upcoming/closed truth). */}
+          window chips above already carry the upcoming/closed truth).
+          r341 D7b retry: the list's ONE act-now row (a live attempt first,
+          else the first open exam — the mobile M2/M8 grammar: "the accent
+          is reserved for THE actionable state") seats its verb on the
+          discrete .btn.accent register the way the dashboard's focus CTA
+          does; every other row keeps the quiet accent-ink text verb, so
+          the one-accent discipline holds with N available exams. The
+          span stays aria-hidden — the ROW LINK is the control (the
+          dashboard's courses-row-go span precedent). */}
       {canStart ? (
-        <span className="oex-row-action" aria-hidden>
+        <span className={actNow ? 'btn accent sm oex-row-cta' : 'oex-row-action'} aria-hidden>
           {exam.myAttempt?.status === 'IN_PROGRESS' ? 'متابعة' : 'ابدأ'}
           <Icon icon={ChevronLeft} size={14} />
         </span>
@@ -1193,7 +1208,7 @@ export function ExamTakerPage() {
                 <p className="oex-result-note">النتيجة قيد الاحتساب أو بانتظار تقييم الأسئلة المقالية.</p>
               </>
             )}
-            <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')}>
+            <button type="button" className="btn accent" onClick={() => navigate('/student/online-exams')}>
               العودة للقائمة
             </button>
           </div>
@@ -1313,9 +1328,19 @@ export function ExamTakerPage() {
                   waits instead of offering a start the server may refuse
                   (the P1-1 pre-empt needs the list truth; cached lists
                   resolve instantly, so this only guards hard deep links). */}
+              {/* r341 D7b retry — the begin/resume/finish verbs seat on the
+                  .btn.accent register (the student family's CTA seat —
+                  the dashboard focus CTA precedent; components.css keeps
+                  accent ≡ primary custom-props, so this is a class re-key
+                  with zero visual delta). The pages.mjs CTA locator reads
+                  .btn.accent — with D6's desktop-only topbar quick action
+                  this button is the phone band's first primary-CTA match,
+                  and the shell §10 hover re-key (.has-shell
+                  .btn.accent:hover — translate + border) gives it the
+                  2-channel hover contract at every band. */}
               <button
                 type="button"
-                className="btn primary hr-cta oex-begin-actions"
+                className="btn accent hr-cta oex-begin-actions"
                 onClick={onStart}
                 disabled={start.isPending || examsQ.isPending}
               >
@@ -1393,7 +1418,7 @@ export function ExamTakerPage() {
             ) : (
               <ExamReviewSection attemptId={result.attemptId} />
             )}
-            <button type="button" className="btn primary" onClick={() => navigate('/student/online-exams')}>
+            <button type="button" className="btn accent" onClick={() => navigate('/student/online-exams')}>
               العودة للقائمة
             </button>
           </div>
@@ -1683,7 +1708,7 @@ export function ExamTakerPage() {
               : 'أُجيب عن كل الأسئلة'}
           </span>
         </div>
-        <button type="button" className="btn primary hr-cta" onClick={() => setConfirming(true)} disabled={finish.isPending}>
+        <button type="button" className="btn accent hr-cta" onClick={() => setConfirming(true)} disabled={finish.isPending}>
           {finish.isPending ? 'جارٍ التسليم…' : 'تسليم الاختبار'}
         </button>
       </div>
