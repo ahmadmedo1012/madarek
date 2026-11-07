@@ -9,24 +9,26 @@
  * (--neutral-100). Square corners throughout. No text. RTL: a grid
  * has no reading order here — direction-neutral by design.
  */
+import {
+  ACCENT,
+  dotted,
+  ILL_PAPER,
+  ILL_STROKE,
+  IllSvg,
+  NEUTRAL_100,
+} from './shell';
+
 export default function EmptyCourses() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* tile 1 — paper step */}
       <rect
         x="58"
         y="58"
         width="40"
         height="40"
-        fill="var(--neutral-100)"
-        stroke="var(--ill-stroke)"
+        fill={NEUTRAL_100}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       {/* tile 2 — paper */}
@@ -35,8 +37,8 @@ export default function EmptyCourses() {
         y="58"
         width="40"
         height="40"
-        fill="var(--ill-paper)"
-        stroke="var(--ill-stroke)"
+        fill={ILL_PAPER}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       {/* tile 3 — signal */}
@@ -45,8 +47,8 @@ export default function EmptyCourses() {
         y="102"
         width="40"
         height="40"
-        fill="var(--accent)"
-        stroke="var(--ill-stroke)"
+        fill={ACCENT}
+        stroke={ILL_STROKE}
         strokeWidth="1.5"
       />
       {/* tile 4 — the dotted ghost */}
@@ -56,17 +58,13 @@ export default function EmptyCourses() {
         width="40"
         height="40"
         fill="none"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.5"
+        {...dotted(ILL_STROKE, '0.5')}
       />
       {/* the course-to-be */}
       <path
         d="M 122 114 Q 122 122 130 122 Q 122 122 122 130 Q 122 122 114 122 Q 122 122 122 114 Z"
-        fill="var(--accent)"
+        fill={ACCENT}
       />
-    </svg>
+    </IllSvg>
   );
 }

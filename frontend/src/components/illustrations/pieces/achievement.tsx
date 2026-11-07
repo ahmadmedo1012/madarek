@@ -12,26 +12,21 @@
  * Family: gold only — --gold fill, --gold-ink strokes, --gold-soft
  * halo; NO signal, NO ink strokes. No text. RTL: mirror-symmetric.
  */
+import { dotted, GOLD, GOLD_INK, GOLD_SOFT, IllSvg } from './shell';
+
 export default function Achievement() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* the soft gold halo */}
-      <circle cx="100" cy="100" r="44" fill="var(--gold-soft)" />
+      <circle cx="100" cy="100" r="44" fill={GOLD_SOFT} />
       {/* the ribbon tails, five and seven o'clock, behind the disc */}
       <rect
         x="69"
         y="112"
         width="14"
         height="30"
-        fill="var(--gold-soft)"
-        stroke="var(--gold-ink)"
+        fill={GOLD_SOFT}
+        stroke={GOLD_INK}
         strokeWidth="1.5"
         transform="rotate(35 76 112)"
       />
@@ -40,8 +35,8 @@ export default function Achievement() {
         y="112"
         width="14"
         height="30"
-        fill="var(--gold-soft)"
-        stroke="var(--gold-ink)"
+        fill={GOLD_SOFT}
+        stroke={GOLD_INK}
         strokeWidth="1.5"
         transform="rotate(-35 124 112)"
       />
@@ -50,8 +45,8 @@ export default function Achievement() {
         cx="100"
         cy="100"
         r="28"
-        fill="var(--gold)"
-        stroke="var(--gold-ink)"
+        fill={GOLD}
+        stroke={GOLD_INK}
         strokeWidth="2"
       />
       {/* the embossed inner ring */}
@@ -60,17 +55,13 @@ export default function Achievement() {
         cy="100"
         r="20"
         fill="none"
-        stroke="var(--gold-ink)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.6"
+        {...dotted(GOLD_INK, '0.6')}
       />
       {/* the star */}
       <path
         d="M 100 90 Q 100 100 110 100 Q 100 100 100 110 Q 100 100 90 100 Q 100 100 100 90 Z"
-        fill="var(--gold-ink)"
+        fill={GOLD_INK}
       />
-    </svg>
+    </IllSvg>
   );
 }

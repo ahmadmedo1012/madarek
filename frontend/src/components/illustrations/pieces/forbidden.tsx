@@ -8,38 +8,29 @@
  * rides the paper step (--neutral-100). Square corners. No text.
  * RTL: mirror-symmetric — direction-neutral.
  */
+import { ACCENT, dotted, ILL_STROKE, IllSvg, NEUTRAL_100 } from './shell';
+
 export default function Forbidden() {
   return (
-    <svg // allow-emoji: bespoke illustration scene (mk-ill state-graphics kit) — not UI iconography
-      viewBox="0 0 200 200"
-      width="100%"
-      height="100%"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      focusable="false"
-    >
+    <IllSvg>
       {/* the quiet echo ring */}
       <circle
         cx="100"
         cy="100"
         r="64"
         fill="none"
-        stroke="var(--ill-stroke)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeDasharray="0.1 7"
-        strokeOpacity="0.35"
+        {...dotted(ILL_STROKE, '0.35')}
       />
       {/* the octagon — paper step */}
       <path
         d="M 148 119.9 L 119.9 148 L 80.1 148 L 52 119.9 L 52 80.1 L 80.1 52 L 119.9 52 L 148 80.1 Z"
-        fill="var(--neutral-100)"
-        stroke="var(--ill-stroke)"
+        fill={NEUTRAL_100}
+        stroke={ILL_STROKE}
         strokeWidth="2"
         strokeLinejoin="round"
       />
       {/* the bar */}
-      <rect x="76" y="92" width="48" height="16" fill="var(--accent)" />
-    </svg>
+      <rect x="76" y="92" width="48" height="16" fill={ACCENT} />
+    </IllSvg>
   );
 }
