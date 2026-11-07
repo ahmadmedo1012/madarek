@@ -28,7 +28,7 @@
  */
 
 /** One scroll-tied progress seat (a real DOM element + its scrub range). */
-export interface ProgressSeat {
+interface ProgressSeat {
   /** The element that visibly changes with document scroll. */
   el: HTMLElement;
   /** Short instrument-facing label, e.g. "scr-rule-top". */

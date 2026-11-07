@@ -364,11 +364,17 @@ test.describe('R309 hero — the reveal-state lifecycle (§6)', () => {
     await page.goto('/');
     await page.locator('.hi-marker[data-marker="cp"]').click();
     await expect(page.locator('.hi-marker[data-marker="cp"]')).toHaveAttribute('aria-pressed', 'true');
-    /* leave the hero via the footer, then return via the footer link */
-    await page.locator('.fo-footer a[href="#main"]').scrollIntoViewIfNeeded();
+    /* r340 reconciliation: the test's footer a[href="#main"] return-to-top
+     * seat died with the R331/R333 footer rebuild (the rebuilt footer
+     * carries no anchor link — verified: rg '#main' Footer.tsx = 0 hits).
+     * The BEHAVIORAL LAW is unchanged: leave the hero for the footer's
+     * depth, then return to the very top — the stations must reset.
+     * The navigation mechanism (footer link vs a plain return scroll)
+     * was never the assertion; the reset is. */
+    await page.evaluate(() => window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }));
     await page.waitForTimeout(300);
-    await page.locator('.fo-footer a[href="#main"]').click();
-    /* the smooth scroll takes ~1.5–2s from the footer */
+    await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'instant' }));
+    /* the reset choreography settles */
     await page.waitForTimeout(2600);
     await expect(page.locator('.hi-marker[data-open="on"]')).toHaveCount(0);
     await expect(page.locator('.hi-card[data-open="on"]')).toHaveCount(0);

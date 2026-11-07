@@ -234,7 +234,7 @@ export interface ApiRequestConfig {
 /** What every `api.*` method resolves — the axios response shape, so
  *  callers reading past `data` (the bulk-import raw-envelope reads,
  *  the 401 path) see no change. */
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T;
   status?: number;
   statusText?: string;
@@ -244,7 +244,7 @@ export interface ApiResponse<T = any> {
 
 /** What every failed request rejects with — structurally the axios
  *  error the app's mappers inspect. */
-export class ApiError<T = any> extends Error {
+export class ApiError<T = unknown> extends Error {
   isAxiosError = true as const;
   code?: string;
   config?: ApiRequestConfig;
@@ -265,7 +265,7 @@ export class ApiError<T = any> extends Error {
 
 /** The transport seam tests install to simulate the network (the
  *  session suite used to reach for `api.defaults.adapter` on axios). */
-export type ApiTransport = (config: ApiRequestConfig) => Promise<ApiResponse<any>>;
+export type ApiTransport = (config: ApiRequestConfig) => Promise<ApiResponse<unknown>>;
 
 type InternalConfig = ApiRequestConfig & { __retried?: boolean };
 
@@ -283,26 +283,31 @@ export const api = {
     },
   },
 
-  request<T = any>(config: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request(config);
+  /* r340 lint-fix: the generic default is `unknown` (no-explicit-any);
+   * the ONE trust-boundary cast lives at the internal seam — the
+   * transport parses JSON of unknown shape, the CALLER asserts T
+   * (the standard typed-wrapper pattern; previously `T = any` hid
+   * every downstream read). */
+  request<T = unknown>(config: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request(config) as Promise<ApiResponse<T>>;
   },
-  get<T = any>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request({ ...config, url, method: 'get' });
+  get<T = unknown>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request({ ...config, url, method: 'get' }) as Promise<ApiResponse<T>>;
   },
-  post<T = any>(url: string, data?: unknown, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request({ ...config, url, method: 'post', data });
+  post<T = unknown>(url: string, data?: unknown, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request({ ...config, url, method: 'post', data }) as Promise<ApiResponse<T>>;
   },
-  put<T = any>(url: string, data?: unknown, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request({ ...config, url, method: 'put', data });
+  put<T = unknown>(url: string, data?: unknown, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request({ ...config, url, method: 'put', data }) as Promise<ApiResponse<T>>;
   },
-  patch<T = any>(url: string, data?: unknown, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request({ ...config, url, method: 'patch', data });
+  patch<T = unknown>(url: string, data?: unknown, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request({ ...config, url, method: 'patch', data }) as Promise<ApiResponse<T>>;
   },
-  delete<T = any>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request({ ...config, url, method: 'delete' });
+  delete<T = unknown>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request({ ...config, url, method: 'delete' }) as Promise<ApiResponse<T>>;
   },
-  head<T = any>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return request({ ...config, url, method: 'head' });
+  head<T = unknown>(url: string, config?: ApiRequestConfig): Promise<ApiResponse<T>> {
+    return request({ ...config, url, method: 'head' }) as Promise<ApiResponse<T>>;
   },
 };
 
@@ -328,7 +333,7 @@ const QUERY_PARAM_MAX_LENGTH = 120;
 // request — exactly the truth the user sees.
 let wakeSeq = 0;
 
-async function request(config: ApiRequestConfig): Promise<ApiResponse<any>> {
+async function request(config: ApiRequestConfig): Promise<ApiResponse<unknown>> {
   const cfg: InternalConfig = { ...config };
   const url = typeof cfg.url === 'string' ? cfg.url : '';
 
@@ -425,7 +430,7 @@ async function tryRefresh(): Promise<string | null> {
 
 // ── The transports ─────────────────────────────────────────────────
 
-async function rawRequest(cfg: InternalConfig): Promise<ApiResponse<any>> {
+async function rawRequest(cfg: InternalConfig): Promise<ApiResponse<unknown>> {
   if (transportOverride) return transportOverride(cfg);
   return cfg.onUploadProgress ? xhrTransport(cfg) : fetchTransport(cfg);
 }
@@ -490,7 +495,7 @@ function parseBody(text: string, contentType: string | null): unknown {
   return text;
 }
 
-async function fetchTransport(cfg: InternalConfig): Promise<ApiResponse<any>> {
+async function fetchTransport(cfg: InternalConfig): Promise<ApiResponse<unknown>> {
   const method = (cfg.method ?? 'get').toUpperCase();
   const headers = new Headers(cfg.headers);
   const { body: serialized, json, form } = serializeBody(cfg);
@@ -515,7 +520,7 @@ async function fetchTransport(cfg: InternalConfig): Promise<ApiResponse<any>> {
       credentials: 'include', // refresh cookie (was withCredentials)
       signal: controller.signal,
     });
-    const response: ApiResponse<any> = {
+    const response: ApiResponse<unknown> = {
       data: parseBody(await res.text(), res.headers.get('content-type')),
       status: res.status,
       statusText: res.statusText,
@@ -548,7 +553,7 @@ async function fetchTransport(cfg: InternalConfig): Promise<ApiResponse<any>> {
 /** fetch cannot report upload progress — the two upload hooks
  *  (materials, papers) paint byte-accurate bars from it, so those
  *  requests ride native XHR. Still zero-dependency. */
-function xhrTransport(cfg: InternalConfig): Promise<ApiResponse<any>> {
+function xhrTransport(cfg: InternalConfig): Promise<ApiResponse<unknown>> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     const method = (cfg.method ?? 'get').toUpperCase();
@@ -567,7 +572,7 @@ function xhrTransport(cfg: InternalConfig): Promise<ApiResponse<any>> {
       cfg.onUploadProgress?.({ loaded: e.loaded, total: e.total || undefined });
     };
     xhr.onload = () => {
-      const response: ApiResponse<any> = {
+      const response: ApiResponse<unknown> = {
         data: parseBody(xhr.responseText, xhr.getResponseHeader('content-type')),
         status: xhr.status,
         statusText: xhr.statusText,

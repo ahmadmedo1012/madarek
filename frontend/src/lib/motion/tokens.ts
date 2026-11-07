@@ -33,7 +33,7 @@
  */
 
 /** Duration rungs of the semantic motion ladder (tokens.css). */
-export type MotionDurationName =
+type MotionDurationName =
   | 'micro'
   | 'short'
   | 'medium'
@@ -44,7 +44,7 @@ export type MotionDurationName =
   | 'skeleton';
 
 /** Easing roles of the semantic motion ladder (tokens.css). */
-export type MotionEaseName = 'standard' | 'decelerate' | 'accelerate' | 'emphasized';
+type MotionEaseName = 'standard' | 'decelerate' | 'accelerate' | 'emphasized';
 
 /** CSS custom property consumed for each duration rung. */
 const DURATION_VARS: Record<MotionDurationName, string> = {

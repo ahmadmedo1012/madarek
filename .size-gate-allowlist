@@ -22,3 +22,9 @@ frontend/public/lectures/se301-03-design.mp4
 # dependency graph, not evidence bloat.
 apps/mobile/package-lock.json
 apps/mobile/src/api/schema.generated.ts
+
+# r340 — the T-02b provenance law REQUIRES every conformance run to file
+# its full-matrix results blob (scripts/conformance/results/*.json);
+# full-matrix JSON blobs run ~570-600KB (the per-cell detail is the
+# reproducible backing evidence, never last-writer-wins archaeology).
+scripts/conformance/results/

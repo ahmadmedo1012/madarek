@@ -25,8 +25,9 @@
  * scroll-rule.css display:none belt); it is decorative chrome, pointer
  * events none, z 45 (above content, under the nav's 60).
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { registerProgressSeat } from '../../../lib/progressRegistry';
+import { useReducedMotion } from '../../motion/useReducedMotion';
 import '../../../styles/landing/scroll-rule.css';
 
 /* R340 T-P1x — the landing's stage count (the BootLog's own nine,
@@ -37,17 +38,11 @@ export function ScrollRule() {
   const pctRef = useRef<HTMLDivElement>(null);
   const ticksRef = useRef<HTMLDivElement>(null);
   /* RM guard — the docblock's own law: reduced motion never mounts
-   * the instrument. Checked once + on change; jsdom-safe (no
-   * matchMedia → stays mounted, the CSS belt still bounds it). */
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    if (typeof window.matchMedia !== 'function') return undefined;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
+   * the instrument. The canonical hook (single source of truth — the
+   * r340 refactor also retired this file's inline duplicate, the
+   * jscpd +1). jsdom-safe (no matchMedia → false → mounted, the CSS
+   * belt still bounds it). */
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     /* the readout: document scroll traversal as a mono % — the same

@@ -46,7 +46,7 @@ const MAX_STAGGER = 14;
  */
 const SPACE = ' ';
 
-export interface WordRevealProps {
+interface WordRevealProps {
   text: string;
   className?: string;
 }
@@ -76,7 +76,7 @@ export function WordReveal({ text, className }: WordRevealProps) {
   );
 }
 
-export interface ScrubRevealProps {
+interface ScrubRevealProps {
   text: string;
   className?: string;
   /** the element carrying --wr-p (defaults to self) */

@@ -23,8 +23,9 @@
  * display:none belt); it is decorative chrome — pointer-events none,
  * the scroll-rule's own ladder seat (content < 45 < chrome 50 < nav 60).
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { registerProgressSeat } from '../../../lib/progressRegistry';
+import { useReducedMotion } from '../../motion/useReducedMotion';
 import '../../../styles/landing/boot-log.css';
 
 /** The landing's nine stages, in document order (our own names — the
@@ -52,17 +53,10 @@ export function BootLog() {
   const fillRef = useRef<HTMLSpanElement | null>(null);
   const countRef = useRef<HTMLDivElement | null>(null);
   const stageRef = useRef<HTMLDivElement | null>(null);
-  const [reduced, setReduced] = useState(false);
-
-  /* RM guard — same law as ScrollRule: reduced motion never mounts. */
-  useEffect(() => {
-    if (typeof window.matchMedia !== 'function') return undefined;
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduced(mq.matches);
-    const onChange = (e: MediaQueryListEvent) => setReduced(e.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
-  }, []);
+  /* RM guard — same law as ScrollRule: reduced motion never mounts
+   * (the canonical single-source hook; jsdom-safe → false → mounted,
+   * the boot-log.css display:none belt still bounds it). */
+  const reduced = useReducedMotion();
 
   /* The one driver: rAF-throttled passive scroll/resize listener.
    * Writes are idempotent per frame (textContent skipped when

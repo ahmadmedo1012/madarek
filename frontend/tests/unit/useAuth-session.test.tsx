@@ -7,7 +7,6 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
-import type { AxiosResponse } from 'axios';
 
 vi.mock('../../src/lib/api', () => ({
   api: { post: vi.fn(), get: vi.fn(), put: vi.fn() },
@@ -31,7 +30,7 @@ import { useLogin, useRegister, useLogout, useMe } from '../../src/hooks/useAuth
 // imported from the single source of truth.
 import { TEST_PASSWORD } from '@shared/testAccounts';
 import { useAuthStore, type AuthUser } from '../../src/stores/auth.store';
-import { api, unwrap } from '../../src/lib/api';
+import { api, unwrap, type ApiResponse } from '../../src/lib/api';
 
 const postMock = vi.mocked(api.post);
 const unwrapMock = vi.mocked(unwrap);
@@ -68,7 +67,10 @@ function seededClient(): QueryClient {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  postMock.mockResolvedValue({ data: {} } as unknown as AxiosResponse);
+  /* r340 lint/type-fix: api.post resolves the app's own ApiResponse
+   * (the axios→fetch migration kept the shape; the stale AxiosResponse
+   * cast no longer typechecks against ApiResponse<unknown>). */
+  postMock.mockResolvedValue({ data: {} } satisfies ApiResponse<unknown>);
   useAuthStore.setState({
     user: null,
     accessToken: null,

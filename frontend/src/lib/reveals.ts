@@ -122,7 +122,7 @@ const BEAT_STAGGER_MS = 4;
 const RULE_W_SEL = '.rl-row-rule-b';
 const RULE_X_SEL = '.rl-rule-top, .rl-rule-bottom';
 
-export interface RevealsHandle {
+interface RevealsHandle {
   destroy(): void;
 }
 
