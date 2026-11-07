@@ -81,7 +81,7 @@ function PostCard({
       {post.hashtags && post.hashtags.length > 0 ? (
         <ChipRow>
           {post.hashtags.map((t) => (
-            <T key={t} variant="xs" color="accentInk">
+            <T key={t} variant="xs" color="secondary">
               {`#${t}`}
             </T>
           ))}

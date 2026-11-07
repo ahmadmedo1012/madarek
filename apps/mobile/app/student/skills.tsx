@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import Gauge from "lucide-react-native/icons/gauge";
 import { studentApi } from "@/api/student";
@@ -78,9 +78,29 @@ function SkillCard({
             {name}
           </T>
         </View>
-        <T variant="sm" weight="bold" color="accentInk">
-          {`المستوى ${latn(lvl)} / ${latn(5)}`}
-        </T>
+        {/** M9 — the web's r305s-chip register: a NEUTRAL hairline chip
+          * (surfaceHover well, text-secondary medium ink); the tone lives
+          * in the small accent dot only. The accent no longer floods
+          * every card's meta line. */}
+        <View
+          accessibilityLabel={`المستوى ${latn(lvl)} من ${latn(5)}`}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: sp[6],
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: p.rule,
+            backgroundColor: p.surfaceHover,
+            paddingHorizontal: sp[8],
+            paddingVertical: sp[2],
+            alignSelf: "flex-start",
+          }}
+        >
+          <View style={{ width: 6, height: 6, backgroundColor: p.accent }} />
+          <T variant="sm" weight="medium" style={{ color: p.textSecondary }}>
+            {`المستوى ${latn(lvl)} / ${latn(5)}`}
+          </T>
+        </View>
       </View>
       <ProgressBar
         ratio={clamp01((progressPct ?? 0) / 100)}
@@ -93,7 +113,7 @@ function SkillCard({
             style={{
               width: 10,
               height: 10,
-              backgroundColor: i < lvl ? p.accent : p.border,
+              backgroundColor: i < lvl ? p.textSecondary : p.border,
             }}
           />
         ))}

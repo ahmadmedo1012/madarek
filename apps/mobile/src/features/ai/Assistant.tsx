@@ -20,7 +20,7 @@ import * as WebBrowser from "expo-web-browser";
 import { aiApi } from "@/api/ai";
 import { usePalette, useSemanticTheme } from "@/design/theme";
 import { AppStatusBar } from "@/design/statusbar";
-import { sp } from "@/design/tokens";
+import { radius, sp, type } from "@/design/tokens";
 import { T } from "@/components/ui/text";
 import { Badge, Card } from "@/components/ui/surfaces";
 import { Button, IconButton } from "@/components/ui/pressables";
@@ -402,7 +402,11 @@ export function Assistant({
                       style={[
                         {
                           backgroundColor: colors.surfaceElevated,
-                          borderRadius: 999,
+                          // M9 — chips go SQUARE (the Heron radius ruling);
+                          // the quick chips ride muted ink like the web's
+                          // .ai-suggestion-text (text-muted), so the
+                          // screen's ONE accent stays on the send action.
+                          borderRadius: radius.none,
                           paddingVertical: sp[10],
                           paddingHorizontal: sp[16],
                           minHeight: 44,
@@ -411,7 +415,7 @@ export function Assistant({
                         hairlines.border,
                       ]}
                     >
-                      <T variant="sm" color="accentInk">
+                      <T variant="sm" color="muted">
                         {s.label}
                       </T>
                     </PressableScale>
@@ -452,7 +456,9 @@ export function Assistant({
           }}
         >
           {quotaHit ? (
-            <Card style={{ borderColor: p.accentInk, padding: sp[10], gap: 2 }}>
+            // M9 — the web's .ai-quota-card: a GOLD hairline notice (not
+            // the accent — orange stays reserved for actions).
+            <Card style={{ borderColor: p.gold, padding: sp[10], gap: sp[2] }}>
               <T variant="sm" weight="bold">
                 وصلت حدّ الأسئلة اليومي
               </T>
@@ -477,11 +483,14 @@ export function Assistant({
                 borderColor: p.rule,
                 backgroundColor: colors.sunken,
                 color: p.text,
-                fontSize: 15,
+                // M9 — the composer rides the bodyLg rung (15/24) from
+                // the app tokens; square corners (radius ruling).
+                fontSize: type.bodyLg,
+                lineHeight: 24,
                 textAlign: "right",
                 writingDirection: "rtl",
                 padding: sp[12],
-                borderRadius: 12,
+                borderRadius: radius.none,
               }}
             />
             {isStreaming ? (
@@ -641,7 +650,7 @@ function HistoryRow({
       })}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], paddingVertical: sp[6] }}>
-        {active ? <Check size={16} color={p.accentInk} /> : null}
+        {active ? <Check size={16} color={p.text} /> : null}
         <View style={{ flex: 1 }}>
           <T variant="body" weight={active ? "bold" : "medium"} numberOfLines={1}>
             {title}
@@ -690,7 +699,7 @@ function TurnBubble({
         alignSelf: mine ? "flex-start" : "flex-end",
         maxWidth: "86%",
         backgroundColor: mine ? colors.sunken : colors.surfaceElevated,
-        borderRadius: 14,
+        borderRadius: radius.none,
         padding: sp[12],
         gap: sp[6],
         ...(mine ? { borderWidth: StyleSheet.hairlineWidth, borderColor: p.rule } : hairlines.border),

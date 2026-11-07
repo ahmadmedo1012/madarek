@@ -243,7 +243,7 @@ function DetailSheet({
                 },
               } as never)
             }
-            icon={<FileText size={16} color={p.accentFg} />}
+            icon={<FileText size={16} color={p.primaryFg} />}
           />
         ) : null}
       </View>

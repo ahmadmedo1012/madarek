@@ -44,7 +44,7 @@ function JobRow({
       <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8], flexWrap: "wrap" }}>
         <Badge label={JOB_TYPE_LABEL[job.type] ?? "فرصة أخرى"} tone="sky" />
         {job.location ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 3 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[2] }}>
             <MapPin size={12} color={p.textMuted} />
             <T variant="xs" color="muted">
               {job.location}

@@ -133,7 +133,7 @@ const BookRow = makeRow<
           <Badge label="متاح" tone="mint" />
         )}
         {book.rating != null ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 2 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[2] }}>
             <Star size={11} color={p.goldInk} />
             <T variant="xs" color="muted">
               {latn(book.rating)}
@@ -459,11 +459,17 @@ const PaperRow = makeRow<PublishedPaper, { last: boolean; snippet: string | null
           </View>
         )}
         {paper.fileUrl ? (
-          <View style={{ flexDirection: "row", alignItems: "center", gap: sp[6] }}>
-            <FileText size={14} color={p.accentInk} />
-            <T variant="sm" weight="bold" color="accentInk">
-              اقرأ البحث كاملاً
-            </T>
+          // M9 — web parity: «اقرأ البحث كاملاً» is the web's .btn.primary.sm
+          // (charcoal slab), not orange text — the accent leaves the rows.
+          <View style={{ alignSelf: "flex-start" }}>
+            <Button
+              label="اقرأ البحث كاملاً"
+              kind="primary"
+              small
+              onPress={() => onOpen(paper)}
+              icon={<FileText size={13} color={p.primaryFg} />}
+              accessibilityLabel={`اقرأ البحث كاملاً: ${paper.title}`}
+            />
           </View>
         ) : null}
       </LedgerRow>

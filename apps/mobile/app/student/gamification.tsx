@@ -145,7 +145,9 @@ export default function GamificationScreen() {
                       {`المستوى ${latn(l.level)}`}
                     </T>
                   </View>
-                  <T variant="body" weight="bold" color="accentInk">
+                  {/* M9 — the XP column is DATA, inked like the web's
+                      leaderboard; the accent no longer floods every row. */}
+                  <T variant="body" weight="bold">
                     {pointsAr(l.totalXp)}
                   </T>
                 </View>
