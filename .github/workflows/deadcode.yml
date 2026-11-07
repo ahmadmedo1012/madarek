@@ -1,7 +1,9 @@
 name: deadcode
 
 # T-22 Track B: dead-code / duplication / circular-dep ratchet gate.
-# CI is currently quota-dead; this job exists so the gate runs when quota returns.
+# r341/Y5: GitHub Actions quota was restored — Actions is ALIVE again
+# (verified 2026-11-07; this workflow ran green on main same day). The old
+# "CI is currently quota-dead" note is obsolete.
 on:
   push:
     branches: ['**']
