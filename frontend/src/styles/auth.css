@@ -992,6 +992,20 @@
     .auth-register-prompt a:hover { color: var(--accent-hover); text-decoration: underline; text-underline-offset: 3px; }
   }
 
+  /* R341/D1 — the hover-alive door seat: the prompt link's quiet CTA
+     answers the pointer on TWO channels (color + the underline sweep —
+     the fill-wipe's sibling, r329's no-unguarded-hovers law), with
+     focus-visible parity. Scoped to the prompt variant so the
+     .auth-submit anatomy (fp-new-link) keeps its own measured border. */
+  .auth-register-link.auth-primary-link {
+    border-block-end: 1px solid transparent;
+  }
+  .auth-register-link.auth-primary-link:hover,
+  .auth-register-link.auth-primary-link:focus-visible {
+    color: var(--accent-strong);
+    border-block-end-color: var(--accent);
+  }
+
   /* ══ 5b · THE CONSENT LINE (R320 §D · c2-LEGAL) — the policy-consent
      micro-module's seat (components/ConsentLine.tsx): ONE quiet line
      with the two links every account surface owes its visitor (شروط
