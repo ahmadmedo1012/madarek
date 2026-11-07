@@ -5,47 +5,47 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "auth.css :: .auth-demo-hint-close:hover",
+      "key": "patterns.css :: .auth-demo-hint-close:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .auth-demo-hint-reopen:hover",
+      "key": "patterns.css :: .auth-demo-hint-reopen:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .auth-forgot:hover",
+      "key": "patterns.css :: .auth-forgot:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .auth-input-toggle:hover",
+      "key": "patterns.css :: .auth-input-toggle:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .auth-register-prompt a:hover",
+      "key": "patterns.css :: .auth-register-prompt a:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .auth-submit:not(:disabled):hover,\n    .auth-submit:not(:disabled):focus-visible",
+      "key": "patterns.css :: .auth-submit:not(:disabled):hover,\n    .auth-submit:not(:disabled):focus-visible",
       "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .fp-dev-inbox-link:hover",
+      "key": "patterns.css :: .fp-dev-inbox-link:hover",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .role-card:hover .role-card-arrow",
+      "key": "patterns.css :: .role-card:hover .role-card-arrow",
       "reason": "INK-ONLY hover — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .role-card:hover .role-card-index,\n    .role-card:focus-visible .role-card-index",
+      "key": "patterns.css :: .role-card:hover .role-card-index,\n    .role-card:focus-visible .role-card-index",
       "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .role-card:hover .role-card-sub,\n    .role-card:focus-visible .role-card-sub",
+      "key": "patterns.css :: .role-card:hover .role-card-sub,\n    .role-card:focus-visible .role-card-sub",
       "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
-      "key": "auth.css :: .role-card:hover,\n    .role-card:focus-visible",
+      "key": "patterns.css :: .role-card:hover,\n    .role-card:focus-visible",
       "reason": "INK-ONLY state — no background is declared in any state of this selector: the ground is the inherited surface and never moves, so the pair cannot half-flip"
     },
     {
