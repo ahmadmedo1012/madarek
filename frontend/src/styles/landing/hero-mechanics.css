@@ -1123,3 +1123,67 @@ section.fo-hero .hro-alt {
   .hro .hro-alt,
   section.fo-hero .hro-actions .hro-cta { transition: none; }
 }
+/* ── R341 H1-a · the per-div drafting-grid hairline layer (HeroGrid) —
+   measured seats from the frozen spec (home-hero-wrap.1440/390.json),
+   mirrored sr-exact into our RTL frame. Geometry/opacity/colour ride
+   per-element CSS custom properties set inline by HeroGrid.tsx (the
+   single measured data table — no duplicated per-element rules); this
+   sheet holds only the layer laws. Dashed rows render Madarek's own
+   dash rhythm for the spec's background-image hairlines. The wrapper
+   is visibility:hidden (visible children) so the edge-390 gutter
+   census — which unions every visible descendant — sees only the
+   hairlines, never the frame box. ── */
+.hro .hro-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  visibility: hidden;
+  color: var(--grid-ink-72);
+  font-size: 13.33px; /* type-gate: allow — the frozen spec's measured hero-grid rung (no ladder rung carries it) */
+  line-height: 18px; /* type-gate: allow — measured seat, same census */
+  font-weight: 500;
+  z-index: var(--z-hero-grid);
+}
+.hro .hro-grid .hro-gl {
+  position: absolute;
+  visibility: visible;
+  left: var(--gl-l, auto);
+  top: var(--gl-t, auto);
+  width: var(--gl-w, auto);
+  height: var(--gl-h, auto);
+  opacity: var(--gl-op, 1);
+  background-color: var(--gl-bg, transparent);
+  color: var(--gl-ink, inherit);
+}
+.hro .hro-grid .hro-gl[data-k='dx'] {
+  background-image: repeating-linear-gradient(to right, var(--gl-ink, currentColor) 0 6px, transparent 6px 10px);
+}
+.hro .hro-grid .hro-gl[data-k='dy'] {
+  background-image: repeating-linear-gradient(to bottom, var(--gl-ink, currentColor) 0 6px, transparent 6px 10px);
+}
+/* wide-band rows (the art panel grid): rendered >=1440 only — Heron
+   repacks that grid below this band (still excused 768/1024/390). */
+.hro .hro-grid .hro-gl[data-wide] { display: none; }
+@media (min-width: 1440px) {
+  .hro .hro-grid .hro-gl[data-wide] { display: block; }
+}
+/* the <=991 seat — rows with a measured 390 seat re-seat onto it
+   (section marks; incl. the fs/lh rung seat). */
+@media (max-width: 991px) {
+  .hro .hro-grid {
+    font-size: 15.88px; /* type-gate: allow — the <=991 measured rung (the 390 census) */
+    line-height: 21.44px; /* type-gate: allow — measured seat, same census */
+  }
+  .hro .hro-grid .hro-gl {
+    left: var(--gl-l390, var(--gl-l, auto));
+    top: var(--gl-t390, var(--gl-t, auto));
+    width: var(--gl-w390, var(--gl-w, auto));
+    height: var(--gl-h390, var(--gl-h, auto));
+    opacity: var(--gl-op390, var(--gl-op, 1));
+    background-color: var(--gl-bg390, var(--gl-bg, transparent));
+    color: var(--gl-ink390, var(--gl-ink, inherit));
+  }
+}
+/* the a[2] datum seat's dark arm — the frozen spec's full-ink channel
+   under the dark boot (H1-a's measured dark parity). */
+:root[data-theme="dark"] .hro .hro-grid .hro-gl-g89 { color: var(--grid-ink); }

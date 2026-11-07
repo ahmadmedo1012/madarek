@@ -743,6 +743,20 @@
     /* r305 — the auth ambient wash re-keys to the orange seat (the
        value was the retired copper). */
     --journey-glow:        rgba(250, 54, 0, 0.10);   /* ember ambient wash */
+
+    /* R341 H1-a — the hero drafting-grid hairline family, measured from
+       the frozen Heron spec (docs/redesign/r335/heron-spec/
+       home-hero-wrap.1440/390.json): the grid's own paper-tinted
+       hairline, rule grey, 72% ink, and full ink. Constant in BOTH
+       themes (the frozen spec is the light census; the grid divs carry
+       no text, so the dark ink census is unaffected). */
+    --grid-line-paper:     rgb(224, 224, 218);
+    --grid-line-rule:      rgb(179, 179, 175);
+    --grid-ink-72:         rgba(40, 40, 40, 0.72);
+    --grid-ink:            rgb(40, 40, 40);
+    /* the hero grid layer's own stacking rung (css-counts: raw z-index
+       literals live in the token sources, not the sheets) */
+    --z-hero-grid: 2;
   }
 
   /* ════════════════════════════════════════════════════════════════════

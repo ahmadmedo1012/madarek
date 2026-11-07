@@ -54,6 +54,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Icon } from '../../Icon';
 import { HERO_WORK_ITEMS } from '../../../data/landing-ledger';
 import { HeroInkWindow } from '../HeroInkWindow';
+import { HeroGrid } from './HeroGrid';
 import { HeroInspect } from '../cursor/HeroInspect';
 import { useIsNarrowLayout } from '../../../hooks/useIsNarrowLayout';
 import '../../../styles/landing/hero-mechanics.css';
@@ -260,6 +261,11 @@ export function Hero() {
       <span className="bp-plus bp-plus-tr" aria-hidden="true" />
       <span className="bp-plus bp-plus-bl" aria-hidden="true" />
       <span className="bp-plus bp-plus-br" aria-hidden="true" />
+
+      {/* ══ [5] THE DRAFTING GRID — R341 H1-a: the per-div hairline layer
+          (the reference's ~95 grid divs, measured seats; appended LAST so
+          no existing census ordinal shifts). ══ */}
+      <HeroGrid />
     </section>
   );
 }
