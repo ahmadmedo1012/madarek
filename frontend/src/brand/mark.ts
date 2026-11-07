@@ -40,6 +40,7 @@ export const MARK_DIAMOND_PATH = 'M16 5L27 16L16 27L5 16Z';
 
 /** The orange point: 4×4 square centred on the grid intersection (24,8). */
 export const MARK_POINT = { x: 22, y: 6, size: 4 } as const;
+export const MARK_POINT_CENTRE = { x: 24, y: 8 } as const;
 
 /** The mark's ink bbox inside the 32 viewBox (tips 5..27 all round). */
 export const MARK_INK = { x: 5, y: 5, w: 22, h: 22 } as const;
@@ -56,6 +57,7 @@ export const MARK_GRID_POINTS: readonly (readonly [number, number])[] = [
  * thicker PROPORTIONAL ratio for 16 px legibility — the only sanctioned
  * deviation (BRAND.md §min-sizes). */
 export const MARK_STROKE_COMPONENT = 1.5; /* px, non-scaling */
+export const MARK_STROKE_FAVICON = 2.25;  /* viewBox units, proportional */
 
 /** The optical-size ramp (R324/X11). A CONSTANT 1.5 px screen stroke
  * below the 32-grid design size reads progressively heavier: 12.5 % of
