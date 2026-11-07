@@ -756,6 +756,16 @@
   }
 
   .wy-side {
+    /* L1-a — the stacked head: the base grid-column: 2 / row 1/span 2
+       seat survived the ≤767 single-column re-seat and spawned an
+       implicit col 2 — it ate the 1fr track (the eyebrow collapsed to
+       w0, its text wrapped to a 3-line 42px block, the title fell to
+       y194) and the rail overlapped the head rows instead of stacking.
+       Re-seat to col 1 / row 3: eyebrow y48 → title y75 → side y158,
+       exactly the stacked grammar this block's margins were authored
+       for (the spec's 390 head). */
+    grid-column: 1;
+    grid-row: 3;
     align-self: auto;
     margin-block-start: 1.91rem;        /* h2 bottom 139 → side y158 */
     padding-inline: 0;
