@@ -66,7 +66,7 @@ export function CurriculumAuthoringPanel({
          * button keeps the token primary; the course accent survives only
          * on the non-text icon-well tint of the selected lecture's
          * structure head below (the --tq-accent idiom the family's rows
-         * already use, teacher-quality.css). */
+         * already use, patterns.css §11). */
         <button
           type="button"
           className="btn primary sm"
@@ -107,7 +107,7 @@ export function CurriculumAuthoringPanel({
         <div className="cur-structure">
           <div className="cur-structure-head">
             {/* The course accent's one surface â€” the family's tinted icon
-             * well (.tq-row-icon keys off --tq-accent, teacher-quality.css;
+             * well (.tq-row-icon keys off --tq-accent, patterns.css §11;
              * the OfferingRow/LabRow idiom). Decorative only: no text ever
              * rides the raw course color (contrast unaudited). */}
             <span

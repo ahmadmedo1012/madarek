@@ -441,15 +441,15 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "teacher-quality.css :: .exa-row.exa-row-clickable:hover",
+      "key": "patterns.css :: .exa-row.exa-row-clickable:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "teacher-quality.css :: a.tq-row:focus-visible,\nbutton.tq-row:focus-visible",
+      "key": "patterns.css :: a.tq-row:focus-visible,\nbutton.tq-row:focus-visible",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "teacher-quality.css :: a.tq-row:hover,\n  button.tq-row:hover",
+      "key": "patterns.css :: a.tq-row:hover,\n  button.tq-row:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {

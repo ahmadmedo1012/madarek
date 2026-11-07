@@ -30,7 +30,6 @@ import { countAr } from '../../lib/format';
 import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B6 (A4 P3-4): entity tab title, one call only
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.filter-pill/.back-link families (D11 css split, 12-15)
-import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
 import { formatPct1, formatNum } from '../../utils/numbers';
 
@@ -246,7 +245,7 @@ function TrackGridSkeleton() {
 
 /** r241 (Superlist): one offering = one row — icon well leading, code+
  * term kicker, course name prominent, honest counts inline, trailing
- * chevron. The icon-well tint keys off --tq-accent (teacher-quality.css
+ * chevron. The icon-well tint keys off --tq-accent (patterns.css �11
  * owns the grammar); countAr(0) still names the reality (5-A7). */
 function OfferingRow({ offering }: { offering: TeacherOffering }) {
   const accent = offering.course.themeColor ?? 'var(--accent)';

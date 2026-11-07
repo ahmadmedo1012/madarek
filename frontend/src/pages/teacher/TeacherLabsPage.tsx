@@ -30,7 +30,6 @@ import { Icon } from '../../components/Icon';
 import { useLabs, type VirtualLab } from '../../hooks/useResources';
 import { countAr } from '../../lib/format';
 import { formatNum } from '../../utils/numbers';
-import '../../styles/teacher-quality.css'; // 4C family sheet (r241): the .tq list-row catalog grammar
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
 
 const CATEGORY_ICON: Record<string, LucideIcon> = {
@@ -211,7 +210,7 @@ export default function TeacherLabsPage() {
  * shared Heron chip (tabular digits stay .tq-num). */
 function LabRow({ lab }: { lab: VirtualLab }) {
   const Ico = iconFor(lab.category);
-  // --tq-accent feeds the color-mix tint owned by teacher-quality.css;
+  // --tq-accent feeds the color-mix tint owned by patterns.css �11;
   // the previous inline `${accent}1a` alpha was invalid CSS whenever the
   // fallback fired (audit 0-e P1-15).
   const accent = lab.themeColor ?? 'var(--accent)';

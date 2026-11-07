@@ -146,7 +146,7 @@ export function LectureFormModal({
             <textarea id={descId} rows={3} className="auth-input" style={{ blockSize: 'auto', paddingInlineStart: 'var(--sp-4)', resize: 'vertical' }} {...form.register('description')} />
           </FormField>
 
-          {/* cur-grid-2 (teacher-quality.css): the 2-col field grid WITH
+          {/* cur-grid-2 (patterns.css �11): the 2-col field grid WITH
            * the ≤480px collapse — the old inline grid-template-columns
            * overrode the shared mobile ladder with no way back. */}
           <div className="cur-grid-2">
@@ -307,7 +307,7 @@ export function LectureAuthoringList({
               </span>
             </button>
             {/* The trailing action cluster — ≤640px it wraps onto its own
-             * line (cur-lec-actions, teacher-quality.css) instead of
+             * line (cur-lec-actions, patterns.css �11) instead of
              * squeezing the title to an unusable sliver on phones. */}
             <div className="cur-lec-actions">
               <a

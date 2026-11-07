@@ -30,7 +30,6 @@ import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 // — the quality sector's qlt-* rules consolidated there, and the roster
 // toolbar migrated OFF the borrowed .admin-students-* chrome onto the
 // family-owned .tq-toolbar/.tq-search pill.
-import '../../styles/teacher-quality.css';
 // R305 Heron (§0+§D): the shared hr- primitives + this family's
 // quality-boards overlay. Imported AFTER the R304 family sheet so the
 // equal-specificity Heron rules land last.

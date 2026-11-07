@@ -40,7 +40,6 @@ import { overlayStack } from '../../lib/overlayStack';
 import { useEntityPageTitle } from '../../components/layout/AppShell';
 import '../../styles/owner.css'; // ConfirmDialog surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
-import '../../styles/teacher-quality.css'; // R304 — the family sheet (oex- section lives here)
 /* ── r305-c (schedule family) imports — the only region agent 2-c edits above the components ── */
 import '../../styles/student/heron.css';
 import '../../styles/student/heron-schedule.css';
