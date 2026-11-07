@@ -1000,6 +1000,9 @@
   }
   .auth-register-link.auth-primary-link:hover,
   .auth-register-link.auth-primary-link:focus-visible {
+    /* paired-state (r319 E9): background rides explicitly — a state
+       rule never sets color XOR background (the B1 ghost). */
+    background: transparent;
     color: var(--accent-strong);
     border-block-end-color: var(--accent);
   }
