@@ -74,7 +74,7 @@ describe('R321 §A6 — decorative marks never carry DOM text (the innerText lea
     /* R332 split: landing.css is now the per-section family under
      * styles/landing/ (the stub landing.css is rule-free). */
     const styles = [
-      'auth.css',
+      'patterns.css',
       'landing/chrome.css',
       'landing/hero.css',
       'landing/statement.css',
