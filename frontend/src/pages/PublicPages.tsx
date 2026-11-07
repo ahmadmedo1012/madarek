@@ -74,8 +74,8 @@ export function AboutPage() {
               </p>
             </div>
             <div className="pf-page-actions">
-              <Link to="/capabilities" className="btn accent">سجلّ القدرات</Link>
-              <Link to="/" className="btn ghost">الصفحة الرئيسية</Link>
+              <Link to="/capabilities" className="ab-cta-primary">سجلّ القدرات</Link>
+              <Link to="/" className="ab-cta-ghost">الصفحة الرئيسية</Link>
             </div>
           </div>
 
