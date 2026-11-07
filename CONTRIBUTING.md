@@ -12,10 +12,10 @@
 Copy `.env.example` → `.env`, then follow the README quickstart. Node `>=20 <25`
 (CI pins 22). Never commit `.env` or real secrets.
 
-## اتفاقيات العمل R339 | R339 working agreements
+## اتفاقيات العمل | Working agreements (set in R339, still in force)
 
-هذه قواعد الجولة الحالية، ملزمة لكل وكيل/مساهم | Binding for every agent
-and contributor this round:
+هذه قواعد العمل القائمة، ملزمة لكل وكيل/مساهم (الجولة الحالية R341) | Binding for every agent
+and contributor (current round: R341):
 
 1. **بوابة الدفع**: `bash scripts/verify.sh --fast` أخضر قبل كل دفع — هذا
    عقد R337 بعد حادثتي main الأحمر. | `verify.sh --fast` green before every
@@ -27,14 +27,16 @@ and contributor this round:
    أساس بوابة إلا بتوثيق سبب مقنع في نفس الـ PR. | Never raise a ceiling
    or re-pin a gate baseline without a documented justification.
 4. **انضباط السقاطة (ratchet)**: أرقام المطابقة تتحسن فقط؛ التحسن يُثبَّت
-   في نفس الالتزام (`--update`)، والتراجع يُرفض. | Conformance numbers may
+   في نفس الالتزام (`--ratchet` لأداة المطابقة، أو `--update` لبوابة deadcode)، والتراجع يُرفض. | Conformance numbers may
    only improve; improvements get re-pinned in the same commit, regressions
    are rejected.
 5. **سقف الاستثناء 5%**: دلتا العناصر المستثناة (excused) في أي قسم < 5%
    — الاستثناءات تكلفة تُدار لا بابًا خلفيًا. | Excused-element delta per
    section stays under 5%.
-6. **تسمية الفروع**: `rNNN/<task>` لعمل الجولات (مثل `r339/t23`) — تجنّب
-   نمط `r338/t13*` (محجوز بقواعد المستودع). | Branches: `rNNN/<task>`;
+6. **تسمية الفروع**: `wip/<task>` في الجولة الحالية (قانون R341؛ تاريخيًا
+   `rNNN/<task>` مثل `r339/t23`) — تجنّب
+   نمط `r338/t13*` (محجوز بقواعد المستودع). | Branches: `wip/<task>` this wave
+   (r341 law; historically `rNNN/<task>`);
    the `r338/t13*` pattern is reserved by a repo ruleset — avoid it.
 
 ## عرف الالتزام | Commit convention
