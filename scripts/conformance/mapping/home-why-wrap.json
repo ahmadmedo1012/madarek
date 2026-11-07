@@ -272,8 +272,7 @@
       "ours": "[data-spec=\"why.fade\"]",
       "skip": [
         "geometry",
-        "type",
-        "color"
+        "type"
       ],
       "_note": "T-05i gen (wrap#1): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -288,9 +287,7 @@
       },
       "ours": "[data-spec=\"why.stagein\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#2): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -322,9 +319,7 @@
       },
       "ours": "[data-spec=\"why.row2\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#4): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -374,8 +369,7 @@
       "ours": "[data-spec=\"why.card1\"]",
       "skip": [
         "geometry",
-        "type",
-        "color"
+        "type"
       ],
       "_note": "T-05i gen (wrap#7): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -424,10 +418,7 @@
       },
       "ours": "[data-spec=\"why.mk1svg\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (svg#1): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
@@ -446,7 +437,6 @@
         "tag",
         "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#1): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -465,7 +455,6 @@
         "tag",
         "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#2): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -482,7 +471,6 @@
       "ours": "[data-spec=\"why.card4\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#10): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -515,10 +503,7 @@
       },
       "ours": "[data-spec=\"why.mk2svg\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (svg#2): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
@@ -537,7 +522,6 @@
         "tag",
         "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#3): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -553,10 +537,7 @@
       },
       "ours": "[data-spec=\"why.mk2p2\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#4): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -785,8 +766,7 @@
         "tag",
         "tc",
         "geometry",
-        "type",
-        "color"
+        "type"
       ],
       "_note": "T-05i gen (svg#3): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -804,7 +784,6 @@
         "tag",
         "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#5): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -962,7 +941,6 @@
       "ours": "[data-spec=\"why.mini1_1\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#26): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -979,7 +957,6 @@
       "ours": "[data-spec=\"why.mini1_2\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#27): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -995,11 +972,7 @@
       },
       "ours": "[data-spec=\"why.spinsvg\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#4): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1015,7 +988,6 @@
       "ours": "[data-spec=\"why.mini2_1\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#28): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1083,7 +1055,6 @@
       "ours": "[data-spec=\"why.mini1_2b\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#32): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1099,9 +1070,7 @@
       },
       "ours": "[data-spec=\"why.mini2_1b\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#33): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -1117,7 +1086,6 @@
       "ours": "[data-spec=\"why.mini1_1c\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#34): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1133,9 +1101,7 @@
       },
       "ours": "[data-spec=\"why.mini1_2c\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#35): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -1202,10 +1168,7 @@
       "ours": "[data-spec=\"why.vid1\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (zero#8): 0x0 tween-residue seat (footer T-06c precedent) — no visual box to assert"
     },
@@ -1221,7 +1184,6 @@
       "ours": "[data-spec=\"why.vid2\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#38): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1238,7 +1200,6 @@
       "ours": "[data-spec=\"why.vid3\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#39): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1255,7 +1216,6 @@
       "ours": "[data-spec=\"why.vid4\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#40): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1272,7 +1232,6 @@
       "ours": "[data-spec=\"why.vic\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#41): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1289,7 +1248,6 @@
       "ours": "[data-spec=\"why.vicin\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#42): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1306,7 +1264,6 @@
       "ours": "[data-spec=\"why.spinz\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#43): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1323,7 +1280,6 @@
       "ours": "[data-spec=\"why.spin\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#44): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1339,9 +1295,7 @@
       },
       "ours": "[data-spec=\"why.chk\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#45): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -1357,7 +1311,6 @@
       "ours": "[data-spec=\"why.loadz\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#46): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1374,7 +1327,6 @@
       "ours": "[data-spec=\"why.load\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#47): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1391,7 +1343,6 @@
       "ours": "[data-spec=\"why.dots\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#48): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1408,7 +1359,6 @@
       "ours": "[data-spec=\"why.dot1\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#49): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1425,7 +1375,6 @@
       "ours": "[data-spec=\"why.dot2\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#50): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1442,7 +1391,6 @@
       "ours": "[data-spec=\"why.dot3\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#51): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1459,7 +1407,6 @@
       "ours": "[data-spec=\"why.pt1\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#52): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1475,11 +1422,7 @@
       },
       "ours": "[data-spec=\"why.chksvg\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#5): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1495,10 +1438,7 @@
       "ours": "[data-spec=\"why.loadsvg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#6): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1513,10 +1453,7 @@
       },
       "ours": "[data-spec=\"why.mp2\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#6): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -1532,10 +1469,7 @@
       },
       "ours": "[data-spec=\"why.mp3\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#7): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -1551,9 +1485,7 @@
       },
       "ours": "[data-spec=\"why.pt2\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#53): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -1569,7 +1501,6 @@
       "ours": "[data-spec=\"why.pt3\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#54): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1585,10 +1516,7 @@
       "ours": "[data-spec=\"why.pt4\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (zero#9): 0x0 tween-residue seat (footer T-06c precedent) — no visual box to assert"
     },
@@ -1603,11 +1531,7 @@
       },
       "ours": "[data-spec=\"why.tailsvg\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#7): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1623,10 +1547,7 @@
       "ours": "[data-spec=\"why.mapsvg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#8): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1642,10 +1563,7 @@
       "ours": "[data-spec=\"why.pt1svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#9): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1661,10 +1579,7 @@
       "ours": "[data-spec=\"why.pt2svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#10): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1680,10 +1595,7 @@
       "ours": "[data-spec=\"why.pt3svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#11): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1700,8 +1612,7 @@
         "tag",
         "tc",
         "geometry",
-        "type",
-        "color"
+        "type"
       ],
       "_note": "T-05i gen (zero#10): 0x0 tween-residue seat (footer T-06c precedent) — no visual box to assert"
     },
@@ -1735,7 +1646,6 @@
       "ours": "[data-spec=\"why.pt7\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#55): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1751,11 +1661,7 @@
       },
       "ours": "[data-spec=\"why.pt4svg\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#12): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1771,10 +1677,7 @@
       "ours": "[data-spec=\"why.pt5svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#13): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1792,7 +1695,6 @@
         "tag",
         "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#8): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -1808,10 +1710,7 @@
       },
       "ours": "[data-spec=\"why.mp5\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#9): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -1828,7 +1727,6 @@
       "ours": "[data-spec=\"why.pt8\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#56): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1845,7 +1743,6 @@
       "ours": "[data-spec=\"why.pt9\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#57): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1862,7 +1759,6 @@
       "ours": "[data-spec=\"why.pt10\"]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (wrap#58): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
@@ -1878,9 +1774,7 @@
       },
       "ours": "[data-spec=\"why.pt11\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#59): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -1895,9 +1789,7 @@
       },
       "ours": "[data-spec=\"why.pt12\"]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (wrap#60): heron depth-6-truncated tween wrapper — our flatter DOM renders the visual leaf (bound elsewhere)"
     },
@@ -1912,11 +1804,7 @@
       },
       "ours": "[data-spec=\"why.pt6svg\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#14): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1932,10 +1820,7 @@
       "ours": "[data-spec=\"why.pt7svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#15): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1951,10 +1836,7 @@
       "ours": "[data-spec=\"why.pt8svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#16): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -1969,10 +1851,7 @@
       },
       "ours": "[data-spec=\"why.mp6\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#10): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -1988,10 +1867,7 @@
       },
       "ours": "[data-spec=\"why.mp7\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#11): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2007,10 +1883,7 @@
       },
       "ours": "[data-spec=\"why.mp8\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#12): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2026,10 +1899,7 @@
       },
       "ours": "[data-spec=\"why.mp9\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#13): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2045,10 +1915,7 @@
       },
       "ours": "[data-spec=\"why.mp10\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#14): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2064,10 +1931,7 @@
       },
       "ours": "[data-spec=\"why.mp11\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#15): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2083,11 +1947,7 @@
       },
       "ours": "[data-spec=\"why.mp12\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (path#16): heron tween path layer — authored decomposition differs by law (never Heron paths)"
     },
@@ -2102,11 +1962,7 @@
       },
       "ours": "[data-spec=\"why.mp13\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (path#17): heron tween path layer — authored decomposition differs by law (never Heron paths)"
     },
@@ -2121,11 +1977,7 @@
       },
       "ours": "[data-spec=\"why.mp14\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (path#18): heron tween path layer — authored decomposition differs by law (never Heron paths)"
     },
@@ -2140,11 +1992,7 @@
       },
       "ours": "[data-spec=\"why.mp15\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (path#19): heron tween path layer — authored decomposition differs by law (never Heron paths)"
     },
@@ -2159,10 +2007,7 @@
       },
       "ours": "[data-spec=\"why.mp16\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#20): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2178,10 +2023,7 @@
       },
       "ours": "[data-spec=\"why.lp1\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#21): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2197,10 +2039,7 @@
       },
       "ours": "[data-spec=\"why.lp2\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#22): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2216,10 +2055,7 @@
       },
       "ours": "[data-spec=\"why.lp3\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#23): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2235,10 +2071,7 @@
       },
       "ours": "[data-spec=\"why.lp4\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#24): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2254,10 +2087,7 @@
       },
       "ours": "[data-spec=\"why.lp5\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (path#25): heron tween path layer — authored decomposition differs by law (never Heron paths)"
@@ -2274,10 +2104,7 @@
       "ours": "[data-spec=\"why.pt9svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#17): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2293,10 +2120,7 @@
       "ours": "[data-spec=\"why.pt10svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#18): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2310,10 +2134,7 @@
       "ours": "[data-spec=\"why.map\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (zero#12): 0x0 tween-residue seat (footer T-06c precedent) — no visual box to assert"
     },
@@ -2326,10 +2147,7 @@
       },
       "ours": "[data-spec=\"why.mapin\"]",
       "skip": [
-        "tag",
-        "tc",
         "geometry",
-        "type",
         "color"
       ],
       "_note": "T-05i gen (zero#13): 0x0 tween-residue seat (footer T-06c precedent) — no visual box to assert"
@@ -2345,11 +2163,7 @@
       },
       "ours": "[data-spec=\"why.pt11svg\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#19): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2365,10 +2179,7 @@
       "ours": "[data-spec=\"why.pt12svg\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#20): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2384,10 +2195,7 @@
       "ours": "[data-spec=\"why.lp6\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#21): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2402,11 +2210,7 @@
       },
       "ours": "[data-spec=\"why.pt1r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#1): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2421,11 +2225,7 @@
       },
       "ours": "[data-spec=\"why.pt1r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#2): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2441,10 +2241,7 @@
       "ours": "[data-spec=\"why.lp7\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#22): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2459,11 +2256,7 @@
       },
       "ours": "[data-spec=\"why.pt2r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#3): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2478,11 +2271,7 @@
       },
       "ours": "[data-spec=\"why.pt2r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#4): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2498,10 +2287,7 @@
       "ours": "[data-spec=\"why.lp8\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#23): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2516,11 +2302,7 @@
       },
       "ours": "[data-spec=\"why.pt3r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#5): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2535,11 +2317,7 @@
       },
       "ours": "[data-spec=\"why.pt3r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#6): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2555,10 +2333,7 @@
       "ours": "[data-spec=\"why.lp9\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#24): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2573,11 +2348,7 @@
       },
       "ours": "[data-spec=\"why.pt4r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#7): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2592,11 +2363,7 @@
       },
       "ours": "[data-spec=\"why.pt4r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#8): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2612,10 +2379,7 @@
       "ours": "[data-spec=\"why.lp10\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#25): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2630,11 +2394,7 @@
       },
       "ours": "[data-spec=\"why.pt5r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#9): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2649,11 +2409,7 @@
       },
       "ours": "[data-spec=\"why.pt5r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#10): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2669,10 +2425,7 @@
       "ours": "[data-spec=\"why.lp11\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#26): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2687,11 +2440,7 @@
       },
       "ours": "[data-spec=\"why.pt6r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#11): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2706,11 +2455,7 @@
       },
       "ours": "[data-spec=\"why.pt6r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#12): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2726,10 +2471,7 @@
       "ours": "[data-spec=\"why.lp12\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#27): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2744,11 +2486,7 @@
       },
       "ours": "[data-spec=\"why.pt7r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#13): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2763,11 +2501,7 @@
       },
       "ours": "[data-spec=\"why.pt7r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#14): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2783,10 +2517,7 @@
       "ours": "[data-spec=\"why.lp13\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#28): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2801,11 +2532,7 @@
       },
       "ours": "[data-spec=\"why.pt8r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#15): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2820,11 +2547,7 @@
       },
       "ours": "[data-spec=\"why.pt8r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#16): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2840,10 +2563,7 @@
       "ours": "[data-spec=\"why.lp14\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#29): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2858,11 +2578,7 @@
       },
       "ours": "[data-spec=\"why.pt9r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#17): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2877,11 +2593,7 @@
       },
       "ours": "[data-spec=\"why.pt9r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#18): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2897,10 +2609,7 @@
       "ours": "[data-spec=\"why.lp15\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#30): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2915,11 +2624,7 @@
       },
       "ours": "[data-spec=\"why.pt10r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#19): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2934,11 +2639,7 @@
       },
       "ours": "[data-spec=\"why.pt10r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#20): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2954,10 +2655,7 @@
       "ours": "[data-spec=\"why.lp16\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#31): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -2972,11 +2670,7 @@
       },
       "ours": "[data-spec=\"why.pt11r1\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#21): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -2991,11 +2685,7 @@
       },
       "ours": "[data-spec=\"why.pt11r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#22): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -3011,10 +2701,7 @@
       "ours": "[data-spec=\"why.pt12r1\"]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (svg#32): heron tween svg/vector scaffolding — our authored line-art measured at canvas/row level (T-05g plumbing census)"
     },
@@ -3029,11 +2716,7 @@
       },
       "ours": "[data-spec=\"why.pt12r2\"]",
       "skip": [
-        "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "_note": "T-05i gen (rect#23): heron point-reveal rect pair — our authored rect pair measured at the point seat"
     },
@@ -3056,8 +2739,7 @@
       "ours": "section.wy-section > div:nth-child(1) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -3272,8 +2954,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(2)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -3436,8 +3117,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -3552,8 +3232,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(1) > svg:nth-child(1) > g:nth-child(1) > g:nth-child(1) > defs:nth-child(1) > filter:nth-child(1) > femerge:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -3624,8 +3303,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -3864,8 +3542,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -3936,8 +3613,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > img:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4056,8 +3732,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(5) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4080,8 +3755,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(6) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4104,8 +3778,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(7) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4128,8 +3801,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(8) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4152,8 +3824,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(9) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4176,8 +3847,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(10) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4200,8 +3870,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(11) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4224,8 +3893,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(12) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4248,8 +3916,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(13) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4272,8 +3939,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(15) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4296,8 +3962,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(1) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > svg:nth-child(2)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4320,8 +3985,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(4) > div:nth-child(1) > svg:nth-child(1) > g:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4336,8 +4000,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(6)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4352,8 +4015,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(2) > div:nth-child(3) > div:nth-child(1) > img:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4368,8 +4030,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(4) > div:nth-child(7)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -4516,8 +4177,7 @@
       "ours": "section.wy-section > div:nth-child(3) > div:nth-child(2) > div:nth-child(4) > div:nth-child(2) > div:nth-child(3) > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)",
       "scope": "page",
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "_note": "T-05k gen (mass-bind): heron tween wrapper was heuristic-glued (junk y/x-mirror/w/h/bg fails); bound EXACTLY to the tag+tc queue-head element it paired with — zero displacement (footer T-06c / T-05g precedent); tag/tc pass by construction, type + radius/opacity/border/interactive/transition stay measured on the real element"
     },
@@ -8410,10 +8070,7 @@
       "heron": "mask[1]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
     },
@@ -8446,10 +8103,7 @@
       "heron": "defs[2]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
     },
@@ -8458,10 +8112,7 @@
       "heron": "filter[1]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
     },
@@ -8518,10 +8169,7 @@
       "heron": "clippath[2]",
       "skip": [
         "tag",
-        "tc",
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg defs/mask/filter scaffolding — no visual surface (t14a plumbing mechanism, T-05g)"
     },
@@ -8542,7 +8190,6 @@
       "heron": "path[1]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
@@ -8552,7 +8199,6 @@
       "heron": "path[2]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
@@ -8562,7 +8208,6 @@
       "heron": "path[3]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
@@ -8572,7 +8217,6 @@
       "heron": "path[4]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
@@ -8582,7 +8226,6 @@
       "heron": "path[5]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
@@ -8592,7 +8235,6 @@
       "heron": "path[6]",
       "skip": [
         "geometry",
-        "type",
         "color"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
@@ -8601,9 +8243,7 @@
       "section": "home-why-wrap",
       "heron": "path[7]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8611,9 +8251,7 @@
       "section": "home-why-wrap",
       "heron": "path[8]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8621,9 +8259,7 @@
       "section": "home-why-wrap",
       "heron": "path[9]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8631,9 +8267,7 @@
       "section": "home-why-wrap",
       "heron": "path[10]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8641,9 +8275,7 @@
       "section": "home-why-wrap",
       "heron": "path[11]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8651,9 +8283,7 @@
       "section": "home-why-wrap",
       "heron": "path[12]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8661,9 +8291,7 @@
       "section": "home-why-wrap",
       "heron": "path[13]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8671,9 +8299,7 @@
       "section": "home-why-wrap",
       "heron": "path[14]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8681,9 +8307,7 @@
       "section": "home-why-wrap",
       "heron": "path[15]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8691,9 +8315,7 @@
       "section": "home-why-wrap",
       "heron": "path[16]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg path — our authored line-art uses a different path decomposition; scene measured at svg-canvas/row-box level (T-05g)"
     },
@@ -8711,9 +8333,7 @@
       "section": "home-why-wrap",
       "heron": "rect[1]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg rect scaffold — authored line-art decomposition differs (T-05g)"
     },
@@ -8721,9 +8341,7 @@
       "section": "home-why-wrap",
       "heron": "rect[2]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg rect scaffold — authored line-art decomposition differs (T-05g)"
     },
@@ -8771,9 +8389,7 @@
       "section": "home-why-wrap",
       "heron": "g[1]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene svg root group — transform plumbing; canvas box is the measured surface (T-05g)"
     },
@@ -8781,9 +8397,7 @@
       "section": "home-why-wrap",
       "heron": "g[1] > g[1]",
       "skip": [
-        "geometry",
-        "type",
-        "color"
+        "geometry"
       ],
       "reason": "heron tween-scene nested svg group — transform plumbing (T-05g)"
     },
@@ -8807,8 +8421,7 @@
         "1920": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8819,8 +8432,7 @@
         "1920": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[9] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8846,8 +8458,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8861,8 +8472,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8876,8 +8486,7 @@
         "1920": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8921,8 +8530,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8932,8 +8540,7 @@
         "768": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[4] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -8943,8 +8550,7 @@
         "768": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9069,8 +8675,7 @@
         "390": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9080,8 +8685,7 @@
         "390": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[7] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9092,8 +8696,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9157,8 +8760,7 @@
         "1024": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[1] > img[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9172,8 +8774,7 @@
         "1920": "home-why-wrap > div[2] > div[1] > svg[1] > defs[2] > filter[1] > femerge[5]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9184,8 +8785,7 @@
         "1920": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[9] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9211,8 +8811,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[4] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9226,8 +8825,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[1] > div[1] > svg[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9241,8 +8839,7 @@
         "1920": "home-why-wrap > div[1] > div[2] > div[1] > div[1] > div[1] > img[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9286,8 +8883,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[1] > div[2]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9297,8 +8893,7 @@
         "768": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[4] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9308,8 +8903,7 @@
         "768": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[4]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9434,8 +9028,7 @@
         "390": "home-why-wrap > div[3] > div[1] > div[2] > div[4] > div[1] > div[7]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9445,8 +9038,7 @@
         "390": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[7] > div[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9457,8 +9049,7 @@
         "1920": "home-why-wrap > div[2] > div[3] > div[1] > div[2] > div[3] > div[2]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     },
@@ -9522,8 +9113,7 @@
         "1024": "home-why-wrap > div[1] > div[2] > div[4] > div[1] > div[1] > img[1]"
       },
       "skip": [
-        "geometry",
-        "color"
+        "geometry"
       ],
       "reason": "T-05m gen (junk-glue kill): heron tween-wrapper record heuristically glued to an ordinal depth-twin (junk y/x-mirror/w/h/bg fails); no uniquely-selectable real counterpart — mass-bind could not re-seat it; geometry+color skipped with this written reason, tag/tc/type/border/interactive/transition stay measured on the paired element"
     }
