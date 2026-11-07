@@ -118,8 +118,15 @@ function CourseListSkeleton() {
 /** r221 (4A redesign — Superlist): the course row — the LIST is the
  *  product. Needs a per-offering lectures query (the count scent «٣
  *  محاضرات»); the whole title is the link and the CTA chip is visual
- *  (no nested interactive inside an anchor). */
-function CourseRow({ e }: { e: MyEnrollment }) {
+ *  (no nested interactive inside an anchor).
+ *  r341 D7a — `actNow` seats the row's verb on the accent register
+ *  (the ONE act-now row: the first not-done course, the exams list's
+ *  oex-row-cta precedent — «the accent is reserved for THE actionable
+ *  state»); every other row keeps the quiet ghost verb so the
+ *  one-accent discipline holds with N enrolled courses. The span is
+ *  still decorative chrome inside the row LINK — the row is the
+ *  control (r289). */
+function CourseRow({ e, actNow }: { e: MyEnrollment; actNow?: boolean }) {
   const c = e.offering.course;
   const Cmp = courseIcon(c.code ?? c.name);
   const tint = courseTint(c.themeColor);
@@ -183,7 +190,13 @@ function CourseRow({ e }: { e: MyEnrollment }) {
             pct={e.progressPct}
             ariaLabel={`تقدّم مقرّر ${c.name}: ${e.progressPct}%`}
           />
-          <span className="btn ghost sm courses-row-go">
+          <span
+            className={
+              actNow
+                ? 'btn accent sm courses-row-go courses-row-go--now'
+                : 'btn ghost sm courses-row-go'
+            }
+          >
             {e.progressPct > 0 ? 'تابع' : 'ابدأ'}
             <Icon icon={ArrowLeft} size={12} />
           </span>
@@ -209,6 +222,14 @@ export default function StudentCoursesPage() {
     attention: data?.filter((e) => matchesFilter(e, 'attention')).length ?? 0,
   };
   const filtered = (data ?? []).filter((e) => matchesFilter(e, filter));
+
+  /* r341 D7a — the list's ONE act-now row (the exams list's oex-row-cta
+   * grammar): the first still-unfinished course carries the page's one
+   * discrete accent verb («تابع/ابدأ»); with nothing left to finish the
+   * first row keeps it (an «ابدأ»-able empty course is still THE
+   * actionable row). Follows `filtered` so the verb never points at a
+   * row the current bucket hides. */
+  const actNowId = (filtered.find((e) => e.progressPct < 100) ?? filtered[0])?.id;
 
   return (
     <div className="r319s-page">
@@ -292,7 +313,7 @@ export default function StudentCoursesPage() {
               re-stagger replays — data refetches alone never replay it. */}
           <RowList key={filter} aria-label="قائمة المقرّرات المسجّلة">
             {filtered.length ? filtered.map((e) => (
-              <CourseRow key={e.id} e={e} />
+              <CourseRow key={e.id} e={e} actNow={e.id === actNowId} />
             )) : (
               /* R319 (c3-S1): the empty filter bucket is the sheet's
                  reserved-but-empty region — the hatched EmptyCell, never

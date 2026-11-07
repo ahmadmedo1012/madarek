@@ -74,27 +74,23 @@
   .dash-hero-deep .dash-resume-side-note .font-mono {
     color: color-mix(in srgb, var(--neutral-0) 85%, var(--neutral-900));
   }
-  /* Quiet but precise progress on the deep band: the track mixes the
-     band fg 22% toward the band ground (a visible well on both poles);
-     the fill is the band's own fg ink — the copper stays in the edge
-     and the CTA, where the ONE-accent discipline wants it. */
-  .dash-hero-deep .progress-track {
-    background: color-mix(in srgb, var(--neutral-0) 22%, var(--neutral-900));
-  }
-  .dash-hero-deep .progress-fill { background: var(--neutral-0); }
-  .dash-hero-deep .momentum-ring .ring-track {
-    stroke: color-mix(in srgb, var(--neutral-0) 22%, var(--neutral-900));
-  }
-  .dash-hero-deep .momentum-ring .ring-fill { stroke: var(--neutral-0); }
+  /* R341 D7a — the P2.5 instrument swap killed the deep band's quiet
+     ProgressBar + momentum-ring re-derivations that lived here: the
+     hero renders the R325 RulerGauge + SegmentedProgress (rg-proven
+     zero seats for .dash-hero-deep .progress-track/.progress-fill and
+     the .momentum-ring .ring-* rules) — deleted with their RM belt
+     arms. */
 
-  /* ── 2 · Section kicker harmonics ─────────────────────────────────
-     The foundation .r305s-kicker carries every dashboard section
-     (اليوم / مقرّراتك / فجوات يُنصح بسدّها / أسبوعك القادم). One
-     wrap-safety refinement (scoped to THIS page's kickers — F2): the
-     action button may be up to ~110px and the title 130px+ at 320px
-     — the row wraps instead of clipping. */
-  .dash-section .r305s-kicker,
-  .dash-momentum .r305s-kicker { flex-wrap: wrap; }
+  /* ── 2 · ScheduleStrip harmonics (r341 D7a) ──────────────
+     The §B2 swap retired the .r305s-kicker wrap refinement that lived
+     here (zero seats — the sections render .r319s-bar now). In its
+     place, the strip's TODAY header cell: the inked head sets only its
+     background, so the sr-only «اليوم» label inherited the page's
+     --text ink — 1:1 against the ink fill (the ink-island probe's
+     catch; the WeekStrip twin was D7c's fix in pages.css). The head's
+     OWN color flips to the paper pole so every child (the sr-only
+     label included) inherits an ink that measures against the fill. */
+  .ind-sched-day--today .ind-sched-head { color: var(--bg); }
 
   /* ── 3 · The momentum strip — the page's metadata band ────────────
      The labeled rule («زخم الفصل» stamped INTO the hairline) replaces
@@ -143,9 +139,6 @@
   }
   /* No animation is authored here (color/border steps only, all via
      tokens); the belt stays as the explicit contract, mirroring the
-     foundation sheet. */
-  @media (prefers-reduced-motion: reduce) {
-    .dash-hero-deep .progress-fill,
-    .dash-hero-deep .momentum-ring .ring-fill { transition: none; }
-  }
+     foundation sheet. R341 D7a: the .progress-fill / .ring-fill arms
+     died with their zero-seat rules above — the block is retired. */
 }

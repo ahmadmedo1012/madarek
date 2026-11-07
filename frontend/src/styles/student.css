@@ -173,59 +173,16 @@
 
   /* ── §analytics — DashboardPage · MatrixPage · AiAssistant (wave 4-a) ── */
 
-  /* ═══ Dashboard — KPI count-up + doughnut moment + craft fixes ═══
-     The page moment: KPI values count in (TSX CountIn) riding the grid
-     entrance stagger, agenda items slide in from inline-start, and the
-     doughnut center number re-rises on every data change (keyed
-     remount). This section owns the pieces the shared layers can't
-     carry. */
-
-  /* Term progress fill — the span carried only an inline width with no
-     background/height anywhere: the bar rendered as an empty track.
-     23-b (A11 P2-10 — scaleX debt cleared): the value rides
-     transform: scaleX() (set inline by the page) from the inline-start
-     edge; the width layout transition is gone. */
-  
-  
-
-  /* ChartFrame adoption: the frame fills the fixed doughnut well; the
-     center number overlays it (positioning stays on .dash-doughnut). */
-  
-
-  /* Center number rises + settles whenever the average changes
-     (key={pct} remount in the TSX). */
-  
-  @keyframes dash-center-in {
-    from { opacity: 0; transform: scale(0.85); }
-    to { opacity: 1; transform: none; }
-  }
-
-  /* Arabic labels never take letter-spacing/uppercase — both break the
-     cursive join (ruling #2; the shared rules predate it). */
-  /* Agenda tone wells — the TSX always carried data-tone but Card never
-     spread it to the DOM (silently dead); the tone now rides the icon
-     well. Text/icons on pastel use the -deep WCAG-pinned inks. */
-  
-  
-  /* r166a (E1 oversized-empty defect): the agenda's EMPTY slot held a
-     ~375px card (the opt-in 160px illustration + the state's
-     breathing padding) for one line of meaning — dominating the
-     column's tail on desktop and slot 2 on mobile. This slot is a
-     status strip, not a destination page: the illustration is gone
-     (TSX) and the state compacts to the agenda rows' own rhythm —
-     icon well + one-line copy + sp-5 padding. Scoped to the
-     dashboard's agenda only; every other empty state keeps the
-     shared .state canon. */
-  
-  /* PP-X2 (audit P1-8): agenda rows ARE links now (class → course,
-     assignment → course, live → broadcast). The 22-c "affordance lie"
-     overrides below (cursor: default + rest-only hover) are reverted —
-     the pointer + surface-2 hover + chevron now tell the truth. Focus
-     rides the platform's global :focus-visible ring. */
-  /* The chevron nudges toward FORWARD (inline-end): --motion-direction
-     is −1 in RTL, so the translate lands leftward — the reading
-     direction's "next". */
-  
+  /* ═══ Dashboard — the continue-learning hero ═══
+     R341 D7a — the r285-era KPI/doughnut moment (the term-fill span,
+     the ChartFrame doughnut well, the dash-center-in rise, the agenda
+     tone wells, the compact empty slot, the chevron nudge) is fully
+     retired: the R319/R325 rebuilds seat the StatLine + indicator
+     instruments, and every one of those families is rg-proven zero-
+     seat in the TSX. This section now owns what still renders — the
+     hero band below (the agenda/week rows ride the pattern library).
+     The KPI values still count in (TSX CountIn) — that is TSX, not
+     CSS; no keyframe survives here. */
 
   /* ═══ Continue-learning hero (PP-X2, audit P0-3) ═══
      The PRIMARY action of the dashboard: one click from cold-open to
@@ -423,6 +380,17 @@
     color: var(--accent-fg);
     font-weight: 700;
   }
+  /* r341 D7a — the light-theme AA seat: white on the raw --accent
+     (#FA3600) measures 3.76:1 (the documented AA-LARGE exception —
+     but this numeral is fs-sm 13px, a SMALL text node, and the
+     conformance ink probe + axe both read it). The same darker seat
+     the R318 .btn.accent recipe takes (#DB3A00, 4.55:1), built from
+     tokens: accent mixed 82% toward --black ≈ #CD2C00 = 5.31:1 with
+     the white numeral. Dark already passes by construction
+     (--warm-ink #191918 on the luminous ember ≈ 4.7:1+) — untouched. */
+  [data-theme='light'] .cal-cell[data-today='true'] .cal-day-num {
+    background: color-mix(in srgb, var(--accent) 82%, var(--black));
+  }
   .cal-dots {
     display: flex;
     gap: 3px; /* spacing-gate: allow — calendar dot trail hairline gap */
@@ -583,8 +551,18 @@
   .courses-row-go { flex-shrink: 0; }
   @media (max-width: 640px) {
     /* Phone rows: the chip is decorative (the row's title is the
-       link) — it yields to the text; the bar keeps the honest % only. */
+       link) — it yields to the text; the bar keeps the honest % only.
+       r341 D7a — EXCEPT the act-now verb: the first still-unfinished
+       course's «تابع/ابدأ» rides the accent register and STAYS on the
+       phone band (the exams list's oex-row-cta precedent — the accent
+       is reserved for THE actionable state, and the page's only
+       primary CTA at 390). The 44px craft floor rides with it (the
+       touch floor law; .btn.sm alone renders a 32px box). */
     .courses-row-go { display: none; }
+    .courses-row-go--now {
+      display: inline-flex;
+      min-block-size: 44px;
+    }
   }
   /* (r151f: bang retired — the v6 stagger's five selectors carry
      :not(.courses-grid):not(.mooc-grid) at the source now, so this
@@ -593,15 +571,11 @@
   /* API course tint rides on --course-tint (set inline by TSX) and is
      only consumed through color-mix washes over var(--surface) — the
      invalid `${tint}10` hex-alpha inline pattern is gone. */
-  /* PP-X2 (audit P2-9) — course-card scent: the code chip + counted
-     lecture noun above the title (the track-card-cat grammar — the
-     exams cards' category line), and the progress row gains a named
-     CTA so six same-teacher same-% cards are told apart and answer
-     "what happens when I click". */
-  @keyframes courses-card-in {
-    from { opacity: 0; transform: translateY(8px) scale(0.985); }
-    to { opacity: 1; transform: none; }
-  }
+  /* R341 D7a — the r221 Superlist rebuild killed the thumb-card grid:
+     the card scent block (code chip + counted noun + named .thumb-
+     card-go CTA) and its courses-card-in entrance keyframe are zero-
+     seat (rg-proven; the LIST is the product now — RowList + §B2
+     CourseBar). */
 
   /* r221 (4A redesign — Superlist): the continue strip — the course
      home's ONE next action with its progress riding beside it. The
@@ -750,28 +724,25 @@
        pre-9-b 32px pin, which no longer exists. This rule is now the
        ONLY floor in the 641-920 band — polish's ≤640 block covers
        phones — so the rule itself stays.) Font sizes unchanged.
-       PP-X2 live-census follow-up: the course card's nested «تابع/ابدأ»
-       CTA (.thumb-card-go, a .btn.ghost.sm → 32px) joined the list —
-       the whole card is the primary target, but the labeled CTA must
-       stand on its own on touch too (zero sub-40px interactives). */
-    .courses-filter .pill,
+       r341 D7a: the courses arms are zero-seat (rg-proven) — the
+       r221 Superlist rebuild deleted the assignments table
+       (.courses-assignments) and the enrolled thumb-card grid
+       (.thumb-card-go); the row verbs ride .courses-row-go above. */
     .matrix-filter .pill,
-    .courses-assignments td .btn,
+    .courses-filter .pill,
     .webinar-kpis .metric-change .btn,
-    .jobs-table .table-row-actions .btn,
-    .thumb-card .thumb-card-go { min-block-size: 44px; }
+    .jobs-table .table-row-actions .btn { min-block-size: 44px; }
   }
   @media (prefers-reduced-motion: reduce) {
     /* R331 A-CSS pass 1 — bang retired. The comment below described a
        war that ended at r151f: every entrance these selectors fight
-       (courses-card-in 1311/1618, mooc-cta-pulse 1655, webinar-live-
-       pulse 1701, lecture-next-pulse 320) lost its own !important then,
-       so a same-layer, later-source, equal-specificity kill wins
-       without one. base.css's canonical belt still wins the cross-layer
+       (mooc-cta-pulse, webinar-live-pulse, lecture-next-pulse — the
+       courses-card-in twin died with the r221 Superlist rebuild,
+       r341 D7a) lost its own !important then, so a same-layer,
+       later-source, equal-specificity kill wins without one.
+       base.css's canonical belt still wins the cross-layer
        !important race for durations/delays — animation-name:none here
        is what actually freezes the pieces. */
-    /* The agenda chevron nudge is a hover garnish, not information. */
-    
   }
 
   /* ── §research — ResearchPage · LibraryPage · LivePage · LabsPage (wave 4-c) ── */
