@@ -74,7 +74,7 @@ let chromium;
 try {
   ({ chromium } = createRequire(join(WORKTREE, "frontend", "package.json"))("playwright"));
 } catch {
-  ({ chromium } = createRequire("/home/z/madarek/frontend/package.json"))("playwright"));
+  ({ chromium } = createRequire("/home/z/madarek/frontend/package.json"))("playwright");
 }
 
 // ── the ladder: every --fs-* token name declared by the token sources ────────
