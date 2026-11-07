@@ -1148,3 +1148,147 @@
   [data-spec="why.mini2_1c"] .wy-ic-ring { border-radius: 99px; }
 }
 /* T05L-END */
+
+/* ═══ L1-a (r341) — the deck carousel chrome + the full-bleed restore.
+   The T-16 panel finding #1 (the gallery reads static/clipped): the
+   ≤767 deck belt — the 390 spec's four 374px rows side-by-side — had
+   no scroll, no snap, no controls; rows 2–4 sat unreachable past the
+   RTL inline-end edge. This block seats the real carousel grammar:
+   the track becomes the snap belt, both edges fade into the paper,
+   arrows + dots ride the stage's bottom band, and the pinned even
+   captions clamp inside the viewport (the Arabic word-split law —
+   never split words). ≥768 is untouched. ═══ */
+
+/* the ≥992 full-bleed restore — strata's edge-rail group (strata.css
+   @media ≥992) still carried .wy-section at 3.2rem/4rem padding, a
+   pre-T-05 leftover: the why spec is full-bleed (171.24rem wide, ZERO
+   padding — head, hairline and stage all run to the measured rect;
+   the rail-side route-map art sits ≥183px in, clear of the 24px
+   .et-tab rail). The element-tagged seat out-ranks the shared strata
+   list without touching strata.css (the ≤767 margin precedent). */
+@media (min-width: 992px) {
+  section.wy-section { padding-inline: 0; }
+}
+
+/* the deck chrome — hidden by default; the ≤767 belt below seats it */
+.wy-deck-chrome { display: none; }
+
+@media (max-width: 767px) {
+  /* the snap belt — .wy-track IS the scroller (the rows keep their
+     measured 374px deck seats; only the clip + snap grammar is new).
+     Ladder seats: fade 5 / chrome 10 — content rungs, far under the
+     capbar 40 + rule 45 (the landing-local ladder law). */
+  .wy-stage {
+    --lz-deck-fade: 5;
+    --lz-deck-chrome: 10;
+  }
+  .wy-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;              /* the deck owns its chrome */
+  }
+  .wy-track::-webkit-scrollbar { display: none; }
+  .wy-row {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  /* the edge fades — the paper melts over the belt's two ends so the
+     neighbour card reads as continuing past the frame, not cut */
+  .wy-stage::before,
+  .wy-stage::after {
+    content: "";
+    position: absolute;
+    inset-block-start: 0;
+    block-size: 48.47rem;               /* the belt band */
+    inline-size: 2.4rem;
+    pointer-events: none;
+    z-index: var(--lz-deck-fade);
+  }
+  .wy-stage::before {
+    inset-inline-start: 0;
+    background: linear-gradient(to left, var(--bg) 55%, transparent);
+  }
+  .wy-stage::after {
+    inset-inline-end: 0;
+    background: linear-gradient(to right, var(--bg) 55%, transparent);
+  }
+
+  /* arrows + dots — the stage's bottom band (row cards end y367 of
+     the 481px belt; the chrome owns the band beneath them) */
+  .wy-deck-chrome {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2.4rem;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: 5.28rem;                /* 52px @390 — clears the 44px floor */
+    z-index: var(--lz-deck-chrome);
+  }
+  .wy-deck-btn {
+    inline-size: 5.28rem;
+    block-size: 5.28rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    background: var(--paper);
+    border: 0.12rem solid var(--rule-strong);
+    cursor: pointer;
+    transition:
+      border-color var(--t-fast, 0.24s) var(--e-out, ease-out),
+      background-color var(--t-fast, 0.24s) var(--e-out, ease-out);
+  }
+  .wy-deck-btn:hover { border-color: var(--accent-ink); }
+  .wy-deck-svg {
+    inline-size: 1.68rem;
+    block-size: 1.68rem;
+    display: block;
+  }
+  .wy-deck-path {
+    stroke: var(--text);
+    fill: none;
+    stroke-width: 1.2;
+    transition: stroke var(--t-fast, 0.24s) var(--e-out, ease-out);
+  }
+  .wy-deck-btn:hover .wy-deck-path { stroke: var(--accent-ink); }
+  .wy-deck-dots {
+    display: flex;
+    gap: 1.2rem;
+  }
+  .wy-deck-dot {
+    inline-size: 4.32rem;               /* 43px hit — the 6px mark inside */
+    block-size: 4.32rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+  }
+  .wy-deck-dot::after {
+    content: "";
+    inline-size: 0.6rem;
+    block-size: 0.6rem;
+    background: var(--text-faint);
+    transition: background-color var(--t-fast, 0.24s) var(--e-out, ease-out);
+  }
+  .wy-deck-dot.is-on::after { background: var(--accent-ink); }
+}
+
+/* the even-caption clamp (≤599) — the recorded 410px even seat rides
+   the reference's own mid-pan off-canvas crop (20px past the edge);
+   with the snap belt the rows are REACHABLE, and the Arabic
+   word-split law seats the pinned even captions 36px inside the
+   inline-end edge — the mirror of the recorded odd seat's inset. */
+@media (max-width: 599px) {
+  .wy-capbar .wy-cap:nth-child(even) .wy-cap-t,
+  .wy-capbar .wy-cap:nth-child(even) .wy-cap-s {
+    inset-inline-start: auto;
+    inset-inline-end: 36px; /* spacing-gate: allow — the word-split-law clamp (mirrors the recorded odd seat's own 36px inline inset) */
+  }
+}
+/* L1A-END */

@@ -22,7 +22,7 @@
  * gsap; reveal engine drives the intro, Lenis stays).
  */
 import { useSheetScroll } from '../../lib/motion/useSheetScroll';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   CAPTURE_LECTURE_CHECKPOINT_2X,
@@ -131,7 +131,7 @@ const capSrc = (id: string) => {
 /** the 13px icon cluster — white core (4px glyph) + accent swap + ring. */
 function IconCluster({ x, ds }: { x: string; ds: string }) {
   return (
-    <div className="wy-ic" data-spec={`why.${ds}`} style={{ insetInlineStart: x }}>
+    <div className="wy-ic" data-spec={`why.${ds}`} style={{ '--wy-ix': x } as React.CSSProperties}>
       <div className="wy-ic-core">
         <div className="wy-ic-box">
           <div className="wy-ic-dot" />
@@ -146,13 +146,18 @@ function IconCluster({ x, ds }: { x: string; ds: string }) {
   );
 }
 
-/** a small capture with its sub-pixel reveal box (+cluster | plain img). */
+/** a small capture with its sub-pixel reveal box (+cluster | plain img).
+ * L1-a (r341): the seats ride the --wy-* custom properties — NOT the
+ * physical properties — so the sheet's ≤991/≤767 measured re-seat
+ * rules (direct values, higher in the cascade) actually WIN on the
+ * tablet/phone belts; the inline physical props had been killing
+ * them (desktop geometry on phone = the clipped/stray thumbnails). */
 function MiniSeat({ m, id, ds }: { m: Mini; id: string; ds: string }) {
   return (
     <div
       className="wy-mini"
       data-spec={`why.${ds}`}
-      style={{ insetInlineStart: m.box[0], insetBlockStart: m.box[1], inlineSize: m.box[2], blockSize: m.box[3] }}
+      style={{ '--wy-sx': m.box[0], '--wy-sy': m.box[1], '--wy-sw': m.box[2], '--wy-sh': m.box[3] } as React.CSSProperties}
     >
       {m.img ? (
         <div className="wy-mini-in">
@@ -160,7 +165,7 @@ function MiniSeat({ m, id, ds }: { m: Mini; id: string; ds: string }) {
         </div>
       ) : (
         <>
-          <div className="wy-box" data-spec={`why.${ds}b`} style={{ insetInlineStart: m.bx }}>
+          <div className="wy-box" data-spec={`why.${ds}b`} style={{ '--wy-bx': m.bx } as React.CSSProperties}>
             <div className="wy-box-in">
               <img className="wy-box-img" src={capSrc(id)} alt="" loading="lazy" />
             </div>
@@ -192,6 +197,33 @@ function Marker({ y, ds }: { y: string; ds: string }) {
 
 export function WhyScene() {
   const stageRef = useRef<HTMLDivElement>(null);
+  /* L1-a (r341) — the ≤767 deck belt: .wy-track IS the snap scroller
+   * (why.css ≤767: overflow-x auto + scroll-snap x mandatory); the
+   * arrows/dots chrome reads + drives its scroll seat. ≥768 the belt
+   * is not scrollable and the chrome is display:none — inert. */
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [deckAt, setDeckAt] = useState(0);
+  const deckGo = (i: number) => {
+    const t = trackRef.current;
+    if (!t) return;
+    const rows = t.querySelectorAll<HTMLElement>('.wy-row');
+    const row = rows[Math.max(0, Math.min(rows.length - 1, i))];
+    row?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
+  const onDeckScroll = () => {
+    const t = trackRef.current;
+    if (!t) return;
+    const port = t.getBoundingClientRect();
+    const mid = port.left + port.width / 2;
+    let best = 0;
+    let bestD = Infinity;
+    t.querySelectorAll<HTMLElement>('.wy-row').forEach((r, i) => {
+      const rc = r.getBoundingClientRect();
+      const d = Math.abs(rc.left + rc.width / 2 - mid);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    setDeckAt(best);
+  };
   /* the pinned caption bar is PORTALED to document.body: the why
    * section rides the r323 content-visibility skirt (strata.css),
    * whose layout+paint containment makes the section the containing
@@ -239,7 +271,7 @@ export function WhyScene() {
         <div className="wy-fade" aria-hidden="true" data-spec="why.fade" />
         <Marker y="-0.12rem" ds="mk1" />
         <Marker y="262.8rem" ds="mk2" />
-        <div className="wy-track" data-spec="why.track">
+        <div className="wy-track" data-spec="why.track" ref={trackRef} onScroll={onDeckScroll}>
           <div className="wy-progress" aria-hidden="true" data-spec="why.progress" />
           <div className="wy-track-in" data-spec="why.rows">
             {ROWS.map((r, i) => (
@@ -247,9 +279,9 @@ export function WhyScene() {
                 className="wy-row"
                 data-spec={`why.row${i + 1}`}
                 key={r.title}
-                style={{ insetBlockStart: `${[0, 62.16, 124.32, 186.48][i]}rem` }}
+                style={{ '--wy-ry': `${[0, 62.16, 124.32, 186.48][i]}rem` } as React.CSSProperties}
               >
-                <div className="wy-card" data-spec={`why.card${i + 1}`} style={{ insetInlineStart: r.card[0] }}>
+                <div className="wy-card" data-spec={`why.card${i + 1}`} style={{ '--wy-cx': r.card[0] } as React.CSSProperties}>
                   <div className="wy-card-in">
                     <img
                       className="wy-img"
@@ -264,12 +296,12 @@ export function WhyScene() {
                   /* row 3 — the lecture-player seat (spec's video card) */
                   <div className="wy-player" data-spec="why.player">
                     <div className="wy-player2" data-spec="why.player2">
-                      <div className="wy-vid" data-spec="why.vid1" style={{ insetInlineStart: '22.92rem', insetBlockStart: '-10.44rem', inlineSize: '38.76rem', blockSize: '23.88rem' }}>
+                      <div className="wy-vid" data-spec="why.vid1" style={{ '--wy-sx': '22.92rem', '--wy-sy': '-10.44rem', '--wy-sw': '38.76rem', '--wy-sh': '23.88rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={lectureShot2x} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-vic" data-spec="why.vic" style={{ insetInlineStart: '58.68rem', insetBlockStart: '10.56rem' }}>
+                      <div className="wy-vic" data-spec="why.vic" style={{ '--wy-sx': '58.68rem', '--wy-sy': '10.56rem' } as React.CSSProperties}>
                         <div className="wy-vic-in" data-spec="why.vicin">
                           <svg className="wy-vic-svg" data-spec="why.vicsvg" viewBox="0 0 18 18" aria-hidden="true">
                             <mask id={`wyvm${i}`}>
@@ -279,12 +311,12 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
-                      <div className="wy-vid wy-vid2" data-spec="why.vid2" style={{ insetInlineStart: '20.88rem', insetBlockStart: '14.76rem', inlineSize: '42.72rem', blockSize: '26.28rem' }}>
+                      <div className="wy-vid wy-vid2" data-spec="why.vid2" style={{ '--wy-sx': '20.88rem', '--wy-sy': '14.76rem', '--wy-sw': '42.72rem', '--wy-sh': '26.28rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={capSrc('student-dashboard')} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-spinz" data-spec="why.spinz" style={{ insetInlineStart: '59.52rem', insetBlockStart: '37.68rem' }}>
+                      <div className="wy-spinz" data-spec="why.spinz" style={{ '--wy-sx': '59.52rem', '--wy-sy': '37.68rem' } as React.CSSProperties}>
                         <div className="wy-spin" data-spec="why.spin">
                           <svg className="wy-spin-svg" data-spec="why.spinsvg" viewBox="0 0 24 24" aria-hidden="true">
                             <g>
@@ -302,7 +334,7 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
-                      <div className="wy-chk" data-spec="why.chk" style={{ insetInlineStart: '60.36rem', insetBlockStart: '-6.24rem' }}>
+                      <div className="wy-chk" data-spec="why.chk" style={{ '--wy-sx': '60.36rem', '--wy-sy': '-6.24rem' } as React.CSSProperties}>
                         <svg className="wy-chk-svg" data-spec="why.chksvg" viewBox="0 0 6 6" aria-hidden="true">
                           <mask id="wycm1">
                             <path d="M1 3 l1.5 1.5 L5 1.5" />
@@ -310,12 +342,12 @@ export function WhyScene() {
                           </mask>
                         </svg>
                       </div>
-                      <div className="wy-vid wy-vid3" data-spec="why.vid3" style={{ insetInlineStart: '22.92rem', insetBlockStart: '42.6rem', inlineSize: '38.76rem', blockSize: '23.88rem' }}>
+                      <div className="wy-vid wy-vid3" data-spec="why.vid3" style={{ '--wy-sx': '22.92rem', '--wy-sy': '42.6rem', '--wy-sw': '38.76rem', '--wy-sh': '23.88rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={capSrc('student-library')} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-loadz" data-spec="why.loadz" style={{ insetInlineStart: '57.84rem', insetBlockStart: '18.24rem' }}>
+                      <div className="wy-loadz" data-spec="why.loadz" style={{ '--wy-sx': '57.84rem', '--wy-sy': '18.24rem' } as React.CSSProperties}>
                         <div className="wy-load" data-spec="why.load">
                           <svg className="wy-load-svg" data-spec="why.loadsvg" viewBox="0 0 24 24" aria-hidden="true">
                             <g>
@@ -343,12 +375,12 @@ export function WhyScene() {
                           </svg>
                         </div>
                       </div>
-                      <div className="wy-vid wy-vid4" data-spec="why.vid4" style={{ insetInlineStart: '20.64rem', insetBlockStart: '42.6rem', inlineSize: '16.32rem', blockSize: '10.44rem' }}>
+                      <div className="wy-vid wy-vid4" data-spec="why.vid4" style={{ '--wy-sx': '20.64rem', '--wy-sy': '42.6rem', '--wy-sw': '16.32rem', '--wy-sh': '10.44rem' } as React.CSSProperties}>
                         <div className="wy-vid-in">
                           <img className="wy-img" src={capSrc('student-matrix')} alt="" loading="lazy" />
                         </div>
                       </div>
-                      <div className="wy-dots" data-spec="why.dots" style={{ insetInlineStart: '25.44rem', insetBlockStart: '-0.72rem' }}>
+                      <div className="wy-dots" data-spec="why.dots" style={{ '--wy-sx': '25.44rem', '--wy-sy': '-0.72rem' } as React.CSSProperties}>
                         <div className="wy-dot" data-spec="why.dot1" />
                         <div className="wy-dot" data-spec="why.dot2" />
                         <div className="wy-dot wy-dot-3" data-spec="why.dot3" />
@@ -361,7 +393,7 @@ export function WhyScene() {
                   /* row 4 — the dashed route map + point reveals */
                   <>
                     {POINTS.map(([x, y, s, sc], k) => (
-                      <div className="wy-pt" key={k} data-spec={`why.pt${k + 1}`} style={{ insetInlineStart: x, insetBlockStart: y, inlineSize: s, blockSize: s, ['--wy-pt-s' as string]: sc }}>
+                      <div className="wy-pt" key={k} data-spec={`why.pt${k + 1}`} style={{ '--wy-sx': x, '--wy-sy': y, '--wy-sw': s, '--wy-sh': s, ['--wy-pt-s' as string]: sc } as React.CSSProperties}>
                         <div className="wy-pt-in">
                           <svg className="wy-pt-svg" data-spec={`why.pt${k + 1}svg`} viewBox="0 0 3 3" aria-hidden="true">
                             <rect className="wy-pt-rect" data-spec={`why.pt${k + 1}r1`} x="0" y="0" width="3" height="3" />
@@ -379,7 +411,7 @@ export function WhyScene() {
                                 key={k}
                                 className="wy-map-path"
                                 data-spec={`why.mp${k + 1}`}
-                                style={{ insetInlineStart: x, insetBlockStart: y, inlineSize: w, blockSize: h }}
+                                style={{ '--wy-sx': x, '--wy-sy': y, '--wy-sw': w, '--wy-sh': h } as React.CSSProperties}
                                 d={`M${(k * 37) % 300} ${(k * 53) % 220} l${(k % 5) * 40 + 30} ${(k % 3) * 30 + 20}`}
                               />
                             ))}
@@ -420,6 +452,34 @@ export function WhyScene() {
           </div>,
           document.body,
         )}
+      </div>
+
+      {/* L1-a (r341) — the ≤767 deck carousel chrome: snap-belt arrows
+       * + dots seated in the stage's bottom band (why.css hides it
+       * ≥768; no data-spec — an off-book chrome seat, never measured). */}
+      <div className="wy-deck-chrome">
+        <button type="button" className="wy-deck-btn" onClick={() => deckGo(deckAt - 1)} aria-label="المرحلة السابقة" disabled={deckAt === 0}>
+          <svg className="wy-deck-svg" viewBox="0 0 12 12" aria-hidden="true">
+            <path className="wy-deck-path" d="M4.5 1.5 L9 6 L4.5 10.5" />
+          </svg>
+        </button>
+        <div className="wy-deck-dots" role="group" aria-label="مراحل الرحلة">
+          {ROWS.map((r, i) => (
+            <button
+              type="button"
+              key={r.title}
+              className={`wy-deck-dot${i === deckAt ? ' is-on' : ''}`}
+              onClick={() => deckGo(i)}
+              aria-label={r.title}
+              aria-current={i === deckAt}
+            />
+          ))}
+        </div>
+        <button type="button" className="wy-deck-btn" onClick={() => deckGo(deckAt + 1)} aria-label="المرحلة التالية" disabled={deckAt === ROWS.length - 1}>
+          <svg className="wy-deck-svg" viewBox="0 0 12 12" aria-hidden="true">
+            <path className="wy-deck-path" d="M7.5 1.5 L3 6 L7.5 10.5" />
+          </svg>
+        </button>
       </div>
     </div>
   );
