@@ -344,6 +344,16 @@
   border-block-end: 1px solid color-mix(in srgb, var(--border) 62%, transparent);
 }
 
+/* r341 D8 (type-rung fix): the pickers' <option> labels inherit the
+   16px iOS-zoom floor the shared .input recipe pins on the CONTROL —
+   but an option's label is not a focused control, and 16px sits off
+   the measured ladder. The options re-key onto the --fs-body-lg rung
+   (15px); the closed control itself keeps its floor (no iOS zoom
+   risk — the popup, not the field, renders these). */
+.hr-scope select option {
+  font-size: var(--fs-body-lg);
+}
+
 @media (hover: hover) and (pointer: fine) {
   .hr-scope .table tbody tr:hover {
     background: color-mix(in srgb, var(--surface-2) 55%, transparent);
@@ -669,7 +679,7 @@
 
 /* ── r323 B3.1 — the invite-codes card (the roster page seat) ─────── */
 .inv-form { display: flex; align-items: flex-end; gap: var(--sp-2-5); flex-wrap: wrap; }
-.inv-field { display: grid; gap: var(--sp-1); font-size: 0.75rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-secondary); }
+.inv-field { display: grid; gap: var(--sp-1); font-size: var(--fs-xs); /* r341 D8 type-rung fix: was a bare 0.75rem literal — 6.25px on the fluid root (8.33px @1440), unreadable and off every rung */ color: var(--text-secondary); }
 .inv-field select,
 .inv-field input {
   min-block-size: 40px;
@@ -680,4 +690,4 @@
   font: inherit;
   border-radius: 0;
 }
-.inv-note { display: flex; align-items: center; gap: var(--sp-1-5); font-size: 0.75rem; /* type-gate: allow — the r305 Heron overlay quality rungs (authored literals, reviewed) */ color: var(--text-secondary); margin: var(--sp-2-5) 0 0; }
+.inv-note { display: flex; align-items: center; gap: var(--sp-1-5); font-size: var(--fs-xs); /* r341 D8 type-rung fix: same 0.75rem-on-fluid-root bug as .inv-field above */ color: var(--text-secondary); margin: var(--sp-2-5) 0 0; }

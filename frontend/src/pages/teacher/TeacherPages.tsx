@@ -51,6 +51,12 @@ import { validatePdfFile, pdfUploadErrorMessage } from '../../lib/pdfUpload';
 import ResearchReviewPage from './ResearchReviewPage';
 import { formatDate, formatNum, formatPct1 } from '../../utils/numbers';
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 hr- primitives + §A tqd- deltas (mounted via .hr-scope)
+/* R341 D8 — the [nn] section-index register (.w11-idx, inner.css §W11):
+ * the same gutter grammar the teacher dashboard's Card titles and the
+ * student SectionBar speak, so every daily-work section head reads on
+ * the numeral axis (conformance probe). The dashboard's own bridge
+ * import (TeacherDashboardPage.tsx:20) — inner.css is 119 lines. */
+import '../../styles/landing/inner.css';
 
 /* The teacher dashboard now lives in TeacherDashboardPage.tsx
  * (social-media feed style). The previous KPI-grid version was
@@ -176,7 +182,18 @@ export function TeacherSchedulePage() {
      * + the §A tqd- deltas; the .page layout root stays untouched. */
     <div className="hr-scope">
       <div className="page">
-      <PageHeader title="جدول المحاضرات" subtitle="جدولك الأسبوعيّ مع القاعات والأوقات." brow="التدريس · الجدول" />
+      <PageHeader
+        title="جدول المحاضرات"
+        subtitle="جدولك الأسبوعيّ مع القاعات والأوقات."
+        brow="التدريس · الجدول"
+        actions={(
+          /* R341 D8 — the calendar-page precedent: a read-only ledger
+           * still names its ONE honest next action on the accent
+           * register — today's lectures are exactly what the roll call
+           * records, and the link is in the first fold at every width. */
+          <Link to="/teacher/attendance" className="btn accent sm">تسجيل حضور اليوم</Link>
+        )}
+      />
       {days.length === 0 ? (
         <EmptyState
           title="لا يوجد جدول مسجَّل"
@@ -439,8 +456,11 @@ export function AttendancePage() {
           <button
             type="button"
             /* R305 Heron: the ONE ember-flavored primary action of the
-             * page — the save is the session's whole point. */
-            className="btn primary hr-cta"
+             * page — the save is the session's whole point.
+             * R341 D8 — re-keyed to the accent register (.btn.accent,
+             * the pattern-library primary voice the rebuilt pages
+             * speak; the hr-cta ember ring stays). */
+            className="btn accent hr-cta"
             onClick={onSave}
             disabled={!effectiveOfferingId || students.length === 0 || record.isPending}
           >
@@ -449,7 +469,7 @@ export function AttendancePage() {
         }
       />
 
-      <Card title="الجلسة" icon={Calendar} className="tpg-session">
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>الجلسة</>} icon={Calendar} className="tpg-session">
         <div className="form-row-3">
           <FormField label="المقرّر">
             <select className="input" value={effectiveOfferingId} onChange={(e) => setOfferingId(e.target.value)}>
@@ -498,7 +518,10 @@ export function AttendancePage() {
       </Card>
 
       <div className="grid-2-1">
-        <Card title={offering ? `طلاب ${offering.course.name}` : 'الطلاب'} icon={ClipboardCheck}>
+        <Card
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>{offering ? `طلاب ${offering.course.name}` : 'الطلاب'}</>}
+          icon={ClipboardCheck}
+        >
           {!effectiveOfferingId ? (
             <EmptyState title="لا توجد مقرّرات" description="ستظهر المقرّرات هنا حين تُسنَد إليك." illustration="empty-courses" />
           ) : stuQ.isPending ? (
@@ -571,7 +594,7 @@ export function AttendancePage() {
           )}
         </Card>
 
-        <Card title="إحصائيّات الجلسة">
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>إحصائيّات الجلسة</>}>
           {/* A6 P2 (22-a): the stats card mirrors the roster's state —
               never four fake 0% bars while nothing is loaded. Empty
               buckets dim instead of painting full-weight zero tracks
@@ -680,18 +703,24 @@ export function GradesPage() {
         title="درجات الطلاب"
         subtitle="نظرة على متوسّط درجات طلاب المقرّر الحاليّ."
         brow="التدريس · الدرجات"
-        actions={
-          <OfferingPickerSelect
-            offerings={offerings}
-            effectiveOfferingId={effectiveOfferingId}
-            onChange={setOfferingId}
-            label="المقرّر"
-          />
-        }
+        actions={(
+          <>
+            {/* R341 D8 — the page's ONE primary action on the accent
+             * register: a first-fold jump to the semester-entry card
+             * (the write half the read table above feeds). */}
+            <a href="#grade-entry" className="btn accent sm">إدخال الدرجات</a>
+            <OfferingPickerSelect
+              offerings={offerings}
+              effectiveOfferingId={effectiveOfferingId}
+              onChange={setOfferingId}
+              label="المقرّر"
+            />
+          </>
+        )}
       />
 
       <Card
-        title={offering ? `${offering.course.name} · ${offering.course.code}` : 'الدرجات'}
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{offering ? `${offering.course.name} · ${offering.course.code}` : 'الدرجات'}</>}
         icon={ClipboardList}
         /* The old «قيد التطوير» note's still-true half lives here: the
          * average folds every graded artifact (assignment submissions
@@ -919,8 +948,9 @@ function SemesterGradeEntry({
   };
 
   return (
+    <div id="grade-entry">
     <Card
-      title="إدخال الدرجات الفصليّة"
+      title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>إدخال الدرجات الفصليّة</>}
       icon={ClipboardCheck}
       subtitle={
         dirtyRows.length > 0
@@ -930,8 +960,9 @@ function SemesterGradeEntry({
       actions={
         <button
           type="button"
-          /* R305 Heron: the card's ONE ember-flavored primary. */
-          className="btn primary hr-cta"
+          /* R305 Heron: the card's ONE ember-flavored primary.
+           * R341 D8 — accent register (the pattern-library primary). */
+          className="btn accent hr-cta"
           onClick={() => void onSave()}
           disabled={pending || !offeringId || students.length === 0}
         >
@@ -1099,6 +1130,7 @@ function SemesterGradeEntry({
         )}
       </form>
     </Card>
+    </div>
   );
 }
 
@@ -1464,8 +1496,10 @@ export function MaterialsPage() {
         actions={(
           /* r144 (T1-h F2): the channel the old dead-end card pointed
            * at without providing. By-link creation (no multipart).
-           * R305 Heron: the page's ONE ember-flavored primary. */
-          <button type="button" className="btn primary hr-cta" onClick={() => setAdding(true)}>
+           * R305 Heron: the page's ONE ember-flavored primary —
+           * R341 D8 re-keyed to the accent register (the
+           * pattern-library primary voice). */
+          <button type="button" className="btn accent hr-cta" onClick={() => setAdding(true)}>
             <Icon icon={Upload} size={15} /> إضافة مادة
           </button>
         )}
@@ -1476,7 +1510,7 @@ export function MaterialsPage() {
           (one card fewer of dead weight above the actual data; the
           header's primary CTA already names the action). */}
       <Card
-        title="ملفاتك"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>ملفاتك</>}
         icon={FileText}
         subtitle={(
           <span>
@@ -1591,27 +1625,37 @@ export function StudentsListPage() {
         title="قائمة الطلاب"
         subtitle="جميع الطلاب المسجَّلين في مقرّراتك."
         brow="التدريس · الفصل"
-        actions={
-          <OfferingPickerSelect
-            offerings={offerings}
-            effectiveOfferingId={effectiveOfferingId}
-            onChange={setOfferingId}
-            label="المقرّر"
-          />
-        }
+        actions={(
+          <>
+            {/* R341 D8 — the roster's ONE primary action on the accent
+             * register: the risk analysis hub (the per-offering deep
+             * links stay the name rows' job — the r164-h pin counts
+             * them). */}
+            <Link to="/teacher/intelligence" className="btn accent sm">تحليل المخاطرة</Link>
+            <OfferingPickerSelect
+              offerings={offerings}
+              effectiveOfferingId={effectiveOfferingId}
+              onChange={setOfferingId}
+              label="المقرّر"
+            />
+          </>
+        )}
       />
 
       <Card
         title={
-          offering
-            ? `${offering.course.name} · ${offering.course.code} · ${
-              /* P2-1: «0 طالباً» is broken Arabic — the zero case names
-               * the reality (the empty-state below carries the guidance). */
-              students.length === 0
-                ? 'لا طلاب مسجَّلين'
-                : countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])
-            }`
-            : 'الطلاب'
+          <>
+            <span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>
+            {offering
+              ? `${offering.course.name} · ${offering.course.code} · ${
+                /* P2-1: «0 طالباً» is broken Arabic — the zero case names
+                 * the reality (the empty-state below carries the guidance). */
+                students.length === 0
+                  ? 'لا طلاب مسجَّلين'
+                  : countAr(students.length, ['طالب واحد', 'طالبان', 'طلاب', 'طالباً'])
+              }`
+              : 'الطلاب'}
+          </>
         }
         icon={Users}
       >
@@ -1768,14 +1812,25 @@ export function PerformancePage() {
         title="الأداء والتحليل"
         subtitle="رؤى على أداء فصلك — مُستخرجة من بيانات الحضور والدرجات الفعليّة."
         brow="التدريس · التحليل"
-        actions={
-          <OfferingPickerSelect
-            offerings={offerings}
-            effectiveOfferingId={effectiveOfferingId}
-            onChange={setOfferingId}
-            label="المقرّر"
-          />
-        }
+        actions={(
+          <>
+            {/* R341 D8 — the analysis ledger's ONE primary action on the
+             * accent register: the intelligence drill-down (risk rows +
+             * per-student context for the same offering). */}
+            <Link
+              to={effectiveOfferingId ? `/teacher/intelligence/${effectiveOfferingId}` : '/teacher/intelligence'}
+              className="btn accent sm"
+            >
+              ذكاء المقرّر
+            </Link>
+            <OfferingPickerSelect
+              offerings={offerings}
+              effectiveOfferingId={effectiveOfferingId}
+              onChange={setOfferingId}
+              label="المقرّر"
+            />
+          </>
+        )}
       />
 
       {!effectiveOfferingId ? (
@@ -1820,7 +1875,7 @@ export function PerformancePage() {
           />
 
           <Card
-            title={offering ? `توزيع الدرجات — ${offering.course.name}` : 'توزيع الدرجات'}
+            title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>{offering ? `توزيع الدرجات — ${offering.course.name}` : 'توزيع الدرجات'}</>}
             icon={BarChart3}
           >
             {students.length === 0 ? (
@@ -2132,8 +2187,10 @@ export function AssignmentsPage() {
           /* r144 (T1-h F1): the teaching loop's missing authoring half —
            * the copy used to promise «ستظهر هنا فور إنشاء أيّ واجب» with
            * no creation affordance anywhere in the product.
-           * R305 Heron: the page's ONE ember-flavored primary. */
-          <button type="button" className="btn primary hr-cta" onClick={() => setCreating(true)}>
+           * R305 Heron: the page's ONE ember-flavored primary — R341 D8
+           * re-keyed to the accent register (the pattern-library
+           * primary voice; the ember ring stays). */
+          <button type="button" className="btn accent hr-cta" onClick={() => setCreating(true)}>
             <Icon icon={ClipboardList} size={15} /> واجب جديد
           </button>
         )}
@@ -2149,7 +2206,7 @@ export function AssignmentsPage() {
         onGrade={(target) => setGradeTarget(target)}
       />
 
-      <Card title="جميع الواجبات" icon={ClipboardList}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>جميع الواجبات</>} icon={ClipboardList}>
         {q.isPending ? (
           <ListSkeleton rows={5} />
         ) : q.isError ? (
@@ -2334,7 +2391,7 @@ function NeedsReviewCard({
 
   return (
     <Card
-      title="تسليمات بانتظار التقييم"
+      title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>تسليمات بانتظار التقييم</>}
       icon={ClipboardCheck}
       /* P2-1: countAr(0) renders the broken «0 تسليماً…» — the zero case
        * gets its own honest copy (the dashboard-badge pattern). */
