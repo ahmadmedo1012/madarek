@@ -210,7 +210,7 @@ export default function TeacherLabsPage() {
  * shared Heron chip (tabular digits stay .tq-num). */
 function LabRow({ lab }: { lab: VirtualLab }) {
   const Ico = iconFor(lab.category);
-  // --tq-accent feeds the color-mix tint owned by patterns.css ง11;
+  // --tq-accent feeds the color-mix tint owned by patterns.css ยง11;
   // the previous inline `${accent}1a` alpha was invalid CSS whenever the
   // fallback fired (audit 0-e P1-15).
   const accent = lab.themeColor ?? 'var(--accent)';

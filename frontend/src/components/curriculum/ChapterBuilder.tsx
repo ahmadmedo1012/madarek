@@ -139,7 +139,7 @@ function ChapterFormModal({
             <input id={titleId} type="text" className="auth-input" {...form.register('title')} />
           </FormField>
 
-          {/* cur-grid-2 (patterns.css �11): 2-col grid with the
+          {/* cur-grid-2 (patterns.css §11): 2-col grid with the
            * ≤480px collapse the old inline template-columns defeated. */}
           <div className="cur-grid-2">
             <FormField label="البداية" htmlFor={startId} error={err.start?.message} hint="مثل 05:20">

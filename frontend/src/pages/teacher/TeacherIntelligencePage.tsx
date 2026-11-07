@@ -245,7 +245,7 @@ function TrackGridSkeleton() {
 
 /** r241 (Superlist): one offering = one row — icon well leading, code+
  * term kicker, course name prominent, honest counts inline, trailing
- * chevron. The icon-well tint keys off --tq-accent (patterns.css �11
+ * chevron. The icon-well tint keys off --tq-accent (patterns.css §11
  * owns the grammar); countAr(0) still names the reality (5-A7). */
 function OfferingRow({ offering }: { offering: TeacherOffering }) {
   const accent = offering.course.themeColor ?? 'var(--accent)';
