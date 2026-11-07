@@ -360,6 +360,84 @@ describe("DataList web fallback", () => {
   );
 });
 
+/* ── DataList: view windowing (M5 — the transcript panel witness) ───── */
+
+describe("DataList windowing (web FlatList fallback)", () => {
+  const withWebOS = <R,>(fn: () => Promise<R>): Promise<R> => {
+    const original = Platform.OS;
+    Object.defineProperty(Platform, "OS", { value: "web", configurable: true });
+    return fn().finally(() => {
+      Object.defineProperty(Platform, "OS", { value: original, configurable: true });
+    });
+  };
+
+  /** A 90-minute lecture's transcript (~1000 cues) behind a counting row. */
+  const LONG: Notice[] = Array.from({ length: 1000 }, (_, i) => ({
+    id: `c${i}`,
+    title: `سطر النص ${i}`,
+  }));
+
+  async function countMountedRows(
+    windowing?: { initialNumToRender?: number; maxToRenderPerBatch?: number; windowSize?: number },
+  ): Promise<number> {
+    let renders = 0;
+    const CountingRow = ({ item }: { item: Notice }) => {
+      renders += 1;
+      return <T>{item.title}</T>;
+    };
+    const { unmount } = await render(
+      <DataList<Notice>
+        data={LONG}
+        renderItem={({ item }) => <CountingRow item={item} />}
+        keyExtractor={(n) => n.id}
+        style={{ height: 360 }}
+        windowing={windowing}
+        scrollProps={{ nestedScrollEnabled: true }}
+      />,
+    );
+    await flushList();
+    unmount();
+    return renders;
+  }
+
+  it(
+    "M5 before→after: a 1000-cue transcript mounts only the initial window (10), not 1000 rows",
+    () =>
+      withWebOS(async () => {
+        const mounted = await countMountedRows();
+        // BEFORE (the audit's .map shape): 200–1000 rows mounted at once.
+        // AFTER: FlatList mounts just its initial window — the data stays whole.
+        expect(mounted).toBeGreaterThan(0);
+        expect(mounted).toBeLessThanOrEqual(10);
+        expect(LONG).toHaveLength(1000);
+      }),
+  );
+
+  it(
+    "windowing.initialNumToRender shapes the mounted window (4 → 4 rows)",
+    () =>
+      withWebOS(async () => {
+        expect(await countMountedRows({ initialNumToRender: 4 })).toBe(4);
+      }),
+  );
+
+  it("windowing is a native no-op: FlashList still carries the full data", async () => {
+    // native (platform=ios here) — FlashList v2 recycles; the windowing
+    // object must not disturb the data handoff. Jest renders every row
+    // (no real layout), so the count is NOT the native witness — the
+    // FlatList-fallback counts above are.
+    await render(
+      <DataList<Notice>
+        data={LONG}
+        {...LIST_PROPS}
+        windowing={{ initialNumToRender: 4, maxToRenderPerBatch: 8, windowSize: 9 }}
+      />,
+    );
+    await flushList();
+    expect(lastListProps<Notice>().data).toHaveLength(1000);
+  });
+});
+
 /* ── makeRow ────────────────────────────────────────────────────────── */
 
 describe("makeRow (memoized row factory)", () => {
