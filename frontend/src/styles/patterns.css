@@ -516,7 +516,7 @@ a.pf-row-link {
    and the global .auth-input/.auth-error/.auth-field-error utilities
    (curriculum/community/admin modals). Layer homes preserved:
    @layer pages for the sheet grammar, @layer overrides for the input
-   ladders
+   ladders. ═══════════════════════════════════════════════════════ */
 @layer pages {
 
   /* ══ 1 · SHELL — login / register share the framed sheet ground ══ */

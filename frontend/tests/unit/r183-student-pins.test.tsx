@@ -107,8 +107,17 @@ describe('r183-B3 — active chapter concept ink (A6/A3 P1-2, WCAG 1.4.3)', () =
   it('light: --text-secondary on --accent-soft clears 4.5:1 (pre-fix --text-faint: 3.95:1, live-measured A6)', () => {
     const fixed = ratio(light, '--text-secondary', '--accent-soft');
     expect(fixed).toBeGreaterThanOrEqual(4.5); // computed 6.784:1
-    // …and the pair it replaces genuinely failed — the fix is necessary.
-    expect(ratio(light, '--text-faint', '--accent-soft')).toBeLessThan(4.5);
+    // R341 M6 re-key: the muted-ink AA audit darkened light --text-faint
+    // (#70706A → #666660, shared/design-tokens.json) so the OLD pair now
+    // measures ≈4.71:1 — the historical "genuinely failed" tripwire no
+    // longer holds, exactly like the dark arm's r305 re-key below. The
+    // CONTRACT survives as a usage rule (the row consumes
+    // --text-secondary, never faint — asserted structurally above), while
+    // this numeric assertion follows the shipped palette: faint still sits
+    // UNDER secondary, so the hierarchy the fix established is preserved.
+    expect(ratio(light, '--text-faint', '--accent-soft')).toBeLessThan(
+      ratio(light, '--text-secondary', '--accent-soft'),
+    );
   });
 
   it('dark: --text-secondary on --accent-soft clears 4.5:1 (pre-fix --text-faint: 4.12:1, live-measured A6)', () => {
