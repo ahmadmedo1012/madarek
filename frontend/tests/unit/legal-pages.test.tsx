@@ -116,7 +116,10 @@ describe('R320 §D — the 9-page grammar (the Heron public sheet)', () => {
     expect(skip).toBeTruthy();
     expect(skip?.getAttribute('href')).toBe('#main');
     expect(container.querySelector('main#main')).toBeTruthy();
-    expect(container.querySelector('header.lg-header')).toBeTruthy();
+    /* R341 D2 re-key: /about left the lg-* family and rides the pattern
+     * library now (about.css ab-* header, queen-arbitrated OWNERSHIP D2
+     * split); the other eight sheets keep the lg sheet header. */
+    expect(container.querySelector('header.lg-header, header.ab-header')).toBeTruthy();
     // the honest colophon cluster + the آخر تحديث stamp
     expect(screen.getByText('منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل')).toBeTruthy();
     expect(screen.getAllByText(/آخر تحديث/).length).toBeGreaterThanOrEqual(1);

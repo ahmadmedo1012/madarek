@@ -1,0 +1,265 @@
+/* ════════════════════════════════════════════════════════════════════
+   مدارك — /about (R341 · task D2)
+   ════════════════════════════════════════════════════════════════════
+   The about sheet rebuilt on the PATTERN LIBRARY (r340 T-D1a recipe):
+   pf-page/pf-page-header/pf-eyebrow/pf-page-actions carry the frame,
+   and this sheet owns only what the library does not — the sticky
+   guest header, the [nn] section bars, the hairline cells, the
+   statement seat, the pending marker and the colophon. The page left
+   the lg-* legal-sheet family (legal.css stays with /legal/* · /help
+   · /contact until their own D-tasks); every rule here is
+   about-scoped ab-*.
+
+   Discipline (the fleet gates): theme TOKENS only — the dark pair is
+   automatic, no [data-theme] block in this file · every :hover inside
+   @media (hover: hover) and always the color+background PAIR ·
+   spacing on the --sp-* ladder · radius var(--r-sm) (0 — the r313
+   ladder) · logical properties only · 44px interaction floor ·
+   z-index only through the --z-* rungs · @media print collapses to
+   one clean column.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ══ 1 · THE SHELL — framed guest paper ═══════════════════════════ */
+
+  .ab {
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: clip;
+    font-family: var(--font-sans);
+  }
+
+  /* the thin chrome bar — the guest-sheet header register (sticky,
+     translucent paper wash, hairline), the about sheet's own classes. */
+  .ab-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-dropdown);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--grid-line);
+  }
+
+  .ab-header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-block-size: 56px;
+    max-inline-size: 1160px;
+    margin-inline: auto;
+    padding-inline: var(--sp-6);
+    flex-wrap: wrap; /* ≤420: the row wraps, the pill never clips. */
+  }
+
+  .ab-header-inner .btn { flex-shrink: 0; }
+
+  @media (max-width: 420px) {
+    .ab-header-inner .btn { white-space: nowrap; }
+    .ab-header-inner {
+      padding-inline: var(--sp-4);
+      row-gap: var(--sp-1-5);
+    }
+  }
+
+  .ab-header-brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--sp-2-5);
+    min-block-size: 44px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-body);
+  }
+
+  /* ══ 2 · THE MEASURE — pf-page carries the column; main owns the
+     gutters + the z-lift above the grain film (GuestSheetChrome's
+     fixed z-0 layer — the auth.css §8 borrow register). ════════════ */
+
+  .ab-main {
+    position: relative;
+    z-index: var(--z-hero-grid);
+    padding-inline: var(--page-gutter);
+    padding-block: var(--sp-10) var(--sp-14);
+  }
+
+  @media (max-width: 920px) {
+    .ab-main {
+      padding-inline: var(--page-gutter-mobile);
+      padding-block: var(--sp-8) var(--sp-12);
+    }
+  }
+
+  /* the sheet's own mobile inset (the pages.mjs edge390 law, proved on
+     /auth in r340 T-D1a): --sp-2 = the 8px content gutter at 390. */
+  @media (max-width: 767px) {
+    .ab-main { padding-inline: var(--sp-2); }
+  }
+
+  /* ══ 3 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
+
+  .ab-bar {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    font-family: var(--font-display);
+    /* the app-density section rung (20 @1440 · 18 @390) — the page
+       title above rides --fs-app-h1, so the bar steps DOWN it on the
+       pf-section ladder instead of beside it. */
+    font-size: var(--fs-app-h2);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--text);
+  }
+
+  .ab-bar-index {
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ab-bar-title {
+    min-inline-size: 0;
+  }
+
+  /* ══ 4 · THE HAIRLINE CELL — radius 0, 1px rule, no shadow ══════ */
+
+  .ab-cell {
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    padding: var(--sp-5) var(--sp-6);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  @media (max-width: 920px) {
+    .ab-cell { padding: var(--sp-4) var(--sp-5); }
+  }
+
+  .ab-p {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-loose);
+    color: var(--text-secondary);
+    overflow-wrap: anywhere; /* the last-resort wrap — a run that
+      cannot fit a line alone breaks at the glyph, never the column. */
+  }
+
+  /* the verbatim statement — the landing's identity paragraph in its
+     own display seat (the lead step, primary ink). */
+  .ab-p-statement {
+    font-size: var(--fs-body-lg);
+    color: var(--text);
+  }
+
+  /* the mono voice — Latin runs, codes (always dir=ltr in markup) */
+  .ab-mono {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ab-code {
+    color: var(--accent-ink);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.02em;
+  }
+
+  /* the honest unknown marker — visible but tasteful */
+  .ab-pending {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 */
+    padding: var(--sp-1) var(--sp-2-5);
+    white-space: nowrap;
+  }
+
+  /* quiet in-document links (hairline underline, accent ink) */
+  .ab-link {
+    color: var(--accent-ink);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding-block-end: var(--sp-0-5);
+  }
+
+  /* ══ 5 · THE COLOPHON — identity line + آخر تحديث ════════════════ */
+
+  .ab-colophon {
+    margin-block-start: var(--sp-2);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .ab-colophon-line {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+
+  .ab-colophon-stamp {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .ab-colophon-stamp .ab-mono {
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+  }
+
+  /* ══ 6 · HOVER — guarded to real pointers, always the PAIR ══════ */
+
+  @media (hover: hover) and (pointer: fine) {
+    .ab-link:hover {
+      color: var(--accent-strong);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+
+    [data-theme='dark'] .ab-link:hover {
+      color: var(--accent);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+  }
+
+  /* ══ 7 · PRINT — one clean column, chrome hidden ═════════════════ */
+
+  @media print {
+    .ab-header,
+    .auth-frame,
+    .auth-grain,
+    .skip-link {
+      display: none;
+    }
+
+    .ab-main {
+      padding: 0;
+    }
+
+    .ab-cell { background: transparent; }
+
+    .ab-bar,
+    .ab-cell,
+    .ab-colophon {
+      break-inside: avoid;
+    }
+  }
+}

@@ -12,6 +12,10 @@
  */
 import { Link } from 'react-router-dom';
 import type { ReactNode } from 'react';
+import { ArrowRight } from 'lucide-react';
+import { Icon } from '../components/Icon';
+import { Logo } from '../brand';
+import { GuestSheetChrome } from '../components/layout/GuestSheetChrome';
 import {
   CodeRun,
   LegalCell,
@@ -21,6 +25,10 @@ import {
   useLegalMeta,
 } from './legal/LegalSheet';
 import { LEGAL_UPDATED } from './legal/LegalPages';
+/* R341 D2 — the about sheet's own rules (ab-*): /about left the lg-*
+ * legal-sheet family and rides the pattern library (pf-*) + this
+ * about-scoped sheet. /help + /contact keep LegalSheet below. */
+import '../styles/about.css';
 
 /* ═══ [C-04] عن مدارك ═══════════════════════════════════════════════ */
 
@@ -31,51 +39,122 @@ export function AboutPage() {
     description: 'منصّة تعليمية تقنية مستقلّة، عربية أولًا — البيان كاملًا كما هو في صفحة البداية، بلا إضافات.',
   });
 
+  /* R341 D2 — rebuilt on the pattern library (the r340 T-D1a recipe):
+   * the pf-page/pf-page-header frame + the about sheet's own ab-*
+   * grammar (about.css). Same chrome laws as the guest sheets: the
+   * skip link first, GuestSheetChrome's frame + grain, the sticky
+   * guest header, ONE h1, and the honest colophon — every word below
+   * is the SAME text the lg sheet carried (tests are law). */
   return (
-    <LegalSheet
-      title="عن مدارك"
-      lede="كل ما يمكن قوله بصدق اليوم موجود في فقرة واحدة — نضعها هنا كما هي في صفحة البداية، حرفيًا."
-      updated={LEGAL_UPDATED}
-    >
-      <LegalSectionBar index={1} title="البيان" id="about-statement" />
-      <LegalCell>
-        {/* The landing's own identity paragraph, VERBATIM
-            (LandingPage.tsx:1346-1350 — the r188 honesty pin keeps
-            «اصطناعية بالكامل» contiguous on one source line; the same
-            discipline holds here). LEGAL-TODO row 14: nothing may be
-            added about who builds مدارك until the owner states it. */}
-        <p className="lg-p lg-p-statement">
-          منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
-        </p>
-      </LegalCell>
+    <div className="ab">
+      <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+      <GuestSheetChrome />
 
-      <LegalSectionBar index={2} title="ما الذي يعمل اليوم" id="about-works" />
-      <LegalCell>
-        <p className="lg-p">
-          المحاضرات التفاعلية، الاختبارات ذاتية التصحيح للموضوعي، مصفوفة الإتقان، مكتبة البحوث برفع
-          <CodeRun>PDF</CodeRun> والمراجعة، الرسائل والإشعارات، والجدول الأسبوعي — والسجلّ الكامل الصادق
-          (ما يعمل حقيقة وما هو محاكاة) في <Link to="/capabilities" className="lg-link">صفحة السجلّ</Link>.
-        </p>
-      </LegalCell>
+      <header className="ab-header">
+        <div className="ab-header-inner">
+          <Link to="/" className="btn ghost sm">
+            <Icon icon={ArrowRight} size={14} />
+            العودة إلى الصفحة الرئيسية
+          </Link>
+          <Link to="/" className="ab-header-brand" aria-label="مدارك — الصفحة الرئيسية">
+            <Logo variant="mark" size={22} />
+            مدارك
+          </Link>
+        </div>
+      </header>
 
-      <LegalSectionBar index={3} title="من يبنيها" id="about-builders" />
-      <LegalCell>
-        <p className="lg-p">
-          لا نضيف هنا شيئًا لم يقله المالك بعد — ما يمكن نشره عن من يبني مدارك (خلفية، فريق، تمويل)
-          <PendingTag />.
-        </p>
-      </LegalCell>
+      <main id="main" tabIndex={-1} className="ab-main">
+        <div className="pf-page" data-width="reading">
+          <div className="pf-page-header">
+            <div className="pf-page-header-text">
+              <p className="pf-eyebrow">بيان المنصّة</p>
+              <h1 className="pf-page-title">عن مدارك</h1>
+              <p className="pf-page-desc">
+                كل ما يمكن قوله بصدق اليوم موجود في فقرة واحدة — نضعها هنا كما هي في صفحة البداية، حرفيًا.
+              </p>
+            </div>
+            <div className="pf-page-actions">
+              <Link to="/capabilities" className="btn accent">سجلّ القدرات</Link>
+              <Link to="/" className="btn ghost">الصفحة الرئيسية</Link>
+            </div>
+          </div>
 
-      <LegalSectionBar index={4} title="البيانات" id="about-data" />
-      <LegalCell>
-        <p className="lg-p">
-          الفصل الكامل بين بيانات العرض الاصطناعية وبياناتك الحقيقية في
-          {' '}<Link to="/legal/data" className="lg-link">صفحة البيانات</Link>،
-          وسياسات المنصّة في <Link to="/legal/privacy" className="lg-link">سياسة الخصوصية</Link> و
-          <Link to="/legal/terms" className="lg-link">شروط الاستخدام</Link>.
-        </p>
-      </LegalCell>
-    </LegalSheet>
+          <section aria-labelledby="about-statement">
+            <div className="pf-section-header">
+              <h2 className="ab-bar" id="about-statement">
+                <span className="ab-bar-index ab-mono" dir="ltr" aria-hidden="true">[01]</span>
+                <span className="ab-bar-title">البيان</span>
+              </h2>
+            </div>
+            <div className="ab-cell">
+              {/* The landing's own identity paragraph, VERBATIM
+                  (LandingPage.tsx:1346-1350 — the r188 honesty pin keeps
+                  «اصطناعية بالكامل» contiguous on one source line; the same
+                  discipline holds here). LEGAL-TODO row 14: nothing may be
+                  added about who builds مدارك until the owner states it. */}
+              <p className="ab-p ab-p-statement">
+                منصّة تعليمية تقنية مستقلّة، عربية أولًا. لا تنتمي إلى أيّ مؤسّسة تعليمية ولا تمثّلها؛ وبيانات العرض داخلها تخصّ «جامعة مدارك التجريبية» — مؤسسة اصطناعية بالكامل لأغراض العرض.
+              </p>
+            </div>
+          </section>
+
+          <section aria-labelledby="about-works">
+            <div className="pf-section-header">
+              <h2 className="ab-bar" id="about-works">
+                <span className="ab-bar-index ab-mono" dir="ltr" aria-hidden="true">[02]</span>
+                <span className="ab-bar-title">ما الذي يعمل اليوم</span>
+              </h2>
+            </div>
+            <div className="ab-cell">
+              <p className="ab-p">
+                المحاضرات التفاعلية، الاختبارات ذاتية التصحيح للموضوعي، مصفوفة الإتقان، مكتبة البحوث برفع
+                <bdi className="ab-code ab-mono" dir="ltr">PDF</bdi> والمراجعة، الرسائل والإشعارات، والجدول الأسبوعي — والسجلّ الكامل الصادق
+                (ما يعمل حقيقة وما هو محاكاة) في <Link to="/capabilities" className="ab-link">صفحة السجلّ</Link>.
+              </p>
+            </div>
+          </section>
+
+          <section aria-labelledby="about-builders">
+            <div className="pf-section-header">
+              <h2 className="ab-bar" id="about-builders">
+                <span className="ab-bar-index ab-mono" dir="ltr" aria-hidden="true">[03]</span>
+                <span className="ab-bar-title">من يبنيها</span>
+              </h2>
+            </div>
+            <div className="ab-cell">
+              <p className="ab-p">
+                لا نضيف هنا شيئًا لم يقله المالك بعد — ما يمكن نشره عن من يبني مدارك (خلفية، فريق، تمويل)
+                <span className="ab-pending">[يُستكمل قبل الإطلاق]</span>.
+              </p>
+            </div>
+          </section>
+
+          <section aria-labelledby="about-data">
+            <div className="pf-section-header">
+              <h2 className="ab-bar" id="about-data">
+                <span className="ab-bar-index ab-mono" dir="ltr" aria-hidden="true">[04]</span>
+                <span className="ab-bar-title">البيانات</span>
+              </h2>
+            </div>
+            <div className="ab-cell">
+              <p className="ab-p">
+                الفصل الكامل بين بيانات العرض الاصطناعية وبياناتك الحقيقية في
+                {' '}<Link to="/legal/data" className="ab-link">صفحة البيانات</Link>،
+                وسياسات المنصّة في <Link to="/legal/privacy" className="ab-link">سياسة الخصوصية</Link> و
+                <Link to="/legal/terms" className="ab-link">شروط الاستخدام</Link>.
+              </p>
+            </div>
+          </section>
+
+          <footer className="ab-colophon">
+            <p className="ab-colophon-line">منصّة مستقلّة · عربية أولًا · بيانات العرض اصطناعية بالكامل</p>
+            <p className="ab-colophon-stamp">
+              آخر تحديث: <span className="ab-mono" dir="ltr">{LEGAL_UPDATED}</span>
+            </p>
+          </footer>
+        </div>
+      </main>
+    </div>
   );
 }
 
