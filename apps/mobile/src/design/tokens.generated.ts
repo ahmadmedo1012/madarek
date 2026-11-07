@@ -17,7 +17,7 @@ export const heron = {
     text: "#282828",
     textSecondary: "#414140",
     textMuted: "#62625F",
-    textFaint: "#70706A",
+    textFaint: "#666660",
     accent: "#FA3600",
     accentHover: "#D03000",
     accentInk: "#C72E00",
