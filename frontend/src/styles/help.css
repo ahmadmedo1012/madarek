@@ -1,132 +1,20 @@
 /* ════════════════════════════════════════════════════════════════════
-   مدارك — /help (R341 · task D3)
+   مدارك — /help (R341 · task D3 · W7 dedup)
    ════════════════════════════════════════════════════════════════════
-   The help sheet rebuilt on the PATTERN LIBRARY (the r340 T-D1a
-   recipe, proved on /about in D2): pf-page/pf-page-header/pf-eyebrow/
-   pf-page-actions carry the frame, and this sheet owns only what the
-   library does not — the sticky guest header, the nine-question FAQ
-   accordion (native details/summary, the R333 P-G3a grammar), the
-   mono/code/link voices and the colophon. The page left the lg-*
-   legal-sheet family (legal.css stays with /legal/* · /contact until
-   their own D-tasks); every rule here is help-scoped hp-*.
-
-   Discipline (the fleet gates): theme TOKENS only — the dark pair is
-   automatic, no [data-theme] block beyond the hover token swap · every
-   :hover inside @media (hover: hover) and always the color+background
-   PAIR · spacing on the --sp-* ladder · radius var(--r-sm) (0 — the
-   r313 ladder) · logical properties only · 44px interaction floor ·
-   z-index only through the --z-* rungs · @media print collapses to
-   one clean column with every answer visible.
-   ════════════════════════════════════════════════════════════════════ */
+   الأسئلة التسعة — the FAQ sheet. The pattern library owns the frame
+   (pf-page · pf-page-header · pf-eyebrow · pf-page-actions) and the
+   shared guest-sheet chrome grammar seats in patterns.css §G (header,
+   measure, voices, CTA pair, colophon, hover, print — one grouped rule
+   per family; help renders no section bar and no hairline cell, so
+   those groups carry no hp-* selectors). What stays HERE is the
+   sheet's one invention: the nine-question native details/summary
+   accordion (the R333 P-G3a grammar) and its print contract. Every
+   rule is help-scoped hp-*.
+   ──────────────────────────────────────────────────────── */
 
 @layer pages {
 
-  /* ══ 1 · THE SHELL — framed guest paper ═══════════════════════════ */
-
-  .hp {
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: clip;
-    font-family: var(--font-sans);
-  }
-
-  /* the thin chrome bar — the guest-sheet header register (sticky,
-     translucent paper wash, hairline), the help sheet's own classes. */
-  .hp-header {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: var(--z-dropdown);
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(10px);
-    border-block-end: 1px solid var(--grid-line);
-  }
-
-  .hp-header-inner {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-    min-block-size: 56px;
-    max-inline-size: 1160px;
-    margin-inline: auto;
-    padding-inline: var(--sp-6);
-    flex-wrap: wrap; /* ≤420: the row wraps, the pill never clips. */
-  }
-
-  .hp-header-inner .btn { flex-shrink: 0; }
-
-  @media (max-width: 420px) {
-    .hp-header-inner .btn { white-space: nowrap; }
-    .hp-header-inner {
-      padding-inline: var(--sp-4);
-      row-gap: var(--sp-1-5);
-    }
-  }
-
-  .hp-header-brand {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--sp-2-5);
-    min-block-size: 44px;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: var(--fw-bold);
-    font-size: var(--fs-body);
-  }
-
-  /* ══ 2 · THE MEASURE — pf-page carries the column; main owns the
-     gutters + the z-lift above the grain film (GuestSheetChrome's
-     fixed z-0 layer — the auth.css §8 borrow register). ════════════ */
-
-  .hp-main {
-    position: relative;
-    z-index: var(--z-hero-grid);
-    padding-inline: var(--page-gutter);
-    padding-block: var(--sp-10) var(--sp-14);
-  }
-
-  @media (max-width: 920px) {
-    .hp-main {
-      padding-inline: var(--page-gutter-mobile);
-      padding-block: var(--sp-8) var(--sp-12);
-    }
-  }
-
-  /* the sheet's own mobile inset (the pages.mjs edge390 law, proved on
-     /auth in r340 T-D1a and /about in D2): --sp-2 = the 8px content
-     gutter at 390. */
-  @media (max-width: 767px) {
-    .hp-main { padding-inline: var(--sp-2); }
-  }
-
-  /* the h1 rides the census D2 rung (--fs-d2: 40 @1440 · 31.74 @390 —
-     the type-census H1 seat, ≤32px @390, ≤3 lines — the D2 finding). */
-  .hp .pf-page-title { font-size: var(--fs-d2); }
-
-  /* ══ 3 · THE VOICES — mono, code, link (help-scoped) ═════════════ */
-
-  .hp-mono {
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .hp-code {
-    color: var(--accent-ink);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.02em;
-  }
-
-  /* quiet in-document links (hairline underline, accent ink) */
-  .hp-link {
-    color: var(--accent-ink);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
-    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    padding-block-end: var(--sp-0-5);
-  }
-
-  /* ══ 4 · THE FAQ ACCORDION — nine native details/summary ════════ */
+  /* ══ 1 · THE FAQ ACCORDION — nine native details/summary ════════ */
 
   /* the hairline slab: radius 0, 1px rule, the paper wash — the sheet's
      one list container (the [nn] numerals + the h2 questions inside
@@ -213,74 +101,8 @@
     .hp-faq-a { padding-inline-start: var(--sp-5); }
   }
 
-  /* ══ 4b · THE CTA PAIR — the sheet's own actions (the pages.mjs
-     hover contract: the primary changes ≥2 measured channels). The
-     ink slab keeps the label AA in BOTH themes; hover wipes to the
-     accent pair (background + border-color, and color too in dark).
-     The 44px floor, radius 0, tokens only. */
-  .hp-cta-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-2);
-    min-block-size: 44px;
-    padding-inline: var(--sp-6);
-    border: 1px solid var(--primary);
-    border-radius: var(--r-sm); /* 0 — the r313 ladder */
-    background: var(--primary);
-    color: var(--primary-fg);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .hp-cta-ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-2);
-    min-block-size: 44px;
-    padding-inline: var(--sp-6);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-sm); /* 0 */
-    background: transparent;
-    color: var(--text);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  /* ══ 5 · THE COLOPHON — identity line + آخر تحديث ════════════════ */
-
-  .hp-colophon {
-    margin-block-start: var(--sp-2);
-    padding-block-start: var(--sp-5);
-    border-block-start: 1px solid var(--rule-strong);
-    display: grid;
-    gap: var(--sp-2);
-  }
-
-  .hp-colophon-line {
-    margin: 0;
-    font-size: var(--fs-sm);
-    line-height: var(--lh-base);
-    color: var(--text-muted);
-  }
-
-  .hp-colophon-stamp {
-    margin: 0;
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-  }
-
-  .hp-colophon-stamp .hp-mono {
-    color: var(--text-secondary);
-    font-size: var(--fs-xs);
-  }
-
-  /* ══ 6 · HOVER — guarded to real pointers, always the PAIR ══════ */
+  /* ══ 2 · HOVER — the accordion row alone (the shared CTA/link
+     hovers ride patterns.css §G·HOVER) ═════════════════════════════ */
 
   @media (hover: hover) and (pointer: fine) {
     /* the summary row's affordance: ink + paper wash together (the B1
@@ -289,46 +111,12 @@
       color: var(--accent-ink);
       background: color-mix(in srgb, var(--surface) 70%, transparent);
     }
-
-    .hp-cta-primary:hover {
-      background: var(--accent);
-      color: var(--accent-fg);
-      border-color: var(--accent);
-    }
-
-    .hp-cta-ghost:hover {
-      background: var(--surface-2);
-      color: var(--accent-strong);
-      border-color: var(--accent);
-    }
-
-    .hp-link:hover {
-      color: var(--accent-strong);
-      background: transparent;
-      border-block-end-color: var(--accent);
-    }
-
-    [data-theme='dark'] .hp-link:hover {
-      color: var(--accent);
-      background: transparent;
-      border-block-end-color: var(--accent);
-    }
   }
 
-  /* ══ 7 · PRINT — one clean column, every answer visible ══════════ */
+  /* ══ 3 · PRINT — every answer visible (the shared collapse rides
+     patterns.css §G·PRINT) ══════════════════════════════════════════ */
 
   @media print {
-    .hp-header,
-    .auth-frame,
-    .auth-grain,
-    .skip-link {
-      display: none;
-    }
-
-    .hp-main {
-      padding: 0;
-    }
-
     /* the accordion prints as a DOCUMENT — every answer on paper
        regardless of its screen open-state (the ::details-content slot
        is what hides closed answers; browsers without the pseudo simply

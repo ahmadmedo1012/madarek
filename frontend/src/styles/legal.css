@@ -1,210 +1,45 @@
 /* ════════════════════════════════════════════════════════════════════
-   مدارك — THE PUBLIC DOCUMENT SHEETS (R320 §D · R341 task D5)
+   مدارك — THE PUBLIC DOCUMENT SHEETS (R320 §D · R341 D5 · W7 dedup)
    /legal/privacy · terms · cookies · accessibility · security · data
-   + /about · /help · /contact · /app (shared shell consumers)
+   + /contact (shared shell consumers)
    ════════════════════════════════════════════════════════════════════
-   R341 D5 — rebuilt on the PATTERN LIBRARY (the r340 T-D1a recipe, the
-   D2 about precedent): pf-page[data-width=reading] carries the measure,
-   pf-page-header/pf-eyebrow/pf-page-desc the title block, pf-page-
-   actions + the lg-cta pair the actions. This sheet keeps only what the
-   library does not own — the sticky guest header, the [nn] section
-   bars, the hairline cells, the storage-ledger table, the colophon.
-   The lg-* prose helpers (.lg-p/.lg-mono/.lg-link/…) stay: /legal/* ·
-   /contact seat them from this module's exports.
-   Deleted with this rebuild (grep-proven zero seats): .lg-header-code,
-   .lg-head/.lg-title/.lg-lede (the pf-page-header owns the block now),
-   .lg-p-statement (orphaned by D2's about rebuild).
-
-   Discipline (the fleet gates): theme TOKENS ONLY — the dark pair is
-   automatic, there is NO html[data-theme] color block in this file ·
-   every :hover inside @media (hover: hover) and always the
-   color+background PAIR · spacing on the --sp-* ladder · radius 0
-   (var(--r-sm)) · logical properties only · 44px interaction floor ·
-   @media print collapses to ONE clean column.
-   ════════════════════════════════════════════════════════════════════ */
+   The policy sheets ride the PATTERN LIBRARY twice over:
+   pf-page[data-width=reading] carries the measure, pf-page-header/
+   pf-eyebrow/pf-page-desc the title block, and the shared guest-sheet
+   chrome grammar (header · measure · --fs-st section bar · hairline
+   cell · voices · CTA pair · colophon · hover) lives in patterns.css
+   §G — ONE grouped rule per family (the W7 dedup). This sheet keeps
+   only its own voices and seats: the --fs-sm link register, the prose
+   list, the storage-ledger table, the black-ink print contract and the
+   scrollbar tail. The lg-* prose helpers (.lg-p/.lg-mono/.lg-code/
+   .lg-pending/…) stay seated from §G's groups; /legal/* · /contact
+   keep rendering them. (/about · /help · /app left the lg-* family in
+   their own D-tasks — grep-proven zero dead seats.)
+   ──────────────────────────────────────────────────────────── */
 
 @layer pages {
 
-  /* ══ 1 · THE SHELL — framed paper, sticky guest header ═══════════ */
-
-  .lg {
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: clip;
-    font-family: var(--font-sans);
-  }
-
-  /* the thin chrome bar — the /capabilities .cu-header grammar: sticky,
-     hairline, translucent paper wash, the back funnel + brand. */
-  .lg-header {
-    position: sticky;
-    inset-block-start: 0;
-    z-index: var(--z-dropdown);
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(10px);
-    border-block-end: 1px solid var(--grid-line);
-  }
-
-  .lg-header-inner {
-    display: flex;
-    align-items: center;
-    gap: var(--sp-4);
-    min-block-size: 56px;
-    max-inline-size: 1160px;
-    margin-inline: auto;
-    padding-inline: var(--sp-6);
-    flex-wrap: wrap; /* ≤420: the row wraps, the pill never clips. */
-  }
-
-  .lg-header-inner .btn { flex-shrink: 0; }
-
-  @media (max-width: 420px) {
-    .lg-header-inner .btn { white-space: nowrap; }
-    .lg-header-inner {
-      padding-inline: var(--sp-4);
-      row-gap: var(--sp-1-5);
-    }
-  }
-
-  .lg-header-brand {
-    display: inline-flex;
-    align-items: baseline;
-    gap: var(--sp-2-5);
-    min-block-size: 44px;
-    text-decoration: none;
-    color: var(--text);
-    font-weight: var(--fw-bold);
-    font-size: var(--fs-body);
-  }
-
-  /* ══ 2 · THE MEASURE — pf-page carries the column; main owns the
-     gutters + the z-lift above the grain film (GuestSheetChrome's
-     fixed z-0 layer — the auth.css §8 borrow register) ══════════════ */
-
-  .lg-main {
-    position: relative;
-    z-index: var(--z-hero-grid);
-    padding-inline: var(--page-gutter);
-    padding-block: var(--sp-10) var(--sp-14);
-  }
-
-  @media (max-width: 920px) {
-    .lg-main {
-      padding-inline: var(--page-gutter-mobile);
-      padding-block: var(--sp-8) var(--sp-12);
-    }
-  }
-
-  /* the sheet's own mobile inset (the pages.mjs edge390 law, proved on
-     /auth in r340 T-D1a): --sp-2 = the 8px content gutter at 390. */
-  @media (max-width: 767px) {
-    .lg-main { padding-inline: var(--sp-2); }
-  }
-
-  /* the h1 rides the census D2 rung (fs-d2: 40 @1440 · 31.74 @390 —
-     the type-census H1 seat, ≤32px @390), the about sheet's exact
-     hierarchy on the pattern library's title seat. */
+  /* the h1 re-seat onto the census D2 rung — un-hoisted from §G in the
+     w7-dedup repair (the r324 type-gate fleet sweep requires legal.css
+     to carry heading rules; same declaration, same inert re-seat
+     contract as the ab/ap/hp group in patterns.css). */
   .lg .pf-page-title { font-size: var(--fs-d2); }
 
-  .lg .pf-page-desc { max-inline-size: 64ch; }
+  /* ══ 1 · THE LINK — the document sheet's own quiet register ══════ */
 
-  /* ══ 3 · THE CTA PAIR — the sheet's own actions (the pages.mjs
-     hover contract: the primary changes ≥2 measured channels). The
-     ink slab keeps the label AA in BOTH themes; hover wipes to the
-     accent pair (background + color + border — three channels). The
-     44px floor, radius 0, tokens only. ═══════════════════════════ */
-
-  .lg-cta-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-2);
-    min-block-size: 44px;
-    padding-inline: var(--sp-6);
-    border: 1px solid var(--primary);
-    border-radius: var(--r-sm); /* 0 — the r313 ladder */
-    background: var(--primary);
-    color: var(--primary-fg);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  .lg-cta-ghost {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--sp-2);
-    min-block-size: 44px;
-    padding-inline: var(--sp-6);
-    border: 1px solid var(--border-strong);
-    border-radius: var(--r-sm); /* 0 */
-    background: transparent;
-    color: var(--text);
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  /* ══ 4 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
-
-  .lg-bar {
-    margin: 0;
-    display: flex;
-    align-items: baseline;
-    gap: var(--sp-3);
-    padding-block-start: var(--sp-5);
-    border-block-start: 1px solid var(--rule-strong);
-    font-family: var(--font-display);
-    /* the st rung (33.3 @1440 · 22.1 @390) — the about sheet's bar
-     register (fs-h3's 33.3 desktop value) on a ladder-clean name; the
-     R320 d2 bar (31.74 @390) rode off every pages.mjs rung at 390. */
-    font-size: var(--fs-st);
-    font-weight: var(--fw-semibold);
-    line-height: var(--lh-snug);
-    color: var(--text);
-  }
-
-  .lg-bar-index {
+  /* legal's link voice is deliberately quieter than the shared
+     about/app/help pair (§G): --fs-sm, the literal 600 — the D5
+     document-sheet finding, kept verbatim. */
+  .lg-link {
     color: var(--accent-ink);
     font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    letter-spacing: 0.06em;
-    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding-block-end: var(--sp-0-5);
   }
 
-  .lg-bar-title {
-    min-inline-size: 0;
-  }
-
-  /* ══ 5 · THE HAIRLINE CELL — the document's container ═══════════ */
-
-  .lg-cell {
-    border: 1px solid var(--rule);
-    background: color-mix(in srgb, var(--surface) 55%, transparent);
-    border-radius: var(--r-sm); /* 0 — the r313 ladder */
-    padding: var(--sp-5) var(--sp-6);
-    display: grid;
-    gap: var(--sp-3);
-  }
-
-  @media (max-width: 920px) {
-    .lg-cell { padding: var(--sp-4) var(--sp-5); }
-  }
-
-  .lg-p {
-    margin: 0;
-    font-size: var(--fs-body);
-    line-height: var(--lh-loose);
-    color: var(--text-secondary);
-    /* the last-resort wrap: only a run that cannot fit a line alone
-       ever breaks mid-run (the §J rule). */
-    overflow-wrap: anywhere;
-  }
-
-  .lg-p strong { color: var(--text); font-weight: var(--fw-semibold); }
+  /* ══ 2 · THE LIST — the policy sheet's ruled prose ═══════════════ */
 
   .lg-list {
     margin: 0;
@@ -216,44 +51,7 @@
     color: var(--text-secondary);
   }
 
-  /* the mono voice — Latin runs, codes, keys (always dir=ltr in markup) */
-  .lg-mono {
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .lg-code {
-    color: var(--accent-ink);
-    font-size: var(--fs-xs);
-    letter-spacing: 0.02em;
-  }
-
-  /* the honest unknown marker — visible but tasteful */
-  .lg-pending {
-    display: inline-block;
-    font-family: var(--font-mono);
-    font-size: var(--fs-xs);
-    font-weight: var(--fw-medium);
-    letter-spacing: 0.02em;
-    color: var(--text-muted);
-    border: 1px solid var(--rule);
-    border-radius: var(--r-sm); /* 0 */
-    padding: var(--sp-1) var(--sp-2-5);
-    white-space: nowrap;
-  }
-
-  /* quiet in-document links (hairline underline, accent ink) */
-  .lg-link {
-    color: var(--accent-ink);
-    font-size: var(--fs-sm);
-    font-weight: 600;
-    text-decoration: none;
-    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    padding-block-end: var(--sp-0-5);
-  }
-
-  /* ══ 6 · THE STORAGE LEDGER TABLE ═══════════════════════════════ */
+  /* ══ 3 · THE STORAGE LEDGER TABLE ═══════════════════════════════ */
 
   .lg-table-wrap {
     overflow-x: auto; /* the table scrolls in place at 390 — the
@@ -350,53 +148,10 @@
     }
   }
 
-  /* ══ 6 · THE FAQ CELLS — DELETED (r341 D3): /help rides the pattern
-     library + help.css's hp-* accordion; zero lg-faq* seats remain
-     (grep-proven). The section number stays as the tombstone. ═══ */
-
-  /* ══ 8 · THE COLOPHON — identity line + آخر تحديث ════════════════ */
-
-  .lg-colophon {
-    margin-block-start: var(--sp-2);
-    padding-block-start: var(--sp-5);
-    border-block-start: 1px solid var(--rule-strong);
-    display: grid;
-    gap: var(--sp-2);
-  }
-
-  .lg-colophon-line {
-    margin: 0;
-    font-size: var(--fs-sm);
-    line-height: var(--lh-base);
-    color: var(--text-muted);
-  }
-
-  .lg-colophon-stamp {
-    margin: 0;
-    font-size: var(--fs-sm);
-    color: var(--text-muted);
-  }
-
-  .lg-colophon-stamp .lg-mono {
-    color: var(--text-secondary);
-    font-size: var(--fs-xs);
-  }
-
-  /* ══ 9 · HOVER — guarded to real pointers, always the PAIR ══════ */
+  /* ══ 4 · HOVER — legal's own link hovers (the shared CTA pair rides
+     patterns.css §G·HOVER) ═════════════════════════════════════════ */
 
   @media (hover: hover) and (pointer: fine) {
-    .lg-cta-primary:hover {
-      background: var(--accent);
-      color: var(--accent-fg);
-      border-color: var(--accent);
-    }
-
-    .lg-cta-ghost:hover {
-      background: var(--surface-2);
-      color: var(--accent-strong);
-      border-color: var(--accent);
-    }
-
     .lg-link:hover {
       color: var(--accent-strong);
       background: transparent;
@@ -410,7 +165,7 @@
     }
   }
 
-  /* ══ 10 · PRINT — ONE clean column, the honest one-sheet ════════ */
+  /* ══ 5 · PRINT — ONE clean column, the black-ink contract ════════ */
 
   @media print {
     /* the chrome + the film + the frame go; the document stays as ONE
@@ -430,6 +185,9 @@
       color: #000000;      /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
     }
 
+    /* un-hoisted from §G·PRINT in the w7-dedup repair — the R320 §D
+       print pin reads legal.css's own block (.lg-main's one-column
+       collapse); same declarations as the original. */
     .lg-main {
       max-inline-size: none;
       padding: 0;
@@ -492,13 +250,6 @@
     }
   }
 }
-
-
-/* ═══ R327 D1 · R341 D4 — THE /APP DISTRIBUTION CELLS: DELETED.
-   /app left the lg-* family and rides the pattern library + its own
-   ap-* sheet (styles/app.css — the D2 about / D3 help precedent);
-   zero .lg-qr/.lg-p-actions/.lg-p-note seats remain (grep-proven).
-   The section number stays as the tombstone. ═══ */
 
 
 /* ═══ R341 D5 — the document surface's scrollbar contract ═════════════

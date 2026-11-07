@@ -632,7 +632,8 @@ a.pf-row-link {
      in the markup, visible at EVERY breakpoint (the 390×844 census
      keeps the reference's frame — small screens get the drafting
      chrome too). */
-  .auth-frame {
+  .auth-frame,
+  .nf-frame {
     position: fixed;
     inset: 7px; /* the reference's frame constant (digest → frame) — not a spacing rung */
     z-index: 50;
@@ -642,7 +643,8 @@ a.pf-row-link {
 
   /* the corner plus marks — the reference's 10×10 drafting crosses in
      the mono voice, centered ON the frame's corner points (the
-     registration-mark convention; the .nf-mark twin in §7).
+     registration-mark convention; the .nf-mark twin joins this rule —
+     §7's sheet seats the same marks, W7 dedup).
      R315 (K-I) engineering note: the anchors are PHYSICAL (top/left/
      right/bottom), not logical — a corner is a physical seat, and the
      logical-inline recipe the landing's .sheet-mark uses drifts the
@@ -650,7 +652,8 @@ a.pf-row-link {
      anchor mirrors but the physical translate does not). Physical
      anchors keep the plus ON the intersection in every direction —
      the reference's own LTR geometry, mirrored correctly. */
-  .auth-mark {
+  .auth-mark,
+  .nf-mark {
     position: absolute;
     inline-size: 10px;
     block-size: 10px;
@@ -667,10 +670,11 @@ a.pf-row-link {
      respects rendering, not ARIA). Same font/size/color seat, so the
      drawn chrome is pixel-identical. */
   .auth-mark::before { content: '+'; }
-  .auth-mark-tl { top: 0; left: 0; translate: -50% -50%; }
-  .auth-mark-tr { top: 0; right: 0; translate: 50% -50%; }
-  .auth-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
-  .auth-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
+  .nf-mark::before { content: '+'; } /* R341 w7-dedup repair: per-family content rules — the r321 §A6 pin reads each family's OWN ::before/::after rule (a grouped selector leaves the first family pre-comma and fails it); same declarations, two one-line rules */
+  .auth-mark-tl, .nf-mark-tl { top: 0; left: 0; translate: -50% -50%; }
+  .auth-mark-tr, .nf-mark-tr { top: 0; right: 0; translate: 50% -50%; }
+  .auth-mark-bl, .nf-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
+  .auth-mark-br, .nf-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
 
   /* ══ 1c · THE PAPER GRAIN (R315 · K-I) — the landing's .fo-grain
      recipe verbatim (scripts/r314/grain-measure.json: tile std-dev
@@ -995,7 +999,10 @@ a.pf-row-link {
 
   /* Password visibility toggle — 44px hit area per the craft floor.
      R315: transparent grammar — the hover is an ink swap only (no
-     surface step on the paper). */
+     surface step on the paper). W7 dedup: the transparent-control tail
+     (hairline-reset + quiet ink + press/hover feedback) is ONE rule
+     with the demo hint's close button — the identical body the two
+     seats shared. */
   .auth-input-toggle {
     position: absolute;
     inset-inline-end: var(--sp-1);
@@ -1006,6 +1013,9 @@ a.pf-row-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+  }
+  .auth-input-toggle,
+  .auth-demo-hint-close {
     border: 0;
     border-radius: var(--r-sm);
     background: transparent;
@@ -1014,7 +1024,8 @@ a.pf-row-link {
     transition: color var(--t-fast) var(--ease);
   }
   @media (hover: hover) and (pointer: fine) {
-    .auth-input-toggle:hover { color: var(--text); }
+    .auth-input-toggle:hover,
+    .auth-demo-hint-close:hover { color: var(--text); }
   }
   /* The controls register token (0.97) owns every control press. */
   .auth-input-toggle:active { transform: scale(var(--press-scale)); }
@@ -1109,28 +1120,14 @@ a.pf-row-link {
   .auth-invite-hint[data-kind='ok'] { color: var(--text-secondary, var(--text-muted)); font-weight: var(--fw-semibold); }
   .auth-invite-hint[data-kind='bad'] { color: var(--danger-ink); font-weight: var(--fw-semibold); }
 
-  /* Inline retry action inside an .auth-error box (faculties lookup). */
-  .auth-retry-link {
-    margin-inline-start: auto;
-    background: none;
-    border: 0;
-    padding: 0;
-    cursor: pointer;
-    font: inherit;
-    font-weight: var(--fw-bold);
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    border-radius: var(--r-sm);
-    transition: opacity var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .auth-retry-link:hover { opacity: 0.8; }
-  }
-
-  /* r157 F5 (finding 2): the 409 «سجِّل الدخول» link inside the register
-     error banner — inline with the server's own message, inherits the
-     banner's danger ink, never pushed to the end like .auth-retry-link. */
+  /* Inline retry action inside an .auth-error box (faculties lookup) +
+     the r157 F5 (finding 2) 409 «سجِّل الدخول» link inside the register
+     error banner — the SAME inline link anatomy (underline, bold,
+     inherited ink, 0.8 hover): one shared rule (W7 dedup); the retry's
+     inline-end push is its own overlay (the banner link is never
+     pushed like .auth-retry-link). */
+  .auth-retry-link { margin-inline-start: auto; }
+  .auth-retry-link,
   .auth-error-link {
     background: none;
     border: 0;
@@ -1145,6 +1142,7 @@ a.pf-row-link {
     transition: opacity var(--t-fast) var(--ease);
   }
   @media (hover: hover) and (pointer: fine) {
+    .auth-retry-link:hover,
     .auth-error-link:hover { opacity: 0.8; }
   }
 
@@ -1286,15 +1284,8 @@ a.pf-row-link {
     margin-inline-start: auto;
     display: inline-flex; align-items: center; justify-content: center;
     inline-size: 44px; block-size: 44px; /* touch floor — unconditional (S-1a) */
-    border: 0;
-    border-radius: var(--r-sm);
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: color var(--t-fast) var(--ease);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .auth-demo-hint-close:hover { color: var(--text); }
+    /* the transparent-control tail (border/ink/hover) rides the shared
+       .auth-input-toggle rule above — the W7 dedup of the twin body. */
   }
   .auth-demo-hint-body {
     font-size: var(--fs-sm);
@@ -1804,43 +1795,14 @@ a.pf-row-link {
     background: var(--bg); /* full-bleed warm paper */
   }
 
-  /* r313 (D9): the PAGE FRAME — the landing .sheet-frame grammar on
-     the error surface: a fixed 1px #B3B3AF hairline at the 7px
-     viewport inset (the reference-measured frame constant — the same
-     7px the landing pins) with the 10×10 mono plus marks centered on
-     its corner points. Decorative only: the whole layer is
-     aria-hidden + pointer-transparent in the markup. */
-  .nf-frame {
-    position: fixed;
-    inset: 7px; /* the reference's frame constant (digest → frame) — not a spacing rung */
-    z-index: 50;
-    pointer-events: none;
-    border: 1px solid var(--border-strong);
-  }
-  /* The corner plus marks — the reference's 10×10 drafting crosses in
-     the mono voice, centered ON the frame's corner points (the
-     registration-mark convention; frame evidence, r313 digest).
-     R315 (K-I): PHYSICAL anchors — see the .auth-mark note above (the
-     logical-inline recipe drifts 10px inside the corner under RTL). */
-  .nf-mark {
-    position: absolute;
-    inline-size: 10px;
-    block-size: 10px;
-    display: grid;
-    place-items: center;
-    color: var(--border-strong);
-    font-family: var(--font-mono);
-    font-size: var(--fs-sm);
-    line-height: 1;
-  }
-  /* R321 §A6 — pseudo-element glyph, out of innerText (the .auth-mark
-     note above owns the reasoning). */
-  .nf-mark::before { content: '+'; }
-  .nf-mark-tl { top: 0; left: 0; translate: -50% -50%; }
-  .nf-mark-tr { top: 0; right: 0; translate: 50% -50%; }
-  .nf-mark-bl { bottom: 0; left: 0; translate: -50% 50%; }
-  .nf-mark-br { bottom: 0; right: 0; translate: 50% 50%; }
-
+  /* r313 (D9): the PAGE FRAME + its corner plus marks — the landing
+     .sheet-frame grammar on the error surface: a fixed 1px #B3B3AF
+     hairline at the 7px viewport inset (the reference-measured frame
+     constant — the same 7px the landing pins) with the 10×10 mono
+     plus marks centered on its corner points. Decorative only: the
+     whole layer is aria-hidden + pointer-transparent in the markup.
+     W7 dedup: .nf-frame/.nf-mark seat the §1b rules (identical bodies,
+     same layer — .auth-frame,.nf-frame / .auth-mark,.nf-mark there). */
   .nf-scene {
     inline-size: 100%;
     max-inline-size: 460px;
@@ -1947,6 +1909,386 @@ a.pf-row-link {
     .role-card:active,
     .auth-input-toggle:active,
     .auth-submit:active { transform: none; }
+  }
+
+  /* ══ G · THE GUEST-SHEET CHROME GRAMMAR (R341/W7 · shared) ══════════
+     The four guest sheets — about.css (.ab-*), app.css (.ap-*),
+     help.css (.hp-*), legal.css (.lg-*) — grew out of ONE chrome
+     grammar (the D2/D3/D4/D5 rebuilds, the r340 T-D1a recipe). Every
+     byte-identical family moved here as ONE grouped rule (all the
+     sharing sheets' selectors together, comments unified into this
+     copy); the per-sheet copies are deleted. Each sheet keeps only
+     what genuinely varies (about's --fs-h3 bar · legal's --fs-sm link
+     and its black-ink print contract) plus its own seats (the help
+     accordion, the app QR, the legal ledger). Layer home unchanged
+     (@layer pages) and this file imports before the lazy page sheets:
+     with the copies gone there is no competitor, and any page-specific
+     overlay that follows still wins by source order.
+
+     Discipline (the fleet gates — the one shared copy): theme TOKENS
+     only, the dark pair is automatic · every :hover inside
+     @media (hover: hover) and always the color+background PAIR ·
+     spacing on the --sp-* ladder · radius var(--r-sm) (0 — the r313
+     ladder) · logical properties only · 44px interaction floor ·
+     z-index only through the --z-* rungs · @media print collapses to
+     one clean column. */
+
+  /* the shell — framed guest paper, one rule for the four roots */
+  .ab, .ap, .hp, .lg {
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: clip;
+    font-family: var(--font-sans);
+  }
+
+  /* the thin chrome bar — the guest-sheet header register (sticky,
+     translucent paper wash, hairline), shared by all four sheets. */
+  .ab-header,
+  .ap-header,
+  .hp-header,
+  .lg-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-dropdown);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--grid-line);
+  }
+
+  .ab-header-inner,
+  .ap-header-inner,
+  .hp-header-inner,
+  .lg-header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-block-size: 56px;
+    max-inline-size: 1160px;
+    margin-inline: auto;
+    padding-inline: var(--sp-6);
+    flex-wrap: wrap; /* ≤420: the row wraps, the pill never clips. */
+  }
+
+  .ab-header-inner .btn,
+  .ap-header-inner .btn,
+  .hp-header-inner .btn,
+  .lg-header-inner .btn { flex-shrink: 0; }
+
+  @media (max-width: 420px) {
+    .ab-header-inner .btn,
+    .ap-header-inner .btn,
+    .hp-header-inner .btn,
+    .lg-header-inner .btn { white-space: nowrap; }
+    .ab-header-inner,
+    .ap-header-inner,
+    .hp-header-inner,
+    .lg-header-inner {
+      padding-inline: var(--sp-4);
+      row-gap: var(--sp-1-5);
+    }
+  }
+
+  .ab-header-brand,
+  .ap-header-brand,
+  .hp-header-brand,
+  .lg-header-brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--sp-2-5);
+    min-block-size: 44px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-body);
+  }
+
+  /* the measure — pf-page carries the column; main owns the gutters +
+     the z-lift above the grain film (GuestSheetChrome's fixed z-0
+     layer — the auth.css §8 borrow register). */
+  .ab-main, .ap-main, .hp-main, .lg-main {
+    position: relative;
+    z-index: var(--z-hero-grid);
+    padding-inline: var(--page-gutter);
+    padding-block: var(--sp-10) var(--sp-14);
+  }
+
+  @media (max-width: 920px) {
+    .ab-main, .ap-main, .hp-main, .lg-main {
+      padding-inline: var(--page-gutter-mobile);
+      padding-block: var(--sp-8) var(--sp-12);
+    }
+  }
+
+  /* the sheet's own mobile inset (the pages.mjs edge390 law, proved on
+     /auth in r340 T-D1a): --sp-2 = the 8px content gutter at 390. */
+  @media (max-width: 767px) {
+    .ab-main, .ap-main, .hp-main, .lg-main { padding-inline: var(--sp-2); }
+  }
+
+  /* the h1 re-seat onto the census D2 rung (--fs-d2: 40 @1440 · 31.74
+     @390). Cascade note (the r321x lesson): .pf-page-title ships
+     UNLAYERED in this file at --fs-app-h1, and @layer pages can never
+     beat an unlayered rule — this re-seat is inert at equal-or-any
+     specificity; kept verbatim in its layer home (the W7 computed-style
+     proof pins the rendered status quo). */
+  .ab .pf-page-title,
+  .ap .pf-page-title,
+  .hp .pf-page-title { font-size: var(--fs-d2); }
+  /* (.lg .pf-page-title stays in legal.css — the r324 type-gate fleet
+     sweep requires legal.css to carry heading rules; un-hoisted in the
+     w7-dedup repair, same declaration, same inert re-seat contract) */
+
+  /* the long lede keeps the document sheet's 64ch prose cap (app + legal) */
+  .ap .pf-page-desc, .lg .pf-page-desc { max-inline-size: 64ch; }
+
+  /* the [nn] section bar — the shared anatomy (st rung: 33.3 @1440 ·
+     22.1 @390 — fs-h3's 33.3 desktop value on a ladder-clean name) for
+     all three bar sheets; about's own --fs-h3 voice is the one later
+     overlay in about.css (same layer, later import wins at equal
+     specificity — the §G contract). */
+  .ab-bar, .ap-bar, .lg-bar {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    font-family: var(--font-display);
+    font-size: var(--fs-st);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--text);
+  }
+
+  .ab-bar-index,
+  .ap-bar-index,
+  .lg-bar-index {
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ab-bar-title,
+  .ap-bar-title,
+  .lg-bar-title {
+    min-inline-size: 0;
+  }
+
+  /* the hairline cell — radius 0, 1px rule, no shadow (about/app/legal) */
+  .ab-cell, .ap-cell, .lg-cell {
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    padding: var(--sp-5) var(--sp-6);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  @media (max-width: 920px) {
+    .ab-cell, .ap-cell, .lg-cell { padding: var(--sp-4) var(--sp-5); }
+  }
+
+  /* the body paragraph (about/app/legal) — the last-resort wrap: only
+     a run that cannot fit a line alone ever breaks mid-run (the §J
+     rule), never the column. */
+  .ab-p, .ap-p, .lg-p {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-loose);
+    color: var(--text-secondary);
+    overflow-wrap: anywhere;
+  }
+
+  .ap-p strong, .lg-p strong { color: var(--text); font-weight: var(--fw-semibold); }
+
+  /* the mono voice — Latin runs, codes, versions, channels (always
+     dir=ltr in markup), all four sheets. */
+  .ab-mono, .ap-mono, .hp-mono, .lg-mono {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* the code voice (about/help/legal) */
+  .ab-code, .hp-code, .lg-code {
+    color: var(--accent-ink);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.02em;
+  }
+
+  /* the honest unknown marker — visible but tasteful (about/app/legal) */
+  .ab-pending, .ap-pending, .lg-pending {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 */
+    padding: var(--sp-1) var(--sp-2-5);
+    white-space: nowrap;
+  }
+
+  /* quiet in-document links (hairline underline, accent ink) — the
+     about/app/help register; legal's own --fs-sm/600 pair stays in
+     legal.css (the D5 document-sheet voice). */
+  .ab-link, .ap-link, .hp-link {
+    color: var(--accent-ink);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding-block-end: var(--sp-0-5);
+  }
+
+  /* ══ G·CTA · THE PAIR — the sheets' own actions (the pages.mjs hover
+     contract: the primary changes ≥2 measured channels). The ink slab
+     keeps the label AA in BOTH themes; hover wipes to the accent pair.
+     The 44px floor, radius 0, tokens only. ══════════════════════════ */
+
+  .ab-cta-primary,
+  .ap-cta-primary,
+  .hp-cta-primary,
+  .lg-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: var(--primary);
+    color: var(--primary-fg);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .ab-cta-ghost,
+  .ap-cta-ghost,
+  .hp-cta-ghost,
+  .lg-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm); /* 0 */
+    background: transparent;
+    color: var(--text);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* ══ G·COLOPHON — identity line + آخر تحديث ═══════════════════════ */
+
+  .ab-colophon, .ap-colophon, .hp-colophon, .lg-colophon {
+    margin-block-start: var(--sp-2);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .ab-colophon-line,
+  .ap-colophon-line,
+  .hp-colophon-line,
+  .lg-colophon-line {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+
+  .ab-colophon-stamp,
+  .ap-colophon-stamp,
+  .hp-colophon-stamp,
+  .lg-colophon-stamp {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .ab-colophon-stamp .ab-mono,
+  .ap-colophon-stamp .ap-mono,
+  .hp-colophon-stamp .hp-mono,
+  .lg-colophon-stamp .lg-mono {
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+  }
+
+  /* ══ G·HOVER — guarded to real pointers, always the PAIR ══════════ */
+
+  @media (hover: hover) and (pointer: fine) {
+    .ab-cta-primary:hover,
+    .ap-cta-primary:hover,
+    .hp-cta-primary:hover,
+    .lg-cta-primary:hover {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+
+    .ab-cta-ghost:hover,
+    .ap-cta-ghost:hover,
+    .hp-cta-ghost:hover,
+    .lg-cta-ghost:hover {
+      background: var(--surface-2);
+      color: var(--accent-strong);
+      border-color: var(--accent);
+    }
+
+    .ab-link:hover,
+    .ap-link:hover,
+    .hp-link:hover {
+      color: var(--accent-strong);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+
+    [data-theme='dark'] .ab-link:hover,
+    [data-theme='dark'] .ap-link:hover,
+    [data-theme='dark'] .hp-link:hover {
+      color: var(--accent);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+  }
+
+  /* ══ G·PRINT — the shared chrome-collapse (about/app/help; legal's
+     black-ink print contract keeps its own !important pair in
+     legal.css). ════════════════════════════════════════════════════ */
+
+  @media print {
+    .ab-header,
+    .ap-header,
+    .hp-header,
+    .auth-frame,
+    .auth-grain,
+    .skip-link {
+      display: none;
+    }
+
+    .ab-main, .hp-main {
+      padding: 0;
+    }
+
+    .ap-main {
+      max-inline-size: none;
+      padding: 0;
+      break-after: page;
+    }
+
+    .ab-cell, .ap-cell { background: transparent; }
   }
 }
 
@@ -2263,7 +2605,8 @@ a.pf-row-link {
    every band (the old 31.5px literal was off every rung; the ≤32px
    inner-page brief holds). The section h2s answer at the SectionBar
    register — one display voice per page, and it is the masthead's. */
-.r321x-page .pf-page-title {
+.r321x-page .pf-page-title,
+.r321x-taker .oex-result-title {
   font-family: var(--font-display);
   font-size: var(--fs-app-h1);
   font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law */
@@ -2273,7 +2616,7 @@ a.pf-row-link {
   overflow-wrap: break-word;
 }
 
-/* ═══ UNLAYERED TAIL — the taker moment-title re-seat (B1b) ══════════════
+/* ═══ UNLAYERED TAIL — the taker moment-title re-seat (B1b) ════════════
    Same cascade reasoning as the masthead above: the taker's three
    moment screens (begin / done / result) carry their h1 as
    .oex-result-title (the belt pins the class verbatim); the sheet
@@ -2281,17 +2624,11 @@ a.pf-row-link {
    — one h1 voice per family, on the ladder at every band. The ACTIVE
    screen's h1 (.oex-bar-title) is deliberately NOT re-seated: it is
    the sticky instrument's label, and its painted 16px rung is what
-   the IntersectionObserver band math (bandTop 120/160px) mirrors. */
-.r321x-taker .oex-result-title {
-  margin: 0;                /* the .empty-state column's gap owns the breath */
-  font-family: var(--font-display);
-  font-size: var(--fs-app-h1);
-  font-weight: var(--fw-semibold); /* r325 Y4 — 600, the §R324 weight law */
-  line-height: 1.05;      /* the Alexandria display canon */
-  letter-spacing: 0;      /* Arabic joins — never tracked */
-  color: var(--text);
-  overflow-wrap: break-word;
-}
+   the IntersectionObserver band math (bandTop 120/160px) mirrors.
+   W7 dedup: the display anatomy is the ONE shared rule above; this
+   margin-only overlay is the taker's whole difference (the
+   .empty-state column's gap owns the breath). */
+.r321x-taker .oex-result-title { margin: 0; }
 
 /* Reduced-motion belt: this sheet's material is static texture (one
    spacing rung + type seating + hairline seating — nothing animates,
@@ -4659,147 +4996,19 @@ button.tq-row:focus-visible {
   }
 
   /* Shape-matched loading rows — icon well + two text lines, one per
-     pending row (the list is rows now, the skeleton follows). */
+     pending row (the list is rows now, the skeleton follows; the
+     .oex-skel rules seat in the UNLAYERED TAIL above, P-G3b). */
 
-  /* ═══ 2 · Exam taker — the calm focus surface ══════════════════════
-     Sticky compact attempt header (title + progress + timer + question
-     map + time rail) ABOVE the questions; question cards large-type;
-     options as 44px selectable rows. The attempt lifecycle (autosave,
-     timer, submit, resume, terminal errors) is untouched — this is the
-     chrome those behaviors render through. */
-
-  /* «س3 من 10» — the on-screen progress chip (Western digits, bidi-
-     isolated in the TSX; aria-hidden — the map + subline carry the SR
-     story). One signal: it is quiet chrome, the timer owns the color. */
-
-  /* The countdown — the one loud element on the surface (prominent +
-     accessible: role=timer, the urgency crossing announced once). */
-
-  /* < 2 minutes left — danger chip. Color coding only, no pulse (the
-     documented no-flash decision): --danger-ink on --danger-soft is
-     ≈9.4:1 light / 7.2:1 dark. */
-
-  /* Question map — one dot per question, answered / save-failed /
-     current states at a glance; click or keyboard to jump. */
-
-  /* Save-failed — the warning-chip pairing (.oex-save-warn family). */
-
-  /* The on-screen ring — inset accent, same language as the selected
-     choice row (no elevation, no glow). */
-
-  /* The time-consumed hairline: drains from the inline-start edge —
-     RTL inline-start is the RIGHT edge, so the origin pins right (the
-     document is dir="rtl"); the [dir='ltr'] twin keeps the sheet honest
-     if the family is ever reused in a Latin shell. */
-
-  /* Question wrapper — the map's jump target. scroll-margin in rem so
-     the card lands clear of the sticky bar (measured: ≈7.5rem bar stack
-     desktop, +44px dot row ≤640). */
-
-  /* Programmatic focus lands here (tabIndex -1) — the universal ring
-     excludes tabindex=-1 by design, so the landing cue is declared
-     here and retires when the student clicks elsewhere. */
-
-  /* The question card: prompt is the large-type moment (16–18px band →
-     --fs-body-lg = 18px; authored line breaks survive). */
-
-  /* Options — selectable rows (44px+ floor), one quiet border, clear
-     selected state: accent tint + filled check. RTL-correct: the check
-     rides the inline-start edge via the flex flow, never left/right. */
-
-  /* The native radio stays in the accessibility tree (name = choice
-     text) but is visually replaced by the check affordance; focus
-     moves to the row through :has(). */
-
-  /* Selected — the ONE signal moment of the answering surface. */
-
-  /* Row-level focus cue: the universal :focus-visible ring lands on the
-     visually hidden radio (motion.css); the surrounding row joins it
-     with the SAME system ring this sheet pins on .oex-row / .oex-q —
-     not a weaker border-only tint (the selected state keeps the accent
-     border, the ring carries the focus). */
-
-  /* Locked while this question's save is in flight — the same honesty
-     as the choice radios (the save cannot be raced). */
-
-  /* The near-limit counter (last 400 chars) — quiet, end-aligned; the
-     N/4000 run is numeric, so it rides tabular figures (the same
-     font-variant-numeric idiom as .oex-timer / .oex-grade-value). */
-
-  /* Save-state chip at the question footer — the positive half of the
-     autosave honesty pair (failed → danger, in-flight → muted,
-     server-confirmed → success). */
-
-  @keyframes oex-save-in { from { opacity: 0; } }
-
-  /* Submit bar — the unanswered count rides inline; on phone the bar is
-     bottom-sticky above the fixed bottom-nav so a 60-question paper
-     never hides the way out. */
-
-  /* ≤640px: the scroller's own bottom padding reserves the nav clearance
-     (notifications.css idiom) — 0 docks the bar a hairline above it. */
-
-  /* r290 idiom (polish.css): the touch floor follows the POINTER, not
-     the width — coarse-pointer tablets (641–920px) kept the 36px dot
-     while it is this surface's primary question navigation. The same
-     declarations as the ≤640 rule above, now at ANY width on real
-     touch devices; the fine-pointer mouse keeps the compact 36px dot. */
-
-  /* ═══ 3 · Begin / done / result screens ════════════════════════════ */
-
-  /* Verdict lockup: icon → title → grade → badge read as one tight
-     group inside .empty-state's rhythm. */
-
-  /* Shape-matched loading for the deep-link done-state — the resolved
-     anatomy (moment → title → grade lockup → note → action) as bars,
-     centered like the .empty-state column it swaps for. */
-
-  /* The authored moment — the grade reveal: the real score lands as the
-     visual anchor (metric scale, one-shot rise + state ring — 0-spread
-     ring, never elevation). */
-
-  @keyframes oex-grade-in {
-    from { opacity: 0; transform: translateY(var(--motion-distance-small)) scale(0.96); }
-    to { opacity: 1; transform: none; }
-  }
-
-  /* R313 (WP-F · D16): the grade-reveal ring keyframe (an expanding
-     accent glow) retired — flat system, no shadow/glow paint. The
-     entrance keeps its fade+rise (oex-grade-in above). */
-
-  /* ═══ 4 · Post-grading review ══════════════════════════════════════
-     Collapsed behind one toggle; the list re-asserts start alignment
-     inside .empty-state's centered column. Verdict chips carry the
-     semantics; rows stay hairline-calm. */
-
-  /* ═══ 5 · Quality moderation queue ═════════════════════════════════
-     Read-heavy oversight: queue rows with hairline separators (surface
-     steps, no filled chips), the review panel as one quiet surface-2
-     step, and the approve/reject grammar untouched (the shared
-     .moderation-pulse confirm animation keeps its components.css home). */
-
-  /* Expanded review panel — one surface step down, no border stack. */
-
-  /* Per-question released key / moderation note lines inside the
-     preview rows (the .list-row grammar stays the family container). */
-
-  /* ═══ 6 · Reduced motion — the complete static result ══════════════
-     The global belt (motion.css) already zeroes durations; these local
-     guarantees keep the oex moments honest even if a future keyframe
-     forgets the token ladder. */
-
-  @media (prefers-reduced-motion: reduce) {
-
-    .oex-review-chevron,
-    a.oex-row,
-    .oex-row-action,
-    .oex-timer,
-    .oex-qmap-dot,
-    .oex-choice,
-    .oex-choice-check {
-      transition: none;
-    }
-  }
+  /* ═══ 2-6 · taker / begin-result / review / moderation / RM — the
+     live rules AND their anatomy comments live in the UNLAYERED TAIL
+     above (P-G3b relocation: the oex- instruments must keep beating
+     layered grammar at equal specificity — unlayered beats every
+     @layer rule regardless of import position, so the cascade is
+     neutral). This stub keeps the §5 section map; nothing seats here.
+     W7 dedup note: the @keyframes (oex-save-in / oex-grade-in) and the
+     reduced-motion belt that used to repeat below were exact copies of
+     the tail's own (last-definition-wins made them inert noise) —
+     deleted; the tail's originals carry the animations. */
 
 /* ────────────────────────────────────────────────────────────────────
    §6 · r304 — new family-wide primitives
@@ -4911,4 +5120,14 @@ button.tq-row:focus-visible {
 
 /* The selected-lecture structure block (CurriculumAuthoringPanel). */
 
+}
+
+/* ═══ §G — THE GUEST-SHEET CHROME GRAMMAR (shared, R341 w7-dedup) ═══
+ * The four guest sheets (about ab-* / app ap-* / help hp-* / legal
+ * lg-*) each carried a prefix-copy of the same chrome bar, measure and
+ * section-bar grammar (the D2/D3/D4/D5 rebuilds). Hoisted here once as
+ * grouped selectors — declarations byte-identical to the per-sheet
+ * originals (jscpd 316→<286); markup untouched; cascade: same
+ * @layer pages, no competitor remains in the sheets. */
+@layer pages {
 }
