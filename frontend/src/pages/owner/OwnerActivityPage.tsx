@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import {
   LogIn, FileText, UserCog, Server, AlertTriangle, Clock,
   RefreshCw, ChevronDown, ChevronRight, ChevronLeft,
@@ -205,6 +206,19 @@ export function OwnerActivityPage() {
           title="سجل النشاط والمراقبة"
           description="جميع العمليّات المنفَّذة على المنصّة — حيّة من سجلّ التدقيق"
           breadcrumbs={[{ label: 'لوحة المالك', to: '/owner/dashboard' }, { label: 'سجلّ النشاط' }]}
+          /* R341 D11: the [05] nav-order gutter numeral (OWNER_NAV
+           * register — the D10 quality precedent). */
+          index="05"
+          /* D11 (D8/D10 header-CTA precedent): the log's sibling
+           * surfaces — the governance metrics that aggregate this feed
+           * (primary) + the accounts directory the events name (ghost).
+           * Navigation-only; the log itself is read-only. */
+          actions={(
+            <>
+              <Link to="/owner/governance" className="btn accent sm">الحوكمة</Link>
+              <Link to="/owner/users" className="btn ghost sm">المستخدمون</Link>
+            </>
+          )}
         />
 
         {/* r252: the page's four facts ride the patterns StatLine —
