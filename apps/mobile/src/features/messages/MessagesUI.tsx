@@ -44,7 +44,6 @@ import { fromNow, latn } from "@/lib/format";
 import { usePalette } from "@/design/theme";
 import { sp } from "@/design/tokens";
 import { T } from "@/components/ui/text";
-import { Badge } from "@/components/ui/surfaces";
 import { AppSheet, SheetTextInput } from "@/components/ui/sheet";
 import { Avatar, DataList, makeRow, usePagedList } from "@/components/ui/data";
 import { Button, IconButton } from "@/components/ui/pressables";
@@ -60,6 +59,33 @@ import {
 } from "@/features/messages/logic";
 
 const LIMIT = 30;
+
+/**
+ * MutedChip — M8: the messages unread counts ride M1's SECONDARY chip
+ * tier (hairline rule frame, transparent ground, muted medium ink) —
+ * the web's neutral [UNREAD n] register. The screen's one orange stays
+ * on the thread sheet's send button (the primary action).
+ */
+function MutedChip({ label }: { label: string }) {
+  const p = usePalette();
+  return (
+    <View
+      accessibilityRole="text"
+      accessibilityLabel={label}
+      style={{
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: p.rule,
+        paddingHorizontal: sp[8],
+        paddingVertical: sp[2],
+        alignSelf: "flex-start",
+      }}
+    >
+      <T variant="sm" weight="medium" style={{ color: p.textMuted }}>
+        {label}
+      </T>
+    </View>
+  );
+}
 
 /** Solid grey RGB(200,200,200) as a 4×3 blurhash — the placeholder tint
  *  attachment chips show while the bytes stream in (expo-image decodes it
@@ -125,7 +151,7 @@ export function MessagesUI() {
         <View style={{ flex: 1, gap: 0 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
             <T variant="h4" weight="bold">الرسائل</T>
-            {unread > 0 ? <Badge label={`${latn(unread > 99 ? 99 : unread)} غير مقروءة`} tone="copper" /> : null}
+            {unread > 0 ? <MutedChip label={`${latn(unread > 99 ? 99 : unread)} غير مقروءة`} /> : null}
           </View>
           <T variant="xs" color="muted">
             كل رسالة وصلتك أو أرسلتها عبر المنصّة — ردّ على الواردة من هنا.
@@ -214,7 +240,7 @@ const ConversationRow = makeRow<
               {c.name}
             </T>
           </View>
-          {c.unread > 0 ? <Badge label={`${latn(c.unread)} جديدة`} tone="copper" /> : null}
+          {c.unread > 0 ? <MutedChip label={`${latn(c.unread)} جديدة`} /> : null}
         </View>
         <T variant="sm" color="muted" numberOfLines={1}>
           {c.last.fromUserId === myId ? "أنت: " : ""}

@@ -146,10 +146,13 @@ export function NotificationsScreen({
           ) : null}
           <View style={{ flex: 1 }}>
             {kicker ? <MonoLabel>{kicker}</MonoLabel> : null}
-            <T variant="h3" weight="bold">
+            <T variant="h4" weight="bold">
               {title ?? "الإشعارات"}
             </T>
           </View>
+          {/* M8 — mark-all is a SECONDARY header action (the web's ghost
+              button), not the accent: the screen's one orange stays on the
+              push-activation primary below. */}
           {unread > 0 ? (
             <Pressable
               accessibilityRole="button"
@@ -159,8 +162,8 @@ export function NotificationsScreen({
               style={{ minHeight: 44, justifyContent: "center" }}
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                <CheckCheck size={18} color={p.accentInk} />
-                <T variant="sm" weight="bold" color="accentInk">
+                <CheckCheck size={18} color={p.textSecondary} />
+                <T variant="sm" weight="medium" color="secondary">
                   تعليم الكل
                 </T>
               </View>
@@ -231,7 +234,9 @@ function DayHeader({ label, pinned }: { label: string; pinned: boolean }) {
         borderBottomColor: p.rule,
       }}
     >
-      <T variant="sm" weight="bold" color={pinned ? "accentInk" : "muted"}>
+      {/* M8 — a pinned header stays INK (accent no longer rides
+          non-action text); pin state reads from the solid ground alone. */}
+      <T variant="sm" weight="bold" color={pinned ? "text" : "muted"}>
         {label}
       </T>
     </View>
