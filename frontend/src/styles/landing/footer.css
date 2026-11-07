@@ -490,7 +490,11 @@
     --neutral-400 (IS the spec's own ≤767 rgb(180,180,176)) ═══ */
 @media (max-width: 767px) {
   .fo-footer {
-    margin-inline: 8px; /* heron 390 root x8 w374 */
+    /* L1-b (R341 · T-16 #2) — heron 390 root x8 w374, kept verbatim in
+       the harness (env() = 0) and grown on notched phones so the legal
+       rows never butt the safe area. */
+    margin-inline: max(8px, env(safe-area-inset-left, 0px))
+      max(8px, env(safe-area-inset-right, 0px)); /* heron 390 root x8 w374 */
     font-size: 15.88px; /* heron 390 root fs */
     line-height: 21.44px; /* T-06n: 390 root lh = 1.35×fs (spec exp 21.44, was 20.64) */
   }

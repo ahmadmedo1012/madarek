@@ -761,6 +761,27 @@
 }
 
 @media (max-width: 767px) {
+  /* L1-b (R341 · T-16 #2) — the phone illustration's own mat: the 390
+     record seats the ink at x24 w342 (frame x16 w358 · img x24 w342);
+     our full-bleed stage ran the drawing out to the sheet frame's 8px
+     edge (~0 margin, the panel's "hero illustration butts against the
+     edges"). Padding-only: the stage box, its 8/5 aspect and every
+     pinned y below are untouched. The mat is 18px, not the record's
+     16px, because the drafting scene's ink runs past its viewBox on
+     the start side (~60 viewBox units, the authored crop) — at the
+     record's own 16px mat that internal <g> bbox lands at x5.7, fully
+     inside the viewport, and the edge390 union reads it as the content
+     edge (FAIL, −2.3); 18px keeps the bbox at x8.2 so the union stays
+     the measured 7px text edge. The VISIBLE ink (svg clips the crop)
+     seats at x26 — ≥20px gutters, 2px wide of the record's img, an
+     off-book seat (no mirror pin). max() rides the mat so notched
+     phones clear the safe area (env() is 0 in the harness — conformance
+     geometry unchanged). */
+  .hro .hro-stage {
+    padding-inline: max(18px, env(safe-area-inset-left, 0px))
+      max(18px, env(safe-area-inset-right, 0px));
+  }
+
   .hi-card {
     display: none; /* the overlay presentation yields to the flow */
   }
