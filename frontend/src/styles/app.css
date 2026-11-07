@@ -1,0 +1,371 @@
+/* ════════════════════════════════════════════════════════════════════
+   مدارك — /app «تطبيق مدارك: التنزيل والتحديث» (R327 D1 · R341 task D4)
+   ════════════════════════════════════════════════════════════════════
+   The distribution sheet rebuilt on the PATTERN LIBRARY (the r340
+   T-D1a recipe, the D2 about / D3 help / D5 legal precedents):
+   pf-page[data-width=reading]/pf-page-header/pf-eyebrow/pf-page-desc/
+   pf-page-actions carry the frame, and this sheet owns only what the
+   library does not — the sticky guest header, the [nn] section bars,
+   the hairline cells, the QR cell, the actions row, the honest note
+   and the colophon. The page left the lg-* legal-sheet family (the
+   /app seats .lg-qr/.lg-p-actions/.lg-p-note died with this rebuild —
+   legal.css keeps only what /legal/* · /contact still seat); every
+   rule here is app-scoped ap-*.
+
+   Discipline (the fleet gates): theme TOKENS only — the dark pair is
+   automatic, no [data-theme] block in this file · every :hover inside
+   @media (hover: hover) and always the color+background PAIR ·
+   spacing on the --sp-* ladder · radius var(--r-sm) (0 — the r313
+   ladder) · logical properties only · 44px interaction floor ·
+   z-index only through the --z-* rungs · @media print collapses to
+   one clean column.
+   ════════════════════════════════════════════════════════════════════ */
+
+@layer pages {
+
+  /* ══ 1 · THE SHELL — framed guest paper ═══════════════════════════ */
+
+  .ap {
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: clip;
+    font-family: var(--font-sans);
+  }
+
+  /* the thin chrome bar — the guest-sheet header register (sticky,
+     translucent paper wash, hairline), the app sheet's own classes. */
+  .ap-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--z-dropdown);
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-block-end: 1px solid var(--grid-line);
+  }
+
+  .ap-header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    min-block-size: 56px;
+    max-inline-size: 1160px;
+    margin-inline: auto;
+    padding-inline: var(--sp-6);
+    flex-wrap: wrap; /* ≤420: the row wraps, the pill never clips. */
+  }
+
+  .ap-header-inner .btn { flex-shrink: 0; }
+
+  @media (max-width: 420px) {
+    .ap-header-inner .btn { white-space: nowrap; }
+    .ap-header-inner {
+      padding-inline: var(--sp-4);
+      row-gap: var(--sp-1-5);
+    }
+  }
+
+  .ap-header-brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--sp-2-5);
+    min-block-size: 44px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-body);
+  }
+
+  /* ══ 2 · THE MEASURE — pf-page carries the column; main owns the
+     gutters + the z-lift above the grain film (GuestSheetChrome's
+     fixed z-0 layer — the auth.css §8 borrow register). ════════════ */
+
+  .ap-main {
+    position: relative;
+    z-index: var(--z-hero-grid);
+    padding-inline: var(--page-gutter);
+    padding-block: var(--sp-10) var(--sp-14);
+  }
+
+  @media (max-width: 920px) {
+    .ap-main {
+      padding-inline: var(--page-gutter-mobile);
+      padding-block: var(--sp-8) var(--sp-12);
+    }
+  }
+
+  /* the sheet's own mobile inset (the pages.mjs edge390 law, proved on
+     /auth in r340 T-D1a): --sp-2 = the 8px content gutter at 390. */
+  @media (max-width: 767px) {
+    .ap-main { padding-inline: var(--sp-2); }
+  }
+
+  /* the h1 rides the census D2 rung (fs-d2: 40 @1440 · 31.74 @390 —
+     the type-census H1 seat, ≤32px @390); the long lede keeps the
+     legal sheet's 64ch prose cap. */
+  .ap .pf-page-title { font-size: var(--fs-d2); }
+
+  .ap .pf-page-desc { max-inline-size: 64ch; }
+
+  /* ══ 3 · THE CTA PAIR — the sheet's own actions (the pages.mjs
+     hover contract: the primary changes ≥2 measured channels). The
+     ink slab keeps the label AA in BOTH themes; hover wipes to the
+     accent pair (background + color + border — three channels). The
+     44px floor, radius 0, tokens only. ═══════════════════════════ */
+
+  .ap-cta-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--primary);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    background: var(--primary);
+    color: var(--primary-fg);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .ap-cta-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    min-block-size: 44px;
+    padding-inline: var(--sp-6);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm); /* 0 */
+    background: transparent;
+    color: var(--text);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  /* ══ 4 · THE SECTION BAR — [nn] mono index + Arabic title ════════ */
+
+  .ap-bar {
+    margin: 0;
+    display: flex;
+    align-items: baseline;
+    gap: var(--sp-3);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    font-family: var(--font-display);
+    /* the st rung (33.3 @1440 · 22.1 @390) — the legal sheet's bar
+       register on a ladder-clean name (fs-h3's 33.3 desktop value). */
+    font-size: var(--fs-st);
+    font-weight: var(--fw-semibold);
+    line-height: var(--lh-snug);
+    color: var(--text);
+  }
+
+  .ap-bar-index {
+    color: var(--accent-ink);
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ap-bar-title {
+    min-inline-size: 0;
+  }
+
+  /* ══ 5 · THE HAIRLINE CELL — radius 0, 1px rule, no shadow ══════ */
+
+  .ap-cell {
+    border: 1px solid var(--rule);
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    border-radius: var(--r-sm); /* 0 — the r313 ladder */
+    padding: var(--sp-5) var(--sp-6);
+    display: grid;
+    gap: var(--sp-3);
+  }
+
+  @media (max-width: 920px) {
+    .ap-cell { padding: var(--sp-4) var(--sp-5); }
+  }
+
+  .ap-p {
+    margin: 0;
+    font-size: var(--fs-body);
+    line-height: var(--lh-loose);
+    color: var(--text-secondary);
+    /* the last-resort wrap: only a run that cannot fit a line alone
+       ever breaks mid-run (the §J rule). */
+    overflow-wrap: anywhere;
+  }
+
+  .ap-p strong { color: var(--text); font-weight: var(--fw-semibold); }
+
+  /* the quiet aside — the honest caveat under a claim (muted, never
+     hidden): the APK link regenerates, the Play step is pending. */
+  .ap-p-note {
+    color: var(--text-muted);
+    font-size: var(--fs-body);
+    line-height: var(--lh-base);
+  }
+
+  /* the mono voice — Latin runs, versions, channels (always dir=ltr
+     in markup) */
+  .ap-mono {
+    font-family: var(--font-mono);
+    font-size: var(--fs-sm);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* the honest unknown marker — visible but tasteful */
+  .ap-pending {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.02em;
+    color: var(--text-muted);
+    border: 1px solid var(--rule);
+    border-radius: var(--r-sm); /* 0 */
+    padding: var(--sp-1) var(--sp-2-5);
+    white-space: nowrap;
+  }
+
+  /* quiet in-document links (hairline underline, accent ink) */
+  .ap-link {
+    color: var(--accent-ink);
+    font-size: var(--fs-body);
+    font-weight: var(--fw-semibold);
+    text-decoration: none;
+    border-block-end: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    padding-block-end: var(--sp-0-5);
+  }
+
+  /* ══ 6 · THE DISTRIBUTION CELLS — this sheet's own seats ════════ */
+
+  /* the actions row — the REAL download buttons inside the document
+     measure (the shared .btn kit, the sheet's only in-cell CTAs). */
+  .ap-actions {
+    display: flex;
+    gap: var(--sp-3);
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  /* the QR cell — the mark-colored code framed on paper (hairline,
+     never an outside service). */
+  .ap-qr {
+    display: flex;
+    gap: var(--sp-5);
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .ap-qr img {
+    width: 168px;
+    height: 168px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    padding: var(--sp-2);
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 560px) {
+    .ap-qr {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .ap-qr .ap-p-note {
+      text-align: center;
+    }
+  }
+
+  /* ══ 7 · THE COLOPHON — identity line + آخر تحديث ════════════════ */
+
+  .ap-colophon {
+    margin-block-start: var(--sp-2);
+    padding-block-start: var(--sp-5);
+    border-block-start: 1px solid var(--rule-strong);
+    display: grid;
+    gap: var(--sp-2);
+  }
+
+  .ap-colophon-line {
+    margin: 0;
+    font-size: var(--fs-sm);
+    line-height: var(--lh-base);
+    color: var(--text-muted);
+  }
+
+  .ap-colophon-stamp {
+    margin: 0;
+    font-size: var(--fs-sm);
+    color: var(--text-muted);
+  }
+
+  .ap-colophon-stamp .ap-mono {
+    color: var(--text-secondary);
+    font-size: var(--fs-xs);
+  }
+
+  /* ══ 8 · HOVER — guarded to real pointers, always the PAIR ══════ */
+
+  @media (hover: hover) and (pointer: fine) {
+    .ap-cta-primary:hover {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border-color: var(--accent);
+    }
+
+    .ap-cta-ghost:hover {
+      background: var(--surface-2);
+      color: var(--accent-strong);
+      border-color: var(--accent);
+    }
+
+    .ap-link:hover {
+      color: var(--accent-strong);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+
+    [data-theme='dark'] .ap-link:hover {
+      color: var(--accent);
+      background: transparent;
+      border-block-end-color: var(--accent);
+    }
+  }
+
+  /* ══ 9 · PRINT — ONE clean column, the honest one-sheet ════════ */
+
+  @media print {
+    /* the chrome + the film + the frame go; the document stays as ONE
+       column of numbered headings, hairline rules, the QR (paper can
+       scan it) and the stamp — PAGES-GAP §7. */
+    .ap-header,
+    .auth-frame,
+    .auth-grain,
+    .skip-link {
+      display: none;
+    }
+
+    .ap-main {
+      max-inline-size: none;
+      padding: 0;
+      break-after: page;
+    }
+
+    .ap-cell {
+      background: transparent;
+    }
+
+    .ap-bar,
+    .ap-cell,
+    .ap-colophon {
+      break-inside: avoid;
+    }
+  }
+}
