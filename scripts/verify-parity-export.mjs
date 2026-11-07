@@ -389,7 +389,7 @@ const CHECKS = [
   ['light', '--neutral-900', '#282828', "INK — the charcoal (the reference's --content--primary, 13.57:1 paper AAA)"],
   ['light', '--text', '#282828', 'light text = ink'],
   ['light', '--text-muted', '#62625f', 'R313 override: #626260 → #62625f (owner decision — rgba(40,40,40,.72) on #F6F6EE as a solid: 5.63:1 ground · 6.12:1 surface)'],
-  ['light', '--text-faint', '#70706a', 'R313 override: #72726f → #70706a (owner decision — warm faint re-derived for the new paper: 4.59:1 ground, AA where it carries text)'],
+  ['light', '--text-faint', '#666660', 'R341 M6 re-key: #70706a → #666660 (muted-ink AA audit — 96/96 pairs ≥4.5:1 both themes; tokens.css + the export moved together; this pin follows the R313 override: #72726f → #70706a warm faint re-derived for the new paper)'],
   ['light', '--accent', '#fa3600', "VIVID ORANGE signal (r305 — the reference's --content--brand; 3.53:1 paper = UI/large tier; eras: copper r303/r304, ultramarine r197, teal r195)"],
   ['light', '--accent-hover', '#d03000', 'signal hover — the binary-searched AA floor doubles as hover (r305); R323 A5 override: the state-contrast round retuned it #d92f00 → #d03000 (tokens.css + the export moved together; this pin follows)'],
   ['light', '--accent-soft', '#fce3d9', 'signal soft ground (r305 ember tint)'],
