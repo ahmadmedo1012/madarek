@@ -562,13 +562,26 @@ function contrastRatio(a: [number, number, number], b: [number, number, number])
 function cssColorCorpus(): Set<string> {
   const corpus = new Set<string>();
   const stylesDir = resolve(here, '../../src/styles');
-  try {
-    for (const file of readdirSync(stylesDir)) {
-      if (!file.endsWith('.css')) continue;
-      const css = readFileSync(resolve(stylesDir, file), 'utf8');
+  /* R341 w9 fix: the walk is RECURSIVE now — the old top-level-only
+   * readdir silently missed every subdirectory sheet (landing/,
+   * tokens/, student/, teacher/, shell/), so literals that ARE the
+   * frozen spec (e.g. landing/hero-mechanics.css --hro-ink-72
+   * rgba(246,246,238,0.72), journey.css --jt-ink — "the spec string is
+   * law") flagged as off-token on `/` dark. A recursive corpus is the
+   * instrument's own intent ("the stylesheet directory"); the check
+   * still fires for any computed colour that appears in NO sheet. */
+  const walk = (dir: string) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const full = resolve(dir, entry.name);
+      if (entry.isDirectory()) { walk(full); continue; }
+      if (!entry.name.endsWith('.css')) continue;
+      const css = readFileSync(full, 'utf8');
       for (const hex of css.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []) corpus.add(hex.toLowerCase());
       for (const rgb of css.match(/rgba?\([^)]*\)/g) ?? []) corpus.add(rgb.replace(/\s/g, ''));
     }
+  };
+  try {
+    walk(stylesDir);
   } catch {
     /* styles unreadable → empty corpus → off-token check disabled */
   }
@@ -599,10 +612,21 @@ function buildComputedColors(
      * values keep facing the full corpus check unchanged. */
     const isBlend =
       c.color.startsWith('color(srgb') || c.background.startsWith('color(srgb');
+    /* R341 w9: the literal arm. parseRgb blends alpha<1 over WHITE (its
+     * documented approximation), so a computed rgba(246,246,238,0.72)
+     * became a fabricated #bdbdb8 that no sheet can ever contain — the
+     * frozen-spec ink literals (landing --hro-ink-72/--jt-ink/--rl-soft-
+     * ink, "the spec string is law") flagged off-token forever. The
+     * normalized literal (whitespace-stripped, exactly how the corpus
+     * stores it) is the honest second lookup: a value that IS a sheet
+     * literal passes; anything else still faces the hex check. */
+    const fgLiteral = c.color.replace(/\s/g, '');
+    const bgLiteral = c.background.replace(/\s/g, '');
     const offToken =
       !isBlend &&
       corpus.size > 0 &&
-      ((fg !== null && !corpus.has(toHex(fg))) || (bg !== null && !corpus.has(toHex(bg))));
+      ((fg !== null && !corpus.has(toHex(fg)) && !corpus.has(fgLiteral)) ||
+        (bg !== null && !corpus.has(toHex(bg)) && !corpus.has(bgLiteral)));
     const blendNote =
       isBlend && corpus.size > 0
         ? `blend: ${c.selector} fg=${c.color} bg=${c.background}`

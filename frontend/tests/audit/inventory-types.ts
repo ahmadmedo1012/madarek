@@ -220,4 +220,11 @@ export const KNOWN_DURATIONS_MS: ReadonlyArray<number> = [
   // after the R331 hero rebuild). Consumers reference the vars, never
   // re-spelled values — same convention as the r190 scene entry above.
   800, 1_000,
+  // R341 w9 integration: the r305 nav text-roll's 0.3s colour ease
+  // (nav.css .fo-roll-txt — "her label divs: colour 0.3s ease + the
+  // pointer seat (her menu-item class carries cursor:pointer — the
+  // frozen spec)"). The roll family predates this audit's list and is
+  // the frozen spec's measured value, not an ad-hoc literal; ×90
+  // findings on `/` until folded in — same convention as r164/r190.
+  300,
 ];
