@@ -1,5 +1,8 @@
 /**
- * /student/(tabs)/dashboard — لوحة الطالب، R334 R2 mobile-recomposed:
+ * /student/(tabs)/dashboard — لوحة الطالب، R334 R2 mobile-recomposed
+ * (R341 M7 web-language parity: the hero keeps the screen's single
+ * orange moment at hairline weight, the [nn] section bars carry
+ * their honest counts as quiet mono meta — the web BarCount seat):
  * ONE hero «الخطوة التالية» card (the screen's single orange moment —
  * next lecture / assignment / exam / class with one clear action), a
  * numeral-hierarchy stats band (CountUp + RingProgress from @/motion),
@@ -11,7 +14,7 @@
  * /me/onboarding/complete once per app run (web parity, errors ignored).
  */
 import { useEffect, useRef } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import Animated from "react-native-reanimated";
 import { router } from "expo-router";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -33,7 +36,7 @@ import { Button } from "@/components/ui/pressables";
 import { EmptyState, ErrorState } from "@/components/ui/states";
 import { CountUp, PressableScale, RingProgress, Skeleton, SkeletonText, useStaggerEntrance } from "@/motion";
 import { haptics } from "@/haptics";
-import { dateTime, dueLabel, greeting, pct, useNumerals } from "@/lib/format";
+import { dateTime, dueLabel, greeting, latn, pct, useNumerals } from "@/lib/format";
 import { humanizeError } from "@/lib/errors";
 import { AppTopBar } from "@/components/shell/AppTopBar";
 import { useNow } from "@/hooks/useNow";
@@ -91,10 +94,15 @@ export default function StudentDashboard() {
      next exam window → today's first class (pure derivation, unit-pinned). */
   const step = dash.isLoading || resume.isLoading ? null : nextStep(d, resume.data ?? null, now);
 
-  /* Today (then tomorrow) classes — the horizontal chip strip. */
-  const stripClasses = (agenda?.classes ?? [])
-    .filter((c) => c.when === "today" || c.when === "tomorrow")
-    .slice(0, 8);
+  /* Today (then tomorrow) classes — the horizontal chip strip. The
+     unsliced count is the honest meta; the strip shows the first 8. */
+  const todayTomorrow = (agenda?.classes ?? [])
+    .filter((c) => c.when === "today" || c.when === "tomorrow");
+  const stripClasses = todayTomorrow.slice(0, 8);
+  /* The near-agenda's honest actable total (what the [04] meta prints). */
+  const agendaTotal = agenda
+    ? agenda.assignments.length + agenda.exams.length + agenda.live.length
+    : 0;
 
   const refreshing =
     (dash.isFetching && !dash.isLoading) || resume.isFetching || gaps.isFetching;
@@ -134,7 +142,7 @@ export default function StudentDashboard() {
             <Card
               accessibilityLabel={step.a11y}
               onPress={() => router.push(step.href as never)}
-              style={{ gap: sp[10], borderWidth: 1, borderColor: p.accent }}
+              style={{ gap: sp[10], borderWidth: StyleSheet.hairlineWidth, borderColor: p.accent }}
             >
               <View style={{ flexDirection: "row", alignItems: "center", gap: sp[8] }}>
                 <T variant="sm" weight="bold" color="accentInk">
@@ -308,7 +316,11 @@ export default function StudentDashboard() {
           </Animated.View>
         ) : stripClasses.length > 0 ? (
           <Animated.View entering={entering(4)} style={{ gap: sp[8] }}>
-            <SectionBar index={2} title="حصص اليوم وغدًا" />
+            <SectionBar
+              index={2}
+              title="حصص اليوم وغدًا"
+              action={<BarCount n={todayTomorrow.length} a11y={countAr(todayTomorrow.length, ["حصة واحدة", "حصتان", "حصص", "حصة"])} />}
+            />
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -393,7 +405,18 @@ export default function StudentDashboard() {
 
         {/* أجندتك القريبة — ONE merged ledger (تكليفات + اختبارات + مباشر) */}
         <Animated.View entering={entering(6)} style={{ gap: sp[8] }}>
-          <SectionBar index={4} title="أجندتك القريبة" />
+          <SectionBar
+            index={4}
+            title="أجندتك القريبة"
+            action={
+              !dash.isLoading && !dash.isError && agenda && agendaTotal > 0 ? (
+                <BarCount
+                  n={agendaTotal}
+                  a11y={countAr(agendaTotal, ["التزام قريب واحد", "التزامان قريبان", "التزامات قريبة", "التزاماً قريباً"])}
+                />
+              ) : undefined
+            }
+          />
           {dash.isLoading ? (
             <Card style={{ gap: sp[8] }}>
               <SkeletonText lines={2} />
@@ -499,5 +522,16 @@ export default function StudentDashboard() {
         ) : null}
       </ScrollBody>
     </Screen>
+  );
+}
+
+/** R341 M7 — the section bar's quiet mono meta (web BarCount grammar):
+ *  the honest row count as padded Latin digits in the faint mono voice —
+ *  data riding the [nn] bar, never a second accent moment. */
+function BarCount({ n, a11y }: { n: number; a11y: string }) {
+  return (
+    <T variant="monoSm" color="faint" accessibilityLabel={a11y}>
+      {latn(n).padStart(2, "0")}
+    </T>
   );
 }

@@ -1,5 +1,10 @@
 /**
- * /student/calendar — التقويم (web CalendarPage parity, mobile-recomposed):
+ * /student/calendar — التقويم (web CalendarPage parity, mobile-recomposed;
+ * R341 M7 web-language parity: the legend joins the chip register, the
+ * out-of-month dim is an INK step — never opacity — per the web r299
+ * AA ruling, weekend days read quiet ink, and TODAY stays the ONE
+ * emphasized cell: accent-soft wash + copper hairline edge + the
+ * numeral as a filled accent chip):
  * a real month grid on the audience calendar (Africa/Tripoli) uniting the
  * four deadline surfaces — recurring weekly classes (/enrollments/me
  * schedule slots), assignment due dates, exam windows and live sessions
@@ -197,15 +202,30 @@ export default function CalendarScreen() {
           void dash.refetch();
         }}
       >
-      {/* Legend — words + dots */}
+      {/* Legend — the chip register: one quiet hairline chip per kind
+          (web .cal-legend grammar — sunken ground, hairline frame, 0
+          radius) behind the eyebrow that classifies the row. */}
       {/* T-50 (review-1 T12): the calendar was a motionless seat —
           legend + month block take the staggered entrance, month swaps
           fade (remount key), day taps fire selection haptics. */}
-      <Animated.View entering={entering(0)} style={{ flexDirection: "row", flexWrap: "wrap", gap: sp[10], rowGap: 4 }}>
+      <Animated.View entering={entering(0)} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: sp[6], rowGap: 4 }}>
+        <T variant="xs" color="muted">أنواع المواعيد</T>
         {(Object.keys(KIND_LABEL) as CalKind[]).map((kind) => (
-          <View key={kind} style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+          <View
+            key={kind}
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 4,
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: p.border,
+              backgroundColor: p.sunken,
+              paddingHorizontal: sp[8],
+              paddingVertical: 3,
+            }}
+          >
             <View style={{ width: 8, height: 8, backgroundColor: dotColor(kind) }} />
-            <T variant="xs" color="muted">
+            <T variant="xs" color="secondary">
               {KIND_LABEL[kind]}
             </T>
           </View>
@@ -265,6 +285,13 @@ export default function CalendarScreen() {
                   const kinds = kindsFor(cell.key);
                   const count = byDay.get(cell.key)?.length ?? 0;
                   const isToday = cell.key === todayKey;
+                  /* R341 M7 — the web r299 AA ruling: out-of-month reads
+                     as an INK step (muted tier), never opacity; the
+                     Libya weekend (Fri/Sat, dow 5/6 on the 0=Sunday
+                     contract) reads quiet ink too — today always wins. */
+                  const weekend = cell.dow === 5 || cell.dow === 6;
+                  const dayInk =
+                    !cell.inMonth || (weekend && !isToday) ? p.textMuted : p.text;
                   return (
                     <Pressable
                       key={cell.key}
@@ -284,19 +311,33 @@ export default function CalendarScreen() {
                       style={[
                         styles.cell,
                         {
-                          borderColor: p.border,
+                          /* Today = the ONE emphasized cell: accent-soft
+                             wash + copper edge (the numeral becomes a
+                             filled accent chip below) — web parity. */
+                          borderColor: isToday ? p.accent : p.border,
                           backgroundColor: isToday ? p.accentSoft : "transparent",
-                          opacity: cell.inMonth ? 1 : 0.35,
                         },
                       ]}
                     >
-                      <T
-                        variant="sm"
-                        weight={isToday ? "bold" : "regular"}
-                        style={{ color: isToday ? p.accentInk : p.text }}
-                      >
-                        {formatNumber(cell.day)}
-                      </T>
+                      {isToday ? (
+                        <View
+                          style={{
+                            minWidth: 24,
+                            minHeight: 24,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: p.accent,
+                          }}
+                        >
+                          <T variant="sm" weight="bold" color="onAccent">
+                            {formatNumber(cell.day)}
+                          </T>
+                        </View>
+                      ) : (
+                        <T variant="sm" style={{ color: dayInk }}>
+                          {formatNumber(cell.day)}
+                        </T>
+                      )}
                       {kinds.length > 0 ? (
                         <View style={{ flexDirection: "row", gap: 3, marginTop: 2 }}>
                           {kinds.map((kind) => (

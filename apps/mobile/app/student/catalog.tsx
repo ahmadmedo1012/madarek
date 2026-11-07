@@ -1,6 +1,8 @@
 /**
  * /student/catalog — دليل المقرّرات (R334 Round-2 recompose, web
- * CatalogPage parity, read-only): DataList + usePagedList on the
+ * CatalogPage parity + R341 M7 web-language parity: the [01] bar
+ * carries the server's honest total as quiet mono meta; read-only):
+ * DataList + usePagedList on the
  * paginated /courses endpoint (infinite scroll with the honest
  * load-more footer — the manual prev/next pager retired), 250ms
  * debounced search, a department FilterSheet (facets from /faculties,
@@ -235,6 +237,7 @@ export default function CatalogScreen() {
   const searching = term.length > 0;
   const filtering = searching || departmentId !== null;
   const offlineFailure = isNetworkFailure(list.query.error);
+  const totalLabel = countAr(list.total, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"]);
 
   return (
     <Screen scroll={false} padded={false}>
@@ -295,17 +298,15 @@ export default function CatalogScreen() {
               </Pressable>
             </View>
 
+            {/* R341 M7 — the section bar carries the server's honest
+                total as its quiet mono meta (the web BarCount seat). */}
             <SectionBar
               index={1}
               title="مقرّرات المؤسسة"
-              action={
-                <T variant="xs" color="muted">
-                  {latn(list.total)}
-                </T>
-              }
+              action={<BarCount n={list.total} a11y={totalLabel} />}
             />
             <T variant="sm" color="muted" numberOfLines={2}>
-              {countAr(list.total, ["مقرّر واحد", "مقرّران", "مقرّرات", "مقرّراً"])}
+              {totalLabel}
               {searching ? ` · نتائج البحث عن «${term}»` : ""}
               {departmentName ? ` · ${departmentName}` : ""}
             </T>
@@ -460,5 +461,16 @@ export default function CatalogScreen() {
         </AppSheet>
       ) : null}
     </Screen>
+  );
+}
+
+/** R341 M7 — the section bar's quiet mono meta (web BarCount grammar):
+ *  the honest row count as padded Latin digits in the faint mono voice —
+ *  data riding the [01] bar, never a second accent moment. */
+function BarCount({ n, a11y }: { n: number; a11y: string }) {
+  return (
+    <T variant="monoSm" color="faint" accessibilityLabel={a11y}>
+      {latn(n).padStart(2, "0")}
+    </T>
   );
 }
