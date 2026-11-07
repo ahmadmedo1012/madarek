@@ -23,9 +23,10 @@
  *     transparent bars. This helper tints the ROOT VIEW to the theme's page
  *     ground (expo-system-ui setBackgroundColorAsync) so the overscroll /
  *     cold-boot gap behind the transparent bars never flashes white in dark
- *     mode. expo-navigation-bar (contrast enforcement for gesture-handle
- *     scrim) is NOT a dependency — flagged in the docs; adding it is a
- *     LEAD decision (new dep), not silent here.
+ *     mode. R340 T-M5 (LR-001) resolved the lead decision: expo-navigation-bar
+ *     IS now a dependency (plugin `enforceContrast: true` + the theme-derived
+ *     AppNavigationBar in src/design/navbar.tsx — the bottom-side sibling of
+ *     this module).
  *   · Status-bar ICON/CLOCK appearance (`style`) still works cross-platform:
  *     expo-status-bar maps it onto the platform appearance APIs. The exact
  *     native path on Android edge-to-edge is UNVERIFIED on device from this

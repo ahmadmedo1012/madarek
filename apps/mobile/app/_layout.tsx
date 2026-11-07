@@ -26,6 +26,10 @@ import { fontMap } from "@/design/fonts";
 // R334 2-f — the status bar derives its style from the EFFECTIVE app theme
 // (a user preference), never the device scheme (`auto` was wrong).
 import { AppStatusBar } from "@/design/statusbar";
+// R340 T-M5 (LR-001) — the bottom-side sibling: theme-derived Android
+// navigation bar (gesture-handle contrast under enforced edge-to-edge).
+// Android-only no-op elsewhere; see src/design/navbar.tsx.
+import { AppNavigationBar } from "@/design/navbar";
 // R334 B8 (resilience) — the offline layer the root mounts:
 //   · NetworkBanner — self-subscribing connectivity banner (it also wires
 //     NetInfo → TanStack onlineManager, so queries pause/resume honestly)
@@ -186,6 +190,9 @@ export default function RootLayout() {
             <BiometricGate>
               {/* R334 2-f — theme-derived status bar (was: style="auto"). */}
               <AppStatusBar />
+              {/* R340 T-M5 (LR-001) — theme-derived Android navigation bar
+                  (gesture-handle contrast; null on iOS/web). */}
+              <AppNavigationBar />
               <ErrorBoundary scope="navigator">
                 <RootNavigator />
               </ErrorBoundary>

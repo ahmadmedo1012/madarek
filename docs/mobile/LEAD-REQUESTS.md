@@ -9,7 +9,7 @@ The lead applies these at merge. Format: what / why / exact diff / blocked-by.
 - **What:** Optionally add `expo-navigation-bar` to `apps/mobile/package.json` + plugin config for Android gesture-handle contrast under edge-to-edge.
 - **Why:** SDK-58 edge-to-edge makes Android system bars transparent; without it the gesture handle can sit on low-contrast content in dark mode.
 - **Exact diff:** none prepared — this is a lead decision; R334 works without it (status-bar handled via `expo-status-bar` + root-view tint via `expo-system-ui`, already installed).
-- **Status:** open — deferred; not required for Round 1 (no native change made).
+- **Status:** **RESOLVED by r340/T-M5** — `expo-navigation-bar@~58.0.4` installed; plugin `enforceContrast: true` in `app.config.ts`; theme-derived `AppNavigationBar` (`src/design/navbar.tsx`) mounted at the root (`app/_layout.tsx`). New native dep → new runtime fingerprint → needs a binary build (see `scripts/build-android-local.sh` + `docs/mobile/ANDROID-LOCAL.md`); OTA alone cannot ship it.
 - **Raised by:** 2-f Theming (see `docs/mobile/foundations/theming.md`).
 
 <!-- Template:

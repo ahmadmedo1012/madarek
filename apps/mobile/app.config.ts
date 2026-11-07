@@ -69,6 +69,16 @@ const config: ExpoConfig = {
         color: "#FA3600",
       },
     ],
+    // R340 T-M5 (LR-001) — expo-navigation-bar for Android gesture-handle
+    // contrast under enforced edge-to-edge: `enforceContrast` keeps the OS's
+    // translucent scrim behind the gesture handle / 3-button bar so it never
+    // sits on low-contrast content in dark mode. The concrete bar STYLE is
+    // derived at runtime from the effective app theme (src/design/navbar.tsx
+    // → AppNavigationBar in app/_layout.tsx); this plugin entry covers the
+    // pre-JS cold-boot moment. NEW NATIVE DEP → new fingerprint → needs a
+    // new binary build (local gradle path: scripts/build-android-local.sh,
+    // docs/mobile/ANDROID-LOCAL.md); OTA alone cannot ship this.
+    ["expo-navigation-bar", { enforceContrast: true }],
     ["expo-document-picker", { iCloudDirectoryEnabled: false }],
     "expo-video",
     // R327 C3 — the biometric app-lock (cold-start gate). D3: the

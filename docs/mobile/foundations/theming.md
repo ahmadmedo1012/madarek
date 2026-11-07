@@ -105,8 +105,11 @@ import { AppStatusBar } from "@/design/statusbar";
 - **Types + module code verified; the native Android path is
   device-UNVERIFIED from this sandbox.**
 - `expo-navigation-bar` (contrast enforcement for the gesture-handle
-  scrim) is NOT a dependency — adding it is a LEAD decision (new dep),
-  see LEAD-REQUESTS.
+  scrim) is now a dependency — LR-001, resolved by r340/T-M5: plugin
+  `enforceContrast: true` in `app.config.ts` + the theme-derived
+  `AppNavigationBar` (`src/design/navbar.tsx`) mounted at the root. New
+  native dep → new fingerprint → requires a binary build
+  (`scripts/build-android-local.sh`, docs/mobile/ANDROID-LOCAL.md).
 - iOS: unchanged behavior; `style` is the same prop the root layout uses.
 
 ---
