@@ -425,15 +425,15 @@
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student/exams.css :: .oex-choice:active",
+      "key": "patterns.css :: .oex-choice:active",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student/exams.css :: .oex-choice:has(input:disabled):hover",
+      "key": "patterns.css :: .oex-choice:has(input:disabled):hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {
-      "key": "student/exams.css :: .oex-choice:hover",
+      "key": "patterns.css :: .oex-choice:hover",
       "reason": "SURFACE-STEP-ONLY hover — the base ink is unchanged and stays AA on the stepped ground: the fg half never moves, only the surface steps"
     },
     {

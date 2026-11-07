@@ -47,12 +47,13 @@ import '../../styles/student/heron-schedule.css';
 import '../../styles/teacher/heron.css'; // R305 — the Heron layer (oex2- section lives here)
 /* ── R321 B1a (student sweep) — the exams LIST joins the sheet system:
  * the shared §B2 anatomy sheet (page-chunked like every converted
- * family page — the JobsPage/SettingsPage precedent), then THIS
- * family's own harmonics (the .r321x-page opt-in root + the
- * inner-scale masthead re-seat; family-unique rules only, the
- * r319-student-pages.css contract). ── */
+ * family page — the JobsPage/SettingsPage precedent). r341 D7b: the
+ * family's own harmonics (.r321x-page/.r321x-taker seating + the oex-
+ * taker instruments) live in the pattern library now — patterns.css
+ * §9, consolidated from the deleted styles/student/exams.css (the
+ * D1b auth.css precedent: same @layer homes, unlayered tails stay
+ * unlayered, class names unchanged — the belt pins hold). ── */
 import '../../styles/student/pages.css';
-import '../../styles/student/exams.css';
 
 const KIND_LABEL: Record<string, string> = {
   QUIZ: 'اختبار قصير', MIDTERM: 'نصفي', FINAL: 'نهائي', PRACTICE: 'تدريبي',
@@ -1224,6 +1225,11 @@ export function ExamTakerPage() {
           <Reveal as="section" className="oex-cover" aria-labelledby="oex-cover-title">
             <header className="oex-cover-head">
               <p className="oex-cover-eyebrow">
+                {/* r341 D7b — the family's own [01] gutter numeral (the
+                    PageHeader index register): the cover is the page's one
+                    h1 moment and carries the page-index mono label like
+                    every pattern-library header on the sheet. */}
+                <span className="page-index" aria-hidden="true" dir="ltr">[01]</span>
                 {hasLiveAttempt ? 'لديك محاولة قيد التقدم' : 'هل أنت مستعد للبدء؟'}
               </p>
               {/* PI-REC contract reconciliation: the D5 resume contract
