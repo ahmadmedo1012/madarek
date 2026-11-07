@@ -528,3 +528,26 @@
     color: var(--text);
   }
 }
+
+/* ═══ L1-e (R341 · T-16 #2) — the index-numeral rung belt (TYPE only) ═══
+   The [03] kicker numeral and the 01/02 meta indexes ride Heron's
+   measured Geistmono register (--fs-mono-md = the chrome spec's
+   11.67 @1440 · 13.89 @390). The (0,2,0) belt out-ranks footer.css's
+   global ≤767 `.fo-mono` © census (9.92px), which was leaking onto
+   every page-wide .fo-mono seat at 390 and put the index strip under
+   the 11px legibility floor. Same value as the 1.4rem these seats
+   declared at ≥768 — tokenized + leak-proof, no desktop change. */
+.pm-section .pm-kicker-text,
+.pm-section .pm-index {
+  font-size: var(--fs-mono-md);
+}
+
+/* The ghost index ink (her rgb(180,180,176) register ≈1.9:1) fails the
+   AA 4.5:1 floor at 390 — the panel's unreadable index. The mobile belt
+   seats the index in the muted ink (5.5:1 on paper); ≥768 keeps the
+   measured ghost. */
+@media (max-width: 767px) {
+  .pm-section .pm-index {
+    color: var(--text-muted);
+  }
+}
