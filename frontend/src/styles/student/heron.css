@@ -60,22 +60,11 @@
   }
 
   /* ── 2 · Thin technical dividers ──────────────────────────────────
-     Hairlines carry the layout: horizontal section rule, vertical
-     column rule, and the labeled variant that stamps a micro-label
-     INTO the line (Heron's annotated divider). */
-  .r305s-rule {
-    border: 0;
-    block-size: 1px;
-    background: var(--surface-divider);
-    margin-block: var(--sp-5);
-  }
-  .r305s-rule--strong { background: var(--rule); }
-  .r305s-rule-v {
-    inline-size: 1px;
-    align-self: stretch;
-    background: var(--surface-divider);
-    flex: none;
-  }
+     Hairlines carry the layout. Only the labeled variant survives
+     (the annotated divider that stamps a micro-label INTO the line) —
+     the bare hr-style .r305s-rule, its --strong modifier and the
+     vertical .r305s-rule-v are zero-seat since the R319 SectionBar
+     swap (rg-proven, r341 D7a) — deleted. */
   .r305s-rule-labeled {
     display: flex;
     align-items: center;
@@ -185,27 +174,14 @@
   .r305s-chip--gold    .r305s-chip-dot { background: var(--gold); }
 
   /* ── 5 · Numerals — the technical metric register ────────────────
-     Metrics are the mono voice (IDs + tabular numerals only — the
-     r197 mono contract), always formatted upstream via
-     utils/numbers.ts; the class never formats, never counts. */
-  .r305s-metric {
-    font-family: var(--font-mono);
-    font-size: var(--fs-metric-md);
-    font-weight: var(--fw-bold);
-    font-variant-numeric: tabular-nums;
-    line-height: 1.2;
-    color: var(--text-strong);
-  }
-  .r305s-metric-label {
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    color: var(--text-muted);
-    line-height: 1.4;
-  }
+     R341 D7a — the .r305s-metric / .r305s-metric-label twins are
+     zero-seat (rg-proven: every metric voice rides the pattern
+     StatLine, the §B2 .r319s-count mono register, or the deep band's
+     .pf-stat-value rule below) — deleted with their recipes. */
 
   /* ── 6 · Kicker row — editorial section heading ───────────────────
-     Title at the section register (18px), optional trailing action,
-     the hairline filling the remainder: heading and divider as ONE
+     Title at the section register (18px), the hairline filling the
+     remainder: heading and divider as ONE
      object instead of a boxed card header. */
   .r305s-kicker {
     display: flex;
@@ -225,7 +201,9 @@
     flex: 1;
     background: var(--surface-divider);
   }
-  .r305s-kicker-action { flex: none; }
+  /* r341 D7a — .r305s-kicker-action is zero-seat (rg-proven; the
+     kicker rows that survive — MorePages' §B2-era sections — render
+     no trailing action span) — deleted. */
 
   /* ── 7 · The one-action emphasis ──────────────────────────────────
      Heron restraint: exactly one emphasized action per view region.

@@ -28,38 +28,32 @@
   /* ── 1 · Courses list (/student/courses) ──────────────────────────
      RowList rows: quiet Heron metadata + precise progress. The code/
      teacher/lecture-count line rides the foundation .r305s-meta-row
-     (TSX); here only the row's progress track is tuned to the Heron
-     hairline register so the tabular % readout — not the bar — is the
-     loudest number on the row. */
-  .courses-row-progress .progress-track {
-    block-size: var(--sp-1-5);
-    background: var(--surface-2);
-    /* R313 (WP-E): hairline frame via border (the inset box-shadow
-       ring reads as a shadow in the surface sweep). */
-    border: 1px solid var(--surface-border);
-  }
-  /* The row's % readout: the mono metric voice, one step stronger than
-     the head label (the readout is the row's data; the label is chrome). */
-  .courses-row-progress .progress-head { font-variant-numeric: tabular-nums; }
-
-  /* The upcoming-assignments rows: the due-state chip carries ONE verb
-     (تسليم) — the trailing action is the row's only emphasized control;
-     the chip stays quiet. Nothing to restyle — .r305s-chip is the
-     foundation's — but the chip must never wrap mid-label inside the
-     row's trailing cluster. */
-  .pf-row-trailing .r305s-chip { white-space: nowrap; }
+     (TSX); the row's progress is the §B2 CourseBar (the hairline +
+     end-tick instrument — r319-student-pages.css §3 seats it), so the
+     old ProgressBar track/head refinements that lived here are
+     zero-seat since the c3-S1 swap (rg-proven, r341 D7a) — deleted.
+     r341 D7a — the row's ONE act-now verb seats on the accent
+     register: the CoursesPage renders `span.btn.accent.sm
+     .courses-row-go--now` on the first still-unfinished course (the
+     exams list's oex-row-cta precedent); the seating (44px craft
+     floor + the phone-band visibility) lives in student.css beside
+     the .courses-row-go family it extends. */
 
   /* ── 2 · Catalog (/student/catalog) ───────────────────────────────
      Editorial heading register: the read-only classification (enrollment
      is admin-mediated — the honest-door note below says the same thing)
-     rides the foundation eyebrow above the legacy .page-title block. */
-  .page-title-block .r305s-eyebrow { margin-block-end: var(--sp-1); }
-  /* The technical rule that closes the header register. */
+     rides the patterns PageHeader's own eyebrow seat since the r288
+     anatomy fold; the old .page-title-block re-seat below it is
+     zero-seat on this route (rg-proven, r341 D7a) — deleted. */
 
   /* The honest-door note (r180-F4): enrollment is admin-mediated. Same
      accent-soft grammar the SubmitAssignmentModal done-banner uses —
      moved from inline styles into the family sheet so the surface
-     anatomy is inspectable next to its siblings. */
+     anatomy is inspectable next to its siblings.
+     r341 D7a — the ink re-keys to --accent-strong: light --accent-ink
+     measured 4.48:1 on --accent-soft — a hair under the 4.5 floor
+     (the conformance ink probe + axe). The deep copper tier clears
+     both themes by construction: 6.10:1 light / 9.51:1 dark. */
   .r305c-note {
     display: flex;
     align-items: flex-start;
@@ -67,7 +61,7 @@
     padding: var(--sp-3) var(--sp-4);
     border-radius: var(--r-md);
     background: var(--accent-soft);
-    color: var(--accent-ink);
+    color: var(--accent-strong);
     font-size: var(--fs-sm);
     line-height: var(--lh-base);
   }
@@ -160,9 +154,10 @@
 
   /* Reduced-motion belt: this sheet introduces no animation of its own
      (hover/focus are the shared system's grammar). The hairlines above
-     are static; nothing to disable — kept as the explicit contract. */
+     are static; nothing to disable — kept as the explicit contract.
+     r341 D7a — the .courses-row-progress .progress-track arm died with
+     its rule above (zero seats since the §B2 CourseBar swap). */
   @media (prefers-reduced-motion: reduce) {
-    .lecture-panel .lecture-panel-sec-title::before,
-    .courses-row-progress .progress-track { transition: none; }
+    .lecture-panel .lecture-panel-sec-title::before { transition: none; }
   }
 }

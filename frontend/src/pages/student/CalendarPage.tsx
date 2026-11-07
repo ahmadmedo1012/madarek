@@ -9,12 +9,16 @@ import { Card, Badge } from '../../components/primitives';
 import { ErrorState, EmptyState, Skeleton } from '../../components/primitives/States';
 import { PageFrame, PageHeader } from '../../components/patterns';
 /* R319 (c3-S2) — the §B2 kit: the today week strip (the page's genuine
- * week context) + the hatched empty cell. */
-import { WeekStrip, EmptyCell } from '../../components/student';
+ * week context) + the hatched empty cell + the mono-indexed section
+ * bar that opens the month instrument (r341 D7a — the calendar joins
+ * the family's [nn] register: every student page's regions open with
+ * the SectionBar). */
+import { WeekStrip, EmptyCell, SectionBar, BarCount } from '../../components/student';
 import { Icon } from '../../components/Icon';
 import { useStudentDashboard, useMyEnrollments, useMyExams } from '../../hooks/useResources';
 import { WEEKDAY_NAMES_AR, arUnit } from '../../lib/format';
 import { ASSIGNMENT_KIND_LABEL, EXAM_KIND_LABEL } from '../../lib/courseMeta';
+import { countAr } from '../../lib/format';
 import {
   monthGrid,
   monthTitleAr,
@@ -231,7 +235,10 @@ export default function StudentCalendarPage() {
       <PageFrame width="default">
         <PageHeader title="التقويم الأكاديمي" description="جارٍ جمع مواعيدك…" />
         {/* R319 (c3-S2): the week strip — the page's genuine today/week
-            context (the grid's today cell anchors on it). */}
+            context (the grid's today cell anchors on it). r341 D7a: the
+            [01] bar opens the month instrument in the pending mirror
+            too — the settled handoff moves nothing (the r172b law). */}
+        <SectionBar index="01" title="مواعيد الشهر" />
         <WeekStrip />
         <div aria-busy="true" aria-live="polite">
           <CalendarSkeleton />
@@ -246,6 +253,7 @@ export default function StudentCalendarPage() {
       <div className="r319s-page">
       <PageFrame width="default">
         <PageHeader title="التقويم الأكاديمي" />
+        <SectionBar index="01" title="مواعيد الشهر" />
         <ErrorState
           message="تعذَّر تحميل التقويم الأكاديمي"
           error={failed.error}
@@ -274,11 +282,37 @@ export default function StudentCalendarPage() {
           'كل مواعيدك في نظرة واحدة: الحصص الأسبوعية، ومواعيد تسليم الواجبات، ' +
           'ونوافذ الاختبارات، والبث المباشر — بتوقيت ليبيا.'
         }
+        /* r341 D7a — the header's action seat: the honest cross-route
+           verb on the accent register (the quality pages' «لوحة الجودة»
+           precedent). The calendar is a read-only composition — its one
+           primary action sends the student to TODAY's commitments on
+           the dashboard (the reciprocal of the dashboard's «التقويم
+           الكامل» ghost). */
+        actions={
+          <Link to="/student/dashboard" className="btn accent sm">
+            التزامات اليوم
+          </Link>
+        }
       />
 
       {/* R319 (c3-S2): the week strip — the page's genuine today/week
           context: the current week as one hairline row of 7 cells with
-          today inked, above the month grid whose today cell anchors it. */}
+          today inked, above the month grid whose today cell anchors it.
+          r341 D7a: the [01] SectionBar opens the month instrument (the
+          family's mono-indexed register) with the honest days-with-
+          events count as its quiet mono meta (countAr for AT). */}
+      <SectionBar
+        index="01"
+        title="مواعيد الشهر"
+        meta={
+          monthEventCount > 0 ? (
+            <BarCount
+              n={monthEventCount}
+              srLabel={countAr(monthEventCount, ['يوم واحد له مواعيد', 'يومان لهما مواعيد', 'أيام لها مواعيد', 'يوماً له مواعيد'])}
+            />
+          ) : undefined
+        }
+      />
       <WeekStrip />
 
       <Card className="cal-card" flush>

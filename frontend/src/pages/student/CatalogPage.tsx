@@ -1,4 +1,5 @@
 import { useEffect, useState, type CSSProperties } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Search, X, BookOpen, Info, ChevronRight, ChevronLeft,
 } from 'lucide-react';
@@ -154,7 +155,14 @@ export default function CatalogPage() {
           r288 anatomy fold — .page-title was already byte-identical to
           .pf-page-title) so the route carries the ambient sheet code
           + the ONE masthead display voice; the read-only classification
-          rides the eyebrow seat. */}
+          rides the eyebrow seat.
+          r341 D7a — the header's action seat: the honest cross-route
+          verb on the accent register (the quality pages' «لوحة الجودة»
+          precedent). The catalogue itself is read-only by product
+          contract (enrollment is admin-mediated — the note below says
+          so), so the one primary action is the reciprocal of the
+          courses page's «دليل المقرّرات» ghost: jump to the student's
+          OWN enrolled courses. */}
       <PageHeader
         title="دليل المقرّرات"
         eyebrow="مرجع للقراءة فقط"
@@ -162,6 +170,11 @@ export default function CatalogPage() {
           institutionName
             ? `فهرس مقرّرات ${institutionName} — للبحث والاطّلاع على الخطة الدراسية.`
             : 'فهرس مقرّرات مؤسستك — للبحث والاطّلاع على الخطة الدراسية.'
+        }
+        actions={
+          <Link to="/student/courses" className="btn accent sm">
+            مقرّراتي المسجّلة
+          </Link>
         }
       />
 
