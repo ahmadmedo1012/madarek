@@ -24,6 +24,11 @@
  * handed to the CSS-foundations wave.
  */
 export { useReducedMotion } from './useReducedMotion';
+/* r341/A-Medic: the in-app numeric count-up reveal — promoted from the
+ * DashboardPage/QualityPages byte-copy twins (wave 5-c's header named
+ * this promotion as the plan). CourseDetailPage's useCountUp stays
+ * page-local by design (different easing/rounding contract). */
+export { CountIn } from './CountIn';
 export { PageTransition } from './PageTransition';
 export { Skeleton } from './Skeleton';
 export type { SkeletonVariant } from './Skeleton';
