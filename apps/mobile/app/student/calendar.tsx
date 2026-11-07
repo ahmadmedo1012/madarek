@@ -219,7 +219,7 @@ export default function CalendarScreen() {
               gap: 4,
               borderWidth: StyleSheet.hairlineWidth,
               borderColor: p.border,
-              backgroundColor: p.sunken,
+              backgroundColor: p.surfaceHover,
               paddingHorizontal: sp[8],
               paddingVertical: 3,
             }}
