@@ -555,7 +555,11 @@
   .fo-form-row { margin-block-start: 13.33px; }
   .fo-contact-h { margin: 5px 0 0; font-size: 13.33px; line-height: 18px; }
   .fo-link { padding: 4.17px; font-size: 13.33px; line-height: 17.33px; }
-  .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: 38.3px; }
+  /* L2-c: block-size auto + the 38.3px floor — the 2-line Arabic biglink
+     (2×19.2 lh + 8.34 padding = 46.74px) overflowed the fixed 38.3px box
+     and its second line's ink ran 9px into the ADDRESS label below
+     (sweep-measured @390). The floor keeps the 1-line seat at 38.3px. */
+  .fo-biglink { margin-block-start: 5px; padding: 4.17px; block-size: auto; min-block-size: 38.3px; }
   .fo-biglink-t { font-size: 18.3px; line-height: 19.2px; }
   .fo-social { padding: 4.17px; block-size: 23.3px; }
   .fo-social-t1,
@@ -584,7 +588,23 @@
   .fo-footer-cluster { font-size: 9.92px; line-height: 13.39px; }
   .fo-legal-link { padding-inline: 10px; font-size: 11.67px; line-height: 15.17px; }
   .fo-footer-bottom { margin-block-start: -80px; flex-direction: column; }
-  .fo-legal-row { inline-size: auto; justify-content: space-between; row-gap: 0; }
+  /* L2-c (R341 panel-1 finding 3 — mobile footer collisions): the wrapped
+     legal rows span the full 374px sheet, so the rows' inline-end links
+     park their ink at x18–37 — exactly under the scroll-rule chrome stack
+     (scr-pct x33–61 / bl-count x20–69, fixed, ink-on-ink measured:
+     «التخزين المحلي» × «100%», «تطبيق الجوال» × «09 / 09»). The row keeps
+     Heron's full-sheet law but reserves the chrome's measured 66px corner
+     band on the inline end — link ink now starts ≥ x74. */
+  .fo-legal-row { inline-size: auto; justify-content: space-between; row-gap: 0; padding-inline-end: 66px; }
+}
+
+/* L2-c (R341 panel-1 finding 3) — the 768 social un-crush, seated AFTER the
+   ≤991 belt so the belt's own `block-size: 25px` cannot re-crush it (the
+   belt's 0 row-gap is what turned the t1/t2 pair's 42.34px of content into
+   a 9px row-N×row-(N+1) ink collision; 390's 15px row-gap absorbs the
+   bleed and keeps its own 23.3px seat — untouched). */
+@media (min-width: 768px) and (max-width: 991px) {
+  .fo-social { block-size: auto; min-block-size: 25px; }
 }
 
 /* ═══ dark theme: the 72% soft-ink literals above are the LIGHT
