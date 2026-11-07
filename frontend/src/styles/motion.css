@@ -149,6 +149,7 @@
   .skeleton {
     display: inline-block;               /* span primitives take dimension */
     min-height: 1em;                     /* variants override */
+    max-width: 100%;                     /* R341: a fixed-width bar never pokes past its card — the 320-floor KpiSkeleton case (r305 no-overflow belt) */
     border-radius: var(--r-sm);
     background-color: var(--surface-3);  /* static/RM ground */
     background-image: linear-gradient(
@@ -163,6 +164,20 @@
   }
   [dir="ltr"] .skeleton {
     animation-name: skeleton-shimmer-ltr;
+  }
+  /* R341 (r305 no-overflow belt, the 320 floor): KpiSkeleton mirrors the
+     MetricCard anatomy with FIXED-width bars (80/70/120). After D6's
+     phone-band gutter re-key (.content-inner gives 8px back to .main) the
+     metric card's content box shrank; at 320 the 120px change-bar poked
+     3px past the card's trailing (RTL: left) edge and .content's
+     scrollWidth read 307 > 304 mid-skeleton. The head column is a bare
+     flex item with NO width constraint of its own (no rule anywhere),
+     so the cap lives HERE with the skeleton family: the column may
+     never exceed its card, and the bars inside may never exceed the
+     column. Loaded metrics always fit — this is the loading state only. */
+  .metric .metric-head {
+    min-width: 0;
+    max-width: 100%;
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -38,8 +38,14 @@ const SHELL_LANDMARKS = ['.topbar-title', 'h1.pf-page-title', '.bottom-nav'];
  * the CONTAINERS (header bar, main, hero title cell, footer): never
  * the marquee tracks (.fo-hero-work-track/.fo-ticker-track) — those
  * deliberately run past both edges inside an overflow-hidden clip,
- * exactly like a printed strip wider than the window. */
-const LANDING_LANDMARKS = ['.fo-header-inner', 'main#main', '.fo-hero-title', '.fo-footer-inner'];
+ * exactly like a printed strip wider than the window.
+ * R341 re-key: the footer landmark was .fo-footer-inner until the
+ * f301041a conformance footer rewrite renamed the container to .fo-in
+ * (data-spec="footer.in" — the live contract; visible while Actions
+ * was dead, so the pin silently rotted). Re-keyed to the live class;
+ * the contract itself (container inside footer, no overflow) is
+ * unchanged. */
+const LANDING_LANDMARKS = ['.fo-header-inner', 'main#main', '.fo-hero-title', '.fo-in'];
 
 test.describe('الزائر — فيض أفقي صفري', () => {
   for (const vp of NARROW_VIEWPORTS) {
@@ -68,7 +74,7 @@ test.describe('الزائر — فيض أفقي صفري', () => {
         await page.evaluate(() =>
           window.scrollTo(0, document.scrollingElement?.scrollHeight ?? 0),
         );
-        await expect(page.locator('.fo-footer-inner')).toBeVisible();
+        await expect(page.locator('.fo-in')).toBeVisible(); // R341 re-key: .fo-footer-inner → .fo-in (f301041a)
         await expectNoHorizontalOverflow(page, LANDING_LANDMARKS);
       });
 
