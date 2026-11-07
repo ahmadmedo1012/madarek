@@ -9,7 +9,7 @@
  * statically — public + student/teacher/admin/quality/owner + the
  * shared authenticated surfaces — at 1440/768/390, over EVERY heading
  * level h1–h4 PLUS the classed heading seats (.pf-page-title,
- * .page-title, .lg-title, .lg-bar, .lg-faq-q, .cu-title, .nf-title,
+ * .page-title, .lg-title, .lg-bar, .hp-faq-q, .cu-title, .nf-title,
  * .auth-form-title, .card-title, .vision-h2, step/section-bar titles)
  * and mono micro-labels.
  *
@@ -100,7 +100,7 @@ const ROLE_PASSWORD = process.env.AUDIT_PASSWORD || '12345678';
 
 /* ── collectors (run inside the page) ─────────────────────────────── */
 const COLLECT_FN = () => {
-  const HEADING_SEATS = '.pf-page-title, .page-title, .lg-title, .lg-bar, .lg-faq-q, .cu-title, .nf-title, .auth-form-title, .card-title, .vision-h2, .vision-hero-title, .r319s-bar-title, .lecture-meta-title, .r321x-cover-title, .oex-result-title, .hr-section-head h2, .hr-section-head h3, .pf-section-title, .college-city-name, .college-hero-name, .comp-hero-title, .guest-cta-title, .vc-title, .onboarding-flow-headline, .cal-month, .teacher-name, .doc-reader-title, .r305s-kicker-title, .r305rp-kicker-title, .r305rp-rev-masthead-title, .tpg-queue-title, .modal-title, .state-title, .owner-confirm-title, .pf-today-title, .lab-hero-title, .dash-section-title, .dash-resume-course-name, .section-title, .notif-panel-title, .search-empty-title, .cert-title, .momentum-title, .lecture-panel-title, .lib-cover-title';
+  const HEADING_SEATS = '.pf-page-title, .page-title, .lg-title, .lg-bar, .hp-faq-q, .cu-title, .nf-title, .auth-form-title, .card-title, .vision-h2, .vision-hero-title, .r319s-bar-title, .lecture-meta-title, .r321x-cover-title, .oex-result-title, .hr-section-head h2, .hr-section-head h3, .pf-section-title, .college-city-name, .college-hero-name, .comp-hero-title, .guest-cta-title, .vc-title, .onboarding-flow-headline, .cal-month, .teacher-name, .doc-reader-title, .r305s-kicker-title, .r305rp-kicker-title, .r305rp-rev-masthead-title, .tpg-queue-title, .modal-title, .state-title, .owner-confirm-title, .pf-today-title, .lab-hero-title, .dash-section-title, .dash-resume-course-name, .section-title, .notif-panel-title, .search-empty-title, .cert-title, .momentum-title, .lecture-panel-title, .lib-cover-title';
   const isMono = (ff) => /mono/i.test(ff);
   const seen = new Set();
   const grab = (el, kind) => {

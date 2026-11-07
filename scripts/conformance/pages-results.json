@@ -1,23 +1,23 @@
 {
- "generatedAt": "2026-11-07T08:57:37.754Z",
- "url": "http://localhost:5341",
+ "generatedAt": "2026-11-07T10:16:24.352Z",
+ "url": "http://localhost:5343",
  "dark": true,
  "routes": {
-  "/auth/register": {
+  "/help": {
    "1440:dark": {
-    "score": 98.4,
+    "score": 99.4,
     "axes": {
      "typeRungs": {
-      "score": 95.23809523809523,
+      "score": 98.21428571428571,
       "distinctTiers": true,
       "fails": [
        {
-        "fs": 46.6667,
+        "fs": 28,
         "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "من أنت؟"
+        "text": "المساعدة والأسئلة الشائع"
        }
       ],
-      "total": 21,
+      "total": 56,
       "resolvedRungs": [
        66.6667,
        60,
@@ -58,16 +58,16 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95.23809523809523,
+      "score": 98.21428571428571,
       "fails": [
        {
-        "text": "1",
+        "text": "تخطَّ إلى المحتوى",
         "ratio": 3.76,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(250, 54, 0)"
        }
       ],
-      "total": 21
+      "total": 56
      },
      "edge390": {
       "score": 100,
@@ -78,24 +78,18 @@
      "hover": {
       "score": 100,
       "channels": 2,
-      "label": "سجّل الدخول"
+      "label": "سجلّ القدرات"
      }
     }
    },
    "390:dark": {
-    "score": 98.4,
+    "score": 99.7,
     "axes": {
      "typeRungs": {
-      "score": 95.23809523809523,
+      "score": 100,
       "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 31.7557,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "من أنت؟"
-       }
-      ],
-      "total": 21,
+      "fails": [],
+      "total": 56,
       "resolvedRungs": [
        79.3893,
        71.4504,
@@ -136,16 +130,16 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 95.23809523809523,
+      "score": 98.21428571428571,
       "fails": [
        {
-        "text": "1",
+        "text": "تخطَّ إلى المحتوى",
         "ratio": 3.76,
         "color": "rgb(255, 255, 255)",
         "bg": "rgb(250, 54, 0)"
        }
       ],
-      "total": 21
+      "total": 56
      },
      "edge390": {
       "score": 100,
@@ -156,454 +150,7 @@
      "hover": {
       "score": 100,
       "channels": 2,
-      "label": "سجّل الدخول"
-     }
-    }
-   }
-  },
-  "/auth/forgot-password": {
-   "1440:dark": {
-    "score": 98.8,
-    "axes": {
-     "typeRungs": {
-      "score": 92.85714285714286,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 46.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "استعادة كلمة المرور"
-       }
-      ],
-      "total": 14,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 5
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 14
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "إرسال رابط الاستعادة"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 97.6,
-    "axes": {
-     "typeRungs": {
-      "score": 85.71428571428571,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 31.7557,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "استعادة كلمة المرور"
-       },
-       {
-        "fs": 16.4733,
-        "ff": "\"IBM Plex Sans Arabic\", Tajawal, system-",
-        "text": "البريد الإلكتروني"
-       }
-      ],
-      "total": 14,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 5
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 14
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "إرسال رابط الاستعادة"
-     }
-    }
-   }
-  },
-  "/auth/reset-password": {
-   "1440:dark": {
-    "score": 98.6,
-    "axes": {
-     "typeRungs": {
-      "score": 91.66666666666666,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 46.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الرابط غير صالح أو انتهت"
-       }
-      ],
-      "total": 12,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 2
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 12
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اطلب رابطًا جديدًا"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 98.6,
-    "axes": {
-     "typeRungs": {
-      "score": 91.66666666666666,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 31.7557,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الرابط غير صالح أو انتهت"
-       }
-      ],
-      "total": 12,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 2
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 12
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اطلب رابطًا جديدًا"
-     }
-    }
-   }
-  },
-  "/auth": {
-   "1440:dark": {
-    "score": 99.8,
-    "axes": {
-     "typeRungs": {
-      "score": 98.64864864864865,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 46.6667,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "مرحبا بعودتك"
-       }
-      ],
-      "total": 74,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 4
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 74
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "تسجيل الدخول"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 99.3,
-    "axes": {
-     "typeRungs": {
-      "score": 95.94594594594594,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 31.7557,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "مرحبا بعودتك"
-       },
-       {
-        "fs": 16.4733,
-        "ff": "\"IBM Plex Sans Arabic\", Tajawal, system-",
-        "text": "البريد الإلكتروني أو رقم"
-       },
-       {
-        "fs": 16.4733,
-        "ff": "\"IBM Plex Sans Arabic\", Tajawal, system-",
-        "text": "كلمة المرور"
-       }
-      ],
-      "total": 74,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 4
-     },
-     "pattern": {
-      "score": 100,
-      "paper": true,
-      "hairline": true,
-      "numeral": true,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 74
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "تسجيل الدخول"
+      "label": "سجلّ القدرات"
      }
     }
    }

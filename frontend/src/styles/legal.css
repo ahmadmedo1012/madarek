@@ -1,7 +1,8 @@
 /* ════════════════════════════════════════════════════════════════════
    مدارك — THE PUBLIC DOCUMENT SHEETS (R320 §D · c2-LEGAL)
    /legal/privacy · terms · cookies · accessibility · security · data
-   + /about · /help · /contact
+   + /contact · /help (r341 D3: the FAQ cells left for help.css/hp-*;
+   /about left in r341 D2)
    ════════════════════════════════════════════════════════════════════
    The nine public pages share ONE document shell (pages/legal/
    LegalSheet.tsx): the /capabilities chrome-less guest grammar —
@@ -19,7 +20,6 @@
      r313 ladder);
    · the STORAGE LEDGER table (.lg-table) — mono dir=ltr keys in their
      own column, hairline rows, the reject-purge column;
-   · the FAQ cells (.lg-faq / .lg-faq-q / .lg-faq-a);
    · the honest COLOPHON (.lg-colophon) — the platform's own identity
      line + the آخر تحديث stamp (print-visible).
 
@@ -380,96 +380,9 @@
     }
   }
 
-  /* ══ 6 · THE FAQ CELLS ══════════════════════════════════════════ */
-
-  .lg-faq {
-    display: grid;
-    gap: 0;
-    border: 1px solid var(--rule);
-    background: color-mix(in srgb, var(--surface) 55%, transparent);
-    border-radius: var(--r-sm); /* 0 */
-  }
-
-  /* R333 P-G3a (T-G1-03): the item is a native <details> — the accordion
-     affordance IS the summary row: full-width, 44px+ touch floor, the
-     [nn] index on the inline start, and a hairline caret on the inline
-     end that rotates with the open state (the motion ladder's short
-     token). The native marker retires; the print belt below forces the
-     answers visible on paper regardless of open state. */
-  .lg-faq-item {
-    display: block;
-    padding: 0;
-  }
-
-  .lg-faq-item + .lg-faq-item { border-block-start: 1px solid var(--rule); }
-
-  .lg-faq-q {
-    margin: 0;
-    display: flex;
-    align-items: baseline;
-    gap: var(--sp-3);
-    padding: var(--sp-4) var(--sp-5);
-    min-block-size: 44px;
-    box-sizing: border-box;
-    font-size: var(--fs-body);
-    font-weight: var(--fw-semibold);
-    color: var(--text);
-    cursor: pointer;
-    list-style: none; /* the hairline caret replaces the native marker */
-  }
-
-  .lg-faq-q::-webkit-details-marker { display: none; }
-
-  .lg-faq-q .lg-mono {
-    color: var(--accent-ink);
-    font-size: var(--fs-sm);
-    font-weight: var(--fw-medium);
-    letter-spacing: 0.06em;
-  }
-
-  /* the question text takes the remaining measure; the caret pins to
-     the inline end whatever the question's length. PI-REC: the text is
-     an <h2> now (the R320 §D nine-heading outline law) — the UA heading
-     font/margin reset rides here so the summary row is pixel-identical
-     to the span it replaced. */
-  .lg-faq-q-text { flex: 1 1 auto; min-inline-size: 0; margin: 0; font: inherit; }
-
-  .lg-faq-caret {
-    flex: 0 0 auto;
-    align-self: center;
-    inline-size: 7px;
-    block-size: 7px;
-    border-inline-end: 1.5px solid currentColor;
-    border-block-end: 1.5px solid currentColor;
-    /* physical rotate is deliberate: the caret is a glyph, not a
-       layout box — it points DOWN closed, UP open, in both reading
-       directions (border-inline-end mirrors with the direction, keeping
-       the v-shape anchored to the inline end in RTL and LTR alike). */
-    transform: rotate(45deg);
-    transition: transform var(--motion-duration-short) var(--motion-ease-standard);
-  }
-
-  .lg-faq-item[open] .lg-faq-caret { transform: rotate(225deg); }
-
-  @media (hover: hover) and (pointer: fine) {
-    /* the B1 pair discipline: color AND background always together */
-    .lg-faq-q:hover { color: var(--accent-ink); background: transparent; }
-  }
-
-  /* the answer indents to the question's text edge (past the [nn]
-     index) and keeps the 1.8 prose leading */
-  .lg-faq-a {
-    margin: 0;
-    padding: 0 var(--sp-5) var(--sp-4);
-    padding-inline-start: calc(var(--sp-5) + var(--sp-3) + 2.6em);
-    font-size: var(--fs-body);
-    line-height: 1.8;
-    color: var(--text-secondary);
-  }
-
-  @media (max-width: 640px) {
-    .lg-faq-a { padding-inline-start: var(--sp-5); }
-  }
+  /* ══ 6 · THE FAQ CELLS — DELETED (r341 D3): /help rides the pattern
+     library + help.css's hp-* accordion; zero lg-faq* seats remain
+     (grep-proven). The section number stays as the tombstone. ═══ */
 
   /* ══ 7 · THE COLOPHON — identity line + آخر تحديث ══════════════ */
 
@@ -547,8 +460,6 @@
     .lg-bar-title,
     .lg-p,
     .lg-list,
-    .lg-faq-q,
-    .lg-faq-a,
     .lg-colophon-line,
     .lg-colophon-stamp,
     .lg-colophon-stamp .lg-mono {
@@ -558,16 +469,11 @@
     /* R333 P-G3a (T-G1-03): the FAQ accordion prints as a DOCUMENT —
        every answer on paper regardless of its screen open-state (the
        ::details-content slot is what hides closed answers; browsers
-       without the pseudo simply print the open items). */
-    .lg-faq-item::details-content {
-      content-visibility: visible;
-      display: contents;
-    }
+       without the pseudo simply print the open items). r341 D3: the
+       lg-faq print arms left with the FAQ itself (help.css owns the
+       hp-* accordion's print belt now). */
 
-    .lg-faq-caret { display: none; }
-
-    .lg-cell,
-    .lg-faq {
+    .lg-cell {
       background: transparent;
       border-color: #000000; /* color-gate: allow — print contract: black hairlines (PAGES-GAP §7) */
     }
@@ -588,7 +494,6 @@
     .lg-code,
     .lg-table .lg-table-key,
     .lg-bar-index,
-    .lg-faq-q .lg-mono,
     .lg-pending {
       color: #000000; /* color-gate: allow — print contract: black ink (PAGES-GAP §7) */
     }
@@ -601,7 +506,6 @@
        section bar at a page foot */
     .lg-bar,
     .lg-cell,
-    .lg-faq-item,
     .lg-colophon {
       break-inside: avoid;
     }
