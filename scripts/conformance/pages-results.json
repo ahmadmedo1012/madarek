@@ -1,10 +1,10 @@
 {
- "generatedAt": "2026-11-07T08:50:40.476Z",
+ "generatedAt": "2026-11-07T08:57:37.754Z",
  "url": "http://localhost:5341",
- "dark": false,
+ "dark": true,
  "routes": {
   "/auth/register": {
-   "1440:light": {
+   "1440:dark": {
     "score": 98.4,
     "axes": {
      "typeRungs": {
@@ -82,7 +82,7 @@
      }
     }
    },
-   "390:light": {
+   "390:dark": {
     "score": 98.4,
     "axes": {
      "typeRungs": {
@@ -162,7 +162,7 @@
    }
   },
   "/auth/forgot-password": {
-   "1440:light": {
+   "1440:dark": {
     "score": 98.8,
     "axes": {
      "typeRungs": {
@@ -233,7 +233,7 @@
      }
     }
    },
-   "390:light": {
+   "390:dark": {
     "score": 97.6,
     "axes": {
      "typeRungs": {
@@ -311,7 +311,7 @@
    }
   },
   "/auth/reset-password": {
-   "1440:light": {
+   "1440:dark": {
     "score": 98.6,
     "axes": {
      "typeRungs": {
@@ -382,7 +382,7 @@
      }
     }
    },
-   "390:light": {
+   "390:dark": {
     "score": 98.6,
     "axes": {
      "typeRungs": {
@@ -455,7 +455,7 @@
    }
   },
   "/auth": {
-   "1440:light": {
+   "1440:dark": {
     "score": 99.8,
     "axes": {
      "typeRungs": {
@@ -526,7 +526,7 @@
      }
     }
    },
-   "390:light": {
+   "390:dark": {
     "score": 99.3,
     "axes": {
      "typeRungs": {
