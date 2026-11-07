@@ -40,9 +40,10 @@
  *      ink law is theme-independent). Uncountable seats (bg-image
  *      ancestors, unparseable colors, opacity < 0.3) are counted as
  *      skipped and reported, never silently dropped.
- *   5. edge390 — at the 390 bp only: the page's root content gutters
- *      (visible-content union of <main> vs the viewport edges) are
- *      8px ± 2 — the landing's own phone gutter. Other bps: n/a (100).
+ *   5. edge390 — at the 390 bp only: the page root content's side gutters
+ *      (the content-box edges of the shell's flowing top-level blocks —
+ *      header/main/footer; fixed chrome excluded) are 8px ± 2 — the
+ *      landing's own phone gutter. Other bps: n/a (100).
  *   6. hover — the route's primary CTA (first match of .auth-submit /
  *      .btn.primary / .btn.accent / button[type=submit]) shows ≥ 2
  *      affordance changes on hover (computed diff over color /
@@ -227,8 +228,12 @@ const MEASURE_FN = String.raw`(cfg) => {
         if (!hairline.sample) hairline.sample = cs.borderTopColor;
       }
     }
-    // spacing census — block paddings/margins, non-zero only
-    for (const v of [cs.paddingTop, cs.paddingBottom, cs.marginTop, cs.marginBottom]) {
+    // spacing census — block paddings/margins of section-level (flowing)
+    // elements, non-zero only. Fixed overlays (the cursor HUD readout,
+    // toasts) are pointer chrome, not sheet content — excluded here ONLY
+    // (their visible text still enters the type/ink censuses below).
+    const isFixed = cs.position === "fixed";
+    if (!isFixed) for (const v of [cs.paddingTop, cs.paddingBottom, cs.marginTop, cs.marginBottom]) {
       const f = parseFloat(v);
       if (Number.isFinite(f) && f > 0) spacingVals.push(Math.round(f * 100) / 100);
     }
@@ -271,22 +276,23 @@ const MEASURE_FN = String.raw`(cfg) => {
   const eyebrowHit = document.querySelector(cfg.eyebrowClasses.map((c) => "." + c).join(","));
   const ctaPairHit = document.querySelector(cfg.ctaPairClasses.map((c) => "." + c).join(","));
 
-  // 5 · edge390 — the root content's side gutters (visible-content union of <main>)
+  // 5 · edge390 — the page root content's side gutters: the CONTENT-BOX edges
+  // (rect + border + padding — run.mjs's padEdge math) of the shell's flowing
+  // top-level blocks (header/main/footer; fixed chrome excluded). A full-bleed
+  // block (padEdge 0) or an over-wide gutter both fail the 8px ±2 law.
   let edge = null;
   if (cfg.isBp390) {
-    const main = document.querySelector("main") || shell;
     const vw = window.innerWidth;
-    let l = Infinity, r = -Infinity;
-    for (const d of [main, ...main.querySelectorAll("*")]) {
+    let l = Infinity, r = Infinity;
+    for (const d of shell.children) {
+      const st = csOf(d);
+      if (st.position === "fixed" || st.display === "none" || st.visibility === "hidden") continue;
       const b = d.getBoundingClientRect();
       if (b.width <= 0 || b.height <= 0) continue;
-      if (b.left < -0.5 || b.right > vw + 0.5) continue; // fully-inside only
-      const st = csOf(d);
-      if (st.visibility === "hidden" || Number(st.opacity) <= 0) continue;
-      l = Math.min(l, b.left);
-      r = Math.max(r, b.right);
+      l = Math.min(l, b.left + num(st.borderLeftWidth) + num(st.paddingLeft));
+      r = Math.min(r, vw - (b.right - num(st.borderRightWidth) - num(st.paddingRight)));
     }
-    if (l !== Infinity) edge = { l: Math.round(l * 10) / 10, r: Math.round((vw - r) * 10) / 10 };
+    if (l !== Infinity) edge = { l: Math.round(l * 10) / 10, r: Math.round(r * 10) / 10 };
   }
 
   // 6 · the primary CTA (hover affordances measured from the node side)
