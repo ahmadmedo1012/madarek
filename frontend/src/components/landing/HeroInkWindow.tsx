@@ -24,6 +24,7 @@
  * through HERO_SEAT into this frame — HERO_FRAME exports the viewBox
  * window so the instrument's letterbox math shares the same numbers.
  */
+import { useEffect, useRef } from 'react';
 import { ElevationArt } from './ElevationDrawing';
 
 /* The hero window's viewBox — the TIGHT window around the whole
@@ -42,8 +43,42 @@ export const HERO_FRAME = { x: 151, y: 164, w: 1139, h: 411 } as const;
 export const HERO_SEAT = { x: 58, y: 114, s: 0.882 } as const;
 
 export function HeroInkWindow() {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  /* r340 T-P1y (§5 index legibility) — the 11px RENDERED floor for the
+   * mono micro-labels (bp-micro) below 992px: the svg scales with the
+   * viewport, so the label font must scale INVERSELY (calc cannot
+   * divide by a length). One rAF-throttled resize listener measures
+   * the live svg width and publishes the needed user-units as a CSS
+   * var the ≤991 belt reads (hero.css .hro .bp-micro). ≥992 keeps the
+   * fixed 12px spec seat; jsdom-safe (no width → var unset → 12px). */
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || typeof window === 'undefined') return undefined;
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const w = svg.getBoundingClientRect().width;
+      if (!w) return;
+      /* rendered px = units × (w / HERO_FRAME.w) × HERO_SEAT.s — the
+       * inverse solves for 11px rendered, floored at the 12px seat. */
+      const units = (11 * HERO_FRAME.w) / (HERO_SEAT.s * w);
+      svg.style.setProperty('--bp-label-fs', `${Math.max(12, Math.round(units * 10) / 10)}px`);
+    };
+    const schedule = () => {
+      if (!raf) raf = window.requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener('resize', schedule);
+    return () => {
+      window.removeEventListener('resize', schedule);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
   return (
     <svg
+      ref={svgRef}
       className="bp-svg"
       viewBox={`${HERO_FRAME.x} ${HERO_FRAME.y} ${HERO_FRAME.w} ${HERO_FRAME.h}`}
       preserveAspectRatio="xMidYMid meet"

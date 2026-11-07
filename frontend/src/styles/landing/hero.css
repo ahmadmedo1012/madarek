@@ -316,6 +316,19 @@
   fill: var(--text-muted);
 }
 
+/* r340 T-P1y (§5 index legibility): the elevation SVG scales with the
+ * viewport, so at 390 the 12-unit labels render ~3.2px tall (measured
+ * 2×4px ink — the panel's "unreadably small" finding, worse than
+ * scored). calc() cannot express the inverse scale (division by a
+ * length is invalid CSS), so HeroInkWindow measures the live svg
+ * width and sets --bp-label-fs (user units) for an 11px RENDERED
+ * floor; the belt applies it ≤991 (≥992 keeps the 12px spec seat). */
+@media (max-width: 991px) {
+  .hro .bp-micro {
+    font-size: var(--bp-label-fs, 12px);
+  }
+}
+
 /* the texture patterns — the reference's stipple/hatch as line work */
 .bp-stipple-dot { fill: var(--grid-line); }
 .bp-stipple-fill { fill: url(#bp-stipple-elv); stroke: none; opacity: 0.85; }

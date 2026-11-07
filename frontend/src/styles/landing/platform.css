@@ -309,6 +309,7 @@ html[data-theme='dark'] .pr-section .pr-cta {
 .pr-section .pr-img {
   margin: 0;
   overflow: clip;
+  position: relative; /* r340 T-P1y — the frame-chrome overlay's anchor (paint-only: position is not a spec-checked axis) */
 }
 
 /* the column's measured hairlines — the flanking verticals
@@ -660,4 +661,42 @@ html[data-theme='dark'] .pr-section .pr-cta {
       animation-range: entry 0% cover 30%;
     }
   }
+}
+
+/* ═══ r340 T-P1y — the product captures' drafting chrome (the blind
+ * panel's "two design languages" finding: the screenshots read generic
+ * light-SaaS next to the drafting-paper sheet). Every capture now
+ * carries the sheet's own grammar: ONE 1px var(--rule) hairline frame
+ * (the pattern library's Hairline--border seat) + a paper [nn] tag
+ * chip (the Numeral family) at the frame's inline-start corner.
+ * Overlay-only: pointer-events none, no z-index (paint order after
+ * the img), the pinned frame geometry untouched. ═══ */
+.pr-frame-chrome {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.pr-frame-chrome .lp-hairline--border {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+.pr-frame-tag {
+  position: absolute;
+  inset-block-start: var(--sp-1-5);
+  inset-inline-start: var(--sp-1-5);
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1px solid var(--rule);
+  padding: 2px var(--sp-1-5);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono-sm);
+  line-height: 1.4;
+  font-weight: 500;
+  color: var(--accent);
+}
+[data-theme='dark'] .pr-frame-tag {
+  background: var(--bg);
+  border-color: var(--rule);
 }

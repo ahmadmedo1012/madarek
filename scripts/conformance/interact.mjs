@@ -225,6 +225,12 @@ export const PATTERNS = [
   { key: "eyebrow-label", sel: ".fo-label", tuple: ["fs", "fw", "color"] },
   { key: "hairline-rule", sel: ".fo-rule, .hairline", tuple: ["bd", "color"] },
   { key: "section-head", sel: ".wy-title, .h2-seat", tuple: ["fs", "fw"] },
+  // r340 T-P1y — the §5 census extension: the product-screenshot cards
+  // adopt the pattern library (hairline frame + [nn] paper tag); the
+  // census asserts every capture carries the SAME chrome treatment
+  // (one design language — the panel's criterion-10 finding).
+  { key: "product-frame-chrome", sel: ".pr-frame-chrome", tuple: ["bd", "color"] },
+  { key: "product-frame-tag", sel: ".pr-frame-tag", tuple: ["fs", "fw", "color", "bd"] },
 ];
 
 export async function patterns(url) {
