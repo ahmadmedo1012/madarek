@@ -3069,11 +3069,16 @@
 .fb-actions { display: flex; justify-content: flex-end; gap: var(--sp-2); }
 
 /* ── the registrar/owner inbox (the feedback page seat) ────────── */
-.fb-chip[data-kind='BUG'] { color: var(--danger); border-color: currentColor; }
-.fb-chip[data-kind='IDEA'] { color: var(--success); border-color: currentColor; }
+/* R341 D11 (the R131-F12 -ink pattern): the raw tone fills measured
+   3.45:1 (danger) / 3.97:1 (success) / 4.03:1 (warning) on the card —
+   the chips are status TEXT, so they ride the AA-safe -ink tiers the
+   owner family's own event icons use (dark themes resolve to the same
+   light tones ≡ pixel-identical). */
+.fb-chip[data-kind='BUG'] { color: var(--danger-ink); border-color: currentColor; }
+.fb-chip[data-kind='IDEA'] { color: var(--success-ink); border-color: currentColor; }
 .fb-chip[data-status='open'] { color: var(--text); }
-.fb-chip[data-status='triage'] { color: var(--warning); border-color: currentColor; }
-.fb-chip[data-status='fixed'] { color: var(--success); }
+.fb-chip[data-status='triage'] { color: var(--warning-ink); border-color: currentColor; }
+.fb-chip[data-status='fixed'] { color: var(--success-ink); }
 .fb-chip[data-status='dismissed'] { color: var(--text-muted); }
 
 /* ══════════════════════════════════════════════════════════════════
