@@ -398,7 +398,12 @@ export function QualityDashboardPage() {
       <div className="page-title-block">
         {/* R305 Heron (§D): the sector brow opens the governance face. */}
         <QualityBrow />
-        <h1 className="page-title">لوحة الجودة</h1>
+        <h1 className="page-title">
+          {/* R341 D10: the [01] nav-order gutter numeral — the R319
+              PageHeader index register (primitives/PageHeader grammar). */}
+          <span className="page-index" aria-hidden="true" dir="ltr">[01]</span>
+          لوحة الجودة
+        </h1>
         <p className="page-subtitle">
           بناء نظام تعليمي فعّال عبر تطوير الأداء الأكاديمي والإداري والتقني — وفقاً لمتطلبات الاعتماد المحلية والدولية.
         </p>
@@ -409,7 +414,15 @@ export function QualityDashboardPage() {
       {/* r299 (E item 1): the sector's own read-only cue — the former
           gold ShieldCheck «وصول قراءة فقط» badge retired (gold is
           achievements-only per the token discipline). */}
-      <div className="qlt-header-badges"><ReadOnlyBadge /></div>
+      {/* R341 D10: the header CTA pair (the D8 teacher-family grammar) —
+          navigation only (the sector authors nothing); the accent seat
+          is the measured hover surface (.has-shell .btn.accent:hover,
+          D6 chrome.css §10). */}
+      <div className="qlt-header-badges">
+        <ReadOnlyBadge />
+        <Link to="/quality/reports" className="btn accent sm">تقارير الجودة</Link>
+        <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+      </div>
     </header>
   );
 
@@ -753,7 +766,11 @@ export function QualityCoursesPage() {
         <div className="page-title-block">
           {/* R305 Heron (§D): the sector brow opens the governance face. */}
           <QualityBrow />
-          <h1 className="page-title">جودة المقرّرات</h1>
+          <h1 className="page-title">
+            {/* R341 D10: [02] nav-order index register. */}
+            <span className="page-index" aria-hidden="true" dir="ltr">[02]</span>
+            جودة المقرّرات
+          </h1>
           <p className="page-subtitle">
             {metric
               ? `${metricLabel} لكل مقرّر · مرتَّبة من الأدنى أولاً`
@@ -761,8 +778,11 @@ export function QualityCoursesPage() {
           </p>
         </div>
         {/* 4C-b: the oversight read-only cue (the sector has no authoring). */}
+        {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
         <div className="qlt-header-badges">
           <ReadOnlyBadge />
+          <Link to="/quality/professors" className="btn accent sm">تقييم الأساتذة</Link>
+          <Link to="/quality/engagement" className="btn ghost sm">الانخراط والحضور</Link>
         </div>
       </header>
       {c.isPending ? (
@@ -977,7 +997,11 @@ export function QualityProfessorsPage() {
           <div className="page-title-block">
             {/* R305 Heron (§D): the sector brow. */}
             <QualityBrow />
-            <h1 className="page-title">تقييم الأساتذة</h1>
+            <h1 className="page-title">
+              {/* R341 D10: [03] nav-order index register. */}
+              <span className="page-index" aria-hidden="true" dir="ltr">[03]</span>
+              تقييم الأساتذة
+            </h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
           <div className="qlt-header-badges"><ReadOnlyBadge /></div>
@@ -1001,7 +1025,11 @@ export function QualityProfessorsPage() {
           <div className="page-title-block">
             {/* R305 Heron (§D): the sector brow. */}
             <QualityBrow />
-            <h1 className="page-title">تقييم الأساتذة</h1>
+            <h1 className="page-title">
+              {/* R341 D10: [03] nav-order index register. */}
+              <span className="page-index" aria-hidden="true" dir="ltr">[03]</span>
+              تقييم الأساتذة
+            </h1>
             <p className="page-subtitle">رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.</p>
           </div>
           <div className="qlt-header-badges"><ReadOnlyBadge /></div>
@@ -1027,7 +1055,11 @@ export function QualityProfessorsPage() {
         <div className="page-title-block">
           {/* R305 Heron (§D): the sector brow. */}
           <QualityBrow />
-          <h1 className="page-title">تقييم الأساتذة</h1>
+          <h1 className="page-title">
+            {/* R341 D10: [03] nav-order index register. */}
+            <span className="page-index" aria-hidden="true" dir="ltr">[03]</span>
+            تقييم الأساتذة
+          </h1>
           <p className="page-subtitle">
             رضا الطلاب، معدل الاستجابة، الالتزام بمعايير المنصة.
             {p.data.data.some((t) => t.satisfactionEstimated || t.responseHoursEstimated)
@@ -1035,7 +1067,12 @@ export function QualityProfessorsPage() {
               : ''}
           </p>
         </div>
-        <div className="qlt-header-badges"><ReadOnlyBadge /></div>
+        {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
+        <div className="qlt-header-badges">
+          <ReadOnlyBadge />
+          <Link to="/quality/courses" className="btn accent sm">جودة المقرّرات</Link>
+          <Link to="/quality/dashboard" className="btn ghost sm">لوحة الجودة</Link>
+        </div>
       </header>
 
       {/* R190 (D4): the typographic stat strip — was the grid-3
@@ -1258,10 +1295,19 @@ export function QualityEngagementPage() {
       <div className="page-title-block">
         {/* R305 Heron (§D): the sector brow. */}
         <QualityBrow />
-        <h1 className="page-title">الانخراط والحضور</h1>
+        <h1 className="page-title">
+          {/* R341 D10: [04] nav-order index register. */}
+          <span className="page-index" aria-hidden="true" dir="ltr">[04]</span>
+          الانخراط والحضور
+        </h1>
         <p className="page-subtitle">نسب الحضور، إكمال المحاضرات، النقاط المتفاعلة.</p>
       </div>
-      <div className="qlt-header-badges"><ReadOnlyBadge /></div>
+      {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
+      <div className="qlt-header-badges">
+        <ReadOnlyBadge />
+        <Link to="/quality/courses" className="btn accent sm">جودة المقرّرات</Link>
+        <Link to="/quality/reports" className="btn ghost sm">تقارير الجودة</Link>
+      </div>
     </header>
   );
   if (e.isPending) {
@@ -1435,10 +1481,20 @@ export function QualityCurriculumPage() {
       <div className="page-title-block">
         {/* R305 Heron (§D): the sector brow. */}
         <QualityBrow />
-        <h1 className="page-title">مراجعة المناهج</h1>
+        <h1 className="page-title">
+          {/* R341 D10: [06] nav-order index register (05 is the moderation
+              board's own cover numeral, D7b's seat). */}
+          <span className="page-index" aria-hidden="true" dir="ltr">[06]</span>
+          مراجعة المناهج
+        </h1>
         <p className="page-subtitle">شجرة الكلّيّات والأقسام والمقرّرات، مع مؤشرات اكتمال المحتوى.</p>
       </div>
-      <div className="qlt-header-badges"><ReadOnlyBadge /></div>
+      {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
+      <div className="qlt-header-badges">
+        <ReadOnlyBadge />
+        <Link to="/quality/courses" className="btn accent sm">جودة المقرّرات</Link>
+        <Link to="/quality/exam-moderation" className="btn ghost sm">مراجعة الاختبارات</Link>
+      </div>
     </header>
   );
   if (c.isPending) {
@@ -1662,10 +1718,21 @@ export function QualityReportsPage() {
         <div className="page-title-block">
           {/* R305 Heron (§D): the sector brow. */}
           <QualityBrow />
-          <h1 className="page-title">تقارير الجودة</h1>
+          <h1 className="page-title">
+            {/* R341 D10: [07] nav-order index register. */}
+            <span className="page-index" aria-hidden="true" dir="ltr">[07]</span>
+            تقارير الجودة
+          </h1>
           <p className="page-subtitle">لوحات حيّة بدلاً من تقارير ثابتة — تُحدَّث مع كل عمليّة على المنصّة.</p>
         </div>
-        <div className="qlt-header-badges"><ReadOnlyBadge /></div>
+        {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar) —
+            the export card below is still pending, so the pair points at
+            the live boards it stands in for. */}
+        <div className="qlt-header-badges">
+          <ReadOnlyBadge />
+          <Link to="/quality/dashboard" className="btn accent sm">لوحة الجودة</Link>
+          <Link to="/quality/alerts" className="btn ghost sm">تنبيهات الجودة</Link>
+        </div>
       </header>
 
       {/* 4C-b: the link ledger — full-width ≥44px rows with an icon well,
@@ -1735,7 +1802,11 @@ export function QualityAlertsPage() {
         <div className="page-title-block">
           {/* R305 Heron (§D): the sector brow. */}
           <QualityBrow />
-          <h1 className="page-title">تنبيهات الجودة</h1>
+          <h1 className="page-title">
+            {/* R341 D10: [09] nav-order index register. */}
+            <span className="page-index" aria-hidden="true" dir="ltr">[09]</span>
+            تنبيهات الجودة
+          </h1>
           <p className="page-subtitle">أحداث تستوجب تدخّل فريق ضمان الجودة — مُستخرجة فوريّاً من بيانات المنصّة.</p>
         </div>
         <div className="qlt-header-badges">
@@ -1744,6 +1815,9 @@ export function QualityAlertsPage() {
             <span className="hr-chip" data-tone="danger">{countAr(q.data.counts.critical, ['تنبيه حرج', 'تنبيهان حرجان', 'تنبيهات حرجة', 'تنبيهاً حرجاً'])}</span>
           )}
           <ReadOnlyBadge />
+          {/* R341 D10: the header CTA pair (navigation-only, the D8 grammar). */}
+          <Link to="/quality/dashboard" className="btn accent sm">لوحة الجودة</Link>
+          <Link to="/quality/reports" className="btn ghost sm">تقارير الجودة</Link>
         </div>
       </header>
 
