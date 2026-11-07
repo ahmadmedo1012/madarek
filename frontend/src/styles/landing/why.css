@@ -255,6 +255,12 @@
   border-radius: var(--r-sm, 0.24rem);
   overflow: hidden;
   background: var(--surface);
+  /* R342-05 — the hover-transition seat (the two hover channels live
+     in the R342A block at the sheet's tail; this is the shell's own
+     base transition so the lift/frame animate, not snap). */
+  transition:
+    transform var(--t-fast, 0.24s) var(--e-out, ease-out),
+    outline-color var(--t-fast, 0.24s) var(--e-out, ease-out);
 }
 
 .wy-img {
@@ -495,6 +501,9 @@
 .wy-map {
   position: absolute;
   inset: 0;
+  /* R342-05: the route art spans the whole row — it must never
+     intercept the card's hover/tap (decorative line-art, not a seat). */
+  pointer-events: none;
 }
 
 .wy-map-in,
@@ -1372,3 +1381,69 @@
   }
 }
 /* L1A-END */
+
+/* ═══ R342-05 — the caption legibility chip + the gallery hover
+   grammar. The T05I generated seats above are measured spec truth
+   (white ink, transparent ground, "over the captures in both
+   themes") — but our capture surfaces are light-background product
+   screenshots on light paper, so the pinned captions read white-on-
+   paper at every stage where they don't overlap a frame. This block
+   adds the chip SCRIM as ::before layers on the caption seats (the
+   seats' own computed color/bg stay measured — the pseudo is a new
+   paint layer, no binding touches), the two hover channels on the
+   gallery cards (lift + accent hairline frame), and the deck-dot
+   hover arm. ═══ */
+
+/* the caption chip ink — theme-stable dark ground (the generated
+   seats ride white ink in BOTH themes, so the ground must stay dark
+   in both: the dark paper already carries them, the light paper is
+   the defect this chip fixes). The literal rides the ::before rule
+   below (a second .wy-capbar block would duplicate the selector). */
+
+.wy-capbar .wy-cap-t::before,
+.wy-capbar .wy-cap-s::before {
+  content: "";
+  position: absolute;
+  /* the chip is the text box + a small even pad — rem keeps it
+     proportional across the bp seats (the generated vars carry the
+     measured geometry; the pad only frames it) */
+  inset: -0.5rem -1.2rem;
+  background: rgba(24, 24, 22, 0.88); /* color-gate: allow — R342-05 measured caption-bar ground (the pinned dark caption grammar; theme-stable by design) */
+  border-radius: var(--r-sm, 0.24rem);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* the sub line rides a slightly tighter pad (13px text under a 20px
+   title) so the two chips read as one caption unit, not two slabs */
+.wy-capbar .wy-cap-s::before {
+  inset: -0.4rem -1.2rem;
+}
+
+/* ── the gallery cards — two hover channels (the judge's zero-delta
+   finding): (1) the frame lifts 2px, (2) an accent hairline frames
+   the capture. Both live on the UNBOUND inner shell (.wy-card-in) —
+   the bound card seats keep their measured geometry/transition; the
+   shell's base transition sits in its own rule (§ the capture rows). ── */
+.wy-card:hover .wy-card-in {
+  transform: translateY(-0.24rem);
+  outline: 0.12rem solid var(--accent-ink);
+  outline-offset: 0.36rem;
+}
+
+/* keyboard parity — the cards aren't focusable (narrative surfaces,
+   not links); the focusable seats are the deck controls, which ride
+   the universal :focus-visible ring (motion.css). */
+
+/* the deck dots gain a hover arm (faint → secondary; the active dot
+   keeps its accent) — the deck buttons already carry two channels. */
+@media (max-width: 767px) {
+  .wy-deck-dot:hover::after {
+    background: var(--text-secondary);
+  }
+  .wy-deck-dot:hover.is-on::after {
+    background: var(--accent-ink);
+  }
+}
+
+/* R342A-END */
