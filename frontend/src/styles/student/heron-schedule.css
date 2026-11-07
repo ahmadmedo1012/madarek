@@ -156,59 +156,29 @@
   }
 
   /* ── §3 · /student/schedule — the week ledger ────────────────────
-     Day sections already ride SectionHeader + RowList (the r299
-     contract). Heron adds the thin technical rule BETWEEN days and
-     the kicker hairline INSIDE each day header, so the week reads as
-     one ruled ledger instead of stacked boxes. */
+     Day sections ride SectionBar + RowList (the r299/r319 contract):
+     the bar carries its own hairline (.r319s-bar-rule), and the thin
+     technical rule BETWEEN days below keeps the week reading as one
+     ruled ledger instead of stacked boxes. (R341 D7c: the old
+     `.schedule-day .pf-section-header::after` kicker hairline is
+     DELETED — dead since the r319 SectionBar swap: the settled day
+     renders .r319s-bar (not .pf-section-header) and the skeleton
+     path renders no .schedule-day wrapper, so no DOM ever matched.) */
 
-  .schedule-day .pf-section-header::after {
-    content: "";
-    block-size: 1px;
-    flex: 1;
-    align-self: center;
-    background: var(--surface-divider);
-  }
   .schedule-day + .schedule-day {
     border-block-start: 1px solid var(--surface-divider);
     padding-block-start: var(--sp-4);
   }
 
   /* ── §4 · /student/results — the graded ledger ───────────────────
-     The page's ONE deep band: the summary strip. The pattern StatLine
-     keeps its anatomy and its canonical band tones (r164-a pins) —
-     the band re-derives the ink those tones RESOLVE to.
-
-     CASCADE NOTE (why tokens, not color overrides): patterns.css — the
-     StatLine owner — is UNLAYERED, and unlayered author styles beat
-     @layer pages at any specificity, so a `.results-summary .pf-stat…`
-     color rule here would silently lose to the pattern's own tone
-     rules (dead CSS; the canonical -ink inks are tuned for the page
-     paper, not for the inverted band). Scoped custom properties flip
-     the direction: the unlayered rules keep winning, but they now
-     resolve tokens inherited from the band's own fg pole (--neutral-0
-     flips with the theme, so one rule holds both — the foundation's
-     band-secondary recipe at label/hint strength). */
-  .results-summary {
-    --text: var(--neutral-0);
-    /* P2.6 — strengths re-tuned for the pole the sheet never ran on:
-       the 62/55% authoring cleared the light pole (ink band) but landed
-       3.97:1 / 3.28:1 on the dark theme's PAPER band — below the 4.5
-       small-text floor. 72/67% hold ≥4.58 on BOTH poles (engine math
-       recorded in audits/evidence/r325/ink-app/README.md). */
-    --text-muted: color-mix(in srgb, var(--neutral-0) 72%, var(--neutral-900));
-    --text-faint: color-mix(in srgb, var(--neutral-0) 67%, var(--neutral-900));
-    --success-ink: color-mix(in srgb, var(--success) 62%, var(--neutral-0));
-    --warning-ink: color-mix(in srgb, var(--warning) 62%, var(--neutral-0));
-    --danger-ink: color-mix(in srgb, var(--danger) 62%, var(--neutral-0));
-    --accent-ink: color-mix(in srgb, var(--accent) 62%, var(--neutral-0));
-    display: flex;
-    flex-direction: column;
-    gap: var(--sp-3);
-    padding: var(--sp-4) var(--sp-5);
-  }
-  /* Values ride the mono metric register (tabular-nums comes from the
-     pattern itself; nothing here competes with the pattern's rules). */
-  .results-summary .pf-stat-value { font-family: var(--font-mono); }
+     (R341 D7c: this section's local rules are DELETED — the deep
+     band's ink pole + the mono stat-value voice were promoted to the
+     SHARED foundation (.r305s-band--deep in heron.css §3), so the
+     results summary rides the generic band classes verbatim and every
+     other deep band inherits the same AA re-derivation. The page's
+     .results-summary class remains in the markup as the test-pinned
+     hook; its layout rides the band's own padding + the flex-col/gap
+     utilities in the TSX.) */
 
   /* ── §5 · /student/online-exams — window chips + calm taker ──────
      teacher-quality.css §5 owns the oex- anatomy and the attempt
@@ -227,7 +197,6 @@
   /* ── §6 · Responsive + reduced-motion belt ─────────────────────── */
 
   @media (max-width: 640px) {
-    .results-summary { padding: var(--sp-4); }
     .cal-legend { gap: var(--sp-1-5) var(--sp-2); }
   }
 

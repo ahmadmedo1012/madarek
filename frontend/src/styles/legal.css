@@ -8,11 +8,9 @@
    pf-page-header/pf-eyebrow/pf-page-desc the title block, pf-page-
    actions + the lg-cta pair the actions. This sheet keeps only what the
    library does not own — the sticky guest header, the [nn] section
-   bars, the hairline cells, the storage-ledger table, the FAQ cells,
-   the colophon, and the /app distribution cells (.lg-qr/.lg-p-actions/
-   .lg-p-note — AppDownloadPage seats until task D4). The lg-* prose
-   helpers (.lg-p/.lg-mono/.lg-link/…) stay: /help · /contact · /app
-   seat them from this module's exports; their D-tasks re-key them.
+   bars, the hairline cells, the storage-ledger table, the colophon.
+   The lg-* prose helpers (.lg-p/.lg-mono/.lg-link/…) stay: /legal/* ·
+   /contact seat them from this module's exports.
    Deleted with this rebuild (grep-proven zero seats): .lg-header-code,
    .lg-head/.lg-title/.lg-lede (the pf-page-header owns the block now),
    .lg-p-statement (orphaned by D2's about rebuild).
@@ -496,50 +494,11 @@
 }
 
 
-/* ═══ R327 D1 — the /app distribution sheet's own cells (task D4's
- * seats until its rebuild): the QR cell (mark colors, hairline frame)
- * and the actions row (real download buttons inside the document
- * measure — the sheet's only CTA seats). */
-
-.lg-qr {
-  display: flex;
-  gap: var(--sp-5);
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
-.lg-qr img {
-  width: 168px;
-  height: 168px;
-  border: 1px solid var(--rule);
-  background: var(--paper);
-  padding: var(--sp-2);
-  flex: 0 0 auto;
-}
-
-.lg-p-actions {
-  display: flex;
-  gap: var(--sp-3);
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.lg-p-note {
-  color: var(--text-muted);
-  font-size: var(--fs-body);
-  line-height: var(--lh-base);
-}
-
-@media (max-width: 560px) {
-  .lg-qr {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .lg-qr .lg-p-note {
-    text-align: center;
-  }
-}
+/* ═══ R327 D1 · R341 D4 — THE /APP DISTRIBUTION CELLS: DELETED.
+   /app left the lg-* family and rides the pattern library + its own
+   ap-* sheet (styles/app.css — the D2 about / D3 help precedent);
+   zero .lg-qr/.lg-p-actions/.lg-p-note seats remain (grep-proven).
+   The section number stays as the tombstone. ═══ */
 
 
 /* ═══ R341 D5 — the document surface's scrollbar contract ═════════════

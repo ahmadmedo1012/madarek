@@ -8,6 +8,7 @@ import { GlobalSearch } from './GlobalSearch';
 import { NotificationDropdown } from './NotificationDropdown';
 import { Dropdown, DropdownItem, DropdownSeparator } from '../overlays';
 import { useUiStore } from '../../stores/ui.store';
+import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import { useAuthStore, type MembershipInfo, type AppRole } from '../../stores/auth.store';
 import { useThemeStore, resolveTheme } from '../../stores/theme.store';
 import { useLogout, useMe, useSelectInstitution } from '../../hooks/useAuth';
@@ -240,6 +241,16 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
     '/student/alerts';
   const onAiPage = location.pathname.endsWith('/ai');
   const showAiButton = role !== 'ADMIN' && role !== 'QUALITY' && !onAiPage;
+  /* r341/D6: the «اسأل AI» quick action is a DESKTOP-band control —
+     CSS has hidden it ≤920px since 4-A10 (freed ~47px for the title;
+     the destination stays reachable via the bottom-nav «المساعد»,
+     the sidebar and the ⌘K palette). The hidden link used to stay in
+     the DOM, which made it the first `a[class*='primary']` match for
+     conformance probes AND assistive tech's link lists — a control
+     that renders nowhere should not exist in the tree. Render it
+     only in the band where it is visible (>920px, the same query
+     Sidebar's drawer band and the CSS hide use). */
+  const desktopBand = !useIsNarrowLayout(920);
 
   // Close menu on outside click is handled by the Dropdown primitive
   // (click-outside + Esc + focus return + arrow-key navigation).
@@ -320,7 +331,7 @@ export function Topbar({ title, rightSlot, scrolled = false, onOpenCommandPalett
             <Icon icon={Search} size={18} />
           </button>
         )}
-        {rightSlot ?? (showAiButton && (
+        {rightSlot ?? (showAiButton && desktopBand && (
           <NavLink to={aiPath} className="btn primary sm" title="اسأل الذكاء الاصطناعي">
             <Icon icon={Sparkles} size={13} />
             <span className="hide-on-mobile">اسأل AI</span>

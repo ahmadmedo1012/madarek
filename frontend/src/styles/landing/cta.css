@@ -258,8 +258,12 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
 
 /* the recorded hover seat: both chevrons slide one cell along the
    inline axis — the lead chevron exits the clip, the twin lands in
-   its seat (.probe-hover is the conformance probe's hover class). */
-.fo-cta .btn.accent:hover .fo-cta-ricon,
+   its seat (.probe-hover is the conformance probe's hover class).
+   L1-d (R341): the slide — the resolve's SECONDARY affordance (the
+   arrow nudge) — rides the :focus-within arm too: keyboard parity
+   with the wash flip below (r172a §3: zero :focus-visible rules in
+   the landing family — the seat itself holding focus matches). */
+.fo-cta .btn.accent:is(:hover, :focus-within) .fo-cta-ricon,
 .fo-cta .btn.accent.probe-hover .fo-cta-ricon {
   transform: translateX(-100%);
 }
@@ -428,12 +432,16 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
   }
 
   .fo-cta-actions {
-    flex-wrap: nowrap;
     margin-block-start: 1.12rem;
   }
 
   .fo-cta .btn.accent.lg {
     inline-size: 15.32rem;
+    /* L1-d: the phone resolve holds heron's measured 152×43 seat (the
+       nowrap squeeze shrank it to 92 and clipped the chevron affordance
+       off-canvas); the ghost wraps to its own centred row — the actions
+       belt re-finds heron's single-seat rows. */
+    flex: none;
   }
 }
 
@@ -667,57 +675,112 @@ html[data-theme='dark'] .fo-cta .fo-text-link {
    deltas (heron ordinals 1/4/6/9: ≥769px bd/tr micro-drift on the
    resolve seats; ≤768 color+bd on every seat). .probe-hover is the
    conformance probe's hover-equivalent class — never real. ── */
-/* T-18 A5 — the resolve wash's HOVER seat: the frozen rest wash is the
-   reference's own #FA3600 (white label 3.76:1 — the documented AA
-   exception the canonical button system solved with its r318 seat);
-   hover deepens the wash to the canonical --accent-ink token (white
-   label 5.5:1 ≥ 4.5:1 WCAG AA). The recorded transitions are
-   untouched — the wash snaps, the 0.48s chevron slide carries the
-   motion. Light + dark both (the dark ember's ink is --warm-ink,
-   5.6:1, unaffected: only the ground deepens). */
-.fo-cta .btn.accent:hover .fo-cta-rbtn,
+/* L1-d (R341, T-16 #8 + top-5 #5) — the resolve wash's INVERT-TO-INK
+   seat: the T-18 A5 fix deepened the wash #FA3600 → --accent-ink
+   (#C72E00) — a one-step orange drift the panel read as a dead
+   low-contrast fill with no secondary affordance. The fix rides the
+   canonical .btn.accent wipe language itself (components.css: hover
+   swaps to the INK wipe): the wash flips to --primary with the
+   --primary-fg label — light #282828 + white (14.74:1) · dark the
+   white slab + warm ink — ONE token pair, both themes, no frozen-flip
+   arm needed (the hover label never crosses themes: light stays
+   white, dark stays --warm-ink, so the rbtn's color-leg latch concern
+   is void; the recorded transitions stay untouched — the wash snaps,
+   the 0.48s chevron slide carries the motion). The :focus-within arm
+   rides the same seat — keyboard parity: the base.css 2px solid
+   rgb(199,46,0) ring draws on top of the inverted slab. */
+.fo-cta .btn.accent:is(:hover, :focus-within) .fo-cta-rbtn,
 .fo-cta .btn.accent.probe-hover .fo-cta-rbtn {
-  background: var(--accent-ink);
-  /* paired-state (r319 lint): the ink rides its inherited seat in
-     light — hover deepens ONLY the ground; the dark arm below re-pins
-     the frozen-flip ember ink so the pair holds in both themes. */
-  color: inherit;
-}
-html[data-theme='dark'] .fo-cta .btn.accent:hover .fo-cta-rbtn,
-html[data-theme='dark'] .fo-cta .btn.accent.probe-hover .fo-cta-rbtn {
-  background: var(--accent-ink); /* same ground — paired with the ember ink */
-  color: var(--warm-ink);
+  background: var(--primary);
+  color: var(--primary-fg);
 }
 
+/* L1-d: the micro-drift belt grows :focus-within arms — the probe's
+   focus walk (interact.mjs) reads the same bd/tr channels on the
+   keyboard pass, and the seats nudge under the ring exactly as they
+   drift under the cursor (the hero's ungated focus-arm pattern). */
 @media (min-width: 769px) {
-  .fo-cta .btn.accent:hover,
+  .fo-cta .btn.accent:is(:hover, :focus-within),
   .fo-cta .btn.accent.probe-hover {
     transform: translateX(-0.1875rem);
     border-block-end-color: var(--accent-strong);
   }
 
-  .fo-cta .btn.ghost:hover,
+  .fo-cta .btn.ghost:is(:hover, :focus-within),
   .fo-cta .btn.ghost.probe-hover,
-  .fo-cta .fo-text-link:hover,
+  .fo-cta .fo-text-link:is(:hover, :focus-within),
   .fo-cta .fo-text-link.probe-hover {
     transform: translateX(-0.1875rem);
     border-block-end-color: var(--accent);
   }
 }
 
+/* ── L1-d — the underline SWEEP (heron's measured secondary
+   affordance): the ghost/text seats already invert on hover (the .btn
+   ink wipe / the accent underline); the sweep draws a 1px --accent
+   rule across the seat's block-end edge, 0 → 100% from the reading
+   start edge (RTL: the physical right). It rides the same
+   hover/focus/probe arms as the drift; the RM belt is inherited — the
+   motion tokens zero --t-base under prefers-reduced-motion, so the
+   draw collapses to the resolved line. The ghost's ::after parks
+   INSIDE the padding box (the .btn clip) directly above its 1px
+   border; the text-link's ::after overlays its own faint rest
+   underline at the border seat. ── */
+.fo-cta .fo-text-link {
+  /* the sweep's containing block — no layout shift (relative, no
+     offsets; the rest geometry is pinned by the spec mapping). */
+  position: relative;
+}
+
+.fo-cta .btn.ghost::after,
+.fo-cta .fo-text-link::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 1px;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform var(--t-base) var(--ease);
+  pointer-events: none;
+}
+
+.fo-cta .fo-text-link::after {
+  inset-block-end: -1px; /* overlay the 1px rest underline exactly */
+}
+
+.fo-cta .btn.ghost:is(:hover, :focus-within)::after,
+.fo-cta .btn.ghost.probe-hover::after,
+.fo-cta .fo-text-link:is(:hover, :focus-within)::after,
+.fo-cta .fo-text-link.probe-hover::after {
+  transform: scaleX(1);
+}
+
 @media (max-width: 768px) {
-  .fo-cta .btn.accent:hover,
+  .fo-cta .btn.accent:is(:hover, :focus-within),
   .fo-cta .btn.accent.probe-hover {
     border-block-end-color: var(--accent-ink);
   }
 
-  .fo-cta .btn.ghost:hover,
+  .fo-cta .btn.ghost:is(:hover, :focus-within),
   .fo-cta .btn.ghost.probe-hover,
-  .fo-cta .fo-text-link:hover,
+  .fo-cta .fo-text-link:is(:hover, :focus-within),
   .fo-cta .fo-text-link.probe-hover {
     color: var(--rule-strong);
     border-block-end-color: var(--rule-strong);
   }
+}
+
+/* L1-d — the registry cloud's keyboard-parity arm (focus-only: the
+   hover arms stay per-record — [14] tr @≥769, the color+bd phone
+   belt below, [2] the exact 1440 no-change mirror): the underline
+   draws + the seat drifts under the ring, the same voice as the
+   resolve seats. */
+.cg-cloud-link[data-spec-hover]:focus-within {
+  color: var(--accent-ink);
+  border-block-end-color: var(--accent);
+  transform: translateX(-0.1875rem);
 }
 /* ── T-13 registry cloud — the recorded cta seats beyond the button
    pair (heron ordinals 2·3·5·7·8·10–13·14·15–18). The frozen spec's

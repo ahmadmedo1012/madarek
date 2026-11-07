@@ -10,7 +10,11 @@
 /* ── Numeral `[nn]` — the mono bracketed index (chrome .fo-mono). ── */
 .lp-numeral {
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  /* L1-e (R341 · T-16 #2) — the numeral rides Heron's measured
+     Geistmono rung (--fs-mono-md: 11.67 @1440 · 13.89 @390), a tier
+     BELOW the fs-sm label voice — body / label / numeral read as
+     distinct rungs; ≥11px at 390 (the panel's legibility finding). */
+  font-size: var(--fs-mono-md);
   font-variant-numeric: tabular-nums;
 }
 
@@ -34,8 +38,11 @@
 }
 
 .lp-eyebrow .lp-numeral {
-  font-size: var(--fs-xxs);
-  color: var(--text-faint);
+  /* L1-e — the eyebrow's index joins the mono rung (11.67/13.89) with
+     AA ink: --text-faint measured 4.5–4.6:1 on paper (borderline);
+     --text-muted clears 5.4:1 at every recorded ground. */
+  font-size: var(--fs-mono-md);
+  color: var(--text-muted);
 }
 
 /* ── Hairline — the 1px rule (statement/chrome grammar: bg technique,
