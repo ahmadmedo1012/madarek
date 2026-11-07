@@ -18,7 +18,7 @@ import {
   RulerGauge, SegmentedProgress, MasteryCells, StreakTicks,
   ScheduleStrip, GradeBars, groupSlotsByDay, watchState, gradeBands,
 } from '../../components/patterns/indicators';
-import { CountIn } from '../../components/motion';
+import { CountIn } from '../../components/motion/CountIn';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
 import {

@@ -21,7 +21,7 @@ import { ChartFrame } from '../../components/charts';
 import { cartesianOptions, radialOptions, chartColors, useChartThemeKey } from '../../lib/chartTheme';
 import { ErrorState, EmptyState, ChartSkeleton, ListSkeleton, TableSkeleton, Skeleton, CardSkeleton } from '../../components/primitives/States';
 import { useCompactRosterBand } from '../admin/AdminPages'; // R341 deadcode reconciliation — one definition (see the Professor Evaluation note)
-import { CountIn } from '../../components/motion';
+import { CountIn } from '../../components/motion/CountIn';
 import { Icon } from '../../components/Icon';
 import { api, unwrap } from '../../lib/api';
 import { formatRelativeArShort, WEEKDAY_NAMES_AR, countAr } from '../../lib/format';

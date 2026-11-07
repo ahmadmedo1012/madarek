@@ -5,6 +5,11 @@
  *
  * PLATFORM INVENTORY (refreshed r157 per the overlays/index.ts pattern —
  * the export now names what each primitive actually is):
+ *   - CountIn → the in-app numeric count-up reveal (r341/A-Medic
+ *     promotion of the DashboardPage/QualityPages byte-copy twins).
+ *     Direct-import member (pages import it from ./CountIn), NOT a
+ *     barrel key: tests/motion/Skeleton.test.tsx pins this barrel's
+ *     exact runtime key list.
  *   - useReducedMotion → the reduced-motion gate read by pages with
  *     pointer choreography (student dashboard, AI assistant, owner
  *     charts/education/governance/AI, admin sync/pages, quality,
@@ -24,11 +29,6 @@
  * handed to the CSS-foundations wave.
  */
 export { useReducedMotion } from './useReducedMotion';
-/* r341/A-Medic: the in-app numeric count-up reveal — promoted from the
- * DashboardPage/QualityPages byte-copy twins (wave 5-c's header named
- * this promotion as the plan). CourseDetailPage's useCountUp stays
- * page-local by design (different easing/rounding contract). */
-export { CountIn } from './CountIn';
 export { PageTransition } from './PageTransition';
 export { Skeleton } from './Skeleton';
 export type { SkeletonVariant } from './Skeleton';
