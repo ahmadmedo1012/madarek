@@ -11,7 +11,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import {
   ClipboardCheck, Clock, CheckCircle2, AlertTriangle, ChevronRight, ChevronDown, ChevronLeft,
   FileText, Hourglass, CalendarClock, ArrowLeft, Check,
-  ListChecks, Info, Ban,
+  ListChecks, Info, Ban, BarChart3, Compass,
 } from 'lucide-react';
 import { Card, Badge, PageHeader } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -296,6 +296,24 @@ export default function OnlineExamsPage() {
           eyebrow="مركز الاختبارات"
           title="الاختبارات الإلكترونية"
           description="اختبارات معتمدة من مكتب الجودة، موحَّدة عبر الكليات. تنبيه: لا يمكن إعادة المحاولة بعد التسليم إلا في الاختبارات التدريبية."
+          /* R342-08 — the header CTA pair (the D11/D8 measured seat; the
+             phone band hides the topbar «اسأل AI» ≤920, D6, and the first
+             row's start CTA sits below the phone fold): the exam
+             journey's honest next steps — «النتائج والتقييمات» is where
+             the grades land, «المصفوفة التعليمية» is the mastery the
+             interactions feed (the exams→results→mastery loop). */
+          actions={(
+            <>
+              <Link to="/student/results" className="btn primary sm">
+                <Icon icon={BarChart3} size={13} />
+                النتائج والتقييمات
+              </Link>
+              <Link to="/student/matrix" className="btn ghost sm">
+                <Icon icon={Compass} size={13} />
+                المصفوفة التعليمية
+              </Link>
+            </>
+          )}
         />
 
         {/* [02] the startable board — the bar renders in every state
