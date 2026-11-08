@@ -717,6 +717,7 @@ L.push(`- Crawl = ${CRAWL.groups.map((g) => `${g.routes.length} ${g.name}`).join
 L.push(`- This ran on the D1 WORKTREE (wip/r343-D1): parallel R343 branches add CSS concurrently — the authoritative baseline is the post-merge full-matrix re-run.`);
 L.push(`- admin/teacher/owner/quality surfaces were NOT crawled (their fixture corpora live inside the per-role harness scripts) — their selectors are counted \`notCrawled\` (${notCrawled.length}), never dead.`);
 L.push(`- ALL cells run on the D7a hermetic e2e transport (public cells as guests: /auth/me answers 401; public data surfaces get the fixture table — /colleges renders its designed state, never the no-backend ErrorState).`);
+L.push(`- Inherent subset limits (do NOT delete on these signals alone): (1) transient states — skeletons/toasts/modals unmount before the harvest (e.g. .gallery-skeleton-*); (2) a file loaded by a crawled route may also carry other surfaces' families — colleges.css's .comp-* belong to /competitions|/community and its detail/leaderboard classes to the 2 uncrawled colleges routes (no fixtures in the e2e table).`);
 L.push(`- Playwright CSS coverage cannot see Vite-dev's injected <style> tags — the live set is harvested from document.styleSheets (data-vite-dev-id attribution) after a scroll+hover pass; coverage entries: ${coverageEntries}.`);
 L.push(``);
 L.push(`## Totals (frontend/src/styles — ${files.length} files)`);

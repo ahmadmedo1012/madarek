@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-11-08T18:39:05.301Z",
+ "generatedAt": "2026-11-08T18:47:06.392Z",
  "tool": "scripts/css/dead.mjs",
  "url": "http://localhost:5208",
  "mode": "vite-dev (injected <style> sheets; CSS coverage supplement — see tool header)",
@@ -334,7 +334,7 @@
     "bp": 390,
     "theme": "light",
     "sheets": 23,
-    "matchedSelectors": 132,
+    "matchedSelectors": 179,
     "errors": []
    },
    {
@@ -343,7 +343,7 @@
     "bp": 390,
     "theme": "dark",
     "sheets": 23,
-    "matchedSelectors": 138,
+    "matchedSelectors": 185,
     "errors": []
    },
    {
@@ -352,7 +352,7 @@
     "bp": 1440,
     "theme": "light",
     "sheets": 23,
-    "matchedSelectors": 150,
+    "matchedSelectors": 197,
     "errors": []
    },
    {
@@ -361,7 +361,7 @@
     "bp": 1440,
     "theme": "dark",
     "sheets": 23,
-    "matchedSelectors": 156,
+    "matchedSelectors": 203,
     "errors": []
    },
    {
@@ -552,14 +552,14 @@
  "totals": {
   "files": 78,
   "selectors": 6268,
-  "matched": 3207,
-  "neverMatched": 1774,
+  "matched": 3225,
+  "neverMatched": 1756,
   "printOnly": 119,
   "notCrawled": 1168,
   "usedByTheme": {
-   "light": 2021,
-   "dark": 2072,
-   "union": 2080
+   "light": 2038,
+   "dark": 2089,
+   "union": 2097
   },
   "duplicateGroups": 952,
   "redundantDeclarations": 1178,
@@ -623,8 +623,8 @@
   },
   "frontend/src/styles/colleges.css": {
    "selectors": 193,
-   "matched": 2,
-   "dead": 191,
+   "matched": 22,
+   "dead": 171,
    "printOnly": 0,
    "notCrawled": 0,
    "important": 0,
@@ -632,8 +632,8 @@
   },
   "frontend/src/styles/components.css": {
    "selectors": 308,
-   "matched": 79,
-   "dead": 229,
+   "matched": 72,
+   "dead": 236,
    "printOnly": 0,
    "notCrawled": 0,
    "important": 6,
@@ -668,8 +668,8 @@
   },
   "frontend/src/styles/illustrations.css": {
    "selectors": 10,
-   "matched": 2,
-   "dead": 8,
+   "matched": 0,
+   "dead": 10,
    "printOnly": 0,
    "notCrawled": 0,
    "important": 0,
@@ -947,8 +947,8 @@
   },
   "frontend/src/styles/motion.css": {
    "selectors": 48,
-   "matched": 1,
-   "dead": 47,
+   "matched": 3,
+   "dead": 45,
    "printOnly": 0,
    "notCrawled": 0,
    "important": 1,
@@ -974,8 +974,8 @@
   },
   "frontend/src/styles/patterns.css": {
    "selectors": 807,
-   "matched": 366,
-   "dead": 430,
+   "matched": 373,
+   "dead": 423,
    "printOnly": 11,
    "notCrawled": 0,
    "important": 0,
@@ -1001,8 +1001,8 @@
   },
   "frontend/src/styles/polish.css": {
    "selectors": 251,
-   "matched": 131,
-   "dead": 69,
+   "matched": 130,
+   "dead": 70,
    "printOnly": 51,
    "notCrawled": 0,
    "important": 18,
@@ -1226,8 +1226,8 @@
   },
   "frontend/src/styles/tokens/tokens.css": {
    "selectors": 35,
-   "matched": 21,
-   "dead": 12,
+   "matched": 20,
+   "dead": 13,
    "printOnly": 2,
    "notCrawled": 0,
    "important": 0,
@@ -1543,68 +1543,8 @@
   },
   {
    "file": "frontend/src/styles/colleges.css",
-   "line": 20,
-   "selector": ".college-city-section"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 23,
-   "selector": ".college-city-section:first-of-type"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 26,
-   "selector": ".college-city-header"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 35,
-   "selector": ".college-city-name"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 43,
-   "selector": ".college-city-count"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 53,
-   "selector": ".college-card-arrow"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 77,
-   "selector": ".gallery-chip-strip"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 84,
-   "selector": ".gallery-chip"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 110,
-   "selector": ".gallery-chip:hover"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 115,
-   "selector": ".gallery-chip.gallery-chip-on"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
    "line": 115,
    "selector": ".gallery-chip[aria-selected=\"true\"]"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 124,
-   "selector": ".gallery-chip-count"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 135,
-   "selector": ".gallery-chip.gallery-chip-on .gallery-chip-count"
   },
   {
    "file": "frontend/src/styles/colleges.css",
@@ -1705,36 +1645,6 @@
    "file": "frontend/src/styles/colleges.css",
    "line": 289,
    "selector": ".gallery-skeleton-row-line-b"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 303,
-   "selector": ".gallery-chip-strip"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 315,
-   "selector": ".gallery-chip-strip::-webkit-scrollbar"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 316,
-   "selector": ".gallery-chip"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 332,
-   "selector": ".gallery-chip-strip"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 337,
-   "selector": ".college-stat-chip"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 350,
-   "selector": ".college-stat-chip strong"
   },
   {
    "file": "frontend/src/styles/colleges.css",
@@ -2079,17 +1989,7 @@
   {
    "file": "frontend/src/styles/colleges.css",
    "line": 743,
-   "selector": ".college-card-arrow"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 743,
    "selector": ".student-rank-row"
-  },
-  {
-   "file": "frontend/src/styles/colleges.css",
-   "line": 761,
-   "selector": ".leaderboard-cta"
   },
   {
    "file": "frontend/src/styles/colleges.css",
@@ -2769,11 +2669,6 @@
   {
    "file": "frontend/src/styles/components.css",
    "line": 692,
-   "selector": "input[type=\"search\"]"
-  },
-  {
-   "file": "frontend/src/styles/components.css",
-   "line": 692,
    "selector": "input[type=\"number\"]"
   },
   {
@@ -2838,6 +2733,16 @@
   },
   {
    "file": "frontend/src/styles/components.css",
+   "line": 1043,
+   "selector": ".state"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1056,
+   "selector": ".state"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
    "line": 1063,
    "selector": ".state-icon"
   },
@@ -2873,8 +2778,43 @@
   },
   {
    "file": "frontend/src/styles/components.css",
+   "line": 1125,
+   "selector": ".state-illustration"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1132,
+   "selector": ".state-illustration .illustration > svg"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1136,
+   "selector": ".state-title"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1137,
+   "selector": ".state-desc"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1157,
+   "selector": ".state"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
    "line": 1158,
    "selector": ".state-icon"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1159,
+   "selector": ".state-illustration"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1160,
+   "selector": ".state-illustration .illustration > svg"
   },
   {
    "file": "frontend/src/styles/components.css",
@@ -3045,6 +2985,16 @@
    "file": "frontend/src/styles/components.css",
    "line": 1586,
    "selector": ".cmd-palette-card"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1611,
+   "selector": ".illustration"
+  },
+  {
+   "file": "frontend/src/styles/components.css",
+   "line": 1618,
+   "selector": ".illustration > svg"
   },
   {
    "file": "frontend/src/styles/components.css",
@@ -3305,21 +3255,6 @@
    "file": "frontend/src/styles/components.css",
    "line": 2636,
    "selector": ".page-header-meta"
-  },
-  {
-   "file": "frontend/src/styles/components.css",
-   "line": 2687,
-   "selector": ".cp-meta-row"
-  },
-  {
-   "file": "frontend/src/styles/components.css",
-   "line": 2693,
-   "selector": ".cp-meta-stats"
-  },
-  {
-   "file": "frontend/src/styles/components.css",
-   "line": 2700,
-   "selector": ".cp-meta-stats .college-stat-chip"
   },
   {
    "file": "frontend/src/styles/components.css",
@@ -3640,6 +3575,16 @@
    "file": "frontend/src/styles/components.css",
    "line": 3182,
    "selector": ".grid-4"
+  },
+  {
+   "file": "frontend/src/styles/illustrations.css",
+   "line": 43,
+   "selector": ".mk-ill.mk-ill"
+  },
+  {
+   "file": "frontend/src/styles/illustrations.css",
+   "line": 53,
+   "selector": ".mk-ill > svg"
   },
   {
    "file": "frontend/src/styles/illustrations.css",
@@ -6208,16 +6153,6 @@
   },
   {
    "file": "frontend/src/styles/motion.css",
-   "line": 112,
-   "selector": "[data-reveal][data-revealed=\"true\"]"
-  },
-  {
-   "file": "frontend/src/styles/motion.css",
-   "line": 118,
-   "selector": "[data-reveal][data-revealed=\"true\"]"
-  },
-  {
-   "file": "frontend/src/styles/motion.css",
    "line": 149,
    "selector": ".skeleton"
   },
@@ -6970,41 +6905,6 @@
    "file": "frontend/src/styles/patterns.css",
    "line": 330,
    "selector": "a.pf-stat:hover .pf-stat-value"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 334,
-   "selector": ".pf-filterbar"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 340,
-   "selector": ".pf-filterbar.sticky"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 356,
-   "selector": ".pf-filterbar-search"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 364,
-   "selector": ".pf-filterbar-search-icon"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 371,
-   "selector": ".pf-filterbar-search input"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 385,
-   "selector": ".pf-filterbar-search input::placeholder"
-  },
-  {
-   "file": "frontend/src/styles/patterns.css",
-   "line": 386,
-   "selector": ".pf-filterbar-filters"
   },
   {
    "file": "frontend/src/styles/patterns.css",
@@ -9174,11 +9074,6 @@
   {
    "file": "frontend/src/styles/polish.css",
    "line": 1612,
-   "selector": "input[type=\"search\"]"
-  },
-  {
-   "file": "frontend/src/styles/polish.css",
-   "line": 1612,
    "selector": "input[type=\"number\"]"
   },
   {
@@ -9243,6 +9138,11 @@
   },
   {
    "file": "frontend/src/styles/polish.css",
+   "line": 2082,
+   "selector": ".state.state-error .btn"
+  },
+  {
+   "file": "frontend/src/styles/polish.css",
    "line": 2206,
    "selector": ".state.state-empty .state-icon"
   },
@@ -9250,6 +9150,11 @@
    "file": "frontend/src/styles/polish.css",
    "line": 2206,
    "selector": ".state.state-error .state-icon"
+  },
+  {
+   "file": "frontend/src/styles/polish.css",
+   "line": 2206,
+   "selector": ".state.state-error .btn"
   },
   {
    "file": "frontend/src/styles/polish.css",
@@ -10140,6 +10045,11 @@
    "file": "frontend/src/styles/tokens/tokens.css",
    "line": 953,
    "selector": ":root[data-theme=\"dark\"] body[data-role=\"owner\"]"
+  },
+  {
+   "file": "frontend/src/styles/tokens/tokens.css",
+   "line": 1087,
+   "selector": ".illustration svg :is(path, circle, rect, line, polyline, polygon, ellipse)"
   }
  ],
  "notCrawledFiles": [
