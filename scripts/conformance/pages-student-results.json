@@ -1,0 +1,686 @@
+{
+ "generatedAt": "2026-11-08T00:48:42.794Z",
+ "url": "http://localhost:5308",
+ "dark": false,
+ "routes": {
+  "/student/university": {
+   "1440:light": {
+    "score": 98.5,
+    "axes": {
+     "typeRungs": {
+      "score": 94.28571428571428,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "جامعة الزاوية"
+       },
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بطاقة تعريف"
+       }
+      ],
+      "total": 35,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 3
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 96.875,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 32
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 98.9,
+    "axes": {
+     "typeRungs": {
+      "score": 96.96969696969697,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بطاقة تعريف"
+       }
+      ],
+      "total": 33,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 3
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 96.66666666666667,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 30
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "دليل الحرم الجامعيّ"
+     }
+    }
+   }
+  },
+  "/student/downloads": {
+   "1440:light": {
+    "score": 99.1,
+    "axes": {
+     "typeRungs": {
+      "score": 96.49122807017544,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "مركز التحميلات"
+       },
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "ملفّات حديثة"
+       }
+      ],
+      "total": 57,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.24561403508771,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 57
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.1,
+    "axes": {
+     "typeRungs": {
+      "score": 96.36363636363636,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 31.7557,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "مركز التحميلات"
+       },
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "ملفّات حديثة"
+       }
+      ],
+      "total": 55,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.18181818181819,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 55
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "مقرّراتي الدراسية"
+     }
+    }
+   }
+  },
+  "/student/research": {
+   "1440:light": {
+    "score": 99.1,
+    "axes": {
+     "typeRungs": {
+      "score": 96.1038961038961,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بحوثي العلمية"
+       },
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بحوثي"
+       },
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "كيف يعمل النظام"
+       }
+      ],
+      "total": 77,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 1
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.7012987012987,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 77
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.1,
+    "axes": {
+     "typeRungs": {
+      "score": 96,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 31.7557,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بحوثي العلمية"
+       },
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "بحوثي"
+       },
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "كيف يعمل النظام"
+       }
+      ],
+      "total": 75,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 1
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.66666666666667,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 75
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "المكتبة الإلكترونية"
+     }
+    }
+   }
+  },
+  "/student/jobs": {
+   "1440:light": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 97.05882352941177,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "فرص العمل"
+       },
+       {
+        "fs": 26.6667,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "فرص العمل"
+       }
+      ],
+      "total": 68,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.52941176470588,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 68
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.2,
+    "axes": {
+     "typeRungs": {
+      "score": 96.96969696969697,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 31.7557,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "فرص العمل"
+       },
+       {
+        "fs": 19.8473,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "فرص العمل"
+       }
+      ],
+      "total": 66,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 98.48484848484848,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       }
+      ],
+      "total": 66
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "مهاراتي"
+     }
+    }
+   }
+  }
+ },
+ "gate": false,
+ "floor": 90
+}
