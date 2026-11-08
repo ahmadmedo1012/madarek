@@ -1,0 +1,4324 @@
+{
+ "generatedAt": "2026-11-08T23:25:04.904Z",
+ "engine": "chromium",
+ "url": "http://localhost:5173/",
+ "specDir": "/home/z/my-project/madarek/docs/redesign/r335/heron-spec",
+ "summary": {
+  "total": 2280,
+  "pass": 2217,
+  "fail": 63,
+  "passRate": 97.2,
+  "exceptionUses": 7,
+  "exceptionRate": 0.3,
+  "exceptionCap": "<5%",
+  "exceptionRules": {
+   "ar-text-length-class": 7
+  },
+  "unmatchedFailures": 1,
+  "gate": "FAIL(coverage:home-intro-wrap)",
+  "ratchet": 93.2,
+  "coverage": {
+   "formula": "coverage = measured / (measured + offBookEst); offBookEst = suppressedChecks + excusedElements × 12 (GROUP_CHECKS sum = checks per fully-measured element; conservative — the 5 unskippable per-element checks are not counted). Section cells only; scroll/interact extensions are not coverage-scored.",
+   "thresholds": {
+    "coverageFloor": "40% measured (FAIL(coverage), no escape)",
+    "offBookCap": "70% (FAIL(off-book) unless reviewed in coverage-review.json with written reason + owner task)",
+    "heuristicShareCap": "50% of pairs (FAIL(heuristic))"
+   },
+   "overall": {
+    "measured": 2189,
+    "offBookEst": 3308,
+    "coveragePct": 39.8,
+    "offBookPct": 60.2
+   },
+   "sections": {
+    "home-intro-wrap": {
+     "measured": 2189,
+     "skipped": 860,
+     "excused": 204,
+     "offBookEst": 3308,
+     "pairs": 217,
+     "heur": 2,
+     "coverage": 39.8,
+     "offBookPct": 60.2,
+     "heurPct": 0.9
+    }
+   },
+   "gateFailures": [
+    {
+     "gate": "coverage",
+     "section": "home-intro-wrap",
+     "value": "39.8%",
+     "threshold": "< 40% measured (coverage floor — no escape; lift it with section work)"
+    }
+   ],
+   "reviewedEscapes": []
+  },
+  "unmatchedOmitted": 0,
+  "skippedOmitted": 95,
+  "totalSkipped": 860,
+  "edge390": {
+   "fails": 0,
+   "tolerance": "±2px vs the spec's recorded 390 section-root gutter",
+   "note": "content edge = visible-content union (fully-inside descendants), root content box as fallback; spec gutter from the section root's x/w"
+  }
+ },
+ "sections": {
+  "home-intro-wrap": {
+   "768": {
+    "passRate": 99.2,
+    "n": 2189,
+    "pass": 2171,
+    "fail": 18,
+    "exceptions": 7,
+    "explicit": 0,
+    "dataSpec": 215,
+    "heuristic": 2,
+    "unmatched": 1,
+    "excused": 204,
+    "skipped": 860,
+    "missing": null
+   }
+  }
+ },
+ "failures": [
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.cell.1",
+   "mode": "data-spec",
+   "expected": 440,
+   "actual": 612,
+   "delta": 172
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > a[2] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.ctaiconin2",
+   "mode": "data-spec",
+   "expected": 104,
+   "actual": 162,
+   "delta": 57.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[2]",
+   "oursSelector": "#ds:intro.ctaicon2",
+   "mode": "data-spec",
+   "expected": 105,
+   "actual": 162,
+   "delta": 57
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "y",
+   "heronPath": "home-intro-wrap > div[1] > div[2] > div[2] > div[1] > h2[1] > div[7]",
+   "oursSelector": "#ds:intro.line.7",
+   "mode": "data-spec",
+   "expected": 181,
+   "actual": 162,
+   "delta": 19
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[2]",
+   "oursSelector": "#ds:intro.ctaspan",
+   "mode": "data-spec",
+   "expected": 70,
+   "actual": 88,
+   "delta": 17.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.ctaspanin",
+   "mode": "data-spec",
+   "expected": 70,
+   "actual": 88,
+   "delta": 17.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > a[2] > div[1] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.ctatext",
+   "mode": "data-spec",
+   "expected": 70,
+   "actual": 88,
+   "delta": 17.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[2] > div[2]",
+   "oursSelector": "#ds:intro.ctaspan2",
+   "mode": "data-spec",
+   "expected": 70,
+   "actual": 88,
+   "delta": 17.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > a[2] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.ctatext2",
+   "mode": "data-spec",
+   "expected": 70,
+   "actual": 88,
+   "delta": 17.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > a[2] > div[1] > div[3] > div[2] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.ctaiconbox2",
+   "mode": "data-spec",
+   "expected": 104,
+   "actual": 121,
+   "delta": 16.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[1] > div[2] > div[2] > a[2] > div[1] > div[3]",
+   "oursSelector": "#ds:intro.ctaicons",
+   "mode": "data-spec",
+   "expected": 146,
+   "actual": 162,
+   "delta": 16
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > a[2] > div[1] > div[3] > div[1]",
+   "oursSelector": "#ds:intro.ctaicon",
+   "mode": "data-spec",
+   "expected": 146,
+   "actual": 162,
+   "delta": 16
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > div[2] > a[2] > div[1] > div[3] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.ctaiconin",
+   "mode": "data-spec",
+   "expected": 146,
+   "actual": 162,
+   "delta": 15.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "x-mirror",
+   "heronPath": "home-intro-wrap > a[2] > div[1] > div[3] > div[1] > div[1] > div[1]",
+   "oursSelector": "#ds:intro.ctaiconbox",
+   "mode": "data-spec",
+   "expected": 146,
+   "actual": 162,
+   "delta": 15.5
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "interactive",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "#ds:intro.labelarrowbox2",
+   "mode": "data-spec",
+   "expected": false,
+   "actual": true,
+   "delta": 1
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "interactive",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[3] > div[1] > div[1] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "interactive",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "oursSelector": "#hm:div.none",
+   "mode": "heuristic",
+   "expected": true,
+   "actual": false,
+   "delta": 1
+  },
+  {
+   "section": "(scroll-curve)",
+   "bp": "768",
+   "kind": "scroll-curve",
+   "heronPath": "div.home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[2] > div[1]",
+   "oursSelector": "-",
+   "mode": "scroll-curve",
+   "expected": "shape within 5% of range",
+   "actual": "deviation 100.0% (ours [0,0,0,0,0,0,0,0,0,0,0] vs heron [0,0.07,0.19,0.3,0.41,0.52,0.63,0.75,0.86,0.97,1])",
+   "delta": 1
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "no-counterpart",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[3] > div[1]",
+   "oursSelector": "(none)",
+   "mode": "unmatched",
+   "expected": "an element conforming to the spec role",
+   "actual": "no counterpart element",
+   "delta": 0
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "hover",
+   "heronPath": "div.home-intro-wrap > interactive[1]",
+   "oursSelector": "-",
+   "mode": "interact",
+   "expected": "change (bd)",
+   "actual": "no-counterpart",
+   "delta": 0
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "hover",
+   "heronPath": "div.home-intro-partner-label-wrap > interactive[19]",
+   "oursSelector": "-",
+   "mode": "interact",
+   "expected": "change (color,bd)",
+   "actual": "no-counterpart",
+   "delta": 0
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "hover",
+   "heronPath": "div.home-intro-partner-label-wrap > interactive[20]",
+   "oursSelector": "-",
+   "mode": "interact",
+   "expected": "change (color,bd)",
+   "actual": "no-counterpart",
+   "delta": 0
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "kind": "hover",
+   "heronPath": "div.home-intro-partner-label-wrap > interactive[21]",
+   "oursSelector": "-",
+   "mode": "interact",
+   "expected": "change (bd)",
+   "actual": "no-counterpart",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(255, 255, 255)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(255, 255, 255)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(255, 255, 255)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(65, 65, 64)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(255, 255, 255)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(255, 255, 255)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(255, 255, 255)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(102, 102, 96)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(102, 102, 96)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.67px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"1.4004px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.67px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"1.4004px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.67px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"1.4004px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.67px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"1.4004px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.67px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"1.4004px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.67px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"1.4004px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"600\",\"color\":\"rgb(40, 40, 40)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(40, 40, 40)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(180, 180, 176)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(40, 40, 40)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(180, 180, 176)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(40, 40, 40)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(180, 180, 176)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(40, 40, 40)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgb(180, 180, 176)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.52px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.52px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.52px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.52px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.52px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"10px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"10px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"10px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"10px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"0.533333px\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "numeral-label",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.3333px\",\"fw\":\"500\",\"color\":\"rgb(98, 98, 95)\",\"ls\":\"0.533333px\",\"bd\":\"1px\"}",
+   "actual": "{\"fs\":\"11.6667px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  },
+  {
+   "section": "(pattern)",
+   "bp": "1440",
+   "kind": "pattern",
+   "heronPath": "hairline-rule",
+   "oursSelector": "-",
+   "mode": "pattern",
+   "expected": "{\"fs\":\"13.33px\",\"fw\":\"500\",\"color\":\"rgba(40, 40, 40, 0.72)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "actual": "{\"fs\":\"13.33px\",\"fw\":\"500\",\"color\":\"rgb(40, 40, 40)\",\"ls\":\"normal\",\"bd\":\"0px\"}",
+   "delta": 0
+  }
+ ],
+ "unmatchedReport": [
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > section[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > defs[1]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[2] > svg[1] > defs[1] > mask[1]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > filter[2]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[2] > svg[1] > filter[2] > fecomponenttransfer[4]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > svg[1] > image[3]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[8] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[9] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[2] > div[10] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[4] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[2] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[8] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[9] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[8] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[9] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[3] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[4] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[2] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[3] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[3] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[3] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[4] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[4] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[4] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[5] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[4] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[5] > div[1] > div[1] > div[5] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[6] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[2] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[3] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[4] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[4] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[4] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[5] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[5] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[6] > div[1] > div[1] > div[5] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[7] > div[1]",
+   "excused": true,
+   "reason": "ar-char-split residue: the reference split-text tween scaffolding (line/word/char boxes) in an alternate window-head recording; the design-relevant boxes are explicitly bound (intro.line/linein/linemask/word/wordin/wchar) and fully measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[8] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[7] > div[1] > div[1] > div[1] > div[9] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[4] > div[1] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[1] > div[1] > div[1] > div[3] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[1] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[4] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "0x0 tween-residue box (the roll pair's parked copy mid-tween); our parked copy is a real off-stage box"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[4] > div[2] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[1] > div[1] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[1] > div[1] > div[1] > svg[1] > path[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[4] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[1] > div[3] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[1] > div[1] > svg[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[1] > svg[1] > path[1]",
+   "excused": true,
+   "reason": "window collision: the walk truncates paths at six segments, so distinct spec elements share this recorded path; only one counterpart can bind. The conforming container is bound explicitly; this residue is tween plumbing (the parked roll copy / the loop duplicate)."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[1] > div[4] > div[2] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > div[3] > div[2] > div[2] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[1] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[2]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[2] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[3]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[4]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[4] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[4] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[4] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[5]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[5] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[5] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[5] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[6]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[6] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[6] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[6] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[7]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[7] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[7] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[7] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[3] > div[2] > div[2] > div[1] > div[1] > div[8]",
+   "excused": true,
+   "reason": "crawl overflow cells: the reference frozen track records 9 window cells (1440) / 8 (390); our crawl is the five DOCUMENTED universities (r307 media-truth contract) — the paired cells intro.cell.1-5 carry the geometry"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[8] > div[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[8] > div[1] > img[1]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > div[1] > div[8] > div[2]",
+   "excused": true,
+   "reason": "deep-window residue: the reference's tween/roll plumbing below the bound containers (window paths truncated by the walk); our equivalent renders inside the explicitly-bound conforming containers."
+  }
+ ],
+ "skippedReport": [
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > section[1] > div[1] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "R338 T-03i plumbing: heuristic-glued div.none tween-residue window — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[7]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[7]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[8]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[9]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[9]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[10]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[2] > div[10]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[3] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[1] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[4] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[4] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[1] > div[1] > div[1] > div[4] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[2] > div[1] > h2[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[2] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[7]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[7]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[8]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[8]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[9]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[1] > div[9]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[2] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[2] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[7]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[7]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[8]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[8]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[9]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[2] > div[9]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[2] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[2] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "group": "tc",
+   "checks": 1,
+   "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "group": "type",
+   "checks": 4,
+   "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > div[1] > div[3] > div[2] > div[1]",
+   "group": "color",
+   "checks": 2,
+   "reason": "R338 T-03i2 plumbing: heuristic-glued div.none tween-residue window under the 390-stacked media band (div[2] arm) — no design counterpart; the real boxes are explicitly bound and measured"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[2] > div[1] > div[1] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[3] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[2] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[3] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[3] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[7]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[3] > div[1] > div[1] > div[4] > div[7]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[4] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[7]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[2] > div[7]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[6]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[3] > div[6]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[4] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[4] > div[1] > div[1] > div[4] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[2] > div[1] > h2[1] > div[5] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[1] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[1] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[2] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[2] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[2] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[2] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[2] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[2] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[3] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[3] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[3] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[3] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[3] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[3] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[3]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[3]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[4]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[4] > div[4]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[5]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > div[1] > h2[1] > div[5] > div[1] > div[1] > div[5]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[5] > div[1]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[5] > div[1]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[5] > div[2]",
+   "group": "tag",
+   "checks": 1,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  },
+  {
+   "section": "home-intro-wrap",
+   "bp": "768",
+   "heronPath": "home-intro-wrap > h2[1] > div[5] > div[1] > div[1] > div[5] > div[2]",
+   "group": "geometry",
+   "checks": 4,
+   "reason": "binding-level skip (mapping explicit[].skip)"
+  }
+ ],
+ "darkInkReport": [],
+ "sectionEdges": {},
+ "scrollFeel": {
+  "pass": 6,
+  "fail": 0,
+  "failures": []
+ },
+ "scrollCurves": {
+  "pass": 0,
+  "fail": 1
+ },
+ "interact": {
+  "pass": 23,
+  "fail": 4,
+  "hoverChecked": 27
+ },
+ "patterns": {
+  "pass": 17,
+  "fail": 40,
+  "checked": 61
+ },
+ "panel": {
+  "pass": 5,
+  "fail": 0,
+  "deadVoid": {
+   "home-intro-wrap@768": {
+    "bp": "768",
+    "worstGapPx": 0,
+    "limitPx": 540
+   }
+  },
+  "hClip": {
+   "home-intro-wrap@768": {
+    "bp": "768",
+    "found": 0,
+    "excluded": 0
+   }
+  },
+  "cookie": {
+   "768": {
+    "bp": "768",
+    "seats": {
+     "top": {
+      "present": true,
+      "visible": true,
+      "rect": {
+       "l": 7,
+       "t": 13927,
+       "r": 761,
+       "b": 13985
+      },
+      "footerOverlap": false,
+      "ctaOverlap": false
+     },
+     "mid": {
+      "present": true,
+      "visible": true,
+      "rect": {
+       "l": 7,
+       "t": 7545,
+       "r": 761,
+       "b": 7603
+      },
+      "footerOverlap": false,
+      "ctaOverlap": false
+     },
+     "bottom": {
+      "present": true,
+      "visible": true,
+      "rect": {
+       "l": 7,
+       "t": 1164,
+       "r": 761,
+       "b": 1222
+      },
+      "footerOverlap": false,
+      "ctaOverlap": false
+     }
+    },
+    "dismissed": {
+     "clicked": true,
+     "gone": true
+    }
+   }
+  },
+  "progress": {
+   "768": {
+    "bp": "768",
+    "registered": 7,
+    "rendered": 7,
+    "seats": [
+     "scr-rule-top",
+     "scr-rule-bot",
+     "scr-pct",
+     "scr-ticks",
+     "bl-count",
+     "bl-fill",
+     "bl-stage"
+    ]
+   }
+  },
+  "skipped": []
+ },
+ "provenance": {
+  "file": "chromium-20261108-232545-sections-home-intro-wrap.bp-768.json",
+  "scope": "sections-home-intro-wrap.bp-768",
+  "fullMatrix": false,
+  "sections": "1/10",
+  "bps": "1/5",
+  "engine": "chromium",
+  "dark": false,
+  "gate": true,
+  "url": "http://localhost:5173/"
+ }
+}

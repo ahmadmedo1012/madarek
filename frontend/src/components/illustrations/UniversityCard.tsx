@@ -24,9 +24,12 @@ interface UniversityCardProps {
    *  at the cell's own ratio so the band stays even; the gallery seats
    *  keep each card's documented ratio) */
   ratioOverride?: number;
+  /** short display name for small strip seats (the crawl documents the
+   *  university, not the full institutional form) */
+  shortName?: string;
 }
 
-export function UniversityCard({ id, alt, className, ratioOverride }: UniversityCardProps) {
+export function UniversityCard({ id, alt, className, ratioOverride, shortName }: UniversityCardProps) {
   const spec = cardById(id);
   if (!spec) return null;
   const W = 1000;
@@ -36,7 +39,11 @@ export function UniversityCard({ id, alt, className, ratioOverride }: University
   const sx = (x: number) => (x / 100) * W;
   const sy = (y: number) => (y / 100) * H;
   const mono = Math.max(11, H * 0.036);
-  const nameFs = Math.min(H * 0.125, W * 0.105);
+  /* R343 C-1 fix: the name NEVER overflows the plate — a conservative
+   * per-character budget (1.3em) holds even on wide fallback fonts (the
+   * CI runners' Arabic stack measured ~1.25em/char and hClipped). */
+  const nameUnits = Math.max(spec.nameAr.length, 4);
+  const nameFs = Math.min(H * 0.125, W * 0.105, (W * 0.86) / (nameUnits * 1.3));
   const subFs = nameFs * 0.44;
   const cityFs = mono;
   const topY = H * 0.075 + mono;
@@ -63,7 +70,7 @@ export function UniversityCard({ id, alt, className, ratioOverride }: University
       </text>
       {/* the Arabic display name + sub-line */}
       <text x={sx(94)} y={nameY} fontSize={nameFs} fill="currentColor" textAnchor="end" style={{ fontFamily: 'var(--font-display), var(--font-sans), sans-serif', fontWeight: 600 }}>
-        {spec.nameAr}
+        {shortName ?? spec.nameAr}
       </text>
       <text x={sx(94)} y={subY} fontSize={subFs} fill="currentColor" opacity={0.72} textAnchor="end" style={{ fontFamily: 'var(--font-sans), sans-serif' }}>
         {spec.subAr}

@@ -74,6 +74,16 @@ const HERON_CHAR_COUNTS = [
   3, 10, 5, 2, 9, 9, 3, 4, 4, 5, 7, 3, 7, 6, 4, 2, 3, 3, 4, 7, 2, 3, 7, 3, 3, 9,
 ] as const;
 
+/* R343 C-1 — the crawl's short display names (the strip documents the
+ * university; the full institutional forms live on the campus cards). */
+const CRAWL_SHORT: readonly string[] = [
+  'جامعة بنغازي',
+  'جامعة بنغازي',
+  'جامعة عمر المختار',
+  'جامعة طرابلس',
+  'جامعة بنغازي',
+] as const;
+
 /* ── The r307 media truth: distinct Libyan universities documented —
  * Benghazi, Tripoli, Omar Al-Mukhtar (photos) + Misurata, Sebha
  * (official-channel videos). The crawl pairs each name with its
@@ -295,7 +305,7 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                       <Fragment key={u}>
                         <div className="st-crawl-cell" data-spec={`intro.cell.${i + 1}`}>
                           <div className="st-crawl-card" data-spec={`intro.celllogo.${i + 1}`}>
-                            <UniversityCard id={CRAWL_CAPTURES[i] ?? CRAWL_CAPTURES[0]!} alt={`${u} — بطاقة تخطيطية`} ratioOverride={2} />
+                            <UniversityCard id={CRAWL_CAPTURES[i] ?? CRAWL_CAPTURES[0]!} alt={`${u} — بطاقة تخطيطية`} ratioOverride={2} shortName={CRAWL_SHORT[i]} />
                           </div>
                           <div className="st-crawl-sep" aria-hidden="true" data-spec={`intro.cellsep.${i + 1}`} />
                         </div>
