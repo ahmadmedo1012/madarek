@@ -1,5 +1,5 @@
 import {
-  Wallet, Building2, Phone, Mail, ArrowLeft, Info, Megaphone,
+  Wallet, Building2, Phone, Mail, ArrowLeft, Info, Megaphone, MapPin,
 } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
@@ -61,6 +61,24 @@ export default function PaymentPage() {
       <PageHeader
         title="الشؤون الماليّة"
         description="حالة رسومك الجامعيّة وكيفيّة سدادها."
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6): the
+           university-services family's honest siblings — «الجامعة
+           التجريبية» (the registrar facts) and «دليل الحرم
+           الجامعيّ» (where to find the office). The in-section
+           «المجتمع الجامعيّ» link keeps its seat in §06. */
+        actions={(
+          <>
+            <Link to="/student/university" className="btn primary sm">
+              <Icon icon={Building2} size={13} />
+              الجامعة التجريبية
+            </Link>
+            <Link to="/student/map" className="btn ghost sm">
+              <Icon icon={MapPin} size={13} />
+              دليل الحرم الجامعيّ
+            </Link>
+          </>
+        )}
       />
 
       {/* R319 (c3-S2): every region below the masthead opens with the

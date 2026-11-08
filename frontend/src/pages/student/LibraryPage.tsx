@@ -5,7 +5,7 @@ import { useIsNarrowLayout } from '../../hooks/useIsNarrowLayout';
 import {
   Search, Library as LibraryIcon, BookOpen,
   Code, Network, Database, Bot, ShieldCheck, Star, FileText, X,
-  SlidersHorizontal, Undo2, ChevronLeft, ChevronRight,
+  SlidersHorizontal, Undo2, ChevronLeft, ChevronRight, Download, BookMarked,
   type LucideIcon,
 } from 'lucide-react';
 import { Pill, UserAvatar } from '../../components/primitives';
@@ -629,6 +629,23 @@ export default function LibraryPage() {
           /* 22-c (A3 P3-10): honest scope — no «آلاف الكتب» overclaim. */
           'كتب المكتبة الأكاديمية وبحوث طلاب الجامعة المنشورة — متاحة للاستعارة الفورية والاطّلاع المرجعي.'
         }
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «بحوثي العلمية» is the shelf's sibling workflow (your own
+           papers land on the published shelf), «مركز التحميلات» is
+           the files shelf — both real surfaces of this family. */
+        actions={(
+          <>
+            <Link to="/student/research" className="btn primary sm">
+              <Icon icon={BookMarked} size={13} />
+              بحوثي العلمية
+            </Link>
+            <Link to="/student/downloads" className="btn ghost sm">
+              <Icon icon={Download} size={13} />
+              مركز التحميلات
+            </Link>
+          </>
+        )}
         tabs={tabsStrip}
       />
 

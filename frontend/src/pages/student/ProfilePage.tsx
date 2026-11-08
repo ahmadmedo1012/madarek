@@ -1,8 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import {
   User, Mail, GraduationCap, BookOpen, Award, ExternalLink,
-  CheckCircle2, AlertCircle, Trophy, Hash, type LucideIcon,
+  CheckCircle2, AlertCircle, Trophy, Hash, UserCog, type LucideIcon,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Card, ProgressBar, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
 import { PageFrame, PageHeader, StatLine } from '../../components/patterns';
@@ -181,6 +182,23 @@ export default function ProfilePage() {
       <PageHeader
         title="ملفي الشخصي"
         description="معلوماتك الأكاديمية، حساباتك العلمية، وإنجازاتك في المنصة."
+        /* R342-08 — the header CTA pair (the D11/D8 measured seat;
+           the phone band hides the topbar «اسأل AI» ≤920, D6):
+           «الإنجازات والشهادات» is the growth surface this page's
+           hero summarizes (the achievements tab), «إعدادات الحساب»
+           is the account family's settings sibling — navigation-only. */
+        actions={(
+          <>
+            <Link to="/achievements" className="btn primary sm">
+              <Icon icon={Trophy} size={13} />
+              الإنجازات والشهادات
+            </Link>
+            <Link to="/settings" className="btn ghost sm">
+              <Icon icon={UserCog} size={13} />
+              إعدادات الحساب
+            </Link>
+          </>
+        )}
       />
 
       {/* R305 Heron hero — the ONE deep band on the page: identity

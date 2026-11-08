@@ -18,6 +18,8 @@ import {
   ThumbsDown,
   RotateCcw,
   Clock3,
+  Compass,
+  BookOpen,
 } from 'lucide-react';
 import { Card, Badge, AlertRow } from '../../components/primitives';
 import { Skeleton } from '../../components/primitives/States';
@@ -27,6 +29,7 @@ import { SectionBar, BarCount, StatusChip, EmptyCell } from '../../components/st
 /* G النهائية: الترويسة على عقد patterns — السطح محادثة موطّنة داخل
    إطار العائلة نفسه (PageFrame/PageHeader) لا ودجات دردشة عامة. */
 import { PageFrame, PageHeader } from '../../components/patterns';
+import { Link } from 'react-router-dom';
 import { useReducedMotion } from '../../components/motion';
 import { Icon } from '../../components/Icon';
 import { useAuthStore } from '../../stores/auth.store';
@@ -749,7 +752,28 @@ export default function AiAssistantPage() {
           }
           /* The badge names the real model when one answers — an LLM
              badge on template replies (or the reverse) would be a lie. */
-          actions={<Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>}
+          /* R342-08 — the header CTA pair (the D11/D8 measured seat):
+             the phone band hides the topbar «اسأل AI» (≤920, D6) and
+             the composer's send button rides disabled on an empty
+             draft, so the page's masthead carries two honest
+             cross-links: «المصفوفة التعليمية» is the mastery data
+             the assistant reads (the gaps rail's source — rendered on
+             this very page), «المكتبة الإلكترونية» is the study
+             shelf the answers point into. The sidebar's «محادثة
+             جديدة» keeps its single label (the r164g pin owns it). */
+          actions={(
+            <>
+              <Link to="/student/matrix" className="btn primary sm">
+                <Icon icon={Compass} size={13} />
+                المصفوفة التعليمية
+              </Link>
+              <Link to="/student/library" className="btn ghost sm">
+                <Icon icon={BookOpen} size={13} />
+                المكتبة الإلكترونية
+              </Link>
+              <Badge color="gold" icon={Sparkles}>{isRealLlm && aiConfig.data?.model ? aiConfig.data.model : 'AI'}</Badge>
+            </>
+          )}
         />
 
         {/* r261 (4E، اتجاه Superlist): شريط الفجوات — سياق المصادر يسبق

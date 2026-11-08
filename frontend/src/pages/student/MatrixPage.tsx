@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Play, AlertCircle, Sparkles, ArrowLeft,
+  Play, AlertCircle, Sparkles, ArrowLeft, Bot, ClipboardCheck,
 } from 'lucide-react';
 import { Badge } from '../../components/primitives';
 import { ErrorState, Skeleton } from '../../components/primitives/States';
@@ -174,7 +174,25 @@ export default function MatrixPage() {
         meta={matrix.data && totalConcepts > 0
           ? <>{countAr(totalConcepts, ['مفهوم واحد مُقاس', 'مفهومان مُقاسان', 'مفاهيم مُقاسة', 'مفهوماً مُقاساً'])} عبر {countAr(mappedCourses.length, ['مقرّر واحد', 'مقرّرين', 'مقرّرات', 'مقرّراً'])}</>
           : undefined}
-        actions={<Badge color="brand" icon={Sparkles}>تتبّع المعرفة</Badge>}
+        actions={(
+          /* R342-08 — the header CTA pair joins the tacking badge
+             (the D11/D8 measured seat; the phone band hides the
+             topbar «اسأل AI» ≤920, D6): «المساعد الذكي» reads these
+             gaps to propose the next study step, «الاختبارات
+             الإلكترونية» are the interactions mastery is measured
+             from (the header's own description) — navigation-only. */
+          <>
+            <Link to="/student/ai" className="btn primary sm">
+              <Icon icon={Bot} size={13} />
+              المساعد الذكي
+            </Link>
+            <Link to="/student/online-exams" className="btn ghost sm">
+              <Icon icon={ClipboardCheck} size={13} />
+              الاختبارات الإلكترونية
+            </Link>
+            <Badge color="brand" icon={Sparkles}>تتبّع المعرفة</Badge>
+          </>
+        )}
       />
 
       {/* Status key — the words ARE the encoding; the dots only anchor
