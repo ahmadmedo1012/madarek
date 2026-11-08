@@ -203,7 +203,10 @@ try {
   }
 
   /* the OG card — 1200×630 paper plate: hairline ink frame, the lockup,
-   * ONE orange accent (the mark's point), the Arabic tagline. */
+   * ONE orange accent (the mark's point), the Arabic tagline.
+   * R343: + the ORIGINAL skyline band + the [01] index — the card now
+   * speaks the same imagery system as the product itself. */
+  const skylineUrl = pathToFileURL(path.join(ROOT, 'frontend/public/media/illustrations/r342/footer/footer-skyline-light.webp')).href;
   const W = 1200;
   const H = 630;
   const lockupH = 150;
@@ -217,14 +220,24 @@ try {
          display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .frame { position: absolute; inset: 26px; border: 1.5px solid ${INK}; pointer-events: none; }
   .lockup svg { display: block; width: ${lockupW}px; height: ${lockupH}px; }
-  .tagline { margin-top: 44px; font-family: 'mdrk-og-ar', 'mdrk-og-lt', sans-serif;
+  .tagline { margin-top: 34px; font-family: 'mdrk-og-ar', 'mdrk-og-lt', sans-serif;
              font-weight: 600; font-size: 33px; line-height: 1.7; color: ${INK};
              direction: rtl; text-align: center; letter-spacing: 0; }
+  /* R343 — the OG card joins the imagery system: the ORIGINAL skyline
+     band (the r342 footer art, the system's own horizon) rides the
+     tagline's foot; the [01] mono index anchors the frame's corner. */
+  .skyline { margin-top: 38px; width: 1044px; height: 160px; display: block;
+             filter: grayscale(1) contrast(1.06); opacity: 0.9; }
+  .idx { position: absolute; top: 44px; inset-inline-start: 48px; direction: ltr;
+         font-family: 'mdrk-og-lt', monospace; font-size: 22px; letter-spacing: 0.12em;
+         color: ${INK}; opacity: 0.72; }
 </style></head>
 <body>
   <div class="frame"></div>
+  <div class="idx">[01]</div>
   <div class="lockup">${LOCKUP}</div>
   <div class="tagline">${TAGLINE}</div>
+  <img class="skyline" src="${skylineUrl}" alt="" />
 </body></html>`;
   const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 });
   await page.setContent(html, { waitUntil: 'load' });
