@@ -1,12 +1,13 @@
 # R343 · D1 — CSS dead-code report (PROVISIONAL subset crawl)
 
-generated 2026-11-08T18:47:06.392Z · tool `scripts/css/dead.mjs` · dev server http://localhost:5208 · mode: vite-dev
+generated 2026-11-08T18:54:25.229Z · tool `scripts/css/dead.mjs` · dev server http://localhost:5208 · mode: vite-dev
 
 ## Baseline honesty — READ FIRST
 - Crawl = 10 public + 1 student routes × bps {390/1440} × themes {light/dark} = 44 cells (student surfaces seeded via the D7a e2e transport).
 - This ran on the D1 WORKTREE (wip/r343-D1): parallel R343 branches add CSS concurrently — the authoritative baseline is the post-merge full-matrix re-run.
 - admin/teacher/owner/quality surfaces were NOT crawled (their fixture corpora live inside the per-role harness scripts) — their selectors are counted `notCrawled` (1168), never dead.
 - ALL cells run on the D7a hermetic e2e transport (public cells as guests: /auth/me answers 401; public data surfaces get the fixture table — /colleges renders its designed state, never the no-backend ErrorState).
+- Inherent subset limits (do NOT delete on these signals alone): (1) transient states — skeletons/toasts/modals unmount before the harvest (e.g. .gallery-skeleton-*); (2) a file loaded by a crawled route may also carry other surfaces' families — colleges.css's .comp-* belong to /competitions|/community and its detail/leaderboard classes to the 2 uncrawled colleges routes (no fixtures in the e2e table).
 - Playwright CSS coverage cannot see Vite-dev's injected <style> tags — the live set is harvested from document.styleSheets (data-vite-dev-id attribution) after a scroll+hover pass; coverage entries: 88.
 
 ## Totals (frontend/src/styles — 78 files)
