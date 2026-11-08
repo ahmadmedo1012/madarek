@@ -329,6 +329,13 @@ jobs:
       # اصطناعية تثبت أن كل فئة عمياء تُكتشف وأن العلامات المعيبة
       # تُرفض وأن الفشل يُغلق مغلقًا. تعمل بلا node_modules.
       - run: bash scripts/test-raw-css-gate.sh
+      # R342-11 — the shared rung-harvest instrument repair (reported
+      # by R342-09): the pages.mjs type-ladder regex dropped every
+      # digit-bearing --fs-* rung (fs-h1/h2/h3, fs-d1..d3, fs-app-h1..h3,
+      # fs-2xl..4xl), counting every on-token 28px h1 off-ladder. The
+      # repair's regression belt: mutation + live + narrow arms,
+      # dependency-free (the test-raw-css-gate.sh precedent).
+      - run: bash scripts/conformance/test-rung-harvest.sh
       # R321 §A7 — the STATIC ledger scan: every occurrence of the
       # retired admin-role label in the working trees must be covered by
       # scripts/r321/r321-rename-keep.json (one term per concept: the role
