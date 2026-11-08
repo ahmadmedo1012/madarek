@@ -32,6 +32,10 @@ import {
 import { countAr } from '../../lib/format';
 import { formatDate } from '../../utils/numbers';
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
+/* R342-09 — the [nn] section-index register (.w11-idx, inner.css §W11):
+ * the same gutter grammar the done teacher pages speak, so the
+ * profile's section heads read on the numeral axis. */
+import '../../styles/landing/inner.css';
 
 const RANK_LABEL: Record<string, string> = {
   LECTURER: 'مُعيد / محاضر',
@@ -216,9 +220,11 @@ export default function TeacherProfilePage() {
           </p>
         </div>
         {!editing ? (
-          /* R305: the surface's one primary action rides the ember-flavored
-           * .hr-cta emphasis cap. */
-          <button type="button" className="btn primary hr-cta" onClick={startEdit}>
+          /* R305 → R342-09: the surface's one primary action rides the
+           * accent register (the D8 family law — the ONE ember action
+           * per view, the same seat the daily-work pages' create/edit
+           * verbs hold), keeping the .hr-cta emphasis cap. */
+          <button type="button" className="btn accent hr-cta" onClick={startEdit}>
             <Icon icon={Edit3} size={14} /> تعديل البيانات الشخصية
           </button>
         ) : (
@@ -226,7 +232,7 @@ export default function TeacherProfilePage() {
             <button type="button" className="btn ghost" onClick={cancelEdit} disabled={update.isPending}>
               <Icon icon={X} size={14} /> إلغاء
             </button>
-            <button type="button" className="btn primary hr-cta" onClick={() => void saveEdit()} disabled={update.isPending}>
+            <button type="button" className="btn accent hr-cta" onClick={() => void saveEdit()} disabled={update.isPending}>
               <Icon icon={Save} size={14} /> {update.isPending ? 'جارٍ الحفظ…' : 'حفظ'}
             </button>
           </div>
@@ -257,7 +263,9 @@ export default function TeacherProfilePage() {
           <UserAvatar
             initials={profile.avatarInitials ?? `${profile.firstName[0] ?? ''}${profile.lastName[0] ?? ''}`}
             color={profile.avatarColor ?? undefined}
-            size={72}
+            /* R342-09 rung hygiene: 72 → 75 — the initials land on the
+             * 30px type rung (72×0.4 = 28.8 ≈ 29 was off every rung). */
+            size={75}
           />
           <div className="flex-1">
             <h2 className="teacher-name">
@@ -313,7 +321,7 @@ export default function TeacherProfilePage() {
       />
 
       {/* Bio + contact (editable) */}
-      <Card title="نبذة شخصية" icon={FileText}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>نبذة شخصية</>} icon={FileText}>
         {editing && draft ? (
           /* r152c (A2): the four edit-mode controls were placeholder-ONLY
              — no accessible name at all. FormField gives each a real
@@ -335,7 +343,7 @@ export default function TeacherProfilePage() {
       </Card>
 
       <div className="grid-2">
-        <Card title="المكتب وساعات العمل" icon={MapPin}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>المكتب وساعات العمل</>} icon={MapPin}>
           {editing && draft ? (
             <div className="flex-col gap-2">
               <FormField label="موقع المكتب" id="teacher-office-location-field">
@@ -377,7 +385,7 @@ export default function TeacherProfilePage() {
           )}
         </Card>
 
-        <Card title="الموقع الإلكتروني" icon={Globe}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>الموقع الإلكتروني</>} icon={Globe}>
           {editing && draft ? (
             <FormField label="الموقع الإلكتروني" id="teacher-website-field">
               <input
@@ -400,7 +408,7 @@ export default function TeacherProfilePage() {
 
       {/* Subject keywords + degree summary */}
       <div className="grid-2">
-        <Card title="مجالات الاهتمام البحثي" icon={Sparkles}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[04]</span>مجالات الاهتمام البحثي</>} icon={Sparkles}>
           {profile.subjectKeywords.length === 0 ? (
             <div className="text-sm text-muted">لم تُسجَّل مجالات بحثية بعد.</div>
           ) : (
@@ -410,7 +418,7 @@ export default function TeacherProfilePage() {
           )}
         </Card>
         <Card
-          title="الشهادات والاعتمادات"
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[05]</span>الشهادات والاعتمادات</>}
           icon={GraduationCap}
           /* r157 / 6A9 — countAr grammar: «3 شهادات» (the old
            * `${n} شهادة` template broke at 0 and 2); the zero case
@@ -439,7 +447,7 @@ export default function TeacherProfilePage() {
 
       {/* Publications & awards */}
       <Card
-        title="المنشورات العلمية"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[06]</span>المنشورات العلمية</>}
         icon={FileText}
         subtitle={profile.publications.length === 0
           ? 'لم تُضف منشورات'
@@ -472,7 +480,7 @@ export default function TeacherProfilePage() {
       </Card>
 
       <Card
-        title="التكريمات والجوائز"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[07]</span>التكريمات والجوائز</>}
         icon={Award}
         subtitle={profile.awards.length === 0
           ? 'لم تُضف جائزة'
@@ -502,7 +510,7 @@ export default function TeacherProfilePage() {
       </Card>
 
       {/* Courses currently teaching */}
-      <Card title="المقرّرات الحالية" icon={BookOpen} subtitle={countAr(profile.courses.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])}>
+      <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[08]</span>المقرّرات الحالية</>} icon={BookOpen} subtitle={countAr(profile.courses.length, ['مقرّر واحد هذا الفصل', 'مقرّران هذا الفصل', 'مقرّرات هذا الفصل', 'مقرّراً هذا الفصل'])}>
         {profile.courses.length === 0 ? (
           <EmptyState illustration="empty-courses"
             icon={BookOpen}

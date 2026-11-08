@@ -5,7 +5,7 @@ import {
   ShieldCheck, Server,
   Radio, Settings,
   Download, RefreshCw, Mail, X,
-  GraduationCap, UserMinus, AlertCircle, BookOpen,
+  GraduationCap, UserMinus, AlertCircle, BookOpen, FileText,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -152,12 +152,18 @@ export function AdminStudentsPage() {
       <PatternsPageHeader
         title="إدارة الطلاب"
         description="قائمة الطلاب المسجَّلين في الجامعة، مع البحث والتصفية حسب الكلّيّة."
+        index="05"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'الطلاب' }]}
         meta={studentsQ.data
           ? `${countAr(studentsQ.data.meta.total, ['طالب واحد مسجَّل', 'طالبان مسجَّلان', 'طلاب مسجَّلون', 'طالباً مسجَّلاً'])} · بحث الخادم`
           : 'قراءة سجلّ الطلاب…'}
         actions={(
-          <button type="button" className="btn secondary sm" onClick={() => setBulkImportOpen(true)}>
+          /* R342-09: the roster's ONE standing action rides the accent
+           * register (the D8 family law) — the bulk import is the
+           * registrar's primary students verb, so the first viewport at
+           * every width keeps the affordance (the admin topbar hides
+           * «اسأل AI» entirely). */
+          <button type="button" className="btn accent sm" onClick={() => setBulkImportOpen(true)}>
             <Icon icon={Download} size={14} />
             استيراد طلاب من ملف
           </button>
@@ -488,7 +494,17 @@ export function AdminDigitalPage() {
       <PatternsPageHeader
         title="التحوّل الرقميّ"
         description="مؤشّرات تبنّي المنصّة الرقميّة عبر مكوّنات الجامعة."
+        index="06"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'التحوّل الرقميّ' }]}
+        actions={(
+          /* R342-09 (D11 sub-page CTA precedent): a read-only metrics ledger
+           * names its ONE honest next surface — the institutional reports
+           * are the adoption view's analytical sibling. */
+          <Link to="/admin/reports" className="btn accent sm">
+            <Icon icon={FileText} size={13} />
+            التقارير المؤسسية
+          </Link>
+        )}
       />
 
       {q.isPending && (
@@ -609,7 +625,17 @@ export function AdminSettingsPage() {
       <PatternsPageHeader
         title="إعدادات المنصّة"
         description="إعدادات تشغيليّة على مستوى الجامعة. تفعيل المعدِّلات الفرديّة قيد التطوير."
+        index="09"
         breadcrumbs={[{ label: 'لوحة المسجل العام', to: '/admin/dashboard' }, { label: 'إعدادات المنصّة' }]}
+        actions={(
+          /* R342-09 (D11 sub-page CTA precedent): the settings ledger's ONE
+           * honest next surface — the university sync is the standing
+           * operational duty the settings page's own facts describe. */
+          <Link to="/admin/sync" className="btn accent sm">
+            <Icon icon={RefreshCw} size={13} />
+            مزامنة الجامعة
+          </Link>
+        )}
       />
 
       <div className="grid-2">

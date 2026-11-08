@@ -12,7 +12,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   AlertTriangle, BookOpen, Sparkles, ChevronRight, ChevronLeft,
   Users, ClipboardCheck, BarChart3, Brain, Lightbulb, ArrowUpRight,
-  CheckCircle2, RefreshCw,
+  CheckCircle2, RefreshCw, MessageSquare,
 } from 'lucide-react';
 import { Card, Badge, UserAvatar, Tabs } from '../../components/primitives';
 import { StatStrip } from '../../components/primitives/Ledger';
@@ -31,6 +31,11 @@ import { useEntityPageTitle } from '../../components/layout/AppShell'; // r183-B
 import '../../styles/owner.css'; // ConfirmDialog surfaces via curriculum authoring (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .track-hero/.filter-pill/.back-link families (D11 css split, 12-15)
 import '../../styles/teacher/heron.css'; // R305 Heron: §0 primitives + §E tax- composition
+/* R342-09 — the [nn] section-index register (.w11-idx, inner.css §W11):
+ * the same gutter grammar the teacher dashboard's Card titles and the
+ * done daily-work pages speak (TeacherPages.tsx:54), so the
+ * intelligence surfaces' section heads read on the numeral axis too. */
+import '../../styles/landing/inner.css';
 import { formatPct1, formatNum } from '../../utils/numbers';
 
 /* The shared risk vocabulary (the dashboard mirrors these exact
@@ -88,11 +93,20 @@ export default function TeacherIntelligencePage() {
             متابعة أداء طلابك مدعومة بتحليل لحظي للحضور والدرجات والمتابعة، مع توصيات تدخّل ذكية.
           </p>
         </div>
+        {/* R342-09 (D8 header-CTA law): the catalog's ONE honest next
+         * action on the accent register — the risk panel's suggestions
+         * are interventions («تواصل مع الطالب…»), and the messages
+         * surface is exactly that channel. Visible at every width (the
+         * topbar «اسأل AI» hides ≤920px, so without it the first
+         * viewport at 390 carries no primary action at all). */}
+        <Link to="/teacher/messages" className="btn accent sm hr-cta">
+          <Icon icon={MessageSquare} size={13} /> تواصل مع الطلاب
+        </Link>
       </header>
 
       {/* Global at-risk panel */}
       <Card
-        title="طلاب يحتاجون متابعة"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>طلاب يحتاجون متابعة</>}
         icon={AlertTriangle}
         subtitle={
           risks.isPending ? 'جارٍ التحميل…'
@@ -132,7 +146,7 @@ export default function TeacherIntelligencePage() {
                   className="risk-row hr-edge"
                   data-severity={RISK_SEV[r.riskLevel]}
                 >
-                  <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={36} />
+                  <UserAvatar initials={r.avatarInitials ?? r.name.slice(0, 2)} color={r.avatarColor ?? undefined} size={38} />
                   <div className="flex-1">
                     <div className="risk-row-name">{r.name}</div>
                     <div className="risk-row-meta">
@@ -156,7 +170,7 @@ export default function TeacherIntelligencePage() {
 
       {/* My offerings */}
       <Card
-        title="مقرّراتي"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>مقرّراتي</>}
         icon={BookOpen}
         subtitle={
           offerings.isPending ? 'جارٍ التحميل…'
@@ -413,6 +427,11 @@ export function TeacherOfferingDetailPage() {
           <EmojiIcon emoji={offering.course.iconEmoji ?? '📚'} size={28} />
         </div>
         <div className="track-hero-main">
+          {/* R342-09 — the detail-surface classification eyebrow (.hr-eyebrow,
+           * heron.css §E): a param route resolves no topbar group kicker, so
+           * the surface carries its own classification line — which board this
+           * drill-down belongs to. A real classification, never decoration. */}
+          <p className="hr-eyebrow">الذكاء الأكاديمي · تحليل المقرّر</p>
           <div className="track-hero-cat"><bdi>{offering.course.code}</bdi> · {offering.term}</div>
           <h1 className="track-hero-title">{offering.course.name}</h1>
           <div className="track-hero-meta">
@@ -426,6 +445,18 @@ export function TeacherOfferingDetailPage() {
             </Badge>
             <Badge>{countAr(offering.course.credits, ['وحدة واحدة', 'وحدتان', 'وحدات', 'وحدة'])}</Badge>
             {offering.room && <Badge>قاعة {offering.room}</Badge>}
+            {/* R342-09 (D8 header-CTA law): the ledger's ONE honest next
+             * action on the accent register — the offering's grade entry
+             * (the picker pages now take ?offering=, so the drill-down
+             * lands on THIS course's ledger, not the default one). Fast
+             * navigation between offering, roster and assessment is the
+             * surface's job. */}
+            <Link
+              to={`/teacher/grades?offering=${offering.id}`}
+              className="btn accent sm hr-cta"
+            >
+              <Icon icon={ClipboardCheck} size={13} /> إدخال درجات المقرّر
+            </Link>
           </div>
         </div>
       </div>
@@ -480,7 +511,7 @@ export function TeacherOfferingDetailPage() {
       />
 
       {tab === 'students' && (
-        <Card title="قائمة الطلاب — تحليل لحظي" icon={Users}>
+        <Card title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>قائمة الطلاب — تحليل لحظي</>} icon={Users}>
           {students.isPending ? (
             <ListSkeleton rows={4} />
           ) : students.isError ? (
@@ -537,7 +568,7 @@ export function TeacherOfferingDetailPage() {
 
       {tab === 'curriculum' && (
         <Card
-          title="اقتراح هيكل منهج (محاكاة قالبية)"
+          title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>اقتراح هيكل منهج (محاكاة قالبية)</>}
           icon={Brain}
           actions={
             /* R305: the tab's one primary action rides the ember-flavored
@@ -622,7 +653,7 @@ function StudentRow({ student, dimmed }: { student: TeacherStudentRow; dimmed: b
       className={`risk-row hr-edge${dimmed ? ' is-dim' : ''}`}
       data-severity={RISK_SEV[student.riskLevel]}
     >
-      <UserAvatar initials={student.avatarInitials ?? student.name.slice(0, 2)} color={student.avatarColor ?? undefined} size={40} />
+      <UserAvatar initials={student.avatarInitials ?? student.name.slice(0, 2)} color={student.avatarColor ?? undefined} size={38} />
       <div className="flex-1">
         <div className="risk-row-name">{student.name}</div>
         <div className="risk-row-meta">
