@@ -1048,29 +1048,38 @@ section.chapters {
 
   /* the plaques — the measured mobile seat: over the plan at the
    * stack's mid-band (334×79 @ (20,377) @390), the same overlay
-   * grammar as desktop. */
+   * grammar as desktop. R342-11: the plates cap at the ≥16px safe
+   * gutters (the reference's own mobile plaque insets — 21/28px) and
+   * center in the band; the pre-fix full-width plate let the second
+   * statement span x=7.7–382.3 @390 (r325 gutter belt). */
   .jt-cards,
   .jt-card2w {
     position: absolute;
     inset: 0;
-    place-items: center start;
+    place-items: center;
+  }
+
+  .jt-card-plate {
+    max-inline-size: calc(100% - 2 * var(--sp-4));
+    margin-inline: auto;
+    stroke-width: 4px;
   }
 
   .jt-card {
     padding-inline: 0;
   }
 
-  .jt-card-plate {
-    stroke-width: 4px;
-  }
-
-  /* the annotation cards — below the drawing in the stack's flow
-   * (the ≤991 recomposition: readable, never over the crop). */
+  /* the annotation cards — RETIRED at ≤991 (R342-11): the frozen
+   * spec's mobile capture has NO annotation cards (the 390 census:
+   * drawing + the mono intro card + the closing column only), and
+   * the in-flow recomposition made the sticky box (100dvh − 57px)
+   * uncontainable (drawing 489 + three 67px callouts + the card =
+   * ~943px — the card's tail painted over the closing column at the
+   * track end, r312 sweep +39px after the compact-card fix). The
+   * desktop keeps its measured overlay callouts; the mobile story
+   * reads through the findings + the closing ledger. */
   .jt-anno {
-    position: static;
-    inline-size: auto;
-    align-self: start;
-    margin-block-start: var(--sp-2);
+    display: none;
   }
 
   .jt-anno-t {
@@ -1101,13 +1110,27 @@ section.chapters {
 
   .jt-intro-findings {
     position: static;
-    min-block-size: 0;
+    /* R342-11: the measured finding box (10.2em) — the card stays
+     * COMPACT during the story (one finding at a time, the reference's
+     * own mobile furniture: its 390 card measures ~230px total). The
+     * pre-fix min-block-size 0 + static stacking rendered the card at
+     * the full five-finding ladder height (~693px) with four findings
+     * invisible — the sticky box (100dvh − 57px) could never contain
+     * plan + card, and the card's tail painted over the closing
+     * column at the track end (r312 sweep: +276px cover). */
+    min-block-size: 10.2em;
     opacity: 1;
   }
 
   .jt-intro-finding {
-    position: static;
-    inset: auto;
+    /* the compact crossfade seat during the story (opacity keyed by
+     * data-finding, exactly the desktop grammar); the 'all'/RM
+     * stacked ladder wins by specificity/media order when the driver
+     * opens the card (`.jt[data-finding='all'] .jt-intro-finding` and
+     * the prefers-reduced-motion belt both override this seat). */
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline: 0;
   }
 
   /* the phone's statement-era orange furniture (8px corner spot). */
@@ -1193,6 +1216,19 @@ section.chapters {
 @media (max-width: 399px) {
   .jt-map-col {
     block-size: 473dvh;
+  }
+}
+
+/* R342-11 — the complete static sheet at ≤991 under reduced motion:
+ * the sticky unpins (the pin is scroll-driven choreography; RM
+ * visitors get the sheet in flow — drawing, the full stacked
+ * findings ladder, then the closing column, everything readable in
+ * order, nothing riding over anything). The fixed sticky box could
+ * never contain the ~724px card ladder anyway. */
+@media (max-width: 991px) and (prefers-reduced-motion: reduce) {
+  .jt-map-in {
+    position: static;
+    block-size: auto;
   }
 }
 
