@@ -333,7 +333,32 @@ export default function ResearchReviewPage() {
       <PageFrame width="default">
         <PageHeader
           title="البحث العلمي"
+          /* R342-09 — the numeral gutter register (the R319 PageHeader
+           * index seat) + the workflow classification eyebrow: the
+           * review surface reads on the same [nn] grammar the done
+           * teacher pages speak. */
+          index="01"
+          eyebrow="التدريس · البحث العلمي"
           description="قائمة بحوث الطلاب للمراجعة، ومنشوراتك العلمية."
+          actions={
+            /* R342-09 (D8 header-CTA law): the queue's ONE honest next
+             * action on the accent register — open the OLDEST waiting
+             * paper's review (the queue's own triage order). On the
+             * phone band this is the split's deliberate act (the Sheet);
+             * on desktop it mirrors the auto-preselect courtesy. Hidden
+             * when nothing awaits review (never a dead control). */
+            passed.length > 0 && !selectedId ? (
+              <Button
+                type="button"
+                variant="accent"
+                className="hr-cta"
+                onClick={() => attemptSelect(passed[0]!)}
+              >
+                <Icon icon={ClipboardCheck} size={14} />
+                مراجعة أقدم بحث
+              </Button>
+            ) : undefined
+          }
           tabs={
             <Tabs<Tab>
               value={tab}

@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   Users, BarChart3, ClipboardCheck, ClipboardList,
@@ -109,8 +109,22 @@ function PageHeader({ title, subtitle, actions, brow }: { title: string; subtitl
 function useOfferingPicker() {
   const offsQ = useTeacherOfferings();
   const offerings = offsQ.data ?? [];
-  const [offeringId, setOfferingId] = useState<string>('');
-  const effectiveOfferingId = offeringId || offerings[0]?.id || '';
+  /* R342-09 — the ?offering= deep link: cross-surface CTAs (the
+   * intelligence drill-down's «إدخال درجات المقرّر») land the picker on
+   * the NAMED offering instead of the default first one, so offering →
+   * roster → assessment navigation keeps its context. Consumed once on
+   * mount (deep-link semantics — the same contract as the admin
+   * roster's ?facultyId drill); later param changes don't fight the
+   * user's own picker edits. An unknown/offering-less id falls back to
+   * the first offering (the honest default, never an empty ledger). */
+  const [searchParams] = useSearchParams();
+  const [offeringId, setOfferingId] = useState<string>(
+    () => searchParams.get('offering') ?? '',
+  );
+  const effectiveOfferingId =
+    offeringId && offerings.some((o) => o.id === offeringId)
+      ? offeringId
+      : offerings[0]?.id || '';
   const offering = offerings.find((o) => o.id === effectiveOfferingId) ?? null;
   return { offsQ, offerings, effectiveOfferingId, setOfferingId, offering };
 }

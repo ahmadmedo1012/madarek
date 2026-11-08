@@ -75,6 +75,10 @@ import {
 import '../../styles/owner.css'; // ConfirmDialog + ToggleSwitch surfaces (D11 css split, 12-15)
 import '../../styles/training.css'; // shared .back-link family (D11 css split, 12-15)
 import '../../styles/teacher/heron.css'; // R305 — the Heron layer (exa2- section lives here)
+/* R342-09 — the [nn] section-index register (.w11-idx, inner.css §W11):
+ * the same gutter grammar the done teacher pages speak, so the exam
+ * surfaces' section heads read on the numeral axis. */
+import '../../styles/landing/inner.css';
 
 /* ═══════════════ Label maps (TS-pinned over the full enums — 15-a) ═══════════════ */
 
@@ -678,7 +682,9 @@ function ExaSectionHead({
   count,
   actions,
 }: {
-  title: string;
+  /* R342-09: title widened to ReactNode — the section heads now carry
+   * the [nn] .w11-idx gutter index (the family numeral register). */
+  title: React.ReactNode;
   desc?: string;
   count?: React.ReactNode;
   actions?: React.ReactNode;
@@ -701,7 +707,7 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
   return (
     <>
       <ExaSectionHead
-        title="قوالب اختباراتي"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>قوالب اختباراتي</>}
         desc={
           q.isPending
             ? 'جارٍ التحميل…'
@@ -710,7 +716,10 @@ function MyTemplatesSection({ onBuild }: { onBuild: () => void }) {
               : 'ستظهر قوالبك هنا — ابنِ قالباً من أسئلة البنك المعتمدة.'
         }
         actions={
-          <Button variant="primary" className="hr-cta" onClick={onBuild}>
+          /* R342-09: the tab's build action rides the accent register
+           * (the D8 family law — the ONE ember action per view, the
+           * materials/assignments create-button seat). */
+          <Button variant="accent" className="hr-cta" onClick={onBuild}>
             <Icon icon={Plus} size={14} /> قالب اختبار جديد
           </Button>
         }
@@ -963,10 +972,10 @@ function QuestionBankSection() {
   return (
     <>
       <ExaSectionHead
-        title="بنك الأسئلة المعتمدة"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>بنك الأسئلة المعتمدة</>}
         desc="الأسئلة التي اعتمدتها الجودة وتصلح لبناء القوالب — إنشاء سؤال جديد يمرّ على المراجعة أولاً."
         actions={
-          <Button variant="primary" className="hr-cta" onClick={() => setCreating(true)}>
+          <Button variant="accent" className="hr-cta" onClick={() => setCreating(true)}>
             <Icon icon={Plus} size={14} /> سؤال جديد
           </Button>
         }
@@ -2086,7 +2095,7 @@ function ModerationQueueSection() {
   return (
     <>
       <ExaSectionHead
-        title="قوالب بانتظار المراجعة"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[03]</span>قوالب بانتظار المراجعة</>}
         desc={
           q.isPending
             ? 'جارٍ التحميل…'
@@ -2181,8 +2190,13 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
       <header className="exa-detail-head">
         <div className="exa-detail-top">
           <div className="exa-detail-heading">
-            {/* R305 Heron — the lifecycle brow above the authored title. */}
-            <span className="hr-brow exa2-brow">دورة حياة القالب</span>
+            {/* R305 Heron — the lifecycle brow above the authored title.
+             * R342-09: the DETAIL surface swaps .hr-brow for the
+             * .hr-eyebrow classification register — a param route resolves
+             * no topbar group kicker, so the surface carries its own
+             * classification line (same §0 brow anatomy, the eyebrow
+             * name — see heron.css §E). */}
+            <span className="hr-eyebrow exa2-brow">دورة حياة القالب</span>
             {/* A6 P3 (22-a): 2-line clamp lives in the exa sheet —
                 authored titles run long and pushed the whole page down;
                 the full title stays in the title attr. */}
@@ -2225,7 +2239,7 @@ function TemplateDetailBody({ template }: { template: ExamTemplateDetail }) {
         <div className="exa-main">
           <section aria-label="أسئلة القالب">
             <ExaSectionHead
-              title="أسئلة القالب"
+              title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[01]</span>أسئلة القالب</>}
               count={countAr(template.questions.length, ['سؤال واحد', 'سؤالان', 'أسئلة', 'سؤالاً'])}
               desc={`مجموع النقاط ${countAr(totalPoints, ['نقطة واحدة', 'نقطتان', 'نقاط', 'نقطة'])}`}
             />
@@ -2355,7 +2369,11 @@ function AuthorActions({ template }: { template: ExamTemplateDetail }) {
     <>
       <div className="exa-detail-actions">
         {editable && (
-          <Button variant="ghost" size="sm" onClick={() => setEditing(true)}>
+          /* R342-09: the detail surface's ONE decisive author action rides
+           * the accent register (the D8 family law — on a draft/pending
+           * template, edit-then-resubmit is the author's live verb; clone
+           * and the gated publish stay quiet ghost/primary tier). */
+          <Button variant="accent" size="sm" className="hr-cta" onClick={() => setEditing(true)}>
             <Icon icon={Pencil} size={12} /> تعديل
           </Button>
         )}
@@ -2648,7 +2666,7 @@ function AttemptsSection({ template }: { template: ExamTemplateDetail }) {
   return (
     <section aria-label="التصحيح">
       <ExaSectionHead
-        title="التصحيح"
+        title={<><span className="w11-idx" dir="ltr" aria-hidden="true">[02]</span>التصحيح</>}
         desc={
           q.isPending
             ? 'جارٍ التحميل…'

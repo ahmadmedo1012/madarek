@@ -339,10 +339,16 @@ const TPROFILE = {
   workload: { courseCount: 2, totalCredits: 6, totalEnrolled: 112 },
 };
 
-/* ── /research/queue — ResearchPaper[] (ResearchReviewPage). */
+/* ── /research/queue — R342-09 fixture repair: the D8 fixture still
+ * carried the pre-rename statuses (SCANNED/UPLOADED — neither is in
+ * the PaperStatus union nor in backend RESEARCH_QUEUE_STATUSES), so
+ * the measured page rendered the EMPTY queue + empty states. The
+ * honest trio per the live wire contract (learning.routes.ts):
+ * CHECKS_PASSED (awaiting the teacher's grade) + GRADED (awaiting
+ * the teacher's publish) — the two halves of the review loop. */
 const RQUEUE = [
-  { id: 'pap_e2e_1', title: 'فهرسة قواعد البيانات الموزعة', abstract: 'دراسة مقارنة لاستراتيجيات الفهرسة في الأنظمة الموزعة.', fileUrl: 'https://cdn.madarek.dev/papers/indexing.pdf', status: 'SCANNED', plagiarismPct: 4, aiContentPct: 9, grade: null, feedback: null, uploadedAt: hoursAgo(20), scannedAt: hoursAgo(18), gradedAt: null, publishedAt: null, student: { id: 'stu_e2e_2', firstName: 'سالم', lastName: 'قدّور', avatarInitials: 'سق', avatarColor: '#059669', email: 'salim@zu.edu.ly' }, reviewer: null, offering: { id: 'offr_e2e_t_db', course: { name: 'قواعد البيانات', code: 'CS-304' } } },
-  { id: 'pap_e2e_2', title: 'الخوارزميات الجشعة في جدولة المهام', abstract: 'تطبيقات الخوارزميات الجشعة على جدولة المهام الزمنية.', fileUrl: null, status: 'UPLOADED', plagiarismPct: null, aiContentPct: null, grade: null, feedback: null, uploadedAt: hoursAgo(5), scannedAt: null, gradedAt: null, publishedAt: null, student: { id: 'stu_e2e_1', firstName: 'مروة', lastName: 'البراني', avatarInitials: 'مر', avatarColor: '#0ea5e9', email: 'marwa@zu.edu.ly' }, reviewer: null, offering: { id: 'offr_e2e_t_algo', course: { name: 'مقدمة في الخوارزميات', code: 'CS-201' } } },
+  { id: 'pap_e2e_1', title: 'فهرسة قواعد البيانات الموزعة', abstract: 'دراسة مقارنة لاستراتيجيات الفهرسة في الأنظمة الموزعة.', fileUrl: 'https://cdn.madarek.dev/papers/indexing.pdf', status: 'CHECKS_PASSED', plagiarismPct: 4, aiContentPct: 9, grade: null, feedback: null, uploadedAt: hoursAgo(20), scannedAt: hoursAgo(18), gradedAt: null, publishedAt: null, student: { id: 'stu_e2e_2', firstName: 'سالم', lastName: 'قدّور', avatarInitials: 'سق', avatarColor: '#059669', email: 'salim@zu.edu.ly' }, reviewer: null, offering: { id: 'offr_e2e_t_db', course: { name: 'قواعد البيانات', code: 'CS-304' } } },
+  { id: 'pap_e2e_2', title: 'الخوارزميات الجشعة في جدولة المهام', abstract: 'تطبيقات الخوارزميات الجشعة على جدولة المهام الزمنية.', fileUrl: null, status: 'GRADED', plagiarismPct: 2, aiContentPct: 6, grade: 17, feedback: 'معالجة جيدة للبنية الفرعية المثلى مع نقص في التحليل التجريبي.', uploadedAt: hoursAgo(96), scannedAt: hoursAgo(94), gradedAt: hoursAgo(30), publishedAt: null, student: { id: 'stu_e2e_1', firstName: 'مروة', lastName: 'البراني', avatarInitials: 'مر', avatarColor: '#0ea5e9', email: 'marwa@zu.edu.ly' }, reviewer: { firstName: 'ليلى', lastName: 'الفيتوري' }, offering: { id: 'offr_e2e_t_algo', course: { name: 'مقدمة في الخوارزميات', code: 'CS-201' } } },
 ];
 
 /* ── exam authoring: templates list + question bank. */
@@ -407,7 +413,15 @@ const overrides = [
   { method: 'GET', path: '/live/sessions', json: ok(LIVE) },
   { method: 'GET', path: '/labs', json: ok(LABS) },
   { method: 'GET', path: '/invites', json: ok(INVITES) },
-  { method: 'GET', path: '/me/permissions', json: ok({ role: 'TEACHER', capabilities: [], roleDefaults: [] }) },
+  /* R342-09 fixture repair: the seeded teacher now carries the real
+   * capability grants an exam-authoring teacher holds (the /me/permissions
+   * wire shape: capabilities = the user's effective grants). The D8
+   * default (empty capabilities) rendered /teacher/exams as its honest
+   * PERMISSION WALL — a real state, but not the authoring surface this
+   * harness exists to measure. EXAMS_AUTHOR opens the hub + the detail
+   * author actions; CURRICULUM_EDIT_OWN opens the intelligence detail's
+   * authoring tab; RESEARCH_GRADE_OWN is the research grading grant. */
+  { method: 'GET', path: '/me/permissions', json: ok({ role: 'TEACHER', capabilities: ['EXAMS_AUTHOR', 'CURRICULUM_EDIT_OWN', 'RESEARCH_GRADE_OWN'], roleDefaults: [] }) },
   { method: 'GET', path: '/messages', json: MESSAGES },
   /* /teacher/exams/:id — the moderation corpus's template detail. */
   { method: 'GET', path: '/exams/templates/tpl_e2e_quiz4', json: ok(MODERATION_TEMPLATES.tpl_e2e_quiz4) },

@@ -1,14 +1,14 @@
 {
- "generatedAt": "2026-11-07T23:45:52.056Z",
+ "generatedAt": "2026-11-08T00:07:23.141Z",
  "url": "http://localhost:5309",
- "dark": true,
+ "dark": false,
  "routes": {
   "/teacher/dashboard": {
-   "1440:dark": {
-    "score": 99.6,
+   "1440:light": {
+    "score": 99.3,
     "axes": {
      "typeRungs": {
-      "score": 97.43589743589743,
+      "score": 97.3913043478261,
       "distinctTiers": true,
       "fails": [
        {
@@ -27,7 +27,7 @@
         "text": "سق"
        }
       ],
-      "total": 117,
+      "total": 115,
       "resolvedRungs": [
        66.6667,
        60,
@@ -68,9 +68,22 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 90
+      "score": 98.24561403508771,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 114
      },
      "edge390": {
       "score": 100,
@@ -85,14 +98,14 @@
      }
     }
    },
-   "390:dark": {
-    "score": 100,
+   "390:light": {
+    "score": 99.7,
     "axes": {
      "typeRungs": {
       "score": 100,
       "distinctTiers": true,
       "fails": [],
-      "total": 116,
+      "total": 114,
       "resolvedRungs": [
        79.3893,
        71.4504,
@@ -133,9 +146,22 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 89
+      "score": 98.23008849557522,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 113
      },
      "edge390": {
       "score": 100,
@@ -151,147 +177,9 @@
     }
    }
   },
-  "/teacher/research": {
-   "1440:dark": {
-    "score": 96.1,
-    "axes": {
-     "typeRungs": {
-      "score": 96.875,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 28,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "البحث العلمي"
-       }
-      ],
-      "total": 32,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 2
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 32
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 80,
-    "axes": {
-     "typeRungs": {
-      "score": 100,
-      "distinctTiers": true,
-      "fails": [],
-      "total": 31,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 2
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 31
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 0,
-      "channels": 0,
-      "label": ""
-     }
-    }
-   }
-  },
   "/teacher/messages": {
-   "1440:dark": {
-    "score": 99,
+   "1440:light": {
+    "score": 98.1,
     "axes": {
      "typeRungs": {
       "score": 94.28571428571428,
@@ -349,8 +237,21 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 100,
-      "fails": [],
+      "score": 94.28571428571428,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
       "total": 35
      },
      "edge390": {
@@ -366,8 +267,8 @@
      }
     }
    },
-   "390:dark": {
-    "score": 99.5,
+   "390:light": {
+    "score": 98.5,
     "axes": {
      "typeRungs": {
       "score": 97.05882352941177,
@@ -420,8 +321,21 @@
       "ctaPair": true
      },
      "darkInk": {
-      "score": 100,
-      "fails": [],
+      "score": 94.11764705882352,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
       "total": 34
      },
      "edge390": {
@@ -438,36 +352,21 @@
     }
    }
   },
-  "/teacher/intelligence": {
-   "1440:dark": {
-    "score": 95.6,
+  "/teacher/schedule": {
+   "1440:light": {
+    "score": 99,
     "axes": {
      "typeRungs": {
-      "score": 93.54838709677419,
+      "score": 97.91666666666666,
       "distinctTiers": true,
       "fails": [
        {
         "fs": 28,
         "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الذكاء الأكاديمي"
-       },
-       {
-        "fs": 14,
-        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
-        "text": "سا"
-       },
-       {
-        "fs": 14,
-        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
-        "text": "من"
-       },
-       {
-        "fs": 14,
-        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
-        "text": "أح"
+        "text": "جدول المحاضرات"
        }
       ],
-      "total": 62,
+      "total": 48,
       "resolvedRungs": [
        66.6667,
        60,
@@ -497,659 +396,112 @@
      },
      "spacing": {
       "score": 100,
-      "total": 0
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 24
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 80,
-    "axes": {
-     "typeRungs": {
-      "score": 100,
-      "distinctTiers": true,
-      "fails": [],
-      "total": 61,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 0
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 23
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 0,
-      "channels": 0,
-      "label": ""
-     }
-    }
-   }
-  },
-  "/teacher/profile": {
-   "1440:dark": {
-    "score": 96.2,
-    "axes": {
-     "typeRungs": {
-      "score": 97.1830985915493,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 28,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "الملف الأكاديمي"
-       },
-       {
-        "fs": 29,
-        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
-        "text": "لف"
-       }
-      ],
-      "total": 71,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 1
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 19
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 79.3,
-    "axes": {
-     "typeRungs": {
-      "score": 95.71428571428572,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 29,
-        "ff": "\"Geist Mono\", \"IBM Plex Mono\", \"IBM Plex",
-        "text": "لف"
-       },
-       {
-        "fs": 31.74,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "د. ليلى الفيتوري موثَّق"
-       },
-       {
-        "fs": 31.74,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "موثَّق"
-       }
-      ],
-      "total": 70,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 1
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 18
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 0,
-      "channels": 0,
-      "label": ""
-     }
-    }
-   }
-  },
-  "/teacher/live": {
-   "1440:dark": {
-    "score": 96.3,
-    "axes": {
-     "typeRungs": {
-      "score": 97.67441860465115,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 28,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "إدارة البث المباشر"
-       }
-      ],
-      "total": 43,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 1
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 30
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 80,
-    "axes": {
-     "typeRungs": {
-      "score": 100,
-      "distinctTiers": true,
-      "fails": [],
-      "total": 42,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 1
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 29
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 0,
-      "channels": 0,
-      "label": ""
-     }
-    }
-   }
-  },
-  "/teacher/labs": {
-   "1440:dark": {
-    "score": 96.3,
-    "axes": {
-     "typeRungs": {
-      "score": 97.5,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 28,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "المعامل الافتراضية"
-       }
-      ],
-      "total": 40,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 1
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 20
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 80,
-    "axes": {
-     "typeRungs": {
-      "score": 100,
-      "distinctTiers": true,
-      "fails": [],
-      "total": 39,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 1
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 19
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 8,
-      "r": 8
-     },
-     "hover": {
-      "score": 0,
-      "channels": 0,
-      "label": ""
-     }
-    }
-   }
-  },
-  "/teacher/exams": {
-   "1440:dark": {
-    "score": 95.7,
-    "axes": {
-     "typeRungs": {
-      "score": 94.44444444444444,
-      "distinctTiers": true,
-      "fails": [
-       {
-        "fs": 28,
-        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
-        "text": "بنك الأسئلة والاختبارات"
-       }
-      ],
-      "total": 18,
-      "resolvedRungs": [
-       66.6667,
-       60,
-       53.3333,
-       15,
-       13.3333,
-       13.3333,
-       13,
-       13,
-       13,
-       11.67,
-       11,
-       11,
-       13.3333,
-       33.3333,
-       40,
-       13.3333,
-       40,
-       33.3333,
-       13,
-       13,
-       48,
-       30,
-       24,
-       33.3333
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 0
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
-      "total": 17
-     },
-     "edge390": {
-      "score": 100,
-      "pass": true,
-      "l": 0,
-      "r": 0
-     },
-     "hover": {
-      "score": 100,
-      "channels": 2,
-      "label": "اسأل AI"
-     }
-    }
-   },
-   "390:dark": {
-    "score": 80,
-    "axes": {
-     "typeRungs": {
-      "score": 100,
-      "distinctTiers": true,
-      "fails": [],
-      "total": 17,
-      "resolvedRungs": [
-       79.3893,
-       71.4504,
-       63.5115,
-       17.8626,
-       15.8779,
-       15.8779,
-       13,
-       13,
-       13,
-       13.8931,
-       11.9084,
-       11,
-       15.8779,
-       39.6947,
-       47.6336,
-       15.8779,
-       47.6336,
-       39.6947,
-       13,
-       13,
-       48,
-       30,
-       24,
-       22.1
-      ]
-     },
-     "spacing": {
-      "score": 100,
-      "total": 0
-     },
-     "pattern": {
-      "score": 80,
-      "paper": true,
-      "hairline": true,
-      "numeral": false,
-      "eyebrow": true,
-      "ctaPair": true
-     },
-     "darkInk": {
-      "score": 100,
-      "fails": [],
       "total": 16
      },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 95.83333333333334,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 48
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 47,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 16
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 95.74468085106383,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 47
+     },
      "edge390": {
       "score": 100,
       "pass": true,
@@ -1157,9 +509,993 @@
       "r": 8
      },
      "hover": {
-      "score": 0,
-      "channels": 0,
-      "label": ""
+      "score": 100,
+      "channels": 2,
+      "label": "تسجيل حضور اليوم"
+     }
+    }
+   }
+  },
+  "/teacher/attendance": {
+   "1440:light": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 98.61111111111111,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "الحضور والغياب"
+       }
+      ],
+      "total": 72,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 97.22222222222221,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 72
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 71,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 97.1830985915493,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 71
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "حفظ السجلّ"
+     }
+    }
+   }
+  },
+  "/teacher/grades": {
+   "1440:light": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 98.63013698630137,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "درجات الطلاب"
+       }
+      ],
+      "total": 73,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 97.26027397260275,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 73
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 72,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 97.22222222222221,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 72
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إدخال الدرجات"
+     }
+    }
+   }
+  },
+  "/teacher/materials": {
+   "1440:light": {
+    "score": 98.5,
+    "axes": {
+     "typeRungs": {
+      "score": 96.96969696969697,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "الملفات التعليمية"
+       }
+      ],
+      "total": 33,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 93.93939393939394,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 33
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 32,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 93.75,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 32
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "إضافة مادة"
+     }
+    }
+   }
+  },
+  "/teacher/students": {
+   "1440:light": {
+    "score": 99.2,
+    "axes": {
+     "typeRungs": {
+      "score": 98.4375,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "قائمة الطلاب"
+       }
+      ],
+      "total": 64,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 96.875,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 64
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.5,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 63,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 96.82539682539682,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 63
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "تحليل المخاطرة"
+     }
+    }
+   }
+  },
+  "/teacher/performance": {
+   "1440:light": {
+    "score": 98.9,
+    "axes": {
+     "typeRungs": {
+      "score": 97.77777777777777,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "الأداء والتحليل"
+       }
+      ],
+      "total": 45,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 1
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 95.55555555555556,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 45
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.2,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 44,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 1
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 95.45454545454545,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 44
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "ذكاء المقرّر"
+     }
+    }
+   }
+  },
+  "/teacher/assignments": {
+   "1440:light": {
+    "score": 98.9,
+    "axes": {
+     "typeRungs": {
+      "score": 97.82608695652173,
+      "distinctTiers": true,
+      "fails": [
+       {
+        "fs": 28,
+        "ff": "Alexandria, \"IBM Plex Sans Arabic\", syst",
+        "text": "الواجبات والاختبارات"
+       }
+      ],
+      "total": 46,
+      "resolvedRungs": [
+       66.6667,
+       60,
+       53.3333,
+       15,
+       13.3333,
+       13.3333,
+       13,
+       13,
+       13,
+       11.67,
+       11,
+       11,
+       13.3333,
+       33.3333,
+       40,
+       13.3333,
+       40,
+       33.3333,
+       13,
+       13,
+       48,
+       30,
+       24,
+       33.3333
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 95.65217391304348,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 46
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 0,
+      "r": 0
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "اسأل AI"
+     }
+    }
+   },
+   "390:light": {
+    "score": 99.3,
+    "axes": {
+     "typeRungs": {
+      "score": 100,
+      "distinctTiers": true,
+      "fails": [],
+      "total": 45,
+      "resolvedRungs": [
+       79.3893,
+       71.4504,
+       63.5115,
+       17.8626,
+       15.8779,
+       15.8779,
+       13,
+       13,
+       13,
+       13.8931,
+       11.9084,
+       11,
+       15.8779,
+       39.6947,
+       47.6336,
+       15.8779,
+       47.6336,
+       39.6947,
+       13,
+       13,
+       48,
+       30,
+       24,
+       22.1
+      ]
+     },
+     "spacing": {
+      "score": 100,
+      "total": 0
+     },
+     "pattern": {
+      "score": 100,
+      "paper": true,
+      "hairline": true,
+      "numeral": true,
+      "eyebrow": true,
+      "ctaPair": true
+     },
+     "darkInk": {
+      "score": 95.55555555555556,
+      "fails": [
+       {
+        "text": "تخطَّ إلى المحتوى الرئيس",
+        "ratio": 3.76,
+        "color": "rgb(255, 255, 255)",
+        "bg": "rgb(250, 54, 0)"
+       },
+       {
+        "text": "2",
+        "ratio": 1.98,
+        "color": "rgb(25, 25, 24)",
+        "bg": "rgb(140, 35, 10)"
+       }
+      ],
+      "total": 45
+     },
+     "edge390": {
+      "score": 100,
+      "pass": true,
+      "l": 8,
+      "r": 8
+     },
+     "hover": {
+      "score": 100,
+      "channels": 2,
+      "label": "واجب جديد"
      }
     }
    }
