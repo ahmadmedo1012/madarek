@@ -269,6 +269,18 @@ export function Footer({ year }: { year: number }) {
                   </form>
                 </div>
               </div>
+              {/* R343 — the form zone's four corner registration marks (the
+                  census's own 8×8 ink crosshair seats at the zone's corners,
+                  div[5..8] > div[1] > svg — the same registration grammar the
+                  strip band carries; our OWN hairline glyph geometry, never
+                  the reference's paths) */}
+              {(['tl', 'tr', 'bl', 'br'] as const).map((pos, i) => (
+                <div className={`fo-freg fo-freg-${pos}`} key={pos} data-spec={`footer.freg.${i + 1}`} aria-hidden="true">
+                  <svg className="fo-freg-svg" viewBox="0 0 8 8" fill="none" data-spec={`footer.fregsvg.${i + 1}`}>
+                    <path className="fo-freg-p" d="M4 0v8M0 4h8" />
+                  </svg>
+                </div>
+              ))}
             </div>
           </div>
 

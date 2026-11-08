@@ -618,6 +618,10 @@
   .fo-c2-top .fo-lgroup:first-child { min-block-size: 124px; }
   .fo-lg-links { display: grid; grid-template-columns: 1fr 1fr; margin-block-start: 0; line-height: 15.4px; }
   .fo-lg-links a { padding-block: 0; }
+  /* R343 — the form-label seat's 390 pitch: the fluid 11.67fu unit collapsed
+     to 3.16px here (a real mobile defect — the label was microscopic); the
+     census records 11.91/16.08 */
+  .fo-form-label { font-size: 11.91px; line-height: 16.08px; }
   .fo-mono-label {
     font-size: 11.91px; /* R343: the census's own 390 mono pitch (was 10/11 — the recorded seat is 11.91/16.08) */
     line-height: 16.08px;
@@ -739,3 +743,36 @@
 
 /* T-06l census: the c2bottom box lh rides the ROOT fs law (1.35×root) */
 [data-spec=footer.c2bottom] { line-height: 1.35; }
+
+/* R343 — the form zone's corner registration marks: the census's own
+ * 8×8 ink crosshair seats (div[5..8] > div[1] > svg — the reference's
+ * registration grammar, our OWN hairline glyph). Positioned at the
+ * form zone's four corners, aria-hidden, pointer-dead. */
+.fo-form-zone { position: relative; }
+.fo-freg {
+  position: absolute;
+  inline-size: calc(var(--fu) * 10);
+  block-size: calc(var(--fu) * 10);
+  color: var(--text);
+  pointer-events: none;
+}
+.fo-freg-svg { inline-size: 100%; block-size: 100%; display: block; }
+.fo-freg-p {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.fo-freg-tl { inset-block-start: 0; inset-inline-start: 0; }
+.fo-freg-tr { inset-block-start: 0; inset-inline-end: 0; }
+.fo-freg-bl { inset-block-end: 0; inset-inline-start: 0; }
+.fo-freg-br { inset-block-end: 0; inset-inline-end: 0; }
+@media (max-width: 767px) {
+  .fo-freg { inline-size: 8px; block-size: 8px; }
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .fo-freg { inline-size: 11px; block-size: 11px; }
+}
+@media (min-width: 992px) and (max-width: 1299.98px) {
+  .fo-freg { inline-size: 7px; block-size: 7px; }
+}

@@ -452,20 +452,6 @@
   {
    "section": "footer",
    "heron": {
-    "1440": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]"
-   },
-   "spec": {
-    "1440": "footer > div[2] > div[1] > div[2] > div[2] > div[1] > div[1]"
-   },
-   "ours": "footer.formlabelt",
-   "bps": [
-    "1440"
-   ],
-   "note": "R343 footer wave round 6: per-bp pairing (independent rank-proportional match at this bp); full checks"
-  },
-  {
-   "section": "footer",
-   "heron": {
     "390": "footer > div[2] > div[1] > div[3] > div[2] > a[4] > div[1]"
    },
    "spec": {
@@ -498,15 +484,18 @@
    "section": "footer",
    "heron": {
     "1440": "footer > footer[1] > div[1] > div[3] > div[2] > a[3] > div[2]",
-    "768": "footer > div[1] > div[3] > div[2] > a[3] > div[2] > div[1]"
+    "768": "footer > div[1] > div[3] > div[2] > a[3] > div[2] > div[1]",
+    "390": "footer > div[2] > div[1] > div[3] > div[2] > a[4] > div[1]"
    },
    "spec": {
     "1440": "footer > footer[1] > div[1] > div[3] > div[2] > a[3] > div[2]",
-    "768": "footer > div[1] > div[3] > div[2] > a[3] > div[2] > div[1]"
+    "768": "footer > div[1] > div[3] > div[2] > a[3] > div[2] > div[1]",
+    "390": "footer > div[2] > div[1] > div[3] > div[2] > a[4] > div[1]"
    },
    "ours": "footer.socialt.2",
    "bps": [
     "1440",
+    "390",
     "768"
    ],
    "note": "R343 footer wave round 6: per-bp pairing (independent rank-proportional match at this bp); full checks"
@@ -538,6 +527,277 @@
     "768"
    ],
    "note": "R343 footer wave round 6: per-bp pairing (independent rank-proportional match at this bp); full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[2] > div[2] > div[1] > div[3] > div[1] > div[1]"
+   },
+   "spec": {
+    "390": "footer > div[2] > div[2] > div[1] > div[3] > div[1] > div[1]"
+   },
+   "ours": "footer.bg2labelt.2",
+   "bps": [
+    "390"
+   ],
+   "note": "R343 footer final round: per-bp rank pairing at the corrected type scales; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "1440": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[2]"
+   },
+   "spec": {
+    "1440": "footer > div[2] > a[1] > div[1] > div[1] > div[1] > div[2]"
+   },
+   "ours": "footer.ilinkt.1.1",
+   "bps": [
+    "1440"
+   ],
+   "note": "R343 footer final round: per-bp rank pairing at the corrected type scales; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "768": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "768": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "ours": "footer.acct.2",
+   "bps": [
+    "768"
+   ],
+   "note": "R343 footer final round: per-bp rank pairing at the corrected type scales; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "1440": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "1440": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "ours": "footer.brt.1.4",
+   "bps": [
+    "1440"
+   ],
+   "note": "R343 footer final round: per-bp rank pairing at the corrected type scales; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "768": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "768": "footer > div[2] > a[4] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "ours": "footer.brt.2.2",
+   "bps": [
+    "768"
+   ],
+   "note": "R343 footer final round: per-bp rank pairing at the corrected type scales; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "768": "footer > div[2] > a[5] > div[1] > div[1] > div[1] > div[1]",
+    "1440": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "spec": {
+    "768": "footer > div[2] > a[5] > div[1] > div[1] > div[1] > div[1]",
+    "1440": "footer > div[1] > a[3] > div[1] > div[1] > div[1] > div[1]"
+   },
+   "ours": "footer.brt.3.2",
+   "bps": [
+    "1440",
+    "768"
+   ],
+   "note": "R343 footer final round: per-bp rank pairing at the corrected type scales; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]"
+   },
+   "spec": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[5] > div[1]"
+   },
+   "ours": "footer.freg.1",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]"
+   },
+   "spec": {
+    "390": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[5] > div[1] > svg[1]"
+   },
+   "ours": "footer.fregsvg.1",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]"
+   },
+   "spec": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[6] > div[1]"
+   },
+   "ours": "footer.freg.2",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]"
+   },
+   "spec": {
+    "390": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[6] > div[1] > svg[1]"
+   },
+   "ours": "footer.fregsvg.2",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]"
+   },
+   "spec": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[7] > div[1]"
+   },
+   "ours": "footer.freg.3",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]"
+   },
+   "spec": {
+    "390": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[7] > div[1] > svg[1]"
+   },
+   "ours": "footer.fregsvg.3",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]"
+   },
+   "spec": {
+    "390": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+    "768": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+    "1024": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]",
+    "1440": "footer > div[1] > div[2] > div[2] > div[1] > div[8] > div[1]"
+   },
+   "ours": "footer.freg.4",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
+  },
+  {
+   "section": "footer",
+   "heron": {
+    "390": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]"
+   },
+   "spec": {
+    "390": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+    "768": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+    "1024": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]",
+    "1440": "footer > div[2] > div[2] > div[1] > div[8] > div[1] > svg[1]"
+   },
+   "ours": "footer.fregsvg.4",
+   "bps": [
+    "1024",
+    "1440",
+    "390",
+    "768"
+   ],
+   "note": "R343: the form zone's corner registration marks — the census's own 8×8 ink crosshair seats (the strip band's registration grammar), our OWN glyph geometry; full checks"
   }
  ]
 }
