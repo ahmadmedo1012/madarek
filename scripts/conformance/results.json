@@ -1,13 +1,13 @@
 {
- "generatedAt": "2026-11-08T16:00:42.814Z",
+ "generatedAt": "2026-11-08T16:49:38.689Z",
  "engine": "chromium",
  "url": "http://localhost:5173/",
  "specDir": "/home/z/wt/r342-integration/docs/redesign/r335/heron-spec",
  "summary": {
-  "total": 73442,
-  "pass": 68487,
-  "fail": 4955,
-  "passRate": 93.3,
+  "total": 72377,
+  "pass": 67779,
+  "fail": 4598,
+  "passRate": 93.6,
   "exceptionUses": 168,
   "exceptionRate": 0.2,
   "exceptionCap": "<5%",
@@ -3036,8 +3036,8 @@
    "oursSelector": "#hm:svg.none",
    "mode": "heuristic",
    "expected": -830,
-   "actual": 366,
-   "delta": 1196
+   "actual": 365,
+   "delta": 1195
   },
   {
    "section": "home-why-wrap",
@@ -6811,8 +6811,8 @@
    "oursSelector": "#ds:footer.bgroup.2",
    "mode": "data-spec",
    "expected": 70,
-   "actual": 506,
-   "delta": 436
+   "actual": 505,
+   "delta": 435
   },
   {
    "section": "home-map-wrap",
@@ -13909,16 +13909,6 @@
   "pass": 0,
   "fail": 5
  },
- "interact": {
-  "pass": 691,
-  "fail": 317,
-  "hoverChecked": 736
- },
- "patterns": {
-  "pass": 17,
-  "fail": 40,
-  "checked": 61
- },
  "panel": {
   "pass": 63,
   "fail": 0,
@@ -14379,7 +14369,7 @@
   "skipped": []
  },
  "provenance": {
-  "file": "chromium-20261108-160627-full.json",
+  "file": "chromium-20261108-165217-full.json",
   "scope": "full",
   "fullMatrix": true,
   "sections": "10/10",
