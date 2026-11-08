@@ -300,13 +300,18 @@ export function Statement({ sectionRef, titleRef }: StatementProps) {
                   </span>
                 </div>
               </div>
-              <div className="st-desc" data-spec="intro.desc">
-                <div className="st-desc-text" data-spec="intro.desctext">
-                  توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
-                  <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
-                </div>
-                <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />
+            </div>
+
+            {/* R342-02 — the desc row rides BELOW the ticker-in box (the
+                frozen spec's own nest: tickerin = labelrow + crawl; the
+                disclosure desc is the band's own closing row, inside the
+                ticker cell) */}
+            <div className="st-desc" data-spec="intro.desc">
+              <div className="st-desc-text" data-spec="intro.desctext">
+                توثيق وسائط لا شراكة — الصور والقنوات الرسمية لهذه الجامعات في
+                <Link to="/campus" className="fo-text-link">صفحة الحرم الجامعي</Link>.
               </div>
+              <div className="st-desc-rule lp-hairline lp-hairline--h" aria-hidden="true" data-spec="intro.descrule" />
             </div>
           </div>
         </div>
